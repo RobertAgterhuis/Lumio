@@ -1,0 +1,60 @@
+appId: nl.lumio.desktop
+productName: Lumio
+copyright: Copyright © 2026 Lumio
+
+# We use "dir" target to produce an unpacked directory (USB-portable)
+directories:
+  output: ../../dist/Lumio
+
+# The Electron app itself (compiled TS output)
+files:
+  - dist/**/*
+  - package.json
+
+# Extra resources bundled alongside the app
+extraResources:
+  # .NET backend (self-contained publish)
+  - from: ../../dist/backend
+    to: ../backend
+    filter:
+      - "**/*"
+  # Next.js static export
+  - from: ../../dist/frontend
+    to: ../frontend
+    filter:
+      - "**/*"
+
+win:
+  target:
+    - target: dir
+      arch:
+        - x64
+  icon: null  # TODO: add icon
+  signAndEditExecutable: false  # No code signing — USB-portable app
+  forceCodeSigning: false
+
+mac:
+  target:
+    - target: dir
+      arch:
+        - x64
+        - arm64
+  icon: null
+
+linux:
+  target:
+    - target: dir
+      arch:
+        - x64
+  icon: null
+
+# No auto-update — this is a USB-portable app
+publish: null
+
+# Don't create installers
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: false
+
+# Asar is fine for the Electron code, but backend/frontend are extraResources
+asar: true

@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lumio.Api/Lumio.Api.csproj" />
+  </Folder>
+</Solution>

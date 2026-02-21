@@ -1,0 +1,51 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+dist/
+
+# .NET
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+project.lock.json
+*.nuget.props
+*.nuget.targets
+.nuget/
+*.nupkg
+
+# Node
+node_modules/
+.next/
+out/
+.env
+.env.local
+npm-debug.log*
+
+# Electron
+release/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Lumio data
+data/
+*.db
+*.db-shm
+*.db-wal
