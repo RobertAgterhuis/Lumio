@@ -11,6 +11,10 @@ public class Erfgenaam : BaseEntity
     public string Relatie { get; set; } = string.Empty;
     public string? Telefoon { get; set; }
     public string? Email { get; set; }
+    public string? Adres { get; set; }
+    public string? Postcode { get; set; }
+    public string? Woonplaats { get; set; }
+    public DateOnly? Geboortedatum { get; set; }
     public int? ShareIndex { get; set; }
     public bool HeeftShareOntvangen { get; set; }
     public DateTime? ShareUitgegevenOp { get; set; }

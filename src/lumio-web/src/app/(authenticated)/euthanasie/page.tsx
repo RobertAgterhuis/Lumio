@@ -13,8 +13,15 @@ interface Wilsverklaring {
   situatieBeschrijving?: string;
   huisarts?: string;
   huisartsPraktijk?: string;
+  huisartsTelefoon?: string;
+  huisartsEmail?: string;
   vertegenwoordigerNaam?: string;
   vertegenwoordigerRelatie?: string;
+  vertegenwoordigerTelefoon?: string;
+  vertegenwoordigerEmail?: string;
+  vertegenwoordigerAdres?: string;
+  vertegenwoordigerPostcode?: string;
+  vertegenwoordigerWoonplaats?: string;
   aanvullendeWensen?: string;
   datumOndertekening?: string;
 }
@@ -128,12 +135,44 @@ export default function EuthanasiePage() {
                   {data.huisartsPraktijk}
                 </p>
               )}
+              {data.huisartsTelefoon && (
+                <p>
+                  <span className="text-muted-foreground">Telefoon huisarts:</span>{" "}
+                  {data.huisartsTelefoon}
+                </p>
+              )}
+              {data.huisartsEmail && (
+                <p>
+                  <span className="text-muted-foreground">E-mail huisarts:</span>{" "}
+                  {data.huisartsEmail}
+                </p>
+              )}
               {data.vertegenwoordigerNaam && (
                 <p>
                   <span className="text-muted-foreground">
                     Vertegenwoordiger:
                   </span>{" "}
                   {data.vertegenwoordigerNaam} ({data.vertegenwoordigerRelatie})
+                </p>
+              )}
+              {data.vertegenwoordigerTelefoon && (
+                <p>
+                  <span className="text-muted-foreground">Tel. vertegenwoordiger:</span>{" "}
+                  {data.vertegenwoordigerTelefoon}
+                </p>
+              )}
+              {data.vertegenwoordigerEmail && (
+                <p>
+                  <span className="text-muted-foreground">E-mail vertegenwoordiger:</span>{" "}
+                  {data.vertegenwoordigerEmail}
+                </p>
+              )}
+              {data.vertegenwoordigerAdres && (
+                <p>
+                  <span className="text-muted-foreground">Adres vertegenwoordiger:</span>{" "}
+                  {data.vertegenwoordigerAdres}
+                  {data.vertegenwoordigerPostcode ? `, ${data.vertegenwoordigerPostcode}` : ""}
+                  {data.vertegenwoordigerWoonplaats ? ` ${data.vertegenwoordigerWoonplaats}` : ""}
                 </p>
               )}
             </CardContent>

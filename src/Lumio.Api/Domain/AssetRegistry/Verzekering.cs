@@ -6,6 +6,8 @@ public class Verzekering : BaseEntity
 {
     public Guid EigenaarId { get; set; }
     public string Verzekeraar { get; set; } = string.Empty;
+    public string? VerzekeraarTelefoon { get; set; }
+    public string? VerzekeraarEmail { get; set; }
     public string PolisNummer { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
     public decimal? VerzekerdBedrag { get; set; }

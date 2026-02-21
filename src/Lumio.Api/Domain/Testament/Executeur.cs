@@ -11,5 +11,8 @@ public class Executeur : BaseEntity
     public string? Relatie { get; set; }
     public string? Telefoon { get; set; }
     public string? Email { get; set; }
+    public string? Adres { get; set; }
+    public string? Postcode { get; set; }
+    public string? Woonplaats { get; set; }
     public string? Bevoegdheden { get; set; }
 }

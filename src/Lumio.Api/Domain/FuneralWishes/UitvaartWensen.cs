@@ -10,6 +10,11 @@ public class UitvaartWensen : BaseEntity
     public string VoorkeurType { get; set; } = string.Empty;
     public string? Begraafplaats { get; set; }
     public string? UitvaartOndernemer { get; set; }
+    public string? UitvaartOndernemerTelefoon { get; set; }
+    public string? UitvaartOndernemerEmail { get; set; }
+    public string? UitvaartOndernemerAdres { get; set; }
+    public string? UitvaartOndernemerPostcode { get; set; }
+    public string? UitvaartOndernemerPlaats { get; set; }
     public bool HeeftUitvaartVerzekering { get; set; }
     public string? UitvaartVerzekeringDetails { get; set; }
     public string? CeremonieSoort { get; set; }

@@ -8,6 +8,10 @@ public record ErfgenaamResponse(
     string Relatie,
     string? Telefoon,
     string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
+    DateOnly? Geboortedatum,
     int? ShareIndex,
     bool HeeftShareOntvangen,
     DateTime? ShareUitgegevenOp);
@@ -18,4 +22,8 @@ public record ErfgenaamUpsertRequest(
     string? Tussenvoegsel,
     string Relatie,
     string? Telefoon,
-    string? Email);
+    string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
+    DateOnly? Geboortedatum);

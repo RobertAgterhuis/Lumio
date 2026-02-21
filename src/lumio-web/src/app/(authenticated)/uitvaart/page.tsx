@@ -21,6 +21,11 @@ interface UitvaartWensen {
   voorkeurType: string;
   begraafplaats?: string;
   uitvaartOndernemer?: string;
+  uitvaartOndernemerTelefoon?: string;
+  uitvaartOndernemerEmail?: string;
+  uitvaartOndernemerAdres?: string;
+  uitvaartOndernemerPostcode?: string;
+  uitvaartOndernemerPlaats?: string;
   heeftUitvaartVerzekering: boolean;
   uitvaartVerzekeringDetails?: string;
   ceremonieSoort?: string;
@@ -191,6 +196,26 @@ export default function UitvaartPage() {
                       Ondernemer:
                     </span>{" "}
                     {data.uitvaartOndernemer}
+                  </p>
+                )}
+                {data.uitvaartOndernemerTelefoon && (
+                  <p>
+                    <span className="text-muted-foreground">Tel. ondernemer:</span>{" "}
+                    {data.uitvaartOndernemerTelefoon}
+                  </p>
+                )}
+                {data.uitvaartOndernemerEmail && (
+                  <p>
+                    <span className="text-muted-foreground">E-mail ondernemer:</span>{" "}
+                    {data.uitvaartOndernemerEmail}
+                  </p>
+                )}
+                {data.uitvaartOndernemerAdres && (
+                  <p>
+                    <span className="text-muted-foreground">Adres ondernemer:</span>{" "}
+                    {data.uitvaartOndernemerAdres}
+                    {data.uitvaartOndernemerPostcode ? `, ${data.uitvaartOndernemerPostcode}` : ""}
+                    {data.uitvaartOndernemerPlaats ? ` ${data.uitvaartOndernemerPlaats}` : ""}
                   </p>
                 )}
                 {data.kledingwensen && (

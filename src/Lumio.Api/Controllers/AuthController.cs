@@ -83,6 +83,33 @@ public class AuthController : ControllerBase
         return Ok(new { bericht = "Wachtwoord gewijzigd. Let op: bestaande Shamir-sleuteldelen zijn ongeldig geworden." });
     }
 
+    [HttpDelete("account")]
+    public async Task<IActionResult> VerwijderAccount([FromBody] OntgrendelRequest request)
+    {
+        if (!_passwordService.IsUnlocked)
+            return StatusCode(423, new { error = "Database is vergrendeld." });
+
+        // Verify the password before deleting
+        var success = await _passwordService.UnlockAsync(request.Wachtwoord);
+        if (!success)
+            return Unauthorized(new { error = "Ongeldig wachtwoord." });
+
+        var dbPath = HttpContext.RequestServices.GetRequiredService<IConfiguration>()["DatabasePath"]!;
+        var saltPath = Path.ChangeExtension(dbPath, ".salt");
+
+        // Lock the database first
+        _passwordService.Lock();
+
+        // Delete database and salt files
+        if (System.IO.File.Exists(dbPath))
+            System.IO.File.Delete(dbPath);
+
+        if (System.IO.File.Exists(saltPath))
+            System.IO.File.Delete(saltPath);
+
+        return Ok(new { bericht = "Alle gegevens zijn permanent verwijderd." });
+    }
+
     [HttpPost("ontgrendel-erfgenaam")]
     public async Task<IActionResult> OntgrendelErfgenaam(
         [FromBody] OntgrendelErfgenaamRequest request,

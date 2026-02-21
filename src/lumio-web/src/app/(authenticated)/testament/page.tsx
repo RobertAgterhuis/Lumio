@@ -16,6 +16,11 @@ interface TestamentInfo {
   testamentType?: string;
   notarisNaam?: string;
   notarisKantoor?: string;
+  notarisTelefoon?: string;
+  notarisEmail?: string;
+  notarisAdres?: string;
+  notarisPostcode?: string;
+  notarisPlaats?: string;
   datumTestament?: string;
   ctr_Nummer?: string;
 }
@@ -24,6 +29,11 @@ interface Begunstigde {
   id: string;
   naam: string;
   relatie: string;
+  telefoon?: string;
+  email?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
   percentage?: number;
   isLegitiemePortie: boolean;
 }
@@ -34,6 +44,9 @@ interface Executeur {
   relatie?: string;
   telefoon?: string;
   email?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
   notarieleAkte?: boolean;
 }
 
@@ -43,7 +56,7 @@ export default function TestamentPage() {
   const [executeurs, setExecuteurs] = useState<Executeur[]>([]);
   const [execDialogOpen, setExecDialogOpen] = useState(false);
   const [editExecId, setEditExecId] = useState<string | null>(null);
-  const [execForm, setExecForm] = useState({ naam: "", relatie: "", telefoon: "", email: "" });
+  const [execForm, setExecForm] = useState({ naam: "", relatie: "", telefoon: "", email: "", adres: "", postcode: "", woonplaats: "" });
   const [execError, setExecError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -74,10 +87,13 @@ export default function TestamentPage() {
         relatie: exec.relatie ?? "",
         telefoon: exec.telefoon ?? "",
         email: exec.email ?? "",
+        adres: exec.adres ?? "",
+        postcode: exec.postcode ?? "",
+        woonplaats: exec.woonplaats ?? "",
       });
     } else {
       setEditExecId(null);
-      setExecForm({ naam: "", relatie: "", telefoon: "", email: "" });
+      setExecForm({ naam: "", relatie: "", telefoon: "", email: "", adres: "", postcode: "", woonplaats: "" });
     }
     setExecDialogOpen(true);
   };
@@ -90,6 +106,9 @@ export default function TestamentPage() {
         relatie: execForm.relatie || null,
         telefoon: execForm.telefoon || null,
         email: execForm.email || null,
+        adres: execForm.adres || null,
+        postcode: execForm.postcode || null,
+        woonplaats: execForm.woonplaats || null,
       };
       if (editExecId) {
         await api.put(`/api/testament/executeurs/${editExecId}`, payload);
@@ -148,6 +167,9 @@ export default function TestamentPage() {
               <div><span className="font-medium">Type:</span> {testament.testamentType || "—"}</div>
               <div><span className="font-medium">Notaris:</span> {testament.notarisNaam || "—"}</div>
               <div><span className="font-medium">Kantoor:</span> {testament.notarisKantoor || "—"}</div>
+              {testament.notarisTelefoon && <div><span className="font-medium">Telefoon:</span> {testament.notarisTelefoon}</div>}
+              {testament.notarisEmail && <div><span className="font-medium">E-mail:</span> {testament.notarisEmail}</div>}
+              {testament.notarisAdres && <div><span className="font-medium">Adres:</span> {testament.notarisAdres}{testament.notarisPostcode ? `, ${testament.notarisPostcode}` : ""}{testament.notarisPlaats ? ` ${testament.notarisPlaats}` : ""}</div>}
               <div><span className="font-medium">Datum:</span> {testament.datumTestament || "—"}</div>
               <div><span className="font-medium">CTR Nummer:</span> {testament.ctr_Nummer || "—"}</div>
             </CardContent>
@@ -272,6 +294,32 @@ export default function TestamentPage() {
               value={execForm.email}
               onChange={(e) => setExecForm((f) => ({ ...f, email: e.target.value }))}
               placeholder="E-mailadres"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres</Label>
+              <Input
+                value={execForm.adres}
+                onChange={(e) => setExecForm((f) => ({ ...f, adres: e.target.value }))}
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={execForm.postcode}
+                onChange={(e) => setExecForm((f) => ({ ...f, postcode: e.target.value }))}
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Woonplaats</Label>
+            <Input
+              value={execForm.woonplaats}
+              onChange={(e) => setExecForm((f) => ({ ...f, woonplaats: e.target.value }))}
+              placeholder="Woonplaats"
             />
           </div>
         </div>

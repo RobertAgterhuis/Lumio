@@ -44,6 +44,8 @@ interface Bankrekening {
 interface Verzekering {
   id: string;
   verzekeraar: string;
+  verzekeraarTelefoon?: string;
+  verzekeraarEmail?: string;
   polisNummer: string;
   type: string;
   verzekerdBedrag?: number;
@@ -53,6 +55,8 @@ interface Verzekering {
 interface Schuld {
   id: string;
   schuldeiser: string;
+  schuldeiserTelefoon?: string;
+  schuldeiserEmail?: string;
   type: string;
   bedrag: number;
   maandelijkseAflossing?: number;
@@ -77,8 +81,8 @@ export default function BoedelPage() {
 
   const [bezitForm, setBezitForm] = useState({ categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "" });
   const [rekeningForm, setRekeningForm] = useState({ bankNaam: "", rekeningType: "", iban: "", notities: "" });
-  const [verzekerForm, setVerzekerForm] = useState({ verzekeraar: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "" });
-  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "" });
+  const [verzekerForm, setVerzekerForm] = useState({ verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "" });
+  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "" });
 
   const loadData = () => {
     Promise.all([
@@ -127,12 +131,14 @@ export default function BoedelPage() {
     setEditId(item?.id ?? null);
     setVerzekerForm(item ? {
       verzekeraar: item.verzekeraar,
+      verzekeraarTelefoon: item.verzekeraarTelefoon ?? "",
+      verzekeraarEmail: item.verzekeraarEmail ?? "",
       type: item.type,
       polisNummer: item.polisNummer,
       verzekerdBedrag: item.verzekerdBedrag?.toString() ?? "",
       begunstigde: item.begunstigde ?? "",
       notities: item.notities ?? "",
-    } : { verzekeraar: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "" });
+    } : { verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "" });
     setDialogKind("verzekering");
   };
   const openSchuld = (item?: Schuld) => {
@@ -140,12 +146,14 @@ export default function BoedelPage() {
     setEditId(item?.id ?? null);
     setSchuldForm(item ? {
       schuldeiser: item.schuldeiser,
+      schuldeiserTelefoon: item.schuldeiserTelefoon ?? "",
+      schuldeiserEmail: item.schuldeiserEmail ?? "",
       type: item.type,
       bedrag: item.bedrag.toString(),
       maandelijkseAflossing: item.maandelijkseAflossing?.toString() ?? "",
       referentie: item.referentie ?? "",
       notities: item.notities ?? "",
-    } : { schuldeiser: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "" });
+    } : { schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "" });
     setDialogKind("schuld");
   };
 
@@ -189,6 +197,8 @@ export default function BoedelPage() {
     try {
       const payload = {
         verzekeraar: verzekerForm.verzekeraar,
+        verzekeraarTelefoon: verzekerForm.verzekeraarTelefoon || null,
+        verzekeraarEmail: verzekerForm.verzekeraarEmail || null,
         polisNummer: verzekerForm.polisNummer,
         type: verzekerForm.type,
         verzekerdBedrag: verzekerForm.verzekerdBedrag ? parseFloat(verzekerForm.verzekerdBedrag) : null,
@@ -207,6 +217,8 @@ export default function BoedelPage() {
     try {
       const payload = {
         schuldeiser: schuldForm.schuldeiser,
+        schuldeiserTelefoon: schuldForm.schuldeiserTelefoon || null,
+        schuldeiserEmail: schuldForm.schuldeiserEmail || null,
         type: schuldForm.type,
         bedrag: parseFloat(schuldForm.bedrag) || 0,
         maandelijkseAflossing: schuldForm.maandelijkseAflossing ? parseFloat(schuldForm.maandelijkseAflossing) : null,
@@ -440,6 +452,10 @@ export default function BoedelPage() {
         <DialogHeader><DialogTitle>{editId ? "Verzekering bewerken" : "Verzekering toevoegen"}</DialogTitle></DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2"><Label>Verzekeraar</Label><Input value={verzekerForm.verzekeraar} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraar: e.target.value }))} placeholder="bijv. Nationale-Nederlanden, Aegon" /></div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2"><Label>Telefoon verzekeraar</Label><Input value={verzekerForm.verzekeraarTelefoon} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraarTelefoon: e.target.value }))} placeholder="Telefoonnummer" /></div>
+            <div className="space-y-2"><Label>E-mail verzekeraar</Label><Input type="email" value={verzekerForm.verzekeraarEmail} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraarEmail: e.target.value }))} placeholder="info@verzekeraar.nl" /></div>
+          </div>
           <div className="space-y-2"><Label>Type</Label>
             <Select value={verzekerForm.type} onChange={(e) => setVerzekerForm((f) => ({ ...f, type: e.target.value }))}>
               <option value="">Selecteer...</option>
@@ -468,6 +484,10 @@ export default function BoedelPage() {
         <DialogHeader><DialogTitle>{editId ? "Schuld bewerken" : "Schuld toevoegen"}</DialogTitle></DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2"><Label>Schuldeiser</Label><Input value={schuldForm.schuldeiser} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiser: e.target.value }))} placeholder="bijv. ING, DUO, Rabobank" /></div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2"><Label>Telefoon schuldeiser</Label><Input value={schuldForm.schuldeiserTelefoon} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiserTelefoon: e.target.value }))} placeholder="Telefoonnummer" /></div>
+            <div className="space-y-2"><Label>E-mail schuldeiser</Label><Input type="email" value={schuldForm.schuldeiserEmail} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiserEmail: e.target.value }))} placeholder="info@schuldeiser.nl" /></div>
+          </div>
           <div className="space-y-2"><Label>Type</Label>
             <Select value={schuldForm.type} onChange={(e) => setSchuldForm((f) => ({ ...f, type: e.target.value }))}>
               <option value="">Selecteer...</option>

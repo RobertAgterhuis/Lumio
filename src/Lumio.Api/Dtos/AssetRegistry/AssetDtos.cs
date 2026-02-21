@@ -19,21 +19,29 @@ public record BankrekeningUpsertRequest(
     string RekeningType, string? Notities);
 
 public record VerzekeringResponse(
-    Guid Id, string Verzekeraar, string PolisNummer,
+    Guid Id, string Verzekeraar,
+    string? VerzekeraarTelefoon, string? VerzekeraarEmail,
+    string PolisNummer,
     string Type, decimal? VerzekerdBedrag,
     string? Begunstigde, string? Notities);
 
 public record VerzekeringUpsertRequest(
-    string Verzekeraar, string PolisNummer,
+    string Verzekeraar,
+    string? VerzekeraarTelefoon, string? VerzekeraarEmail,
+    string PolisNummer,
     string Type, decimal? VerzekerdBedrag,
     string? Begunstigde, string? Notities);
 
 public record SchuldResponse(
-    Guid Id, string Schuldeiser, string Type,
+    Guid Id, string Schuldeiser,
+    string? SchuldeiserTelefoon, string? SchuldeiserEmail,
+    string Type,
     decimal Bedrag, decimal? MaandelijkseAflossing,
     string? Referentie, string? Notities);
 
 public record SchuldUpsertRequest(
-    string Schuldeiser, string Type,
+    string Schuldeiser,
+    string? SchuldeiserTelefoon, string? SchuldeiserEmail,
+    string Type,
     decimal Bedrag, decimal? MaandelijkseAflossing,
     string? Referentie, string? Notities);

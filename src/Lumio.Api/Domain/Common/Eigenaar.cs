@@ -14,4 +14,9 @@ public class Eigenaar : BaseEntity
     public string? Email { get; set; }
     public string? Notaris { get; set; }
     public string? NotarisKantoor { get; set; }
+    public string? NotarisTelefoon { get; set; }
+    public string? NotarisEmail { get; set; }
+    public string? NotarisAdres { get; set; }
+    public string? NotarisPostcode { get; set; }
+    public string? NotarisPlaats { get; set; }
 }

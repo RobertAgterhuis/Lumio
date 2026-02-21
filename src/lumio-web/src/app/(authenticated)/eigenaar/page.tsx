@@ -28,6 +28,11 @@ interface Eigenaar {
   email?: string;
   notaris?: string;
   notarisKantoor?: string;
+  notarisTelefoon?: string;
+  notarisEmail?: string;
+  notarisAdres?: string;
+  notarisPostcode?: string;
+  notarisPlaats?: string;
 }
 
 const emptyForm = {
@@ -43,6 +48,11 @@ const emptyForm = {
   email: "",
   notaris: "",
   notarisKantoor: "",
+  notarisTelefoon: "",
+  notarisEmail: "",
+  notarisAdres: "",
+  notarisPostcode: "",
+  notarisPlaats: "",
 };
 
 export default function EigenaarPage() {
@@ -72,6 +82,11 @@ export default function EigenaarPage() {
             email: data.email ?? "",
             notaris: data.notaris ?? "",
             notarisKantoor: data.notarisKantoor ?? "",
+            notarisTelefoon: data.notarisTelefoon ?? "",
+            notarisEmail: data.notarisEmail ?? "",
+            notarisAdres: data.notarisAdres ?? "",
+            notarisPostcode: data.notarisPostcode ?? "",
+            notarisPlaats: data.notarisPlaats ?? "",
           });
         }
       })
@@ -102,6 +117,11 @@ export default function EigenaarPage() {
         email: form.email || null,
         notaris: form.notaris || null,
         notarisKantoor: form.notarisKantoor || null,
+        notarisTelefoon: form.notarisTelefoon || null,
+        notarisEmail: form.notarisEmail || null,
+        notarisAdres: form.notarisAdres || null,
+        notarisPostcode: form.notarisPostcode || null,
+        notarisPlaats: form.notarisPlaats || null,
       };
       if (exists) {
         await api.put("/api/eigenaar", payload);
@@ -276,6 +296,51 @@ export default function EigenaarPage() {
                 placeholder="bijv. De Vries & Partners Notarissen"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Telefoon notaris</Label>
+              <Input
+                value={form.notarisTelefoon}
+                onChange={(e) => update("notarisTelefoon", e.target.value)}
+                placeholder="Telefoonnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>E-mail notaris</Label>
+              <Input
+                type="email"
+                value={form.notarisEmail}
+                onChange={(e) => update("notarisEmail", e.target.value)}
+                placeholder="notaris@kantoor.nl"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2 md:col-span-2">
+              <Label>Adres notaris</Label>
+              <Input
+                value={form.notarisAdres}
+                onChange={(e) => update("notarisAdres", e.target.value)}
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={form.notarisPostcode}
+                onChange={(e) => update("notarisPostcode", e.target.value)}
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Plaats</Label>
+            <Input
+              value={form.notarisPlaats}
+              onChange={(e) => update("notarisPlaats", e.target.value)}
+              placeholder="Plaats"
+            />
           </div>
         </CardContent>
       </Card>

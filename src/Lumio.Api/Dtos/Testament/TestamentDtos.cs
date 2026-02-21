@@ -6,6 +6,11 @@ public record TestamentInfoResponse(
     string? TestamentType,
     string? NotarisNaam,
     string? NotarisKantoor,
+    string? NotarisTelefoon,
+    string? NotarisEmail,
+    string? NotarisAdres,
+    string? NotarisPostcode,
+    string? NotarisPlaats,
     DateOnly? DatumTestament,
     string? TestamentLocatie,
     string? CTR_Nummer,
@@ -18,6 +23,11 @@ public record TestamentInfoUpsertRequest(
     string? TestamentType,
     string? NotarisNaam,
     string? NotarisKantoor,
+    string? NotarisTelefoon,
+    string? NotarisEmail,
+    string? NotarisAdres,
+    string? NotarisPostcode,
+    string? NotarisPlaats,
     DateOnly? DatumTestament,
     string? TestamentLocatie,
     string? CTR_Nummer,
@@ -28,6 +38,11 @@ public record BegunstigdeResponse(
     Guid Id,
     string Naam,
     string Relatie,
+    string? Telefoon,
+    string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
     string? Omschrijving,
     decimal? Percentage,
     bool IsLegitiemePortie);
@@ -35,6 +50,11 @@ public record BegunstigdeResponse(
 public record BegunstigdeUpsertRequest(
     string Naam,
     string Relatie,
+    string? Telefoon,
+    string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
     string? Omschrijving,
     decimal? Percentage,
     bool IsLegitiemePortie);
@@ -45,6 +65,9 @@ public record ExecuteurResponse(
     string? Relatie,
     string? Telefoon,
     string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
     string? Bevoegdheden);
 
 public record ExecuteurUpsertRequest(
@@ -52,4 +75,7 @@ public record ExecuteurUpsertRequest(
     string? Relatie,
     string? Telefoon,
     string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
     string? Bevoegdheden);

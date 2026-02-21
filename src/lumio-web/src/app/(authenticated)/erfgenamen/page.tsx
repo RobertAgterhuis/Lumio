@@ -39,6 +39,10 @@ interface Erfgenaam {
   relatie: string;
   email?: string;
   telefoon?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
+  geboortedatum?: string;
   shareIndex?: number;
   heeftShareOntvangen: boolean;
   shareUitgegevenOp?: string;
@@ -62,6 +66,10 @@ const emptyForm = {
   relatie: "",
   email: "",
   telefoon: "",
+  adres: "",
+  postcode: "",
+  woonplaats: "",
+  geboortedatum: "",
 };
 
 function displayName(e: Erfgenaam): string {
@@ -111,6 +119,10 @@ export default function ErfgenamenPage() {
         relatie: item.relatie,
         email: item.email ?? "",
         telefoon: item.telefoon ?? "",
+        adres: item.adres ?? "",
+        postcode: item.postcode ?? "",
+        woonplaats: item.woonplaats ?? "",
+        geboortedatum: item.geboortedatum ?? "",
       });
     } else {
       setEditId(null);
@@ -128,6 +140,10 @@ export default function ErfgenamenPage() {
         tussenvoegsel: form.tussenvoegsel || null,
         email: form.email || null,
         telefoon: form.telefoon || null,
+        adres: form.adres || null,
+        postcode: form.postcode || null,
+        woonplaats: form.woonplaats || null,
+        geboortedatum: form.geboortedatum || null,
       };
       if (editId) {
         await api.put(`/api/erfgenamen/${editId}`, payload);
@@ -370,6 +386,48 @@ export default function ErfgenamenPage() {
                 }
               />
             </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Geboortedatum</Label>
+            <Input
+              type="date"
+              value={form.geboortedatum}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, geboortedatum: e.target.value }))
+              }
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres</Label>
+              <Input
+                value={form.adres}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, adres: e.target.value }))
+                }
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={form.postcode}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, postcode: e.target.value }))
+                }
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Woonplaats</Label>
+            <Input
+              value={form.woonplaats}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, woonplaats: e.target.value }))
+              }
+              placeholder="Woonplaats"
+            />
           </div>
         </div>
         <DialogFooter>

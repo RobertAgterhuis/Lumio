@@ -14,6 +14,11 @@ public record EigenaarResponse(
     string? Email,
     string? Notaris,
     string? NotarisKantoor,
+    string? NotarisTelefoon,
+    string? NotarisEmail,
+    string? NotarisAdres,
+    string? NotarisPostcode,
+    string? NotarisPlaats,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
@@ -29,4 +34,9 @@ public record EigenaarUpsertRequest(
     string? Telefoon,
     string? Email,
     string? Notaris,
-    string? NotarisKantoor);
+    string? NotarisKantoor,
+    string? NotarisTelefoon,
+    string? NotarisEmail,
+    string? NotarisAdres,
+    string? NotarisPostcode,
+    string? NotarisPlaats);

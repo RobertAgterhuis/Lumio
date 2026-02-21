@@ -10,6 +10,11 @@ public class TestamentInfo : BaseEntity
     public string? TestamentType { get; set; }
     public string? NotarisNaam { get; set; }
     public string? NotarisKantoor { get; set; }
+    public string? NotarisTelefoon { get; set; }
+    public string? NotarisEmail { get; set; }
+    public string? NotarisAdres { get; set; }
+    public string? NotarisPostcode { get; set; }
+    public string? NotarisPlaats { get; set; }
     public DateOnly? DatumTestament { get; set; }
     public string? TestamentLocatie { get; set; }
     public string? CTR_Nummer { get; set; }
