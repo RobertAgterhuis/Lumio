@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
 import { useAuthStore, type Profile } from "@/stores/authStore";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import {
   getIdleTimeoutMinutes,
   setIdleTimeoutMinutes,
@@ -482,6 +483,7 @@ export default function InstellingenPage() {
                 required
                 minLength={8}
               />
+              <PasswordStrengthMeter password={nieuwWachtwoord} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="bevestig">Bevestig nieuw wachtwoord</Label>
