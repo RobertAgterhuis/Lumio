@@ -69,4 +69,25 @@ public class ExportController : ControllerBase
         var pdf = await _pdfService.GenerateCompleetPdf();
         return File(pdf, "application/pdf", "lumio-compleet.pdf");
     }
+
+    [HttpPost("noodkaart")]
+    public async Task<IActionResult> ExportNoodkaart()
+    {
+        var pdf = await _pdfService.GenerateNoodkaartPdf();
+        return File(pdf, "application/pdf", "lumio-noodkaart.pdf");
+    }
+
+    [HttpPost("testament-concept")]
+    public async Task<IActionResult> ExportTestamentConcept()
+    {
+        var pdf = await _pdfService.GenerateTestamentConceptPdf();
+        return File(pdf, "application/pdf", "lumio-testament-concept.pdf");
+    }
+
+    [HttpPost("wilsverklaring")]
+    public async Task<IActionResult> ExportWilsverklaring()
+    {
+        var pdf = await _pdfService.GenerateWilsverklaringPdf();
+        return File(pdf, "application/pdf", "lumio-wilsverklaring.pdf");
+    }
 }

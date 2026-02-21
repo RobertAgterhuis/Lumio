@@ -23,5 +23,10 @@ public class WilsverklaringEuthanasie : BaseEntity
     public string? VertegenwoordigerWoonplaats { get; set; }
     public string? AanvullendeWensen { get; set; }
 
+    // S8 — Wettelijk conforme document-generatie
+    public bool DementieClausule { get; set; }
+    public string? DementieClausuleToelichting { get; set; }
+    public string? BehandelVerbod { get; set; }
+
     public List<EuthanasieVoorwaarde> Voorwaarden { get; set; } = [];
 }

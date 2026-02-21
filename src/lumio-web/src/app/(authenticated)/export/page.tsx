@@ -20,6 +20,7 @@ import {
   Church,
   FileText,
   Loader2,
+  Phone,
 } from "lucide-react";
 
 const exportOptions = [
@@ -64,6 +65,24 @@ const exportOptions = [
     label: "Documenten",
     icon: FileText,
     endpoint: "/api/export/documenten",
+  },
+  {
+    key: "noodkaart",
+    label: "Noodkaart",
+    icon: Phone,
+    endpoint: "/api/export/noodkaart",
+  },
+  {
+    key: "testament-concept",
+    label: "Testament Concept (wettelijk)",
+    icon: ScrollText,
+    endpoint: "/api/export/testament-concept",
+  },
+  {
+    key: "wilsverklaring",
+    label: "Wilsverklaring Euthanasie (wettelijk)",
+    icon: Stethoscope,
+    endpoint: "/api/export/wilsverklaring",
   },
 ];
 

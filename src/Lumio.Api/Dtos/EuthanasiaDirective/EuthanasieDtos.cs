@@ -18,6 +18,9 @@ public record WilsverklaringResponse(
     string? VertegenwoordigerPostcode,
     string? VertegenwoordigerWoonplaats,
     string? AanvullendeWensen,
+    bool DementieClausule,
+    string? DementieClausuleToelichting,
+    string? BehandelVerbod,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
@@ -36,7 +39,10 @@ public record WilsverklaringUpsertRequest(
     string? VertegenwoordigerAdres,
     string? VertegenwoordigerPostcode,
     string? VertegenwoordigerWoonplaats,
-    string? AanvullendeWensen);
+    string? AanvullendeWensen,
+    bool DementieClausule,
+    string? DementieClausuleToelichting,
+    string? BehandelVerbod);
 
 public record VoorwaardeResponse(
     Guid Id,

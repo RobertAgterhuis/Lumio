@@ -21,6 +21,10 @@ public class TestamentInfo : BaseEntity
     public string? AlgemeneWensen { get; set; }
     public string? BijzondereBepalingen { get; set; }
 
+    // S8 — Wettelijk conforme document-generatie
+    public bool UitsluitingsClausule { get; set; } = true;
+    public string? Legaten { get; set; }
+
     public List<Begunstigde> Begunstigden { get; set; } = [];
     public List<Executeur> Executeurs { get; set; } = [];
 }

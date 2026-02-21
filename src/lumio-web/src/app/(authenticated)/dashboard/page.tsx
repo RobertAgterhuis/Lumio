@@ -18,6 +18,7 @@ import {
   ArrowRight,
   User,
   AlertTriangle,
+  Phone,
 } from "lucide-react";
 
 const domainCards = [
@@ -84,6 +85,14 @@ const domainCards = [
     beschrijving: "Erfgenamen beheren en sleuteldelen verdelen",
     color: "text-indigo-600",
     bgColor: "bg-indigo-50",
+  },
+  {
+    href: "/noodcontacten",
+    icon: Phone,
+    titel: "Noodcontacten",
+    beschrijving: "Vertrouwenspersonen en hulpverleners voor noodsituaties",
+    color: "text-pink-600",
+    bgColor: "bg-pink-50",
   },
 ];
 

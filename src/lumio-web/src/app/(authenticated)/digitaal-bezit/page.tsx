@@ -16,11 +16,12 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api } from "@/lib/api-client";
-import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
+import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff, Filter } from "lucide-react";
 
 interface DigitaalAccount {
   id: string;
   platformNaam: string;
+  categorie?: string;
   gebruikersnaam?: string;
   emailAdres?: string;
   url?: string;
@@ -46,8 +47,22 @@ interface CryptoWallet {
   notities?: string;
 }
 
+const ACCOUNT_CATEGORIEEN = [
+  "Social Media",
+  "Email",
+  "Banking",
+  "Shopping",
+  "Streaming",
+  "Gaming",
+  "Cloud",
+  "Werk",
+  "Overheid",
+  "Overig",
+];
+
 const emptyAccount = {
   platformNaam: "",
+  categorie: "",
   gebruikersnaam: "",
   emailAdres: "",
   url: "",
@@ -89,6 +104,11 @@ export default function DigitaalBezitPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ontsleuteld, setOntsleuteld] = useState<Record<string, string>>({});
+  const [categorieFilter, setCategorieFilter] = useState<string>("");
+
+  const filteredAccounts = categorieFilter
+    ? accounts.filter((a) => a.categorie === categorieFilter)
+    : accounts;
 
   const loadData = () => {
     Promise.all([
@@ -114,6 +134,7 @@ export default function DigitaalBezitPage() {
       setEditId(account.id);
       setAccountForm({
         platformNaam: account.platformNaam,
+        categorie: account.categorie ?? "",
         gebruikersnaam: account.gebruikersnaam ?? "",
         emailAdres: account.emailAdres ?? "",
         url: account.url ?? "",
@@ -171,6 +192,7 @@ export default function DigitaalBezitPage() {
     try {
       const payload = {
         platformNaam: accountForm.platformNaam,
+        categorie: accountForm.categorie || null,
         gebruikersnaam: accountForm.gebruikersnaam || null,
         emailAdres: accountForm.emailAdres || null,
         url: accountForm.url || null,
@@ -328,18 +350,35 @@ export default function DigitaalBezitPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Online Accounts</CardTitle>
-              <Button size="sm" onClick={() => openAccountDialog()}>
-                <Plus className="h-4 w-4 mr-1" /> Toevoegen
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <Select
+                    value={categorieFilter}
+                    onChange={(e) => setCategorieFilter(e.target.value)}
+                    className="w-40"
+                  >
+                    <option value="">Alle categorieën</option>
+                    {ACCOUNT_CATEGORIEEN.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </Select>
+                </div>
+                <Button size="sm" onClick={() => openAccountDialog()}>
+                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              {accounts.length === 0 ? (
+              {filteredAccounts.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">
-                  Nog geen accounts. Klik op Toevoegen.
+                  {categorieFilter
+                    ? `Geen accounts in categorie "${categorieFilter}".`
+                    : "Nog geen accounts. Klik op Toevoegen."}
                 </p>
               ) : (
                 <div className="space-y-2">
-                  {accounts.map((a) => (
+                  {filteredAccounts.map((a) => (
                     <div
                       key={a.id}
                       className="flex items-center justify-between rounded-md border p-3"
@@ -353,6 +392,9 @@ export default function DigitaalBezitPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2">
+                        {a.categorie && (
+                          <Badge variant="outline">{a.categorie}</Badge>
+                        )}
                         <Badge variant="secondary">{a.gewensteActie}</Badge>
                         <Button
                           variant="ghost"
@@ -529,6 +571,20 @@ export default function DigitaalBezitPage() {
               }
               placeholder="bijv. Google, Facebook, LinkedIn"
             />
+          </div>
+          <div className="space-y-2">
+            <Label>Categorie</Label>
+            <Select
+              value={accountForm.categorie}
+              onChange={(e) =>
+                setAccountForm((f) => ({ ...f, categorie: e.target.value }))
+              }
+            >
+              <option value="">Selecteer categorie...</option>
+              {ACCOUNT_CATEGORIEEN.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </Select>
           </div>
           <div className="space-y-2">
             <Label>Gebruikersnaam</Label>
