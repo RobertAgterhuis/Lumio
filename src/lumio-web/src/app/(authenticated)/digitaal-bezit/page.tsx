@@ -17,6 +17,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api } from "@/lib/api-client";
 import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff, Filter } from "lucide-react";
+import { PasswordGenerator } from "@/components/PasswordGenerator";
 
 interface DigitaalAccount {
   id: string;
@@ -710,6 +711,11 @@ export default function DigitaalBezitPage() {
                 setWachtwoordForm((f) => ({ ...f, wachtwoord: e.target.value }))
               }
               placeholder={editId ? "Laat leeg om niet te wijzigen" : "Wachtwoord"}
+            />
+            <PasswordGenerator
+              onUse={(pw) =>
+                setWachtwoordForm((f) => ({ ...f, wachtwoord: pw }))
+              }
             />
           </div>
           <div className="space-y-2">

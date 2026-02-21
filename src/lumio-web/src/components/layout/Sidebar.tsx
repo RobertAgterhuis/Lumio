@@ -17,6 +17,7 @@ import {
   LayoutDashboard,
   User,
   Phone,
+  ClipboardList,
 } from "lucide-react";
 
 const navItems = [
@@ -32,6 +33,7 @@ const navItems = [
   { href: "/erfgenamen", label: "Erfgenamen", icon: Users },
   { href: "/noodcontacten", label: "Noodcontacten", icon: Phone },
   { href: "/export", label: "Exporteren", icon: Download },
+  { href: "/audit-log", label: "Activiteitenlog", icon: ClipboardList },
   { href: "/instellingen", label: "Instellingen", icon: Settings },
 ];
 

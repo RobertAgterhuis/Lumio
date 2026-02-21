@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
 using Lumio.Api.Middleware;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services.Security;
 using Microsoft.Data.Sqlite;
@@ -33,6 +34,7 @@ builder.Services.AddSingleton<IMasterPasswordService, MasterPasswordService>();
 builder.Services.AddSingleton<IShamirService, ShamirService>();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<ILumioPdfService, LumioPdfService>();
+builder.Services.AddSingleton<IAuditService, AuditService>();
 
 // EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>

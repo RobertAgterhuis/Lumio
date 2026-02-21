@@ -1,5 +1,6 @@
 using Lumio.Api.Data;
 using Lumio.Api.Dtos.Auth;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,13 @@ public class AuthController : ControllerBase
 {
     private readonly IMasterPasswordService _passwordService;
     private readonly IProfileService _profileService;
+    private readonly IAuditService _audit;
 
-    public AuthController(IMasterPasswordService passwordService, IProfileService profileService)
+    public AuthController(IMasterPasswordService passwordService, IProfileService profileService, IAuditService audit)
     {
         _passwordService = passwordService;
         _profileService = profileService;
+        _audit = audit;
     }
 
     [HttpGet("status")]
@@ -104,12 +107,14 @@ public class AuthController : ControllerBase
         if (!success)
             return Unauthorized(new { error = "Ongeldig wachtwoord." });
 
+        await _audit.LogAsync("Ontgrendeld", details: $"Profiel: {_profileService.ActiveProfile?.Naam}");
         return Ok(new { bericht = "Database ontgrendeld." });
     }
 
     [HttpPost("vergrendel")]
-    public IActionResult Vergrendel()
+    public async Task<IActionResult> Vergrendel()
     {
+        await _audit.LogAsync("Vergrendeld", details: $"Profiel: {_profileService.ActiveProfile?.Naam}");
         _passwordService.Lock();
         _profileService.DeselectProfile();
         return Ok(new { bericht = "Database vergrendeld." });
@@ -125,6 +130,7 @@ public class AuthController : ControllerBase
             return BadRequest(new { error = "Nieuw wachtwoord moet minimaal 8 tekens bevatten." });
 
         await _passwordService.ChangePasswordAsync(request.HuidigWachtwoord, request.NieuwWachtwoord);
+        await _audit.LogAsync("Wachtwoord gewijzigd", details: $"Profiel: {_profileService.ActiveProfile?.Naam}");
         return Ok(new { bericht = "Wachtwoord gewijzigd. Let op: bestaande Shamir-sleuteldelen zijn ongeldig geworden." });
     }
 
