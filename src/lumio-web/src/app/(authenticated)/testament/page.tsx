@@ -58,6 +58,13 @@ export default function TestamentPage() {
   const [editExecId, setEditExecId] = useState<string | null>(null);
   const [execForm, setExecForm] = useState({ naam: "", relatie: "", telefoon: "", email: "", adres: "", postcode: "", woonplaats: "" });
   const [execError, setExecError] = useState<string | null>(null);
+
+  // Begunstigde dialog state
+  const [begDialogOpen, setBegDialogOpen] = useState(false);
+  const [editBegId, setEditBegId] = useState<string | null>(null);
+  const [begForm, setBegForm] = useState({ naam: "", relatie: "", telefoon: "", email: "", adres: "", postcode: "", woonplaats: "", percentage: "", isLegitiemePortie: false });
+  const [begError, setBegError] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -133,6 +140,65 @@ export default function TestamentPage() {
     }
   };
 
+  // Begunstigde CRUD
+  const openBegDialog = (beg?: Begunstigde) => {
+    setBegError(null);
+    if (beg) {
+      setEditBegId(beg.id);
+      setBegForm({
+        naam: beg.naam,
+        relatie: beg.relatie ?? "",
+        telefoon: beg.telefoon ?? "",
+        email: beg.email ?? "",
+        adres: beg.adres ?? "",
+        postcode: beg.postcode ?? "",
+        woonplaats: beg.woonplaats ?? "",
+        percentage: beg.percentage != null ? String(beg.percentage) : "",
+        isLegitiemePortie: beg.isLegitiemePortie,
+      });
+    } else {
+      setEditBegId(null);
+      setBegForm({ naam: "", relatie: "", telefoon: "", email: "", adres: "", postcode: "", woonplaats: "", percentage: "", isLegitiemePortie: false });
+    }
+    setBegDialogOpen(true);
+  };
+
+  const saveBeg = async () => {
+    setBegError(null);
+    try {
+      const payload = {
+        naam: begForm.naam,
+        relatie: begForm.relatie || null,
+        telefoon: begForm.telefoon || null,
+        email: begForm.email || null,
+        adres: begForm.adres || null,
+        postcode: begForm.postcode || null,
+        woonplaats: begForm.woonplaats || null,
+        percentage: begForm.percentage ? Number(begForm.percentage) : null,
+        isLegitiemePortie: begForm.isLegitiemePortie,
+      };
+      if (editBegId) {
+        await api.put(`/api/testament/begunstigden/${editBegId}`, payload);
+      } else {
+        await api.post("/api/testament/begunstigden", payload);
+      }
+      setBegDialogOpen(false);
+      const updated = await api.get<Begunstigde[]>("/api/testament/begunstigden").catch(() => []);
+      setBegunstigden(updated ?? []);
+    } catch (err) {
+      setBegError(err instanceof Error ? err.message : "Opslaan mislukt.");
+    }
+  };
+
+  const deleteBeg = async (id: string) => {
+    try {
+      await api.delete(`/api/testament/begunstigden/${id}`);
+      setBegunstigden((prev) => prev.filter((b) => b.id !== id));
+    } catch (err) {
+      setBegError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+    }
+  };
+
   if (loading) {
     return <div className="text-muted-foreground">Laden...</div>;
   }
@@ -179,23 +245,41 @@ export default function TestamentPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Begunstigden</CardTitle>
-                <Badge variant="secondary">{begunstigden.length}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{begunstigden.length}</Badge>
+                  <Button size="sm" onClick={() => openBegDialog()}>
+                    <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
+              {begError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-2 mb-3">
+                  <p className="text-sm text-red-800">{begError}</p>
+                </div>
+              )}
               {begunstigden.length === 0 ? (
                 <p className="text-sm text-muted-foreground">Nog geen begunstigden toegevoegd.</p>
               ) : (
                 <ul className="space-y-2">
                   {begunstigden.map((b) => (
-                    <li key={b.id} className="flex items-center justify-between text-sm">
+                    <li key={b.id} className="flex items-center justify-between text-sm rounded-md border p-2">
                       <div>
                         <span className="font-medium">{b.naam}</span>
                         <span className="text-muted-foreground ml-2">({b.relatie})</span>
+                        {b.percentage != null && (
+                          <Badge variant="outline" className="ml-2">{b.percentage}%</Badge>
+                        )}
                       </div>
-                      {b.percentage && (
-                        <Badge variant="outline">{b.percentage}%</Badge>
-                      )}
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="sm" onClick={() => openBegDialog(b)}>
+                          <Pencil className="h-3 w-3" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => deleteBeg(b.id)}>
+                          <Trash2 className="h-3 w-3 text-red-500" />
+                        </Button>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -326,6 +410,104 @@ export default function TestamentPage() {
         <DialogFooter>
           <Button variant="outline" onClick={() => setExecDialogOpen(false)}>Annuleren</Button>
           <Button onClick={saveExec}>Opslaan</Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Begunstigde dialog */}
+      <Dialog open={begDialogOpen} onOpenChange={setBegDialogOpen}>
+        <DialogHeader>
+          <DialogTitle>{editBegId ? "Begunstigde bewerken" : "Begunstigde toevoegen"}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Naam</Label>
+              <Input
+                value={begForm.naam}
+                onChange={(e) => setBegForm((f) => ({ ...f, naam: e.target.value }))}
+                placeholder="Naam van de begunstigde"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Relatie</Label>
+              <Input
+                value={begForm.relatie}
+                onChange={(e) => setBegForm((f) => ({ ...f, relatie: e.target.value }))}
+                placeholder="bijv. Partner, Kind"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Telefoon</Label>
+              <Input
+                value={begForm.telefoon}
+                onChange={(e) => setBegForm((f) => ({ ...f, telefoon: e.target.value }))}
+                placeholder="Telefoonnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>E-mail</Label>
+              <Input
+                value={begForm.email}
+                onChange={(e) => setBegForm((f) => ({ ...f, email: e.target.value }))}
+                placeholder="E-mailadres"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres</Label>
+              <Input
+                value={begForm.adres}
+                onChange={(e) => setBegForm((f) => ({ ...f, adres: e.target.value }))}
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={begForm.postcode}
+                onChange={(e) => setBegForm((f) => ({ ...f, postcode: e.target.value }))}
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Woonplaats</Label>
+            <Input
+              value={begForm.woonplaats}
+              onChange={(e) => setBegForm((f) => ({ ...f, woonplaats: e.target.value }))}
+              placeholder="Woonplaats"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Percentage</Label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={begForm.percentage}
+                onChange={(e) => setBegForm((f) => ({ ...f, percentage: e.target.value }))}
+                placeholder="bijv. 50"
+              />
+            </div>
+            <div className="flex items-end space-x-2 pb-0.5">
+              <input
+                type="checkbox"
+                id="legitieme-portie"
+                checked={begForm.isLegitiemePortie}
+                onChange={(e) => setBegForm((f) => ({ ...f, isLegitiemePortie: e.target.checked }))}
+                className="h-4 w-4 rounded border-border"
+              />
+              <Label htmlFor="legitieme-portie" className="text-sm">Legitieme portie</Label>
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setBegDialogOpen(false)}>Annuleren</Button>
+          <Button onClick={saveBeg}>Opslaan</Button>
         </DialogFooter>
       </Dialog>
     </div>

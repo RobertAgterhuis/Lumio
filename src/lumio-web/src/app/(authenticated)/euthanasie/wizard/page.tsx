@@ -16,9 +16,15 @@ export default function EuthanasieWizardPage() {
     situatieBeschrijving: "",
     huisarts: "",
     huisartsPraktijk: "",
+    huisartsTelefoon: "",
+    huisartsEmail: "",
     vertegenwoordigerNaam: "",
     vertegenwoordigerRelatie: "",
     vertegenwoordigerTelefoon: "",
+    vertegenwoordigerEmail: "",
+    vertegenwoordigerAdres: "",
+    vertegenwoordigerPostcode: "",
+    vertegenwoordigerWoonplaats: "",
     aanvullendeWensen: "",
     datumOndertekening: "",
   });
@@ -26,7 +32,7 @@ export default function EuthanasieWizardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<{ wilEuthanasie: boolean; situatieBeschrijving: string; huisarts: string; huisartsPraktijk: string; vertegenwoordigerNaam: string; vertegenwoordigerRelatie: string; vertegenwoordigerTelefoon: string; aanvullendeWensen: string; datumOndertekening: string }>("/api/euthanasie")
+    api.get<{ wilEuthanasie: boolean; situatieBeschrijving: string; huisarts: string; huisartsPraktijk: string; huisartsTelefoon: string; huisartsEmail: string; vertegenwoordigerNaam: string; vertegenwoordigerRelatie: string; vertegenwoordigerTelefoon: string; vertegenwoordigerEmail: string; vertegenwoordigerAdres: string; vertegenwoordigerPostcode: string; vertegenwoordigerWoonplaats: string; aanvullendeWensen: string; datumOndertekening: string }>("/api/euthanasie")
       .then((data) => {
         if (data) {
           setForm({
@@ -34,9 +40,15 @@ export default function EuthanasieWizardPage() {
             situatieBeschrijving: data.situatieBeschrijving ?? "",
             huisarts: data.huisarts ?? "",
             huisartsPraktijk: data.huisartsPraktijk ?? "",
+            huisartsTelefoon: data.huisartsTelefoon ?? "",
+            huisartsEmail: data.huisartsEmail ?? "",
             vertegenwoordigerNaam: data.vertegenwoordigerNaam ?? "",
             vertegenwoordigerRelatie: data.vertegenwoordigerRelatie ?? "",
             vertegenwoordigerTelefoon: data.vertegenwoordigerTelefoon ?? "",
+            vertegenwoordigerEmail: data.vertegenwoordigerEmail ?? "",
+            vertegenwoordigerAdres: data.vertegenwoordigerAdres ?? "",
+            vertegenwoordigerPostcode: data.vertegenwoordigerPostcode ?? "",
+            vertegenwoordigerWoonplaats: data.vertegenwoordigerWoonplaats ?? "",
             aanvullendeWensen: data.aanvullendeWensen ?? "",
             datumOndertekening: data.datumOndertekening
               ? new Date(data.datumOndertekening).toISOString().split("T")[0]
@@ -109,6 +121,24 @@ export default function EuthanasieWizardPage() {
               placeholder="bijv. Huisartsenpraktijk Centrum"
             />
           </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Telefoon huisarts</Label>
+              <Input
+                value={form.huisartsTelefoon}
+                onChange={(e) => update("huisartsTelefoon", e.target.value)}
+                placeholder="Telefoonnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>E-mail huisarts</Label>
+              <Input
+                value={form.huisartsEmail}
+                onChange={(e) => update("huisartsEmail", e.target.value)}
+                placeholder="E-mailadres"
+              />
+            </div>
+          </div>
         </div>
       ),
     },
@@ -152,6 +182,48 @@ export default function EuthanasieWizardPage() {
                 update("vertegenwoordigerTelefoon", e.target.value)
               }
               placeholder="bijv. 06-12345678"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>E-mail</Label>
+            <Input
+              value={form.vertegenwoordigerEmail}
+              onChange={(e) =>
+                update("vertegenwoordigerEmail", e.target.value)
+              }
+              placeholder="E-mailadres"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres</Label>
+              <Input
+                value={form.vertegenwoordigerAdres}
+                onChange={(e) =>
+                  update("vertegenwoordigerAdres", e.target.value)
+                }
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={form.vertegenwoordigerPostcode}
+                onChange={(e) =>
+                  update("vertegenwoordigerPostcode", e.target.value)
+                }
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Woonplaats</Label>
+            <Input
+              value={form.vertegenwoordigerWoonplaats}
+              onChange={(e) =>
+                update("vertegenwoordigerWoonplaats", e.target.value)
+              }
+              placeholder="Woonplaats"
             />
           </div>
         </div>
@@ -208,11 +280,25 @@ export default function EuthanasieWizardPage() {
               <span className="font-medium">Huisarts:</span>{" "}
               {form.huisarts || "—"} ({form.huisartsPraktijk || "—"})
             </div>
+            {(form.huisartsTelefoon || form.huisartsEmail) && (
+              <div>
+                {form.huisartsTelefoon && <span className="mr-4">Tel: {form.huisartsTelefoon}</span>}
+                {form.huisartsEmail && <span>E-mail: {form.huisartsEmail}</span>}
+              </div>
+            )}
             <div>
               <span className="font-medium">Vertegenwoordiger:</span>{" "}
               {form.vertegenwoordigerNaam || "—"} (
               {form.vertegenwoordigerRelatie || "—"})
             </div>
+            {form.vertegenwoordigerAdres && (
+              <div>
+                <span className="font-medium">Adres:</span>{" "}
+                {form.vertegenwoordigerAdres}
+                {form.vertegenwoordigerPostcode && `, ${form.vertegenwoordigerPostcode}`}
+                {form.vertegenwoordigerWoonplaats && ` ${form.vertegenwoordigerWoonplaats}`}
+              </div>
+            )}
             {form.datumOndertekening && (
               <div>
                 <span className="font-medium">Datum:</span>{" "}

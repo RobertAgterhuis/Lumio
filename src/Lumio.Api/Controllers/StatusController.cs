@@ -8,14 +8,19 @@ namespace Lumio.Api.Controllers;
 public class StatusController : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetStatus([FromServices] IMasterPasswordService passwordService)
+    public IActionResult GetStatus(
+        [FromServices] IMasterPasswordService passwordService,
+        [FromServices] IProfileService profileService)
     {
+        var activeProfile = profileService.ActiveProfile;
         return Ok(new
         {
             status = "ok",
             versie = "1.0.0",
             isOntgrendeld = passwordService.IsUnlocked,
-            isEersteKeer = passwordService.IsFirstRun
+            isEersteKeer = profileService.IsFirstRun,
+            profielGeselecteerd = activeProfile != null,
+            actiefProfiel = activeProfile?.Naam
         });
     }
 }

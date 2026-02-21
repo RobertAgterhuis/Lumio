@@ -15,6 +15,11 @@ export default function UitvaartWizardPage() {
     voorkeurType: "",
     begraafplaats: "",
     uitvaartOndernemer: "",
+    uitvaartOndernemerTelefoon: "",
+    uitvaartOndernemerEmail: "",
+    uitvaartOndernemerAdres: "",
+    uitvaartOndernemerPostcode: "",
+    uitvaartOndernemerPlaats: "",
     heeftUitvaartVerzekering: "false",
     uitvaartVerzekeringDetails: "",
     ceremonieSoort: "",
@@ -31,13 +36,18 @@ export default function UitvaartWizardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<{ voorkeurType: string; begraafplaats: string; uitvaartOndernemer: string; heeftUitvaartVerzekering: boolean; uitvaartVerzekeringDetails: string; ceremonieSoort: string; ceremonieLocatie: string; muziekwensen: string; sprekers: string; bloemen: string; kledingwensen: string; rouwkaartTekst: string; condoleance: string; overigeWensen: string }>("/api/uitvaart")
+    api.get<{ voorkeurType: string; begraafplaats: string; uitvaartOndernemer: string; uitvaartOndernemerTelefoon: string; uitvaartOndernemerEmail: string; uitvaartOndernemerAdres: string; uitvaartOndernemerPostcode: string; uitvaartOndernemerPlaats: string; heeftUitvaartVerzekering: boolean; uitvaartVerzekeringDetails: string; ceremonieSoort: string; ceremonieLocatie: string; muziekwensen: string; sprekers: string; bloemen: string; kledingwensen: string; rouwkaartTekst: string; condoleance: string; overigeWensen: string }>("/api/uitvaart")
       .then((data) => {
         if (data) {
           setForm({
             voorkeurType: data.voorkeurType ?? "",
             begraafplaats: data.begraafplaats ?? "",
             uitvaartOndernemer: data.uitvaartOndernemer ?? "",
+            uitvaartOndernemerTelefoon: data.uitvaartOndernemerTelefoon ?? "",
+            uitvaartOndernemerEmail: data.uitvaartOndernemerEmail ?? "",
+            uitvaartOndernemerAdres: data.uitvaartOndernemerAdres ?? "",
+            uitvaartOndernemerPostcode: data.uitvaartOndernemerPostcode ?? "",
+            uitvaartOndernemerPlaats: data.uitvaartOndernemerPlaats ?? "",
             heeftUitvaartVerzekering: data.heeftUitvaartVerzekering != null ? String(data.heeftUitvaartVerzekering) : "false",
             uitvaartVerzekeringDetails: data.uitvaartVerzekeringDetails ?? "",
             ceremonieSoort: data.ceremonieSoort ?? "",
@@ -94,6 +104,50 @@ export default function UitvaartWizardPage() {
               value={form.uitvaartOndernemer}
               onChange={(e) => update("uitvaartOndernemer", e.target.value)}
               placeholder="bijv. Monuta, DELA of een lokale uitvaartondernemer"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Telefoon ondernemer</Label>
+              <Input
+                value={form.uitvaartOndernemerTelefoon}
+                onChange={(e) => update("uitvaartOndernemerTelefoon", e.target.value)}
+                placeholder="Telefoonnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>E-mail ondernemer</Label>
+              <Input
+                value={form.uitvaartOndernemerEmail}
+                onChange={(e) => update("uitvaartOndernemerEmail", e.target.value)}
+                placeholder="E-mailadres"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres ondernemer</Label>
+              <Input
+                value={form.uitvaartOndernemerAdres}
+                onChange={(e) => update("uitvaartOndernemerAdres", e.target.value)}
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={form.uitvaartOndernemerPostcode}
+                onChange={(e) => update("uitvaartOndernemerPostcode", e.target.value)}
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Plaats ondernemer</Label>
+            <Input
+              value={form.uitvaartOndernemerPlaats}
+              onChange={(e) => update("uitvaartOndernemerPlaats", e.target.value)}
+              placeholder="Plaats"
             />
           </div>
           <div className="space-y-2">
@@ -247,6 +301,20 @@ export default function UitvaartWizardPage() {
               <span className="font-medium">Ondernemer:</span>{" "}
               {form.uitvaartOndernemer || "—"}
             </div>
+            {(form.uitvaartOndernemerTelefoon || form.uitvaartOndernemerEmail) && (
+              <div>
+                {form.uitvaartOndernemerTelefoon && <span className="mr-4">Tel: {form.uitvaartOndernemerTelefoon}</span>}
+                {form.uitvaartOndernemerEmail && <span>E-mail: {form.uitvaartOndernemerEmail}</span>}
+              </div>
+            )}
+            {form.uitvaartOndernemerAdres && (
+              <div>
+                <span className="font-medium">Adres:</span>{" "}
+                {form.uitvaartOndernemerAdres}
+                {form.uitvaartOndernemerPostcode && `, ${form.uitvaartOndernemerPostcode}`}
+                {form.uitvaartOndernemerPlaats && ` ${form.uitvaartOndernemerPlaats}`}
+              </div>
+            )}
             {form.ceremonieSoort && (
               <div>
                 <span className="font-medium">Ceremonie:</span>{" "}
@@ -287,6 +355,11 @@ export default function UitvaartWizardPage() {
       heeftUitvaartVerzekering: form.heeftUitvaartVerzekering === "true",
       begraafplaats: form.begraafplaats || null,
       uitvaartOndernemer: form.uitvaartOndernemer || null,
+      uitvaartOndernemerTelefoon: form.uitvaartOndernemerTelefoon || null,
+      uitvaartOndernemerEmail: form.uitvaartOndernemerEmail || null,
+      uitvaartOndernemerAdres: form.uitvaartOndernemerAdres || null,
+      uitvaartOndernemerPostcode: form.uitvaartOndernemerPostcode || null,
+      uitvaartOndernemerPlaats: form.uitvaartOndernemerPlaats || null,
       uitvaartVerzekeringDetails: form.uitvaartVerzekeringDetails || null,
       ceremonieSoort: form.ceremonieSoort || null,
       ceremonieLocatie: form.ceremonieLocatie || null,

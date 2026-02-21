@@ -10,17 +10,16 @@ namespace Lumio.Api.Controllers;
 public class BackupController : ControllerBase
 {
     private readonly IMasterPasswordService _passwordService;
-    private readonly string _dbPath;
+    private readonly IProfileService _profileService;
 
-    public BackupController(IMasterPasswordService passwordService, IConfiguration config)
+    public BackupController(IMasterPasswordService passwordService, IProfileService profileService)
     {
         _passwordService = passwordService;
-        _dbPath = config["DatabasePath"]
-            ?? throw new InvalidOperationException("DatabasePath is not configured.");
+        _profileService = profileService;
     }
 
     /// <summary>
-    /// Download a backup ZIP containing the encrypted database and salt file.
+    /// Download a backup ZIP containing the encrypted database and salt file for the active profile.
     /// </summary>
     [HttpGet]
     public IActionResult DownloadBackup()
@@ -28,8 +27,11 @@ public class BackupController : ControllerBase
         if (!_passwordService.IsUnlocked)
             return StatusCode(423, new { error = "Database is vergrendeld." });
 
-        if (!System.IO.File.Exists(_dbPath))
+        var dbPath = _profileService.ActiveDbPath;
+        if (dbPath == null || !System.IO.File.Exists(dbPath))
             return NotFound(new { error = "Geen database gevonden." });
+
+        var profileName = _profileService.ActiveProfile?.Naam ?? "lumio";
 
         var memoryStream = new MemoryStream();
         using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, leaveOpen: true))
@@ -37,14 +39,14 @@ public class BackupController : ControllerBase
             // Add the database file
             var dbEntry = archive.CreateEntry("lumio.db", CompressionLevel.SmallestSize);
             using (var entryStream = dbEntry.Open())
-            using (var dbStream = new FileStream(_dbPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var dbStream = new FileStream(dbPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 dbStream.CopyTo(entryStream);
             }
 
             // Add the salt file if it exists
-            var saltPath = Path.ChangeExtension(_dbPath, ".salt");
-            if (System.IO.File.Exists(saltPath))
+            var saltPath = _profileService.ActiveSaltPath;
+            if (saltPath != null && System.IO.File.Exists(saltPath))
             {
                 var saltEntry = archive.CreateEntry("lumio.salt", CompressionLevel.SmallestSize);
                 using var entryStream = saltEntry.Open();
@@ -54,7 +56,7 @@ public class BackupController : ControllerBase
         }
 
         memoryStream.Position = 0;
-        var filename = $"lumio-backup-{DateTime.Now:yyyy-MM-dd-HHmm}.zip";
+        var filename = $"lumio-backup-{profileName}-{DateTime.Now:yyyy-MM-dd-HHmm}.zip";
         return File(memoryStream, "application/zip", filename);
     }
 
@@ -127,12 +129,13 @@ public class BackupController : ControllerBase
             // Lock the current database before replacing files
             _passwordService.Lock();
 
-            // Replace database file
-            System.IO.File.Copy(tempDbPath, _dbPath, overwrite: true);
+            // Replace database file for the active profile
+            var activeDbPath = _profileService.ActiveDbPath!;
+            System.IO.File.Copy(tempDbPath, activeDbPath, overwrite: true);
 
             // Replace salt file if present in backup
             var tempSaltPath = Path.Combine(tempDir, "lumio.salt");
-            var saltPath = Path.ChangeExtension(_dbPath, ".salt");
+            var saltPath = _profileService.ActiveSaltPath!;
             if (System.IO.File.Exists(tempSaltPath))
             {
                 System.IO.File.Copy(tempSaltPath, saltPath, overwrite: true);

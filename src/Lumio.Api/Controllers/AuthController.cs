@@ -11,16 +11,54 @@ namespace Lumio.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IMasterPasswordService _passwordService;
+    private readonly IProfileService _profileService;
 
-    public AuthController(IMasterPasswordService passwordService)
+    public AuthController(IMasterPasswordService passwordService, IProfileService profileService)
     {
         _passwordService = passwordService;
+        _profileService = profileService;
     }
 
     [HttpGet("status")]
-    public ActionResult<AuthStatusResponse> GetStatus()
+    public IActionResult GetStatus()
     {
-        return Ok(new AuthStatusResponse(_passwordService.IsUnlocked, _passwordService.IsFirstRun));
+        var activeProfile = _profileService.ActiveProfile;
+        return Ok(new
+        {
+            isOntgrendeld = _passwordService.IsUnlocked,
+            isEersteKeer = _profileService.IsFirstRun,
+            profielGeselecteerd = activeProfile != null,
+            actiefProfiel = activeProfile == null ? null : new
+            {
+                id = activeProfile.Id,
+                naam = activeProfile.Naam
+            },
+            // If a profile is selected but has no DB yet, it needs setup
+            profielHeeftSetupNodig = activeProfile != null && !_profileService.ActiveProfileDbExists
+        });
+    }
+
+    [HttpPost("selecteer-profiel")]
+    public IActionResult SelecteerProfiel([FromBody] SelectProfileRequest request)
+    {
+        try
+        {
+            // Lock current profile first if unlocked
+            if (_passwordService.IsUnlocked)
+                _passwordService.Lock();
+
+            _profileService.SelectProfile(request.ProfielId);
+            var profile = _profileService.ActiveProfile!;
+            return Ok(new
+            {
+                bericht = $"Profiel '{profile.Naam}' geselecteerd.",
+                heeftSetupNodig = !_profileService.ActiveProfileDbExists
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost("setup")]
@@ -28,6 +66,9 @@ public class AuthController : ControllerBase
         [FromBody] SetupRequest request,
         [FromServices] IServiceProvider serviceProvider)
     {
+        if (_profileService.ActiveProfile == null)
+            return BadRequest(new { error = "Geen profiel geselecteerd. Selecteer of maak eerst een profiel aan." });
+
         if (!_passwordService.IsFirstRun)
             return BadRequest(new { error = "Database bestaat al. Gebruik ontgrendel." });
 
@@ -50,6 +91,9 @@ public class AuthController : ControllerBase
     [HttpPost("ontgrendel")]
     public async Task<IActionResult> Ontgrendel([FromBody] OntgrendelRequest request)
     {
+        if (_profileService.ActiveProfile == null)
+            return BadRequest(new { error = "Geen profiel geselecteerd." });
+
         if (_passwordService.IsFirstRun)
             return BadRequest(new { error = "Geen database gevonden. Gebruik setup." });
 
@@ -67,6 +111,7 @@ public class AuthController : ControllerBase
     public IActionResult Vergrendel()
     {
         _passwordService.Lock();
+        _profileService.DeselectProfile();
         return Ok(new { bericht = "Database vergrendeld." });
     }
 
@@ -89,23 +134,21 @@ public class AuthController : ControllerBase
         if (!_passwordService.IsUnlocked)
             return StatusCode(423, new { error = "Database is vergrendeld." });
 
+        if (_profileService.ActiveProfile == null)
+            return BadRequest(new { error = "Geen profiel geselecteerd." });
+
         // Verify the password before deleting
         var success = await _passwordService.UnlockAsync(request.Wachtwoord);
         if (!success)
             return Unauthorized(new { error = "Ongeldig wachtwoord." });
 
-        var dbPath = HttpContext.RequestServices.GetRequiredService<IConfiguration>()["DatabasePath"]!;
-        var saltPath = Path.ChangeExtension(dbPath, ".salt");
+        var profileId = _profileService.ActiveProfile.Id;
 
         // Lock the database first
         _passwordService.Lock();
 
-        // Delete database and salt files
-        if (System.IO.File.Exists(dbPath))
-            System.IO.File.Delete(dbPath);
-
-        if (System.IO.File.Exists(saltPath))
-            System.IO.File.Delete(saltPath);
+        // Delete the profile and its files
+        _profileService.DeleteProfile(profileId);
 
         return Ok(new { bericht = "Alle gegevens zijn permanent verwijderd." });
     }

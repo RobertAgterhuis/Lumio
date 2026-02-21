@@ -5,24 +5,54 @@ import { useRouter } from "next/navigation";
 import { UnlockForm } from "@/components/auth/UnlockForm";
 import { SetupForm } from "@/components/auth/SetupForm";
 import { HeirUnlockForm } from "@/components/auth/HeirUnlockForm";
-import { useAuthStore } from "@/stores/authStore";
+import { ProfileSelector } from "@/components/auth/ProfileSelector";
+import { useAuthStore, type Profile } from "@/stores/authStore";
 import { api } from "@/lib/api-client";
 
 export default function HomePage() {
   const router = useRouter();
-  const { isUnlocked, isFirstRun, isLoading, setUnlocked, setFirstRun, setLoading } =
-    useAuthStore();
+  const {
+    isUnlocked,
+    isFirstRun,
+    isLoading,
+    profileSelected,
+    profileNeedsSetup,
+    setUnlocked,
+    setFirstRun,
+    setLoading,
+    setProfiles,
+    setActiveProfile,
+    setProfileSelected,
+    setProfileNeedsSetup,
+  } = useAuthStore();
   const [heirMode, setHeirMode] = useState(false);
 
   useEffect(() => {
     const checkStatus = async () => {
       try {
+        // Load profiles list
+        const profiles = await api.get<Profile[]>("/api/profielen");
+        setProfiles(profiles);
+
+        // Check auth status (includes profile state)
         const status = await api.get<{
           isOntgrendeld: boolean;
           isEersteKeer: boolean;
+          profielGeselecteerd: boolean;
+          actiefProfiel: { id: string; naam: string } | null;
+          profielHeeftSetupNodig: boolean;
         }>("/api/auth/status");
         setUnlocked(status.isOntgrendeld);
         setFirstRun(status.isEersteKeer);
+        setProfileSelected(status.profielGeselecteerd);
+        setProfileNeedsSetup(status.profielHeeftSetupNodig);
+
+        if (status.actiefProfiel) {
+          const activeProfile = profiles.find(
+            (p) => p.id === status.actiefProfiel!.id
+          );
+          if (activeProfile) setActiveProfile(activeProfile);
+        }
       } catch {
         // API not available yet — keep loading
       } finally {
@@ -30,7 +60,7 @@ export default function HomePage() {
       }
     };
     checkStatus();
-  }, [setUnlocked, setFirstRun, setLoading]);
+  }, [setUnlocked, setFirstRun, setLoading, setProfiles, setActiveProfile, setProfileSelected, setProfileNeedsSetup]);
 
   useEffect(() => {
     if (isUnlocked) {
@@ -53,6 +83,11 @@ export default function HomePage() {
     return null; // Redirecting to dashboard
   }
 
+  // Determine which step of the auth flow to show
+  const showProfileSelector = !profileSelected;
+  const showSetup = profileSelected && profileNeedsSetup;
+  const showUnlock = profileSelected && !profileNeedsSetup;
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 p-4">
       <div className="mb-8 text-center">
@@ -61,21 +96,45 @@ export default function HomePage() {
           Uw digitale nalatenschap, veilig bewaard
         </p>
       </div>
-      {isFirstRun ? (
+
+      {showProfileSelector ? (
+        <ProfileSelector onProfileSelected={() => {}} />
+      ) : showSetup ? (
         <SetupForm />
       ) : heirMode ? (
         <HeirUnlockForm />
       ) : (
         <UnlockForm />
       )}
-      {!isFirstRun && (
+
+      {showUnlock && !heirMode && (
         <button
           onClick={() => setHeirMode((m) => !m)}
           className="mt-4 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
         >
-          {heirMode
-            ? "Ontgrendelen met wachtwoord"
-            : "Ik ben een erfgenaam (ontgrendelen met sleuteldelen)"}
+          Ik ben een erfgenaam (ontgrendelen met sleuteldelen)
+        </button>
+      )}
+
+      {showUnlock && heirMode && (
+        <button
+          onClick={() => setHeirMode(false)}
+          className="mt-4 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+        >
+          Ontgrendelen met wachtwoord
+        </button>
+      )}
+
+      {profileSelected && (
+        <button
+          onClick={() => {
+            setProfileSelected(false);
+            setProfileNeedsSetup(false);
+            setActiveProfile(null);
+          }}
+          className="mt-2 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+        >
+          ← Ander profiel kiezen
         </button>
       )}
     </div>

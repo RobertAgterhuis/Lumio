@@ -4,24 +4,29 @@ namespace Lumio.Api.Services.Security;
 
 public class MasterPasswordService : IMasterPasswordService
 {
-    private readonly string _dbPath;
+    private readonly IProfileService _profileService;
     private string? _currentPassword;
 
     public bool IsUnlocked => _currentPassword != null;
-    public bool IsFirstRun => !File.Exists(_dbPath);
+    public bool IsFirstRun => _profileService.ActiveProfile == null
+        ? _profileService.IsFirstRun
+        : !_profileService.ActiveProfileDbExists;
     public string? CurrentPassword => _currentPassword;
+    public string? ActiveDbPath => _profileService.ActiveDbPath;
 
-    public MasterPasswordService(IConfiguration config)
+    public MasterPasswordService(IProfileService profileService)
     {
-        _dbPath = config["DatabasePath"]
-            ?? throw new InvalidOperationException("DatabasePath is not configured.");
+        _profileService = profileService;
     }
 
     public async Task<bool> UnlockAsync(string password)
     {
+        var dbPath = _profileService.ActiveDbPath
+            ?? throw new InvalidOperationException("Geen profiel geselecteerd.");
+
         var connStr = new SqliteConnectionStringBuilder
         {
-            DataSource = _dbPath,
+            DataSource = dbPath,
             Mode = SqliteOpenMode.ReadWrite,
             Password = password
         }.ToString();
@@ -61,9 +66,12 @@ public class MasterPasswordService : IMasterPasswordService
         if (!IsUnlocked)
             throw new InvalidOperationException("Database is niet ontgrendeld.");
 
+        var dbPath = _profileService.ActiveDbPath
+            ?? throw new InvalidOperationException("Geen profiel geselecteerd.");
+
         var connStr = new SqliteConnectionStringBuilder
         {
-            DataSource = _dbPath,
+            DataSource = dbPath,
             Mode = SqliteOpenMode.ReadWrite,
             Password = currentPassword
         }.ToString();

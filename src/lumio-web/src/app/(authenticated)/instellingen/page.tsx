@@ -20,7 +20,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore, type Profile } from "@/stores/authStore";
 import {
   getIdleTimeoutMinutes,
   setIdleTimeoutMinutes,
@@ -34,6 +34,9 @@ import {
   Download,
   Upload,
   Trash2,
+  Users,
+  Plus,
+  UserCircle,
 } from "lucide-react";
 
 const TIMEOUT_OPTIONS = [
@@ -48,7 +51,18 @@ const TIMEOUT_OPTIONS = [
 
 export default function InstellingenPage() {
   const router = useRouter();
-  const { lock } = useAuthStore();
+  const { lock, profiles, activeProfile, setProfiles } = useAuthStore();
+
+  // Profile management state
+  const [newProfileName, setNewProfileName] = useState("");
+  const [newProfileRelatie, setNewProfileRelatie] = useState("Partner");
+  const [showCreateProfile, setShowCreateProfile] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMessage, setProfileMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+  const [showDeleteProfileConfirm, setShowDeleteProfileConfirm] = useState<string | null>(null);
 
   // Password change state
   const [huidigWachtwoord, setHuidigWachtwoord] = useState("");
@@ -93,6 +107,59 @@ export default function InstellingenPage() {
   useEffect(() => {
     setIdleTimeout(getIdleTimeoutMinutes());
   }, []);
+
+  // Load profiles on mount
+  useEffect(() => {
+    const loadProfiles = async () => {
+      try {
+        const data = await api.get<Profile[]>("/api/profielen");
+        setProfiles(data);
+      } catch {
+        // Ignore
+      }
+    };
+    loadProfiles();
+  }, [setProfiles]);
+
+  const handleCreateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileMessage(null);
+    if (!newProfileName.trim()) return;
+
+    setProfileSaving(true);
+    try {
+      const profile = await api.post<Profile>("/api/profielen", {
+        naam: newProfileName.trim(),
+        relatie: newProfileRelatie,
+      });
+      setProfiles([...profiles, profile]);
+      setNewProfileName("");
+      setShowCreateProfile(false);
+      setProfileMessage({ type: "success", text: `Profiel "${profile.naam}" aangemaakt.` });
+    } catch (err) {
+      setProfileMessage({
+        type: "error",
+        text: err instanceof Error ? err.message : "Profiel aanmaken mislukt.",
+      });
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const handleDeleteProfile = async (profileId: string) => {
+    setShowDeleteProfileConfirm(null);
+    setProfileMessage(null);
+    try {
+      await api.delete(`/api/profielen/${profileId}`);
+      setProfiles(profiles.filter((p) => p.id !== profileId));
+      setProfileMessage({ type: "success", text: "Profiel verwijderd." });
+    } catch (err) {
+      setProfileMessage({
+        type: "error",
+        text: err instanceof Error ? err.message : "Profiel verwijderen mislukt.",
+      });
+    }
+  };
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -260,6 +327,125 @@ export default function InstellingenPage() {
               </Button>
             ))}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Profile management (M7) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" /> Profielen
+          </CardTitle>
+          <CardDescription>
+            Beheer profielen voor uzelf en uw naasten. Elk profiel heeft een
+            eigen versleutelde database. Maximaal 5 profielen.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* List existing profiles */}
+          <div className="space-y-2">
+            {profiles.map((profile) => (
+              <div
+                key={profile.id}
+                className="flex items-center justify-between rounded-lg border border-border p-3"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <UserCircle className="h-8 w-8 text-primary/60 shrink-0" />
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">
+                      {profile.naam}
+                      {activeProfile?.id === profile.id && (
+                        <span className="ml-2 text-xs text-primary font-normal">(actief)</span>
+                      )}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{profile.relatie}</p>
+                  </div>
+                </div>
+                {!profile.isPrimair && profile.id !== activeProfile?.id && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive shrink-0"
+                    onClick={() => setShowDeleteProfileConfirm(profile.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {profileMessage && (
+            <p
+              className={`text-sm ${
+                profileMessage.type === "success"
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {profileMessage.text}
+            </p>
+          )}
+
+          {/* Create new profile form */}
+          {showCreateProfile ? (
+            <form onSubmit={handleCreateProfile} className="space-y-3 max-w-md rounded-lg border border-border p-4">
+              <div className="space-y-2">
+                <Label htmlFor="new-profile-name">Naam</Label>
+                <Input
+                  id="new-profile-name"
+                  value={newProfileName}
+                  onChange={(e) => setNewProfileName(e.target.value)}
+                  placeholder="Bijv. Jan, Partner"
+                  required
+                  autoFocus
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Relatie</Label>
+                <div className="flex flex-wrap gap-2">
+                  {["Partner", "Kind", "Ouder", "Overig"].map((rel) => (
+                    <Button
+                      key={rel}
+                      type="button"
+                      variant={newProfileRelatie === rel ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setNewProfileRelatie(rel)}
+                    >
+                      {rel}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button type="submit" size="sm" disabled={profileSaving || !newProfileName.trim()}>
+                  {profileSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  Aanmaken
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowCreateProfile(false)}
+                >
+                  Annuleren
+                </Button>
+              </div>
+            </form>
+          ) : profiles.length < 5 ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowCreateProfile(true)}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Nieuw profiel toevoegen
+            </Button>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Maximaal 5 profielen bereikt.
+            </p>
+          )}
         </CardContent>
       </Card>
 
@@ -580,6 +766,39 @@ export default function InstellingenPage() {
           </Button>
           <Button variant="destructive" onClick={handleDeleteAccount}>
             Ja, verwijder alles permanent
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Profile delete confirmation dialog */}
+      <Dialog
+        open={showDeleteProfileConfirm !== null}
+        onOpenChange={(open) => !open && setShowDeleteProfileConfirm(null)}
+      >
+        <DialogHeader>
+          <DialogTitle className="text-destructive">
+            Profiel verwijderen?
+          </DialogTitle>
+          <DialogDescription>
+            Weet u het zeker? Het profiel en de bijbehorende database worden
+            permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => setShowDeleteProfileConfirm(null)}
+          >
+            Annuleren
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() =>
+              showDeleteProfileConfirm &&
+              handleDeleteProfile(showDeleteProfileConfirm)
+            }
+          >
+            Ja, verwijder profiel
           </Button>
         </DialogFooter>
       </Dialog>

@@ -9,6 +9,7 @@ public class DatabaseUnlockMiddleware
     private static readonly string[] AllowedPrefixes =
     [
         "/api/auth/",
+        "/api/profielen",
         "/api/status",
         "/api/backup/restore",
         "/swagger"
@@ -19,7 +20,7 @@ public class DatabaseUnlockMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, IMasterPasswordService passwordService)
+    public async Task InvokeAsync(HttpContext context, IMasterPasswordService passwordService, IProfileService profileService)
     {
         var path = context.Request.Path.Value?.ToLowerInvariant() ?? "";
 
@@ -33,6 +34,18 @@ public class DatabaseUnlockMiddleware
         if (AllowedPrefixes.Any(prefix => path.StartsWith(prefix)))
         {
             await _next(context);
+            return;
+        }
+
+        // Check if a profile is selected
+        if (profileService.ActiveProfile == null)
+        {
+            context.Response.StatusCode = 423; // Locked
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Geen profiel geselecteerd. Selecteer eerst een profiel."
+            });
             return;
         }
 

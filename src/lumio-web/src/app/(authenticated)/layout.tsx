@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { IdleWarningDialog } from "@/components/layout/IdleWarningDialog";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { api } from "@/lib/api-client";
 
@@ -16,7 +16,8 @@ export default function AuthenticatedLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isUnlocked, setUnlocked, lock } = useAuthStore();
+  const { isUnlocked, setUnlocked, lock, setProfiles, setActiveProfile, setProfileSelected } =
+    useAuthStore();
   const [checking, setChecking] = useState(!isUnlocked);
 
   const handleIdleLock = async () => {
@@ -38,10 +39,30 @@ export default function AuthenticatedLayout({
 
     // Zustand loses state on refresh — verify with backend
     api
-      .get<{ isOntgrendeld: boolean; isEersteKeer: boolean }>("/api/auth/status")
-      .then((data) => {
+      .get<{
+        isOntgrendeld: boolean;
+        isEersteKeer: boolean;
+        profielGeselecteerd: boolean;
+        actiefProfiel: { id: string; naam: string } | null;
+      }>("/api/auth/status")
+      .then(async (data) => {
         if (data.isOntgrendeld) {
           setUnlocked(true);
+          setProfileSelected(data.profielGeselecteerd);
+
+          // Restore profile state on refresh
+          if (data.actiefProfiel) {
+            try {
+              const profiles = await api.get<Profile[]>("/api/profielen");
+              setProfiles(profiles);
+              const active = profiles.find(
+                (p) => p.id === data.actiefProfiel!.id
+              );
+              if (active) setActiveProfile(active);
+            } catch {
+              // Non-critical
+            }
+          }
         } else {
           router.replace("/");
         }
