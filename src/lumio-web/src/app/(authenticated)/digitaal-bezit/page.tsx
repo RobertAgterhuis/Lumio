@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api } from "@/lib/api-client";
-import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff, Filter } from "lucide-react";
+import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff, Filter, Upload, Loader2 } from "lucide-react";
 import { PasswordGenerator } from "@/components/PasswordGenerator";
 
 interface DigitaalAccount {
@@ -106,6 +106,14 @@ export default function DigitaalBezitPage() {
   const [error, setError] = useState<string | null>(null);
   const [ontsleuteld, setOntsleuteld] = useState<Record<string, string>>({});
   const [categorieFilter, setCategorieFilter] = useState<string>("");
+  const [importOpen, setImportOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState<{
+    geimporteerd: number;
+    fouten: number;
+    details: string[];
+  } | null>(null);
+  const importFileRef = React.useRef<HTMLInputElement>(null);
 
   const filteredAccounts = categorieFilter
     ? accounts.filter((a) => a.categorie === categorieFilter)
@@ -310,6 +318,30 @@ export default function DigitaalBezitPage() {
     }
   };
 
+  const handleImport = async () => {
+    const file = importFileRef.current?.files?.[0];
+    if (!file) return;
+
+    setImporting(true);
+    setImportResult(null);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("bestand", file);
+      const result = await api.upload<{
+        geimporteerd: number;
+        fouten: number;
+        details: string[];
+      }>("/api/digitaal-bezit/wachtwoorden/importeren", formData);
+      setImportResult(result);
+      if (result.geimporteerd > 0) loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Importeren mislukt.");
+    } finally {
+      setImporting(false);
+    }
+  };
+
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
@@ -424,9 +456,14 @@ export default function DigitaalBezitPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Wachtwoorden</CardTitle>
-              <Button size="sm" onClick={() => openWachtwoordDialog()}>
-                <Plus className="h-4 w-4 mr-1" /> Toevoegen
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={() => { setImportOpen(true); setImportResult(null); }}>
+                  <Upload className="h-4 w-4 mr-1" /> Importeren
+                </Button>
+                <Button size="sm" onClick={() => openWachtwoordDialog()}>
+                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {wachtwoorden.length === 0 ? (
@@ -839,6 +876,66 @@ export default function DigitaalBezitPage() {
           </Button>
           <Button onClick={saveCrypto} disabled={saving}>
             {saving ? "Opslaan..." : "Opslaan"}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Import Wachtwoorden Dialog */}
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogHeader>
+          <DialogTitle>Wachtwoorden importeren</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+            <p className="text-sm text-blue-800">
+              Ondersteunt CSV-export van <strong>1Password</strong>,{" "}
+              <strong>Bitwarden</strong>, <strong>LastPass</strong>,{" "}
+              <strong>KeePass</strong> en <strong>Chrome</strong>.
+              Exporteer uw wachtwoorden als CSV vanuit uw huidige
+              wachtwoordmanager en upload het bestand hieronder.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label>CSV-bestand</Label>
+            <Input ref={importFileRef} type="file" accept=".csv" />
+          </div>
+          {importResult && (
+            <div
+              className={`rounded-lg border p-3 ${
+                importResult.fouten > 0
+                  ? "border-amber-200 bg-amber-50"
+                  : "border-green-200 bg-green-50"
+              }`}
+            >
+              <p className="text-sm font-medium">
+                {importResult.geimporteerd} wachtwoorden geïmporteerd
+                {importResult.fouten > 0 &&
+                  `, ${importResult.fouten} fouten`}
+              </p>
+              {importResult.details.length > 0 && (
+                <ul className="mt-1 text-xs text-muted-foreground list-disc list-inside">
+                  {importResult.details.map((d, i) => (
+                    <li key={i}>{d}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setImportOpen(false)}>
+            Sluiten
+          </Button>
+          <Button onClick={handleImport} disabled={importing}>
+            {importing ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Importeren...
+              </>
+            ) : (
+              <>
+                <Upload className="h-4 w-4 mr-2" /> Importeren
+              </>
+            )}
           </Button>
         </DialogFooter>
       </Dialog>

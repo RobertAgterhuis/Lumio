@@ -66,4 +66,63 @@ public class StatusController : ControllerBase
             domeinen
         });
     }
+
+    [HttpGet("meldingen")]
+    public async Task<IActionResult> GetMeldingen([FromServices] LumioDbContext db)
+    {
+        var meldingen = new List<object>();
+
+        // 1. Check of eigenaar profiel is aangemaakt
+        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+        {
+            meldingen.Add(new { type = "waarschuwing", categorie = "profiel", bericht = "U heeft nog geen persoonlijk profiel aangemaakt. Dit is de eerste stap.", actie = "/eigenaar" });
+        }
+
+        // 2. Check ontbrekende domeinen
+        if (!await db.Testamenten.AnyAsync())
+            meldingen.Add(new { type = "herinnering", categorie = "testament", bericht = "U heeft nog geen testamentaire informatie vastgelegd.", actie = "/testament" });
+
+        if (!await db.Wilsverklaringen.AnyAsync())
+            meldingen.Add(new { type = "herinnering", categorie = "euthanasie", bericht = "U heeft nog geen wilsverklaring euthanasie opgesteld.", actie = "/euthanasie" });
+
+        if (!await db.DonorRegistraties.AnyAsync())
+            meldingen.Add(new { type = "herinnering", categorie = "donor", bericht = "U heeft uw donorregistratie nog niet vastgelegd.", actie = "/donor" });
+
+        if (!await db.UitvaartWensen.AnyAsync())
+            meldingen.Add(new { type = "herinnering", categorie = "uitvaart", bericht = "U heeft nog geen uitvaartwensen vastgelegd.", actie = "/uitvaart" });
+
+        if (!await db.Erfgenamen.AnyAsync())
+            meldingen.Add(new { type = "herinnering", categorie = "erfgenamen", bericht = "U heeft nog geen erfgenamen geregistreerd.", actie = "/erfgenamen" });
+
+        if (!await db.Noodcontacten.AnyAsync())
+            meldingen.Add(new { type = "herinnering", categorie = "noodcontacten", bericht = "U heeft nog geen noodcontacten opgegeven.", actie = "/noodcontacten" });
+
+        if (!await db.Documenten.AnyAsync())
+            meldingen.Add(new { type = "herinnering", categorie = "documenten", bericht = "U heeft nog geen belangrijke documenten geüpload.", actie = "/documenten" });
+
+        // 3. Check of er een backup is gemaakt (geen recente backup-actie in audit log)
+        var laatsteBackup = await db.AuditLog
+            .Where(a => a.Actie == "Backup")
+            .OrderByDescending(a => a.Tijdstip)
+            .FirstOrDefaultAsync();
+        if (laatsteBackup is null)
+        {
+            meldingen.Add(new { type = "waarschuwing", categorie = "backup", bericht = "U heeft nog nooit een backup gemaakt. Maak een backup om dataverlies te voorkomen.", actie = "/instellingen" });
+        }
+        else if (laatsteBackup.Tijdstip < DateTime.UtcNow.AddDays(-30))
+        {
+            meldingen.Add(new { type = "herinnering", categorie = "backup", bericht = $"Uw laatste backup is van {laatsteBackup.Tijdstip:dd-MM-yyyy}. Overweeg een nieuwe backup.", actie = "/instellingen" });
+        }
+
+        // 4. Check of Shamir sleuteldelen zijn verdeeld
+        var erfgenamenMetSleutel = await db.Erfgenamen.AnyAsync(e => e.HeeftShareOntvangen);
+        var erfgenamenTotaal = await db.Erfgenamen.CountAsync();
+        if (erfgenamenTotaal > 0 && !erfgenamenMetSleutel)
+        {
+            meldingen.Add(new { type = "herinnering", categorie = "shamir", bericht = "U heeft erfgenamen maar nog geen sleuteldelen verdeeld via Shamir's Secret Sharing.", actie = "/erfgenamen" });
+        }
+
+        return Ok(new { meldingen, aantal = meldingen.Count });
+    }
 }

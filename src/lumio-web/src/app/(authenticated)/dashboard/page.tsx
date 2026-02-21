@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api-client";
+import { cn } from "@/lib/utils";
 import {
   ScrollText,
   Heart,
@@ -21,6 +22,8 @@ import {
   Phone,
   CheckCircle2,
   Circle,
+  Bell,
+  Info,
 } from "lucide-react";
 
 interface DomeinStatus {
@@ -34,6 +37,18 @@ interface Compleetheid {
   aantalIngevuld: number;
   totaal: number;
   domeinen: DomeinStatus[];
+}
+
+interface Melding {
+  type: "waarschuwing" | "herinnering";
+  categorie: string;
+  bericht: string;
+  actie: string;
+}
+
+interface MeldingenResponse {
+  meldingen: Melding[];
+  aantal: number;
 }
 
 const domainCards = [
@@ -132,6 +147,8 @@ const domainCards = [
 export default function DashboardPage() {
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [compleetheid, setCompleetheid] = useState<Compleetheid | null>(null);
+  const [meldingen, setMeldingen] = useState<Melding[]>([]);
+  const [meldingenOpen, setMeldingenOpen] = useState(true);
 
   useEffect(() => {
     api
@@ -142,6 +159,11 @@ export default function DashboardPage() {
     api
       .get<Compleetheid>("/api/status/compleetheid")
       .then(setCompleetheid)
+      .catch(() => {});
+
+    api
+      .get<MeldingenResponse>("/api/status/meldingen")
+      .then((data) => setMeldingen(data.meldingen))
       .catch(() => {});
   }, []);
 
@@ -184,15 +206,63 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Notificaties & Herinneringen */}
+      {meldingen.length > 0 && meldingenOpen && (
+        <div className="rounded-lg border bg-card p-5">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Bell className="h-4 w-4 text-primary" />
+              <h2 className="text-sm font-semibold">
+                Meldingen ({meldingen.length})
+              </h2>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMeldingenOpen(false)}
+              className="text-xs text-muted-foreground"
+            >
+              Verbergen
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {meldingen.map((melding, idx) => (
+              <Link key={idx} href={melding.actie}>
+                <div
+                  className={cn(
+                    "flex items-start gap-3 rounded-md border p-3 transition-colors hover:bg-muted/50 cursor-pointer",
+                    melding.type === "waarschuwing"
+                      ? "border-amber-200 bg-amber-50"
+                      : "border-blue-100 bg-blue-50/50"
+                  )}
+                >
+                  {melding.type === "waarschuwing" ? (
+                    <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                  ) : (
+                    <Info className="h-4 w-4 text-blue-600 mt-0.5 shrink-0" />
+                  )}
+                  <p className={cn(
+                    "text-sm",
+                    melding.type === "waarschuwing" ? "text-amber-900" : "text-blue-900"
+                  )}>
+                    {melding.bericht}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {hasProfile === false && (
-        <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-5">
+        <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-5 dark:border-amber-700 dark:bg-amber-950">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-6 w-6 text-amber-600 mt-0.5 shrink-0" />
+            <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-amber-900">
+              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
                 Vul eerst uw profiel in om te beginnen
               </p>
-              <p className="text-sm text-amber-800 mt-1">
+              <p className="text-sm text-amber-800 dark:text-amber-300 mt-1">
                 Voordat u gegevens kunt opslaan in Lumio, moet u eerst uw
                 persoonsgegevens invullen. Dit is eenmalig.
               </p>
@@ -206,8 +276,8 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <p className="text-sm text-blue-800">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
+        <p className="text-sm text-blue-800 dark:text-blue-300">
           <strong>Let op:</strong> Lumio is een hulpmiddel voor het vastleggen van uw wensen.
           Een notarieel testament blijft vereist voor juridische geldigheid conform het
           Burgerlijk Wetboek (BW Boek 4).

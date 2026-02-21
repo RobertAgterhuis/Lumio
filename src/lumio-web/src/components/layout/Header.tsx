@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
-import { Lock, Search, UserCircle } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
+import { Lock, Search, UserCircle, Moon, Sun } from "lucide-react";
 import { SearchDialog } from "./SearchDialog";
 
 export function Header() {
   const { lock, activeProfile } = useAuthStore();
   const [searchOpen, setSearchOpen] = useState(false);
+  const { theme, toggle: toggleTheme } = useTheme();
 
   const handleLock = async () => {
     try {
@@ -59,6 +61,18 @@ export function Header() {
             <kbd className="ml-1 hidden rounded border bg-muted px-1.5 py-0.5 text-xs sm:inline-block">
               Ctrl+K
             </kbd>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Licht thema" : "Donker thema"}
+          >
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
           </Button>
           <Button variant="ghost" size="sm" onClick={handleLock} className="gap-2">
             <Lock className="h-4 w-4" />

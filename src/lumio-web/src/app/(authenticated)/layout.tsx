@@ -6,8 +6,10 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { IdleWarningDialog } from "@/components/layout/IdleWarningDialog";
+import { ShortcutsDialog } from "@/components/layout/ShortcutsDialog";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { api } from "@/lib/api-client";
 
 export default function AuthenticatedLayout({
@@ -30,6 +32,7 @@ export default function AuthenticatedLayout({
   };
 
   const { showWarning, secondsLeft, dismiss } = useIdleTimer(handleIdleLock);
+  useKeyboardShortcuts();
 
   useEffect(() => {
     if (isUnlocked) {
@@ -103,6 +106,7 @@ export default function AuthenticatedLayout({
         secondsLeft={secondsLeft}
         onDismiss={dismiss}
       />
+      <ShortcutsDialog />
     </div>
   );
 }

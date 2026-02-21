@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
-import { FileText, Download, Trash2, Upload, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { FileText, Download, Trash2, Upload, Loader2, CloudUpload } from "lucide-react";
 
 interface PersoonlijkDocument {
   id: string;
@@ -35,6 +36,12 @@ export default function DocumentenPage() {
   const [categorie, setCategorie] = useState("");
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dropUploads, setDropUploads] = useState<
+    { file: File; naam: string; categorie: string; status: "pending" | "uploading" | "done" | "error"; error?: string }[]
+  >([]);
+  const [dropDialogOpen, setDropDialogOpen] = useState(false);
+  const dragCounter = useRef(0);
 
   const loadData = () => {
     api
@@ -47,6 +54,83 @@ export default function DocumentenPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  // --- Drag & Drop handlers ---
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current++;
+    if (e.dataTransfer.types.includes("Files")) {
+      setIsDragging(true);
+    }
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current--;
+    if (dragCounter.current === 0) {
+      setIsDragging(false);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    dragCounter.current = 0;
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length === 0) return;
+
+    setDropUploads(
+      files.map((file) => ({
+        file,
+        naam: file.name.replace(/\.[^.]+$/, ""),
+        categorie: "Overig",
+        status: "pending" as const,
+      }))
+    );
+    setDropDialogOpen(true);
+  }, []);
+
+  const updateDropUpload = (index: number, updates: Partial<typeof dropUploads[0]>) => {
+    setDropUploads((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, ...updates } : item))
+    );
+  };
+
+  const handleDropUploadAll = async () => {
+    for (let i = 0; i < dropUploads.length; i++) {
+      const item = dropUploads[i];
+      if (item.status === "done") continue;
+      if (!item.naam || !item.categorie) {
+        updateDropUpload(i, { status: "error", error: "Naam en categorie zijn verplicht." });
+        continue;
+      }
+
+      updateDropUpload(i, { status: "uploading" });
+      try {
+        const formData = new FormData();
+        formData.append("bestand", item.file);
+        formData.append("naam", item.naam);
+        formData.append("categorie", item.categorie);
+        await api.upload("/api/documenten/uploaden", formData);
+        updateDropUpload(i, { status: "done" });
+      } catch (err) {
+        updateDropUpload(i, {
+          status: "error",
+          error: err instanceof Error ? err.message : "Upload mislukt.",
+        });
+      }
+    }
+    loadData();
+  };
 
   const handleUpload = async () => {
     const file = fileRef.current?.files?.[0];
@@ -113,7 +197,28 @@ export default function DocumentenPage() {
     );
 
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6 relative"
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      {/* Drop zone overlay */}
+      {isDragging && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center rounded-lg border-2 border-dashed border-primary bg-primary/5 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-2">
+            <CloudUpload className="h-12 w-12 text-primary" />
+            <p className="text-lg font-semibold text-primary">
+              Bestanden hier loslaten
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Sleep bestanden hierheen om te uploaden
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Documenten</h1>
@@ -248,6 +353,84 @@ export default function DocumentenPage() {
                 <Upload className="h-4 w-4 mr-2" /> Uploaden
               </>
             )}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Drag & Drop multi-file dialog */}
+      <Dialog open={dropDialogOpen} onOpenChange={setDropDialogOpen}>
+        <DialogHeader>
+          <DialogTitle>
+            {dropUploads.length} bestand{dropUploads.length !== 1 ? "en" : ""} uploaden
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3 py-4 max-h-80 overflow-y-auto">
+          {dropUploads.map((item, idx) => (
+            <div
+              key={idx}
+              className={cn(
+                "rounded-md border p-3 space-y-2",
+                item.status === "done" && "border-green-200 bg-green-50",
+                item.status === "error" && "border-red-200 bg-red-50"
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium truncate">{item.file.name}</p>
+                <span className="text-xs text-muted-foreground">{formatSize(item.file.size)}</span>
+              </div>
+              {item.status !== "done" && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Input
+                      value={item.naam}
+                      onChange={(e) => updateDropUpload(idx, { naam: e.target.value })}
+                      placeholder="Naam"
+                      disabled={item.status === "uploading"}
+                    />
+                  </div>
+                  <div>
+                    <Select
+                      value={item.categorie}
+                      onChange={(e) => updateDropUpload(idx, { categorie: e.target.value })}
+                      disabled={item.status === "uploading"}
+                    >
+                      <option value="Testament">Testament</option>
+                      <option value="Identiteitsbewijs">Identiteitsbewijs</option>
+                      <option value="Akte">Akte</option>
+                      <option value="Verzekeringspolis">Verzekeringspolis</option>
+                      <option value="Medisch">Medisch document</option>
+                      <option value="Financieel">Financieel document</option>
+                      <option value="Overig">Overig</option>
+                    </Select>
+                  </div>
+                </div>
+              )}
+              {item.status === "uploading" && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Uploaden...
+                </div>
+              )}
+              {item.status === "done" && (
+                <p className="text-xs text-green-700">Geüpload</p>
+              )}
+              {item.status === "error" && (
+                <p className="text-xs text-red-700">{item.error}</p>
+              )}
+            </div>
+          ))}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setDropDialogOpen(false)}>
+            Sluiten
+          </Button>
+          <Button
+            onClick={handleDropUploadAll}
+            disabled={dropUploads.some((u) => u.status === "uploading") || dropUploads.every((u) => u.status === "done")}
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            {dropUploads.every((u) => u.status === "done")
+              ? "Klaar"
+              : `Alles uploaden (${dropUploads.filter((u) => u.status !== "done").length})`}
           </Button>
         </DialogFooter>
       </Dialog>
