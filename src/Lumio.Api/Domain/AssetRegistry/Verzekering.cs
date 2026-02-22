@@ -12,5 +12,6 @@ public class Verzekering : BaseEntity
     public string Type { get; set; } = string.Empty;
     public decimal? VerzekerdBedrag { get; set; }
     public string? Begunstigde { get; set; }
+    public VermogensSoort VermogensSoort { get; set; } = VermogensSoort.Prive;
     public string? Notities { get; set; }
 }

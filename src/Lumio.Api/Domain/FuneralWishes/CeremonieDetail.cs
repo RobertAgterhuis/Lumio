@@ -10,4 +10,10 @@ public class CeremonieDetail : BaseEntity
     public string Onderdeel { get; set; } = string.Empty;
     public string? Beschrijving { get; set; }
     public int Volgorde { get; set; }
+
+    // P-S15: Uitgebreide ceremonie-details
+    public string? Muziek { get; set; }
+    public string? Spreker { get; set; }
+    public string? Tekstlezing { get; set; }
+    public string? Dresscode { get; set; }
 }

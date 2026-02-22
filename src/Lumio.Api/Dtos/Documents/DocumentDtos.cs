@@ -8,6 +8,7 @@ public record DocumentResponse(
     string ContentType,
     long BestandsGrootte,
     string? Notities,
+    DateOnly? VerlooptOp,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp,
     Guid DocumentGroepId,
@@ -20,3 +21,7 @@ public record DocumentVersieResponse(
     string BestandsNaam,
     long BestandsGrootte,
     DateTime AangemaaktOp);
+
+public record DocumentUpdateRequest(
+    DateOnly? VerlooptOp,
+    string? Notities);

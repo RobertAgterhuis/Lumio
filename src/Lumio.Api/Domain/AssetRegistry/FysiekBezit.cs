@@ -10,5 +10,6 @@ public class FysiekBezit : BaseEntity
     public decimal? GeschatteWaarde { get; set; }
     public string? Locatie { get; set; }
     public string? BestemdeErfgenaam { get; set; }
+    public VermogensSoort VermogensSoort { get; set; } = VermogensSoort.Prive;
     public string? Notities { get; set; }
 }

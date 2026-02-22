@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 
@@ -99,6 +100,7 @@ export default function TestamentWizardPage() {
           </div>
           <div className="space-y-2">
             <Label>Type testament</Label>
+            <HelpTooltip tekst="Een notarieel testament wordt opgesteld door een notaris en is rechtsgeldig. Een codicil is een eigenhandig geschreven document dat alleen geldt voor legaten van roerende goederen (geen onroerend goed)." />
             <Select
               value={form.testamentType}
               onChange={(e) => update("testamentType", e.target.value)}
@@ -191,6 +193,7 @@ export default function TestamentWizardPage() {
           </div>
           <div className="space-y-2">
             <Label>Uitsluitingsclausule opnemen?</Label>
+            <HelpTooltip tekst="Een uitsluitingsclausule bepaalt dat wat uw erfgenaam erft, privévermogen blijft. Zonder deze clausule kan de erfenis bij een scheiding verdeeld worden met de ex-partner van uw erfgenaam." />
             <Select
               value={form.uitsluitingsClausule}
               onChange={(e) => update("uitsluitingsClausule", e.target.value)}

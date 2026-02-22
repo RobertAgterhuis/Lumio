@@ -21,6 +21,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import {
   Users,
   Plus,
@@ -31,6 +32,7 @@ import {
   Check,
   Loader2,
   Package,
+  Download,
 } from "lucide-react";
 
 interface Erfgenaam {
@@ -48,6 +50,10 @@ interface Erfgenaam {
   shareIndex?: number;
   heeftShareOntvangen: boolean;
   shareUitgegevenOp?: string;
+  legitimatieSoort?: number;
+  legitimatieNummer?: string;
+  legitimatieDatumAfgifte?: string;
+  legitimatieGeldigTot?: string;
 }
 
 interface ShareInfo {
@@ -96,6 +102,10 @@ const emptyForm = {
   postcode: "",
   woonplaats: "",
   geboortedatum: "",
+  legitimatieSoort: "0",
+  legitimatieNummer: "",
+  legitimatieDatumAfgifte: "",
+  legitimatieGeldigTot: "",
 };
 
 function displayName(e: Erfgenaam): string {
@@ -194,6 +204,10 @@ export default function ErfgenamenPage() {
         postcode: item.postcode ?? "",
         woonplaats: item.woonplaats ?? "",
         geboortedatum: item.geboortedatum ?? "",
+        legitimatieSoort: String(item.legitimatieSoort ?? 0),
+        legitimatieNummer: item.legitimatieNummer ?? "",
+        legitimatieDatumAfgifte: item.legitimatieDatumAfgifte ?? "",
+        legitimatieGeldigTot: item.legitimatieGeldigTot ?? "",
       });
     } else {
       setEditId(null);
@@ -215,6 +229,10 @@ export default function ErfgenamenPage() {
         postcode: form.postcode || null,
         woonplaats: form.woonplaats || null,
         geboortedatum: form.geboortedatum || null,
+        legitimatieSoort: parseInt(form.legitimatieSoort),
+        legitimatieNummer: form.legitimatieNummer || null,
+        legitimatieDatumAfgifte: form.legitimatieDatumAfgifte || null,
+        legitimatieGeldigTot: form.legitimatieGeldigTot || null,
       };
       if (editId) {
         await api.put(`/api/erfgenamen/${editId}`, payload);
@@ -236,6 +254,29 @@ export default function ErfgenamenPage() {
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+    }
+  };
+
+  const handleExportErfgenaam = async (id: string, voornaam: string) => {
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/erfgenaam/${id}`, {
+        method: "POST",
+      });
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lumio-erfgenaam-${voornaam.toLowerCase().replace(/\s+/g, "-")}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
     }
   };
 
@@ -332,7 +373,7 @@ export default function ErfgenamenPage() {
         <div>
           <h1 className="text-3xl font-bold">Erfgenamen</h1>
           <p className="text-muted-foreground mt-1">
-            Erfgenamen beheren en sleuteldelen verdelen
+            Erfgenamen beheren en noodcodes verdelen
           </p>
         </div>
         <div className="flex gap-2">
@@ -341,7 +382,7 @@ export default function ErfgenamenPage() {
               variant="outline"
               onClick={() => setShamirDialogOpen(true)}
             >
-              <KeyRound className="h-4 w-4 mr-2" /> Sleuteldelen genereren
+              <KeyRound className="h-4 w-4 mr-2" /> Noodcodes verdelen
             </Button>
           )}
           <Button onClick={() => openDialog()}>
@@ -352,11 +393,10 @@ export default function ErfgenamenPage() {
 
       <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
         <p className="text-sm text-indigo-800">
-          <strong>Shamir&apos;s Secret Sharing:</strong> Verdeel uw
-          hoofdwachtwoord in delen onder erfgenamen. Een minimum aantal personen
-          (drempel) kan samen het wachtwoord reconstrueren. Individuele delen
-          zijn waardeloos — pas als genoeg personen samenwerken wordt het geheim
-          onthuld.
+          <strong>Noodcodes verdelen:</strong> Uw hoofdwachtwoord wordt veilig
+          opgesplitst in unieke codes voor uw erfgenamen. Pas wanneer genoeg
+          erfgenamen (de &apos;drempel&apos;) hun code samenvoegen, kan het
+          wachtwoord worden hersteld. Eén code alleen is waardeloos.
         </p>
       </div>
 
@@ -422,6 +462,14 @@ export default function ErfgenamenPage() {
                         title="Bezit toewijzen"
                       >
                         <Package className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleExportErfgenaam(e.id, e.voornaam)}
+                        title="PDF downloaden"
+                      >
+                        <Download className="h-3 w-3" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -610,6 +658,58 @@ export default function ErfgenamenPage() {
               placeholder="Woonplaats"
             />
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Legitimatie</Label>
+              <Select
+                value={form.legitimatieSoort}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, legitimatieSoort: e.target.value }))
+                }
+              >
+                <option value="0">Geen</option>
+                <option value="1">Paspoort</option>
+                <option value="2">Identiteitskaart</option>
+                <option value="3">Rijbewijs</option>
+              </Select>
+            </div>
+            {form.legitimatieSoort !== "0" && (
+              <div className="space-y-2">
+                <Label>Documentnummer</Label>
+                <Input
+                  value={form.legitimatieNummer}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, legitimatieNummer: e.target.value }))
+                  }
+                  placeholder="Documentnummer"
+                />
+              </div>
+            )}
+          </div>
+          {form.legitimatieSoort !== "0" && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Datum afgifte</Label>
+                <Input
+                  type="date"
+                  value={form.legitimatieDatumAfgifte}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, legitimatieDatumAfgifte: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Geldig tot</Label>
+                <Input
+                  type="date"
+                  value={form.legitimatieGeldigTot}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, legitimatieGeldigTot: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogOpen(false)}>
@@ -715,10 +815,10 @@ export default function ErfgenamenPage() {
       {/* Shamir Generate Dialog */}
       <Dialog open={shamirDialogOpen} onOpenChange={closeShamirDialog}>
         <DialogHeader>
-          <DialogTitle>Shamir Sleuteldelen Genereren</DialogTitle>
+          <DialogTitle>Noodcodes Genereren</DialogTitle>
           <DialogDescription>
-            Verdeel uw hoofdwachtwoord in {erfgenamen.length} delen. Alleen
-            wanneer het minimum aantal personen (drempel) hun deel samenvoegt,
+            Verdeel uw hoofdwachtwoord in {erfgenamen.length} unieke noodcodes. Alleen
+            wanneer het minimum aantal personen (drempel) hun code samenvoegt,
             kan het wachtwoord worden gereconstrueerd.
           </DialogDescription>
         </DialogHeader>
@@ -728,9 +828,9 @@ export default function ErfgenamenPage() {
             <div className="space-y-4 py-4">
               <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
                 <p className="text-sm text-amber-800">
-                  <strong>Waarschuwing:</strong> De sleuteldelen worden NIET
+                  <strong>Waarschuwing:</strong> De noodcodes worden NIET
                   opgeslagen in Lumio. Noteer ze zorgvuldig of druk ze af.
-                  Verloren delen kunnen niet worden hersteld.
+                  Verloren codes kunnen niet worden hersteld.
                 </p>
               </div>
               <div className="space-y-2">
@@ -744,7 +844,8 @@ export default function ErfgenamenPage() {
               </div>
               <div className="space-y-2">
                 <Label>
-                  Drempel (minimum aantal delen voor reconstructie)
+                  Drempel (minimum aantal noodcodes voor reconstructie)
+                  <HelpTooltip tekst="De drempel bepaalt hoeveel erfgenamen samen nodig zijn om uw hoofdwachtwoord te reconstrueren. Bij een drempel van 3 moeten minimaal 3 erfgenamen hun code samenvoegen. Een hogere drempel is veiliger, maar vereist meer samenwerking." />
                 </Label>
                 <Select
                   value={shamirThreshold}

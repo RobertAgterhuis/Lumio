@@ -24,8 +24,20 @@ public class UitvaartWensen : BaseEntity
     public string? Bloemen { get; set; }
     public string? Kledingwensen { get; set; }
     public string? RouwkaartTekst { get; set; }
+    public string? RouwadvertentieTekst { get; set; }
     public string? Condoleance { get; set; }
     public string? OverigeWensen { get; set; }
+
+    // P-M14: Locatie-voorkeuren
+    public string? VoorkeurBegraafplaatsNaam { get; set; }
+    public string? VoorkeurBegraafplaatsAdres { get; set; }
+    public string? VoorkeurCrematoriumnaam { get; set; }
+    public string? VoorkeurCrematoriumAdres { get; set; }
+    public string? VoorkeurAulaNaam { get; set; }
+    public string? VoorkeurAulaAdres { get; set; }
+
+    // P-S16: Budgetrichting
+    public string? BudgetRichting { get; set; }
 
     public List<CeremonieDetail> CeremonieDetails { get; set; } = [];
 }

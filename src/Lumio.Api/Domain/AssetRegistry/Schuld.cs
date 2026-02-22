@@ -12,5 +12,6 @@ public class Schuld : BaseEntity
     public decimal Bedrag { get; set; }
     public decimal? MaandelijkseAflossing { get; set; }
     public string? Referentie { get; set; }
+    public VermogensSoort VermogensSoort { get; set; } = VermogensSoort.Prive;
     public string? Notities { get; set; }
 }

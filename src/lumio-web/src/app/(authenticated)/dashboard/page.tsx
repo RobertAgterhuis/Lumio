@@ -131,7 +131,7 @@ const domainCards = [
     domein: "erfgenamen",
     icon: Users,
     titel: "Erfgenamen",
-    beschrijving: "Erfgenamen beheren en sleuteldelen verdelen",
+    beschrijving: "Erfgenamen beheren en noodcodes verdelen",
     color: "text-indigo-600",
     bgColor: "bg-indigo-50",
   },

@@ -20,8 +20,16 @@ public record UitvaartWensenResponse(
     string? Bloemen,
     string? Kledingwensen,
     string? RouwkaartTekst,
+    string? RouwadvertentieTekst,
     string? Condoleance,
     string? OverigeWensen,
+    string? VoorkeurBegraafplaatsNaam,
+    string? VoorkeurBegraafplaatsAdres,
+    string? VoorkeurCrematoriumnaam,
+    string? VoorkeurCrematoriumAdres,
+    string? VoorkeurAulaNaam,
+    string? VoorkeurAulaAdres,
+    string? BudgetRichting,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
@@ -43,16 +51,32 @@ public record UitvaartWensenUpsertRequest(
     string? Bloemen,
     string? Kledingwensen,
     string? RouwkaartTekst,
+    string? RouwadvertentieTekst,
     string? Condoleance,
-    string? OverigeWensen);
+    string? OverigeWensen,
+    string? VoorkeurBegraafplaatsNaam,
+    string? VoorkeurBegraafplaatsAdres,
+    string? VoorkeurCrematoriumnaam,
+    string? VoorkeurCrematoriumAdres,
+    string? VoorkeurAulaNaam,
+    string? VoorkeurAulaAdres,
+    string? BudgetRichting);
 
 public record CeremonieDetailResponse(
     Guid Id,
     string Onderdeel,
     string? Beschrijving,
-    int Volgorde);
+    int Volgorde,
+    string? Muziek,
+    string? Spreker,
+    string? Tekstlezing,
+    string? Dresscode);
 
 public record CeremonieDetailUpsertRequest(
     string Onderdeel,
     string? Beschrijving,
-    int Volgorde);
+    int Volgorde,
+    string? Muziek,
+    string? Spreker,
+    string? Tekstlezing,
+    string? Dresscode);

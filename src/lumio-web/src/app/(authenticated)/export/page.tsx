@@ -23,6 +23,9 @@ import {
   Phone,
   ShieldAlert,
   Archive,
+  ClipboardList,
+  FileJson,
+  FileCode,
 } from "lucide-react";
 
 const exportOptions = [
@@ -91,6 +94,12 @@ const exportOptions = [
     label: "Noodprocedure & Instructie",
     icon: ShieldAlert,
     endpoint: "/api/export/noodprocedure",
+  },
+  {
+    key: "boedelbeschrijving",
+    label: "Boedelbeschrijving (wettelijk)",
+    icon: ClipboardList,
+    endpoint: "/api/export/boedelbeschrijving",
   },
 ];
 
@@ -177,6 +186,33 @@ export default function ExportPage() {
     }
   };
 
+  const handleStructuredExport = async (format: "json" | "xml") => {
+    const key = format;
+    setDownloading(key);
+    setError(null);
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/${format}`);
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const today = new Date().toISOString().slice(0, 10);
+      a.download = `lumio-export-${today}.${format}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -224,6 +260,45 @@ export default function ExportPage() {
               <Archive className="h-4 w-4 mr-2" />
             )}
             Compleet pakket (ZIP)
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileJson className="h-5 w-5" /> Gestructureerde export
+          </CardTitle>
+          <CardDescription>
+            Exporteer alle gegevens als JSON of XML — ideaal voor overdracht aan
+            een notaris of ander systeem. Wachtwoorden en gevoelige gegevens
+            worden uitgesloten.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex gap-3 flex-wrap">
+          <Button
+            variant="outline"
+            onClick={() => handleStructuredExport("json")}
+            disabled={downloading !== null}
+          >
+            {downloading === "json" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileJson className="h-4 w-4 mr-2" />
+            )}
+            Downloaden als JSON
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleStructuredExport("xml")}
+            disabled={downloading !== null}
+          >
+            {downloading === "xml" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileCode className="h-4 w-4 mr-2" />
+            )}
+            Downloaden als XML
           </Button>
         </CardContent>
       </Card>

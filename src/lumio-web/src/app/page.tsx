@@ -115,7 +115,7 @@ export default function HomePage() {
           onClick={() => setHeirMode((m) => !m)}
           className="mt-4 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
         >
-          Ik ben een erfgenaam (ontgrendelen met sleuteldelen)
+          Ik ben een erfgenaam (ontgrendelen met noodcodes)
         </button>
       )}
 

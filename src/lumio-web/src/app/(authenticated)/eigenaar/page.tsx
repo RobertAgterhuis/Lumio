@@ -12,7 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
-import { User, Save, Loader2 } from "lucide-react";
+import { User, Save, Loader2, Camera, Trash2 } from "lucide-react";
+import { Select } from "@/components/ui/select";
 
 interface Eigenaar {
   id: string;
@@ -33,6 +34,14 @@ interface Eigenaar {
   notarisAdres?: string;
   notarisPostcode?: string;
   notarisPlaats?: string;
+  burgerlijkeStaat?: number;
+  huwelijksVoorwaarden?: number;
+  datumHuwelijk?: string;
+  legitimatieSoort?: number;
+  legitimatieNummer?: string;
+  legitimatieDatumAfgifte?: string;
+  legitimatieGeldigTot?: string;
+  heeftProfielFoto?: boolean;
 }
 
 const emptyForm = {
@@ -53,6 +62,13 @@ const emptyForm = {
   notarisAdres: "",
   notarisPostcode: "",
   notarisPlaats: "",
+  burgerlijkeStaat: "0",
+  huwelijksVoorwaarden: "0",
+  datumHuwelijk: "",
+  legitimatieSoort: "0",
+  legitimatieNummer: "",
+  legitimatieDatumAfgifte: "",
+  legitimatieGeldigTot: "",
 };
 
 export default function EigenaarPage() {
@@ -62,8 +78,11 @@ export default function EigenaarPage() {
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [fotoUrl, setFotoUrl] = useState<string | null>(null);
+  const [fotoUploading, setFotoUploading] = useState(false);
 
   useEffect(() => {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
     api
       .get<Eigenaar>("/api/eigenaar")
       .then((data) => {
@@ -87,7 +106,17 @@ export default function EigenaarPage() {
             notarisAdres: data.notarisAdres ?? "",
             notarisPostcode: data.notarisPostcode ?? "",
             notarisPlaats: data.notarisPlaats ?? "",
+            burgerlijkeStaat: String(data.burgerlijkeStaat ?? 0),
+            huwelijksVoorwaarden: String(data.huwelijksVoorwaarden ?? 0),
+            datumHuwelijk: data.datumHuwelijk ?? "",
+            legitimatieSoort: String(data.legitimatieSoort ?? 0),
+            legitimatieNummer: data.legitimatieNummer ?? "",
+            legitimatieDatumAfgifte: data.legitimatieDatumAfgifte ?? "",
+            legitimatieGeldigTot: data.legitimatieGeldigTot ?? "",
           });
+          if (data.heeftProfielFoto) {
+            setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+          }
         }
       })
       .catch(() => {
@@ -122,6 +151,13 @@ export default function EigenaarPage() {
         notarisAdres: form.notarisAdres || null,
         notarisPostcode: form.notarisPostcode || null,
         notarisPlaats: form.notarisPlaats || null,
+        burgerlijkeStaat: parseInt(form.burgerlijkeStaat),
+        huwelijksVoorwaarden: parseInt(form.huwelijksVoorwaarden),
+        datumHuwelijk: form.datumHuwelijk || null,
+        legitimatieSoort: parseInt(form.legitimatieSoort),
+        legitimatieNummer: form.legitimatieNummer || null,
+        legitimatieDatumAfgifte: form.legitimatieDatumAfgifte || null,
+        legitimatieGeldigTot: form.legitimatieGeldigTot || null,
       };
       if (exists) {
         await api.put("/api/eigenaar", payload);
@@ -134,6 +170,37 @@ export default function EigenaarPage() {
       setError(err instanceof Error ? err.message : "Opslaan mislukt.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleFotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFotoUploading(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append("bestand", file);
+      await api.upload("/api/eigenaar/foto", fd);
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Foto uploaden mislukt.");
+    } finally {
+      setFotoUploading(false);
+    }
+  };
+
+  const handleFotoDelete = async () => {
+    setFotoUploading(true);
+    setError(null);
+    try {
+      await api.delete("/api/eigenaar/foto");
+      setFotoUrl(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Foto verwijderen mislukt.");
+    } finally {
+      setFotoUploading(false);
     }
   };
 
@@ -164,6 +231,71 @@ export default function EigenaarPage() {
             op Opslaan.
           </p>
         </div>
+      )}
+
+      {exists && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Profielfoto</CardTitle>
+            <CardDescription>
+              Upload een pasfoto, bijvoorbeeld voor de rouwkaart.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-6">
+              <div className="h-28 w-28 rounded-full bg-muted border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden shrink-0">
+                {fotoUrl ? (
+                  <img
+                    src={fotoUrl}
+                    alt="Profielfoto"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Camera className="h-10 w-10 text-muted-foreground/50" />
+                )}
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={fotoUploading}
+                    onClick={() =>
+                      document.getElementById("foto-input")?.click()
+                    }
+                  >
+                    {fotoUploading ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Camera className="h-4 w-4 mr-2" />
+                    )}
+                    {fotoUrl ? "Wijzigen" : "Uploaden"}
+                  </Button>
+                  {fotoUrl && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={fotoUploading}
+                      onClick={handleFotoDelete}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" /> Verwijderen
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  JPG, PNG of WebP. Maximaal 10 MB.
+                </p>
+                <input
+                  id="foto-input"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFotoUpload}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       <Card>
@@ -267,6 +399,117 @@ export default function EigenaarPage() {
                 />
               </div>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Burgerlijke staat</CardTitle>
+          <CardDescription>
+            Uw burgerlijke staat en eventuele huwelijksvoorwaarden.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Burgerlijke staat</Label>
+                <Select
+                  value={form.burgerlijkeStaat}
+                  onChange={(e) => update("burgerlijkeStaat", e.target.value)}
+                >
+                  <option value="0">Ongehuwd</option>
+                  <option value="1">Gehuwd</option>
+                  <option value="2">Geregistreerd partnerschap</option>
+                  <option value="3">Gescheiden</option>
+                  <option value="4">Weduwe / Weduwnaar</option>
+                </Select>
+              </div>
+              {(form.burgerlijkeStaat === "1" || form.burgerlijkeStaat === "2") && (
+                <div className="space-y-2">
+                  <Label>Huwelijksvoorwaarden</Label>
+                  <Select
+                    value={form.huwelijksVoorwaarden}
+                    onChange={(e) => update("huwelijksVoorwaarden", e.target.value)}
+                  >
+                    <option value="0">Niet van toepassing</option>
+                    <option value="1">Gemeenschap van goederen</option>
+                    <option value="2">Beperkte gemeenschap</option>
+                    <option value="3">Koude uitsluiting</option>
+                  </Select>
+                </div>
+              )}
+            </div>
+            {(form.burgerlijkeStaat === "1" || form.burgerlijkeStaat === "2") && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Datum huwelijk / partnerschap</Label>
+                  <Input
+                    type="date"
+                    value={form.datumHuwelijk}
+                    onChange={(e) => update("datumHuwelijk", e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Identificatie</CardTitle>
+          <CardDescription>
+            Legitimatiegegevens voor juridische documenten.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Soort legitimatie</Label>
+                <Select
+                  value={form.legitimatieSoort}
+                  onChange={(e) => update("legitimatieSoort", e.target.value)}
+                >
+                  <option value="0">Geen</option>
+                  <option value="1">Paspoort</option>
+                  <option value="2">Identiteitskaart</option>
+                  <option value="3">Rijbewijs</option>
+                </Select>
+              </div>
+              {form.legitimatieSoort !== "0" && (
+                <div className="space-y-2">
+                  <Label>Documentnummer</Label>
+                  <Input
+                    value={form.legitimatieNummer}
+                    onChange={(e) => update("legitimatieNummer", e.target.value)}
+                    placeholder="Documentnummer"
+                  />
+                </div>
+              )}
+            </div>
+            {form.legitimatieSoort !== "0" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Datum afgifte</Label>
+                  <Input
+                    type="date"
+                    value={form.legitimatieDatumAfgifte}
+                    onChange={(e) => update("legitimatieDatumAfgifte", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Geldig tot</Label>
+                  <Input
+                    type="date"
+                    value={form.legitimatieGeldigTot}
+                    onChange={(e) => update("legitimatieGeldigTot", e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

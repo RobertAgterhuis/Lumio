@@ -38,6 +38,9 @@ import {
   Users,
   Plus,
   UserCircle,
+  HardDrive,
+  FolderOpen,
+  Check,
 } from "lucide-react";
 
 const TIMEOUT_OPTIONS = [
@@ -96,6 +99,18 @@ export default function InstellingenPage() {
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Auto-backup state
+  const [autoBackupEnabled, setAutoBackupEnabled] = useState(false);
+  const [autoBackupPad, setAutoBackupPad] = useState("");
+  const [autoBackupFrequentie, setAutoBackupFrequentie] = useState("dagelijks");
+  const [autoBackupSaving, setAutoBackupSaving] = useState(false);
+  const [autoBackupTesting, setAutoBackupTesting] = useState(false);
+  const [autoBackupMessage, setAutoBackupMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+  const isElectron = typeof window !== "undefined" && !!(window as any).lumio?.isElectron;
+
   // Account delete state
   const [deletePassword, setDeletePassword] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -108,6 +123,24 @@ export default function InstellingenPage() {
   useEffect(() => {
     setIdleTimeout(getIdleTimeoutMinutes());
   }, []);
+
+  // Load auto-backup config on mount (Electron only)
+  useEffect(() => {
+    if (!isElectron) return;
+    const loadAutoBackup = async () => {
+      try {
+        const config = await (window as any).lumio.getAutoBackupConfig();
+        if (config) {
+          setAutoBackupEnabled(true);
+          setAutoBackupPad(config.pad);
+          setAutoBackupFrequentie(config.frequentie);
+        }
+      } catch {
+        // Ignore
+      }
+    };
+    loadAutoBackup();
+  }, [isElectron]);
 
   // Load profiles on mount
   useEffect(() => {
@@ -262,6 +295,53 @@ export default function InstellingenPage() {
       });
     } finally {
       setRestoring(false);
+    }
+  };
+
+  // Auto-backup handlers
+  const handleSelectBackupDirectory = async () => {
+    if (!isElectron) return;
+    const path = await (window as any).lumio.selectDirectory();
+    if (path) setAutoBackupPad(path);
+  };
+
+  const handleSaveAutoBackup = async () => {
+    if (!isElectron) return;
+    setAutoBackupSaving(true);
+    setAutoBackupMessage(null);
+    try {
+      if (autoBackupEnabled && autoBackupPad) {
+        await (window as any).lumio.setAutoBackupConfig({
+          pad: autoBackupPad,
+          frequentie: autoBackupFrequentie,
+        });
+        setAutoBackupMessage({ type: "success", text: "Auto-backup instellingen opgeslagen." });
+      } else {
+        await (window as any).lumio.setAutoBackupConfig(null);
+        setAutoBackupMessage({ type: "success", text: "Auto-backup uitgeschakeld." });
+      }
+    } catch {
+      setAutoBackupMessage({ type: "error", text: "Opslaan mislukt." });
+    } finally {
+      setAutoBackupSaving(false);
+    }
+  };
+
+  const handleTestAutoBackup = async () => {
+    if (!isElectron) return;
+    setAutoBackupTesting(true);
+    setAutoBackupMessage(null);
+    try {
+      const result = await (window as any).lumio.triggerAutoBackup();
+      if (result.success) {
+        setAutoBackupMessage({ type: "success", text: "Test-backup succesvol aangemaakt." });
+      } else {
+        setAutoBackupMessage({ type: "error", text: result.error || "Backup mislukt." });
+      }
+    } catch {
+      setAutoBackupMessage({ type: "error", text: "Backup mislukt." });
+    } finally {
+      setAutoBackupTesting(false);
     }
   };
 
@@ -616,6 +696,114 @@ export default function InstellingenPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Auto-backup (Electron only) */}
+      {isElectron && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <HardDrive className="h-5 w-5" /> Automatische backup
+            </CardTitle>
+            <CardDescription>
+              Configureer automatische backups naar een map op uw computer of USB-stick.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Label htmlFor="auto-backup-toggle" className="flex-1">
+                Automatische backup inschakelen
+              </Label>
+              <button
+                id="auto-backup-toggle"
+                role="switch"
+                aria-checked={autoBackupEnabled}
+                onClick={() => setAutoBackupEnabled(!autoBackupEnabled)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  autoBackupEnabled ? "bg-primary" : "bg-muted"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    autoBackupEnabled ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+
+            {autoBackupEnabled && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Backup-map</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      readOnly
+                      value={autoBackupPad}
+                      placeholder="Selecteer een map..."
+                      className="flex-1"
+                    />
+                    <Button variant="outline" onClick={handleSelectBackupDirectory}>
+                      <FolderOpen className="h-4 w-4 mr-2" />
+                      Bladeren
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="auto-backup-freq">Frequentie</Label>
+                  <select
+                    id="auto-backup-freq"
+                    value={autoBackupFrequentie}
+                    onChange={(e) => setAutoBackupFrequentie(e.target.value)}
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="dagelijks">Dagelijks</option>
+                    <option value="wekelijks">Wekelijks</option>
+                    <option value="maandelijks">Maandelijks</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleSaveAutoBackup}
+                    disabled={autoBackupSaving || !autoBackupPad}
+                  >
+                    {autoBackupSaving ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Check className="h-4 w-4 mr-2" />
+                    )}
+                    Opslaan
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleTestAutoBackup}
+                    disabled={autoBackupTesting || !autoBackupPad}
+                  >
+                    {autoBackupTesting ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Download className="h-4 w-4 mr-2" />
+                    )}
+                    Nu backup maken
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {autoBackupMessage && (
+              <p
+                className={`text-sm ${
+                  autoBackupMessage.type === "success"
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {autoBackupMessage.text}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Security info */}
       <Card>

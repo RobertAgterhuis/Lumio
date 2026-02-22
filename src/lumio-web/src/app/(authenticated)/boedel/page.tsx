@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import {
   Dialog,
   DialogHeader,
@@ -23,7 +24,22 @@ import {
   Plus,
   Pencil,
   Trash2,
+  TrendingUp,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+
+interface Samenvatting {
+  totaalBezittingen: number;
+  totaalSaldi: number;
+  totaalVerzekeringen: number;
+  totaalSchulden: number;
+  brutoNalatenschap: number;
+  nettoNalatenschap: number;
+  aantalBezittingen: number;
+  aantalRekeningen: number;
+  aantalVerzekeringen: number;
+  aantalSchulden: number;
+}
 
 interface FysiekBezit {
   id: string;
@@ -33,6 +49,7 @@ interface FysiekBezit {
   locatie?: string;
   bestemdeErfgenaam?: string;
   notities?: string;
+  vermogensSoort: number;
 }
 interface Bankrekening {
   id: string;
@@ -40,6 +57,8 @@ interface Bankrekening {
   iban: string;
   rekeningType: string;
   notities?: string;
+  saldo?: number;
+  vermogensSoort: number;
 }
 interface Verzekering {
   id: string;
@@ -51,6 +70,7 @@ interface Verzekering {
   verzekerdBedrag?: number;
   begunstigde?: string;
   notities?: string;
+  vermogensSoort: number;
 }
 interface Schuld {
   id: string;
@@ -62,6 +82,7 @@ interface Schuld {
   maandelijkseAflossing?: number;
   referentie?: string;
   notities?: string;
+  vermogensSoort: number;
 }
 
 type DialogKind = "bezit" | "rekening" | "verzekering" | "schuld" | null;
@@ -72,6 +93,7 @@ export default function BoedelPage() {
   const [rekeningen, setRekeningen] = useState<Bankrekening[]>([]);
   const [verzekeringen, setVerzekeringen] = useState<Verzekering[]>([]);
   const [schulden, setSchulden] = useState<Schuld[]>([]);
+  const [samenvatting, setSamenvatting] = useState<Samenvatting | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [dialogKind, setDialogKind] = useState<DialogKind>(null);
@@ -79,10 +101,10 @@ export default function BoedelPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [bezitForm, setBezitForm] = useState({ categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "" });
-  const [rekeningForm, setRekeningForm] = useState({ bankNaam: "", rekeningType: "", iban: "", notities: "" });
-  const [verzekerForm, setVerzekerForm] = useState({ verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "" });
-  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "" });
+  const [bezitForm, setBezitForm] = useState({ categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0" });
+  const [rekeningForm, setRekeningForm] = useState({ bankNaam: "", rekeningType: "", iban: "", notities: "", saldo: "", vermogensSoort: "0" });
+  const [verzekerForm, setVerzekerForm] = useState({ verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "", vermogensSoort: "0" });
+  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0" });
 
   const loadData = () => {
     Promise.all([
@@ -90,12 +112,14 @@ export default function BoedelPage() {
       api.get<Bankrekening[]>("/api/boedel/bankrekeningen").catch(() => []),
       api.get<Verzekering[]>("/api/boedel/verzekeringen").catch(() => []),
       api.get<Schuld[]>("/api/boedel/schulden").catch(() => []),
+      api.get<Samenvatting>("/api/boedel/samenvatting").catch(() => null),
     ])
-      .then(([b, r, v, s]) => {
+      .then(([b, r, v, s, sam]) => {
         setBezittingen(b ?? []);
         setRekeningen(r ?? []);
         setVerzekeringen(v ?? []);
         setSchulden(s ?? []);
+        setSamenvatting(sam);
       })
       .finally(() => setLoading(false));
   };
@@ -112,7 +136,8 @@ export default function BoedelPage() {
       locatie: item.locatie ?? "",
       bestemdeErfgenaam: item.bestemdeErfgenaam ?? "",
       notities: item.notities ?? "",
-    } : { categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "" });
+      vermogensSoort: String(item.vermogensSoort ?? 0),
+    } : { categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0" });
     setDialogKind("bezit");
   };
   const openRekening = (item?: Bankrekening) => {
@@ -123,7 +148,9 @@ export default function BoedelPage() {
       rekeningType: item.rekeningType,
       iban: item.iban,
       notities: item.notities ?? "",
-    } : { bankNaam: "", rekeningType: "", iban: "", notities: "" });
+      saldo: item.saldo?.toString() ?? "",
+      vermogensSoort: String(item.vermogensSoort ?? 0),
+    } : { bankNaam: "", rekeningType: "", iban: "", notities: "", saldo: "", vermogensSoort: "0" });
     setDialogKind("rekening");
   };
   const openVerzekering = (item?: Verzekering) => {
@@ -138,7 +165,8 @@ export default function BoedelPage() {
       verzekerdBedrag: item.verzekerdBedrag?.toString() ?? "",
       begunstigde: item.begunstigde ?? "",
       notities: item.notities ?? "",
-    } : { verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "" });
+      vermogensSoort: String(item.vermogensSoort ?? 0),
+    } : { verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "", vermogensSoort: "0" });
     setDialogKind("verzekering");
   };
   const openSchuld = (item?: Schuld) => {
@@ -153,7 +181,8 @@ export default function BoedelPage() {
       maandelijkseAflossing: item.maandelijkseAflossing?.toString() ?? "",
       referentie: item.referentie ?? "",
       notities: item.notities ?? "",
-    } : { schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "" });
+      vermogensSoort: String(item.vermogensSoort ?? 0),
+    } : { schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0" });
     setDialogKind("schuld");
   };
 
@@ -168,6 +197,7 @@ export default function BoedelPage() {
         locatie: bezitForm.locatie || null,
         bestemdeErfgenaam: bezitForm.bestemdeErfgenaam || null,
         notities: bezitForm.notities || null,
+        vermogensSoort: parseInt(bezitForm.vermogensSoort),
       };
       if (editId) await api.put(`/api/boedel/bezittingen/${editId}`, payload);
       else await api.post("/api/boedel/bezittingen", payload);
@@ -184,6 +214,8 @@ export default function BoedelPage() {
         iban: rekeningForm.iban,
         rekeningType: rekeningForm.rekeningType,
         notities: rekeningForm.notities || null,
+        saldo: rekeningForm.saldo ? parseFloat(rekeningForm.saldo) : null,
+        vermogensSoort: parseInt(rekeningForm.vermogensSoort),
       };
       if (editId) await api.put(`/api/boedel/bankrekeningen/${editId}`, payload);
       else await api.post("/api/boedel/bankrekeningen", payload);
@@ -204,6 +236,7 @@ export default function BoedelPage() {
         verzekerdBedrag: verzekerForm.verzekerdBedrag ? parseFloat(verzekerForm.verzekerdBedrag) : null,
         begunstigde: verzekerForm.begunstigde || null,
         notities: verzekerForm.notities || null,
+        vermogensSoort: parseInt(verzekerForm.vermogensSoort),
       };
       if (editId) await api.put(`/api/boedel/verzekeringen/${editId}`, payload);
       else await api.post("/api/boedel/verzekeringen", payload);
@@ -224,6 +257,7 @@ export default function BoedelPage() {
         maandelijkseAflossing: schuldForm.maandelijkseAflossing ? parseFloat(schuldForm.maandelijkseAflossing) : null,
         referentie: schuldForm.referentie || null,
         notities: schuldForm.notities || null,
+        vermogensSoort: parseInt(schuldForm.vermogensSoort),
       };
       if (editId) await api.put(`/api/boedel/schulden/${editId}`, payload);
       else await api.post("/api/boedel/schulden", payload);
@@ -261,6 +295,42 @@ export default function BoedelPage() {
         </p>
       </div>
 
+      {samenvatting && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5" /> Financieel overzicht</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Bezittingen ({samenvatting.aantalBezittingen})</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.totaalBezittingen.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Saldi ({samenvatting.aantalRekeningen})</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.totaalSaldi.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Verzekeringen ({samenvatting.aantalVerzekeringen})</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.totaalVerzekeringen.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Schulden ({samenvatting.aantalSchulden})</p>
+                <p className="text-lg font-semibold text-red-600">&euro; {samenvatting.totaalSchulden.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Bruto nalatenschap</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.brutoNalatenschap.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Netto nalatenschap</p>
+                <p className={`text-lg font-bold ${samenvatting.nettoNalatenschap >= 0 ? "text-green-600" : "text-red-600"}`}>&euro; {samenvatting.nettoNalatenschap.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="bezittingen"><Wallet className="h-4 w-4 mr-1" /> Bezittingen ({bezittingen.length})</TabsTrigger>
@@ -282,9 +352,12 @@ export default function BoedelPage() {
                 <div className="space-y-2">
                   {bezittingen.map((b) => (
                     <div key={b.id} className="flex items-center justify-between rounded-md border p-3">
-                      <div>
-                        <p className="text-sm font-medium">{b.omschrijving}</p>
-                        <p className="text-xs text-muted-foreground">{b.categorie}{b.locatie ? ` \u2014 ${b.locatie}` : ""}</p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={b.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{b.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <div>
+                          <p className="text-sm font-medium">{b.omschrijving}</p>
+                          <p className="text-xs text-muted-foreground">{b.categorie}{b.locatie ? ` \u2014 ${b.locatie}` : ""}</p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         {b.geschatteWaarde != null && <span className="text-sm font-medium">&euro; {b.geschatteWaarde.toLocaleString("nl-NL")}</span>}
@@ -312,11 +385,15 @@ export default function BoedelPage() {
                 <div className="space-y-2">
                   {rekeningen.map((r) => (
                     <div key={r.id} className="flex items-center justify-between rounded-md border p-3">
-                      <div>
-                        <p className="text-sm font-medium">{r.bankNaam}</p>
-                        <p className="text-xs text-muted-foreground">{r.rekeningType} &mdash; {r.iban}</p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={r.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{r.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <div>
+                          <p className="text-sm font-medium">{r.bankNaam}</p>
+                          <p className="text-xs text-muted-foreground">{r.rekeningType} &mdash; {r.iban}</p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
+                        {r.saldo != null && <span className="text-sm font-medium">&euro; {r.saldo.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</span>}
                         <Button variant="ghost" size="sm" onClick={() => openRekening(r)}><Pencil className="h-3 w-3" /></Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteItem("bankrekeningen", r.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
                       </div>
@@ -341,9 +418,12 @@ export default function BoedelPage() {
                 <div className="space-y-2">
                   {verzekeringen.map((v) => (
                     <div key={v.id} className="flex items-center justify-between rounded-md border p-3">
-                      <div>
-                        <p className="text-sm font-medium">{v.verzekeraar}</p>
-                        <p className="text-xs text-muted-foreground">{v.type} &mdash; Polis: {v.polisNummer}</p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={v.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{v.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <div>
+                          <p className="text-sm font-medium">{v.verzekeraar}</p>
+                          <p className="text-xs text-muted-foreground">{v.type} &mdash; Polis: {v.polisNummer}</p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         {v.verzekerdBedrag != null && <span className="text-sm font-medium">&euro; {v.verzekerdBedrag.toLocaleString("nl-NL")}</span>}
@@ -371,9 +451,12 @@ export default function BoedelPage() {
                 <div className="space-y-2">
                   {schulden.map((s) => (
                     <div key={s.id} className="flex items-center justify-between rounded-md border p-3">
-                      <div>
-                        <p className="text-sm font-medium">{s.schuldeiser}</p>
-                        <p className="text-xs text-muted-foreground">{s.type}{s.referentie ? ` \u2014 ${s.referentie}` : ""}</p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={s.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{s.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <div>
+                          <p className="text-sm font-medium">{s.schuldeiser}</p>
+                          <p className="text-xs text-muted-foreground">{s.type}{s.referentie ? ` \u2014 ${s.referentie}` : ""}</p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-red-600">&euro; {s.bedrag.toLocaleString("nl-NL")}</span>
@@ -415,6 +498,12 @@ export default function BoedelPage() {
           <div className="space-y-2"><Label>Geschatte waarde (&euro;)</Label><Input type="number" value={bezitForm.geschatteWaarde} onChange={(e) => setBezitForm((f) => ({ ...f, geschatteWaarde: e.target.value }))} /></div>
           <div className="space-y-2"><Label>Locatie</Label><Input value={bezitForm.locatie} onChange={(e) => setBezitForm((f) => ({ ...f, locatie: e.target.value }))} placeholder="Waar bevindt dit zich?" /></div>
           <div className="space-y-2"><Label>Bestemde erfgenaam</Label><Input value={bezitForm.bestemdeErfgenaam} onChange={(e) => setBezitForm((f) => ({ ...f, bestemdeErfgenaam: e.target.value }))} placeholder="Wie moet dit ontvangen?" /></div>
+          <div className="space-y-2"><Label>Vermogenssoort</Label> <HelpTooltip tekst="Privévermogen is eigendom van één persoon. Gemeenschapsvermogen valt in de gemeenschap van goederen en wordt bij scheiding of overlijden verdeeld. Dit onderscheid is belangrijk voor de erfbelasting en verdeling." />
+            <Select value={bezitForm.vermogensSoort} onChange={(e) => setBezitForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
+              <option value="0">Privé</option>
+              <option value="1">Gemeenschap</option>
+            </Select>
+          </div>
           <div className="space-y-2"><Label>Notities</Label><Textarea value={bezitForm.notities} onChange={(e) => setBezitForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>
@@ -439,6 +528,13 @@ export default function BoedelPage() {
             </Select>
           </div>
           <div className="space-y-2"><Label>IBAN</Label><Input value={rekeningForm.iban} onChange={(e) => setRekeningForm((f) => ({ ...f, iban: e.target.value }))} placeholder="NL00 BANK 0000 0000 00" /></div>
+          <div className="space-y-2"><Label>Saldo (&euro;)</Label><Input type="number" value={rekeningForm.saldo} onChange={(e) => setRekeningForm((f) => ({ ...f, saldo: e.target.value }))} placeholder="Huidig saldo" /></div>
+          <div className="space-y-2"><Label>Vermogenssoort</Label>
+            <Select value={rekeningForm.vermogensSoort} onChange={(e) => setRekeningForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
+              <option value="0">Privé</option>
+              <option value="1">Gemeenschap</option>
+            </Select>
+          </div>
           <div className="space-y-2"><Label>Notities</Label><Textarea value={rekeningForm.notities} onChange={(e) => setRekeningForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>
@@ -471,6 +567,12 @@ export default function BoedelPage() {
           <div className="space-y-2"><Label>Polisnummer</Label><Input value={verzekerForm.polisNummer} onChange={(e) => setVerzekerForm((f) => ({ ...f, polisNummer: e.target.value }))} /></div>
           <div className="space-y-2"><Label>Verzekerd bedrag (&euro;)</Label><Input type="number" value={verzekerForm.verzekerdBedrag} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekerdBedrag: e.target.value }))} /></div>
           <div className="space-y-2"><Label>Begunstigde</Label><Input value={verzekerForm.begunstigde} onChange={(e) => setVerzekerForm((f) => ({ ...f, begunstigde: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>Vermogenssoort</Label>
+            <Select value={verzekerForm.vermogensSoort} onChange={(e) => setVerzekerForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
+              <option value="0">Privé</option>
+              <option value="1">Gemeenschap</option>
+            </Select>
+          </div>
           <div className="space-y-2"><Label>Notities</Label><Textarea value={verzekerForm.notities} onChange={(e) => setVerzekerForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>
@@ -502,6 +604,12 @@ export default function BoedelPage() {
           <div className="space-y-2"><Label>Bedrag (&euro;)</Label><Input type="number" value={schuldForm.bedrag} onChange={(e) => setSchuldForm((f) => ({ ...f, bedrag: e.target.value }))} /></div>
           <div className="space-y-2"><Label>Maandelijkse aflossing (&euro;)</Label><Input type="number" value={schuldForm.maandelijkseAflossing} onChange={(e) => setSchuldForm((f) => ({ ...f, maandelijkseAflossing: e.target.value }))} /></div>
           <div className="space-y-2"><Label>Referentie / contractnummer</Label><Input value={schuldForm.referentie} onChange={(e) => setSchuldForm((f) => ({ ...f, referentie: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>Vermogenssoort</Label>
+            <Select value={schuldForm.vermogensSoort} onChange={(e) => setSchuldForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
+              <option value="0">Privé</option>
+              <option value="1">Gemeenschap</option>
+            </Select>
+          </div>
           <div className="space-y-2"><Label>Notities</Label><Textarea value={schuldForm.notities} onChange={(e) => setSchuldForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>

@@ -39,7 +39,7 @@ public class DocumentenController : ControllerBase
 
         var result = latest.Select(d => new DocumentResponse(
             d.Id, d.Naam, d.Categorie, d.BestandsNaam, d.ContentType,
-            d.BestandsGrootte, d.Notities, d.AangemaaktOp, d.GewijzigdOp,
+            d.BestandsGrootte, d.Notities, d.VerlooptOp, d.AangemaaktOp, d.GewijzigdOp,
             d.DocumentGroepId, d.Versie,
             versionCounts.GetValueOrDefault(d.DocumentGroepId, 1)
         )).ToList();
@@ -58,7 +58,7 @@ public class DocumentenController : ControllerBase
 
         return Ok(new DocumentResponse(
             item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
-            item.BestandsGrootte, item.Notities, item.AangemaaktOp, item.GewijzigdOp,
+            item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));
     }
@@ -90,6 +90,7 @@ public class DocumentenController : ControllerBase
         [FromForm] string naam,
         [FromForm] string categorie,
         [FromForm] string? notities,
+        [FromForm] string? verlooptOp,
         [FromServices] IEncryptionService encryption)
     {
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
@@ -118,6 +119,7 @@ public class DocumentenController : ControllerBase
             BestandsGrootte = bestand.Length,
             BestandsInhoud = content,
             Notities = notities,
+            VerlooptOp = DateOnly.TryParse(verlooptOp, out var vd) ? vd : null,
             DocumentGroepId = documentGroepId,
             Versie = versie
         };
@@ -130,7 +132,7 @@ public class DocumentenController : ControllerBase
 
         return Created($"/api/documenten/{item.Id}", new DocumentResponse(
             item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
-            item.BestandsGrootte, item.Notities, item.AangemaaktOp, item.GewijzigdOp,
+            item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));
     }
@@ -142,6 +144,33 @@ public class DocumentenController : ControllerBase
         if (item is null) return NotFound();
 
         return File(item.BestandsInhoud, item.ContentType, item.BestandsNaam);
+    }
+
+    /// <summary>
+    /// Updates the expiry date and/or notes of a document.
+    /// </summary>
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<DocumentResponse>> Update(Guid id, [FromBody] DocumentUpdateRequest request)
+    {
+        var item = await _db.Documenten.FindAsync(id);
+        if (item is null) return NotFound();
+
+        if (request.VerlooptOp is not null)
+            item.VerlooptOp = request.VerlooptOp;
+
+        if (request.Notities is not null)
+            item.Notities = request.Notities;
+
+        await _db.SaveChangesAsync();
+
+        var aantalVersies = await _db.Documenten
+            .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
+
+        return Ok(new DocumentResponse(
+            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
+            item.DocumentGroepId, item.Versie, aantalVersies
+        ));
     }
 
     /// <summary>

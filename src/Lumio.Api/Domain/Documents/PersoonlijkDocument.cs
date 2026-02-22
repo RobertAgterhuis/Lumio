@@ -13,6 +13,9 @@ public class PersoonlijkDocument : BaseEntity
     public byte[] BestandsInhoud { get; set; } = [];
     public string? Notities { get; set; }
 
+    /// <summary>Optional expiry date for identity documents, passports, etc.</summary>
+    public DateOnly? VerlooptOp { get; set; }
+
     /// <summary>Groups all versions of the same logical document together.</summary>
     public Guid DocumentGroepId { get; set; }
 

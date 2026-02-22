@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { IdleWarningDialog } from "@/components/layout/IdleWarningDialog";
 import { ShortcutsDialog } from "@/components/layout/ShortcutsDialog";
+import { OnboardingWizard } from "@/components/wizard/OnboardingWizard";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -119,6 +120,7 @@ export default function AuthenticatedLayout({
         onDismiss={dismiss}
       />
       <ShortcutsDialog />
+      {!isReadOnly && <OnboardingWizard />}
     </div>
   );
 }

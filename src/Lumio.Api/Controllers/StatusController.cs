@@ -120,7 +120,35 @@ public class StatusController : ControllerBase
         var erfgenamenTotaal = await db.Erfgenamen.CountAsync();
         if (erfgenamenTotaal > 0 && !erfgenamenMetSleutel)
         {
-            meldingen.Add(new { type = "herinnering", categorie = "shamir", bericht = "U heeft erfgenamen maar nog geen sleuteldelen verdeeld via Shamir's Secret Sharing.", actie = "/erfgenamen" });
+            meldingen.Add(new { type = "herinnering", categorie = "shamir", bericht = "U heeft erfgenamen maar nog geen noodcodes verdeeld. Verdeel uw noodcodes zodat erfgenamen samen toegang kunnen krijgen.", actie = "/erfgenamen" });
+        }
+
+        // 5. Check verlopen en bijna-verlopen documenten
+        var vandaag = DateOnly.FromDateTime(DateTime.Today);
+        var over30Dagen = vandaag.AddDays(30);
+
+        var verlopenDocs = await db.Documenten
+            .Where(d => d.VerlooptOp != null && d.VerlooptOp <= vandaag)
+            .Select(d => d.Naam)
+            .Distinct()
+            .ToListAsync();
+
+        if (verlopenDocs.Count > 0)
+        {
+            var namen = string.Join(", ", verlopenDocs);
+            meldingen.Add(new { type = "waarschuwing", categorie = "documenten", bericht = $"De volgende documenten zijn verlopen: {namen}. Controleer of ze nog actueel zijn.", actie = "/documenten" });
+        }
+
+        var bijnaVerlopenDocs = await db.Documenten
+            .Where(d => d.VerlooptOp != null && d.VerlooptOp > vandaag && d.VerlooptOp <= over30Dagen)
+            .Select(d => d.Naam)
+            .Distinct()
+            .ToListAsync();
+
+        if (bijnaVerlopenDocs.Count > 0)
+        {
+            var namen = string.Join(", ", bijnaVerlopenDocs);
+            meldingen.Add(new { type = "herinnering", categorie = "documenten", bericht = $"De volgende documenten verlopen binnenkort: {namen}.", actie = "/documenten" });
         }
 
         return Ok(new { meldingen, aantal = meldingen.Count });

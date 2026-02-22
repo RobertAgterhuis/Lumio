@@ -35,8 +35,16 @@ interface UitvaartWensen {
   bloemen?: string;
   kledingwensen?: string;
   rouwkaartTekst?: string;
+  rouwadvertentieTekst?: string;
   condoleance?: string;
   overigeWensen?: string;
+  voorkeurBegraafplaatsNaam?: string;
+  voorkeurBegraafplaatsAdres?: string;
+  voorkeurCrematoriumnaam?: string;
+  voorkeurCrematoriumAdres?: string;
+  voorkeurAulaNaam?: string;
+  voorkeurAulaAdres?: string;
+  budgetRichting?: string;
 }
 
 interface CeremonieDetail {
@@ -44,6 +52,10 @@ interface CeremonieDetail {
   onderdeel: string;
   beschrijving?: string;
   volgorde: number;
+  muziek?: string;
+  spreker?: string;
+  tekstlezing?: string;
+  dresscode?: string;
 }
 
 export default function UitvaartPage() {
@@ -58,6 +70,10 @@ export default function UitvaartPage() {
     onderdeel: "",
     beschrijving: "",
     volgorde: 0,
+    muziek: "",
+    spreker: "",
+    tekstlezing: "",
+    dresscode: "",
   });
   const [detailError, setDetailError] = useState<string | null>(null);
 
@@ -89,6 +105,10 @@ export default function UitvaartPage() {
         onderdeel: detail.onderdeel,
         beschrijving: detail.beschrijving ?? "",
         volgorde: detail.volgorde,
+        muziek: detail.muziek ?? "",
+        spreker: detail.spreker ?? "",
+        tekstlezing: detail.tekstlezing ?? "",
+        dresscode: detail.dresscode ?? "",
       });
     } else {
       setEditDetailId(null);
@@ -96,6 +116,10 @@ export default function UitvaartPage() {
         onderdeel: "",
         beschrijving: "",
         volgorde: details.length + 1,
+        muziek: "",
+        spreker: "",
+        tekstlezing: "",
+        dresscode: "",
       });
     }
     setDetailDialogOpen(true);
@@ -108,6 +132,10 @@ export default function UitvaartPage() {
         onderdeel: detailForm.onderdeel,
         beschrijving: detailForm.beschrijving || null,
         volgorde: detailForm.volgorde,
+        muziek: detailForm.muziek || null,
+        spreker: detailForm.spreker || null,
+        tekstlezing: detailForm.tekstlezing || null,
+        dresscode: detailForm.dresscode || null,
       };
       if (editDetailId) {
         await api.put(`/api/uitvaart/details/${editDetailId}`, payload);
@@ -224,6 +252,12 @@ export default function UitvaartPage() {
                     {data.kledingwensen}
                   </p>
                 )}
+                {data.budgetRichting && (
+                  <p>
+                    <span className="text-muted-foreground">Budget:</span>{" "}
+                    {data.budgetRichting}
+                  </p>
+                )}
               </CardContent>
             </Card>
             <Card>
@@ -259,6 +293,14 @@ export default function UitvaartPage() {
                     {data.rouwkaartTekst}
                   </p>
                 )}
+                {data.rouwadvertentieTekst && (
+                  <p>
+                    <span className="text-muted-foreground">
+                      Rouwadvertentie:
+                    </span>{" "}
+                    {data.rouwadvertentieTekst}
+                  </p>
+                )}
                 {data.condoleance && (
                   <p>
                     <span className="text-muted-foreground">
@@ -278,6 +320,37 @@ export default function UitvaartPage() {
               </CardContent>
             </Card>
           </div>
+
+          {(data.voorkeurBegraafplaatsNaam || data.voorkeurCrematoriumnaam || data.voorkeurAulaNaam) && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Locatie-voorkeuren</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                {data.voorkeurBegraafplaatsNaam && (
+                  <p>
+                    <span className="text-muted-foreground">Begraafplaats:</span>{" "}
+                    {data.voorkeurBegraafplaatsNaam}
+                    {data.voorkeurBegraafplaatsAdres && ` \u2014 ${data.voorkeurBegraafplaatsAdres}`}
+                  </p>
+                )}
+                {data.voorkeurCrematoriumnaam && (
+                  <p>
+                    <span className="text-muted-foreground">Crematorium:</span>{" "}
+                    {data.voorkeurCrematoriumnaam}
+                    {data.voorkeurCrematoriumAdres && ` \u2014 ${data.voorkeurCrematoriumAdres}`}
+                  </p>
+                )}
+                {data.voorkeurAulaNaam && (
+                  <p>
+                    <span className="text-muted-foreground">Aula:</span>{" "}
+                    {data.voorkeurAulaNaam}
+                    {data.voorkeurAulaAdres && ` \u2014 ${data.voorkeurAulaAdres}`}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>
@@ -316,6 +389,14 @@ export default function UitvaartPage() {
                           <p className="text-xs text-muted-foreground mt-1">
                             {d.beschrijving}
                           </p>
+                        )}
+                        {(d.muziek || d.spreker || d.tekstlezing || d.dresscode) && (
+                          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
+                            {d.muziek && <span className="text-xs text-muted-foreground">♫ {d.muziek}</span>}
+                            {d.spreker && <span className="text-xs text-muted-foreground">🗣 {d.spreker}</span>}
+                            {d.tekstlezing && <span className="text-xs text-muted-foreground">📖 {d.tekstlezing}</span>}
+                            {d.dresscode && <span className="text-xs text-muted-foreground">👔 {d.dresscode}</span>}
+                          </div>
                         )}
                       </div>
                       <div className="flex gap-1">
@@ -391,6 +472,58 @@ export default function UitvaartPage() {
                 }))
               }
               min={1}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Muziekkeuze</Label>
+            <Input
+              value={detailForm.muziek}
+              onChange={(e) =>
+                setDetailForm((f) => ({
+                  ...f,
+                  muziek: e.target.value,
+                }))
+              }
+              placeholder="bijv. Ave Maria, live pianist"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Spreker</Label>
+            <Input
+              value={detailForm.spreker}
+              onChange={(e) =>
+                setDetailForm((f) => ({
+                  ...f,
+                  spreker: e.target.value,
+                }))
+              }
+              placeholder="Naam van de spreker"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Tekstlezing</Label>
+            <Input
+              value={detailForm.tekstlezing}
+              onChange={(e) =>
+                setDetailForm((f) => ({
+                  ...f,
+                  tekstlezing: e.target.value,
+                }))
+              }
+              placeholder="bijv. Psalm 23, eigen gedicht"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Dresscode</Label>
+            <Input
+              value={detailForm.dresscode}
+              onChange={(e) =>
+                setDetailForm((f) => ({
+                  ...f,
+                  dresscode: e.target.value,
+                }))
+              }
+              placeholder="bijv. Zwart, casual, kleurrijk"
             />
           </div>
         </div>

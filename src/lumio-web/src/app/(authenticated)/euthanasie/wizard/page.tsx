@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 
@@ -145,6 +146,7 @@ export default function EuthanasieWizardPage() {
           </div>
           <div className="space-y-2">
             <Label>Dementie-clausule opnemen?</Label>
+            <HelpTooltip tekst="Een dementie-clausule is een schriftelijke wilsverklaring waarin u aangeeft onder welke omstandigheden bij vergevorderde dementie u euthanasie wenst. Artsen zijn niet verplicht hieraan gehoor te geven, maar het biedt een duidelijk kader." />
             <Select
               value={form.dementieClausule}
               onChange={(e) => update("dementieClausule", e.target.value)}
@@ -182,6 +184,7 @@ export default function EuthanasieWizardPage() {
           </div>
           <div className="space-y-2">
             <Label>Behandelverbod</Label>
+            <HelpTooltip tekst="Een behandelverbod is een schriftelijke verklaring waarin u vastlegt welke medische behandelingen u weigert als u niet meer zelf kunt beslissen. Op grond van de WGBO (art. 7:450 BW) wordt dit in principe gerespecteerd door zorgverleners." />
             <Textarea
               value={form.behandelVerbod}
               onChange={(e) => update("behandelVerbod", e.target.value)}

@@ -8,5 +8,7 @@ public class Bankrekening : BaseEntity
     public string BankNaam { get; set; } = string.Empty;
     public string IBAN { get; set; } = string.Empty;
     public string RekeningType { get; set; } = string.Empty;
+    public decimal? Saldo { get; set; }
+    public VermogensSoort VermogensSoort { get; set; } = VermogensSoort.Prive;
     public string? Notities { get; set; }
 }

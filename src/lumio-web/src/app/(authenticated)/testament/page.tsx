@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
 import { ScrollText, Plus, Pencil, Trash2 } from "lucide-react";
 
@@ -245,6 +246,7 @@ export default function TestamentPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Begunstigden</CardTitle>
+                <HelpTooltip tekst="Een begunstigde is een persoon of organisatie die in uw testament iets ontvangt, zoals een geldbedrag, een goed of een percentage van uw nalatenschap." />
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">{begunstigden.length}</Badge>
                   <Button size="sm" onClick={() => openBegDialog()}>
@@ -292,6 +294,7 @@ export default function TestamentPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Executeurs</CardTitle>
+                <HelpTooltip tekst="Een executeur (of executeur-testamentair) is de persoon die u aanwijst om uw nalatenschap af te wikkelen. Deze persoon beheert uw bezittingen, betaalt schulden en verdeelt de erfenis volgens uw wensen." />
                 <Button size="sm" onClick={() => openExecDialog()}>
                   <Plus className="h-4 w-4 mr-1" /> Toevoegen
                 </Button>

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
-import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp } from "lucide-react";
+import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock } from "lucide-react";
 
 interface PersoonlijkDocument {
   id: string;
@@ -24,6 +24,7 @@ interface PersoonlijkDocument {
   bestandsNaam: string;
   bestandsGrootte: number;
   notities?: string;
+  verlooptOp?: string;
   aangemaaktOp: string;
   documentGroepId: string;
   versie: number;
@@ -45,6 +46,7 @@ export default function DocumentenPage() {
   const [uploading, setUploading] = useState(false);
   const [naam, setNaam] = useState("");
   const [categorie, setCategorie] = useState("");
+  const [verlooptOp, setVerlooptOp] = useState("");
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -157,10 +159,12 @@ export default function DocumentenPage() {
       formData.append("bestand", file);
       formData.append("naam", naam);
       formData.append("categorie", categorie);
+      if (verlooptOp) formData.append("verlooptOp", verlooptOp);
       await api.upload("/api/documenten/uploaden", formData);
       setUploadOpen(false);
       setNaam("");
       setCategorie("");
+      setVerlooptOp("");
       if (fileRef.current) fileRef.current.value = "";
       loadData();
     } catch (err) {
@@ -231,6 +235,17 @@ export default function DocumentenPage() {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const getExpiryStatus = (verlooptOp?: string) => {
+    if (!verlooptOp) return null;
+    const expiry = new Date(verlooptOp);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return { label: "Verlopen", variant: "destructive" as const, icon: AlertTriangle };
+    if (diffDays <= 30) return { label: `Verloopt over ${diffDays} dag${diffDays !== 1 ? "en" : ""}`, variant: "warning" as const, icon: Clock };
+    return null;
   };
 
   if (loading)
@@ -326,6 +341,17 @@ export default function DocumentenPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">{doc.categorie}</Badge>
+                      {(() => {
+                        const expiry = getExpiryStatus(doc.verlooptOp);
+                        if (!expiry) return null;
+                        const Icon = expiry.icon;
+                        return (
+                          <Badge variant={expiry.variant === "destructive" ? "destructive" : "secondary"} className={expiry.variant === "warning" ? "bg-amber-100 text-amber-800 border-amber-200" : ""}>
+                            <Icon className="h-3 w-3 mr-1" />
+                            {expiry.label}
+                          </Badge>
+                        );
+                      })()}
                       {doc.aantalVersies > 1 && (
                         <Button
                           variant="ghost"
@@ -455,6 +481,17 @@ export default function DocumentenPage() {
           <div className="space-y-2">
             <Label>Bestand</Label>
             <Input ref={fileRef} type="file" />
+          </div>
+          <div className="space-y-2">
+            <Label>Verloopdatum <span className="text-muted-foreground text-xs font-normal">(optioneel)</span></Label>
+            <Input
+              type="date"
+              value={verlooptOp}
+              onChange={(e) => setVerlooptOp(e.target.value)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Stel een verloopdatum in om een herinnering te ontvangen wanneer dit document vernieuwd moet worden.
+            </p>
           </div>
         </div>
         <DialogFooter>

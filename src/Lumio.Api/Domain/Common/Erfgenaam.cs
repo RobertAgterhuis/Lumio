@@ -18,4 +18,10 @@ public class Erfgenaam : BaseEntity
     public int? ShareIndex { get; set; }
     public bool HeeftShareOntvangen { get; set; }
     public DateTime? ShareUitgegevenOp { get; set; }
+
+    // P-M17: Legitimatiegegevens
+    public LegitimatieSoort LegitimatieSoort { get; set; } = LegitimatieSoort.Geen;
+    public string? LegitimatieNummer { get; set; }
+    public DateOnly? LegitimatieDatumAfgifte { get; set; }
+    public DateOnly? LegitimatieGeldigTot { get; set; }
 }
