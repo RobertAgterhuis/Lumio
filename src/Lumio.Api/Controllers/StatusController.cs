@@ -151,6 +151,126 @@ public class StatusController : ControllerBase
             meldingen.Add(new { type = "herinnering", categorie = "documenten", bericht = $"De volgende documenten verlopen binnenkort: {namen}.", actie = "/documenten" });
         }
 
+        // 6. Check periodieke actualisatie-herinnering (kwartaal)
+        if (eigenaar is not null)
+        {
+            var bevestigingen = await db.ActualisatieBevestigingen
+                .Where(a => a.EigenaarId == eigenaar.Id)
+                .ToListAsync();
+            var laatsteAlgemeen = bevestigingen
+                .OrderByDescending(b => b.BevestigdOp)
+                .FirstOrDefault();
+            if (laatsteAlgemeen is null)
+            {
+                meldingen.Add(new { type = "herinnering", categorie = "actualisatie", bericht = "Controleer regelmatig of al uw gegevens nog actueel zijn. Bevestig uw actualisatie via Instellingen.", actie = "/instellingen" });
+            }
+            else if (laatsteAlgemeen.BevestigdOp < DateTime.UtcNow.AddDays(-90))
+            {
+                meldingen.Add(new { type = "herinnering", categorie = "actualisatie", bericht = $"Uw laatste actualisatie-controle was op {laatsteAlgemeen.BevestigdOp:dd-MM-yyyy}. Controleer of uw gegevens nog actueel zijn.", actie = "/instellingen" });
+            }
+        }
+
         return Ok(new { meldingen, aantal = meldingen.Count });
+    }
+
+    // ── P-S7: Periodieke actualisatie-herinnering ─────────────
+
+    [HttpGet("actualisatie")]
+    public async Task<IActionResult> GetActualisatie([FromServices] LumioDbContext db)
+    {
+        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return Ok(new { domeinen = Array.Empty<object>(), herinneringNodig = false });
+
+        var bevestigingen = await db.ActualisatieBevestigingen
+            .Where(a => a.EigenaarId == eigenaar.Id)
+            .ToListAsync();
+
+        var nu = DateTime.UtcNow;
+        var kwartaal = TimeSpan.FromDays(90);
+
+        var domeinChecks = new[]
+        {
+            new { domein = "eigenaar", label = "Mijn Profiel" },
+            new { domein = "testament", label = "Testament" },
+            new { domein = "euthanasie", label = "Wilsverklaring" },
+            new { domein = "donor", label = "Donorregistratie" },
+            new { domein = "boedel", label = "Boedel" },
+            new { domein = "uitvaart", label = "Uitvaartwensen" },
+            new { domein = "erfgenamen", label = "Erfgenamen" },
+            new { domein = "documenten", label = "Documenten" },
+            new { domein = "digitaal-bezit", label = "Digitaal Bezit" },
+            new { domein = "noodcontacten", label = "Noodcontacten" },
+        };
+
+        var resultaat = domeinChecks.Select(d =>
+        {
+            var bevestiging = bevestigingen
+                .Where(b => b.Domein == d.domein)
+                .OrderByDescending(b => b.BevestigdOp)
+                .FirstOrDefault();
+
+            var laatsteBevestiging = bevestiging?.BevestigdOp;
+            var isVerlopen = laatsteBevestiging is null || (nu - laatsteBevestiging.Value) > kwartaal;
+
+            return new
+            {
+                d.domein,
+                d.label,
+                laatsteBevestiging = laatsteBevestiging?.ToString("yyyy-MM-dd"),
+                actualisatieNodig = isVerlopen
+            };
+        }).ToList();
+
+        var herinneringNodig = resultaat.Any(r => r.actualisatieNodig);
+
+        return Ok(new { domeinen = resultaat, herinneringNodig });
+    }
+
+    [HttpPost("actualisatie/{domein}")]
+    public async Task<IActionResult> BevestigActualisatie(
+        string domein,
+        [FromServices] LumioDbContext db)
+    {
+        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return NotFound(new { error = "Geen profiel gevonden." });
+
+        var bevestiging = new Domain.Common.ActualisatieBevestiging
+        {
+            EigenaarId = eigenaar.Id,
+            Domein = domein,
+            BevestigdOp = DateTime.UtcNow,
+        };
+
+        db.ActualisatieBevestigingen.Add(bevestiging);
+        await db.SaveChangesAsync();
+
+        return Ok(new { domein, bevestigdOp = bevestiging.BevestigdOp });
+    }
+
+    [HttpPost("actualisatie/alles")]
+    public async Task<IActionResult> BevestigAlleActualisaties([FromServices] LumioDbContext db)
+    {
+        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return NotFound(new { error = "Geen profiel gevonden." });
+
+        var domeinen = new[] { "eigenaar", "testament", "euthanasie", "donor", "boedel",
+            "uitvaart", "erfgenamen", "documenten", "digitaal-bezit", "noodcontacten" };
+
+        var nu = DateTime.UtcNow;
+        foreach (var domein in domeinen)
+        {
+            db.ActualisatieBevestigingen.Add(new Domain.Common.ActualisatieBevestiging
+            {
+                EigenaarId = eigenaar.Id,
+                Domein = domein,
+                BevestigdOp = nu,
+            });
+        }
+
+        await db.SaveChangesAsync();
+        return Ok(new { bevestigd = domeinen.Length, tijdstip = nu });
     }
 }

@@ -16,8 +16,14 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api } from "@/lib/api-client";
-import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff, Filter, Upload, Loader2 } from "lucide-react";
+import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff, Filter, Upload, Loader2, ExternalLink, Info } from "lucide-react";
 import { PasswordGenerator } from "@/components/PasswordGenerator";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import {
+  zoekAfsluitInstructie,
+  zoekAfsluitInstructiesVoorCategorie,
+  type AfsluitInstructie,
+} from "@/lib/afsluit-instructies";
 
 interface DigitaalAccount {
   id: string;
@@ -114,6 +120,23 @@ export default function DigitaalBezitPage() {
     details: string[];
   } | null>(null);
   const importFileRef = React.useRef<HTMLInputElement>(null);
+
+  /** Expanded account IDs for showing afsluit-instructies */
+  const [instructieOpen, setInstructieOpen] = useState<Record<string, boolean>>({});
+
+  const toggleInstructie = (id: string) =>
+    setInstructieOpen((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  /** Find closure instruction for a given account */
+  const getInstructie = (account: DigitaalAccount): AfsluitInstructie | undefined => {
+    const direct = zoekAfsluitInstructie(account.platformNaam);
+    if (direct) return direct;
+    if (account.categorie) {
+      const catResults = zoekAfsluitInstructiesVoorCategorie(account.categorie);
+      return catResults.length > 0 ? catResults[0] : undefined;
+    }
+    return undefined;
+  };
 
   const filteredAccounts = categorieFilter
     ? accounts.filter((a) => a.categorie === categorieFilter)
@@ -356,6 +379,7 @@ export default function DigitaalBezitPage() {
         <p className="text-muted-foreground mt-1">
           Online accounts, wachtwoorden en crypto wallets
         </p>
+        <VoorbeeldDialog domein="digitaal-bezit" />
       </div>
 
       <div className="rounded-lg border border-green-200 bg-green-50 p-4">
@@ -411,41 +435,72 @@ export default function DigitaalBezitPage() {
                 </p>
               ) : (
                 <div className="space-y-2">
-                  {filteredAccounts.map((a) => (
-                    <div
-                      key={a.id}
-                      className="flex items-center justify-between rounded-md border p-3"
-                    >
-                      <div>
-                        <p className="font-medium text-sm">{a.platformNaam}</p>
-                        {a.gebruikersnaam && (
-                          <p className="text-xs text-muted-foreground">
-                            {a.gebruikersnaam}
+                  {filteredAccounts.map((a) => {
+                    const instructie = getInstructie(a);
+                    return (
+                    <div key={a.id} className="rounded-md border">
+                      <div className="flex items-center justify-between p-3">
+                        <div>
+                          <p className="font-medium text-sm">{a.platformNaam}</p>
+                          {a.gebruikersnaam && (
+                            <p className="text-xs text-muted-foreground">
+                              {a.gebruikersnaam}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {a.categorie && (
+                            <Badge variant="outline">{a.categorie}</Badge>
+                          )}
+                          <Badge variant="secondary">{a.gewensteActie}</Badge>
+                          {instructie && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleInstructie(a.id)}
+                              title="Afsluitinstructies"
+                            >
+                              <Info className={`h-3 w-3 ${instructieOpen[a.id] ? "text-blue-600" : ""}`} />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openAccountDialog(a)}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteItem("accounts", a.id)}
+                          >
+                            <Trash2 className="h-3 w-3 text-red-500" />
+                          </Button>
+                        </div>
+                      </div>
+                      {instructie && instructieOpen[a.id] && (
+                        <div className="border-t bg-blue-50 px-3 py-2">
+                          <p className="text-xs font-medium text-blue-900 mb-1">
+                            Afsluitinstructies — {instructie.platform}
                           </p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {a.categorie && (
-                          <Badge variant="outline">{a.categorie}</Badge>
-                        )}
-                        <Badge variant="secondary">{a.gewensteActie}</Badge>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openAccountDialog(a)}
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteItem("accounts", a.id)}
-                        >
-                          <Trash2 className="h-3 w-3 text-red-500" />
-                        </Button>
-                      </div>
+                          <p className="text-xs text-blue-800">
+                            {instructie.beschrijving}
+                          </p>
+                          <a
+                            href={instructie.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            Bekijk officiële instructies
+                          </a>
+                        </div>
+                      )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

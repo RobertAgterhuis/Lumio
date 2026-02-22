@@ -80,3 +80,26 @@ public record CeremonieDetailUpsertRequest(
     string? Spreker,
     string? Tekstlezing,
     string? Dresscode);
+
+// --- Genodigden ---
+
+public record UitvaartGenodigdeResponse(
+    Guid Id,
+    string Naam,
+    string? Relatie,
+    string? Telefoon,
+    string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
+    string? Notities);
+
+public record UitvaartGenodigdeUpsertRequest(
+    string Naam,
+    string? Relatie,
+    string? Telefoon,
+    string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
+    string? Notities);

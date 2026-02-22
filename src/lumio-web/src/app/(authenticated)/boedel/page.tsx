@@ -27,6 +27,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 
 interface Samenvatting {
   totaalBezittingen: number;
@@ -50,6 +51,9 @@ interface FysiekBezit {
   bestemdeErfgenaam?: string;
   notities?: string;
   vermogensSoort: number;
+  kadastraalNummer?: string;
+  kenteken?: string;
+  kvKNummer?: string;
 }
 interface Bankrekening {
   id: string;
@@ -101,7 +105,7 @@ export default function BoedelPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [bezitForm, setBezitForm] = useState({ categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0" });
+  const [bezitForm, setBezitForm] = useState({ categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0", kadastraalNummer: "", kenteken: "", kvKNummer: "" });
   const [rekeningForm, setRekeningForm] = useState({ bankNaam: "", rekeningType: "", iban: "", notities: "", saldo: "", vermogensSoort: "0" });
   const [verzekerForm, setVerzekerForm] = useState({ verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "", vermogensSoort: "0" });
   const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0" });
@@ -137,7 +141,10 @@ export default function BoedelPage() {
       bestemdeErfgenaam: item.bestemdeErfgenaam ?? "",
       notities: item.notities ?? "",
       vermogensSoort: String(item.vermogensSoort ?? 0),
-    } : { categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0" });
+      kadastraalNummer: item.kadastraalNummer ?? "",
+      kenteken: item.kenteken ?? "",
+      kvKNummer: item.kvKNummer ?? "",
+    } : { categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0", kadastraalNummer: "", kenteken: "", kvKNummer: "" });
     setDialogKind("bezit");
   };
   const openRekening = (item?: Bankrekening) => {
@@ -198,6 +205,9 @@ export default function BoedelPage() {
         bestemdeErfgenaam: bezitForm.bestemdeErfgenaam || null,
         notities: bezitForm.notities || null,
         vermogensSoort: parseInt(bezitForm.vermogensSoort),
+        kadastraalNummer: bezitForm.kadastraalNummer || null,
+        kenteken: bezitForm.kenteken || null,
+        kvKNummer: bezitForm.kvKNummer || null,
       };
       if (editId) await api.put(`/api/boedel/bezittingen/${editId}`, payload);
       else await api.post("/api/boedel/bezittingen", payload);
@@ -287,6 +297,7 @@ export default function BoedelPage() {
       <div>
         <h1 className="text-3xl font-bold">Boedel</h1>
         <p className="text-muted-foreground mt-1">Bezittingen, bankrekeningen, verzekeringen en schulden</p>
+        <VoorbeeldDialog domein="boedel" />
       </div>
 
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
@@ -356,7 +367,7 @@ export default function BoedelPage() {
                         <Badge variant={b.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{b.vermogensSoort === 1 ? "G" : "P"}</Badge>
                         <div>
                           <p className="text-sm font-medium">{b.omschrijving}</p>
-                          <p className="text-xs text-muted-foreground">{b.categorie}{b.locatie ? ` \u2014 ${b.locatie}` : ""}</p>
+                          <p className="text-xs text-muted-foreground">{b.categorie}{b.locatie ? ` \u2014 ${b.locatie}` : ""}{b.kadastraalNummer ? ` \u2014 Kad: ${b.kadastraalNummer}` : ""}{b.kenteken ? ` \u2014 ${b.kenteken}` : ""}{b.kvKNummer ? ` \u2014 KvK: ${b.kvKNummer}` : ""}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -504,6 +515,14 @@ export default function BoedelPage() {
               <option value="1">Gemeenschap</option>
             </Select>
           </div>
+          {/* P-S3: Registerreferenties */}
+          {(bezitForm.categorie === "Onroerend goed" || bezitForm.kadastraalNummer) && (
+            <div className="space-y-2"><Label>Kadastraal nummer</Label><Input value={bezitForm.kadastraalNummer} onChange={(e) => setBezitForm((f) => ({ ...f, kadastraalNummer: e.target.value }))} placeholder="bijv. ASD02 K 1234" /></div>
+          )}
+          {(bezitForm.categorie === "Voertuig" || bezitForm.kenteken) && (
+            <div className="space-y-2"><Label>Kenteken</Label><Input value={bezitForm.kenteken} onChange={(e) => setBezitForm((f) => ({ ...f, kenteken: e.target.value }))} placeholder="bijv. AB-123-CD" /></div>
+          )}
+          <div className="space-y-2"><Label>KvK-nummer</Label><Input value={bezitForm.kvKNummer} onChange={(e) => setBezitForm((f) => ({ ...f, kvKNummer: e.target.value }))} placeholder="Kamer van Koophandel nummer (indien van toepassing)" /></div>
           <div className="space-y-2"><Label>Notities</Label><Textarea value={bezitForm.notities} onChange={(e) => setBezitForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>

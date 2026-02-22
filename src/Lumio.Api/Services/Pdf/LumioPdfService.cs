@@ -24,6 +24,7 @@ public interface ILumioPdfService
     Task<byte[]> GenerateNoodprocedurePdf();
     Task<byte[]> GenerateBoedelbeschrijvingPdf();
     Task<byte[]> GenerateErfgenaamPdf(Guid erfgenaamId);
+    Task<byte[]> GenerateExecuteurRapportPdf();
 }
 
 public class LumioPdfService : ILumioPdfService
@@ -1580,6 +1581,330 @@ public class LumioPdfService : ILumioPdfService
                     }
                 });
                 page.Footer().Element(Footer);
+            });
+        }).GeneratePdf();
+    }
+
+    // ── P-S2: Executeur-rapport PDF ──
+
+    public async Task<byte[]> GenerateExecuteurRapportPdf()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eid = eigenaar?.Id ?? Guid.Empty;
+        var erfgenamen = await _db.Erfgenamen.Where(e => e.EigenaarId == eid).ToListAsync();
+        var bezittingen = await _db.FysiekeBezittingen.Where(f => f.EigenaarId == eid).ToListAsync();
+        var rekeningen = await _db.Bankrekeningen.Where(b => b.EigenaarId == eid).ToListAsync();
+        var verzekeringen = await _db.Verzekeringen.Where(v => v.EigenaarId == eid).ToListAsync();
+        var schulden = await _db.Schulden.Where(s => s.EigenaarId == eid).ToListAsync();
+        var testament = eigenaar != null
+            ? await _db.Testamenten.Include(t => t.Executeurs).Include(t => t.Begunstigden)
+                .FirstOrDefaultAsync(t => t.EigenaarId == eigenaar.Id)
+            : null;
+        var executeurs = testament?.Executeurs ?? [];
+        var begunstigden = testament?.Begunstigden ?? [];
+        var noodcontacten = await _db.Noodcontacten.Where(n => n.EigenaarId == eid).ToListAsync();
+
+        var eigenaarNaam = eigenaar != null
+            ? $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Replace("  ", " ").Trim()
+            : "Onbekend";
+
+        // Totalen
+        var totActiva = bezittingen.Sum(b => b.GeschatteWaarde ?? 0)
+                      + rekeningen.Sum(r => r.Saldo ?? 0)
+                      + verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
+        var totPassiva = schulden.Sum(s => s.Bedrag);
+        var nettoNalatenschap = totActiva - totPassiva;
+
+        return Document.Create(container =>
+        {
+            // ── Pagina 1: Overzicht & executeur ──
+            AddPage(container, "Executeur-rapport", col =>
+            {
+                // Disclaimer
+                col.Item().Background(Colors.Grey.Lighten4).Padding(8).Column(disc =>
+                {
+                    disc.Item().Text("CONCEPT — GEEN JURIDISCH DOCUMENT").FontSize(8).Bold().FontColor(Colors.Grey.Darken2);
+                    disc.Item().PaddingTop(3).Text(
+                        "Dit rapport is bedoeld als hulpmiddel voor de executeur bij de afwikkeling van de " +
+                        $"nalatenschap. Opgesteld op {DateTime.Now:dd-MM-yyyy}. Raadpleeg altijd een notaris " +
+                        "voor de formele afwikkeling.").FontSize(7).FontColor(Colors.Grey.Darken1);
+                });
+
+                // 1. Erflater
+                if (eigenaar != null)
+                {
+                    Section(col, "1. Gegevens erflater", t =>
+                    {
+                        Row(t, "Naam", eigenaarNaam);
+                        Row(t, "Geboortedatum", eigenaar.Geboortedatum.ToString("dd-MM-yyyy"));
+                        if (!string.IsNullOrEmpty(eigenaar.Adres))
+                            Row(t, "Adres", $"{eigenaar.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
+                        if (!string.IsNullOrEmpty(eigenaar.BSN))
+                            Row(t, "BSN", eigenaar.BSN);
+                        Row(t, "Burgerlijke staat", eigenaar.BurgerlijkeStaat switch
+                        {
+                            BurgerlijkeStaat.Gehuwd => "Gehuwd",
+                            BurgerlijkeStaat.GeregistreerdPartnerschap => "Geregistreerd partnerschap",
+                            BurgerlijkeStaat.Gescheiden => "Gescheiden",
+                            BurgerlijkeStaat.Weduwe => "Weduwe/Weduwnaar",
+                            _ => "Ongehuwd"
+                        });
+                    });
+                }
+
+                // 2. Executeur(s)
+                Section(col, "2. Executeur(s)", t =>
+                {
+                    if (executeurs.Count > 0)
+                    {
+                        foreach (var ex in executeurs)
+                        {
+                            t.Item().PaddingBottom(4).Column(item =>
+                            {
+                                item.Item().Text($"• {ex.Naam}").FontSize(9).SemiBold();
+                                if (!string.IsNullOrEmpty(ex.Relatie))
+                                    Row(t, "  Relatie", ex.Relatie);
+                                if (!string.IsNullOrEmpty(ex.Bevoegdheden))
+                                    Row(t, "  Bevoegdheden", ex.Bevoegdheden);
+                                if (!string.IsNullOrEmpty(ex.Telefoon))
+                                    Row(t, "  Telefoon", ex.Telefoon);
+                                if (!string.IsNullOrEmpty(ex.Email))
+                                    Row(t, "  E-mail", ex.Email);
+                                if (!string.IsNullOrEmpty(ex.Adres))
+                                    Row(t, "  Adres", $"{ex.Adres}, {ex.Postcode} {ex.Woonplaats}".Trim().TrimEnd(','));
+                            });
+                        }
+                    }
+                    else
+                        t.Item().Text("Geen executeur aangewezen.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                });
+
+                // 3. Testamentaire informatie
+                Section(col, "3. Testament", t =>
+                {
+                    if (testament != null)
+                    {
+                        if (!string.IsNullOrEmpty(testament.TestamentType))
+                            Row(t, "Type", testament.TestamentType);
+                        if (testament.DatumTestament.HasValue)
+                            Row(t, "Datum testament", testament.DatumTestament.Value.ToString("dd-MM-yyyy"));
+                        if (!string.IsNullOrEmpty(testament.CTR_Nummer))
+                            Row(t, "CTR-nummer", testament.CTR_Nummer);
+                        if (!string.IsNullOrEmpty(testament.NotarisNaam))
+                            Row(t, "Notaris", $"{testament.NotarisNaam}{(string.IsNullOrEmpty(testament.NotarisKantoor) ? "" : $" ({testament.NotarisKantoor})")}");
+                        if (!string.IsNullOrEmpty(testament.NotarisTelefoon))
+                            Row(t, "Tel. notaris", testament.NotarisTelefoon);
+                        if (!string.IsNullOrEmpty(testament.NotarisEmail))
+                            Row(t, "E-mail notaris", testament.NotarisEmail);
+                        if (testament.UitsluitingsClausule)
+                            Row(t, "Uitsluitingsclausule", "Ja");
+                        if (!string.IsNullOrEmpty(testament.Legaten))
+                            Row(t, "Legaten", testament.Legaten);
+                        if (!string.IsNullOrEmpty(testament.AlgemeneWensen))
+                            Row(t, "Algemene wensen", testament.AlgemeneWensen);
+                        if (!string.IsNullOrEmpty(testament.BijzondereBepalingen))
+                            Row(t, "Bijzondere bepalingen", testament.BijzondereBepalingen);
+                    }
+                    else
+                        t.Item().Text("Geen testamentinformatie vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                });
+            });
+
+            // ── Pagina 2: Erfgenamen & begunstigden ──
+            AddPage(container, "Executeur-rapport — Erfgenamen", col =>
+            {
+                Section(col, "4. Erfgenamen", t =>
+                {
+                    if (erfgenamen.Count > 0)
+                    {
+                        foreach (var e in erfgenamen)
+                        {
+                            var naam = $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}".Replace("  ", " ").Trim();
+                            t.Item().PaddingBottom(4).Column(item =>
+                            {
+                                item.Item().Text($"• {naam} — {e.Relatie}").FontSize(9).SemiBold();
+                                if (e.Geboortedatum.HasValue)
+                                    Row(t, "  Geboortedatum", e.Geboortedatum.Value.ToString("dd-MM-yyyy"));
+                                if (!string.IsNullOrEmpty(e.BSN))
+                                    Row(t, "  BSN", e.BSN);
+                                if (!string.IsNullOrEmpty(e.Telefoon))
+                                    Row(t, "  Telefoon", e.Telefoon);
+                                if (!string.IsNullOrEmpty(e.Email))
+                                    Row(t, "  E-mail", e.Email);
+                                if (!string.IsNullOrEmpty(e.Adres))
+                                    Row(t, "  Adres", $"{e.Adres}, {e.Postcode} {e.Woonplaats}".Trim().TrimEnd(','));
+                                if (e.LegitimatieSoort != LegitimatieSoort.Geen)
+                                    Row(t, "  Legitimatie", $"{e.LegitimatieSoort} — {e.LegitimatieNummer}");
+                            });
+                        }
+                    }
+                    else
+                        t.Item().Text("Geen erfgenamen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                });
+
+                if (begunstigden.Count > 0)
+                {
+                    Section(col, "5. Begunstigden (testamentair)", t =>
+                    {
+                        foreach (var b in begunstigden)
+                        {
+                            var perc = b.Percentage.HasValue ? $" — {b.Percentage:0.##}%" : "";
+                            var legPo = b.IsLegitiemePortie ? " (legitieme portie)" : "";
+                            t.Item().PaddingBottom(2).Column(item =>
+                            {
+                                item.Item().Text($"• {b.Naam} ({b.Relatie}){perc}{legPo}").FontSize(9).SemiBold();
+                                if (!string.IsNullOrEmpty(b.Omschrijving))
+                                    item.Item().PaddingLeft(12).Text(b.Omschrijving).FontSize(8).FontColor(Colors.Grey.Darken1);
+                            });
+                        }
+                    });
+                }
+            });
+
+            // ── Pagina 3: Financieel overzicht ──
+            AddPage(container, "Executeur-rapport — Boedeloverzicht", col =>
+            {
+                // Activa
+                Section(col, "6. Activa", t =>
+                {
+                    t.Item().Text("a) Fysieke bezittingen").FontSize(10).SemiBold();
+                    if (bezittingen.Count > 0)
+                    {
+                        foreach (var b in bezittingen)
+                        {
+                            var extra = new List<string>();
+                            if (!string.IsNullOrEmpty(b.KadastraalNummer)) extra.Add($"Kad. {b.KadastraalNummer}");
+                            if (!string.IsNullOrEmpty(b.Kenteken)) extra.Add(b.Kenteken);
+                            if (!string.IsNullOrEmpty(b.KvKNummer)) extra.Add($"KvK {b.KvKNummer}");
+                            var extraStr = extra.Count > 0 ? $" ({string.Join(", ", extra)})" : "";
+                            Row(t, $"  {b.Omschrijving}{extraStr}", b.GeschatteWaarde.HasValue ? $"€ {b.GeschatteWaarde:N2}" : "—");
+                            if (!string.IsNullOrEmpty(b.BestemdeErfgenaam))
+                                t.Item().PaddingLeft(12).Text($"Bestemd voor: {b.BestemdeErfgenaam}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                        }
+                    }
+                    else
+                        t.Item().Text("  Geen bezittingen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+
+                    t.Item().PaddingTop(5).Text("b) Bankrekeningen").FontSize(10).SemiBold();
+                    if (rekeningen.Count > 0)
+                    {
+                        foreach (var r in rekeningen)
+                            Row(t, $"  {r.BankNaam} ({r.IBAN})", r.Saldo.HasValue ? $"€ {r.Saldo:N2}" : "—");
+                    }
+                    else
+                        t.Item().Text("  Geen bankrekeningen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+
+                    t.Item().PaddingTop(5).Text("c) Verzekeringen").FontSize(10).SemiBold();
+                    if (verzekeringen.Count > 0)
+                    {
+                        foreach (var v in verzekeringen)
+                        {
+                            Row(t, $"  {v.Verzekeraar} ({v.Type})", v.VerzekerdBedrag.HasValue ? $"€ {v.VerzekerdBedrag:N2}" : "—");
+                            if (!string.IsNullOrEmpty(v.PolisNummer))
+                                t.Item().PaddingLeft(12).Text($"Polisnr: {v.PolisNummer}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                        }
+                    }
+                    else
+                        t.Item().Text("  Geen verzekeringen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+
+                    t.Item().PaddingTop(8);
+                    Row(t, "TOTAAL ACTIVA (bruto)", $"€ {totActiva:N2}");
+                });
+
+                // Passiva
+                Section(col, "7. Passiva", t =>
+                {
+                    if (schulden.Count > 0)
+                    {
+                        foreach (var s in schulden)
+                            Row(t, $"  {s.Schuldeiser} ({s.Type})", $"€ {s.Bedrag:N2}");
+                        Row(t, "  TOTAAL PASSIVA", $"€ {totPassiva:N2}");
+                    }
+                    else
+                        t.Item().Text("  Geen schulden vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                });
+
+                // Netto nalatenschap
+                col.Item().PaddingTop(5).Background(Colors.Blue.Lighten5).Padding(8).Column(saldo =>
+                {
+                    saldo.Item().Row(row =>
+                    {
+                        row.ConstantItem(200).Text("NETTO NALATENSCHAP").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
+                        row.RelativeItem().AlignRight().Text($"€ {nettoNalatenschap:N2}").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
+                    });
+                });
+
+                // Verdeling indicatie
+                if (erfgenamen.Count > 0 && begunstigden.Count > 0)
+                {
+                    Section(col, "8. Indicatieve verdeling", t =>
+                    {
+                        t.Item().Text("Op basis van de testamentaire percentages:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        foreach (var b in begunstigden.Where(b => b.Percentage.HasValue && b.Percentage > 0))
+                        {
+                            var aandeel = nettoNalatenschap * (b.Percentage!.Value / 100m);
+                            Row(t, $"  {b.Naam} ({b.Percentage:0.##}%)", $"€ {aandeel:N2}");
+                        }
+                        t.Item().PaddingTop(5).Text("Let op: deze bedragen zijn indicatief. De notaris stelt de definitieve verdeling vast.")
+                            .FontSize(7).Italic().FontColor(Colors.Grey.Medium);
+                    });
+                }
+
+                // Relevante contactpersonen
+                if (noodcontacten.Count > 0)
+                {
+                    Section(col, "9. Relevante contactpersonen", t =>
+                    {
+                        foreach (var n in noodcontacten)
+                        {
+                            var details = new List<string>();
+                            if (!string.IsNullOrEmpty(n.Telefoon)) details.Add(n.Telefoon);
+                            if (!string.IsNullOrEmpty(n.Email)) details.Add(n.Email);
+                            Row(t, $"  {n.Naam} ({n.Rol})", string.Join(" | ", details));
+                        }
+                    });
+                }
+            });
+
+            // ── Pagina 4: Ondertekening ──
+            AddPage(container, "Executeur-rapport — Ondertekening", col =>
+            {
+                col.Item().Text("Ondergetekende(n) verklaren kennis te hebben genomen van bovenstaand rapport " +
+                    "en bevestigen de juistheid van de hierin vermelde gegevens, voor zover hen bekend.")
+                    .FontSize(9);
+
+                col.Item().PaddingTop(15).Column(sig =>
+                {
+                    // Executeur
+                    if (executeurs.Count > 0)
+                    {
+                        foreach (var ex in executeurs)
+                        {
+                            sig.Item().PaddingTop(15).Text($"Executeur — {ex.Naam}").FontSize(9).SemiBold();
+                            sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                        }
+                    }
+                    else
+                    {
+                        sig.Item().PaddingTop(15).Text("Executeur:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
+                        sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                    }
+
+                    // Erfgenamen
+                    foreach (var e in erfgenamen)
+                    {
+                        var naam = $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}".Replace("  ", " ").Trim();
+                        sig.Item().PaddingTop(15).Text($"Erfgenaam — {naam}").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                    }
+
+                    // Notaris
+                    sig.Item().PaddingTop(20).Text("Notaris:").FontSize(9).SemiBold();
+                    sig.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
+                    sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                    sig.Item().PaddingTop(5).Text("Stempel:").FontSize(9);
+                });
             });
         }).GeneratePdf();
     }

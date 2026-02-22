@@ -14,6 +14,7 @@ import {
 import { api } from "@/lib/api-client";
 import { User, Save, Loader2, Camera, Trash2 } from "lucide-react";
 import { Select } from "@/components/ui/select";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 
 interface Eigenaar {
   id: string;
@@ -221,6 +222,7 @@ export default function EigenaarPage() {
         <p className="text-muted-foreground mt-1">
           Uw persoonsgegevens als eigenaar van deze nalatenschap
         </p>
+        <VoorbeeldDialog domein="eigenaar" />
       </div>
 
       {!exists && (

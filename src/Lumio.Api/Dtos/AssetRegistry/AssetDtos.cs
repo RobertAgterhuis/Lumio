@@ -6,13 +6,15 @@ public record FysiekBezitResponse(
     Guid Id, string Categorie, string Omschrijving,
     decimal? GeschatteWaarde, string? Locatie,
     string? BestemdeErfgenaam, VermogensSoort VermogensSoort,
-    string? Notities);
+    string? Notities,
+    string? KadastraalNummer, string? Kenteken, string? KvKNummer);
 
 public record FysiekBezitUpsertRequest(
     string Categorie, string Omschrijving,
     decimal? GeschatteWaarde, string? Locatie,
     string? BestemdeErfgenaam, VermogensSoort VermogensSoort,
-    string? Notities);
+    string? Notities,
+    string? KadastraalNummer, string? Kenteken, string? KvKNummer);
 
 public record BankrekeningResponse(
     Guid Id, string BankNaam, string IBAN,

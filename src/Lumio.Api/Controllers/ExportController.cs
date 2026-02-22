@@ -115,6 +115,13 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-boedelbeschrijving.pdf");
     }
 
+    [HttpPost("executeur-rapport")]
+    public async Task<IActionResult> ExportExecuteurRapport()
+    {
+        var pdf = await _pdfService.GenerateExecuteurRapportPdf();
+        return File(pdf, "application/pdf", "lumio-executeur-rapport.pdf");
+    }
+
     [HttpPost("erfgenaam/{erfgenaamId:guid}")]
     public async Task<IActionResult> ExportErfgenaam(Guid erfgenaamId)
     {
@@ -149,6 +156,7 @@ public class ExportController : ControllerBase
                 ("pdf/lumio-wilsverklaring.pdf", _pdfService.GenerateWilsverklaringPdf),
                 ("pdf/lumio-noodprocedure.pdf", _pdfService.GenerateNoodprocedurePdf),
                 ("pdf/lumio-boedelbeschrijving.pdf", _pdfService.GenerateBoedelbeschrijvingPdf),
+                ("pdf/lumio-executeur-rapport.pdf", _pdfService.GenerateExecuteurRapportPdf),
             };
 
             foreach (var (naam, generator) in pdfTasks)
@@ -329,7 +337,7 @@ public class ExportController : ControllerBase
             Erfgenamen = erfgenamen.Select(e => new ErfgenaamExport(
                 e.Voornaam, e.Achternaam, e.Tussenvoegsel, e.Relatie,
                 e.Telefoon, e.Email, e.Adres, e.Postcode, e.Woonplaats,
-                e.Geboortedatum?.ToString("yyyy-MM-dd"),
+                e.Geboortedatum?.ToString("yyyy-MM-dd"), e.BSN,
                 e.LegitimatieSoort.ToString(), e.LegitimatieNummer,
                 e.LegitimatieDatumAfgifte?.ToString("yyyy-MM-dd"),
                 e.LegitimatieGeldigTot?.ToString("yyyy-MM-dd"))).ToList(),
@@ -390,7 +398,8 @@ public class ExportController : ControllerBase
             {
                 FysiekeBezittingen = bezittingen.Select(b => new FysiekBezitExport(
                     b.Categorie, b.Omschrijving, b.GeschatteWaarde,
-                    b.Locatie, b.BestemdeErfgenaam, b.VermogensSoort.ToString(), b.Notities)).ToList(),
+                    b.Locatie, b.BestemdeErfgenaam, b.VermogensSoort.ToString(), b.Notities,
+                    b.KadastraalNummer, b.Kenteken, b.KvKNummer)).ToList(),
                 Bankrekeningen = bankrekeningen.Select(b => new BankrekeningExport(
                     b.BankNaam, b.IBAN, b.RekeningType,
                     b.Saldo, b.VermogensSoort.ToString(), b.Notities)).ToList(),

@@ -27,4 +27,5 @@ public class TestamentInfo : BaseEntity
 
     public List<Begunstigde> Begunstigden { get; set; } = [];
     public List<Executeur> Executeurs { get; set; } = [];
+    public List<TestamentSnapshot> Snapshots { get; set; } = [];
 }

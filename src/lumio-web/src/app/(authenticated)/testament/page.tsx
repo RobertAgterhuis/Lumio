@@ -8,9 +8,26 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
-import { ScrollText, Plus, Pencil, Trash2 } from "lucide-react";
+import { ScrollText, Plus, Pencil, Trash2, AlertTriangle, History, GitCompareArrows } from "lucide-react";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+
+interface LegitimairePortieWaarschuwing {
+  naam: string;
+  toegewezenPercentage?: number;
+  minimumPercentage: number;
+}
+
+interface LegitimairePortieCheck {
+  heeftWaarschuwing: boolean;
+  aantalKinderen: number;
+  heeftPartner: boolean;
+  minimumPercentagePerKind: number;
+  waarschuwingen: LegitimairePortieWaarschuwing[];
+}
 
 interface TestamentInfo {
   id: string;
@@ -23,7 +40,12 @@ interface TestamentInfo {
   notarisPostcode?: string;
   notarisPlaats?: string;
   datumTestament?: string;
+  testamentLocatie?: string;
   ctr_Nummer?: string;
+  algemeneWensen?: string;
+  bijzondereBepalingen?: string;
+  uitsluitingsClausule: boolean;
+  legaten?: string;
 }
 
 interface Begunstigde {
@@ -51,6 +73,25 @@ interface Executeur {
   notarieleAkte?: boolean;
 }
 
+interface TestamentSnapshot {
+  id: string;
+  versie: number;
+  snapshotDatum: string;
+  notitie?: string;
+}
+
+interface TestamentVerschil {
+  veld: string;
+  waardeVersie1?: string;
+  waardeVersie2?: string;
+}
+
+interface TestamentVergelijking {
+  versie1: TestamentSnapshot & { snapshotJson: string };
+  versie2: TestamentSnapshot & { snapshotJson: string };
+  verschillen: TestamentVerschil[];
+}
+
 export default function TestamentPage() {
   const [testament, setTestament] = useState<TestamentInfo | null>(null);
   const [begunstigden, setBegunstigden] = useState<Begunstigde[]>([]);
@@ -68,17 +109,94 @@ export default function TestamentPage() {
 
   const [loading, setLoading] = useState(true);
 
+  // P-S14: Legitimaire portie signalering
+  const [legitiemaireCheck, setLegitimaireCheck] = useState<LegitimairePortieCheck | null>(null);
+
+  // P-S20: Concept-vergelijking (snapshots)
+  const [snapshots, setSnapshots] = useState<TestamentSnapshot[]>([]);
+  const [snapDialogOpen, setSnapDialogOpen] = useState(false);
+  const [snapNotitie, setSnapNotitie] = useState("");
+  const [snapError, setSnapError] = useState<string | null>(null);
+  const [vergelijking, setVergelijking] = useState<TestamentVergelijking | null>(null);
+  const [vergelijkOpen, setVergelijkOpen] = useState(false);
+  const [vergelijkIds, setVergelijkIds] = useState<[string, string]>(["", ""]);
+
+  // P-S5: Direct-edit testament dialog
+  const [testEditOpen, setTestEditOpen] = useState(false);
+  const [testEditForm, setTestEditForm] = useState({
+    testamentType: "", notarisNaam: "", notarisKantoor: "", notarisTelefoon: "",
+    notarisEmail: "", notarisAdres: "", notarisPostcode: "", notarisPlaats: "",
+    datumTestament: "", testamentLocatie: "", ctr_Nummer: "",
+    algemeneWensen: "", bijzondereBepalingen: "", uitsluitingsClausule: true, legaten: "",
+  });
+  const [testEditError, setTestEditError] = useState<string | null>(null);
+
+  const openTestEdit = () => {
+    if (!testament) return;
+    setTestEditError(null);
+    setTestEditForm({
+      testamentType: testament.testamentType ?? "",
+      notarisNaam: testament.notarisNaam ?? "",
+      notarisKantoor: testament.notarisKantoor ?? "",
+      notarisTelefoon: testament.notarisTelefoon ?? "",
+      notarisEmail: testament.notarisEmail ?? "",
+      notarisAdres: testament.notarisAdres ?? "",
+      notarisPostcode: testament.notarisPostcode ?? "",
+      notarisPlaats: testament.notarisPlaats ?? "",
+      datumTestament: testament.datumTestament ?? "",
+      testamentLocatie: testament.testamentLocatie ?? "",
+      ctr_Nummer: testament.ctr_Nummer ?? "",
+      algemeneWensen: testament.algemeneWensen ?? "",
+      bijzondereBepalingen: testament.bijzondereBepalingen ?? "",
+      uitsluitingsClausule: testament.uitsluitingsClausule ?? true,
+      legaten: testament.legaten ?? "",
+    });
+    setTestEditOpen(true);
+  };
+
+  const saveTestEdit = async () => {
+    setTestEditError(null);
+    try {
+      const payload = {
+        testamentType: testEditForm.testamentType || null,
+        notarisNaam: testEditForm.notarisNaam || null,
+        notarisKantoor: testEditForm.notarisKantoor || null,
+        notarisTelefoon: testEditForm.notarisTelefoon || null,
+        notarisEmail: testEditForm.notarisEmail || null,
+        notarisAdres: testEditForm.notarisAdres || null,
+        notarisPostcode: testEditForm.notarisPostcode || null,
+        notarisPlaats: testEditForm.notarisPlaats || null,
+        datumTestament: testEditForm.datumTestament || null,
+        testamentLocatie: testEditForm.testamentLocatie || null,
+        ctr_Nummer: testEditForm.ctr_Nummer || null,
+        algemeneWensen: testEditForm.algemeneWensen || null,
+        bijzondereBepalingen: testEditForm.bijzondereBepalingen || null,
+        uitsluitingsClausule: testEditForm.uitsluitingsClausule,
+        legaten: testEditForm.legaten || null,
+      };
+      const updated = await api.put<TestamentInfo>("/api/testament", payload);
+      setTestament(updated);
+      setTestEditOpen(false);
+    } catch (err) {
+      setTestEditError(err instanceof Error ? err.message : "Opslaan mislukt.");
+    }
+  };
+
   useEffect(() => {
     const load = async () => {
       try {
-        const [t, b, e] = await Promise.all([
+        const [t, b, e, lp, snaps] = await Promise.all([
           api.get<TestamentInfo>("/api/testament").catch(() => null),
           api.get<Begunstigde[]>("/api/testament/begunstigden").catch(() => []),
           api.get<Executeur[]>("/api/testament/executeurs").catch(() => []),
+          api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null),
+          api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch(() => []),
         ]);
         setTestament(t);
         setBegunstigden(b);
         setExecuteurs(e ?? []);
+        setLegitimaireCheck(lp);
+        setSnapshots(snaps ?? []);
       } finally {
         setLoading(false);
       }
@@ -186,6 +304,9 @@ export default function TestamentPage() {
       setBegDialogOpen(false);
       const updated = await api.get<Begunstigde[]>("/api/testament/begunstigden").catch(() => []);
       setBegunstigden(updated ?? []);
+      // Herlaad legitimaire portie check na wijziging begunstigden
+      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
+      setLegitimaireCheck(lpCheck);
     } catch (err) {
       setBegError(err instanceof Error ? err.message : "Opslaan mislukt.");
     }
@@ -195,8 +316,47 @@ export default function TestamentPage() {
     try {
       await api.delete(`/api/testament/begunstigden/${id}`);
       setBegunstigden((prev) => prev.filter((b) => b.id !== id));
+      // Herlaad legitimaire portie check na verwijdering
+      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
+      setLegitimaireCheck(lpCheck);
     } catch (err) {
       setBegError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+    }
+  };
+
+  // P-S20: Snapshot CRUD
+  const createSnapshot = async () => {
+    setSnapError(null);
+    try {
+      await api.post("/api/testament/snapshots", { notitie: snapNotitie || null });
+      setSnapDialogOpen(false);
+      setSnapNotitie("");
+      const updated = await api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch(() => []);
+      setSnapshots(updated ?? []);
+    } catch (err) {
+      setSnapError(err instanceof Error ? err.message : "Snapshot aanmaken mislukt.");
+    }
+  };
+
+  const deleteSnapshot = async (id: string) => {
+    try {
+      await api.delete(`/api/testament/snapshots/${id}`);
+      setSnapshots((prev) => prev.filter((s) => s.id !== id));
+    } catch (err) {
+      setSnapError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+    }
+  };
+
+  const loadVergelijking = async () => {
+    if (!vergelijkIds[0] || !vergelijkIds[1]) return;
+    try {
+      const result = await api.get<TestamentVergelijking>(
+        `/api/testament/snapshots/vergelijk?versie1Id=${vergelijkIds[0]}&versie2Id=${vergelijkIds[1]}`
+      );
+      setVergelijking(result);
+      setVergelijkOpen(true);
+    } catch (err) {
+      setSnapError(err instanceof Error ? err.message : "Vergelijking mislukt.");
     }
   };
 
@@ -215,6 +375,7 @@ export default function TestamentPage() {
           <p className="text-muted-foreground mt-1">
             Testamentaire informatie conform BW Boek 4
           </p>
+          <VoorbeeldDialog domein="testament" />
         </div>
         <Link href="/testament/wizard">
           <Button>
@@ -225,10 +386,48 @@ export default function TestamentPage() {
 
       {testament ? (
         <>
+        {/* P-S14: Legitimaire portie waarschuwing */}
+        {legitiemaireCheck?.heeftWaarschuwing && (
+          <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+              <div>
+                <p className="font-medium text-amber-900">
+                  Mogelijke schending legitimaire portie
+                </p>
+                <p className="text-sm text-amber-800 mt-1">
+                  Op basis van {legitiemaireCheck.aantalKinderen} kind{legitiemaireCheck.aantalKinderen !== 1 ? "eren" : ""}
+                  {legitiemaireCheck.heeftPartner ? " en een partner" : ""} bedraagt de
+                  minimale legitimaire portie per kind {legitiemaireCheck.minimumPercentagePerKind}%
+                  van de nalatenschap (BW Boek 4, art. 4:63-4:69).
+                </p>
+                <ul className="mt-2 space-y-1">
+                  {legitiemaireCheck.waarschuwingen.map((w, i) => (
+                    <li key={i} className="text-sm text-amber-800">
+                      <strong>{w.naam}</strong>:{" "}
+                      {w.toegewezenPercentage != null
+                        ? `${w.toegewezenPercentage}% toegewezen (minimum ${w.minimumPercentage}%)`
+                        : `niet als begunstigde opgenomen (minimum ${w.minimumPercentage}%)`}
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-xs text-amber-700 mt-2">
+                  Dit is een indicatie, geen juridisch advies. Raadpleeg een notaris voor zekerheid.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Notaris Gegevens</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Notaris Gegevens</CardTitle>
+                <Button variant="ghost" size="sm" onClick={openTestEdit}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div><span className="font-medium">Type:</span> {testament.testamentType || "—"}</div>
@@ -239,6 +438,11 @@ export default function TestamentPage() {
               {testament.notarisAdres && <div><span className="font-medium">Adres:</span> {testament.notarisAdres}{testament.notarisPostcode ? `, ${testament.notarisPostcode}` : ""}{testament.notarisPlaats ? ` ${testament.notarisPlaats}` : ""}</div>}
               <div><span className="font-medium">Datum:</span> {testament.datumTestament || "—"}</div>
               <div><span className="font-medium">CTR Nummer:</span> {testament.ctr_Nummer || "—"}</div>
+              {testament.testamentLocatie && <div><span className="font-medium">Locatie:</span> {testament.testamentLocatie}</div>}
+              <div><span className="font-medium">Uitsluitingsclausule:</span> {testament.uitsluitingsClausule ? "Ja" : "Nee"}</div>
+              {testament.legaten && <div><span className="font-medium">Legaten:</span> {testament.legaten}</div>}
+              {testament.algemeneWensen && <div><span className="font-medium">Algemene wensen:</span> {testament.algemeneWensen}</div>}
+              {testament.bijzondereBepalingen && <div><span className="font-medium">Bijzondere bepalingen:</span> {testament.bijzondereBepalingen}</div>}
             </CardContent>
           </Card>
 
@@ -330,6 +534,87 @@ export default function TestamentPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* P-S20: Versiegeschiedenis */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <History className="h-5 w-5" />
+                  Versiegeschiedenis
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{snapshots.length}</Badge>
+                  <Button size="sm" onClick={() => { setSnapNotitie(""); setSnapError(null); setSnapDialogOpen(true); }}>
+                    <Plus className="h-4 w-4 mr-1" /> Snapshot
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {snapError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-2 mb-3">
+                  <p className="text-sm text-red-800">{snapError}</p>
+                </div>
+              )}
+              {snapshots.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Nog geen versies opgeslagen. Maak een snapshot om de huidige staat vast te leggen.</p>
+              ) : (
+                <>
+                  <ul className="space-y-2 mb-4">
+                    {snapshots.map((s) => (
+                      <li key={s.id} className="flex items-center justify-between text-sm rounded-md border p-2">
+                        <div>
+                          <span className="font-medium">Versie {s.versie}</span>
+                          <span className="text-muted-foreground ml-2">
+                            {new Date(s.snapshotDatum).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                          {s.notitie && <span className="text-muted-foreground ml-2">— {s.notitie}</span>}
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => deleteSnapshot(s.id)}>
+                          <Trash2 className="h-3 w-3 text-red-500" />
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                  {snapshots.length >= 2 && (
+                    <div className="border-t pt-3 space-y-3">
+                      <p className="text-sm font-medium flex items-center gap-2">
+                        <GitCompareArrows className="h-4 w-4" /> Versies vergelijken
+                      </p>
+                      <div className="flex items-end gap-2">
+                        <div className="space-y-1 flex-1">
+                          <Label className="text-xs">Versie A</Label>
+                          <Select value={vergelijkIds[0]} onChange={(e) => setVergelijkIds([e.target.value, vergelijkIds[1]])}>
+                            <option value="">Selecteer...</option>
+                            {snapshots.map((s) => (
+                              <option key={s.id} value={s.id}>Versie {s.versie}</option>
+                            ))}
+                          </Select>
+                        </div>
+                        <div className="space-y-1 flex-1">
+                          <Label className="text-xs">Versie B</Label>
+                          <Select value={vergelijkIds[1]} onChange={(e) => setVergelijkIds([vergelijkIds[0], e.target.value])}>
+                            <option value="">Selecteer...</option>
+                            {snapshots.map((s) => (
+                              <option key={s.id} value={s.id}>Versie {s.versie}</option>
+                            ))}
+                          </Select>
+                        </div>
+                        <Button
+                          size="sm"
+                          disabled={!vergelijkIds[0] || !vergelijkIds[1] || vergelijkIds[0] === vergelijkIds[1]}
+                          onClick={loadVergelijking}
+                        >
+                          Vergelijken
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
         </>
       ) : (
         <Card>
@@ -413,6 +698,94 @@ export default function TestamentPage() {
         <DialogFooter>
           <Button variant="outline" onClick={() => setExecDialogOpen(false)}>Annuleren</Button>
           <Button onClick={saveExec}>Opslaan</Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* P-S5: Direct-edit testament dialog */}
+      <Dialog open={testEditOpen} onOpenChange={setTestEditOpen}>
+        <DialogHeader>
+          <DialogTitle>Testament bewerken</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
+          {testEditError && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-2">
+              <p className="text-sm text-red-800">{testEditError}</p>
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Type testament</Label>
+              <Input value={testEditForm.testamentType} onChange={(e) => setTestEditForm((f) => ({ ...f, testamentType: e.target.value }))} placeholder="bijv. Langstlevende" />
+            </div>
+            <div className="space-y-2">
+              <Label>Datum testament</Label>
+              <Input type="date" value={testEditForm.datumTestament} onChange={(e) => setTestEditForm((f) => ({ ...f, datumTestament: e.target.value }))} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Notaris</Label>
+              <Input value={testEditForm.notarisNaam} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisNaam: e.target.value }))} placeholder="Naam notaris" />
+            </div>
+            <div className="space-y-2">
+              <Label>Kantoor</Label>
+              <Input value={testEditForm.notarisKantoor} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisKantoor: e.target.value }))} placeholder="Notariskantoor" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Telefoon</Label>
+              <Input value={testEditForm.notarisTelefoon} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisTelefoon: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>E-mail</Label>
+              <Input value={testEditForm.notarisEmail} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisEmail: e.target.value }))} />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres</Label>
+              <Input value={testEditForm.notarisAdres} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisAdres: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input value={testEditForm.notarisPostcode} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisPostcode: e.target.value }))} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Plaats</Label>
+              <Input value={testEditForm.notarisPlaats} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisPlaats: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>CTR Nummer</Label>
+              <Input value={testEditForm.ctr_Nummer} onChange={(e) => setTestEditForm((f) => ({ ...f, ctr_Nummer: e.target.value }))} placeholder="Centraal Testamentenregister" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Locatie testament</Label>
+            <Input value={testEditForm.testamentLocatie} onChange={(e) => setTestEditForm((f) => ({ ...f, testamentLocatie: e.target.value }))} placeholder="Waar wordt het testament bewaard?" />
+          </div>
+          <div className="flex items-center space-x-2">
+            <input type="checkbox" id="uitsluitingsclausule" checked={testEditForm.uitsluitingsClausule} onChange={(e) => setTestEditForm((f) => ({ ...f, uitsluitingsClausule: e.target.checked }))} className="h-4 w-4 rounded border-border" />
+            <Label htmlFor="uitsluitingsclausule">Uitsluitingsclausule opnemen</Label>
+          </div>
+          <div className="space-y-2">
+            <Label>Legaten</Label>
+            <Textarea value={testEditForm.legaten} onChange={(e) => setTestEditForm((f) => ({ ...f, legaten: e.target.value }))} placeholder="Specifieke goederen of bedragen voor bepaalde personen" rows={2} />
+          </div>
+          <div className="space-y-2">
+            <Label>Algemene wensen</Label>
+            <Textarea value={testEditForm.algemeneWensen} onChange={(e) => setTestEditForm((f) => ({ ...f, algemeneWensen: e.target.value }))} placeholder="Uw algemene wensen voor de nalatenschap" rows={2} />
+          </div>
+          <div className="space-y-2">
+            <Label>Bijzondere bepalingen</Label>
+            <Textarea value={testEditForm.bijzondereBepalingen} onChange={(e) => setTestEditForm((f) => ({ ...f, bijzondereBepalingen: e.target.value }))} placeholder="Eventuele bijzondere bepalingen" rows={2} />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setTestEditOpen(false)}>Annuleren</Button>
+          <Button onClick={saveTestEdit}>Opslaan</Button>
         </DialogFooter>
       </Dialog>
 
@@ -511,6 +884,77 @@ export default function TestamentPage() {
         <DialogFooter>
           <Button variant="outline" onClick={() => setBegDialogOpen(false)}>Annuleren</Button>
           <Button onClick={saveBeg}>Opslaan</Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* P-S20: Snapshot aanmaken */}
+      <Dialog open={snapDialogOpen} onOpenChange={setSnapDialogOpen}>
+        <DialogHeader>
+          <DialogTitle>Snapshot aanmaken</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <p className="text-sm text-muted-foreground">
+            Een snapshot slaat de huidige staat van uw testament, begunstigden en executeurs op.
+            U kunt later versies met elkaar vergelijken.
+          </p>
+          {snapError && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-2">
+              <p className="text-sm text-red-800">{snapError}</p>
+            </div>
+          )}
+          <div className="space-y-2">
+            <Label>Notitie (optioneel)</Label>
+            <Textarea
+              value={snapNotitie}
+              onChange={(e) => setSnapNotitie(e.target.value)}
+              placeholder="bijv. Versie na gesprek met notaris"
+              rows={2}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setSnapDialogOpen(false)}>Annuleren</Button>
+          <Button onClick={createSnapshot}>Opslaan</Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* P-S20: Vergelijking dialog */}
+      <Dialog open={vergelijkOpen} onOpenChange={setVergelijkOpen}>
+        <DialogHeader>
+          <DialogTitle>
+            Vergelijking: Versie {vergelijking?.versie1?.versie} vs Versie {vergelijking?.versie2?.versie}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="py-4">
+          {vergelijking && vergelijking.verschillen.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Geen verschillen gevonden tussen deze versies.
+            </p>
+          ) : (
+            <div className="border rounded-lg overflow-hidden">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50">
+                  <tr>
+                    <th className="text-left p-2 font-medium">Veld</th>
+                    <th className="text-left p-2 font-medium">Versie {vergelijking?.versie1?.versie}</th>
+                    <th className="text-left p-2 font-medium">Versie {vergelijking?.versie2?.versie}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vergelijking?.verschillen.map((v, i) => (
+                    <tr key={i} className="border-t">
+                      <td className="p-2 font-medium">{v.veld}</td>
+                      <td className="p-2 text-red-700 bg-red-50">{v.waardeVersie1 || "—"}</td>
+                      <td className="p-2 text-green-700 bg-green-50">{v.waardeVersie2 || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setVergelijkOpen(false)}>Sluiten</Button>
         </DialogFooter>
       </Dialog>
     </div>

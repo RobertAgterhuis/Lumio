@@ -15,6 +15,7 @@ public class Erfgenaam : BaseEntity
     public string? Postcode { get; set; }
     public string? Woonplaats { get; set; }
     public DateOnly? Geboortedatum { get; set; }
+    public string? BSN { get; set; }
     public int? ShareIndex { get; set; }
     public bool HeeftShareOntvangen { get; set; }
     public DateTime? ShareUitgegevenOp { get; set; }

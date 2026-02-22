@@ -83,3 +83,45 @@ public record ExecuteurUpsertRequest(
     string? Postcode,
     string? Woonplaats,
     string? Bevoegdheden);
+
+// --- Legitimaire portie check ---
+
+public record LegitimairePortieCheckResult(
+    bool HeeftWaarschuwing,
+    int AantalKinderen,
+    bool HeeftPartner,
+    decimal MinimumPercentagePerKind,
+    List<LegitimairePortieWaarschuwing> Waarschuwingen);
+
+public record LegitimairePortieWaarschuwing(
+    string Naam,
+    decimal? ToegewezenPercentage,
+    decimal MinimumPercentage);
+
+// --- Snapshots (concept-vergelijking) ---
+
+public record TestamentSnapshotResponse(
+    Guid Id,
+    int Versie,
+    DateTime SnapshotDatum,
+    string? Notitie);
+
+public record TestamentSnapshotCreateRequest(
+    string? Notitie);
+
+public record TestamentSnapshotDetailResponse(
+    Guid Id,
+    int Versie,
+    DateTime SnapshotDatum,
+    string? Notitie,
+    string SnapshotJson);
+
+public record TestamentVergelijkingResponse(
+    TestamentSnapshotDetailResponse Versie1,
+    TestamentSnapshotDetailResponse Versie2,
+    List<TestamentVerschil> Verschillen);
+
+public record TestamentVerschil(
+    string Veld,
+    string? WaardeVersie1,
+    string? WaardeVersie2);

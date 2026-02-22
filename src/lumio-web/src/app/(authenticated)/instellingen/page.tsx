@@ -41,6 +41,9 @@ import {
   HardDrive,
   FolderOpen,
   Check,
+  RefreshCw,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 
 const TIMEOUT_OPTIONS = [
@@ -120,6 +123,21 @@ export default function InstellingenPage() {
   } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // Actualisatie state (P-S7)
+  interface ActualisatieDomein {
+    domein: string;
+    label: string;
+    laatsteBevestiging: string | null;
+    actualisatieNodig: boolean;
+  }
+  const [actualisatieDomeinen, setActualisatieDomeinen] = useState<ActualisatieDomein[]>([]);
+  const [actualisatieLoading, setActualisatieLoading] = useState(false);
+  const [actualisatieConfirming, setActualisatieConfirming] = useState<string | null>(null);
+  const [actualisatieMessage, setActualisatieMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
   useEffect(() => {
     setIdleTimeout(getIdleTimeoutMinutes());
   }, []);
@@ -154,6 +172,47 @@ export default function InstellingenPage() {
     };
     loadProfiles();
   }, [setProfiles]);
+
+  // Load actualisatie status (P-S7)
+  const loadActualisatie = async () => {
+    try {
+      const data = await api.get<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("/api/status/actualisatie");
+      setActualisatieDomeinen(data.domeinen);
+    } catch {
+      // Ignore
+    }
+  };
+
+  useEffect(() => {
+    loadActualisatie();
+  }, []);
+
+  const handleBevestigAlles = async () => {
+    setActualisatieConfirming("alles");
+    setActualisatieMessage(null);
+    try {
+      await api.post("/api/status/actualisatie/alles", {});
+      await loadActualisatie();
+      setActualisatieMessage({ type: "success", text: "Alle domeinen als actueel bevestigd." });
+    } catch {
+      setActualisatieMessage({ type: "error", text: "Bevestiging mislukt." });
+    } finally {
+      setActualisatieConfirming(null);
+    }
+  };
+
+  const handleBevestigDomein = async (domein: string) => {
+    setActualisatieConfirming(domein);
+    setActualisatieMessage(null);
+    try {
+      await api.post(`/api/status/actualisatie/${domein}`, {});
+      await loadActualisatie();
+    } catch {
+      setActualisatieMessage({ type: "error", text: "Bevestiging mislukt." });
+    } finally {
+      setActualisatieConfirming(null);
+    }
+  };
 
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -408,6 +467,95 @@ export default function InstellingenPage() {
               </Button>
             ))}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Periodieke actualisatie (P-S7) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <RefreshCw className="h-5 w-5" /> Periodieke actualisatie
+          </CardTitle>
+          <CardDescription>
+            Controleer regelmatig of uw gegevens nog up-to-date zijn. Lumio herinnert u elk kwartaal (90 dagen) per onderdeel.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {actualisatieDomeinen.length > 0 ? (
+            <>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {actualisatieDomeinen.map((d) => (
+                  <div
+                    key={d.domein}
+                    className={`flex items-center justify-between rounded-lg border p-3 ${
+                      d.actualisatieNodig
+                        ? "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30"
+                        : "border-border"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      {d.actualisatieNodig ? (
+                        <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                      ) : (
+                        <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                      )}
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{d.label}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {d.laatsteBevestiging
+                            ? `Gecontroleerd: ${new Date(d.laatsteBevestiging).toLocaleDateString("nl-NL")}`
+                            : "Nog niet gecontroleerd"}
+                        </p>
+                      </div>
+                    </div>
+                    {d.actualisatieNodig && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0 ml-2"
+                        disabled={actualisatieConfirming !== null}
+                        onClick={() => handleBevestigDomein(d.domein)}
+                      >
+                        {actualisatieConfirming === d.domein ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Check className="h-3 w-3" />
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {actualisatieMessage && (
+                <p
+                  className={`text-sm ${
+                    actualisatieMessage.type === "success"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {actualisatieMessage.text}
+                </p>
+              )}
+
+              {actualisatieDomeinen.some((d) => d.actualisatieNodig) && (
+                <Button
+                  onClick={handleBevestigAlles}
+                  disabled={actualisatieConfirming !== null}
+                >
+                  {actualisatieConfirming === "alles" && (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  )}
+                  Alles als actueel bevestigen
+                </Button>
+              )}
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Actualisatiestatus wordt geladen...
+            </p>
+          )}
         </CardContent>
       </Card>
 

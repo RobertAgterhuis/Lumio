@@ -40,4 +40,5 @@ public class UitvaartWensen : BaseEntity
     public string? BudgetRichting { get; set; }
 
     public List<CeremonieDetail> CeremonieDetails { get; set; } = [];
+    public List<UitvaartGenodigde> Genodigden { get; set; } = [];
 }

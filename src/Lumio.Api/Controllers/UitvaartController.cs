@@ -94,4 +94,55 @@ public class UitvaartController : ControllerBase
         await _db.SaveChangesAsync();
         return NoContent();
     }
+
+    // --- Genodigden ---
+
+    [HttpGet("genodigden")]
+    public async Task<ActionResult<List<UitvaartGenodigdeResponse>>> GetGenodigden()
+    {
+        var uitvaart = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        if (uitvaart is null) return Ok(new List<UitvaartGenodigdeResponse>());
+
+        var items = await _db.UitvaartGenodigden
+            .Where(g => g.UitvaartWensenId == uitvaart.Id)
+            .OrderBy(g => g.Naam)
+            .ToListAsync();
+        return Ok(items.Adapt<List<UitvaartGenodigdeResponse>>());
+    }
+
+    [HttpPost("genodigden")]
+    public async Task<ActionResult<UitvaartGenodigdeResponse>> CreateGenodigde([FromBody] UitvaartGenodigdeUpsertRequest request)
+    {
+        var uitvaart = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        if (uitvaart is null)
+            return BadRequest(new { error = "Maak eerst uitvaartwensen aan." });
+
+        var item = request.Adapt<UitvaartGenodigde>();
+        item.UitvaartWensenId = uitvaart.Id;
+        _db.UitvaartGenodigden.Add(item);
+        await _db.SaveChangesAsync();
+        return Created($"/api/uitvaart/genodigden/{item.Id}", item.Adapt<UitvaartGenodigdeResponse>());
+    }
+
+    [HttpPut("genodigden/{id:guid}")]
+    public async Task<ActionResult<UitvaartGenodigdeResponse>> UpdateGenodigde(Guid id, [FromBody] UitvaartGenodigdeUpsertRequest request)
+    {
+        var item = await _db.UitvaartGenodigden.FindAsync(id);
+        if (item is null) return NotFound();
+
+        request.Adapt(item);
+        await _db.SaveChangesAsync();
+        return Ok(item.Adapt<UitvaartGenodigdeResponse>());
+    }
+
+    [HttpDelete("genodigden/{id:guid}")]
+    public async Task<IActionResult> DeleteGenodigde(Guid id)
+    {
+        var item = await _db.UitvaartGenodigden.FindAsync(id);
+        if (item is null) return NotFound();
+
+        _db.UitvaartGenodigden.Remove(item);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
 }

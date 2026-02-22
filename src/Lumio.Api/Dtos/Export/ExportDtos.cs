@@ -63,6 +63,7 @@ public record ErfgenaamExport(
     string? Postcode,
     string? Woonplaats,
     string? Geboortedatum,
+    string? BSN,
     string LegitimatieSoort,
     string? LegitimatieNummer,
     string? LegitimatieDatumAfgifte,
@@ -215,7 +216,10 @@ public record FysiekBezitExport(
     string? Locatie,
     string? BestemdeErfgenaam,
     string VermogensSoort,
-    string? Notities
+    string? Notities,
+    string? KadastraalNummer,
+    string? Kenteken,
+    string? KvKNummer
 );
 
 public record BankrekeningExport(

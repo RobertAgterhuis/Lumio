@@ -12,4 +12,9 @@ public class FysiekBezit : BaseEntity
     public string? BestemdeErfgenaam { get; set; }
     public VermogensSoort VermogensSoort { get; set; } = VermogensSoort.Prive;
     public string? Notities { get; set; }
+
+    // P-S3: Registerreferenties
+    public string? KadastraalNummer { get; set; }
+    public string? Kenteken { get; set; }
+    public string? KvKNummer { get; set; }
 }

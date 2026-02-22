@@ -34,6 +34,7 @@ import {
   Package,
   Download,
 } from "lucide-react";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 
 interface Erfgenaam {
   id: string;
@@ -47,6 +48,7 @@ interface Erfgenaam {
   postcode?: string;
   woonplaats?: string;
   geboortedatum?: string;
+  bsn?: string;
   shareIndex?: number;
   heeftShareOntvangen: boolean;
   shareUitgegevenOp?: string;
@@ -102,6 +104,7 @@ const emptyForm = {
   postcode: "",
   woonplaats: "",
   geboortedatum: "",
+  bsn: "",
   legitimatieSoort: "0",
   legitimatieNummer: "",
   legitimatieDatumAfgifte: "",
@@ -204,6 +207,7 @@ export default function ErfgenamenPage() {
         postcode: item.postcode ?? "",
         woonplaats: item.woonplaats ?? "",
         geboortedatum: item.geboortedatum ?? "",
+        bsn: item.bsn ?? "",
         legitimatieSoort: String(item.legitimatieSoort ?? 0),
         legitimatieNummer: item.legitimatieNummer ?? "",
         legitimatieDatumAfgifte: item.legitimatieDatumAfgifte ?? "",
@@ -229,6 +233,7 @@ export default function ErfgenamenPage() {
         postcode: form.postcode || null,
         woonplaats: form.woonplaats || null,
         geboortedatum: form.geboortedatum || null,
+        bsn: form.bsn || null,
         legitimatieSoort: parseInt(form.legitimatieSoort),
         legitimatieNummer: form.legitimatieNummer || null,
         legitimatieDatumAfgifte: form.legitimatieDatumAfgifte || null,
@@ -375,6 +380,7 @@ export default function ErfgenamenPage() {
           <p className="text-muted-foreground mt-1">
             Erfgenamen beheren en noodcodes verdelen
           </p>
+          <VoorbeeldDialog domein="erfgenamen" />
         </div>
         <div className="flex gap-2">
           {erfgenamen.length >= 2 && (
@@ -624,6 +630,16 @@ export default function ErfgenamenPage() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, geboortedatum: e.target.value }))
               }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>BSN (optioneel)</Label> <HelpTooltip tekst="Het Burgerservicenummer is nodig voor notariële aktes. Dit veld wordt versleuteld opgeslagen." />
+            <Input
+              value={form.bsn}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, bsn: e.target.value }))
+              }
+              placeholder="123456789"
             />
           </div>
           <div className="grid grid-cols-3 gap-4">

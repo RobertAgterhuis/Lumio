@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
 import { Phone, Plus, Pencil, Trash2 } from "lucide-react";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 
 interface Noodcontact {
   id: string;
@@ -147,6 +148,7 @@ export default function NoodcontactenPage() {
         <p className="text-muted-foreground mt-1">
           Personen die in een noodsituatie moeten worden gecontacteerd
         </p>
+        <VoorbeeldDialog domein="noodcontacten" />
       </div>
 
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">

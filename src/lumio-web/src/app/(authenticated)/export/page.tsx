@@ -101,6 +101,12 @@ const exportOptions = [
     icon: ClipboardList,
     endpoint: "/api/export/boedelbeschrijving",
   },
+  {
+    key: "executeur-rapport",
+    label: "Executeur-rapport",
+    icon: ClipboardList,
+    endpoint: "/api/export/executeur-rapport",
+  },
 ];
 
 export default function ExportPage() {
