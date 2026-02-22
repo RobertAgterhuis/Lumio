@@ -15,8 +15,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
-import { Phone, Plus, Pencil, Trash2 } from "lucide-react";
+import { Phone, Plus, Pencil, Trash2, Share2, Download, Upload } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
 
 interface Noodcontact {
   id: string;
@@ -29,6 +31,7 @@ interface Noodcontact {
   woonplaats?: string;
   rol: string;
   instructies?: string;
+  isGedeeld: boolean;
 }
 
 const ROLLEN = [
@@ -51,6 +54,7 @@ const emptyForm = {
   woonplaats: "",
   rol: "",
   instructies: "",
+  isGedeeld: false,
 };
 
 export default function NoodcontactenPage() {
@@ -88,6 +92,7 @@ export default function NoodcontactenPage() {
         woonplaats: c.woonplaats ?? "",
         rol: c.rol,
         instructies: c.instructies ?? "",
+        isGedeeld: c.isGedeeld,
       });
     } else {
       setEditId(null);
@@ -110,6 +115,7 @@ export default function NoodcontactenPage() {
         woonplaats: form.woonplaats || null,
         rol: form.rol,
         instructies: form.instructies || null,
+        isGedeeld: form.isGedeeld,
       };
       if (editId) {
         await api.put(`/api/noodcontacten/${editId}`, payload);
@@ -134,6 +140,47 @@ export default function NoodcontactenPage() {
     }
   };
 
+  const exportGedeeld = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5123/api/noodcontacten/gedeeld/export");
+      if (!response.ok) throw new Error("Export mislukt.");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "gedeelde-noodcontacten.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    }
+  };
+
+  const importGedeeld = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const contacten = JSON.parse(text);
+        const result = await api.post<{ toegevoegd: number; overgeslagen: number }>(
+          "/api/noodcontacten/gedeeld/import",
+          contacten
+        );
+        loadData();
+        alert(`${result?.toegevoegd ?? 0} contact(en) geïmporteerd, ${result?.overgeslagen ?? 0} overgeslagen (duplicaat).`);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Import mislukt.");
+      }
+    };
+    input.click();
+  };
+
+  const gedeeldCount = contacten.filter((c) => c.isGedeeld).length;
+
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
@@ -149,6 +196,7 @@ export default function NoodcontactenPage() {
           Personen die in een noodsituatie moeten worden gecontacteerd
         </p>
         <VoorbeeldDialog domein="noodcontacten" />
+        <SectieNotitie sectie="noodcontacten" />
       </div>
 
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
@@ -158,12 +206,39 @@ export default function NoodcontactenPage() {
         </p>
       </div>
 
+      {/* Gedeelde noodcontacten */}
+      <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-purple-900">
+              <Share2 className="h-4 w-4 inline mr-1" />
+              Gedeelde contacten ({gedeeldCount})
+            </p>
+            <p className="text-xs text-purple-700 mt-1">
+              Partners delen vaak dezelfde huisarts, notaris en uitvaartondernemer.
+              Markeer contacten als &apos;gedeeld&apos; en exporteer/importeer ze tussen profielen.
+            </p>
+          </div>
+          <div className="flex gap-2 ml-4">
+            <Button size="sm" variant="outline" onClick={exportGedeeld} disabled={gedeeldCount === 0}>
+              <Download className="h-3 w-3 mr-1" /> Exporteer
+            </Button>
+            <Button size="sm" variant="outline" onClick={importGedeeld}>
+              <Upload className="h-3 w-3 mr-1" /> Importeer
+            </Button>
+          </div>
+        </div>
+      </div>
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Contacten ({contacten.length})</CardTitle>
-          <Button size="sm" onClick={() => openDialog()}>
-            <Plus className="h-4 w-4 mr-1" /> Toevoegen
-          </Button>
+          <div className="flex gap-2">
+            <NoodkaartQR contacten={contacten} />
+            <Button size="sm" onClick={() => openDialog()}>
+              <Plus className="h-4 w-4 mr-1" /> Toevoegen
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {contacten.length === 0 ? (
@@ -181,6 +256,11 @@ export default function NoodcontactenPage() {
                     <div className="flex items-center gap-2">
                       <p className="font-medium text-sm">{c.naam}</p>
                       <Badge variant="outline">{c.rol}</Badge>
+                      {c.isGedeeld && (
+                        <Badge variant="secondary" className="text-xs">
+                          <Share2 className="h-3 w-3 mr-0.5" /> Gedeeld
+                        </Badge>
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {c.relatie}
@@ -316,6 +396,18 @@ export default function NoodcontactenPage() {
               rows={3}
               placeholder="Speciale instructies voor nabestaanden bij contact met deze persoon..."
             />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isGedeeld"
+              checked={form.isGedeeld}
+              onChange={(e) => setForm((f) => ({ ...f, isGedeeld: e.target.checked }))}
+              className="h-4 w-4 rounded border-gray-300"
+            />
+            <Label htmlFor="isGedeeld" className="text-sm font-normal cursor-pointer">
+              Gedeeld contact — ook relevant voor partner/andere profielen
+            </Label>
           </div>
         </div>
         <DialogFooter>

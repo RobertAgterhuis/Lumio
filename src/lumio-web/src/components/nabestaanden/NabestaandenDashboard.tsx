@@ -278,15 +278,19 @@ export function NabestaandenDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <ShieldAlert className="h-5 w-5 text-amber-600" />
+      {/* Header — empathisch ontwerp */}
+      <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-stone-50 to-white p-6 dark:border-stone-700 dark:from-stone-900 dark:to-stone-950">
+        <div className="flex items-center gap-2 mb-2">
+          <ShieldAlert className="h-5 w-5 text-stone-500" />
           <h1 className="text-3xl font-bold">Nabestaanden Dashboard</h1>
         </div>
-        <p className="text-muted-foreground mt-1">
-          Welkom. Hieronder vindt u een stappenplan om de nalatenschap overzichtelijk af te handelen.
-          Alle gegevens zijn beschikbaar in alleen-lezen modus.
+        <p className="text-muted-foreground mt-1 leading-relaxed">
+          Gecondoleerd met uw verlies. Dit dashboard helpt u stap voor stap bij het afhandelen
+          van de nalatenschap. Neem de tijd — u hoeft niet alles tegelijk te doen.
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Alle gegevens zijn beschikbaar in alleen-lezen modus. Gebruik de knoppen hieronder
+          om bij te houden wat u al heeft afgehandeld.
         </p>
       </div>
 
@@ -304,6 +308,16 @@ export function NabestaandenDashboard() {
             Noodcontacten bekijken
           </Button>
         </Link>
+      </div>
+
+      {/* Empathische hulptekst */}
+      <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900 dark:bg-blue-950/30">
+        <p className="text-sm text-blue-800 dark:text-blue-300 leading-relaxed">
+          <strong>Hulp nodig?</strong> Het is normaal als dit overweldigend voelt.
+          Begin met de urgente zaken bovenaan en werk rustig naar beneden. U kunt altijd
+          terugkomen en verder gaan waar u gebleven was. Schakel hulp in van een notaris
+          of uitvaartverzorger als dat prettig voelt.
+        </p>
       </div>
 
       {/* Voortgang afhandeling */}

@@ -33,8 +33,11 @@ import {
   Loader2,
   Package,
   Download,
+  Share2,
 } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { ErfbelastingCalculator } from "@/components/erfgenamen/ErfbelastingCalculator";
 
 interface Erfgenaam {
   id: string;
@@ -285,6 +288,27 @@ export default function ErfgenamenPage() {
     }
   };
 
+  const handleDeelMetErfgenaam = async (id: string, voornaam: string) => {
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/delen/${id}`);
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lumio-deel-${voornaam.toLowerCase().replace(/\s+/g, "-")}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    }
+  };
+
   const handleGenerateShares = async () => {
     setShamirGenerating(true);
     try {
@@ -381,6 +405,7 @@ export default function ErfgenamenPage() {
             Erfgenamen beheren en noodcodes verdelen
           </p>
           <VoorbeeldDialog domein="erfgenamen" />
+          <SectieNotitie sectie="erfgenamen" />
         </div>
         <div className="flex gap-2">
           {erfgenamen.length >= 2 && (
@@ -405,6 +430,9 @@ export default function ErfgenamenPage() {
           wachtwoord worden hersteld. Eén code alleen is waardeloos.
         </p>
       </div>
+
+      {/* Erfbelasting calculator */}
+      {erfgenamen.length > 0 && <ErfbelastingCalculator />}
 
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3">
@@ -476,6 +504,14 @@ export default function ErfgenamenPage() {
                         title="PDF downloaden"
                       >
                         <Download className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeelMetErfgenaam(e.id, e.voornaam)}
+                        title="Deel overzicht (HTML)"
+                      >
+                        <Share2 className="h-3 w-3" />
                       </Button>
                       <Button
                         variant="ghost"

@@ -363,4 +363,127 @@ public class TestamentController : ControllerBase
         await _db.SaveChangesAsync();
         return NoContent();
     }
+
+    // ── Juridische terminologie-check ──
+
+    [HttpGet("juridische-check")]
+    public async Task<IActionResult> JuridischeCheck()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var testament = await _db.Testamenten.FirstOrDefaultAsync();
+        var begunstigden = testament != null
+            ? await _db.Begunstigden.Where(b => b.TestamentInfoId == testament.Id).ToListAsync()
+            : new List<Begunstigde>();
+        var erfgenamen = eigenaar != null
+            ? await _db.Erfgenamen.Where(e => e.EigenaarId == eigenaar.Id).ToListAsync()
+            : new List<Erfgenaam>();
+        var boedelBezittingen = eigenaar != null
+            ? await _db.FysiekeBezittingen.Where(b => b.EigenaarId == eigenaar.Id).ToListAsync()
+            : new List<Domain.AssetRegistry.FysiekBezit>();
+
+        var waarschuwingen = new List<object>();
+
+        if (testament != null)
+        {
+            var type = testament.TestamentType?.ToLowerInvariant() ?? "";
+            var heeftOnroerendGoed = boedelBezittingen.Any(b =>
+                (b.Categorie ?? "").ToLowerInvariant().Contains("woning") ||
+                (b.Categorie ?? "").ToLowerInvariant().Contains("huis") ||
+                (b.Categorie ?? "").ToLowerInvariant().Contains("appartement") ||
+                (b.Categorie ?? "").ToLowerInvariant().Contains("grond") ||
+                (b.Categorie ?? "").ToLowerInvariant().Contains("onroerend") ||
+                (b.Categorie ?? "").ToLowerInvariant().Contains("pand") ||
+                (b.KadastraalNummer != null && b.KadastraalNummer.Length > 0));
+
+            // Codicil + onroerend goed → vereist notarieel testament
+            if (type.Contains("codicil") && heeftOnroerendGoed)
+            {
+                waarschuwingen.Add(new
+                {
+                    ernst = "hoog",
+                    categorie = "Testament type",
+                    melding = "U kiest voor een codicil, maar u heeft onroerend goed. " +
+                        "Verdeling van onroerend goed is alleen rechtsgeldig via een notarieel testament (art. 4:97 BW).",
+                    suggestie = "Overweeg een notarieel testament op te laten stellen."
+                });
+            }
+
+            // Handgeschreven testament + executeur → risico
+            if ((type.Contains("handgeschreven") || type.Contains("eigen") || type.Contains("olografisch")) &&
+                await _db.Executeurs.AnyAsync(e => e.TestamentInfoId == testament.Id))
+            {
+                waarschuwingen.Add(new
+                {
+                    ernst = "middel",
+                    categorie = "Executeur",
+                    melding = "U heeft een executeur aangewezen in een handgeschreven testament. " +
+                        "Een executeur kan alleen 'drie-sterren-bevoegdheden' (beheer, verdeling, te-gelde-making) " +
+                        "krijgen via een notarieel testament.",
+                    suggestie = "Laat de executeurbenoeming opnemen in een notarieel testament."
+                });
+            }
+
+            // Geen uitsluitingsclausule maar wel kinderen
+            var heeftKinderen = erfgenamen.Any(e =>
+                (e.Relatie ?? "").ToLowerInvariant().Contains("kind") ||
+                (e.Relatie ?? "").ToLowerInvariant().Contains("zoon") ||
+                (e.Relatie ?? "").ToLowerInvariant().Contains("dochter"));
+            if (!testament.UitsluitingsClausule && heeftKinderen)
+            {
+                waarschuwingen.Add(new
+                {
+                    ernst = "info",
+                    categorie = "Uitsluitingsclausule",
+                    melding = "U heeft kinderen maar geen uitsluitingsclausule. " +
+                        "Zonder uitsluitingsclausule kan de erfenis van uw kinderen bij een scheiding " +
+                        "in de gemeenschap van goederen vallen.",
+                    suggestie = "Overweeg een uitsluitingsclausule toe te voegen."
+                });
+            }
+
+            // Begunstigden percentages tellen niet op tot 100%
+            var totPct = begunstigden.Where(b => b.Percentage.HasValue).Sum(b => b.Percentage!.Value);
+            if (begunstigden.Count > 0 && totPct > 0 && totPct != 100)
+            {
+                waarschuwingen.Add(new
+                {
+                    ernst = "middel",
+                    categorie = "Verdeling",
+                    melding = $"De percentages van de begunstigden tellen op tot {totPct}% (verwacht: 100%). " +
+                        "Dit kan leiden tot onduidelijkheid over de verdeling.",
+                    suggestie = "Controleer de verdeling en zorg dat de percentages optellen tot 100%."
+                });
+            }
+
+            // Geen notaris ingevuld
+            if (string.IsNullOrWhiteSpace(testament.NotarisNaam))
+            {
+                waarschuwingen.Add(new
+                {
+                    ernst = "info",
+                    categorie = "Notaris",
+                    melding = "Er is geen notaris ingevuld bij het testament. " +
+                        "Voor een geldig notarieel testament is een notaris vereist.",
+                    suggestie = "Vul de gegevens van uw notaris in."
+                });
+            }
+        }
+
+        // Erfgenamen zonder contactgegevens
+        var zonderContact = erfgenamen.Where(e =>
+            string.IsNullOrWhiteSpace(e.Telefoon) && string.IsNullOrWhiteSpace(e.Email)).ToList();
+        if (zonderContact.Count > 0)
+        {
+            waarschuwingen.Add(new
+            {
+                ernst = "info",
+                categorie = "Contactgegevens",
+                melding = $"{zonderContact.Count} erfgena{(zonderContact.Count == 1 ? "am" : "men")} " +
+                    $"zonder telefoon of e-mail: {string.Join(", ", zonderContact.Select(e => string.IsNullOrWhiteSpace(e.Tussenvoegsel) ? $"{e.Voornaam} {e.Achternaam}" : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}"))}.",
+                suggestie = "Vul contactgegevens in zodat erfgenamen bereikbaar zijn."
+            });
+        }
+
+        return Ok(new { aantalWaarschuwingen = waarschuwingen.Count, waarschuwingen });
+    }
 }

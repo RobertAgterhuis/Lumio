@@ -26,6 +26,8 @@ import {
   ClipboardList,
   FileJson,
   FileCode,
+  Sheet,
+  Flower2,
 } from "lucide-react";
 
 const exportOptions = [
@@ -106,6 +108,12 @@ const exportOptions = [
     label: "Executeur-rapport",
     icon: ClipboardList,
     endpoint: "/api/export/executeur-rapport",
+  },
+  {
+    key: "notaris",
+    label: "Notaris-dossier (brief)",
+    icon: ScrollText,
+    endpoint: "/api/export/notaris",
   },
 ];
 
@@ -219,6 +227,42 @@ export default function ExportPage() {
     }
   };
 
+  const handleCsvExport = async (naam: string) => {
+    const key = `csv-${naam}`;
+    setDownloading(key);
+    setError(null);
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/csv/${naam}`);
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const today = new Date().toISOString().slice(0, 10);
+      a.download = `lumio-${naam}-${today}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const csvOptions = [
+    { naam: "erfgenamen", label: "Erfgenamen" },
+    { naam: "bezittingen", label: "Bezittingen" },
+    { naam: "bankrekeningen", label: "Bankrekeningen" },
+    { naam: "verzekeringen", label: "Verzekeringen" },
+    { naam: "schulden", label: "Schulden" },
+    { naam: "noodcontacten", label: "Noodcontacten" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -305,6 +349,88 @@ export default function ExportPage() {
               <FileCode className="h-4 w-4 mr-2" />
             )}
             Downloaden als XML
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sheet className="h-5 w-5" /> CSV-export (Excel)
+          </CardTitle>
+          <CardDescription>
+            Exporteer lijsten als CSV-bestand — geschikt voor Excel, Google
+            Sheets of andere spreadsheetprogramma&apos;s. Ideaal voor overzichten
+            van erfgenamen, bezittingen of financiën.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex gap-3 flex-wrap">
+          {csvOptions.map((opt) => (
+            <Button
+              key={opt.naam}
+              variant="outline"
+              size="sm"
+              onClick={() => handleCsvExport(opt.naam)}
+              disabled={downloading !== null}
+            >
+              {downloading === `csv-${opt.naam}` ? (
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              ) : (
+                <Sheet className="h-3 w-3 mr-1" />
+              )}
+              {opt.label}
+            </Button>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Flower2 className="h-5 w-5" /> NUV-standaard export
+          </CardTitle>
+          <CardDescription>
+            Exporteer uitvaartgegevens in het sectorstandaard formaat van de
+            Nederlandse Uitvaart Verzorgers (NUV). Geschikt voor directe import
+            in uitvaartsoftware.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              setDownloading("nuv");
+              setError(null);
+              try {
+                const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+                const response = await fetch(`${API_BASE}/api/export/nuv`);
+                if (response.status === 423) { window.location.href = "/"; return; }
+                if (!response.ok) {
+                  const body = await response.json().catch(() => ({}));
+                  throw new Error(body.error || "Export mislukt");
+                }
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                const today = new Date().toISOString().slice(0, 10);
+                a.download = `lumio-nuv-export-${today}.xml`;
+                a.click();
+                URL.revokeObjectURL(url);
+              } catch (err) {
+                setError(err instanceof Error ? err.message : "Export mislukt.");
+              } finally {
+                setDownloading(null);
+              }
+            }}
+            disabled={downloading !== null}
+          >
+            {downloading === "nuv" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Flower2 className="h-4 w-4 mr-2" />
+            )}
+            NUV XML downloaden
           </Button>
         </CardContent>
       </Card>

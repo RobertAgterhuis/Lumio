@@ -4,6 +4,7 @@ using Lumio.Api.Dtos.Common;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Lumio.Api.Controllers;
 
@@ -64,5 +65,87 @@ public class NoodcontactenController : ControllerBase
         _db.Noodcontacten.Remove(item);
         await _db.SaveChangesAsync();
         return NoContent();
+    }
+
+    /// <summary>
+    /// Exporteer alle als 'gedeeld' gemarkeerde noodcontacten als JSON.
+    /// Hiermee kunnen gedeelde contacten (bijv. huisarts, notaris) worden
+    /// overgedragen naar een ander profiel.
+    /// </summary>
+    [HttpGet("gedeeld/export")]
+    public async Task<IActionResult> ExportGedeeld()
+    {
+        var gedeeld = await _db.Noodcontacten
+            .Where(n => n.IsGedeeld)
+            .OrderBy(n => n.Naam)
+            .ToListAsync();
+
+        var dtos = gedeeld.Select(n => new GedeeldNoodcontactDto(
+            n.Naam, n.Relatie, n.Telefoon, n.Email,
+            n.Adres, n.Postcode, n.Woonplaats, n.Rol, n.Instructies
+        )).ToList();
+
+        var json = JsonSerializer.Serialize(dtos, new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+
+        return File(
+            System.Text.Encoding.UTF8.GetBytes(json),
+            "application/json",
+            "gedeelde-noodcontacten.json"
+        );
+    }
+
+    /// <summary>
+    /// Importeer gedeelde noodcontacten uit een JSON-bestand.
+    /// Duplicaten (op basis van naam + rol) worden overgeslagen.
+    /// </summary>
+    [HttpPost("gedeeld/import")]
+    public async Task<IActionResult> ImportGedeeld([FromBody] List<GedeeldNoodcontactDto> contacten)
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+
+        var bestaand = await _db.Noodcontacten.ToListAsync();
+        var toegevoegd = 0;
+        var overgeslagen = 0;
+
+        foreach (var dto in contacten)
+        {
+            // Skip duplicates based on name + role
+            var isDuplicaat = bestaand.Any(b =>
+                b.Naam.Equals(dto.Naam, StringComparison.OrdinalIgnoreCase) &&
+                b.Rol.Equals(dto.Rol, StringComparison.OrdinalIgnoreCase));
+
+            if (isDuplicaat)
+            {
+                overgeslagen++;
+                continue;
+            }
+
+            var item = new Noodcontact
+            {
+                EigenaarId = eigenaar.Id,
+                Naam = dto.Naam,
+                Relatie = dto.Relatie,
+                Telefoon = dto.Telefoon,
+                Email = dto.Email,
+                Adres = dto.Adres,
+                Postcode = dto.Postcode,
+                Woonplaats = dto.Woonplaats,
+                Rol = dto.Rol,
+                Instructies = dto.Instructies,
+                IsGedeeld = true
+            };
+            _db.Noodcontacten.Add(item);
+            toegevoegd++;
+        }
+
+        await _db.SaveChangesAsync();
+
+        return Ok(new { toegevoegd, overgeslagen });
     }
 }

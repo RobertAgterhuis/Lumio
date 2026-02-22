@@ -11,6 +11,7 @@ import { api } from "@/lib/api-client";
 import { Stethoscope, Pencil } from "lucide-react";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
 
 interface Wilsverklaring {
   id: string;
@@ -131,6 +132,7 @@ export default function EuthanasiePage() {
             Uw wensen conform de WGBO
           </p>
           <VoorbeeldDialog domein="euthanasie" />
+          <SectieNotitie sectie="euthanasie" />
         </div>
         <Link href="/euthanasie/wizard">
           <Button>

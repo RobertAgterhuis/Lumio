@@ -25,6 +25,7 @@ public interface ILumioPdfService
     Task<byte[]> GenerateBoedelbeschrijvingPdf();
     Task<byte[]> GenerateErfgenaamPdf(Guid erfgenaamId);
     Task<byte[]> GenerateExecuteurRapportPdf();
+    Task<byte[]> GenerateNotarisPdf();
 }
 
 public class LumioPdfService : ILumioPdfService
@@ -1904,6 +1905,278 @@ public class LumioPdfService : ILumioPdfService
                     sig.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
                     sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
                     sig.Item().PaddingTop(5).Text("Stempel:").FontSize(9);
+                });
+            });
+        }).GeneratePdf();
+    }
+
+    // ── Notaris-specifieke PDF-template ──
+
+    public async Task<byte[]> GenerateNotarisPdf()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var testament = eigenaar != null
+            ? await _db.Testamenten.FirstOrDefaultAsync(t => t.EigenaarId == eigenaar.Id)
+            : null;
+        var begunstigden = testament != null
+            ? await _db.Begunstigden.Where(b => b.TestamentInfoId == testament.Id).OrderBy(b => b.Naam).ToListAsync()
+            : new List<Domain.Testament.Begunstigde>();
+        var executeurs = testament != null
+            ? await _db.Executeurs.Where(e => e.TestamentInfoId == testament.Id).OrderBy(e => e.Naam).ToListAsync()
+            : new List<Domain.Testament.Executeur>();
+        var erfgenamen = eigenaar != null
+            ? await _db.Erfgenamen.Where(e => e.EigenaarId == eigenaar.Id).OrderBy(e => e.Achternaam).ToListAsync()
+            : new List<Erfgenaam>();
+        var noodcontacten = eigenaar != null
+            ? await _db.Noodcontacten.Where(n => n.EigenaarId == eigenaar.Id).OrderBy(n => n.Naam).ToListAsync()
+            : new List<Noodcontact>();
+
+        var nu = DateTime.Now;
+        var naam = eigenaar != null
+            ? $"{eigenaar.Voornaam} {(string.IsNullOrWhiteSpace(eigenaar.Tussenvoegsel) ? "" : eigenaar.Tussenvoegsel + " ")}{eigenaar.Achternaam}"
+            : "Onbekend";
+
+        return Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.MarginTop(30);
+                page.MarginBottom(30);
+                page.MarginLeft(60); // Extra brede marge links voor aantekeningen
+                page.MarginRight(40);
+                page.DefaultTextStyle(x => x.FontSize(10));
+
+                page.Header().Column(col =>
+                {
+                    // Notaris briefhoofd
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem().Column(left =>
+                        {
+                            left.Item().Text("NOTARIEEL DOSSIER").FontSize(14).Bold().FontColor(Colors.Blue.Darken4);
+                            left.Item().PaddingTop(3).Text("Lumio — Digitale Nalatenschap").FontSize(8).FontColor(Colors.Grey.Medium);
+                        });
+                        row.ConstantItem(200).AlignRight().Column(right =>
+                        {
+                            right.Item().Text($"Datum: {nu:dd-MM-yyyy}").FontSize(8);
+                            right.Item().Text($"Tijdstip: {nu:HH:mm}").FontSize(8);
+                        });
+                    });
+                    col.Item().PaddingTop(5).LineHorizontal(1f).LineColor(Colors.Blue.Darken4);
+
+                    // Referentie-vak
+                    col.Item().PaddingTop(10).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(8).Column(ref_ =>
+                    {
+                        ref_.Item().Text("REFERENTIEGEGEVENS").FontSize(8).Bold().FontColor(Colors.Blue.Darken3);
+                        ref_.Item().PaddingTop(3).Row(row =>
+                        {
+                            row.ConstantItem(120).Text("Dossiernaam:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                            row.RelativeItem().Text($"Nalatenschap {naam}").FontSize(9);
+                        });
+                        ref_.Item().Row(row =>
+                        {
+                            row.ConstantItem(120).Text("Erflater:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                            row.RelativeItem().Text(naam).FontSize(9);
+                        });
+                        if (eigenaar?.Geboortedatum != default)
+                        {
+                            ref_.Item().Row(row =>
+                            {
+                                row.ConstantItem(120).Text("Geboortedatum:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.RelativeItem().Text(eigenaar!.Geboortedatum.ToString("dd-MM-yyyy")).FontSize(9);
+                            });
+                        }
+                        if (!string.IsNullOrWhiteSpace(eigenaar?.BSN))
+                        {
+                            ref_.Item().Row(row =>
+                            {
+                                row.ConstantItem(120).Text("BSN:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.RelativeItem().Text(eigenaar.BSN).FontSize(9);
+                            });
+                        }
+                        if (!string.IsNullOrWhiteSpace(eigenaar?.Woonplaats))
+                        {
+                            ref_.Item().Row(row =>
+                            {
+                                row.ConstantItem(120).Text("Woonplaats:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.RelativeItem().Text(eigenaar.Woonplaats).FontSize(9);
+                            });
+                        }
+                        ref_.Item().Row(row =>
+                        {
+                            row.ConstantItem(120).Text("Dossiernummer:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                            row.RelativeItem().Text("________________________________").FontSize(9).FontColor(Colors.Grey.Lighten1);
+                        });
+                    });
+
+                    col.Item().PaddingBottom(10);
+                });
+
+                page.Content().Column(col =>
+                {
+                    col.Spacing(8);
+
+                    // Testament
+                    if (testament != null)
+                    {
+                        Section(col, "1. Testamentaire gegevens", section =>
+                        {
+                            Row(section, "Type testament:", testament.TestamentType ?? "Niet opgegeven");
+                            Row(section, "Datum testament:", testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
+                            Row(section, "CTR-nummer:", testament.CTR_Nummer ?? "—");
+                            Row(section, "Locatie:", testament.TestamentLocatie ?? "—");
+                            Row(section, "Notaris:", testament.NotarisNaam ?? "—");
+                            Row(section, "Kantoor:", testament.NotarisKantoor ?? "—");
+                            Row(section, "Uitsluitingsclausule:", testament.UitsluitingsClausule ? "Ja" : "Nee");
+                            if (!string.IsNullOrWhiteSpace(testament.AlgemeneWensen))
+                                Row(section, "Algemene wensen:", testament.AlgemeneWensen);
+                            if (!string.IsNullOrWhiteSpace(testament.BijzondereBepalingen))
+                                Row(section, "Bijzondere bepalingen:", testament.BijzondereBepalingen);
+                            if (!string.IsNullOrWhiteSpace(testament.Legaten))
+                                Row(section, "Legaten:", testament.Legaten);
+
+                            // Aantekeningen ruimte
+                            section.Item().PaddingTop(5).Text("Aantekeningen notaris:").FontSize(8).Italic().FontColor(Colors.Grey.Darken1);
+                            section.Item().PaddingTop(3).MinHeight(40).Border(0.3f).BorderColor(Colors.Grey.Lighten2).Padding(5)
+                                .Text(" ").FontSize(8);
+                        });
+                    }
+
+                    // Erfgenamen
+                    if (erfgenamen.Count > 0)
+                    {
+                        Section(col, "2. Erfgenamen", section =>
+                        {
+                            foreach (var e in erfgenamen)
+                            {
+                                section.Item().PaddingTop(2).Row(row =>
+                                {
+                                    var volledigeNaam = string.IsNullOrWhiteSpace(e.Tussenvoegsel)
+                                        ? $"{e.Voornaam} {e.Achternaam}"
+                                        : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}";
+                                    row.ConstantItem(150).Text(volledigeNaam).FontSize(9);
+                                    row.ConstantItem(100).Text(e.Relatie).FontSize(9).FontColor(Colors.Grey.Darken1);
+                                    row.RelativeItem().Text(e.Telefoon ?? "").FontSize(9);
+                                });
+                            }
+                        });
+                    }
+
+                    // Begunstigden
+                    if (begunstigden.Count > 0)
+                    {
+                        Section(col, "3. Begunstigden", section =>
+                        {
+                            foreach (var b in begunstigden)
+                            {
+                                section.Item().PaddingTop(2).Row(row =>
+                                {
+                                    row.ConstantItem(150).Text(b.Naam).FontSize(9);
+                                    row.ConstantItem(100).Text(b.Relatie).FontSize(9).FontColor(Colors.Grey.Darken1);
+                                    row.RelativeItem().Text(b.Percentage.HasValue ? $"{b.Percentage}%" : "—").FontSize(9);
+                                });
+                            }
+                        });
+                    }
+
+                    // Executeurs
+                    if (executeurs.Count > 0)
+                    {
+                        Section(col, "4. Executeur(s)", section =>
+                        {
+                            foreach (var ex in executeurs)
+                            {
+                                section.Item().PaddingTop(2).Row(row =>
+                                {
+                                    row.ConstantItem(150).Text(ex.Naam).FontSize(9);
+                                    row.ConstantItem(100).Text(ex.Relatie ?? "").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                    row.RelativeItem().Text(ex.Bevoegdheden ?? "—").FontSize(9);
+                                });
+                            }
+                        });
+                    }
+
+                    // Noodcontacten
+                    if (noodcontacten.Count > 0)
+                    {
+                        Section(col, "5. Contactpersonen", section =>
+                        {
+                            foreach (var n in noodcontacten)
+                            {
+                                section.Item().PaddingTop(2).Row(row =>
+                                {
+                                    row.ConstantItem(120).Text(n.Naam).FontSize(9);
+                                    row.ConstantItem(80).Text(n.Rol).FontSize(9).FontColor(Colors.Grey.Darken1);
+                                    row.ConstantItem(100).Text(n.Telefoon ?? "").FontSize(9);
+                                    row.RelativeItem().Text(n.Email ?? "").FontSize(9);
+                                });
+                            }
+                        });
+                    }
+
+                    // Handtekeningblokken
+                    col.Item().PaddingTop(30).Column(sig =>
+                    {
+                        sig.Item().Text("ONDERTEKENING").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
+                        sig.Item().PaddingTop(5).LineHorizontal(0.3f).LineColor(Colors.Grey.Lighten3);
+
+                        sig.Item().PaddingTop(15).Text("Erflater / Testateur:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Row(row =>
+                        {
+                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
+                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                        });
+                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+
+                        sig.Item().PaddingTop(20).Text("Notaris:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Row(row =>
+                        {
+                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
+                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                        });
+                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().PaddingTop(5).Text("Stempel:").FontSize(9);
+
+                        sig.Item().PaddingTop(20).Text("Getuige 1:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Row(row =>
+                        {
+                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
+                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                        });
+                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+
+                        sig.Item().PaddingTop(20).Text("Getuige 2:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Row(row =>
+                        {
+                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
+                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                        });
+                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+                    });
+                });
+
+                page.Footer().Column(col =>
+                {
+                    col.Item().LineHorizontal(0.5f).LineColor(Colors.Blue.Darken4);
+                    col.Item().PaddingTop(3).Text("Dit document is gegenereerd door Lumio en dient als werkdocument voor notarieel gebruik. " +
+                        "Het heeft geen juridische geldigheid zonder notariële verlijding.")
+                        .FontSize(6).Italic().FontColor(Colors.Grey.Medium);
+                    col.Item().PaddingTop(3).Row(row =>
+                    {
+                        row.RelativeItem().Text(t =>
+                        {
+                            t.Span("Gegenereerd op ").FontSize(7).FontColor(Colors.Grey.Medium);
+                            t.Span(nu.ToString("dd-MM-yyyy HH:mm")).FontSize(7).FontColor(Colors.Grey.Medium);
+                        });
+                        row.RelativeItem().AlignRight().Text(t =>
+                        {
+                            t.Span("Pagina ").FontSize(7).FontColor(Colors.Grey.Medium);
+                            t.CurrentPageNumber().FontSize(7).FontColor(Colors.Grey.Medium);
+                            t.Span(" / ").FontSize(7).FontColor(Colors.Grey.Medium);
+                            t.TotalPages().FontSize(7).FontColor(Colors.Grey.Medium);
+                        });
+                    });
                 });
             });
         }).GeneratePdf();

@@ -14,6 +14,8 @@ import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
 import { ScrollText, Plus, Pencil, Trash2, AlertTriangle, History, GitCompareArrows } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { JuridischeCheck } from "@/components/testament/JuridischeCheck";
 
 interface LegitimairePortieWaarschuwing {
   naam: string;
@@ -376,6 +378,8 @@ export default function TestamentPage() {
             Testamentaire informatie conform BW Boek 4
           </p>
           <VoorbeeldDialog domein="testament" />
+          <SectieNotitie sectie="testament" />
+          <JuridischeCheck />
         </div>
         <Link href="/testament/wizard">
           <Button>

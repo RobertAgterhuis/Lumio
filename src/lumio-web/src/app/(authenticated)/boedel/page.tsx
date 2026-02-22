@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
 
 interface Samenvatting {
   totaalBezittingen: number;
@@ -298,6 +299,7 @@ export default function BoedelPage() {
         <h1 className="text-3xl font-bold">Boedel</h1>
         <p className="text-muted-foreground mt-1">Bezittingen, bankrekeningen, verzekeringen en schulden</p>
         <VoorbeeldDialog domein="boedel" />
+        <SectieNotitie sectie="boedel" />
       </div>
 
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">

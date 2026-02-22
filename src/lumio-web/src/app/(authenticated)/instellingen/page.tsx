@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DataHandtekening } from "@/components/instellingen/DataHandtekening";
 import {
   Card,
   CardContent,
@@ -44,6 +45,7 @@ import {
   RefreshCw,
   CheckCircle2,
   AlertTriangle,
+  Type,
 } from "lucide-react";
 
 const TIMEOUT_OPTIONS = [
@@ -83,6 +85,28 @@ export default function InstellingenPage() {
 
   // Idle timeout state
   const [idleTimeout, setIdleTimeout] = useState(5);
+
+  // Grote-tekst modus (P-C8)
+  const [groteTekst, setGroteTekst] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("lumio-grote-tekst");
+    if (saved === "true") {
+      setGroteTekst(true);
+      document.documentElement.classList.add("grote-tekst");
+    }
+  }, []);
+
+  const toggleGroteTekst = (aan: boolean) => {
+    setGroteTekst(aan);
+    if (aan) {
+      document.documentElement.classList.add("grote-tekst");
+      localStorage.setItem("lumio-grote-tekst", "true");
+    } else {
+      document.documentElement.classList.remove("grote-tekst");
+      localStorage.removeItem("lumio-grote-tekst");
+    }
+  };
 
   // Backup state
   const [downloading, setDownloading] = useState(false);
@@ -466,6 +490,36 @@ export default function InstellingenPage() {
                 {opt.label}
               </Button>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Grote-tekst modus (P-C8) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Type className="h-5 w-5" /> Grote-tekst modus
+          </CardTitle>
+          <CardDescription>
+            Vergroot de tekst in de hele applicatie voor betere leesbaarheid.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4">
+            <Button
+              variant={!groteTekst ? "default" : "outline"}
+              size="sm"
+              onClick={() => toggleGroteTekst(false)}
+            >
+              Normaal
+            </Button>
+            <Button
+              variant={groteTekst ? "default" : "outline"}
+              size="sm"
+              onClick={() => toggleGroteTekst(true)}
+            >
+              Grote tekst
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -981,6 +1035,15 @@ export default function InstellingenPage() {
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-green-500" />
             <span>Geen internetverbinding vereist</span>
+          </div>
+
+          <div className="border-t pt-3 mt-3">
+            <h3 className="text-sm font-semibold mb-2">Digitale handtekening</h3>
+            <p className="text-xs text-muted-foreground mb-3">
+              Genereer een unieke hash van uw huidige gegevens. Hiermee kunt u later
+              verifiëren dat uw data niet is gewijzigd.
+            </p>
+            <DataHandtekening />
           </div>
         </CardContent>
       </Card>

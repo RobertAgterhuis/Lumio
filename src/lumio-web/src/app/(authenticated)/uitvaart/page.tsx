@@ -17,6 +17,7 @@ import { Church, Plus, Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
 
 interface UitvaartWensen {
   id: string;
@@ -347,6 +348,7 @@ export default function UitvaartPage() {
             Begrafenis of crematie, ceremonie en rouwkaart
           </p>
           <VoorbeeldDialog domein="uitvaart" />
+          <SectieNotitie sectie="uitvaart" />
         </div>
         <Link href="/uitvaart/wizard">
           <Button>

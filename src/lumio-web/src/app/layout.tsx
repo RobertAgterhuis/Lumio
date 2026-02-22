@@ -16,7 +16,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("lumio-theme");if(t==="dark"||(t==null&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem("lumio-theme");if(t==="dark"||(t==null&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}if(localStorage.getItem("lumio-grote-tekst")==="true"){document.documentElement.classList.add("grote-tekst")}}catch(e){}})();`,
           }}
         />
       </head>

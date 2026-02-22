@@ -16,6 +16,7 @@ import {
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock } from "lucide-react";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
 
 interface PersoonlijkDocument {
   id: string;
@@ -284,6 +285,7 @@ export default function DocumentenPage() {
           <p className="text-muted-foreground mt-1">
             Belangrijke documenten veilig opslaan
           </p>
+          <SectieNotitie sectie="documenten" />
         </div>
         <Button onClick={() => setUploadOpen(true)}>
           <Upload className="h-4 w-4 mr-2" /> Document uploaden

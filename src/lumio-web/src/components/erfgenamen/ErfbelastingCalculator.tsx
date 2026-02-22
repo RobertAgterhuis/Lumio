@@ -1,0 +1,182 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/lib/api-client";
+import { Calculator, AlertTriangle, TrendingDown, Euro } from "lucide-react";
+
+interface ErfbelastingResultaat {
+  erfgenaamId: string;
+  naam: string;
+  relatie: string;
+  tariefgroep: string;
+  brutoDeel: number;
+  vrijstelling: number;
+  belastbaar: number;
+  erfbelasting: number;
+  nettoDeel: number;
+}
+
+interface ErfbelastingResponse {
+  resultaten: ErfbelastingResultaat[];
+  nettoNalatenschap: number;
+  aantalErfgenamen: number;
+  disclaimer: string;
+}
+
+function formatBedrag(bedrag: number): string {
+  return new Intl.NumberFormat("nl-NL", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+  }).format(bedrag);
+}
+
+export function ErfbelastingCalculator() {
+  const [data, setData] = useState<ErfbelastingResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const berekenen = async () => {
+    setLoading(true);
+    try {
+      const result = await api.get<ErfbelastingResponse>(
+        "/api/erfgenamen/erfbelasting"
+      );
+      setData(result);
+      setOpen(true);
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <Button
+        variant="outline"
+        onClick={berekenen}
+        disabled={loading}
+        className="gap-2"
+      >
+        <Calculator className="h-4 w-4" />
+        {loading ? "Berekenen..." : "Erfbelasting berekenen"}
+      </Button>
+
+      {open && data && (
+        <Card className="mt-4">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Euro className="h-5 w-5 text-primary" />
+                Indicatieve erfbelasting
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setOpen(false)}
+                className="text-xs"
+              >
+                Sluiten
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Netto nalatenschap */}
+            <div className="flex items-center justify-between rounded-md border p-3 bg-muted/50">
+              <span className="text-sm font-medium">Netto nalatenschap</span>
+              <span className="text-sm font-bold">
+                {formatBedrag(data.nettoNalatenschap)}
+              </span>
+            </div>
+
+            {/* Per erfgenaam */}
+            {data.resultaten.length > 0 ? (
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold">Per erfgenaam</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b text-left text-muted-foreground">
+                        <th className="pb-2 pr-4">Naam</th>
+                        <th className="pb-2 pr-4">Tariefgroep</th>
+                        <th className="pb-2 pr-4 text-right">Erfdeel</th>
+                        <th className="pb-2 pr-4 text-right">Vrijstelling</th>
+                        <th className="pb-2 pr-4 text-right">Belastbaar</th>
+                        <th className="pb-2 pr-4 text-right">Erfbelasting</th>
+                        <th className="pb-2 text-right">Netto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.resultaten.map((r) => (
+                        <tr key={r.erfgenaamId} className="border-b last:border-0">
+                          <td className="py-2 pr-4 font-medium">{r.naam}</td>
+                          <td className="py-2 pr-4 text-muted-foreground text-xs">
+                            {r.tariefgroep}
+                          </td>
+                          <td className="py-2 pr-4 text-right">
+                            {formatBedrag(r.brutoDeel)}
+                          </td>
+                          <td className="py-2 pr-4 text-right text-green-700">
+                            {formatBedrag(r.vrijstelling)}
+                          </td>
+                          <td className="py-2 pr-4 text-right">
+                            {formatBedrag(r.belastbaar)}
+                          </td>
+                          <td className="py-2 pr-4 text-right text-red-700 font-medium">
+                            {formatBedrag(r.erfbelasting)}
+                          </td>
+                          <td className="py-2 text-right font-bold">
+                            {formatBedrag(r.nettoDeel)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr className="border-t font-semibold">
+                        <td className="pt-2 pr-4" colSpan={5}>
+                          Totaal erfbelasting
+                        </td>
+                        <td className="pt-2 pr-4 text-right text-red-700">
+                          <TrendingDown className="inline h-3 w-3 mr-1" />
+                          {formatBedrag(
+                            data.resultaten.reduce(
+                              (sum, r) => sum + r.erfbelasting,
+                              0
+                            )
+                          )}
+                        </td>
+                        <td className="pt-2 text-right">
+                          {formatBedrag(
+                            data.resultaten.reduce(
+                              (sum, r) => sum + r.nettoDeel,
+                              0
+                            )
+                          )}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Voeg eerst erfgenamen toe om de erfbelasting te berekenen.
+              </p>
+            )}
+
+            {/* Disclaimer */}
+            <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
+              <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+              <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                {data.disclaimer}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}

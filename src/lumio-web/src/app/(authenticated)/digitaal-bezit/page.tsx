@@ -24,6 +24,7 @@ import {
   zoekAfsluitInstructiesVoorCategorie,
   type AfsluitInstructie,
 } from "@/lib/afsluit-instructies";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
 
 interface DigitaalAccount {
   id: string;
@@ -380,6 +381,7 @@ export default function DigitaalBezitPage() {
           Online accounts, wachtwoorden en crypto wallets
         </p>
         <VoorbeeldDialog domein="digitaal-bezit" />
+        <SectieNotitie sectie="digitaal-bezit" />
       </div>
 
       <div className="rounded-lg border border-green-200 bg-green-50 p-4">

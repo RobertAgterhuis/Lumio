@@ -9,6 +9,10 @@ import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 import { NabestaandenDashboard } from "@/components/nabestaanden/NabestaandenDashboard";
+import { StatistiekenWidget } from "@/components/dashboard/StatistiekenWidget";
+import { VoortgangGranulair } from "@/components/dashboard/VoortgangGranulair";
+import { ProfielSuggesties } from "@/components/dashboard/ProfielSuggesties";
+import { InterviewWizard } from "@/components/interview/InterviewWizard";
 import {
   ScrollText,
   Heart,
@@ -152,6 +156,7 @@ export default function DashboardPage() {
   const [compleetheid, setCompleetheid] = useState<Compleetheid | null>(null);
   const [meldingen, setMeldingen] = useState<Melding[]>([]);
   const [meldingenOpen, setMeldingenOpen] = useState(true);
+  const [showInterview, setShowInterview] = useState(false);
 
   useEffect(() => {
     api
@@ -262,7 +267,29 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {hasProfile === false && (
+      {/* Granulaire voortgang per sectie */}
+      <VoortgangGranulair />
+
+      {/* Slimme suggesties */}
+      <ProfielSuggesties />
+
+      {/* Statistieken-widget */}
+      <StatistiekenWidget />
+
+      {showInterview && (
+        <div className="rounded-lg border bg-card p-6">
+          <InterviewWizard
+            onComplete={() => {
+              setShowInterview(false);
+              setHasProfile(true);
+              window.location.reload();
+            }}
+            onCancel={() => setShowInterview(false)}
+          />
+        </div>
+      )}
+
+      {hasProfile === false && !showInterview && (
         <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-5 dark:border-amber-700 dark:bg-amber-950">
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
@@ -272,13 +299,18 @@ export default function DashboardPage() {
               </p>
               <p className="text-sm text-amber-800 dark:text-amber-300 mt-1">
                 Voordat u gegevens kunt opslaan in Lumio, moet u eerst uw
-                persoonsgegevens invullen. Dit is eenmalig.
+                persoonsgegevens invullen. Kies hoe u wilt starten:
               </p>
-              <Link href="/eigenaar">
-                <Button size="sm" className="mt-3">
-                  <User className="h-4 w-4 mr-2" /> Profiel aanmaken
+              <div className="flex gap-2 mt-3">
+                <Button size="sm" variant="outline" onClick={() => setShowInterview(true)}>
+                  <ScrollText className="h-4 w-4 mr-2" /> Begeleid invullen (interview)
                 </Button>
-              </Link>
+                <Link href="/eigenaar">
+                  <Button size="sm">
+                    <User className="h-4 w-4 mr-2" /> Direct profiel aanmaken
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

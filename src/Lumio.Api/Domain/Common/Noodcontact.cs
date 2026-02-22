@@ -12,4 +12,10 @@ public class Noodcontact : BaseEntity
     public string? Woonplaats { get; set; }
     public string Rol { get; set; } = string.Empty; // Huisarts, Notaris, Uitvaartondernemer, Vertrouwenspersoon, Overig
     public string? Instructies { get; set; }
+
+    /// <summary>
+    /// Markeer als gedeeld contact — bijv. huisarts, notaris of uitvaartondernemer
+    /// die voor meerdere profielen (partners) gelden.
+    /// </summary>
+    public bool IsGedeeld { get; set; }
 }
