@@ -12,4 +12,10 @@ public class PersoonlijkDocument : BaseEntity
     public long BestandsGrootte { get; set; }
     public byte[] BestandsInhoud { get; set; } = [];
     public string? Notities { get; set; }
+
+    /// <summary>Groups all versions of the same logical document together.</summary>
+    public Guid DocumentGroepId { get; set; }
+
+    /// <summary>Version number, starting at 1.</summary>
+    public int Versie { get; set; } = 1;
 }

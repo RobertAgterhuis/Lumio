@@ -9,4 +9,14 @@ public record DocumentResponse(
     long BestandsGrootte,
     string? Notities,
     DateTime AangemaaktOp,
-    DateTime GewijzigdOp);
+    DateTime GewijzigdOp,
+    Guid DocumentGroepId,
+    int Versie,
+    int AantalVersies);
+
+public record DocumentVersieResponse(
+    Guid Id,
+    int Versie,
+    string BestandsNaam,
+    long BestandsGrootte,
+    DateTime AangemaaktOp);

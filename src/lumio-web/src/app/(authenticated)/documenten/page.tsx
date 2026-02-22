@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
-import { FileText, Download, Trash2, Upload, Loader2, CloudUpload } from "lucide-react";
+import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp } from "lucide-react";
 
 interface PersoonlijkDocument {
   id: string;
@@ -24,6 +24,17 @@ interface PersoonlijkDocument {
   bestandsNaam: string;
   bestandsGrootte: number;
   notities?: string;
+  aangemaaktOp: string;
+  documentGroepId: string;
+  versie: number;
+  aantalVersies: number;
+}
+
+interface DocumentVersie {
+  id: string;
+  versie: number;
+  bestandsNaam: string;
+  bestandsGrootte: number;
   aangemaaktOp: string;
 }
 
@@ -42,6 +53,9 @@ export default function DocumentenPage() {
   >([]);
   const [dropDialogOpen, setDropDialogOpen] = useState(false);
   const dragCounter = useRef(0);
+  const [expandedVersions, setExpandedVersions] = useState<string | null>(null);
+  const [versionHistory, setVersionHistory] = useState<DocumentVersie[]>([]);
+  const [loadingVersions, setLoadingVersions] = useState(false);
 
   const loadData = () => {
     api
@@ -177,9 +191,39 @@ export default function DocumentenPage() {
     setError(null);
     try {
       await api.delete(`/api/documenten/${id}`);
+      if (expandedVersions === id) setExpandedVersions(null);
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+    }
+  };
+
+  const handleDeleteAllVersions = async (id: string) => {
+    setError(null);
+    try {
+      await api.delete(`/api/documenten/${id}/alle-versies`);
+      setExpandedVersions(null);
+      loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+    }
+  };
+
+  const toggleVersions = async (docId: string) => {
+    if (expandedVersions === docId) {
+      setExpandedVersions(null);
+      setVersionHistory([]);
+      return;
+    }
+    setLoadingVersions(true);
+    try {
+      const versies = await api.get<DocumentVersie[]>(`/api/documenten/${docId}/versies`);
+      setVersionHistory(versies ?? []);
+      setExpandedVersions(docId);
+    } catch {
+      setError("Versiegeschiedenis laden mislukt.");
+    } finally {
+      setLoadingVersions(false);
     }
   };
 
@@ -267,37 +311,114 @@ export default function DocumentenPage() {
           <CardContent>
             <div className="space-y-2">
               {documenten.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="flex items-center justify-between rounded-md border p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">{doc.naam}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {doc.bestandsNaam} &mdash;{" "}
-                        {formatSize(doc.bestandsGrootte)}
-                      </p>
+                <div key={doc.id}>
+                  <div className="flex items-center justify-between rounded-md border p-3">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium">{doc.naam}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {doc.bestandsNaam} &mdash;{" "}
+                          {formatSize(doc.bestandsGrootte)}
+                          {doc.versie > 1 && ` — versie ${doc.versie}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">{doc.categorie}</Badge>
+                      {doc.aantalVersies > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleVersions(doc.id)}
+                          disabled={loadingVersions}
+                          title="Versiegeschiedenis"
+                        >
+                          <History className="h-4 w-4 mr-1" />
+                          <span className="text-xs">{doc.aantalVersies}</span>
+                          {expandedVersions === doc.id ? (
+                            <ChevronUp className="h-3 w-3 ml-0.5" />
+                          ) : (
+                            <ChevronDown className="h-3 w-3 ml-0.5" />
+                          )}
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDownload(doc.id, doc.bestandsNaam)}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          doc.aantalVersies > 1
+                            ? handleDeleteAllVersions(doc.id)
+                            : handleDelete(doc.id)
+                        }
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">{doc.categorie}</Badge>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDownload(doc.id, doc.bestandsNaam)}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(doc.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
-                  </div>
+                  {/* Version history panel */}
+                  {expandedVersions === doc.id && versionHistory.length > 0 && (
+                    <div className="ml-8 mt-1 mb-2 space-y-1 border-l-2 border-muted pl-4">
+                      <p className="text-xs font-medium text-muted-foreground mb-1">
+                        Versiegeschiedenis
+                      </p>
+                      {versionHistory.map((v) => (
+                        <div
+                          key={v.id}
+                          className={cn(
+                            "flex items-center justify-between rounded px-3 py-1.5 text-sm",
+                            v.id === doc.id
+                              ? "bg-primary/10 font-medium"
+                              : "hover:bg-muted/50"
+                          )}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant={v.id === doc.id ? "default" : "secondary"}
+                              className="text-xs px-1.5 py-0"
+                            >
+                              v{v.versie}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">
+                              {v.bestandsNaam} — {formatSize(v.bestandsGrootte)}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(v.aangemaaktOp).toLocaleDateString("nl-NL")}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleDownload(v.id, v.bestandsNaam)}
+                              title={`Download versie ${v.versie}`}
+                            >
+                              <Download className="h-3 w-3" />
+                            </Button>
+                            {v.id !== doc.id && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0"
+                                onClick={() => handleDelete(v.id)}
+                                title={`Verwijder versie ${v.versie}`}
+                              >
+                                <Trash2 className="h-3 w-3 text-red-500" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
