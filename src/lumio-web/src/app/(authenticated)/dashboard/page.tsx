@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/authStore";
+import { NabestaandenDashboard } from "@/components/nabestaanden/NabestaandenDashboard";
 import {
   ScrollText,
   Heart,
@@ -145,6 +147,7 @@ const domainCards = [
 ];
 
 export default function DashboardPage() {
+  const { isReadOnly } = useAuthStore();
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [compleetheid, setCompleetheid] = useState<Compleetheid | null>(null);
   const [meldingen, setMeldingen] = useState<Melding[]>([]);
@@ -172,6 +175,11 @@ export default function DashboardPage() {
     const d = compleetheid.domeinen.find((x) => x.domein === domein);
     return d?.ingevuld ?? null;
   };
+
+  // In read-only (erfgenaam) mode, show the nabestaanden dashboard
+  if (isReadOnly) {
+    return <NabestaandenDashboard />;
+  }
 
   return (
     <div className="space-y-6">

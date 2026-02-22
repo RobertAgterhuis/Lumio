@@ -16,7 +16,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { KeyRound, Plus, Trash2, Loader2, Unlock } from "lucide-react";
 
 export function HeirUnlockForm() {
-  const { setUnlocked } = useAuthStore();
+  const { setUnlocked, setReadOnly } = useAuthStore();
   const [shares, setShares] = useState<string[]>([""]);
   const [error, setError] = useState<string | null>(null);
   const [reconstructing, setReconstructing] = useState(false);
@@ -50,6 +50,8 @@ export function HeirUnlockForm() {
         wachtwoord: result.wachtwoord,
       });
 
+      // Erfgenaam-toegang is altijd read-only
+      setReadOnly(true);
       setUnlocked(true);
     } catch {
       setError(

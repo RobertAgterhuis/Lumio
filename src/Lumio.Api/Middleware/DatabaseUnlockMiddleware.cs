@@ -15,6 +15,26 @@ public class DatabaseUnlockMiddleware
         "/swagger"
     ];
 
+    /// <summary>
+    /// Prefixes that are allowed even in read-only (Shamir/erfgenaam) mode.
+    /// Exports and auth actions remain accessible.
+    /// </summary>
+    private static readonly string[] ReadOnlyAllowedPrefixes =
+    [
+        "/api/auth/",
+        "/api/export/",
+        "/api/status",
+        "/api/afhandeling",
+        "/api/profielen",
+        "/api/backup/restore",
+        "/swagger"
+    ];
+
+    /// <summary>
+    /// HTTP methods that are considered mutating (write) operations.
+    /// </summary>
+    private static readonly string[] WriteMethods = ["POST", "PUT", "PATCH", "DELETE"];
+
     public DatabaseUnlockMiddleware(RequestDelegate next)
     {
         _next = next;
@@ -56,6 +76,20 @@ public class DatabaseUnlockMiddleware
             await context.Response.WriteAsJsonAsync(new
             {
                 error = "Database is vergrendeld. Ontgrendel eerst met uw wachtwoord."
+            });
+            return;
+        }
+
+        // Read-only mode: block mutating requests unless on the allow-list
+        if (passwordService.IsReadOnly
+            && WriteMethods.Contains(context.Request.Method, StringComparer.OrdinalIgnoreCase)
+            && !ReadOnlyAllowedPrefixes.Any(prefix => path.StartsWith(prefix)))
+        {
+            context.Response.StatusCode = 403; // Forbidden
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "Database is geopend in alleen-lezen modus (erfgenaam-toegang). Wijzigingen zijn niet toegestaan."
             });
             return;
         }

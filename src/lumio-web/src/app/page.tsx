@@ -19,6 +19,7 @@ export default function HomePage() {
     profileNeedsSetup,
     setUnlocked,
     setFirstRun,
+    setReadOnly,
     setLoading,
     setProfiles,
     setActiveProfile,
@@ -38,12 +39,14 @@ export default function HomePage() {
         const status = await api.get<{
           isOntgrendeld: boolean;
           isEersteKeer: boolean;
+          isAlleenLezen: boolean;
           profielGeselecteerd: boolean;
           actiefProfiel: { id: string; naam: string } | null;
           profielHeeftSetupNodig: boolean;
         }>("/api/auth/status");
         setUnlocked(status.isOntgrendeld);
         setFirstRun(status.isEersteKeer);
+        setReadOnly(status.isAlleenLezen);
         setProfileSelected(status.profielGeselecteerd);
         setProfileNeedsSetup(status.profielHeeftSetupNodig);
 

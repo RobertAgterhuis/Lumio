@@ -11,6 +11,7 @@ export interface Profile {
 interface AuthState {
   isUnlocked: boolean;
   isFirstRun: boolean;
+  isReadOnly: boolean;
   isLoading: boolean;
   profiles: Profile[];
   activeProfile: Profile | null;
@@ -18,6 +19,7 @@ interface AuthState {
   profileNeedsSetup: boolean;
   setUnlocked: (unlocked: boolean) => void;
   setFirstRun: (firstRun: boolean) => void;
+  setReadOnly: (readOnly: boolean) => void;
   setLoading: (loading: boolean) => void;
   setProfiles: (profiles: Profile[]) => void;
   setActiveProfile: (profile: Profile | null) => void;
@@ -29,6 +31,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   isUnlocked: false,
   isFirstRun: true,
+  isReadOnly: false,
   isLoading: true,
   profiles: [],
   activeProfile: null,
@@ -36,6 +39,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   profileNeedsSetup: false,
   setUnlocked: (unlocked) => set({ isUnlocked: unlocked }),
   setFirstRun: (firstRun) => set({ isFirstRun: firstRun }),
+  setReadOnly: (readOnly) => set({ isReadOnly: readOnly }),
   setLoading: (loading) => set({ isLoading: loading }),
   setProfiles: (profiles) => set({ profiles }),
   setActiveProfile: (profile) => set({ activeProfile: profile }),
@@ -44,6 +48,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   lock: () =>
     set({
       isUnlocked: false,
+      isReadOnly: false,
       activeProfile: null,
       profileSelected: false,
       profileNeedsSetup: false,

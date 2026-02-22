@@ -21,6 +21,8 @@ import {
   FileText,
   Loader2,
   Phone,
+  ShieldAlert,
+  Archive,
 } from "lucide-react";
 
 const exportOptions = [
@@ -84,6 +86,12 @@ const exportOptions = [
     icon: Stethoscope,
     endpoint: "/api/export/wilsverklaring",
   },
+  {
+    key: "noodprocedure",
+    label: "Noodprocedure & Instructie",
+    icon: ShieldAlert,
+    endpoint: "/api/export/noodprocedure",
+  },
 ];
 
 export default function ExportPage() {
@@ -142,6 +150,33 @@ export default function ExportPage() {
     }
   };
 
+  const handleZipExport = async () => {
+    setDownloading("zip");
+    setError(null);
+    try {
+      const response = await fetch("/api/export/alles", {
+        method: "POST",
+      });
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const today = new Date().toISOString().slice(0, 10);
+      a.download = `lumio-export-${today}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -166,7 +201,7 @@ export default function ExportPage() {
             Exporteer alle vastgelegde informatie in één PDF-document.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex gap-3 flex-wrap">
           <Button
             onClick={handleCompleteExport}
             disabled={downloading !== null}
@@ -177,6 +212,18 @@ export default function ExportPage() {
               <Download className="h-4 w-4 mr-2" />
             )}
             Alles exporteren als PDF
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleZipExport}
+            disabled={downloading !== null}
+          >
+            {downloading === "zip" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Archive className="h-4 w-4 mr-2" />
+            )}
+            Compleet pakket (ZIP)
           </Button>
         </CardContent>
       </Card>

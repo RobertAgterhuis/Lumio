@@ -6,11 +6,13 @@ public class MasterPasswordService : IMasterPasswordService
 {
     private readonly IProfileService _profileService;
     private string? _currentPassword;
+    private bool _isReadOnly;
 
     public bool IsUnlocked => _currentPassword != null;
     public bool IsFirstRun => _profileService.ActiveProfile == null
         ? _profileService.IsFirstRun
         : !_profileService.ActiveProfileDbExists;
+    public bool IsReadOnly => _isReadOnly;
     public string? CurrentPassword => _currentPassword;
     public string? ActiveDbPath => _profileService.ActiveDbPath;
 
@@ -59,6 +61,12 @@ public class MasterPasswordService : IMasterPasswordService
     public void Lock()
     {
         _currentPassword = null;
+        _isReadOnly = false;
+    }
+
+    public void SetReadOnly(bool readOnly)
+    {
+        _isReadOnly = readOnly;
     }
 
     public async Task ChangePasswordAsync(string currentPassword, string newPassword)

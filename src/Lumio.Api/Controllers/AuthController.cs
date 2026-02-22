@@ -30,6 +30,7 @@ public class AuthController : ControllerBase
         {
             isOntgrendeld = _passwordService.IsUnlocked,
             isEersteKeer = _profileService.IsFirstRun,
+            isAlleenLezen = _passwordService.IsReadOnly,
             profielGeselecteerd = activeProfile != null,
             actiefProfiel = activeProfile == null ? null : new
             {
@@ -174,7 +175,10 @@ public class AuthController : ControllerBase
             if (!success)
                 return Unauthorized(new { error = "Sleuteldelen konden het wachtwoord niet herstellen." });
 
-            return Ok(new { bericht = "Database ontgrendeld via erfgenaam-toegang." });
+            // Erfgenaam-toegang is altijd read-only
+            _passwordService.SetReadOnly(true);
+
+            return Ok(new { bericht = "Database ontgrendeld via erfgenaam-toegang.", isAlleenLezen = true });
         }
         catch
         {

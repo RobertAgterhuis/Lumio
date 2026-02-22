@@ -19,6 +19,7 @@ public interface ILumioPdfService
     Task<byte[]> GenerateNoodkaartPdf();
     Task<byte[]> GenerateTestamentConceptPdf();
     Task<byte[]> GenerateWilsverklaringPdf();
+    Task<byte[]> GenerateNoodprocedurePdf();
 }
 
 public class LumioPdfService : ILumioPdfService
@@ -945,6 +946,132 @@ public class LumioPdfService : ILumioPdfService
                         wit.Item().PaddingTop(15).Text("Getuige 2:").FontSize(9).SemiBold();
                         wit.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
                         wit.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+                    });
+                });
+                page.Footer().Element(Footer);
+            });
+        }).GeneratePdf();
+    }
+
+    public async Task<byte[]> GenerateNoodprocedurePdf()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var noodcontacten = await _db.Noodcontacten.ToListAsync();
+        var erfgenamen = await _db.Erfgenamen.Where(e => e.HeeftShareOntvangen).OrderBy(e => e.ShareIndex).ToListAsync();
+        var drempel = erfgenamen.Count > 0 ? Math.Max(2, (int)Math.Ceiling(erfgenamen.Count * 0.6)) : 2;
+
+        return Document.Create(container =>
+        {
+            // Page 1: Noodprocedure overzicht
+            container.Page(page =>
+            {
+                ConfigurePage(page);
+                page.Header().Element(c => Header(c, "Noodprocedure — Stappen voor Nabestaanden"));
+                page.Content().Column(col =>
+                {
+                    col.Spacing(10);
+
+                    // Intro
+                    col.Item().Text("Dit document bevat de stappen die nabestaanden moeten volgen om toegang te krijgen tot de digitale nalatenschap in Lumio. Bewaar dit document op een veilige, bereikbare plek.")
+                        .FontSize(9).FontColor(Colors.Grey.Darken1);
+
+                    col.Item().PaddingTop(5);
+
+                    // Eigenaar info
+                    if (eigenaar != null)
+                    {
+                        Section(col, "Gegevens overledene", t =>
+                        {
+                            Row(t, "Naam", $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim());
+                            if (!string.IsNullOrEmpty(eigenaar.Telefoon))
+                                Row(t, "Telefoon", eigenaar.Telefoon);
+                            if (!string.IsNullOrEmpty(eigenaar.Email))
+                                Row(t, "E-mail", eigenaar.Email);
+                        });
+                    }
+
+                    // Stap 1: Noodcontacten
+                    Section(col, "Stap 1 — Noodcontacten informeren", t =>
+                    {
+                        t.Item().Text("Neem zo snel mogelijk contact op met de volgende personen:")
+                            .FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().PaddingTop(3);
+                        if (noodcontacten.Count > 0)
+                        {
+                            foreach (var nc in noodcontacten)
+                            {
+                                Row(t, $"{nc.Naam} ({nc.Rol})", $"{nc.Telefoon ?? "—"} / {nc.Email ?? "—"}");
+                                if (!string.IsNullOrEmpty(nc.Instructies))
+                                    Row(t, "  Instructie", nc.Instructies);
+                            }
+                        }
+                        else
+                        {
+                            t.Item().Text("Geen noodcontacten vastgelegd.").FontSize(9).Italic();
+                        }
+                    });
+
+                    // Stap 2: Shamir-sleuteldelen verzamelen
+                    Section(col, "Stap 2 — Shamir-sleuteldelen verzamelen", t =>
+                    {
+                        t.Item().Text($"Om Lumio te ontgrendelen zijn minimaal {drempel} sleuteldelen nodig. De volgende erfgenamen hebben een sleuteldeel ontvangen:")
+                            .FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().PaddingTop(3);
+                        if (erfgenamen.Count > 0)
+                        {
+                            foreach (var e in erfgenamen)
+                            {
+                                Row(t, $"Deel #{e.ShareIndex}", $"{e.Voornaam} {e.Achternaam} — {e.Telefoon ?? e.Email ?? "geen contact"}");
+                            }
+                        }
+                        else
+                        {
+                            t.Item().Text("Geen sleuteldelen verdeeld — neem contact op met de notaris.").FontSize(9).Italic();
+                        }
+                    });
+
+                    // Stap 3: Lumio installeren
+                    Section(col, "Stap 3 — Lumio installeren", t =>
+                    {
+                        t.Item().Text("Lumio is een desktopapplicatie die lokaal draait. Volg deze stappen:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().PaddingTop(3);
+                        Row(t, "3a", "Download Lumio vanaf de oorspronkelijke bron (USB-stick, gedeelde map, of website).");
+                        Row(t, "3b", "Installeer de applicatie op uw computer (Windows/macOS/Linux).");
+                        Row(t, "3c", "Start Lumio — de applicatie opent in uw webbrowser.");
+                    });
+
+                    // Stap 4: Backup herstellen
+                    Section(col, "Stap 4 — Backup herstellen", t =>
+                    {
+                        t.Item().Text("Als u een backup-bestand (.db) heeft ontvangen:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().PaddingTop(3);
+                        Row(t, "4a", "Ga in Lumio naar Instellingen → Backup herstellen.");
+                        Row(t, "4b", "Selecteer het backup-bestand (.db).");
+                        Row(t, "4c", "Het profiel wordt automatisch geladen.");
+                    });
+
+                    // Stap 5: Ontgrendelen
+                    Section(col, "Stap 5 — Ontgrendelen met sleuteldelen", t =>
+                    {
+                        t.Item().Text("Na het herstellen van de backup:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().PaddingTop(3);
+                        Row(t, "5a", "Selecteer het juiste profiel op het inlogscherm.");
+                        Row(t, "5b", "Klik op 'Ik ben een erfgenaam (ontgrendelen met sleuteldelen)'.");
+                        Row(t, "5c", $"Voer minimaal {drempel} sleuteldelen in (elk in een apart veld).");
+                        Row(t, "5d", "Klik op 'Ontgrendelen met sleuteldelen'.");
+                        Row(t, "5e", "U heeft nu alleen-lezen toegang tot alle vastgelegde gegevens.");
+                    });
+
+                    // Stap 6: Wat te doen
+                    Section(col, "Stap 6 — Gegevens raadplegen", t =>
+                    {
+                        t.Item().Text("Na ontgrendeling kunt u:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().PaddingTop(3);
+                        Row(t, "•", "Het nabestaanden-dashboard volgen met een stappenplan");
+                        Row(t, "•", "Alle vastgelegde wensen en informatie inzien");
+                        Row(t, "•", "PDF-documenten exporteren per onderdeel");
+                        Row(t, "•", "Een compleet ZIP-pakket downloaden met alle documenten");
+                        Row(t, "•", "De voortgang van afhandeling bijhouden");
                     });
                 });
                 page.Footer().Element(Footer);
