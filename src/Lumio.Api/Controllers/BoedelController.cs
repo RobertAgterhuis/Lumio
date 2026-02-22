@@ -21,6 +21,42 @@ public class BoedelController : ControllerBase
         return eigenaar?.Id;
     }
 
+    // --- Financieel Samenvatting (P-M3) ---
+
+    [HttpGet("samenvatting")]
+    public async Task<IActionResult> GetSamenvatting()
+    {
+        var eigenaarId = await GetEigenaarId();
+        if (eigenaarId is null) return NotFound(new { error = "Geen eigenaar profiel gevonden." });
+        var eid = eigenaarId.Value;
+
+        var bezittingen = await _db.FysiekeBezittingen.Where(f => f.EigenaarId == eid).ToListAsync();
+        var rekeningen = await _db.Bankrekeningen.Where(b => b.EigenaarId == eid).ToListAsync();
+        var verzekeringen = await _db.Verzekeringen.Where(v => v.EigenaarId == eid).ToListAsync();
+        var schulden = await _db.Schulden.Where(s => s.EigenaarId == eid).ToListAsync();
+
+        var totaalBezittingen = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
+        var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
+        var totaalVerzekeringen = verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
+        var totaalSchulden = schulden.Sum(s => s.Bedrag);
+        var brutoNalatenschap = totaalBezittingen + totaalSaldi + totaalVerzekeringen;
+        var nettoNalatenschap = brutoNalatenschap - totaalSchulden;
+
+        return Ok(new
+        {
+            totaalBezittingen,
+            totaalSaldi,
+            totaalVerzekeringen,
+            totaalSchulden,
+            brutoNalatenschap,
+            nettoNalatenschap,
+            aantalBezittingen = bezittingen.Count,
+            aantalRekeningen = rekeningen.Count,
+            aantalVerzekeringen = verzekeringen.Count,
+            aantalSchulden = schulden.Count
+        });
+    }
+
     // --- Bezittingen ---
 
     [HttpGet("bezittingen")]

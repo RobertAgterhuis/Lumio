@@ -15,6 +15,11 @@ export default function UitvaartWizardPage() {
     voorkeurType: "",
     begraafplaats: "",
     uitvaartOndernemer: "",
+    uitvaartOndernemerTelefoon: "",
+    uitvaartOndernemerEmail: "",
+    uitvaartOndernemerAdres: "",
+    uitvaartOndernemerPostcode: "",
+    uitvaartOndernemerPlaats: "",
     heeftUitvaartVerzekering: "false",
     uitvaartVerzekeringDetails: "",
     ceremonieSoort: "",
@@ -24,20 +29,33 @@ export default function UitvaartWizardPage() {
     bloemen: "",
     kledingwensen: "",
     rouwkaartTekst: "",
+    rouwadvertentieTekst: "",
     condoleance: "",
     overigeWensen: "",
+    voorkeurBegraafplaatsNaam: "",
+    voorkeurBegraafplaatsAdres: "",
+    voorkeurCrematoriumnaam: "",
+    voorkeurCrematoriumAdres: "",
+    voorkeurAulaNaam: "",
+    voorkeurAulaAdres: "",
+    budgetRichting: "",
   });
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<{ voorkeurType: string; begraafplaats: string; uitvaartOndernemer: string; heeftUitvaartVerzekering: boolean; uitvaartVerzekeringDetails: string; ceremonieSoort: string; ceremonieLocatie: string; muziekwensen: string; sprekers: string; bloemen: string; kledingwensen: string; rouwkaartTekst: string; condoleance: string; overigeWensen: string }>("/api/uitvaart")
+    api.get<{ voorkeurType: string; begraafplaats: string; uitvaartOndernemer: string; uitvaartOndernemerTelefoon: string; uitvaartOndernemerEmail: string; uitvaartOndernemerAdres: string; uitvaartOndernemerPostcode: string; uitvaartOndernemerPlaats: string; heeftUitvaartVerzekering: boolean; uitvaartVerzekeringDetails: string; ceremonieSoort: string; ceremonieLocatie: string; muziekwensen: string; sprekers: string; bloemen: string; kledingwensen: string; rouwkaartTekst: string; rouwadvertentieTekst: string; condoleance: string; overigeWensen: string; voorkeurBegraafplaatsNaam: string; voorkeurBegraafplaatsAdres: string; voorkeurCrematoriumnaam: string; voorkeurCrematoriumAdres: string; voorkeurAulaNaam: string; voorkeurAulaAdres: string; budgetRichting: string }>("/api/uitvaart")
       .then((data) => {
         if (data) {
           setForm({
             voorkeurType: data.voorkeurType ?? "",
             begraafplaats: data.begraafplaats ?? "",
             uitvaartOndernemer: data.uitvaartOndernemer ?? "",
+            uitvaartOndernemerTelefoon: data.uitvaartOndernemerTelefoon ?? "",
+            uitvaartOndernemerEmail: data.uitvaartOndernemerEmail ?? "",
+            uitvaartOndernemerAdres: data.uitvaartOndernemerAdres ?? "",
+            uitvaartOndernemerPostcode: data.uitvaartOndernemerPostcode ?? "",
+            uitvaartOndernemerPlaats: data.uitvaartOndernemerPlaats ?? "",
             heeftUitvaartVerzekering: data.heeftUitvaartVerzekering != null ? String(data.heeftUitvaartVerzekering) : "false",
             uitvaartVerzekeringDetails: data.uitvaartVerzekeringDetails ?? "",
             ceremonieSoort: data.ceremonieSoort ?? "",
@@ -47,8 +65,16 @@ export default function UitvaartWizardPage() {
             bloemen: data.bloemen ?? "",
             kledingwensen: data.kledingwensen ?? "",
             rouwkaartTekst: data.rouwkaartTekst ?? "",
+            rouwadvertentieTekst: data.rouwadvertentieTekst ?? "",
             condoleance: data.condoleance ?? "",
             overigeWensen: data.overigeWensen ?? "",
+            voorkeurBegraafplaatsNaam: data.voorkeurBegraafplaatsNaam ?? "",
+            voorkeurBegraafplaatsAdres: data.voorkeurBegraafplaatsAdres ?? "",
+            voorkeurCrematoriumnaam: data.voorkeurCrematoriumnaam ?? "",
+            voorkeurCrematoriumAdres: data.voorkeurCrematoriumAdres ?? "",
+            voorkeurAulaNaam: data.voorkeurAulaNaam ?? "",
+            voorkeurAulaAdres: data.voorkeurAulaAdres ?? "",
+            budgetRichting: data.budgetRichting ?? "",
           });
         }
       })
@@ -96,6 +122,50 @@ export default function UitvaartWizardPage() {
               placeholder="bijv. Monuta, DELA of een lokale uitvaartondernemer"
             />
           </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>Telefoon ondernemer</Label>
+              <Input
+                value={form.uitvaartOndernemerTelefoon}
+                onChange={(e) => update("uitvaartOndernemerTelefoon", e.target.value)}
+                placeholder="Telefoonnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>E-mail ondernemer</Label>
+              <Input
+                value={form.uitvaartOndernemerEmail}
+                onChange={(e) => update("uitvaartOndernemerEmail", e.target.value)}
+                placeholder="E-mailadres"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres ondernemer</Label>
+              <Input
+                value={form.uitvaartOndernemerAdres}
+                onChange={(e) => update("uitvaartOndernemerAdres", e.target.value)}
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={form.uitvaartOndernemerPostcode}
+                onChange={(e) => update("uitvaartOndernemerPostcode", e.target.value)}
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Plaats ondernemer</Label>
+            <Input
+              value={form.uitvaartOndernemerPlaats}
+              onChange={(e) => update("uitvaartOndernemerPlaats", e.target.value)}
+              placeholder="Plaats"
+            />
+          </div>
           <div className="space-y-2">
             <Label>Heeft u een uitvaartverzekering?</Label>
             <Select
@@ -116,6 +186,66 @@ export default function UitvaartWizardPage() {
               />
             </div>
           )}
+        </div>
+      ),
+    },
+    {
+      id: "locaties",
+      titel: "Locatie-voorkeuren",
+      beschrijving: "Heeft u voorkeuren voor specifieke locaties?",
+      content: (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Optioneel: specificeer uw voorkeurslocaties. Dit helpt de uitvaartondernemer bij de voorbereiding.
+          </p>
+          <div className="space-y-2">
+            <Label>Voorkeur begraafplaats — naam</Label>
+            <Input
+              value={form.voorkeurBegraafplaatsNaam}
+              onChange={(e) => update("voorkeurBegraafplaatsNaam", e.target.value)}
+              placeholder="bijv. Begraafplaats Zorgvlied"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Voorkeur begraafplaats — adres</Label>
+            <Input
+              value={form.voorkeurBegraafplaatsAdres}
+              onChange={(e) => update("voorkeurBegraafplaatsAdres", e.target.value)}
+              placeholder="bijv. Amsteldijk 273, Amsterdam"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Voorkeur crematorium — naam</Label>
+            <Input
+              value={form.voorkeurCrematoriumnaam}
+              onChange={(e) => update("voorkeurCrematoriumnaam", e.target.value)}
+              placeholder="bijv. Crematorium Westgaarde"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Voorkeur crematorium — adres</Label>
+            <Input
+              value={form.voorkeurCrematoriumAdres}
+              onChange={(e) => update("voorkeurCrematoriumAdres", e.target.value)}
+              placeholder="bijv. Ookmeerweg 275, Amsterdam"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Voorkeur aula / ceremonie-locatie — naam</Label>
+            <Input
+              value={form.voorkeurAulaNaam}
+              onChange={(e) => update("voorkeurAulaNaam", e.target.value)}
+              placeholder="bijv. Het Lichtruim"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Voorkeur aula / ceremonie-locatie — adres</Label>
+            <Input
+              value={form.voorkeurAulaAdres}
+              onChange={(e) => update("voorkeurAulaAdres", e.target.value)}
+              placeholder="Adres van de locatie"
+            />
+          </div>
         </div>
       ),
     },
@@ -208,6 +338,15 @@ export default function UitvaartWizardPage() {
               rows={2}
             />
           </div>
+          <div className="space-y-2">
+            <Label>Tekst rouwadvertentie</Label>
+            <Textarea
+              value={form.rouwadvertentieTekst}
+              onChange={(e) => update("rouwadvertentieTekst", e.target.value)}
+              placeholder="Gewenste tekst voor de rouwadvertentie in de krant (kan afwijken van de rouwkaart)..."
+              rows={4}
+            />
+          </div>
         </div>
       ),
     },
@@ -216,6 +355,19 @@ export default function UitvaartWizardPage() {
       titel: "Aanvullende Wensen",
       content: (
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Globaal budget voor uitvaart</Label>
+            <Select
+              value={form.budgetRichting}
+              onChange={(e) => update("budgetRichting", e.target.value)}
+            >
+              <option value="">Geen voorkeur</option>
+              <option value="Eenvoudig">Eenvoudig (tot €5.000)</option>
+              <option value="Gemiddeld">Gemiddeld (€5.000 - €10.000)</option>
+              <option value="Uitgebreid">Uitgebreid (€10.000 - €20.000)</option>
+              <option value="Luxe">Luxe (meer dan €20.000)</option>
+            </Select>
+          </div>
           <div className="space-y-2">
             <Label>Overige wensen</Label>
             <Textarea
@@ -247,6 +399,20 @@ export default function UitvaartWizardPage() {
               <span className="font-medium">Ondernemer:</span>{" "}
               {form.uitvaartOndernemer || "—"}
             </div>
+            {(form.uitvaartOndernemerTelefoon || form.uitvaartOndernemerEmail) && (
+              <div>
+                {form.uitvaartOndernemerTelefoon && <span className="mr-4">Tel: {form.uitvaartOndernemerTelefoon}</span>}
+                {form.uitvaartOndernemerEmail && <span>E-mail: {form.uitvaartOndernemerEmail}</span>}
+              </div>
+            )}
+            {form.uitvaartOndernemerAdres && (
+              <div>
+                <span className="font-medium">Adres:</span>{" "}
+                {form.uitvaartOndernemerAdres}
+                {form.uitvaartOndernemerPostcode && `, ${form.uitvaartOndernemerPostcode}`}
+                {form.uitvaartOndernemerPlaats && ` ${form.uitvaartOndernemerPlaats}`}
+              </div>
+            )}
             {form.ceremonieSoort && (
               <div>
                 <span className="font-medium">Ceremonie:</span>{" "}
@@ -276,6 +442,33 @@ export default function UitvaartWizardPage() {
               </div>
             </div>
           )}
+          {form.rouwadvertentieTekst && (
+            <div className="rounded-lg border p-4">
+              <div className="font-medium mb-1">Rouwadvertentie:</div>
+              <div className="text-muted-foreground whitespace-pre-wrap">
+                {form.rouwadvertentieTekst}
+              </div>
+            </div>
+          )}
+          {(form.voorkeurBegraafplaatsNaam || form.voorkeurCrematoriumnaam || form.voorkeurAulaNaam) && (
+            <div className="rounded-lg border p-4 space-y-1">
+              <div className="font-medium mb-1">Locatie-voorkeuren:</div>
+              {form.voorkeurBegraafplaatsNaam && (
+                <div className="text-muted-foreground">Begraafplaats: {form.voorkeurBegraafplaatsNaam}{form.voorkeurBegraafplaatsAdres && ` — ${form.voorkeurBegraafplaatsAdres}`}</div>
+              )}
+              {form.voorkeurCrematoriumnaam && (
+                <div className="text-muted-foreground">Crematorium: {form.voorkeurCrematoriumnaam}{form.voorkeurCrematoriumAdres && ` — ${form.voorkeurCrematoriumAdres}`}</div>
+              )}
+              {form.voorkeurAulaNaam && (
+                <div className="text-muted-foreground">Aula: {form.voorkeurAulaNaam}{form.voorkeurAulaAdres && ` — ${form.voorkeurAulaAdres}`}</div>
+              )}
+            </div>
+          )}
+          {form.budgetRichting && (
+            <div className="rounded-lg border p-4">
+              <span className="font-medium">Budget:</span> {form.budgetRichting}
+            </div>
+          )}
         </div>
       ),
     },
@@ -287,6 +480,11 @@ export default function UitvaartWizardPage() {
       heeftUitvaartVerzekering: form.heeftUitvaartVerzekering === "true",
       begraafplaats: form.begraafplaats || null,
       uitvaartOndernemer: form.uitvaartOndernemer || null,
+      uitvaartOndernemerTelefoon: form.uitvaartOndernemerTelefoon || null,
+      uitvaartOndernemerEmail: form.uitvaartOndernemerEmail || null,
+      uitvaartOndernemerAdres: form.uitvaartOndernemerAdres || null,
+      uitvaartOndernemerPostcode: form.uitvaartOndernemerPostcode || null,
+      uitvaartOndernemerPlaats: form.uitvaartOndernemerPlaats || null,
       uitvaartVerzekeringDetails: form.uitvaartVerzekeringDetails || null,
       ceremonieSoort: form.ceremonieSoort || null,
       ceremonieLocatie: form.ceremonieLocatie || null,
@@ -295,8 +493,16 @@ export default function UitvaartWizardPage() {
       bloemen: form.bloemen || null,
       kledingwensen: form.kledingwensen || null,
       rouwkaartTekst: form.rouwkaartTekst || null,
+      rouwadvertentieTekst: form.rouwadvertentieTekst || null,
       condoleance: form.condoleance || null,
       overigeWensen: form.overigeWensen || null,
+      voorkeurBegraafplaatsNaam: form.voorkeurBegraafplaatsNaam || null,
+      voorkeurBegraafplaatsAdres: form.voorkeurBegraafplaatsAdres || null,
+      voorkeurCrematoriumnaam: form.voorkeurCrematoriumnaam || null,
+      voorkeurCrematoriumAdres: form.voorkeurCrematoriumAdres || null,
+      voorkeurAulaNaam: form.voorkeurAulaNaam || null,
+      voorkeurAulaAdres: form.voorkeurAulaAdres || null,
+      budgetRichting: form.budgetRichting || null,
     });
     router.push("/uitvaart");
   };

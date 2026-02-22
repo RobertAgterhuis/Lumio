@@ -20,6 +20,14 @@ import {
   Church,
   FileText,
   Loader2,
+  Phone,
+  ShieldAlert,
+  Archive,
+  ClipboardList,
+  FileJson,
+  FileCode,
+  Sheet,
+  Flower2,
 } from "lucide-react";
 
 const exportOptions = [
@@ -64,6 +72,48 @@ const exportOptions = [
     label: "Documenten",
     icon: FileText,
     endpoint: "/api/export/documenten",
+  },
+  {
+    key: "noodkaart",
+    label: "Noodkaart",
+    icon: Phone,
+    endpoint: "/api/export/noodkaart",
+  },
+  {
+    key: "testament-concept",
+    label: "Testament Concept (wettelijk)",
+    icon: ScrollText,
+    endpoint: "/api/export/testament-concept",
+  },
+  {
+    key: "wilsverklaring",
+    label: "Wilsverklaring Euthanasie (wettelijk)",
+    icon: Stethoscope,
+    endpoint: "/api/export/wilsverklaring",
+  },
+  {
+    key: "noodprocedure",
+    label: "Noodprocedure & Instructie",
+    icon: ShieldAlert,
+    endpoint: "/api/export/noodprocedure",
+  },
+  {
+    key: "boedelbeschrijving",
+    label: "Boedelbeschrijving (wettelijk)",
+    icon: ClipboardList,
+    endpoint: "/api/export/boedelbeschrijving",
+  },
+  {
+    key: "executeur-rapport",
+    label: "Executeur-rapport",
+    icon: ClipboardList,
+    endpoint: "/api/export/executeur-rapport",
+  },
+  {
+    key: "notaris",
+    label: "Notaris-dossier (brief)",
+    icon: ScrollText,
+    endpoint: "/api/export/notaris",
   },
 ];
 
@@ -123,6 +173,96 @@ export default function ExportPage() {
     }
   };
 
+  const handleZipExport = async () => {
+    setDownloading("zip");
+    setError(null);
+    try {
+      const response = await fetch("/api/export/alles", {
+        method: "POST",
+      });
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const today = new Date().toISOString().slice(0, 10);
+      a.download = `lumio-export-${today}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const handleStructuredExport = async (format: "json" | "xml") => {
+    const key = format;
+    setDownloading(key);
+    setError(null);
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/${format}`);
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const today = new Date().toISOString().slice(0, 10);
+      a.download = `lumio-export-${today}.${format}`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const handleCsvExport = async (naam: string) => {
+    const key = `csv-${naam}`;
+    setDownloading(key);
+    setError(null);
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/csv/${naam}`);
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const today = new Date().toISOString().slice(0, 10);
+      a.download = `lumio-${naam}-${today}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const csvOptions = [
+    { naam: "erfgenamen", label: "Erfgenamen" },
+    { naam: "bezittingen", label: "Bezittingen" },
+    { naam: "bankrekeningen", label: "Bankrekeningen" },
+    { naam: "verzekeringen", label: "Verzekeringen" },
+    { naam: "schulden", label: "Schulden" },
+    { naam: "noodcontacten", label: "Noodcontacten" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -147,7 +287,7 @@ export default function ExportPage() {
             Exporteer alle vastgelegde informatie in één PDF-document.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex gap-3 flex-wrap">
           <Button
             onClick={handleCompleteExport}
             disabled={downloading !== null}
@@ -158,6 +298,139 @@ export default function ExportPage() {
               <Download className="h-4 w-4 mr-2" />
             )}
             Alles exporteren als PDF
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleZipExport}
+            disabled={downloading !== null}
+          >
+            {downloading === "zip" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Archive className="h-4 w-4 mr-2" />
+            )}
+            Compleet pakket (ZIP)
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileJson className="h-5 w-5" /> Gestructureerde export
+          </CardTitle>
+          <CardDescription>
+            Exporteer alle gegevens als JSON of XML — ideaal voor overdracht aan
+            een notaris of ander systeem. Wachtwoorden en gevoelige gegevens
+            worden uitgesloten.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex gap-3 flex-wrap">
+          <Button
+            variant="outline"
+            onClick={() => handleStructuredExport("json")}
+            disabled={downloading !== null}
+          >
+            {downloading === "json" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileJson className="h-4 w-4 mr-2" />
+            )}
+            Downloaden als JSON
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleStructuredExport("xml")}
+            disabled={downloading !== null}
+          >
+            {downloading === "xml" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileCode className="h-4 w-4 mr-2" />
+            )}
+            Downloaden als XML
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sheet className="h-5 w-5" /> CSV-export (Excel)
+          </CardTitle>
+          <CardDescription>
+            Exporteer lijsten als CSV-bestand — geschikt voor Excel, Google
+            Sheets of andere spreadsheetprogramma&apos;s. Ideaal voor overzichten
+            van erfgenamen, bezittingen of financiën.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex gap-3 flex-wrap">
+          {csvOptions.map((opt) => (
+            <Button
+              key={opt.naam}
+              variant="outline"
+              size="sm"
+              onClick={() => handleCsvExport(opt.naam)}
+              disabled={downloading !== null}
+            >
+              {downloading === `csv-${opt.naam}` ? (
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              ) : (
+                <Sheet className="h-3 w-3 mr-1" />
+              )}
+              {opt.label}
+            </Button>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Flower2 className="h-5 w-5" /> NUV-standaard export
+          </CardTitle>
+          <CardDescription>
+            Exporteer uitvaartgegevens in het sectorstandaard formaat van de
+            Nederlandse Uitvaart Verzorgers (NUV). Geschikt voor directe import
+            in uitvaartsoftware.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              setDownloading("nuv");
+              setError(null);
+              try {
+                const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+                const response = await fetch(`${API_BASE}/api/export/nuv`);
+                if (response.status === 423) { window.location.href = "/"; return; }
+                if (!response.ok) {
+                  const body = await response.json().catch(() => ({}));
+                  throw new Error(body.error || "Export mislukt");
+                }
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                const today = new Date().toISOString().slice(0, 10);
+                a.download = `lumio-nuv-export-${today}.xml`;
+                a.click();
+                URL.revokeObjectURL(url);
+              } catch (err) {
+                setError(err instanceof Error ? err.message : "Export mislukt.");
+              } finally {
+                setDownloading(null);
+              }
+            }}
+            disabled={downloading !== null}
+          >
+            {downloading === "nuv" ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Flower2 className="h-4 w-4 mr-2" />
+            )}
+            NUV XML downloaden
           </Button>
         </CardContent>
       </Card>

@@ -2,6 +2,7 @@ import { app, dialog } from "electron";
 import { startBackend, stopBackend } from "./sidecar";
 import { createMainWindow } from "./window";
 import { getBackendPath, getFrontendPath } from "./paths";
+import { registerAutoBackupHandlers, startAutoBackupScheduler, stopAutoBackupScheduler } from "./autobackup";
 
 // Single instance lock — prevent multiple Lumio instances
 const gotLock = app.requestSingleInstanceLock();
@@ -35,8 +36,14 @@ app.whenReady().then(async () => {
     const port = await findPort();
     console.log(`[lumio] Starting with backend port ${port}`);
 
+    // Register IPC handlers before creating window
+    registerAutoBackupHandlers();
+
     // Start the .NET sidecar
     await startBackend(port);
+
+    // Start auto-backup scheduler
+    startAutoBackupScheduler();
 
     // Create the main window
     createMainWindow();
@@ -51,11 +58,13 @@ app.whenReady().then(async () => {
 });
 
 app.on("window-all-closed", () => {
+  stopAutoBackupScheduler();
   stopBackend();
   app.quit();
 });
 
 app.on("before-quit", () => {
+  stopAutoBackupScheduler();
   stopBackend();
 });
 

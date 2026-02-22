@@ -16,7 +16,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { KeyRound, Plus, Trash2, Loader2, Unlock } from "lucide-react";
 
 export function HeirUnlockForm() {
-  const { setUnlocked } = useAuthStore();
+  const { setUnlocked, setReadOnly } = useAuthStore();
   const [shares, setShares] = useState<string[]>([""]);
   const [error, setError] = useState<string | null>(null);
   const [reconstructing, setReconstructing] = useState(false);
@@ -33,7 +33,7 @@ export function HeirUnlockForm() {
     setError(null);
     const validShares = shares.filter((s) => s.trim().length > 0);
     if (validShares.length < 2) {
-      setError("Minimaal 2 sleuteldelen zijn vereist.");
+      setError("Minimaal 2 noodcodes zijn vereist.");
       return;
     }
 
@@ -50,10 +50,12 @@ export function HeirUnlockForm() {
         wachtwoord: result.wachtwoord,
       });
 
+      // Erfgenaam-toegang is altijd read-only
+      setReadOnly(true);
       setUnlocked(true);
     } catch {
       setError(
-        "Reconstructie mislukt. Controleer of u genoeg geldige sleuteldelen heeft ingevoerd."
+        "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd."
       );
     } finally {
       setReconstructing(false);
@@ -68,8 +70,8 @@ export function HeirUnlockForm() {
         </div>
         <CardTitle>Erfgenaam Toegang</CardTitle>
         <CardDescription>
-          Voer de Shamir sleuteldelen in om het hoofdwachtwoord te
-          reconstrueren. U heeft minimaal het drempelaantal delen nodig.
+          Voer de noodcodes in om het hoofdwachtwoord te
+          reconstrueren. U heeft minimaal het drempelaantal codes nodig.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -78,11 +80,11 @@ export function HeirUnlockForm() {
             {shares.map((share, i) => (
               <div key={i} className="flex gap-2">
                 <div className="flex-1 space-y-1">
-                  <Label className="text-xs">Deel {i + 1}</Label>
+                  <Label className="text-xs">Code {i + 1}</Label>
                   <Input
                     value={share}
                     onChange={(e) => updateShare(i, e.target.value)}
-                    placeholder="Plak hier het sleuteldeel..."
+                    placeholder="Plak hier de noodcode..."
                     className="font-mono text-xs"
                   />
                 </div>
@@ -106,7 +108,7 @@ export function HeirUnlockForm() {
             onClick={addShare}
             className="w-full"
           >
-            <Plus className="h-4 w-4 mr-2" /> Nog een deel toevoegen
+            <Plus className="h-4 w-4 mr-2" /> Nog een code toevoegen
           </Button>
 
           {error && (
@@ -126,7 +128,7 @@ export function HeirUnlockForm() {
             ) : (
               <>
                 <Unlock className="h-4 w-4 mr-2" />
-                Ontgrendelen met sleuteldelen
+                Ontgrendelen met noodcodes
               </>
             )}
           </Button>

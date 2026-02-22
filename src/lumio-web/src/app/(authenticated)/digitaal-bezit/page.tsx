@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,11 +16,20 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api } from "@/lib/api-client";
-import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
+import { Globe, Key, Bitcoin, Plus, Pencil, Trash2, Eye, EyeOff, Filter, Upload, Loader2, ExternalLink, Info } from "lucide-react";
+import { PasswordGenerator } from "@/components/PasswordGenerator";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import {
+  zoekAfsluitInstructie,
+  zoekAfsluitInstructiesVoorCategorie,
+  type AfsluitInstructie,
+} from "@/lib/afsluit-instructies";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
 
 interface DigitaalAccount {
   id: string;
   platformNaam: string;
+  categorie?: string;
   gebruikersnaam?: string;
   emailAdres?: string;
   url?: string;
@@ -46,8 +55,22 @@ interface CryptoWallet {
   notities?: string;
 }
 
+const ACCOUNT_CATEGORIEEN = [
+  "Social Media",
+  "Email",
+  "Banking",
+  "Shopping",
+  "Streaming",
+  "Gaming",
+  "Cloud",
+  "Werk",
+  "Overheid",
+  "Overig",
+];
+
 const emptyAccount = {
   platformNaam: "",
+  categorie: "",
   gebruikersnaam: "",
   emailAdres: "",
   url: "",
@@ -89,6 +112,36 @@ export default function DigitaalBezitPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ontsleuteld, setOntsleuteld] = useState<Record<string, string>>({});
+  const [categorieFilter, setCategorieFilter] = useState<string>("");
+  const [importOpen, setImportOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState<{
+    geimporteerd: number;
+    fouten: number;
+    details: string[];
+  } | null>(null);
+  const importFileRef = React.useRef<HTMLInputElement>(null);
+
+  /** Expanded account IDs for showing afsluit-instructies */
+  const [instructieOpen, setInstructieOpen] = useState<Record<string, boolean>>({});
+
+  const toggleInstructie = (id: string) =>
+    setInstructieOpen((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  /** Find closure instruction for a given account */
+  const getInstructie = (account: DigitaalAccount): AfsluitInstructie | undefined => {
+    const direct = zoekAfsluitInstructie(account.platformNaam);
+    if (direct) return direct;
+    if (account.categorie) {
+      const catResults = zoekAfsluitInstructiesVoorCategorie(account.categorie);
+      return catResults.length > 0 ? catResults[0] : undefined;
+    }
+    return undefined;
+  };
+
+  const filteredAccounts = categorieFilter
+    ? accounts.filter((a) => a.categorie === categorieFilter)
+    : accounts;
 
   const loadData = () => {
     Promise.all([
@@ -114,6 +167,7 @@ export default function DigitaalBezitPage() {
       setEditId(account.id);
       setAccountForm({
         platformNaam: account.platformNaam,
+        categorie: account.categorie ?? "",
         gebruikersnaam: account.gebruikersnaam ?? "",
         emailAdres: account.emailAdres ?? "",
         url: account.url ?? "",
@@ -171,6 +225,7 @@ export default function DigitaalBezitPage() {
     try {
       const payload = {
         platformNaam: accountForm.platformNaam,
+        categorie: accountForm.categorie || null,
         gebruikersnaam: accountForm.gebruikersnaam || null,
         emailAdres: accountForm.emailAdres || null,
         url: accountForm.url || null,
@@ -287,6 +342,30 @@ export default function DigitaalBezitPage() {
     }
   };
 
+  const handleImport = async () => {
+    const file = importFileRef.current?.files?.[0];
+    if (!file) return;
+
+    setImporting(true);
+    setImportResult(null);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append("bestand", file);
+      const result = await api.upload<{
+        geimporteerd: number;
+        fouten: number;
+        details: string[];
+      }>("/api/digitaal-bezit/wachtwoorden/importeren", formData);
+      setImportResult(result);
+      if (result.geimporteerd > 0) loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Importeren mislukt.");
+    } finally {
+      setImporting(false);
+    }
+  };
+
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
@@ -301,6 +380,8 @@ export default function DigitaalBezitPage() {
         <p className="text-muted-foreground mt-1">
           Online accounts, wachtwoorden en crypto wallets
         </p>
+        <VoorbeeldDialog domein="digitaal-bezit" />
+        <SectieNotitie sectie="digitaal-bezit" />
       </div>
 
       <div className="rounded-lg border border-green-200 bg-green-50 p-4">
@@ -328,49 +409,100 @@ export default function DigitaalBezitPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Online Accounts</CardTitle>
-              <Button size="sm" onClick={() => openAccountDialog()}>
-                <Plus className="h-4 w-4 mr-1" /> Toevoegen
-              </Button>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <Select
+                    value={categorieFilter}
+                    onChange={(e) => setCategorieFilter(e.target.value)}
+                    className="w-40"
+                  >
+                    <option value="">Alle categorieën</option>
+                    {ACCOUNT_CATEGORIEEN.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </Select>
+                </div>
+                <Button size="sm" onClick={() => openAccountDialog()}>
+                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              {accounts.length === 0 ? (
+              {filteredAccounts.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">
-                  Nog geen accounts. Klik op Toevoegen.
+                  {categorieFilter
+                    ? `Geen accounts in categorie "${categorieFilter}".`
+                    : "Nog geen accounts. Klik op Toevoegen."}
                 </p>
               ) : (
                 <div className="space-y-2">
-                  {accounts.map((a) => (
-                    <div
-                      key={a.id}
-                      className="flex items-center justify-between rounded-md border p-3"
-                    >
-                      <div>
-                        <p className="font-medium text-sm">{a.platformNaam}</p>
-                        {a.gebruikersnaam && (
-                          <p className="text-xs text-muted-foreground">
-                            {a.gebruikersnaam}
+                  {filteredAccounts.map((a) => {
+                    const instructie = getInstructie(a);
+                    return (
+                    <div key={a.id} className="rounded-md border">
+                      <div className="flex items-center justify-between p-3">
+                        <div>
+                          <p className="font-medium text-sm">{a.platformNaam}</p>
+                          {a.gebruikersnaam && (
+                            <p className="text-xs text-muted-foreground">
+                              {a.gebruikersnaam}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {a.categorie && (
+                            <Badge variant="outline">{a.categorie}</Badge>
+                          )}
+                          <Badge variant="secondary">{a.gewensteActie}</Badge>
+                          {instructie && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleInstructie(a.id)}
+                              title="Afsluitinstructies"
+                            >
+                              <Info className={`h-3 w-3 ${instructieOpen[a.id] ? "text-blue-600" : ""}`} />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openAccountDialog(a)}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteItem("accounts", a.id)}
+                          >
+                            <Trash2 className="h-3 w-3 text-red-500" />
+                          </Button>
+                        </div>
+                      </div>
+                      {instructie && instructieOpen[a.id] && (
+                        <div className="border-t bg-blue-50 px-3 py-2">
+                          <p className="text-xs font-medium text-blue-900 mb-1">
+                            Afsluitinstructies — {instructie.platform}
                           </p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="secondary">{a.gewensteActie}</Badge>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openAccountDialog(a)}
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteItem("accounts", a.id)}
-                        >
-                          <Trash2 className="h-3 w-3 text-red-500" />
-                        </Button>
-                      </div>
+                          <p className="text-xs text-blue-800">
+                            {instructie.beschrijving}
+                          </p>
+                          <a
+                            href={instructie.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            Bekijk officiële instructies
+                          </a>
+                        </div>
+                      )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>
@@ -381,9 +513,14 @@ export default function DigitaalBezitPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Wachtwoorden</CardTitle>
-              <Button size="sm" onClick={() => openWachtwoordDialog()}>
-                <Plus className="h-4 w-4 mr-1" /> Toevoegen
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={() => { setImportOpen(true); setImportResult(null); }}>
+                  <Upload className="h-4 w-4 mr-1" /> Importeren
+                </Button>
+                <Button size="sm" onClick={() => openWachtwoordDialog()}>
+                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {wachtwoorden.length === 0 ? (
@@ -531,6 +668,20 @@ export default function DigitaalBezitPage() {
             />
           </div>
           <div className="space-y-2">
+            <Label>Categorie</Label>
+            <Select
+              value={accountForm.categorie}
+              onChange={(e) =>
+                setAccountForm((f) => ({ ...f, categorie: e.target.value }))
+              }
+            >
+              <option value="">Selecteer categorie...</option>
+              {ACCOUNT_CATEGORIEEN.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </Select>
+          </div>
+          <div className="space-y-2">
             <Label>Gebruikersnaam</Label>
             <Input
               value={accountForm.gebruikersnaam}
@@ -655,6 +806,11 @@ export default function DigitaalBezitPage() {
               }
               placeholder={editId ? "Laat leeg om niet te wijzigen" : "Wachtwoord"}
             />
+            <PasswordGenerator
+              onUse={(pw) =>
+                setWachtwoordForm((f) => ({ ...f, wachtwoord: pw }))
+              }
+            />
           </div>
           <div className="space-y-2">
             <Label>URL</Label>
@@ -777,6 +933,66 @@ export default function DigitaalBezitPage() {
           </Button>
           <Button onClick={saveCrypto} disabled={saving}>
             {saving ? "Opslaan..." : "Opslaan"}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Import Wachtwoorden Dialog */}
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogHeader>
+          <DialogTitle>Wachtwoorden importeren</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+            <p className="text-sm text-blue-800">
+              Ondersteunt CSV-export van <strong>1Password</strong>,{" "}
+              <strong>Bitwarden</strong>, <strong>LastPass</strong>,{" "}
+              <strong>KeePass</strong> en <strong>Chrome</strong>.
+              Exporteer uw wachtwoorden als CSV vanuit uw huidige
+              wachtwoordmanager en upload het bestand hieronder.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label>CSV-bestand</Label>
+            <Input ref={importFileRef} type="file" accept=".csv" />
+          </div>
+          {importResult && (
+            <div
+              className={`rounded-lg border p-3 ${
+                importResult.fouten > 0
+                  ? "border-amber-200 bg-amber-50"
+                  : "border-green-200 bg-green-50"
+              }`}
+            >
+              <p className="text-sm font-medium">
+                {importResult.geimporteerd} wachtwoorden geïmporteerd
+                {importResult.fouten > 0 &&
+                  `, ${importResult.fouten} fouten`}
+              </p>
+              {importResult.details.length > 0 && (
+                <ul className="mt-1 text-xs text-muted-foreground list-disc list-inside">
+                  {importResult.details.map((d, i) => (
+                    <li key={i}>{d}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setImportOpen(false)}>
+            Sluiten
+          </Button>
+          <Button onClick={handleImport} disabled={importing}>
+            {importing ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Importeren...
+              </>
+            ) : (
+              <>
+                <Upload className="h-4 w-4 mr-2" /> Importeren
+              </>
+            )}
           </Button>
         </DialogFooter>
       </Dialog>

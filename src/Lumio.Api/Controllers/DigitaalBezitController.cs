@@ -138,6 +138,137 @@ public class DigitaalBezitController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("wachtwoorden/importeren")]
+    public async Task<IActionResult> ImporterenWachtwoorden(
+        IFormFile bestand,
+        [FromServices] IEncryptionService encryption)
+    {
+        if (bestand is null || bestand.Length == 0)
+            return BadRequest(new { error = "Geen bestand geüpload." });
+
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+
+        using var reader = new StreamReader(bestand.OpenReadStream());
+        var headerLine = await reader.ReadLineAsync();
+        if (string.IsNullOrWhiteSpace(headerLine))
+            return BadRequest(new { error = "CSV-bestand is leeg." });
+
+        // Parse header — normalize to lowercase
+        var headers = ParseCsvLine(headerLine).Select(h => h.Trim().ToLowerInvariant()).ToList();
+
+        // Auto-detect column mapping (supports 1Password, Bitwarden, LastPass, KeePass, Chrome)
+        int ColIndex(params string[] candidates) =>
+            candidates.Select(c => headers.IndexOf(c)).FirstOrDefault(i => i >= 0, -1);
+
+        var naamIdx = ColIndex("name", "naam", "title", "login_label", "group");
+        var userIdx = ColIndex("username", "gebruikersnaam", "login_username", "login", "user");
+        var passIdx = ColIndex("password", "wachtwoord", "login_password", "pass");
+        var urlIdx = ColIndex("url", "login_uri", "urls", "website", "web site");
+        var notesIdx = ColIndex("notes", "notities", "login_notes", "extra", "comments");
+
+        if (passIdx < 0)
+            return BadRequest(new { error = "Kan geen 'password' kolom vinden in het CSV-bestand." });
+
+        var imported = 0;
+        var errors = new List<string>();
+        var lineNumber = 1;
+        string? line;
+
+        while ((line = await reader.ReadLineAsync()) is not null)
+        {
+            lineNumber++;
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            try
+            {
+                var fields = ParseCsvLine(line);
+                var naam = GetField(fields, naamIdx) ?? $"Import #{lineNumber}";
+                var user = GetField(fields, userIdx);
+                var pass = GetField(fields, passIdx);
+                var url = GetField(fields, urlIdx);
+                var notes = GetField(fields, notesIdx);
+
+                if (string.IsNullOrWhiteSpace(pass)) continue; // Skip empty passwords
+
+                var entry = new WachtwoordEntry
+                {
+                    EigenaarId = eigenaar.Id,
+                    Naam = naam,
+                    Gebruikersnaam = user,
+                    EncryptedWachtwoord = encryption.Encrypt(pass),
+                    Url = url,
+                    Notities = notes
+                };
+
+                _db.Wachtwoorden.Add(entry);
+                imported++;
+            }
+            catch
+            {
+                errors.Add($"Regel {lineNumber} kon niet worden verwerkt.");
+            }
+        }
+
+        if (imported > 0)
+            await _db.SaveChangesAsync();
+
+        return Ok(new { geimporteerd = imported, fouten = errors.Count, details = errors.Take(10) });
+    }
+
+    private static string? GetField(List<string> fields, int index)
+        => index >= 0 && index < fields.Count ? (string.IsNullOrWhiteSpace(fields[index]) ? null : fields[index].Trim()) : null;
+
+    private static List<string> ParseCsvLine(string line)
+    {
+        var fields = new List<string>();
+        var current = new System.Text.StringBuilder();
+        var inQuotes = false;
+
+        for (int i = 0; i < line.Length; i++)
+        {
+            var c = line[i];
+            if (inQuotes)
+            {
+                if (c == '"')
+                {
+                    if (i + 1 < line.Length && line[i + 1] == '"')
+                    {
+                        current.Append('"');
+                        i++; // skip escaped quote
+                    }
+                    else
+                    {
+                        inQuotes = false;
+                    }
+                }
+                else
+                {
+                    current.Append(c);
+                }
+            }
+            else
+            {
+                if (c == '"')
+                {
+                    inQuotes = true;
+                }
+                else if (c == ',')
+                {
+                    fields.Add(current.ToString());
+                    current.Clear();
+                }
+                else
+                {
+                    current.Append(c);
+                }
+            }
+        }
+        fields.Add(current.ToString());
+        return fields;
+    }
+
     // --- Crypto Wallets ---
 
     [HttpGet("crypto")]

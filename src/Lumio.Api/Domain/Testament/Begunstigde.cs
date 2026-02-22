@@ -9,6 +9,11 @@ public class Begunstigde : BaseEntity
 
     public string Naam { get; set; } = string.Empty;
     public string Relatie { get; set; } = string.Empty;
+    public string? Telefoon { get; set; }
+    public string? Email { get; set; }
+    public string? Adres { get; set; }
+    public string? Postcode { get; set; }
+    public string? Woonplaats { get; set; }
     public string? Omschrijving { get; set; }
     public decimal? Percentage { get; set; }
     public bool IsLegitiemePortie { get; set; }

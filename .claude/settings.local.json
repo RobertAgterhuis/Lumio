@@ -10,7 +10,8 @@
       "Bash(npm install:*)",
       "Bash(NODE_OPTIONS=--openssl-legacy-provider npm install:*)",
       "Bash(npx tsc:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

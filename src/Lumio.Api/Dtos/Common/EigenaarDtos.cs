@@ -1,3 +1,5 @@
+using Lumio.Api.Domain.Common;
+
 namespace Lumio.Api.Dtos.Common;
 
 public record EigenaarResponse(
@@ -14,6 +16,19 @@ public record EigenaarResponse(
     string? Email,
     string? Notaris,
     string? NotarisKantoor,
+    string? NotarisTelefoon,
+    string? NotarisEmail,
+    string? NotarisAdres,
+    string? NotarisPostcode,
+    string? NotarisPlaats,
+    BurgerlijkeStaat BurgerlijkeStaat,
+    HuwelijksVoorwaarden HuwelijksVoorwaarden,
+    DateOnly? DatumHuwelijk,
+    LegitimatieSoort LegitimatieSoort,
+    string? LegitimatieNummer,
+    DateOnly? LegitimatieDatumAfgifte,
+    DateOnly? LegitimatieGeldigTot,
+    bool HeeftProfielFoto,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
@@ -29,4 +44,16 @@ public record EigenaarUpsertRequest(
     string? Telefoon,
     string? Email,
     string? Notaris,
-    string? NotarisKantoor);
+    string? NotarisKantoor,
+    string? NotarisTelefoon,
+    string? NotarisEmail,
+    string? NotarisAdres,
+    string? NotarisPostcode,
+    string? NotarisPlaats,
+    BurgerlijkeStaat BurgerlijkeStaat,
+    HuwelijksVoorwaarden HuwelijksVoorwaarden,
+    DateOnly? DatumHuwelijk,
+    LegitimatieSoort LegitimatieSoort,
+    string? LegitimatieNummer,
+    DateOnly? LegitimatieDatumAfgifte,
+    DateOnly? LegitimatieGeldigTot);

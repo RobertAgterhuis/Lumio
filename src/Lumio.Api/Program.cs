@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
 using Lumio.Api.Middleware;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services.Security;
 using Microsoft.Data.Sqlite;
@@ -20,26 +21,30 @@ QuestPDF.Settings.License = LicenseType.Community;
 // Determine data directory (relative to exe for USB portability)
 var dataDir = Environment.GetEnvironmentVariable("LUMIO_DATA_DIR")
     ?? Path.Combine(AppContext.BaseDirectory, "..", "data");
+dataDir = Path.GetFullPath(dataDir);
 Directory.CreateDirectory(dataDir);
-var dbPath = Path.GetFullPath(Path.Combine(dataDir, "lumio.db"));
 
-builder.Configuration["DatabasePath"] = dbPath;
+builder.Configuration["DataDir"] = dataDir;
+
+// Profile service (singleton — manages profile manifest)
+builder.Services.AddSingleton<IProfileService, ProfileService>();
 
 // Security services (singletons — hold state across requests)
 builder.Services.AddSingleton<IMasterPasswordService, MasterPasswordService>();
 builder.Services.AddSingleton<IShamirService, ShamirService>();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<ILumioPdfService, LumioPdfService>();
+builder.Services.AddSingleton<IAuditService, AuditService>();
 
-// EF Core with SQLCipher
+// EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
 {
     var passwordService = serviceProvider.GetRequiredService<IMasterPasswordService>();
-    if (passwordService.IsUnlocked)
+    if (passwordService.IsUnlocked && passwordService.ActiveDbPath is { } activeDbPath)
     {
         var connStr = new SqliteConnectionStringBuilder
         {
-            DataSource = dbPath,
+            DataSource = activeDbPath,
             Mode = SqliteOpenMode.ReadWriteCreate,
             Password = passwordService.CurrentPassword
         }.ToString();
@@ -123,6 +128,6 @@ else
 }
 
 Console.WriteLine($"Lumio API gestart op {port}");
-Console.WriteLine($"Database pad: {dbPath}");
+Console.WriteLine($"Data map: {dataDir}");
 
 app.Run();

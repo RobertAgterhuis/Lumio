@@ -82,7 +82,10 @@ public class ShamirController : ControllerBase
             if (!success)
                 return Unauthorized(new { error = "Gereconstrueerd wachtwoord is ongeldig." });
 
-            return Ok(new { succes = true, bericht = "Database ontgrendeld via Shamir reconstructie." });
+            // Erfgenaam-toegang is altijd read-only
+            _masterPassword.SetReadOnly(true);
+
+            return Ok(new { succes = true, bericht = "Database ontgrendeld via Shamir reconstructie.", isAlleenLezen = true });
         }
         catch
         {

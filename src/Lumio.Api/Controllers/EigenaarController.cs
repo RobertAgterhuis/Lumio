@@ -51,4 +51,53 @@ public class EigenaarController : ControllerBase
 
         return Ok(eigenaar.Adapt<EigenaarResponse>());
     }
+
+    // P-M16: Profielfoto endpoints
+
+    [HttpGet("foto")]
+    public async Task<IActionResult> GetFoto()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar?.ProfielFoto is null)
+            return NotFound(new { error = "Geen profielfoto gevonden." });
+
+        return File(eigenaar.ProfielFoto, eigenaar.ProfielFotoContentType ?? "image/jpeg", eigenaar.ProfielFotoNaam ?? "profielfoto.jpg");
+    }
+
+    [HttpPost("foto")]
+    [RequestSizeLimit(10_485_760)] // 10 MB
+    public async Task<IActionResult> UploadFoto([FromForm] IFormFile bestand)
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+
+        if (!bestand.ContentType.StartsWith("image/"))
+            return BadRequest(new { error = "Alleen afbeeldingen zijn toegestaan." });
+
+        using var ms = new MemoryStream();
+        await bestand.CopyToAsync(ms);
+
+        eigenaar.ProfielFoto = ms.ToArray();
+        eigenaar.ProfielFotoContentType = bestand.ContentType;
+        eigenaar.ProfielFotoNaam = bestand.FileName;
+        await _db.SaveChangesAsync();
+
+        return Ok(new { message = "Profielfoto opgeslagen." });
+    }
+
+    [HttpDelete("foto")]
+    public async Task<IActionResult> DeleteFoto()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return NotFound(new { error = "Eigenaar profiel niet gevonden." });
+
+        eigenaar.ProfielFoto = null;
+        eigenaar.ProfielFotoContentType = null;
+        eigenaar.ProfielFotoNaam = null;
+        await _db.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

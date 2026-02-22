@@ -16,6 +16,9 @@ import {
   Download,
   LayoutDashboard,
   User,
+  Phone,
+  ClipboardList,
+  ListChecks,
 } from "lucide-react";
 
 const navItems = [
@@ -29,7 +32,10 @@ const navItems = [
   { href: "/uitvaart", label: "Uitvaartwensen", icon: Church },
   { href: "/documenten", label: "Documenten", icon: FileText },
   { href: "/erfgenamen", label: "Erfgenamen", icon: Users },
+  { href: "/noodcontacten", label: "Noodcontacten", icon: Phone },
+  { href: "/tijdlijn", label: "Tijdlijn Overlijden", icon: ListChecks },
   { href: "/export", label: "Exporteren", icon: Download },
+  { href: "/audit-log", label: "Activiteitenlog", icon: ClipboardList },
   { href: "/instellingen", label: "Instellingen", icon: Settings },
 ];
 

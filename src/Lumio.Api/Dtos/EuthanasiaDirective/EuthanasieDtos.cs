@@ -8,10 +8,19 @@ public record WilsverklaringResponse(
     string? SituatieBeschrijving,
     string? Huisarts,
     string? HuisartsPraktijk,
+    string? HuisartsTelefoon,
+    string? HuisartsEmail,
     string? VertegenwoordigerNaam,
     string? VertegenwoordigerRelatie,
     string? VertegenwoordigerTelefoon,
+    string? VertegenwoordigerEmail,
+    string? VertegenwoordigerAdres,
+    string? VertegenwoordigerPostcode,
+    string? VertegenwoordigerWoonplaats,
     string? AanvullendeWensen,
+    bool DementieClausule,
+    string? DementieClausuleToelichting,
+    string? BehandelVerbod,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
@@ -21,10 +30,19 @@ public record WilsverklaringUpsertRequest(
     string? SituatieBeschrijving,
     string? Huisarts,
     string? HuisartsPraktijk,
+    string? HuisartsTelefoon,
+    string? HuisartsEmail,
     string? VertegenwoordigerNaam,
     string? VertegenwoordigerRelatie,
     string? VertegenwoordigerTelefoon,
-    string? AanvullendeWensen);
+    string? VertegenwoordigerEmail,
+    string? VertegenwoordigerAdres,
+    string? VertegenwoordigerPostcode,
+    string? VertegenwoordigerWoonplaats,
+    string? AanvullendeWensen,
+    bool DementieClausule,
+    string? DementieClausuleToelichting,
+    string? BehandelVerbod);
 
 public record VoorwaardeResponse(
     Guid Id,

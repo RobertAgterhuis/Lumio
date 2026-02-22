@@ -1,39 +1,59 @@
+using Lumio.Api.Domain.AssetRegistry;
+
 namespace Lumio.Api.Dtos.AssetRegistry;
 
 public record FysiekBezitResponse(
     Guid Id, string Categorie, string Omschrijving,
     decimal? GeschatteWaarde, string? Locatie,
-    string? BestemdeErfgenaam, string? Notities);
+    string? BestemdeErfgenaam, VermogensSoort VermogensSoort,
+    string? Notities,
+    string? KadastraalNummer, string? Kenteken, string? KvKNummer);
 
 public record FysiekBezitUpsertRequest(
     string Categorie, string Omschrijving,
     decimal? GeschatteWaarde, string? Locatie,
-    string? BestemdeErfgenaam, string? Notities);
+    string? BestemdeErfgenaam, VermogensSoort VermogensSoort,
+    string? Notities,
+    string? KadastraalNummer, string? Kenteken, string? KvKNummer);
 
 public record BankrekeningResponse(
     Guid Id, string BankNaam, string IBAN,
-    string RekeningType, string? Notities);
+    string RekeningType, decimal? Saldo,
+    VermogensSoort VermogensSoort, string? Notities);
 
 public record BankrekeningUpsertRequest(
     string BankNaam, string IBAN,
-    string RekeningType, string? Notities);
+    string RekeningType, decimal? Saldo,
+    VermogensSoort VermogensSoort, string? Notities);
 
 public record VerzekeringResponse(
-    Guid Id, string Verzekeraar, string PolisNummer,
+    Guid Id, string Verzekeraar,
+    string? VerzekeraarTelefoon, string? VerzekeraarEmail,
+    string PolisNummer,
     string Type, decimal? VerzekerdBedrag,
-    string? Begunstigde, string? Notities);
+    string? Begunstigde, VermogensSoort VermogensSoort,
+    string? Notities);
 
 public record VerzekeringUpsertRequest(
-    string Verzekeraar, string PolisNummer,
+    string Verzekeraar,
+    string? VerzekeraarTelefoon, string? VerzekeraarEmail,
+    string PolisNummer,
     string Type, decimal? VerzekerdBedrag,
-    string? Begunstigde, string? Notities);
+    string? Begunstigde, VermogensSoort VermogensSoort,
+    string? Notities);
 
 public record SchuldResponse(
-    Guid Id, string Schuldeiser, string Type,
+    Guid Id, string Schuldeiser,
+    string? SchuldeiserTelefoon, string? SchuldeiserEmail,
+    string Type,
     decimal Bedrag, decimal? MaandelijkseAflossing,
-    string? Referentie, string? Notities);
+    string? Referentie, VermogensSoort VermogensSoort,
+    string? Notities);
 
 public record SchuldUpsertRequest(
-    string Schuldeiser, string Type,
+    string Schuldeiser,
+    string? SchuldeiserTelefoon, string? SchuldeiserEmail,
+    string Type,
     decimal Bedrag, decimal? MaandelijkseAflossing,
-    string? Referentie, string? Notities);
+    string? Referentie, VermogensSoort VermogensSoort,
+    string? Notities);

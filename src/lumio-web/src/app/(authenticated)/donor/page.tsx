@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api-client";
 import { Heart } from "lucide-react";
 import Link from "next/link";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
 
 interface DonorRegistratie {
   id: string;
@@ -55,6 +57,8 @@ export default function DonorPage() {
           <p className="text-muted-foreground mt-1">
             Uw keuze conform de Donorwet
           </p>
+          <VoorbeeldDialog domein="donor" />
+          <SectieNotitie sectie="donor" />
         </div>
         <Link href="/donor/formulier">
           <Button>

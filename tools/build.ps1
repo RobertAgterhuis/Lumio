@@ -202,6 +202,6 @@ Write-Host "============================================" -ForegroundColor Cyan
 Write-Host "  Build complete!" -ForegroundColor Green
 Write-Host "  Output: $DistDir" -ForegroundColor Cyan
 Write-Host "" -ForegroundColor Cyan
-Write-Host "  Copy the dist/Lumio/ folder to a USB drive" -ForegroundColor Cyan
+Write-Host "  Copy the content of the dist/Lumio/ folder to a USB drive" -ForegroundColor Cyan
 Write-Host "  and run the Lumio executable to start." -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan

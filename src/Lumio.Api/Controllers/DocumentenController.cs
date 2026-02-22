@@ -2,7 +2,6 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.Documents;
 using Lumio.Api.Dtos.Documents;
 using Lumio.Api.Services.Security;
-using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +15,36 @@ public class DocumentenController : ControllerBase
 
     public DocumentenController(LumioDbContext db) => _db = db;
 
+    /// <summary>
+    /// Returns the latest version of each document group.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<List<DocumentResponse>>> GetAll()
     {
-        var items = await _db.Documenten
+        // Get all documents grouped, then pick the latest version per group
+        var all = await _db.Documenten
             .OrderBy(d => d.Categorie)
             .ThenBy(d => d.Naam)
+            .ThenByDescending(d => d.Versie)
             .ToListAsync();
-        return Ok(items.Adapt<List<DocumentResponse>>());
+
+        var versionCounts = all
+            .GroupBy(d => d.DocumentGroepId)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        var latest = all
+            .GroupBy(d => d.DocumentGroepId)
+            .Select(g => g.First()) // already sorted descending by Versie
+            .ToList();
+
+        var result = latest.Select(d => new DocumentResponse(
+            d.Id, d.Naam, d.Categorie, d.BestandsNaam, d.ContentType,
+            d.BestandsGrootte, d.Notities, d.VerlooptOp, d.AangemaaktOp, d.GewijzigdOp,
+            d.DocumentGroepId, d.Versie,
+            versionCounts.GetValueOrDefault(d.DocumentGroepId, 1)
+        )).ToList();
+
+        return Ok(result);
     }
 
     [HttpGet("{id:guid}")]
@@ -31,7 +52,35 @@ public class DocumentenController : ControllerBase
     {
         var item = await _db.Documenten.FindAsync(id);
         if (item is null) return NotFound();
-        return Ok(item.Adapt<DocumentResponse>());
+
+        var aantalVersies = await _db.Documenten
+            .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
+
+        return Ok(new DocumentResponse(
+            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
+            item.DocumentGroepId, item.Versie, aantalVersies
+        ));
+    }
+
+    /// <summary>
+    /// Returns all versions for a given document's group.
+    /// </summary>
+    [HttpGet("{id:guid}/versies")]
+    public async Task<ActionResult<List<DocumentVersieResponse>>> GetVersions(Guid id)
+    {
+        var item = await _db.Documenten.FindAsync(id);
+        if (item is null) return NotFound();
+
+        var versies = await _db.Documenten
+            .Where(d => d.DocumentGroepId == item.DocumentGroepId)
+            .OrderByDescending(d => d.Versie)
+            .Select(d => new DocumentVersieResponse(
+                d.Id, d.Versie, d.BestandsNaam, d.BestandsGrootte, d.AangemaaktOp
+            ))
+            .ToListAsync();
+
+        return Ok(versies);
     }
 
     [HttpPost("uploaden")]
@@ -41,6 +90,7 @@ public class DocumentenController : ControllerBase
         [FromForm] string naam,
         [FromForm] string categorie,
         [FromForm] string? notities,
+        [FromForm] string? verlooptOp,
         [FromServices] IEncryptionService encryption)
     {
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
@@ -49,6 +99,15 @@ public class DocumentenController : ControllerBase
         using var ms = new MemoryStream();
         await bestand.CopyToAsync(ms);
         var content = ms.ToArray();
+
+        // Check if a document with the same name already exists → create new version
+        var existing = await _db.Documenten
+            .Where(d => d.Naam == naam && d.EigenaarId == eigenaar.Id)
+            .OrderByDescending(d => d.Versie)
+            .FirstOrDefaultAsync();
+
+        var documentGroepId = existing?.DocumentGroepId ?? Guid.NewGuid();
+        var versie = (existing?.Versie ?? 0) + 1;
 
         var item = new PersoonlijkDocument
         {
@@ -59,12 +118,23 @@ public class DocumentenController : ControllerBase
             ContentType = bestand.ContentType,
             BestandsGrootte = bestand.Length,
             BestandsInhoud = content,
-            Notities = notities
+            Notities = notities,
+            VerlooptOp = DateOnly.TryParse(verlooptOp, out var vd) ? vd : null,
+            DocumentGroepId = documentGroepId,
+            Versie = versie
         };
 
         _db.Documenten.Add(item);
         await _db.SaveChangesAsync();
-        return Created($"/api/documenten/{item.Id}", item.Adapt<DocumentResponse>());
+
+        var aantalVersies = await _db.Documenten
+            .CountAsync(d => d.DocumentGroepId == documentGroepId);
+
+        return Created($"/api/documenten/{item.Id}", new DocumentResponse(
+            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
+            item.DocumentGroepId, item.Versie, aantalVersies
+        ));
     }
 
     [HttpGet("{id:guid}/download")]
@@ -76,6 +146,36 @@ public class DocumentenController : ControllerBase
         return File(item.BestandsInhoud, item.ContentType, item.BestandsNaam);
     }
 
+    /// <summary>
+    /// Updates the expiry date and/or notes of a document.
+    /// </summary>
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<DocumentResponse>> Update(Guid id, [FromBody] DocumentUpdateRequest request)
+    {
+        var item = await _db.Documenten.FindAsync(id);
+        if (item is null) return NotFound();
+
+        if (request.VerlooptOp is not null)
+            item.VerlooptOp = request.VerlooptOp;
+
+        if (request.Notities is not null)
+            item.Notities = request.Notities;
+
+        await _db.SaveChangesAsync();
+
+        var aantalVersies = await _db.Documenten
+            .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
+
+        return Ok(new DocumentResponse(
+            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
+            item.DocumentGroepId, item.Versie, aantalVersies
+        ));
+    }
+
+    /// <summary>
+    /// Deletes a single version. If it's the last version in the group, the group is gone.
+    /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
@@ -83,6 +183,24 @@ public class DocumentenController : ControllerBase
         if (item is null) return NotFound();
 
         _db.Documenten.Remove(item);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Deletes all versions in a document group.
+    /// </summary>
+    [HttpDelete("{id:guid}/alle-versies")]
+    public async Task<IActionResult> DeleteAllVersions(Guid id)
+    {
+        var item = await _db.Documenten.FindAsync(id);
+        if (item is null) return NotFound();
+
+        var allVersions = await _db.Documenten
+            .Where(d => d.DocumentGroepId == item.DocumentGroepId)
+            .ToListAsync();
+
+        _db.Documenten.RemoveRange(allVersions);
         await _db.SaveChangesAsync();
         return NoContent();
     }

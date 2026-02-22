@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import {
   Users,
   Plus,
@@ -29,7 +31,13 @@ import {
   Copy,
   Check,
   Loader2,
+  Package,
+  Download,
+  Share2,
 } from "lucide-react";
+import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { ErfbelastingCalculator } from "@/components/erfgenamen/ErfbelastingCalculator";
 
 interface Erfgenaam {
   id: string;
@@ -39,9 +47,18 @@ interface Erfgenaam {
   relatie: string;
   email?: string;
   telefoon?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
+  geboortedatum?: string;
+  bsn?: string;
   shareIndex?: number;
   heeftShareOntvangen: boolean;
   shareUitgegevenOp?: string;
+  legitimatieSoort?: number;
+  legitimatieNummer?: string;
+  legitimatieDatumAfgifte?: string;
+  legitimatieGeldigTot?: string;
 }
 
 interface ShareInfo {
@@ -55,6 +72,30 @@ interface GenereerResponse {
   totaalAantalDelen: number;
 }
 
+interface Toewijzing {
+  id: string;
+  erfgenaamId: string;
+  erfgenaamNaam: string;
+  entityType: string;
+  entityId: string;
+  entityNaam: string;
+  instructies?: string;
+}
+
+interface AssetItem {
+  id: string;
+  naam: string;
+  type: string;
+}
+
+const ENTITY_TYPE_LABELS: Record<string, string> = {
+  FysiekBezit: "Bezitting",
+  Bankrekening: "Bankrekening",
+  Verzekering: "Verzekering",
+  DigitaalAccount: "Digitaal Account",
+  CryptoWallet: "Crypto Wallet",
+};
+
 const emptyForm = {
   voornaam: "",
   achternaam: "",
@@ -62,6 +103,15 @@ const emptyForm = {
   relatie: "",
   email: "",
   telefoon: "",
+  adres: "",
+  postcode: "",
+  woonplaats: "",
+  geboortedatum: "",
+  bsn: "",
+  legitimatieSoort: "0",
+  legitimatieNummer: "",
+  legitimatieDatumAfgifte: "",
+  legitimatieGeldigTot: "",
 };
 
 function displayName(e: Erfgenaam): string {
@@ -78,6 +128,19 @@ export default function ErfgenamenPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Toewijzing state
+  const [toewijzingen, setToewijzingen] = useState<Toewijzing[]>([]);
+  const [availableAssets, setAvailableAssets] = useState<AssetItem[]>([]);
+  const [toewijzingDialogOpen, setToewijzingDialogOpen] = useState(false);
+  const [toewijzingForm, setToewijzingForm] = useState({
+    erfgenaamId: "",
+    entityType: "",
+    entityId: "",
+    instructies: "",
+  });
+  const [toewijzingSaving, setToewijzingSaving] = useState(false);
+  const [expandedErfgenaam, setExpandedErfgenaam] = useState<string | null>(null);
 
   // Shamir state
   const [shamirDialogOpen, setShamirDialogOpen] = useState(false);
@@ -96,8 +159,40 @@ export default function ErfgenamenPage() {
       .finally(() => setLoading(false));
   };
 
+  const loadToewijzingen = () => {
+    api
+      .get<Toewijzing[]>("/api/toewijzingen")
+      .then((d) => setToewijzingen(d ?? []))
+      .catch(() => {});
+  };
+
+  const loadAvailableAssets = async () => {
+    try {
+      const [bezittingen, bankrekeningen, verzekeringen, accounts, crypto] =
+        await Promise.all([
+          api.get<{ id: string; omschrijving: string }[]>("/api/boedel/bezittingen").catch(() => []),
+          api.get<{ id: string; bankNaam: string }[]>("/api/boedel/bankrekeningen").catch(() => []),
+          api.get<{ id: string; verzekeraar: string }[]>("/api/boedel/verzekeringen").catch(() => []),
+          api.get<{ id: string; platformNaam: string }[]>("/api/digitaal-bezit/accounts").catch(() => []),
+          api.get<{ id: string; walletNaam: string }[]>("/api/digitaal-bezit/crypto").catch(() => []),
+        ]);
+      const assets: AssetItem[] = [
+        ...(bezittingen ?? []).map((b) => ({ id: b.id, naam: b.omschrijving, type: "FysiekBezit" })),
+        ...(bankrekeningen ?? []).map((b) => ({ id: b.id, naam: b.bankNaam, type: "Bankrekening" })),
+        ...(verzekeringen ?? []).map((v) => ({ id: v.id, naam: v.verzekeraar, type: "Verzekering" })),
+        ...(accounts ?? []).map((a) => ({ id: a.id, naam: a.platformNaam, type: "DigitaalAccount" })),
+        ...(crypto ?? []).map((c) => ({ id: c.id, naam: c.walletNaam, type: "CryptoWallet" })),
+      ];
+      setAvailableAssets(assets);
+    } catch {
+      // ignore
+    }
+  };
+
   useEffect(() => {
     loadData();
+    loadToewijzingen();
+    loadAvailableAssets();
   }, []);
 
   const openDialog = (item?: Erfgenaam) => {
@@ -111,6 +206,15 @@ export default function ErfgenamenPage() {
         relatie: item.relatie,
         email: item.email ?? "",
         telefoon: item.telefoon ?? "",
+        adres: item.adres ?? "",
+        postcode: item.postcode ?? "",
+        woonplaats: item.woonplaats ?? "",
+        geboortedatum: item.geboortedatum ?? "",
+        bsn: item.bsn ?? "",
+        legitimatieSoort: String(item.legitimatieSoort ?? 0),
+        legitimatieNummer: item.legitimatieNummer ?? "",
+        legitimatieDatumAfgifte: item.legitimatieDatumAfgifte ?? "",
+        legitimatieGeldigTot: item.legitimatieGeldigTot ?? "",
       });
     } else {
       setEditId(null);
@@ -128,6 +232,15 @@ export default function ErfgenamenPage() {
         tussenvoegsel: form.tussenvoegsel || null,
         email: form.email || null,
         telefoon: form.telefoon || null,
+        adres: form.adres || null,
+        postcode: form.postcode || null,
+        woonplaats: form.woonplaats || null,
+        geboortedatum: form.geboortedatum || null,
+        bsn: form.bsn || null,
+        legitimatieSoort: parseInt(form.legitimatieSoort),
+        legitimatieNummer: form.legitimatieNummer || null,
+        legitimatieDatumAfgifte: form.legitimatieDatumAfgifte || null,
+        legitimatieGeldigTot: form.legitimatieGeldigTot || null,
       };
       if (editId) {
         await api.put(`/api/erfgenamen/${editId}`, payload);
@@ -149,6 +262,50 @@ export default function ErfgenamenPage() {
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+    }
+  };
+
+  const handleExportErfgenaam = async (id: string, voornaam: string) => {
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/erfgenaam/${id}`, {
+        method: "POST",
+      });
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lumio-erfgenaam-${voornaam.toLowerCase().replace(/\s+/g, "-")}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
+    }
+  };
+
+  const handleDeelMetErfgenaam = async (id: string, voornaam: string) => {
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+      const response = await fetch(`${API_BASE}/api/export/delen/${id}`);
+      if (response.status === 423) { window.location.href = "/"; return; }
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `Export mislukt (${response.status})`);
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lumio-deel-${voornaam.toLowerCase().replace(/\s+/g, "-")}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export mislukt.");
     }
   };
 
@@ -182,6 +339,56 @@ export default function ErfgenamenPage() {
     setCopiedIndex(null);
   };
 
+  const openToewijzingDialog = (erfgenaamId?: string) => {
+    setToewijzingForm({
+      erfgenaamId: erfgenaamId ?? "",
+      entityType: "",
+      entityId: "",
+      instructies: "",
+    });
+    setToewijzingDialogOpen(true);
+  };
+
+  const filteredAssets = availableAssets.filter(
+    (a) =>
+      (!toewijzingForm.entityType || a.type === toewijzingForm.entityType) &&
+      !toewijzingen.some(
+        (t) =>
+          t.entityId === a.id &&
+          t.erfgenaamId === toewijzingForm.erfgenaamId
+      )
+  );
+
+  const handleSaveToewijzing = async () => {
+    setToewijzingSaving(true);
+    try {
+      await api.post("/api/toewijzingen", {
+        erfgenaamId: toewijzingForm.erfgenaamId,
+        entityType: toewijzingForm.entityType,
+        entityId: toewijzingForm.entityId,
+        instructies: toewijzingForm.instructies || null,
+      });
+      setToewijzingDialogOpen(false);
+      loadToewijzingen();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Toewijzing opslaan mislukt.");
+    } finally {
+      setToewijzingSaving(false);
+    }
+  };
+
+  const handleDeleteToewijzing = async (id: string) => {
+    try {
+      await api.delete(`/api/toewijzingen/${id}`);
+      loadToewijzingen();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Toewijzing verwijderen mislukt.");
+    }
+  };
+
+  const getToewijzingenVoorErfgenaam = (erfgenaamId: string) =>
+    toewijzingen.filter((t) => t.erfgenaamId === erfgenaamId);
+
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
@@ -195,8 +402,10 @@ export default function ErfgenamenPage() {
         <div>
           <h1 className="text-3xl font-bold">Erfgenamen</h1>
           <p className="text-muted-foreground mt-1">
-            Erfgenamen beheren en sleuteldelen verdelen
+            Erfgenamen beheren en noodcodes verdelen
           </p>
+          <VoorbeeldDialog domein="erfgenamen" />
+          <SectieNotitie sectie="erfgenamen" />
         </div>
         <div className="flex gap-2">
           {erfgenamen.length >= 2 && (
@@ -204,7 +413,7 @@ export default function ErfgenamenPage() {
               variant="outline"
               onClick={() => setShamirDialogOpen(true)}
             >
-              <KeyRound className="h-4 w-4 mr-2" /> Sleuteldelen genereren
+              <KeyRound className="h-4 w-4 mr-2" /> Noodcodes verdelen
             </Button>
           )}
           <Button onClick={() => openDialog()}>
@@ -215,13 +424,15 @@ export default function ErfgenamenPage() {
 
       <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
         <p className="text-sm text-indigo-800">
-          <strong>Shamir&apos;s Secret Sharing:</strong> Verdeel uw
-          hoofdwachtwoord in delen onder erfgenamen. Een minimum aantal personen
-          (drempel) kan samen het wachtwoord reconstrueren. Individuele delen
-          zijn waardeloos — pas als genoeg personen samenwerken wordt het geheim
-          onthuld.
+          <strong>Noodcodes verdelen:</strong> Uw hoofdwachtwoord wordt veilig
+          opgesplitst in unieke codes voor uw erfgenamen. Pas wanneer genoeg
+          erfgenamen (de &apos;drempel&apos;) hun code samenvoegen, kan het
+          wachtwoord worden hersteld. Eén code alleen is waardeloos.
         </p>
       </div>
+
+      {/* Erfbelasting calculator */}
+      {erfgenamen.length > 0 && <ErfbelastingCalculator />}
 
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3">
@@ -248,43 +459,119 @@ export default function ErfgenamenPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {erfgenamen.map((e) => (
+              {erfgenamen.map((e) => {
+                const erfToewijzingen = getToewijzingenVoorErfgenaam(e.id);
+                const isExpanded = expandedErfgenaam === e.id;
+                return (
                 <div
                   key={e.id}
-                  className="flex items-center justify-between rounded-md border p-3"
+                  className="rounded-md border p-3"
                 >
-                  <div>
-                    <p className="text-sm font-medium">{displayName(e)}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {e.relatie}
-                      {e.email && ` \u2014 ${e.email}`}
-                      {e.telefoon && ` \u2014 ${e.telefoon}`}
-                    </p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 cursor-pointer" onClick={() => setExpandedErfgenaam(isExpanded ? null : e.id)}>
+                      <p className="text-sm font-medium">{displayName(e)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {e.relatie}
+                        {e.email && ` \u2014 ${e.email}`}
+                        {e.telefoon && ` \u2014 ${e.telefoon}`}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {erfToewijzingen.length > 0 && (
+                        <Badge variant="outline">
+                          <Package className="h-3 w-3 mr-1" />
+                          {erfToewijzingen.length}
+                        </Badge>
+                      )}
+                      {e.heeftShareOntvangen && (
+                        <Badge variant="outline">
+                          <KeyRound className="h-3 w-3 mr-1" />
+                          Share
+                        </Badge>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openToewijzingDialog(e.id)}
+                        title="Bezit toewijzen"
+                      >
+                        <Package className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleExportErfgenaam(e.id, e.voornaam)}
+                        title="PDF downloaden"
+                      >
+                        <Download className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeelMetErfgenaam(e.id, e.voornaam)}
+                        title="Deel overzicht (HTML)"
+                      >
+                        <Share2 className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openDialog(e)}
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(e.id)}
+                      >
+                        <Trash2 className="h-3 w-3 text-red-500" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {e.heeftShareOntvangen && (
-                      <Badge variant="outline">
-                        <KeyRound className="h-3 w-3 mr-1" />
-                        Share
-                      </Badge>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => openDialog(e)}
-                    >
-                      <Pencil className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(e.id)}
-                    >
-                      <Trash2 className="h-3 w-3 text-red-500" />
-                    </Button>
-                  </div>
+                  {isExpanded && (
+                    <div className="mt-3 border-t pt-3">
+                      {erfToewijzingen.length === 0 ? (
+                        <p className="text-xs text-muted-foreground italic">
+                          Nog geen bezittingen toegewezen.{" "}
+                          <button
+                            className="underline text-primary"
+                            onClick={() => openToewijzingDialog(e.id)}
+                          >
+                            Toewijzen
+                          </button>
+                        </p>
+                      ) : (
+                        <div className="space-y-2">
+                          <p className="text-xs font-medium text-muted-foreground">Toegewezen bezittingen:</p>
+                          {erfToewijzingen.map((t) => (
+                            <div
+                              key={t.id}
+                              className="flex items-center justify-between rounded bg-muted/50 px-3 py-2"
+                            >
+                              <div>
+                                <p className="text-sm">{t.entityNaam}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {ENTITY_TYPE_LABELS[t.entityType] ?? t.entityType}
+                                  {t.instructies && ` — ${t.instructies}`}
+                                </p>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteToewijzing(t.id)}
+                              >
+                                <Trash2 className="h-3 w-3 text-red-500" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -371,6 +658,110 @@ export default function ErfgenamenPage() {
               />
             </div>
           </div>
+          <div className="space-y-2">
+            <Label>Geboortedatum</Label>
+            <Input
+              type="date"
+              value={form.geboortedatum}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, geboortedatum: e.target.value }))
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>BSN (optioneel)</Label> <HelpTooltip tekst="Het Burgerservicenummer is nodig voor notariële aktes. Dit veld wordt versleuteld opgeslagen." />
+            <Input
+              value={form.bsn}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, bsn: e.target.value }))
+              }
+              placeholder="123456789"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2 col-span-2">
+              <Label>Adres</Label>
+              <Input
+                value={form.adres}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, adres: e.target.value }))
+                }
+                placeholder="Straat en huisnummer"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Postcode</Label>
+              <Input
+                value={form.postcode}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, postcode: e.target.value }))
+                }
+                placeholder="1234 AB"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Woonplaats</Label>
+            <Input
+              value={form.woonplaats}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, woonplaats: e.target.value }))
+              }
+              placeholder="Woonplaats"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Legitimatie</Label>
+              <Select
+                value={form.legitimatieSoort}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, legitimatieSoort: e.target.value }))
+                }
+              >
+                <option value="0">Geen</option>
+                <option value="1">Paspoort</option>
+                <option value="2">Identiteitskaart</option>
+                <option value="3">Rijbewijs</option>
+              </Select>
+            </div>
+            {form.legitimatieSoort !== "0" && (
+              <div className="space-y-2">
+                <Label>Documentnummer</Label>
+                <Input
+                  value={form.legitimatieNummer}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, legitimatieNummer: e.target.value }))
+                  }
+                  placeholder="Documentnummer"
+                />
+              </div>
+            )}
+          </div>
+          {form.legitimatieSoort !== "0" && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Datum afgifte</Label>
+                <Input
+                  type="date"
+                  value={form.legitimatieDatumAfgifte}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, legitimatieDatumAfgifte: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Geldig tot</Label>
+                <Input
+                  type="date"
+                  value={form.legitimatieGeldigTot}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, legitimatieGeldigTot: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogOpen(false)}>
@@ -382,13 +773,104 @@ export default function ErfgenamenPage() {
         </DialogFooter>
       </Dialog>
 
+      {/* Toewijzing Dialog */}
+      <Dialog open={toewijzingDialogOpen} onOpenChange={setToewijzingDialogOpen}>
+        <DialogHeader>
+          <DialogTitle>Bezit toewijzen aan erfgenaam</DialogTitle>
+          <DialogDescription>
+            Wijs een bezitting, rekening of account toe aan een erfgenaam.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label>Erfgenaam</Label>
+            <Select
+              value={toewijzingForm.erfgenaamId}
+              onChange={(e) =>
+                setToewijzingForm((f) => ({ ...f, erfgenaamId: e.target.value }))
+              }
+            >
+              <option value="">Selecteer erfgenaam...</option>
+              {erfgenamen.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {displayName(e)}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Type bezit</Label>
+            <Select
+              value={toewijzingForm.entityType}
+              onChange={(e) =>
+                setToewijzingForm((f) => ({
+                  ...f,
+                  entityType: e.target.value,
+                  entityId: "",
+                }))
+              }
+            >
+              <option value="">Alle types...</option>
+              {Object.entries(ENTITY_TYPE_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Bezit</Label>
+            <Select
+              value={toewijzingForm.entityId}
+              onChange={(e) =>
+                setToewijzingForm((f) => ({ ...f, entityId: e.target.value }))
+              }
+            >
+              <option value="">Selecteer bezit...</option>
+              {filteredAssets.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.naam} ({ENTITY_TYPE_LABELS[a.type] ?? a.type})
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Instructies (optioneel)</Label>
+            <Textarea
+              value={toewijzingForm.instructies}
+              onChange={(e) =>
+                setToewijzingForm((f) => ({ ...f, instructies: e.target.value }))
+              }
+              placeholder="Bijv. 'Bewaar dit als aandenken' of 'Verkopen en opbrengst verdelen'"
+              rows={3}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setToewijzingDialogOpen(false)}>
+            Annuleren
+          </Button>
+          <Button
+            onClick={handleSaveToewijzing}
+            disabled={
+              toewijzingSaving ||
+              !toewijzingForm.erfgenaamId ||
+              !toewijzingForm.entityType ||
+              !toewijzingForm.entityId
+            }
+          >
+            {toewijzingSaving ? "Opslaan..." : "Toewijzen"}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
       {/* Shamir Generate Dialog */}
       <Dialog open={shamirDialogOpen} onOpenChange={closeShamirDialog}>
         <DialogHeader>
-          <DialogTitle>Shamir Sleuteldelen Genereren</DialogTitle>
+          <DialogTitle>Noodcodes Genereren</DialogTitle>
           <DialogDescription>
-            Verdeel uw hoofdwachtwoord in {erfgenamen.length} delen. Alleen
-            wanneer het minimum aantal personen (drempel) hun deel samenvoegt,
+            Verdeel uw hoofdwachtwoord in {erfgenamen.length} unieke noodcodes. Alleen
+            wanneer het minimum aantal personen (drempel) hun code samenvoegt,
             kan het wachtwoord worden gereconstrueerd.
           </DialogDescription>
         </DialogHeader>
@@ -398,9 +880,9 @@ export default function ErfgenamenPage() {
             <div className="space-y-4 py-4">
               <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
                 <p className="text-sm text-amber-800">
-                  <strong>Waarschuwing:</strong> De sleuteldelen worden NIET
+                  <strong>Waarschuwing:</strong> De noodcodes worden NIET
                   opgeslagen in Lumio. Noteer ze zorgvuldig of druk ze af.
-                  Verloren delen kunnen niet worden hersteld.
+                  Verloren codes kunnen niet worden hersteld.
                 </p>
               </div>
               <div className="space-y-2">
@@ -414,7 +896,8 @@ export default function ErfgenamenPage() {
               </div>
               <div className="space-y-2">
                 <Label>
-                  Drempel (minimum aantal delen voor reconstructie)
+                  Drempel (minimum aantal noodcodes voor reconstructie)
+                  <HelpTooltip tekst="De drempel bepaalt hoeveel erfgenamen samen nodig zijn om uw hoofdwachtwoord te reconstrueren. Bij een drempel van 3 moeten minimaal 3 erfgenamen hun code samenvoegen. Een hogere drempel is veiliger, maar vereist meer samenwerking." />
                 </Label>
                 <Select
                   value={shamirThreshold}

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
 
 const organen = [
@@ -79,6 +80,7 @@ export default function DonorFormulierPage() {
         <div className="space-y-4">
           <div className="space-y-2">
             <Label>Keuze</Label>
+            <HelpTooltip tekst="Uw donorkeuze wordt opgeslagen in Lumio als persoonlijk overzicht. Vergeet niet uw keuze ook officieel te registreren bij het Donorregister (donorregister.nl). Alleen de officiële registratie is juridisch bindend." />
             <Select
               value={form.keuze}
               onChange={(e) => update("keuze", e.target.value)}

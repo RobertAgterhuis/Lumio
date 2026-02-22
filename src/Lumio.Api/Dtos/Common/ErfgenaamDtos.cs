@@ -1,3 +1,5 @@
+using Lumio.Api.Domain.Common;
+
 namespace Lumio.Api.Dtos.Common;
 
 public record ErfgenaamResponse(
@@ -8,9 +10,18 @@ public record ErfgenaamResponse(
     string Relatie,
     string? Telefoon,
     string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
+    DateOnly? Geboortedatum,
+    string? BSN,
     int? ShareIndex,
     bool HeeftShareOntvangen,
-    DateTime? ShareUitgegevenOp);
+    DateTime? ShareUitgegevenOp,
+    LegitimatieSoort LegitimatieSoort,
+    string? LegitimatieNummer,
+    DateOnly? LegitimatieDatumAfgifte,
+    DateOnly? LegitimatieGeldigTot);
 
 public record ErfgenaamUpsertRequest(
     string Voornaam,
@@ -18,4 +29,13 @@ public record ErfgenaamUpsertRequest(
     string? Tussenvoegsel,
     string Relatie,
     string? Telefoon,
-    string? Email);
+    string? Email,
+    string? Adres,
+    string? Postcode,
+    string? Woonplaats,
+    DateOnly? Geboortedatum,
+    string? BSN,
+    LegitimatieSoort LegitimatieSoort,
+    string? LegitimatieNummer,
+    DateOnly? LegitimatieDatumAfgifte,
+    DateOnly? LegitimatieGeldigTot);

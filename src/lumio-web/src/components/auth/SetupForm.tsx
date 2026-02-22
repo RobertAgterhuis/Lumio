@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { Shield } from "lucide-react";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 
 export function SetupForm() {
   const [password, setPassword] = useState("");
@@ -67,6 +68,7 @@ export function SetupForm() {
               required
               autoFocus
             />
+            <PasswordStrengthMeter password={password} />
           </div>
 
           <div className="space-y-2">

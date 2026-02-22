@@ -3,6 +3,7 @@ namespace Lumio.Api.Dtos.DigitalEstate;
 public record DigitaalAccountResponse(
     Guid Id,
     string PlatformNaam,
+    string? Categorie,
     string? Gebruikersnaam,
     string? EmailAdres,
     string? Url,
@@ -12,6 +13,7 @@ public record DigitaalAccountResponse(
 
 public record DigitaalAccountUpsertRequest(
     string PlatformNaam,
+    string? Categorie,
     string? Gebruikersnaam,
     string? EmailAdres,
     string? Url,

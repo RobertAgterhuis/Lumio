@@ -11,13 +11,13 @@ public class EncryptionService : IEncryptionService
 {
     private readonly byte[] _key;
 
-    public EncryptionService(IMasterPasswordService passwordService, IConfiguration config)
+    public EncryptionService(IMasterPasswordService passwordService, IProfileService profileService)
     {
         if (!passwordService.IsUnlocked || passwordService.CurrentPassword is null)
             throw new InvalidOperationException("Database moet ontgrendeld zijn voor veldversleuteling.");
 
-        var dbPath = config["DatabasePath"]
-            ?? throw new InvalidOperationException("DatabasePath is not configured.");
+        var dbPath = profileService.ActiveDbPath
+            ?? throw new InvalidOperationException("Geen profiel geselecteerd.");
 
         var salt = GetOrCreateSalt(dbPath);
         _key = DeriveKey(passwordService.CurrentPassword, salt);

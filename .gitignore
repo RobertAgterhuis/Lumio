@@ -49,3 +49,7 @@ data/
 *.db
 *.db-shm
 *.db-wal
+
+#local settings
+Analyse/
+*.md
