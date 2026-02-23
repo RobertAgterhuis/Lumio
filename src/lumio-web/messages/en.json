@@ -2,6 +2,7 @@
   "common": {
     "zoeken": "Search",
     "vergrendelen": "Lock",
+    "hulp": "Help",
     "lichtThema": "Light theme",
     "donkerThema": "Dark theme",
     "opnieuwProberen": "Try again",
@@ -24,7 +25,8 @@
     "tijdlijnOverlijden": "Death Timeline",
     "exporteren": "Export",
     "activiteitenlog": "Activity Log",
-    "instellingen": "Settings"
+    "instellingen": "Settings",
+    "handleiding": "User Guide"
   },
   "search": {
     "placeholder": "Search all records...",
@@ -2544,6 +2546,36 @@
       "summaryCrematorium": "Crematorium:",
       "summaryAula": "Auditorium:",
       "summaryBudget": "Budget:"
+    }
+  },
+  "help": {
+    "titel": "User Guide",
+    "panelTitel": "Help",
+    "helpOpenen": "Help for this section",
+    "sluiten": "Close",
+    "laden": "Loading...",
+    "zoeken": "Search user guide...",
+    "geenResultaten": "No results found",
+    "selecteerHoofdstuk": "Select a chapter to get started",
+    "vorige": "Previous",
+    "volgende": "Next",
+    "laadFout": "Loading error",
+    "laadFoutBeschrijving": "The chapter could not be loaded. Please try again later.",
+    "chapters": {
+      "aanDeSlag": "Getting Started",
+      "dashboard": "Dashboard",
+      "mijnProfiel": "My Profile",
+      "testament": "Last Will",
+      "wilsverklaring": "Advance Directive & Euthanasia",
+      "donorregistratie": "Organ Donation",
+      "digitaalBezit": "Digital Assets",
+      "boedel": "Estate",
+      "uitvaartwensen": "Funeral Wishes",
+      "documenten": "Documents",
+      "erfgenamen": "Heirs & Emergency Codes",
+      "noodcontacten": "Emergency Contacts & Emergency Card",
+      "overigeFuncties": "Other Features",
+      "nabestaanden": "Heir Mode"
     }
   }
 }

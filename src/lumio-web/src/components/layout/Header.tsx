@@ -1,14 +1,17 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTheme } from "@/hooks/useTheme";
 import { useTranslations } from "next-intl";
-import { Lock, Search, UserCircle, Moon, Sun } from "lucide-react";
+import { Lock, Search, UserCircle, Moon, Sun, HelpCircle } from "lucide-react";
 import { SearchDialog } from "./SearchDialog";
 import { NotificationsDropdown } from "./NotificationsDropdown";
+import { useHelpStore } from "@/stores/helpStore";
+import { getChapterForRoute, helpChapters } from "@/content/help-chapters";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -18,6 +21,8 @@ export function Header() {
   const { theme, toggle: toggleTheme } = useTheme();
   const t = useTranslations("common");
   const [fotoUrl, setFotoUrl] = useState<string | null>(null);
+  const pathname = usePathname();
+  const { openPanel } = useHelpStore();
 
   // Fetch profile photo when authenticated
   useEffect(() => {
@@ -89,6 +94,18 @@ export function Header() {
             </kbd>
           </Button>
           <NotificationsDropdown />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              const chapter = getChapterForRoute(pathname ?? "");
+              openPanel(chapter?.slug ?? helpChapters[0].slug);
+            }}
+            title={t("hulp")}
+            className="text-primary-foreground hover:bg-primary-foreground/10"
+          >
+            <HelpCircle className="h-4 w-4" />
+          </Button>
           <Button
             variant="ghost"
             size="icon"

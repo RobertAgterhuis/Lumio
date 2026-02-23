@@ -2,6 +2,7 @@
   "common": {
     "zoeken": "Zoeken",
     "vergrendelen": "Vergrendelen",
+    "hulp": "Hulp",
     "lichtThema": "Licht thema",
     "donkerThema": "Donker thema",
     "opnieuwProberen": "Opnieuw proberen",
@@ -24,7 +25,8 @@
     "tijdlijnOverlijden": "Tijdlijn Overlijden",
     "exporteren": "Exporteren",
     "activiteitenlog": "Activiteitenlog",
-    "instellingen": "Instellingen"
+    "instellingen": "Instellingen",
+    "handleiding": "Handleiding"
   },
   "search": {
     "placeholder": "Zoeken in alle gegevens...",
@@ -2544,6 +2546,36 @@
       "summaryCrematorium": "Crematorium:",
       "summaryAula": "Aula:",
       "summaryBudget": "Budget:"
+    }
+  },
+  "help": {
+    "titel": "Gebruikershandleiding",
+    "panelTitel": "Hulp",
+    "helpOpenen": "Hulp bij dit onderdeel",
+    "sluiten": "Sluiten",
+    "laden": "Laden...",
+    "zoeken": "Zoeken in handleiding...",
+    "geenResultaten": "Geen resultaten gevonden",
+    "selecteerHoofdstuk": "Selecteer een hoofdstuk om te beginnen",
+    "vorige": "Vorige",
+    "volgende": "Volgende",
+    "laadFout": "Fout bij laden",
+    "laadFoutBeschrijving": "Het hoofdstuk kon niet worden geladen. Probeer het later opnieuw.",
+    "chapters": {
+      "aanDeSlag": "Aan de Slag",
+      "dashboard": "Dashboard",
+      "mijnProfiel": "Mijn Profiel",
+      "testament": "Testament",
+      "wilsverklaring": "Wilsverklaring & Euthanasie",
+      "donorregistratie": "Donorregistratie",
+      "digitaalBezit": "Digitaal Bezit",
+      "boedel": "Boedel",
+      "uitvaartwensen": "Uitvaartwensen",
+      "documenten": "Documenten",
+      "erfgenamen": "Erfgenamen & Noodcodes",
+      "noodcontacten": "Noodcontacten & Noodkaart",
+      "overigeFuncties": "Overige Functies",
+      "nabestaanden": "Nabestaanden-modus"
     }
   }
 }

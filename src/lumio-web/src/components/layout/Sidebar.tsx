@@ -20,6 +20,7 @@ import {
   Phone,
   ClipboardList,
   ListChecks,
+  BookOpen,
 } from "lucide-react";
 
 const navItems = [
@@ -38,6 +39,7 @@ const navItems = [
   { href: "/export", labelKey: "exporteren" as const, icon: Download },
   { href: "/audit-log", labelKey: "activiteitenlog" as const, icon: ClipboardList },
   { href: "/instellingen", labelKey: "instellingen" as const, icon: Settings },
+  { href: "/help", labelKey: "handleiding" as const, icon: BookOpen },
 ];
 
 export function Sidebar() {

@@ -44,8 +44,8 @@ release/
 Thumbs.db
 desktop.ini
 
-# Lumio data
-data/
+# Lumio data (top-level only — do not exclude src/Lumio.Api/Data/)
+/data/
 *.db
 *.db-shm
 *.db-wal
