@@ -1,403 +1,134 @@
-# 4. Beveiliging
+# 4 — Beveiliging
 
-## 4.1 Overzicht beveiligingslagen
+## Ontwerpprincipes
 
-Lumio implementeert **defense in depth** met vier complementaire beveiligingslagen:
+1. **Lokaal-only** — Geen cloud, geen netwerkverkeer, geen telemetrie
+2. **Encryptie-at-rest** — Volledige database-encryptie met SQLCipher (AES-256)
+3. **Encryptie-per-veld** — Gevoelige velden (wachtwoorden) extra versleuteld met AES-256-GCM
+4. **Wachtwoord nooit op schijf** — Alleen in-memory, nooit gelogd
+5. **Noodtoegang** — Shamir's Secret Sharing voor erfgenamen
 
-```
-┌──────────────────────────────────────────────────┐
-│  Laag 1: Database-versleuteling (SQLCipher)      │
-│  → Hele database versleuteld met AES-256-CBC     │
-├──────────────────────────────────────────────────┤
-│  Laag 2: Veldversleuteling (AES-256-GCM)         │
-│  → Extra-gevoelige velden apart versleuteld      │
-├──────────────────────────────────────────────────┤
-│  Laag 3: Toegangscontrole (Middleware)            │
-│  → Route-gebaseerd slot met read-only modus      │
-├──────────────────────────────────────────────────┤
-│  Laag 4: Erfgenaam-toegang (Shamir's Secret)      │
-│  → Sleuteldeling voor postmortale toegang        │
-└──────────────────────────────────────────────────┘
-```
+## Database-encryptie (SQLCipher)
 
-## 4.2 Laag 1: Database-versleuteling (SQLCipher)
+Elke profieldatabase is volledig versleuteld:
 
-### Principe
-
-Elke profieldatabase is een SQLCipher-versleutelde SQLite database. Het hele bestand is versleuteld met het masterwachtwoord van de gebruiker. Zonder wachtwoord is de database onleesbaar.
-
-### Implementatie
-
-**Service:** `MasterPasswordService` (singleton)
-
-| Eigenschap | Type | Beschrijving |
-|-----------|------|-------------|
-| `IsUnlocked` | `bool` | Of de database ontgrendeld is |
-| `IsFirstRun` | `bool` | Of dit een nieuw profiel is (nog geen DB) |
-| `IsReadOnly` | `bool` | Of de sessie in alleen-lezen modus is |
-| `CurrentPassword` | `string?` | Het ontgrendelde wachtwoord (alleen in geheugen) |
-| `ActiveDbPath` | `string?` | Pad naar de actieve database |
-
-### Ontgrendeling
-
-```csharp
-// MasterPasswordService.UnlockAsync()
-var connStr = new SqliteConnectionStringBuilder
-{
-    DataSource = dbPath,
-    Mode = SqliteOpenMode.ReadWrite,
-    Password = password         // ← SQLCipher PRAGMA key
-}.ToString();
-
-using var conn = new SqliteConnection(connStr);
-await conn.OpenAsync();
-// Valideer door te querien — fout = verkeerd wachtwoord
-cmd.CommandText = "SELECT count(*) FROM sqlite_master;";
-await cmd.ExecuteScalarAsync();
-```
-
-### Wachtwoord wijzigen
-
-Bij wachtwoordwijziging wordt het SQLCipher `PRAGMA rekey` commando gebruikt om de database te herversleutelen:
-
-```csharp
-// Veilig escapen via parameterized quote()
-quoteCmd.CommandText = "SELECT quote($pw)";
-quoteCmd.Parameters.AddWithValue("$pw", newPassword);
-var quoted = await quoteCmd.ExecuteScalarAsync();
-
-rekeyCmd.CommandText = $"PRAGMA rekey = {quoted}";
-await rekeyCmd.ExecuteNonQueryAsync();
-```
-
-### Levenscyclus
-
-```
-App start → Geen wachtwoord → Database vergrendeld
-                                    │
-                              ┌─────▼─────┐
-                              │ /api/auth/ │ (altijd toegankelijk)
-                              │ ontgrendel │
-                              └─────┬──────┘
-                                    │ wachtwoord correct
-                                    ▼
-                          Database ontgrendeld
-                                    │
-                    ┌───────────────┼───────────────┐
-                    │               │               │
-              Handmatig       Idle timeout      Wachtwoord
-              vergrendelen    (5 min default)   wijzigen
-                    │               │               │
-                    ▼               ▼               │
-              DB vergrendeld  DB vergrendeld    PRAGMA rekey
-                                                    │
-                                                    ▼
-                                              Shamir-shares
-                                              ongeldig geworden
-```
-
-## 4.3 Laag 2: Veldversleuteling (AES-256-GCM)
-
-### Principe
-
-Extra-gevoelige gegevens worden bovenop de databaseversleuteling ook op veldniveau versleuteld. Dit beschermt tegen scenario's waar de database onversleuteld in geheugen staat.
-
-### Versleutelde velden
-
-| Entiteit | Veld | Inhoud |
-|----------|------|--------|
-| `WachtwoordEntry` | `EncryptedWachtwoord` | Wachtwoorden |
-| `CryptoWallet` | `EncryptedSeedPhrase` | Crypto seed phrases |
-
-### Sleutelafleiding
-
-```
-MasterWachtwoord
-       │
-       ▼
-  PBKDF2 (SHA-256, 100.000 iteraties)
-       │            │
-       │      Per-DB salt
-       │     (32 random bytes)
-       │     opgeslagen in .salt bestand
-       ▼
-  AES-256 sleutel (32 bytes)
-```
-
-### Salt-beheer
-
-Per profieldatabase wordt een apart `.salt`-bestand aangemaakt:
-
-```
-data/
-├── {profiel-id}.db     ← SQLCipher database
-└── {profiel-id}.salt   ← 32-byte random salt voor veldversleuteling
-```
-
-**Backwards-compatibiliteit:** Bestaande databases zonder `.salt`-bestand gebruiken automatisch de legacy-salt `"Lumio.FieldEncryption.v1"` (UTF-8 bytes). Nieuwe databases krijgen altijd een cryptografisch random salt.
-
-### Versleutelingsformaat
-
-```
-Base64 encoded:
-┌──────────┬──────────┬─────────────┐
-│ Nonce    │ Auth Tag │ Ciphertext  │
-│ 12 bytes │ 16 bytes │ N bytes     │
-└──────────┴──────────┴─────────────┘
-```
-
-- **Nonce:** 12 bytes, cryptografisch random per versleuteling (`RandomNumberGenerator.Fill`)
-- **Authentication Tag:** 16 bytes, garandeert integriteit (GCM authenticated encryption)
-- **Ciphertext:** Gelijk aan plaintext-lengte
-
-### Service-registratie
-
-`EncryptionService` is geregistreerd als **scoped** — een nieuwe instantie per request. Bij instantiatie:
-1. Haalt het wachtwoord op uit `MasterPasswordService`
-2. Leest de salt uit het `.salt`-bestand
-3. Leidt de AES-sleutel af via PBKDF2
-4. Sleutel bestaat alleen in geheugen gedurende het request
-
-## 4.4 Laag 3: Toegangscontrole (DatabaseUnlockMiddleware)
-
-### Principe
-
-Middleware die alle API-verzoeken filtert op basis van de vergrendelingsstatus. Niet-geauthentiseerde verzoeken krijgen HTTP 423 (Locked) terug.
-
-### Route-filtering
-
-**Altijd toegankelijk** (ongeacht vergrendeling):
-
-| Route-prefix | Doel |
-|-------------|------|
-| `/api/auth/` | Authenticatie-acties |
-| `/api/profielen` | Profielbeheer |
-| `/api/status` | Systeemstatus |
-| `/api/backup/restore` | Backup herstellen |
-| `/swagger` | API-documentatie |
-
-**Alleen-lezen modus** — aanvullend toegankelijk voor erfgenamen:
-
-| Route-prefix | Doel |
-|-------------|------|
-| `/api/export/` | Exportacties |
-| `/api/afhandeling` | Afhandelingstracker |
-
-### Beslissingsboom
-
-```
-Inkomend request
-       │
-       ├── Begint NIET met /api/ → Doorlaten (statische bestanden)
-       │
-       ├── Staat in AllowedPrefixes → Doorlaten
-       │
-       ├── Geen profiel geselecteerd → 423 Locked
-       │         "Geen profiel geselecteerd"
-       │
-       ├── Niet ontgrendeld → 423 Locked
-       │         "Database is vergrendeld"
-       │
-       ├── ReadOnly + schrijfactie (POST/PUT/PATCH/DELETE)
-       │   + NIET in ReadOnlyAllowedPrefixes → 403 Forbidden
-       │         "Database is geopend in alleen-lezen modus"
-       │
-       └── Doorlaten naar controller
-```
-
-### Frontend-afhandeling
-
-De API-client detecteert HTTP 423 en gooit een `"LOCKED"` error:
-
-```typescript
-if (res.status === 423) {
-    throw new Error("LOCKED");
-}
-```
-
-De authenticated layout controleert de sessiestatus bij page refresh en redirected naar de loginpagina indien niet ontgrendeld.
-
-## 4.5 Laag 4: Erfgenaam-toegang (Shamir's Secret Sharing)
-
-### Principe
-
-Shamir's Secret Sharing splitst het masterwachtwoord in N delen, waarvan K delen nodig zijn om het wachtwoord te reconstrueren (drempel-schema). Erfgenamen ontvangen elk een deel en kunnen samen — na overlijden — de database openen in alleen-lezen modus.
-
-### Configuratie
-
-| Parameter | Uitleg |
+| Parameter | Waarde |
 |-----------|--------|
-| `totalShares` (N) | Totaal aantal sleuteldelen |
-| `threshold` (K) | Minimaal aantal delen voor reconstructie |
+| Algoritme | AES-256 |
+| Implementatie | SQLCipher via `Microsoft.Data.Sqlite` |
+| Sleutel | Gebruikerswachtwoord (via `PRAGMA key`) |
+| Sleutelwijziging | Via `PRAGMA rekey` |
 
-Voorwaarden:
-- Drempel (K) ≥ 2
-- Totaal (N) ≥ K
+De database kan **niet** geopend worden zonder het juiste wachtwoord — zelfs niet met directe bestandstoegang.
 
-### Genereerproces
+## Veldencryptie (AES-256-GCM)
 
-```
-1. Gebruiker kiest K (drempel) en N (totaal)
-2. POST /api/shamir/genereer { wachtwoord, aantalDelen, drempel }
-3. ShamirService.GenerateShares() → N wiskundige sleuteldelen
-4. Bestaande share-toewijzingen worden gereset
-5. Delen worden toegewezen aan erfgenamen (op volgorde van ID)
-   → ShareIndex, HeeftShareOntvangen, ShareUitgegevenOp
-6. Sleuteldelen worden eenmalig getoond voor uitgifte
-```
+Gevoelige velden (zoals opgeslagen wachtwoorden in de wachtwoordkluis) worden extra versleuteld bovenop de database-encryptie:
 
-### Share-toewijzing aan erfgenamen
+| Parameter | Waarde |
+|-----------|--------|
+| Algoritme | AES-256-GCM |
+| Nonce | 12 bytes (willekeurig) |
+| Auth tag | 16 bytes |
+| Sleutelafleiding | PBKDF2 (100.000 iteraties, SHA-256) |
+| Salt | 32 bytes (willekeurig per veld) |
 
-```csharp
-// Erfgenamen worden op stabiele ID-volgorde genomen
-var erfgenamen = alleErfgenamen.OrderBy(e => e.Id).Take(result.Shares.Count).ToList();
-for (int i = 0; i < erfgenamen.Count; i++)
-{
-    erfgenamen[i].ShareIndex = result.Shares[i].Index;
-    erfgenamen[i].HeeftShareOntvangen = true;
-    erfgenamen[i].ShareUitgegevenOp = DateTime.UtcNow;
-}
-```
+**Opslag formaat:** `base64(salt + nonce + ciphertext + tag)`
 
-### Reconstructie en ontgrendeling
-
-Er zijn twee ontgrendelingsroutes voor erfgenamen:
-
-**Route 1: Via AuthController** (`POST /api/auth/ontgrendel-erfgenaam`)
-```
-Erfgenamen voeren K shares in
-       │
-       ▼
-ShamirService.ReconstructSecret(shares)
-       │
-       ▼
-MasterPasswordService.UnlockAsync(reconstructed password)
-       │
-       ▼
-MasterPasswordService.SetReadOnly(true)    ← Alleen-lezen!
-       │
-       ▼
-Database ontgrendeld in read-only modus
-```
-
-**Route 2: Via ShamirController** (`POST /api/shamir/reconstrueer-en-ontgrendel`)
-```
-Identiek pad, maar via apart endpoint
-```
-
-### Alleen-lezen beperkingen
-
-Na erfgenaam-ontgrendeling:
-- **Lezen:** Alle gegevens zijn zichtbaar
-- **Schrijven:** Geblokkeerd door middleware (HTTP 403)
-- **Toegestaan:** Export, afhandeling, auth-acties
-- **UI-indicatie:** Banner "U heeft alleen-lezen toegang"
-
-## 4.6 Idle-timeout & automatisch vergrendelen
-
-### Frontend-implementatie
-
-De `useIdleTimer` hook bewaakt gebruikersactiviteit:
-
-| Parameter | Waarde | Beschrijving |
-|-----------|--------|-------------|
-| Standaard timeout | 5 minuten | Configureerbaar via localStorage |
-| Waarschuwingstijd | 30 seconden | Countdown voor auto-lock |
-| Gedetecteerde activiteit | mousemove, keydown, mousedown, touchstart, scroll | Reset timer |
-| Opslag | `lumio-idle-timeout` | localStorage key |
-
-### Timeout-flow
+## Authenticatiestroom
 
 ```
-Gebruikersactiviteit gedetecteerd
-       │
-       ▼
-  Timer reset naar T minuten
-       │
-       │ geen activiteit gedurende (T - 30s)
-       ▼
-  Waarschuwingsdialoog verschijnt
-  "Sessie verloopt over 30 seconden"
-       │
-  ┌────┼────┐
-  │         │
-  Dismiss   30s verlopen
-  (klik)    (geen actie)
-  │         │
-  ▼         ▼
-  Timer     POST /api/auth/vergrendel
-  herstart  Zustand lock()
-            Redirect naar loginpagina
+1. Profiel selecteren (api/auth/selecteer-profiel)
+   └── Laadt profielmetadata, database blijft vergrendeld
+
+2. Ontgrendelen (api/auth/ontgrendel)
+   ├── Wachtwoord gaat naar MasterPasswordService (in-memory)
+   ├── SQLCipher opent database met PRAGMA key
+   └── Alle API-endpoints worden beschikbaar
+
+3. Vergrendelen (api/auth/vergrendel)
+   ├── MasterPasswordService wist wachtwoord uit geheugen
+   ├── Database-connectie wordt gesloten
+   └── DatabaseUnlockMiddleware blokkeert requests (423)
 ```
 
-### Configuratie
+### Eerste keer instellen
 
-Timeout is instelbaar op de instellingenpagina. Waarde `0` schakelt de timer uit.
+```
+api/auth/setup
+├── Ontvang: wachtwoord + profielnaam
+├── Maak nieuw profiel aan in profiles.json
+├── Maak versleutelde database aan
+├── Voer EF Core migraties uit
+└── Database is direct ontgrendeld
+```
 
-## 4.7 Audit Trail
+## Shamir's Secret Sharing
 
-### Automatische logging (DbContext)
+Voor noodtoegang door erfgenamen na overlijden.
 
-Elke `SaveChanges()` creëert automatisch audit-entries voor alle aangemaakt, gewijzigde en verwijderde `BaseEntity`-objecten:
+### Hoe het werkt
 
-| Kolom | Inhoud |
-|-------|--------|
-| `Actie` | "Aangemaakt", "Gewijzigd", "Verwijderd" |
-| `EntityType` | Klasse-naam (bijv. "Erfgenaam") |
-| `EntityId` | GUID van de entiteit |
-| `Details` | "{EntityType} {actie}" |
-| `Tijdstip` | UTC timestamp |
+1. Eigenaar genereert noodcodes via `api/shamir/genereer`
+2. Het database-wachtwoord wordt opgesplitst in `n` delen (één per erfgenaam)
+3. Een drempelwaarde `k` bepaalt hoeveel delen nodig zijn om te reconstrueren
+4. Elk deel wordt individueel aan een erfgenaam gegeven
 
-### Handmatige logging (AuditService)
+### Reconstructie
 
-Voor niet-entity gebeurtenissen wordt `AuditService.LogAsync()` gebruikt:
+```
+api/shamir/reconstrueer-en-ontgrendel
+├── Ontvang: k of meer delen
+├── Reconstrueer originele wachtwoord
+├── Ontgrendel database
+└── Schakel read-only (nabestaanden) modus in
+```
 
-| Actie | Wanneer |
-|-------|---------|
-| `"Ontgrendeld"` | Succesvolle database-ontgrendeling |
-| `"Vergrendeld"` | Handmatige of automatische vergrendeling |
-| `"Wachtwoord gewijzigd"` | Na wachtwoordwijziging |
-| `"Export"` | Bij PDF/backup export |
+### Nabestaandenmodus
 
-De AuditService is fout-tolerant: als de database niet beschikbaar is (vergrendeld), wordt de log silently genegeerd.
+Na ontgrendeling via Shamir delen wordt de applicatie in **read-only modus** gezet:
+- Alle gegevens zijn leesbaar
+- Geen wijzigingen mogelijk
+- Afhandelingschecklist beschikbaar
+- Export functionaliteit beschikbaar
 
-## 4.8 Beveiligingsoverzicht per gegevenstype
+## Sessiebeheer
 
-| Gegevens | SQLCipher (L1) | AES-GCM (L2) | Middleware (L3) |
-|----------|:--------------:|:-------------:|:---------------:|
-| Persoonsgegevens (naam, adres) | ✓ | — | ✓ |
-| BSN | ✓ | — | ✓ |
-| Wachtwoorden (WachtwoordEntry) | ✓ | ✓ | ✓ |
-| Seed phrases (CryptoWallet) | ✓ | ✓ | ✓ |
-| Testamentgegevens | ✓ | — | ✓ |
-| Uitvaartwensen | ✓ | — | ✓ |
-| Documenten (binair) | ✓ | — | ✓ |
-| Audit-log | ✓ | — | ✓ |
-| Profielen (profiles.json) | — | — | — |
+| Mechanisme | Implementatie |
+|------------|---------------|
+| Idle timeout | Frontend `useIdleTimer` hook |
+| Waarschuwing | `SessionTimeoutWarning` component (60s countdown) |
+| Auto-lock | Na timeout → `api/auth/vergrendel` |
+| Destructieve acties | `ConfirmDestructiveAction` component (bevestigingsdialoog) |
 
-### Opmerking over BSN
+## Beveiligingscomponenten (Frontend)
 
-Het BSN wordt momenteel niet veldversleuteld maar uitsluitend beschermd door SQLCipher-databaseversleuteling. De architectuur maakt het mogelijk om in de toekomst BSN-velden toe te voegen aan de veldversleuteling.
+| Component | Doel |
+|-----------|------|
+| `ConfirmDestructiveAction` | Bekrachtigingsdialoog voor onherstelbare acties |
+| `SecureValueReveal` | Toon/verberg gevoelige waarden (wachtwoorden) |
+| `ReadOnlyModeWrapper` | Verbergt/deactiveert mutatie-UI in nabestaandenmodus |
+| `SecurityStatusIndicator` | Visuele status (secure/warning/critical/unknown) |
+| `SessionTimeoutWarning` | Countdown-dialoog bij inactiviteit |
+| `ActivityLogItem` | Weergave van audit-logregels |
 
-## 4.9 Wachtwoordbeleid
+## Audit Log
 
-| Regel | Waarde |
-|-------|--------|
-| Minimale lengte | 8 tekens |
-| Complexiteitseisen | Geen (gebruikerstoegang) |
-| Wachtwoordhint | Geen |
-| Brute-force bescherming | SQLCipher PBKDF2 (vanuit database-engine) |
-| Verificatie bij gevoelige acties | Wachtwoord wijzigen, account verwijderen |
+Alle significante acties worden gelogd in `AuditLogEntry`:
 
-## 4.10 Dreigingsmodel
+- Ontgrendelen/vergrendelen
+- Aanmaken/wijzigen/verwijderen van gegevens
+- Export-acties
+- Wachtwoordwijzigingen
+- Shamir-operaties
 
-| Dreiging | Mitigatie |
-|----------|----------|
-| USB-stick gestolen | Database onleesbaar zonder wachtwoord (SQLCipher) |
-| Geheugen-dump tijdens gebruik | Veldversleuteling beschermt wachtwoorden/seeds aanvullend |
-| Onbevoegde API-toegang | Middleware blokkeert alle verzoeken zonder unlock |
-| Eigenaar overlijdt | Shamir-shares bij erfgenamen, K-van-N reconstructie |
-| Wachtwoord vergeten | Shamir-reconstructie of backup importeren |
-| Man-in-the-middle | Niet van toepassing: lokale communicatie (127.0.0.1) |
-| Database-tampering | AES-GCM authenticatie-tag detecteert wijzigingen |
-| Idle sessie | Automatisch vergrendelen na configureerbare timeout |
+De audit log is alleen-lezen — entries worden nooit verwijderd of gewijzigd.
+
+## Backup & Herstel
+
+| Endpoint | Actie |
+|----------|-------|
+| `GET api/backup` | Download volledige versleutelde database als bestand |
+| `POST api/backup/restore` | Herstel database vanuit backup-bestand |
+
+Electron ondersteunt automatische backups op een configureerbaar interval.
