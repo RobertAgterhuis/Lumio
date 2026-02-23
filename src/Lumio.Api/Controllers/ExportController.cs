@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using System.Xml.Linq;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 
@@ -408,11 +409,41 @@ public class ExportController : ControllerBase
         if (data is null)
             return NotFound(new { error = "Geen eigenaar profiel gevonden." });
 
-        var serializer = new XmlSerializer(typeof(LumioExportData));
+        // Serialize to JSON first (supports positional records), then convert to XML
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
+        var json = JsonSerializer.Serialize(data, jsonOptions);
+        using var jsonDoc = JsonDocument.Parse(json);
+        var xml = new XDocument(new XDeclaration("1.0", "utf-8", null),
+            JsonToXml(jsonDoc.RootElement, "LumioExport"));
         using var ms = new MemoryStream();
-        using var writer = new StreamWriter(ms, Encoding.UTF8);
-        serializer.Serialize(writer, data);
+        using var writer = new StreamWriter(ms, new UTF8Encoding(false));
+        xml.Save(writer);
         return File(ms.ToArray(), "application/xml", $"lumio-export-{DateTime.Now:yyyy-MM-dd}.xml");
+    }
+
+    private static XElement JsonToXml(JsonElement element, string name)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var obj = new XElement(name);
+                foreach (var prop in element.EnumerateObject())
+                    obj.Add(JsonToXml(prop.Value, prop.Name));
+                return obj;
+            case JsonValueKind.Array:
+                var arr = new XElement(name);
+                var itemName = name.EndsWith("en", StringComparison.Ordinal) ? name[..^2] :
+                               name.EndsWith("s", StringComparison.Ordinal) ? name[..^1] : "item";
+                foreach (var item in element.EnumerateArray())
+                    arr.Add(JsonToXml(item, itemName));
+                return arr;
+            default:
+                return new XElement(name, element.ToString());
+        }
     }
 
     // ── P-C6: CSV export ────────────────

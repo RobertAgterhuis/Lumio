@@ -20,6 +20,7 @@ import { Phone, Plus, Pencil, Trash2, Share2, Download, Upload } from "lucide-re
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Noodcontact {
   id: string;
@@ -211,6 +212,8 @@ export default function NoodcontactenPage() {
         <VoorbeeldDialog domein="noodcontacten" />
         <SectieNotitie sectie="noodcontacten" />
       </div>
+
+      <DomainStatusBanner domein="noodcontacten" />
 
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
         <p className="text-sm text-blue-800" dangerouslySetInnerHTML={{ __html: t.raw("tip") }} />

@@ -11,9 +11,11 @@ import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function EuthanasieWizardPage() {
   const router = useRouter();
+  const t = useTranslations("euthanasieWizard");
   const [form, setForm] = useState({
     wilEuthanasie: "",
     situatieBeschrijving: "",
@@ -95,37 +97,36 @@ export default function EuthanasieWizardPage() {
   const stappen: WizardStep[] = [
     {
       id: "keuze",
-      titel: "Uw Keuze",
-      beschrijving:
-        "Wilt u een wilsverklaring euthanasie vastleggen? Dit is conform de Wet toetsing levensbeëindiging (Wtl).",
+      titel: t("keuze.titel"),
+      beschrijving: t("keuze.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
             <p className="text-sm text-blue-800">
-              <strong>Wettelijk kader (Wtl art. 2):</strong> Euthanasie is in Nederland toegestaan wanneer aan alle zorgvuldigheidseisen is voldaan, waaronder een vrijwillig en weloverwogen verzoek en uitzichtloos en ondraaglijk lijden. Een schriftelijke wilsverklaring kan het mondeling verzoek vervangen.
+              <strong>{t("keuze.wettelijkKader")}</strong> {t("keuze.wettelijkKaderTekst")}
             </p>
           </div>
           <div className="space-y-2">
-            <Label>Wilt u euthanasie?</Label>
+            <Label>{t("keuze.wilEuthanasieLabel")}</Label>
             <Select
               value={form.wilEuthanasie}
               onChange={(e) => update("wilEuthanasie", e.target.value)}
             >
-              <option value="">Selecteer...</option>
+              <option value="">{t("keuze.selecteer")}</option>
               <option value="true">
-                Ja, ik wil een wilsverklaring euthanasie
+                {t("keuze.jaWilsverklaring")}
               </option>
               <option value="false">
-                Nee, ik wil geen euthanasie
+                {t("keuze.neeGeenEuthanasie")}
               </option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>In welke situatie?</Label>
+            <Label>{t("keuze.situatieLabel")}</Label>
             <Textarea
               value={form.situatieBeschrijving}
               onChange={(e) => update("situatieBeschrijving", e.target.value)}
-              placeholder="Beschrijf de situatie(s) waarin u euthanasie zou willen, bijv. bij uitzichtloos en ondraaglijk lijden, vergevorderde dementie..."
+              placeholder={t("keuze.situatiePlaceholder")}
               rows={4}
             />
           </div>
@@ -134,35 +135,34 @@ export default function EuthanasieWizardPage() {
     },
     {
       id: "dementie",
-      titel: "Dementie-clausule",
-      beschrijving:
-        "Een dementie-clausule specificeert uw wensen bij vergevorderde dementie, wanneer u mogelijk niet meer in staat bent uw wil te uiten.",
+      titel: t("dementie.titel"),
+      beschrijving: t("dementie.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
             <p className="text-sm text-amber-800">
-              <strong>Let op:</strong> De dementie-clausule is juridisch complex. Artsen zijn niet verplicht hieraan gehoor te geven, maar het geeft wel een duidelijk kader voor uw wensen. Bespreek dit altijd met uw huisarts.
+              <strong>{t("dementie.letOp")}</strong> {t("dementie.letOpTekst")}
             </p>
           </div>
           <div className="space-y-2">
-            <Label>Dementie-clausule opnemen?</Label>
-            <HelpTooltip tekst="Een dementie-clausule is een schriftelijke wilsverklaring waarin u aangeeft onder welke omstandigheden bij vergevorderde dementie u euthanasie wenst. Artsen zijn niet verplicht hieraan gehoor te geven, maar het biedt een duidelijk kader." />
+            <Label>{t("dementie.label")}</Label>
+            <HelpTooltip tekst={t("dementie.tooltip")} />
             <Select
               value={form.dementieClausule}
               onChange={(e) => update("dementieClausule", e.target.value)}
             >
-              <option value="">Selecteer...</option>
-              <option value="true">Ja — ik wil een dementie-clausule</option>
-              <option value="false">Nee — geen dementie-clausule</option>
+              <option value="">{t("keuze.selecteer")}</option>
+              <option value="true">{t("dementie.ja")}</option>
+              <option value="false">{t("dementie.nee")}</option>
             </Select>
           </div>
           {form.dementieClausule === "true" && (
             <div className="space-y-2">
-              <Label>Toelichting dementie-clausule</Label>
+              <Label>{t("dementie.toelichtingLabel")}</Label>
               <Textarea
                 value={form.dementieClausuleToelichting}
                 onChange={(e) => update("dementieClausuleToelichting", e.target.value)}
-                placeholder="Beschrijf in welke fase van dementie u euthanasie zou willen, bijv:&#10;- Wanneer ik mijn naasten niet meer herken&#10;- Wanneer ik niet meer zelfstandig kan eten of drinken&#10;- Wanneer ik opgenomen moet worden in een verpleeghuis"
+                placeholder={t("dementie.toelichtingPlaceholder")}
                 rows={5}
               />
             </div>
@@ -172,23 +172,22 @@ export default function EuthanasieWizardPage() {
     },
     {
       id: "behandelverbod",
-      titel: "Behandelverbod",
-      beschrijving:
-        "Welke medische behandelingen wilt u weigeren als u niet meer in staat bent zelf te beslissen?",
+      titel: t("behandelverbod.titel"),
+      beschrijving: t("behandelverbod.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
             <p className="text-sm text-blue-800">
-              <strong>WGBO art. 7:450 BW:</strong> U heeft het recht om medische behandelingen te weigeren. Een voorafgaande schriftelijke verklaring hierover wordt in principe gerespecteerd door zorgverleners.
+              <strong>{t("behandelverbod.wettelijkKader")}</strong> {t("behandelverbod.wettelijkKaderTekst")}
             </p>
           </div>
           <div className="space-y-2">
-            <Label>Behandelverbod</Label>
-            <HelpTooltip tekst="Een behandelverbod is een schriftelijke verklaring waarin u vastlegt welke medische behandelingen u weigert als u niet meer zelf kunt beslissen. Op grond van de WGBO (art. 7:450 BW) wordt dit in principe gerespecteerd door zorgverleners." />
+            <Label>{t("behandelverbod.label")}</Label>
+            <HelpTooltip tekst={t("behandelverbod.tooltip")} />
             <Textarea
               value={form.behandelVerbod}
               onChange={(e) => update("behandelVerbod", e.target.value)}
-              placeholder="Welke behandelingen weigert u? Bijvoorbeeld:&#10;- Reanimatie&#10;- Kunstmatige beademing&#10;- Kunstmatige voeding en vocht&#10;- Antibiotica bij levensbedreigende infectie&#10;- Opname op intensive care"
+              placeholder={t("behandelverbod.placeholder")}
               rows={5}
             />
           </div>
@@ -197,42 +196,41 @@ export default function EuthanasieWizardPage() {
     },
     {
       id: "huisarts",
-      titel: "Huisarts",
-      beschrijving:
-        "Gegevens van uw huisarts. De arts is degene die de zorgvuldigheidseisen toetst.",
+      titel: t("huisarts.titel"),
+      beschrijving: t("huisarts.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Naam huisarts</Label>
+            <Label>{t("huisarts.naamLabel")}</Label>
             <Input
               value={form.huisarts}
               onChange={(e) => update("huisarts", e.target.value)}
-              placeholder="bijv. dr. A. Jansen"
+              placeholder={t("huisarts.naamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Praktijk</Label>
+            <Label>{t("huisarts.praktijkLabel")}</Label>
             <Input
               value={form.huisartsPraktijk}
               onChange={(e) => update("huisartsPraktijk", e.target.value)}
-              placeholder="bijv. Huisartsenpraktijk Centrum"
+              placeholder={t("huisarts.praktijkPlaceholder")}
             />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Telefoon huisarts</Label>
+              <Label>{t("huisarts.telefoonLabel")}</Label>
               <Input
                 value={form.huisartsTelefoon}
                 onChange={(e) => update("huisartsTelefoon", e.target.value)}
-                placeholder="Telefoonnummer"
+                placeholder={t("huisarts.telefoonPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>E-mail huisarts</Label>
+              <Label>{t("huisarts.emailLabel")}</Label>
               <Input
                 value={form.huisartsEmail}
                 onChange={(e) => update("huisartsEmail", e.target.value)}
-                placeholder="E-mailadres"
+                placeholder={t("huisarts.emailPlaceholder")}
               />
             </div>
           </div>
@@ -241,86 +239,85 @@ export default function EuthanasieWizardPage() {
     },
     {
       id: "vertegenwoordiger",
-      titel: "Vertegenwoordiger",
-      beschrijving:
-        "Wie mag namens u spreken als u dat zelf niet meer kunt? (conform WGBO art. 7:465 BW)",
+      titel: t("vertegenwoordiger.titel"),
+      beschrijving: t("vertegenwoordiger.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Naam vertegenwoordiger</Label>
+            <Label>{t("vertegenwoordiger.naamLabel")}</Label>
             <Input
               value={form.vertegenwoordigerNaam}
               onChange={(e) => update("vertegenwoordigerNaam", e.target.value)}
-              placeholder="bijv. Maria Jansen"
+              placeholder={t("vertegenwoordiger.naamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Relatie</Label>
+            <Label>{t("vertegenwoordiger.relatieLabel")}</Label>
             <Select
               value={form.vertegenwoordigerRelatie}
               onChange={(e) =>
                 update("vertegenwoordigerRelatie", e.target.value)
               }
             >
-              <option value="">Selecteer...</option>
-              <option value="Partner">Partner</option>
-              <option value="Kind">Kind</option>
-              <option value="Ouder">Ouder</option>
-              <option value="Broer/Zus">Broer/Zus</option>
-              <option value="Vriend">Vriend(in)</option>
-              <option value="Anders">Anders</option>
+              <option value="">{t("vertegenwoordiger.selecteer")}</option>
+              <option value="Partner">{t("vertegenwoordiger.partner")}</option>
+              <option value="Kind">{t("vertegenwoordiger.kind")}</option>
+              <option value="Ouder">{t("vertegenwoordiger.ouder")}</option>
+              <option value="Broer/Zus">{t("vertegenwoordiger.broerZus")}</option>
+              <option value="Vriend">{t("vertegenwoordiger.vriend")}</option>
+              <option value="Anders">{t("vertegenwoordiger.anders")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Telefoonnummer</Label>
+            <Label>{t("vertegenwoordiger.telefoonLabel")}</Label>
             <Input
               value={form.vertegenwoordigerTelefoon}
               onChange={(e) =>
                 update("vertegenwoordigerTelefoon", e.target.value)
               }
-              placeholder="bijv. 06-12345678"
+              placeholder={t("vertegenwoordiger.telefoonPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>E-mail</Label>
+            <Label>{t("vertegenwoordiger.emailLabel")}</Label>
             <Input
               value={form.vertegenwoordigerEmail}
               onChange={(e) =>
                 update("vertegenwoordigerEmail", e.target.value)
               }
-              placeholder="E-mailadres"
+              placeholder={t("vertegenwoordiger.emailPlaceholder")}
             />
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
-              <Label>Adres</Label>
+              <Label>{t("vertegenwoordiger.adresLabel")}</Label>
               <Input
                 value={form.vertegenwoordigerAdres}
                 onChange={(e) =>
                   update("vertegenwoordigerAdres", e.target.value)
                 }
-                placeholder="Straat en huisnummer"
+                placeholder={t("vertegenwoordiger.adresPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("vertegenwoordiger.postcodeLabel")}</Label>
               <Input
                 value={form.vertegenwoordigerPostcode}
                 onChange={(e) =>
                   update("vertegenwoordigerPostcode", e.target.value)
                 }
-                placeholder="1234 AB"
+                placeholder={t("vertegenwoordiger.postcodePlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Woonplaats</Label>
+            <Label>{t("vertegenwoordiger.woonplaatsLabel")}</Label>
             <Input
               value={form.vertegenwoordigerWoonplaats}
               onChange={(e) =>
                 update("vertegenwoordigerWoonplaats", e.target.value)
               }
-              placeholder="Woonplaats"
+              placeholder={t("vertegenwoordiger.woonplaatsPlaceholder")}
             />
           </div>
         </div>
@@ -328,21 +325,21 @@ export default function EuthanasieWizardPage() {
     },
     {
       id: "aanvullend",
-      titel: "Aanvullende Wensen",
-      beschrijving: "Eventuele aanvullende wensen of opmerkingen.",
+      titel: t("aanvullend.titel"),
+      beschrijving: t("aanvullend.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Aanvullende wensen</Label>
+            <Label>{t("aanvullend.wensenLabel")}</Label>
             <Textarea
               value={form.aanvullendeWensen}
               onChange={(e) => update("aanvullendeWensen", e.target.value)}
-              placeholder="Overige wensen omtrent het levenseinde..."
+              placeholder={t("aanvullend.wensenPlaceholder")}
               rows={4}
             />
           </div>
           <div className="space-y-2">
-            <Label>Datum ondertekening</Label>
+            <Label>{t("aanvullend.datumLabel")}</Label>
             <Input
               type="date"
               value={form.datumOndertekening}
@@ -354,68 +351,68 @@ export default function EuthanasieWizardPage() {
     },
     {
       id: "samenvatting",
-      titel: "Samenvatting & Document",
-      beschrijving: "Controleer uw gegevens en genereer een wilsverklaring.",
+      titel: t("samenvatting.titel"),
+      beschrijving: t("samenvatting.beschrijving"),
       content: (
         <div className="space-y-4 text-sm">
           <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
             <p className="text-sm text-purple-800">
-              <strong>Disclaimer:</strong> Het gegenereerde document is een <em>schriftelijke wilsverklaring</em> conform de Wtl. Overhandig het aan uw huisarts en bespreek uw wensen. Herbevestig uw wilsverklaring regelmatig.
+              <strong>{t("samenvatting.disclaimer")}</strong> {t("samenvatting.disclaimerTekst")}
             </p>
           </div>
           <div className="rounded-lg border p-4 space-y-2">
             <div>
-              <span className="font-medium">Wil euthanasie:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryWilEuthanasie")}</span>{" "}
               {form.wilEuthanasie === "true"
-                ? "Ja"
+                ? t("samenvatting.summaryJa")
                 : form.wilEuthanasie === "false"
-                ? "Nee"
+                ? t("samenvatting.summaryNee")
                 : "—"}
             </div>
             {form.situatieBeschrijving && (
               <div>
-                <span className="font-medium">Situatie:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summarySituatie")}</span>{" "}
                 {form.situatieBeschrijving}
               </div>
             )}
             <div>
-              <span className="font-medium">Dementie-clausule:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryDementie")}</span>{" "}
               {form.dementieClausule === "true"
-                ? "Ja"
+                ? t("samenvatting.summaryJa")
                 : form.dementieClausule === "false"
-                ? "Nee"
+                ? t("samenvatting.summaryNee")
                 : "—"}
             </div>
             {form.dementieClausuleToelichting && (
               <div>
-                <span className="font-medium">Toelichting:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summaryToelichting")}</span>{" "}
                 {form.dementieClausuleToelichting}
               </div>
             )}
             {form.behandelVerbod && (
               <div>
-                <span className="font-medium">Behandelverbod:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summaryBehandelverbod")}</span>{" "}
                 {form.behandelVerbod}
               </div>
             )}
             <div>
-              <span className="font-medium">Huisarts:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryHuisarts")}</span>{" "}
               {form.huisarts || "—"} ({form.huisartsPraktijk || "—"})
             </div>
             {(form.huisartsTelefoon || form.huisartsEmail) && (
               <div>
-                {form.huisartsTelefoon && <span className="mr-4">Tel: {form.huisartsTelefoon}</span>}
-                {form.huisartsEmail && <span>E-mail: {form.huisartsEmail}</span>}
+                {form.huisartsTelefoon && <span className="mr-4">{t("samenvatting.summaryTel")} {form.huisartsTelefoon}</span>}
+                {form.huisartsEmail && <span>{t("samenvatting.summaryEmail")} {form.huisartsEmail}</span>}
               </div>
             )}
             <div>
-              <span className="font-medium">Vertegenwoordiger:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryVertegenwoordiger")}</span>{" "}
               {form.vertegenwoordigerNaam || "—"} (
               {form.vertegenwoordigerRelatie || "—"})
             </div>
             {form.vertegenwoordigerAdres && (
               <div>
-                <span className="font-medium">Adres:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summaryAdres")}</span>{" "}
                 {form.vertegenwoordigerAdres}
                 {form.vertegenwoordigerPostcode && `, ${form.vertegenwoordigerPostcode}`}
                 {form.vertegenwoordigerWoonplaats && ` ${form.vertegenwoordigerWoonplaats}`}
@@ -423,14 +420,14 @@ export default function EuthanasieWizardPage() {
             )}
             {form.datumOndertekening && (
               <div>
-                <span className="font-medium">Datum:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summaryDatum")}</span>{" "}
                 {form.datumOndertekening}
               </div>
             )}
           </div>
           {form.aanvullendeWensen && (
             <div className="rounded-lg border p-4">
-              <div className="font-medium mb-1">Aanvullende wensen:</div>
+              <div className="font-medium mb-1">{t("samenvatting.summaryAanvullendeWensen")}</div>
               <div className="text-muted-foreground whitespace-pre-wrap">
                 {form.aanvullendeWensen}
               </div>
@@ -439,9 +436,9 @@ export default function EuthanasieWizardPage() {
           <div className="pt-2">
             <Button variant="outline" onClick={downloadWilsverklaringPdf} disabled={generating}>
               {generating ? (
-                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Genereren...</>
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t("samenvatting.genereren")}</>
               ) : (
-                <><Download className="h-4 w-4 mr-2" /> Wilsverklaring downloaden (PDF)</>
+                <><Download className="h-4 w-4 mr-2" /> {t("samenvatting.downloadPdf")}</>
               )}
             </Button>
           </div>
@@ -462,11 +459,11 @@ export default function EuthanasieWizardPage() {
     router.push("/euthanasie");
   };
 
-  if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">Laden...</p></div>;
+  if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
     <WizardShell
-      titel="Wilsverklaring Euthanasie"
+      titel={t("titel")}
       stappen={stappen}
       onComplete={handleComplete}
       onCancel={() => router.push("/euthanasie")}

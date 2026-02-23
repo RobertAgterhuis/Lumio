@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
 import { useAuthStore, type Profile } from "@/stores/authStore";
+import { usePreferencesStore } from "@/stores/preferencesStore";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import {
@@ -49,9 +50,31 @@ import {
   AlertTriangle,
   Type,
   Globe,
+  LayoutDashboard,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 const TIMEOUT_VALUES = [1, 2, 5, 10, 15, 30, 0];
+
+function DashboardToggle({ sectionKey, label }: { sectionKey: "showVoortgang" | "showVoortgangGranulair" | "showSuggesties" | "showDomeinKaarten"; label: string }) {
+  const value = usePreferencesStore((s) => s[sectionKey]);
+  const toggle = usePreferencesStore((s) => s.toggleSection);
+  return (
+    <button
+      type="button"
+      onClick={() => toggle(sectionKey)}
+      className="flex items-center justify-between w-full rounded-lg border p-3 hover:bg-muted/50 transition-colors"
+    >
+      <span className="text-sm font-medium">{label}</span>
+      {value ? (
+        <Eye className="h-4 w-4 text-primary" />
+      ) : (
+        <EyeOff className="h-4 w-4 text-muted-foreground" />
+      )}
+    </button>
+  );
+}
 
 export default function InstellingenPage() {
   const router = useRouter();
@@ -464,6 +487,11 @@ export default function InstellingenPage() {
         </p>
       </div>
 
+      {/* Two-column grid layout */}
+      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Left column — Preferences */}
+      <div className="space-y-6">
+
       {/* Auto-lock timeout (M1) */}
       <Card>
         <CardHeader>
@@ -515,6 +543,33 @@ export default function InstellingenPage() {
               onClick={() => toggleGroteTekst(true)}
             >
               {t("groteTekst.groot")}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Dashboard weergave */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <LayoutDashboard className="h-5 w-5" /> {t("dashboardWeergave.titel")}
+          </CardTitle>
+          <CardDescription>
+            {t("dashboardWeergave.beschrijving")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <DashboardToggle sectionKey="showVoortgang" label={t("dashboardWeergave.voortgang")} />
+          <DashboardToggle sectionKey="showVoortgangGranulair" label={t("dashboardWeergave.voortgangGranulair")} />
+          <DashboardToggle sectionKey="showSuggesties" label={t("dashboardWeergave.suggesties")} />
+          <DashboardToggle sectionKey="showDomeinKaarten" label={t("dashboardWeergave.domeinKaarten")} />
+          <div className="pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => usePreferencesStore.getState().resetDashboard()}
+            >
+              {t("dashboardWeergave.allesHerstellen")}
             </Button>
           </div>
         </CardContent>
@@ -596,8 +651,8 @@ export default function InstellingenPage() {
                 <p
                   className={`text-sm ${
                     actualisatieMessage.type === "success"
-                      ? "text-green-600"
-                      : "text-red-600"
+                      ? "text-success"
+                      : "text-danger"
                   }`}
                 >
                   {actualisatieMessage.text}
@@ -623,6 +678,10 @@ export default function InstellingenPage() {
           )}
         </CardContent>
       </Card>
+
+      </div>
+      {/* Right column — Account & Data */}
+      <div className="space-y-6">
 
       {/* Profile management (M7) */}
       <Card>
@@ -672,8 +731,8 @@ export default function InstellingenPage() {
             <p
               className={`text-sm ${
                 profileMessage.type === "success"
-                  ? "text-green-600"
-                  : "text-red-600"
+                  ? "text-success"
+                  : "text-danger"
               }`}
             >
               {profileMessage.text}
@@ -791,8 +850,8 @@ export default function InstellingenPage() {
               <p
                 className={`text-sm ${
                   message.type === "success"
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-success"
+                    : "text-danger"
                 }`}
               >
                 {message.text}
@@ -839,8 +898,8 @@ export default function InstellingenPage() {
               <p
                 className={`text-sm ${
                   backupMessage.type === "success"
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-success"
+                    : "text-danger"
                 }`}
               >
                 {backupMessage.text}
@@ -894,8 +953,8 @@ export default function InstellingenPage() {
               <p
                 className={`text-sm ${
                   restoreMessage.type === "success"
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-success"
+                    : "text-danger"
                 }`}
               >
                 {restoreMessage.text}
@@ -1002,8 +1061,8 @@ export default function InstellingenPage() {
               <p
                 className={`text-sm ${
                   autoBackupMessage.type === "success"
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-success"
+                    : "text-danger"
                 }`}
               >
                 {autoBackupMessage.text}
@@ -1012,6 +1071,10 @@ export default function InstellingenPage() {
           </CardContent>
         </Card>
       )}
+
+      </div>
+      </div>
+      {/* End two-column grid */}
 
       {/* Security info */}
       <Card>
@@ -1025,21 +1088,21 @@ export default function InstellingenPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
+            <div className="h-2 w-2 rounded-full bg-success" />
             <span>{t("beveiliging.sqlcipher")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
+            <div className="h-2 w-2 rounded-full bg-success" />
             <span>
               {t("beveiliging.aesGcm")}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
+            <div className="h-2 w-2 rounded-full bg-success" />
             <span>{t("beveiliging.lokaal")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
+            <div className="h-2 w-2 rounded-full bg-success" />
             <span>{t("beveiliging.geenInternet")}</span>
           </div>
 
@@ -1097,8 +1160,8 @@ export default function InstellingenPage() {
             <p
               className={`text-sm ${
                 deleteMessage.type === "success"
-                  ? "text-green-600"
-                  : "text-red-600"
+                  ? "text-success"
+                  : "text-danger"
               }`}
             >
               {deleteMessage.text}

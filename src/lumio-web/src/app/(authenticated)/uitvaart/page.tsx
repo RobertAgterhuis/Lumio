@@ -20,6 +20,9 @@ import { Badge } from "@/components/ui/badge";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { PersonSelect } from "@/components/PersonSelect";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface UitvaartWensen {
   id: string;
@@ -361,6 +364,8 @@ export default function UitvaartPage() {
         </Link>
       </div>
 
+      <DomainStatusBanner domein="uitvaart" />
+
       {!data ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
@@ -544,9 +549,9 @@ export default function UitvaartPage() {
             </CardHeader>
             <CardContent>
               {detailError && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-2 mb-3">
-                  <p className="text-sm text-red-800">{detailError}</p>
-                </div>
+                <Alert variant="danger" className="mb-3">
+                  <AlertDescription>{detailError}</AlertDescription>
+                </Alert>
               )}
               {details.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
@@ -862,9 +867,9 @@ export default function UitvaartPage() {
         </DialogHeader>
         <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
           {uitvaartEditError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-2">
-              <p className="text-sm text-red-800">{uitvaartEditError}</p>
-            </div>
+            <Alert variant="danger">
+              <AlertDescription>{uitvaartEditError}</AlertDescription>
+            </Alert>
           )}
           <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieUitvaart")}</p>
           <div className="grid grid-cols-2 gap-2">
@@ -899,10 +904,7 @@ export default function UitvaartPage() {
               <Label>{t("editDialog.kleding")}</Label>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="verzekering" checked={uitvaartEditForm.heeftUitvaartVerzekering} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, heeftUitvaartVerzekering: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="verzekering">{t("editDialog.heeftVerzekering")}</Label>
-          </div>
+          <Checkbox id="verzekering" checked={uitvaartEditForm.heeftUitvaartVerzekering} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, heeftUitvaartVerzekering: e.target.checked }))} label={t("editDialog.heeftVerzekering")} />
           {uitvaartEditForm.heeftUitvaartVerzekering && (
             <div className="space-y-2">
               <Label>{t("editDialog.verzekeringsdetails")}</Label>

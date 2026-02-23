@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 
 const organen = [
   "Hart",
@@ -24,8 +25,23 @@ const organen = [
   "Bloedvaten",
 ];
 
+const organenKeys: Record<string, string> = {
+  "Hart": "hart",
+  "Longen": "longen",
+  "Lever": "lever",
+  "Nieren": "nieren",
+  "Alvleesklier": "alvleesklier",
+  "Dunne darm": "dunneDarm",
+  "Hoornvliezen": "hoornvliezen",
+  "Huid": "huid",
+  "Botweefsel": "botweefsel",
+  "Hartkleppen": "hartkleppen",
+  "Bloedvaten": "bloedvaten",
+};
+
 export default function DonorFormulierPage() {
   const router = useRouter();
+  const t = useTranslations("donorWizard");
   const [form, setForm] = useState({
     keuze: "",
     isGeregistreerdBijDonorregister: "",
@@ -73,48 +89,47 @@ export default function DonorFormulierPage() {
   const stappen: WizardStep[] = [
     {
       id: "keuze",
-      titel: "Uw Donorkeuze",
-      beschrijving:
-        "Registreer hier uw donorkeuze. Vergeet niet om dit ook officieel te melden bij het Donorregister.",
+      titel: t("keuze.titel"),
+      beschrijving: t("keuze.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Keuze</Label>
-            <HelpTooltip tekst="Uw donorkeuze wordt opgeslagen in Lumio als persoonlijk overzicht. Vergeet niet uw keuze ook officieel te registreren bij het Donorregister (donorregister.nl). Alleen de officiële registratie is juridisch bindend." />
+            <Label>{t("keuze.keuzeLabel")}</Label>
+            <HelpTooltip tekst={t("keuze.keuzeTooltip")} />
             <Select
               value={form.keuze}
               onChange={(e) => update("keuze", e.target.value)}
             >
-              <option value="">Selecteer...</option>
-              <option value="Ja, alles">Ja, ik geef alles voor transplantatie</option>
-              <option value="Ja, specifiek">Ja, specifieke organen/weefsels</option>
-              <option value="Nee">Nee, ik wil geen donor zijn</option>
-              <option value="Nabestaanden beslissen">Mijn nabestaanden beslissen</option>
-              <option value="Specifiek persoon beslist">Een specifiek persoon beslist</option>
+              <option value="">{t("keuze.selecteer")}</option>
+              <option value="Ja, alles">{t("keuze.jaAlles")}</option>
+              <option value="Ja, specifiek">{t("keuze.jaSpecifiek")}</option>
+              <option value="Nee">{t("keuze.nee")}</option>
+              <option value="Nabestaanden beslissen">{t("keuze.nabestaanden")}</option>
+              <option value="Specifiek persoon beslist">{t("keuze.specifiekPersoon")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Geregistreerd bij Donorregister?</Label>
+            <Label>{t("keuze.donorregisterLabel")}</Label>
             <Select
               value={form.isGeregistreerdBijDonorregister}
               onChange={(e) =>
                 update("isGeregistreerdBijDonorregister", e.target.value)
               }
             >
-              <option value="">Selecteer...</option>
-              <option value="true">Ja</option>
-              <option value="false">Nee</option>
+              <option value="">{t("keuze.selecteer")}</option>
+              <option value="true">{t("keuze.donorregisterJa")}</option>
+              <option value="false">{t("keuze.donorregisterNee")}</option>
             </Select>
           </div>
           {form.isGeregistreerdBijDonorregister === "true" && (
             <div className="space-y-2">
-              <Label>Referentienummer Donorregister</Label>
+              <Label>{t("keuze.referentieLabel")}</Label>
               <Input
                 value={form.donorregisterReferentie}
                 onChange={(e) =>
                   update("donorregisterReferentie", e.target.value)
                 }
-                placeholder="Uw referentienummer"
+                placeholder={t("keuze.referentiePlaceholder")}
               />
             </div>
           )}
@@ -123,9 +138,8 @@ export default function DonorFormulierPage() {
     },
     {
       id: "organen",
-      titel: "Orgaankeuzes",
-      beschrijving:
-        "Geef per orgaan/weefsel aan of u dit wilt doneren. (Alleen relevant bij 'specifieke organen')",
+      titel: t("orgaankeuzes.titel"),
+      beschrijving: t("orgaankeuzes.beschrijving"),
       content: (
         <div className="space-y-2">
           {organen.map((orgaan) => (
@@ -133,7 +147,7 @@ export default function DonorFormulierPage() {
               key={orgaan}
               className="flex items-center justify-between rounded-md border p-3"
             >
-              <span className="text-sm">{orgaan}</span>
+              <span className="text-sm">{t(`organen.${organenKeys[orgaan]}`)}</span>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -144,7 +158,7 @@ export default function DonorFormulierPage() {
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
-                  Ja
+                  {t("orgaankeuzes.ja")}
                 </button>
                 <button
                   type="button"
@@ -155,7 +169,7 @@ export default function DonorFormulierPage() {
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
-                  Nee
+                  {t("orgaankeuzes.nee")}
                 </button>
               </div>
             </div>
@@ -165,15 +179,15 @@ export default function DonorFormulierPage() {
     },
     {
       id: "toelichting",
-      titel: "Toelichting",
+      titel: t("toelichting.titel"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Toelichting</Label>
+            <Label>{t("toelichting.label")}</Label>
             <Textarea
               value={form.toelichting}
               onChange={(e) => update("toelichting", e.target.value)}
-              placeholder="Eventuele aanvullende toelichting bij uw donorkeuze..."
+              placeholder={t("toelichting.placeholder")}
               rows={4}
             />
           </div>
@@ -182,43 +196,43 @@ export default function DonorFormulierPage() {
     },
     {
       id: "samenvatting",
-      titel: "Samenvatting",
-      beschrijving: "Controleer uw gegevens voordat u opslaat.",
+      titel: t("samenvatting.titel"),
+      beschrijving: t("samenvatting.beschrijving"),
       content: (
         <div className="space-y-3 text-sm">
           <div className="rounded-lg border p-4 space-y-2">
             <div>
-              <span className="font-medium">Keuze:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryKeuze")}</span>{" "}
               {form.keuze || "—"}
             </div>
             <div>
-              <span className="font-medium">Donorregister:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryDonorregister")}</span>{" "}
               {form.isGeregistreerdBijDonorregister === "true"
-                ? "Ja"
+                ? t("samenvatting.summaryJa")
                 : form.isGeregistreerdBijDonorregister === "false"
-                ? "Nee"
+                ? t("samenvatting.summaryNee")
                 : "—"}
             </div>
             {form.donorregisterReferentie && (
               <div>
-                <span className="font-medium">Referentie:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summaryReferentie")}</span>{" "}
                 {form.donorregisterReferentie}
               </div>
             )}
           </div>
           {Object.keys(orgaanKeuzes).length > 0 && (
             <div className="rounded-lg border p-4">
-              <div className="font-medium mb-2">Orgaankeuzes:</div>
+              <div className="font-medium mb-2">{t("samenvatting.summaryOrgaankeuzes")}</div>
               <div className="space-y-1">
                 {Object.entries(orgaanKeuzes).map(([orgaan, keuze]) => (
                   <div key={orgaan} className="flex justify-between">
-                    <span>{orgaan}</span>
+                    <span>{t(`organen.${organenKeys[orgaan]}`)}</span>
                     <span
                       className={
                         keuze ? "text-green-600" : "text-red-600"
                       }
                     >
-                      {keuze ? "Ja" : "Nee"}
+                      {keuze ? t("samenvatting.summaryJa") : t("samenvatting.summaryNee")}
                     </span>
                   </div>
                 ))}
@@ -227,7 +241,7 @@ export default function DonorFormulierPage() {
           )}
           {form.toelichting && (
             <div className="rounded-lg border p-4">
-              <div className="font-medium mb-1">Toelichting:</div>
+              <div className="font-medium mb-1">{t("samenvatting.summaryToelichting")}</div>
               <div className="text-muted-foreground whitespace-pre-wrap">
                 {form.toelichting}
               </div>
@@ -267,11 +281,11 @@ export default function DonorFormulierPage() {
     router.push("/donor");
   };
 
-  if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">Laden...</p></div>;
+  if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
     <WizardShell
-      titel="Donorregistratie"
+      titel={t("titel")}
       stappen={stappen}
       onComplete={handleComplete}
       onCancel={() => router.push("/donor")}

@@ -8,9 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 
 export default function UitvaartWizardPage() {
   const router = useRouter();
+  const t = useTranslations("uitvaartWizard");
   const [form, setForm] = useState({
     voorkeurType: "",
     begraafplaats: "",
@@ -88,101 +90,101 @@ export default function UitvaartWizardPage() {
   const stappen: WizardStep[] = [
     {
       id: "type",
-      titel: "Type Uitvaart",
-      beschrijving: "Wat is uw voorkeur voor de uitvaart?",
+      titel: t("type.titel"),
+      beschrijving: t("type.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Voorkeur type</Label>
+            <Label>{t("type.voorkeurLabel")}</Label>
             <Select
               value={form.voorkeurType}
               onChange={(e) => update("voorkeurType", e.target.value)}
             >
-              <option value="">Selecteer...</option>
-              <option value="Begrafenis">Begrafenis</option>
-              <option value="Crematie">Crematie</option>
-              <option value="Natuurbegraven">Natuurbegraven</option>
-              <option value="Resomatie">Resomatie (watercrematie)</option>
-              <option value="Geen voorkeur">Geen voorkeur</option>
+              <option value="">{t("type.selecteer")}</option>
+              <option value="Begrafenis">{t("type.begrafenis")}</option>
+              <option value="Crematie">{t("type.crematie")}</option>
+              <option value="Natuurbegraven">{t("type.natuurbegraven")}</option>
+              <option value="Resomatie">{t("type.resomatie")}</option>
+              <option value="Geen voorkeur">{t("type.geenVoorkeur")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Begraafplaats / locatie</Label>
+            <Label>{t("type.begraafplaatsLabel")}</Label>
             <Input
               value={form.begraafplaats}
               onChange={(e) => update("begraafplaats", e.target.value)}
-              placeholder="bijv. Begraafplaats Zorgvlied, Amsterdam"
+              placeholder={t("type.begraafplaatsPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Uitvaartondernemer</Label>
+            <Label>{t("type.ondernemerLabel")}</Label>
             <Input
               value={form.uitvaartOndernemer}
               onChange={(e) => update("uitvaartOndernemer", e.target.value)}
-              placeholder="bijv. Monuta, DELA of een lokale uitvaartondernemer"
+              placeholder={t("type.ondernemerPlaceholder")}
             />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Telefoon ondernemer</Label>
+              <Label>{t("type.telefoonLabel")}</Label>
               <Input
                 value={form.uitvaartOndernemerTelefoon}
                 onChange={(e) => update("uitvaartOndernemerTelefoon", e.target.value)}
-                placeholder="Telefoonnummer"
+                placeholder={t("type.telefoonPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>E-mail ondernemer</Label>
+              <Label>{t("type.emailLabel")}</Label>
               <Input
                 value={form.uitvaartOndernemerEmail}
                 onChange={(e) => update("uitvaartOndernemerEmail", e.target.value)}
-                placeholder="E-mailadres"
+                placeholder={t("type.emailPlaceholder")}
               />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
-              <Label>Adres ondernemer</Label>
+              <Label>{t("type.adresLabel")}</Label>
               <Input
                 value={form.uitvaartOndernemerAdres}
                 onChange={(e) => update("uitvaartOndernemerAdres", e.target.value)}
-                placeholder="Straat en huisnummer"
+                placeholder={t("type.adresPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("type.postcodeLabel")}</Label>
               <Input
                 value={form.uitvaartOndernemerPostcode}
                 onChange={(e) => update("uitvaartOndernemerPostcode", e.target.value)}
-                placeholder="1234 AB"
+                placeholder={t("type.postcodePlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Plaats ondernemer</Label>
+            <Label>{t("type.plaatsLabel")}</Label>
             <Input
               value={form.uitvaartOndernemerPlaats}
               onChange={(e) => update("uitvaartOndernemerPlaats", e.target.value)}
-              placeholder="Plaats"
+              placeholder={t("type.plaatsPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Heeft u een uitvaartverzekering?</Label>
+            <Label>{t("type.verzekeringsLabel")}</Label>
             <Select
               value={form.heeftUitvaartVerzekering}
               onChange={(e) => update("heeftUitvaartVerzekering", e.target.value)}
             >
-              <option value="false">Nee</option>
-              <option value="true">Ja</option>
+              <option value="false">{t("type.verzekeringsNee")}</option>
+              <option value="true">{t("type.verzekeringsJa")}</option>
             </Select>
           </div>
           {form.heeftUitvaartVerzekering === "true" && (
             <div className="space-y-2">
-              <Label>Verzekeringsdetails / polisnummer</Label>
+              <Label>{t("type.verzekeringsDetailsLabel")}</Label>
               <Input
                 value={form.uitvaartVerzekeringDetails}
                 onChange={(e) => update("uitvaartVerzekeringDetails", e.target.value)}
-                placeholder="Polisnummer en verzekeraar"
+                placeholder={t("type.verzekeringsDetailsPlaceholder")}
               />
             </div>
           )}
@@ -191,59 +193,59 @@ export default function UitvaartWizardPage() {
     },
     {
       id: "locaties",
-      titel: "Locatie-voorkeuren",
-      beschrijving: "Heeft u voorkeuren voor specifieke locaties?",
+      titel: t("locaties.titel"),
+      beschrijving: t("locaties.beschrijving"),
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Optioneel: specificeer uw voorkeurslocaties. Dit helpt de uitvaartondernemer bij de voorbereiding.
+            {t("locaties.info")}
           </p>
           <div className="space-y-2">
-            <Label>Voorkeur begraafplaats — naam</Label>
+            <Label>{t("locaties.begraafplaatsNaamLabel")}</Label>
             <Input
               value={form.voorkeurBegraafplaatsNaam}
               onChange={(e) => update("voorkeurBegraafplaatsNaam", e.target.value)}
-              placeholder="bijv. Begraafplaats Zorgvlied"
+              placeholder={t("locaties.begraafplaatsNaamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Voorkeur begraafplaats — adres</Label>
+            <Label>{t("locaties.begraafplaatsAdresLabel")}</Label>
             <Input
               value={form.voorkeurBegraafplaatsAdres}
               onChange={(e) => update("voorkeurBegraafplaatsAdres", e.target.value)}
-              placeholder="bijv. Amsteldijk 273, Amsterdam"
+              placeholder={t("locaties.begraafplaatsAdresPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Voorkeur crematorium — naam</Label>
+            <Label>{t("locaties.crematoriumNaamLabel")}</Label>
             <Input
               value={form.voorkeurCrematoriumnaam}
               onChange={(e) => update("voorkeurCrematoriumnaam", e.target.value)}
-              placeholder="bijv. Crematorium Westgaarde"
+              placeholder={t("locaties.crematoriumNaamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Voorkeur crematorium — adres</Label>
+            <Label>{t("locaties.crematoriumAdresLabel")}</Label>
             <Input
               value={form.voorkeurCrematoriumAdres}
               onChange={(e) => update("voorkeurCrematoriumAdres", e.target.value)}
-              placeholder="bijv. Ookmeerweg 275, Amsterdam"
+              placeholder={t("locaties.crematoriumAdresPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Voorkeur aula / ceremonie-locatie — naam</Label>
+            <Label>{t("locaties.aulaNaamLabel")}</Label>
             <Input
               value={form.voorkeurAulaNaam}
               onChange={(e) => update("voorkeurAulaNaam", e.target.value)}
-              placeholder="bijv. Het Lichtruim"
+              placeholder={t("locaties.aulaNaamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Voorkeur aula / ceremonie-locatie — adres</Label>
+            <Label>{t("locaties.aulaAdresLabel")}</Label>
             <Input
               value={form.voorkeurAulaAdres}
               onChange={(e) => update("voorkeurAulaAdres", e.target.value)}
-              placeholder="Adres van de locatie"
+              placeholder={t("locaties.aulaAdresPlaceholder")}
             />
           </div>
         </div>
@@ -251,63 +253,63 @@ export default function UitvaartWizardPage() {
     },
     {
       id: "ceremonie",
-      titel: "Ceremonie",
-      beschrijving: "Hoe wilt u dat de ceremonie eruitziet?",
+      titel: t("ceremonie.titel"),
+      beschrijving: t("ceremonie.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Soort ceremonie</Label>
+            <Label>{t("ceremonie.soortLabel")}</Label>
             <Select
               value={form.ceremonieSoort}
               onChange={(e) => update("ceremonieSoort", e.target.value)}
             >
-              <option value="">Selecteer...</option>
-              <option value="Kerkelijk">Kerkelijk</option>
-              <option value="Niet-kerkelijk">Niet-kerkelijk</option>
-              <option value="Humanistisch">Humanistisch</option>
-              <option value="Persoonlijk">Persoonlijk / op maat</option>
-              <option value="Geen ceremonie">Geen ceremonie</option>
+              <option value="">{t("ceremonie.selecteer")}</option>
+              <option value="Kerkelijk">{t("ceremonie.kerkelijk")}</option>
+              <option value="Niet-kerkelijk">{t("ceremonie.nietKerkelijk")}</option>
+              <option value="Humanistisch">{t("ceremonie.humanistisch")}</option>
+              <option value="Persoonlijk">{t("ceremonie.persoonlijk")}</option>
+              <option value="Geen ceremonie">{t("ceremonie.geenCeremonie")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Locatie ceremonie</Label>
+            <Label>{t("ceremonie.locatieLabel")}</Label>
             <Input
               value={form.ceremonieLocatie}
               onChange={(e) => update("ceremonieLocatie", e.target.value)}
-              placeholder="bijv. Aula, kerk, thuis"
+              placeholder={t("ceremonie.locatiePlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Muziekwensen</Label>
+            <Label>{t("ceremonie.muziekLabel")}</Label>
             <Textarea
               value={form.muziekwensen}
               onChange={(e) => update("muziekwensen", e.target.value)}
-              placeholder="Welke muziek wilt u laten spelen? Bijv. specifieke nummers, live muziek..."
+              placeholder={t("ceremonie.muziekPlaceholder")}
               rows={3}
             />
           </div>
           <div className="space-y-2">
-            <Label>Bloemen</Label>
+            <Label>{t("ceremonie.bloemenLabel")}</Label>
             <Input
               value={form.bloemen}
               onChange={(e) => update("bloemen", e.target.value)}
-              placeholder="bijv. Witte rozen, geen bloemen maar donatie aan..."
+              placeholder={t("ceremonie.bloemenPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Kledingwensen</Label>
+            <Label>{t("ceremonie.kledingLabel")}</Label>
             <Input
               value={form.kledingwensen}
               onChange={(e) => update("kledingwensen", e.target.value)}
-              placeholder="bijv. Favoriet pak, casual kleding"
+              placeholder={t("ceremonie.kledingPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Sprekers</Label>
+            <Label>{t("ceremonie.sprekersLabel")}</Label>
             <Textarea
               value={form.sprekers}
               onChange={(e) => update("sprekers", e.target.value)}
-              placeholder="Wie zou u willen als spreker(s)?"
+              placeholder={t("ceremonie.sprekersPlaceholder")}
               rows={2}
             />
           </div>
@@ -316,34 +318,34 @@ export default function UitvaartWizardPage() {
     },
     {
       id: "rouwkaart",
-      titel: "Rouwkaart & Condoleance",
-      beschrijving: "Wensen voor de rouwkaart en condoleance.",
+      titel: t("rouwkaart.titel"),
+      beschrijving: t("rouwkaart.beschrijving"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Tekst rouwkaart</Label>
+            <Label>{t("rouwkaart.rouwkaartLabel")}</Label>
             <Textarea
               value={form.rouwkaartTekst}
               onChange={(e) => update("rouwkaartTekst", e.target.value)}
-              placeholder="Gewenste tekst of gedicht op de rouwkaart..."
+              placeholder={t("rouwkaart.rouwkaartPlaceholder")}
               rows={4}
             />
           </div>
           <div className="space-y-2">
-            <Label>Condoleance</Label>
+            <Label>{t("rouwkaart.condoleanceLabel")}</Label>
             <Textarea
               value={form.condoleance}
               onChange={(e) => update("condoleance", e.target.value)}
-              placeholder="Wensen voor condoleance (adres, online platform, etc.)"
+              placeholder={t("rouwkaart.condoleancePlaceholder")}
               rows={2}
             />
           </div>
           <div className="space-y-2">
-            <Label>Tekst rouwadvertentie</Label>
+            <Label>{t("rouwkaart.rouwadvertentieLabel")}</Label>
             <Textarea
               value={form.rouwadvertentieTekst}
               onChange={(e) => update("rouwadvertentieTekst", e.target.value)}
-              placeholder="Gewenste tekst voor de rouwadvertentie in de krant (kan afwijken van de rouwkaart)..."
+              placeholder={t("rouwkaart.rouwadvertendiePlaceholder")}
               rows={4}
             />
           </div>
@@ -352,28 +354,28 @@ export default function UitvaartWizardPage() {
     },
     {
       id: "aanvullend",
-      titel: "Aanvullende Wensen",
+      titel: t("aanvullend.titel"),
       content: (
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label>Globaal budget voor uitvaart</Label>
+            <Label>{t("aanvullend.budgetLabel")}</Label>
             <Select
               value={form.budgetRichting}
               onChange={(e) => update("budgetRichting", e.target.value)}
             >
-              <option value="">Geen voorkeur</option>
-              <option value="Eenvoudig">Eenvoudig (tot €5.000)</option>
-              <option value="Gemiddeld">Gemiddeld (€5.000 - €10.000)</option>
-              <option value="Uitgebreid">Uitgebreid (€10.000 - €20.000)</option>
-              <option value="Luxe">Luxe (meer dan €20.000)</option>
+              <option value="">{t("aanvullend.geenVoorkeur")}</option>
+              <option value="Eenvoudig">{t("aanvullend.eenvoudig")}</option>
+              <option value="Gemiddeld">{t("aanvullend.gemiddeld")}</option>
+              <option value="Uitgebreid">{t("aanvullend.uitgebreid")}</option>
+              <option value="Luxe">{t("aanvullend.luxe")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Overige wensen</Label>
+            <Label>{t("aanvullend.overigeLabel")}</Label>
             <Textarea
               value={form.overigeWensen}
               onChange={(e) => update("overigeWensen", e.target.value)}
-              placeholder="Eventuele andere wensen voor uw uitvaart..."
+              placeholder={t("aanvullend.overigePlaceholder")}
               rows={5}
             />
           </div>
@@ -382,32 +384,32 @@ export default function UitvaartWizardPage() {
     },
     {
       id: "samenvatting",
-      titel: "Samenvatting",
-      beschrijving: "Controleer uw gegevens voordat u opslaat.",
+      titel: t("samenvatting.titel"),
+      beschrijving: t("samenvatting.beschrijving"),
       content: (
         <div className="space-y-3 text-sm">
           <div className="rounded-lg border p-4 space-y-2">
             <div>
-              <span className="font-medium">Type:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryType")}</span>{" "}
               {form.voorkeurType || "—"}
             </div>
             <div>
-              <span className="font-medium">Begraafplaats:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryBegraafplaats")}</span>{" "}
               {form.begraafplaats || "—"}
             </div>
             <div>
-              <span className="font-medium">Ondernemer:</span>{" "}
+              <span className="font-medium">{t("samenvatting.summaryOndernemer")}</span>{" "}
               {form.uitvaartOndernemer || "—"}
             </div>
             {(form.uitvaartOndernemerTelefoon || form.uitvaartOndernemerEmail) && (
               <div>
-                {form.uitvaartOndernemerTelefoon && <span className="mr-4">Tel: {form.uitvaartOndernemerTelefoon}</span>}
-                {form.uitvaartOndernemerEmail && <span>E-mail: {form.uitvaartOndernemerEmail}</span>}
+                {form.uitvaartOndernemerTelefoon && <span className="mr-4">{t("samenvatting.summaryTel")} {form.uitvaartOndernemerTelefoon}</span>}
+                {form.uitvaartOndernemerEmail && <span>{t("samenvatting.summaryEmail")} {form.uitvaartOndernemerEmail}</span>}
               </div>
             )}
             {form.uitvaartOndernemerAdres && (
               <div>
-                <span className="font-medium">Adres:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summaryAdres")}</span>{" "}
                 {form.uitvaartOndernemerAdres}
                 {form.uitvaartOndernemerPostcode && `, ${form.uitvaartOndernemerPostcode}`}
                 {form.uitvaartOndernemerPlaats && ` ${form.uitvaartOndernemerPlaats}`}
@@ -415,20 +417,20 @@ export default function UitvaartWizardPage() {
             )}
             {form.ceremonieSoort && (
               <div>
-                <span className="font-medium">Ceremonie:</span>{" "}
+                <span className="font-medium">{t("samenvatting.summaryCeremonie")}</span>{" "}
                 {form.ceremonieSoort}
                 {form.ceremonieLocatie && ` — ${form.ceremonieLocatie}`}
               </div>
             )}
             {form.kledingwensen && (
               <div>
-                <span className="font-medium">Kleding:</span> {form.kledingwensen}
+                <span className="font-medium">{t("samenvatting.summaryKleding")}</span> {form.kledingwensen}
               </div>
             )}
           </div>
           {form.muziekwensen && (
             <div className="rounded-lg border p-4">
-              <div className="font-medium mb-1">Muziekwensen:</div>
+              <div className="font-medium mb-1">{t("samenvatting.summaryMuziekwensen")}</div>
               <div className="text-muted-foreground whitespace-pre-wrap">
                 {form.muziekwensen}
               </div>
@@ -436,7 +438,7 @@ export default function UitvaartWizardPage() {
           )}
           {form.rouwkaartTekst && (
             <div className="rounded-lg border p-4">
-              <div className="font-medium mb-1">Rouwkaart:</div>
+              <div className="font-medium mb-1">{t("samenvatting.summaryRouwkaart")}</div>
               <div className="text-muted-foreground whitespace-pre-wrap">
                 {form.rouwkaartTekst}
               </div>
@@ -444,7 +446,7 @@ export default function UitvaartWizardPage() {
           )}
           {form.rouwadvertentieTekst && (
             <div className="rounded-lg border p-4">
-              <div className="font-medium mb-1">Rouwadvertentie:</div>
+              <div className="font-medium mb-1">{t("samenvatting.summaryRouwadvertentie")}</div>
               <div className="text-muted-foreground whitespace-pre-wrap">
                 {form.rouwadvertentieTekst}
               </div>
@@ -452,21 +454,21 @@ export default function UitvaartWizardPage() {
           )}
           {(form.voorkeurBegraafplaatsNaam || form.voorkeurCrematoriumnaam || form.voorkeurAulaNaam) && (
             <div className="rounded-lg border p-4 space-y-1">
-              <div className="font-medium mb-1">Locatie-voorkeuren:</div>
+              <div className="font-medium mb-1">{t("samenvatting.summaryLocatieVoorkeuren")}</div>
               {form.voorkeurBegraafplaatsNaam && (
-                <div className="text-muted-foreground">Begraafplaats: {form.voorkeurBegraafplaatsNaam}{form.voorkeurBegraafplaatsAdres && ` — ${form.voorkeurBegraafplaatsAdres}`}</div>
+                <div className="text-muted-foreground">{t("samenvatting.summaryBegraafplaatsLocatie")} {form.voorkeurBegraafplaatsNaam}{form.voorkeurBegraafplaatsAdres && ` — ${form.voorkeurBegraafplaatsAdres}`}</div>
               )}
               {form.voorkeurCrematoriumnaam && (
-                <div className="text-muted-foreground">Crematorium: {form.voorkeurCrematoriumnaam}{form.voorkeurCrematoriumAdres && ` — ${form.voorkeurCrematoriumAdres}`}</div>
+                <div className="text-muted-foreground">{t("samenvatting.summaryCrematorium")} {form.voorkeurCrematoriumnaam}{form.voorkeurCrematoriumAdres && ` — ${form.voorkeurCrematoriumAdres}`}</div>
               )}
               {form.voorkeurAulaNaam && (
-                <div className="text-muted-foreground">Aula: {form.voorkeurAulaNaam}{form.voorkeurAulaAdres && ` — ${form.voorkeurAulaAdres}`}</div>
+                <div className="text-muted-foreground">{t("samenvatting.summaryAula")} {form.voorkeurAulaNaam}{form.voorkeurAulaAdres && ` — ${form.voorkeurAulaAdres}`}</div>
               )}
             </div>
           )}
           {form.budgetRichting && (
             <div className="rounded-lg border p-4">
-              <span className="font-medium">Budget:</span> {form.budgetRichting}
+              <span className="font-medium">{t("samenvatting.summaryBudget")}</span> {form.budgetRichting}
             </div>
           )}
         </div>
@@ -507,11 +509,11 @@ export default function UitvaartWizardPage() {
     router.push("/uitvaart");
   };
 
-  if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">Laden...</p></div>;
+  if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
     <WizardShell
-      titel="Uitvaartwensen"
+      titel={t("titel")}
       stappen={stappen}
       onComplete={handleComplete}
       onCancel={() => router.push("/uitvaart")}

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { api } from "@/lib/api-client";
 
 interface InterviewData {
@@ -353,11 +354,11 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
           )}
 
           {data.heeftTestament === "weet-niet" && (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-              <p className="text-sm text-amber-800">
+            <Alert variant="warning">
+              <AlertDescription>
                 <strong>{t("stappen.testament.tipTitel")}</strong> {t("stappen.testament.tipTekst")}
-              </p>
-            </div>
+              </AlertDescription>
+            </Alert>
           )}
         </div>
       ),
@@ -476,11 +477,11 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
             />
           </QuestionBlock>
 
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-blue-800">
+          <Alert variant="info">
+            <AlertDescription>
               <strong>{t("stappen.digitaal.infoTitel")}</strong> {t("stappen.digitaal.infoTekst")}
-            </p>
-          </div>
+            </AlertDescription>
+          </Alert>
         </div>
       ),
     },

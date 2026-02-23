@@ -18,6 +18,7 @@ import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock } from "lucide-react";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 const CATEGORIE_KEYS: Record<string, string> = {
   "Testament": "testament",
@@ -305,6 +306,8 @@ export default function DocumentenPage() {
           <Upload className="h-4 w-4 mr-2" /> {t("uploaden")}
         </Button>
       </div>
+
+      <DomainStatusBanner domein="documenten" />
 
       <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-4">
         <p className="text-sm text-cyan-800" dangerouslySetInnerHTML={{ __html: t.raw("letOp") }} />

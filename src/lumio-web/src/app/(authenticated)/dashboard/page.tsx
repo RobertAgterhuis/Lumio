@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api-client";
-import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
+import { usePreferencesStore, type DashboardPreferences } from "@/stores/preferencesStore";
 import { NabestaandenDashboard } from "@/components/nabestaanden/NabestaandenDashboard";
 import { StatistiekenWidget } from "@/components/dashboard/StatistiekenWidget";
 import { VoortgangGranulair } from "@/components/dashboard/VoortgangGranulair";
@@ -29,8 +29,8 @@ import {
   Phone,
   CheckCircle2,
   Circle,
-  Bell,
-  Info,
+  Clock,
+  EyeOff,
 } from "lucide-react";
 
 interface DomeinStatus {
@@ -44,18 +44,6 @@ interface Compleetheid {
   aantalIngevuld: number;
   totaal: number;
   domeinen: DomeinStatus[];
-}
-
-interface Melding {
-  type: "waarschuwing" | "herinnering";
-  categorie: string;
-  bericht: string;
-  actie: string;
-}
-
-interface MeldingenResponse {
-  meldingen: Melding[];
-  aantal: number;
 }
 
 const domainCards = [
@@ -141,14 +129,49 @@ const domainCards = [
   },
 ];
 
+interface ActualisatieDomein {
+  domein: string;
+  label: string;
+  laatsteBevestiging: string | null;
+  actualisatieNodig: boolean;
+}
+
 export default function DashboardPage() {
   const { isReadOnly } = useAuthStore();
+  const {
+    showVoortgang, showVoortgangGranulair, showSuggesties, showDomeinKaarten,
+    toggleSection, finishedDomains, setDomainFinished,
+  } = usePreferencesStore();
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [compleetheid, setCompleetheid] = useState<Compleetheid | null>(null);
-  const [meldingen, setMeldingen] = useState<Melding[]>([]);
-  const [meldingenOpen, setMeldingenOpen] = useState(true);
+  const [actualisatie, setActualisatie] = useState<ActualisatieDomein[]>([]);
   const [showInterview, setShowInterview] = useState(false);
   const t = useTranslations("dashboard");
+
+  type CardStatus = "afgerond" | "reviewNodig" | "bezig" | "beginnen";
+
+  const getCardStatus = (domein: string): CardStatus => {
+    const isFinished = !!finishedDomains[domein];
+    const needsReview = isFinished && actualisatie.find((a) => a.domein === domein)?.actualisatieNodig === true;
+    const hasData = getDomeinStatus(domein);
+    if (needsReview) return "reviewNodig";
+    if (isFinished) return "afgerond";
+    if (hasData) return "bezig";
+    return "beginnen";
+  };
+
+  const HideButton = ({ section, label }: { section: keyof DashboardPreferences; label: string }) => (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={() => toggleSection(section)}
+      className="text-xs text-muted-foreground gap-1 h-7"
+      title={`${label} verbergen`}
+    >
+      <EyeOff className="h-3.5 w-3.5" />
+      {t("verbergen")}
+    </Button>
+  );
 
   useEffect(() => {
     api
@@ -162,8 +185,8 @@ export default function DashboardPage() {
       .catch(() => {});
 
     api
-      .get<MeldingenResponse>("/api/status/meldingen")
-      .then((data) => setMeldingen(data.meldingen))
+      .get<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("/api/status/actualisatie")
+      .then((data) => setActualisatie(data.domeinen))
       .catch(() => {});
   }, []);
 
@@ -187,85 +210,70 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Compleetheid-indicator */}
-      {compleetheid && (
-        <div className="rounded-lg border bg-card p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold">
-              {t("voortgang.titel")}
-            </h2>
-            <span className="text-sm font-bold text-primary">
-              {compleetheid.percentage}%
-            </span>
-          </div>
-          <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
-            <div
-              className="h-full rounded-full bg-primary transition-all duration-500"
-              style={{ width: `${compleetheid.percentage}%` }}
-            />
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t("voortgang.onderdelen", { aantalIngevuld: compleetheid.aantalIngevuld, totaal: compleetheid.totaal })}
-          </p>
-        </div>
-      )}
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
+        <p className="text-sm text-blue-800 dark:text-blue-300">
+          <strong>{t("letOp")}</strong> {t("juridisch")}
+        </p>
+      </div>
 
-      {/* Notificaties & Herinneringen */}
-      {meldingen.length > 0 && meldingenOpen && (
-        <div className="rounded-lg border bg-card p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Bell className="h-4 w-4 text-primary" />
-              <h2 className="text-sm font-semibold">
-                {t("meldingen.titel", { aantal: meldingen.length })}
-              </h2>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setMeldingenOpen(false)}
-              className="text-xs text-muted-foreground"
-            >
-              {t("meldingen.verbergen")}
-            </Button>
-          </div>
-          <div className="space-y-2">
-            {meldingen.map((melding, idx) => (
-              <Link key={idx} href={melding.actie}>
-                <div
-                  className={cn(
-                    "flex items-start gap-3 rounded-md border p-3 transition-colors hover:bg-muted/50 cursor-pointer",
-                    melding.type === "waarschuwing"
-                      ? "border-amber-200 bg-amber-50"
-                      : "border-blue-100 bg-blue-50/50"
-                  )}
-                >
-                  {melding.type === "waarschuwing" ? (
-                    <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-                  ) : (
-                    <Info className="h-4 w-4 text-blue-600 mt-0.5 shrink-0" />
-                  )}
-                  <p className={cn(
-                    "text-sm",
-                    melding.type === "waarschuwing" ? "text-amber-900" : "text-blue-900"
-                  )}>
-                    {melding.bericht}
-                  </p>
+      {/* Top widgets — responsive 2-column grid */}
+      {showVoortgang && (
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Compleetheid-indicator */}
+          {compleetheid && (
+            <div className="rounded-lg border bg-card p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold">
+                  {t("voortgang.titel")}
+                </h2>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-primary">
+                    {compleetheid.percentage}%
+                  </span>
+                  <HideButton section="showVoortgang" label={t("voortgang.titel")} />
                 </div>
-              </Link>
-            ))}
-          </div>
+              </div>
+              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{ width: `${compleetheid.percentage}%` }}
+                />
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("voortgang.onderdelen", { aantalIngevuld: compleetheid.aantalIngevuld, totaal: compleetheid.totaal })}
+              </p>
+            </div>
+          )}
+
+          {/* Statistieken-widget */}
+          <StatistiekenWidget />
         </div>
       )}
 
-      {/* Granulaire voortgang per sectie */}
-      <VoortgangGranulair />
+      {/* Secondary widgets — responsive 2-column grid */}
+      {(showVoortgangGranulair || showSuggesties) && (
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Granulaire voortgang per sectie */}
+          {showVoortgangGranulair && (
+            <div className="relative">
+              <div className="absolute top-3 right-3 z-10">
+                <HideButton section="showVoortgangGranulair" label="Gedetailleerde voortgang" />
+              </div>
+              <VoortgangGranulair />
+            </div>
+          )}
 
-      {/* Slimme suggesties */}
-      <ProfielSuggesties />
-
-      {/* Statistieken-widget */}
-      <StatistiekenWidget />
+          {/* Slimme suggesties */}
+          {showSuggesties && (
+            <div className="relative">
+              <div className="absolute top-3 right-3 z-10">
+                <HideButton section="showSuggesties" label="Slimme suggesties" />
+              </div>
+              <ProfielSuggesties />
+            </div>
+          )}
+        </div>
+      )}
 
       {showInterview && (
         <div className="rounded-lg border bg-card p-6">
@@ -306,16 +314,15 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
-        <p className="text-sm text-blue-800 dark:text-blue-300">
-          <strong>{t("letOp")}</strong> {t("juridisch")}
-        </p>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {showDomeinKaarten && (
+      <div>
+        <div className="flex items-center justify-end mb-2">
+          <HideButton section="showDomeinKaarten" label="Domeinkaarten" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {domainCards.map((card) => {
           const Icon = card.icon;
-          const status = getDomeinStatus(card.domein);
+          const cardStatus = getCardStatus(card.domein);
           return (
             <Link key={card.href} href={card.href}>
               <Card className="h-full transition-shadow hover:shadow-md cursor-pointer">
@@ -324,33 +331,80 @@ export default function DashboardPage() {
                     <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.bgColor}`}>
                       <Icon className={`h-5 w-5 ${card.color}`} />
                     </div>
-                    {status === true ? (
-                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100 gap-1">
+                    {cardStatus === "afgerond" ? (
+                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100 gap-1 dark:bg-green-900 dark:text-green-200">
                         <CheckCircle2 className="h-3 w-3" />
-                        {t("status.ingevuld")}
+                        {t("status.afgerond")}
                       </Badge>
-                    ) : status === false ? (
+                    ) : cardStatus === "reviewNodig" ? (
+                      <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 gap-1 dark:bg-amber-900 dark:text-amber-200">
+                        <AlertTriangle className="h-3 w-3" />
+                        {t("status.reviewNodig")}
+                      </Badge>
+                    ) : cardStatus === "bezig" ? (
+                      <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 gap-1 dark:bg-blue-900 dark:text-blue-200">
+                        <Clock className="h-3 w-3" />
+                        {t("status.bezig")}
+                      </Badge>
+                    ) : (
                       <Badge variant="secondary" className="gap-1">
                         <Circle className="h-3 w-3" />
                         {t("status.beginnen")}
                       </Badge>
-                    ) : (
-                      <Badge variant="secondary">{t("status.beginnen")}</Badge>
                     )}
                   </div>
                   <CardTitle className="text-lg mt-3">{t(`domein.${card.domeinKey}.titel`)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription>{t(`domein.${card.domeinKey}.beschrijving`)}</CardDescription>
-                  <div className="mt-3 flex items-center text-sm text-primary">
-                    {t("status.openen")} <ArrowRight className="ml-1 h-3 w-3" />
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-sm text-primary flex items-center">
+                      {t("status.openen")} <ArrowRight className="ml-1 h-3 w-3" />
+                    </span>
+                    {cardStatus !== "beginnen" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs px-2 text-muted-foreground"
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (cardStatus === "reviewNodig") {
+                            // Confirm actualisatie on server (BR-148/BR-190)
+                            try {
+                              await api.post(`/api/status/actualisatie/${card.domein}`, {});
+                              setActualisatie((prev) =>
+                                prev.map((a) =>
+                                  a.domein === card.domein ? { ...a, actualisatieNodig: false } : a
+                                )
+                              );
+                              setDomainFinished(card.domein, true);
+                            } catch {
+                              // Ignore
+                            }
+                          } else if (cardStatus === "afgerond") {
+                            setDomainFinished(card.domein, false);
+                          } else {
+                            setDomainFinished(card.domein, true);
+                          }
+                        }}
+                      >
+                        {cardStatus === "afgerond" ? (
+                          <><Circle className="h-3 w-3 mr-1" />{t("status.markeringOpheffen")}</>
+                        ) : (
+                          <><CheckCircle2 className="h-3 w-3 mr-1" />{t("status.markeerAfgerond")}</>
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             </Link>
           );
         })}
+        </div>
       </div>
+      )}
     </div>
   );
 }

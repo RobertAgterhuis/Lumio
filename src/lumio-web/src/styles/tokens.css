@@ -1,0 +1,225 @@
+/* =============================================================================
+   LUMIO DESIGN SYSTEM — TOKEN ARCHITECTURE
+   =============================================================================
+   Layered token system: Base → State → Accessibility
+
+   These tokens are the source-of-truth primitives. Tailwind utility classes
+   are mapped in globals.css via @theme which references this palette.
+
+   Dark mode overrides are defined per layer at the bottom of this file.
+   ============================================================================= */
+
+/* ─── Layer 1: Base Color Primitives ─────────────────────────────────────────── */
+
+:root {
+  /* Primary (teal) */
+  --base-primary-700: #2C4A52;
+  --base-primary-600: #355E68;
+  --base-primary-500: #4F7A83;
+  --base-primary-400: #7A9EA6;
+  --base-primary-300: #A5C2C9;
+  --base-primary-200: #C8DDE1;
+  --base-primary-100: #E6EFF1;
+  --base-primary-50:  #F3F7F8;
+
+  /* Sage (nature / calm) */
+  --base-sage-700: #557260;
+  --base-sage-600: #6B8E7A;
+  --base-sage-500: #84A793;
+  --base-sage-400: #9DBFAC;
+  --base-sage-300: #B6D7C5;
+  --base-sage-200: #CFEFDE;
+  --base-sage-100: #E8F0EB;
+
+  /* Secure (blue — security signaling) */
+  --base-secure-700: #1D4ED8;
+  --base-secure-600: #2563EB;
+  --base-secure-500: #3B82F6;
+  --base-secure-400: #60A5FA;
+  --base-secure-300: #93C5FD;
+  --base-secure-200: #BFDBFE;
+  --base-secure-100: #DBEAFE;
+
+  /* Success */
+  --base-success-700: #4A7A4D;
+  --base-success-600: #5E8C61;
+  --base-success-500: #73A576;
+  --base-success-100: #E8F5E9;
+  --base-success-50:  #F1F8F1;
+
+  /* Warning */
+  --base-warning-700: #B8890F;
+  --base-warning-600: #D4A017;
+  --base-warning-500: #E8B832;
+  --base-warning-100: #FFF8E1;
+  --base-warning-50:  #FFFBEB;
+
+  /* Danger */
+  --base-danger-700: #923C3C;
+  --base-danger-600: #B44A4A;
+  --base-danger-500: #CC5F5F;
+  --base-danger-100: #FDE8E8;
+  --base-danger-50:  #FEF2F2;
+
+  /* Info */
+  --base-info-700: #2C3E50;
+  --base-info-600: #3A506B;
+  --base-info-500: #4E6A85;
+  --base-info-100: #E3EDF5;
+  --base-info-50:  #F0F5FA;
+
+  /* Neutral */
+  --base-neutral-900: #1F2933;
+  --base-neutral-800: #323F4B;
+  --base-neutral-700: #4B5563;
+  --base-neutral-600: #6B7280;
+  --base-neutral-500: #9CA3AF;
+  --base-neutral-400: #B8C0CC;
+  --base-neutral-300: #D1D5DB;
+  --base-neutral-200: #E5E7EB;
+  --base-neutral-100: #F3F4F6;
+  --base-neutral-50:  #F9FAFB;
+  --base-white:       #FFFFFF;
+}
+
+/* ─── Layer 2: Spacing (8pt grid) ────────────────────────────────────────────── */
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+}
+
+/* ─── Layer 3: Shadows ───────────────────────────────────────────────────────── */
+
+:root {
+  --shadow-1: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-2: 0 10px 24px rgba(0, 0, 0, 0.12);
+  --shadow-3: 0 18px 40px rgba(0, 0, 0, 0.16);
+}
+
+/* ─── Layer 4: Motion ────────────────────────────────────────────────────────── */
+
+:root {
+  --duration-fast: 150ms;
+  --duration-med:  250ms;
+  --easing-default: ease-in-out;
+}
+
+/* ─── Layer 5: State Tokens (bg / border / text triplets) ────────────────────── */
+
+:root {
+  /* Success state */
+  --state-success-bg:     var(--base-success-50);
+  --state-success-border: var(--base-success-600);
+  --state-success-text:   var(--base-success-700);
+
+  /* Warning state */
+  --state-warning-bg:     var(--base-warning-50);
+  --state-warning-border: var(--base-warning-600);
+  --state-warning-text:   var(--base-warning-700);
+
+  /* Danger state */
+  --state-danger-bg:     var(--base-danger-50);
+  --state-danger-border: var(--base-danger-600);
+  --state-danger-text:   var(--base-danger-700);
+
+  /* Info state */
+  --state-info-bg:     var(--base-info-50);
+  --state-info-border: var(--base-info-600);
+  --state-info-text:   var(--base-info-700);
+
+  /* Security state */
+  --state-security-bg:     var(--base-secure-100);
+  --state-security-border: var(--base-secure-600);
+  --state-security-text:   var(--base-secure-700);
+}
+
+/* ─── Layer 6: Accessibility Tokens ──────────────────────────────────────────── */
+
+:root {
+  --a11y-focus-ring-color:  var(--base-primary-500);
+  --a11y-focus-ring-width:  2px;
+  --a11y-focus-ring-offset: 2px;
+  --a11y-disabled-opacity:  0.5;
+  --a11y-disabled-cursor:   not-allowed;
+  --a11y-min-target:        44px;
+}
+
+/* =============================================================================
+   DARK MODE OVERRIDES
+   ============================================================================= */
+
+.dark {
+  /* ── Base color overrides ── */
+
+  /* Primary — lighter teal for dark backgrounds */
+  --base-primary-700: #7AB5C0;
+  --base-primary-600: #8CC4CE;
+  --base-primary-500: #9ED3DC;
+  --base-primary-400: #5C9AA5;
+  --base-primary-300: #3E7A85;
+  --base-primary-200: #2A5660;
+  --base-primary-100: #1A2C30;
+  --base-primary-50:  #0F1A1D;
+
+  /* Sage */
+  --base-sage-700: #8CB89E;
+  --base-sage-600: #7AAD8D;
+  --base-sage-100: #1A2A20;
+
+  /* Secure */
+  --base-secure-700: #3B82F6;
+  --base-secure-600: #60A5FA;
+  --base-secure-500: #93C5FD;
+  --base-secure-100: #1E2A40;
+
+  /* Success */
+  --base-success-700: #5EA061;
+  --base-success-600: #7DBF80;
+  --base-success-100: #1A2E1A;
+  --base-success-50:  #0F1A0F;
+
+  /* Warning */
+  --base-warning-700: #D4A41A;
+  --base-warning-600: #F0C040;
+  --base-warning-100: #2E2A10;
+  --base-warning-50:  #1A1A0F;
+
+  /* Danger */
+  --base-danger-700: #C04E4E;
+  --base-danger-600: #E06060;
+  --base-danger-100: #2E1A1A;
+  --base-danger-50:  #1A0F0F;
+
+  /* Info */
+  --base-info-700: #507090;
+  --base-info-600: #6A8AA6;
+  --base-info-100: #1A2430;
+  --base-info-50:  #0F1620;
+
+  /* Neutral — inverted for dark mode */
+  --base-neutral-900: #E5E7EB;
+  --base-neutral-800: #D1D5DB;
+  --base-neutral-700: #B8C0CC;
+  --base-neutral-600: #9CA3AF;
+  --base-neutral-500: #6B7280;
+  --base-neutral-400: #4B5563;
+  --base-neutral-300: #374151;
+  --base-neutral-200: #2D3748;
+  --base-neutral-100: #1E293B;
+  --base-neutral-50:  #0F172A;
+  --base-white:       #1A202C;
+
+  /* ── Shadows — stronger for dark backgrounds ── */
+  --shadow-1: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 10px 24px rgba(0, 0, 0, 0.35);
+  --shadow-3: 0 18px 40px rgba(0, 0, 0, 0.45);
+
+  /* ── Accessibility — dark mode ── */
+  --a11y-focus-ring-color: #60A5FA;
+}

@@ -38,7 +38,9 @@ import {
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { ErfbelastingCalculator } from "@/components/erfgenamen/ErfbelastingCalculator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Erfgenaam {
   id: string;
@@ -418,6 +420,8 @@ export default function ErfgenamenPage() {
           </Button>
         </div>
       </div>
+
+      <DomainStatusBanner domein="erfgenamen" />
 
       <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
         <p className="text-sm text-indigo-800">
@@ -816,9 +820,14 @@ export default function ErfgenamenPage() {
             <Label>{t("toewijzingDialog.bezit")}</Label>
             <Select
               value={toewijzingForm.entityId}
-              onChange={(e) =>
-                setToewijzingForm((f) => ({ ...f, entityId: e.target.value }))
-              }
+              onChange={(e) => {
+                const selectedAsset = filteredAssets.find(a => a.id === e.target.value);
+                setToewijzingForm((f) => ({
+                  ...f,
+                  entityId: e.target.value,
+                  entityType: selectedAsset?.type ?? f.entityType,
+                }));
+              }}
             >
               <option value="">{t("toewijzingDialog.bezitSelecteer")}</option>
               {filteredAssets.map((a) => (
@@ -938,11 +947,11 @@ export default function ErfgenamenPage() {
         ) : (
           <>
             <div className="space-y-4 py-4">
-              <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-                <p className="text-sm text-green-800">
+              <Alert variant="success">
+                <AlertDescription>
                   <strong>{t("shamir.succes")}</strong> {t("shamir.succesTekst", { aantal: generatedShares.totaalAantalDelen, drempel: generatedShares.drempel })}
-                </p>
-              </div>
+                </AlertDescription>
+              </Alert>
               <div className="space-y-3">
                 {generatedShares.delen.map((share, i) => (
                   <div

@@ -14,6 +14,7 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
 import { ShieldAlert } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function AuthenticatedLayout({
   children,
@@ -102,12 +103,11 @@ export default function AuthenticatedLayout({
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header />
         {isReadOnly && (
-          <div className="flex items-center gap-2 bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800">
-            <ShieldAlert className="h-4 w-4 shrink-0" />
-            <span>
+          <Alert variant="warning" className="rounded-none border-x-0 border-t-0">
+            <AlertDescription>
               <strong>{t("alleenLezen")}</strong> — {t("alleenLezenBeschrijving")}
-            </span>
-          </div>
+            </AlertDescription>
+          </Alert>
         )}
         <ErrorBoundary>
           <main className="flex-1 overflow-y-auto p-6">

@@ -15,7 +15,9 @@ import { api } from "@/lib/api-client";
 import { User, Save, Loader2, Camera, Trash2 } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Eigenaar {
   id: string;
@@ -227,6 +229,8 @@ export default function EigenaarPage() {
         </p>
         <VoorbeeldDialog domein="eigenaar" />
       </div>
+
+      <DomainStatusBanner domein="eigenaar" />
 
       {!exists && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
@@ -592,14 +596,14 @@ export default function EigenaarPage() {
       </Card>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
-        </div>
+        <Alert variant="danger">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-          <p className="text-sm text-green-800">{success}</p>
-        </div>
+        <Alert variant="success">
+          <AlertDescription>{success}</AlertDescription>
+        </Alert>
       )}
 
       <div className="flex justify-end">

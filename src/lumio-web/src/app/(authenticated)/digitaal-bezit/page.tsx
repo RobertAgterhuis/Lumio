@@ -27,6 +27,7 @@ import {
 } from "@/lib/afsluit-instructies";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { PersonSelect } from "@/components/PersonSelect";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface DigitaalAccount {
   id: string;
@@ -401,6 +402,8 @@ export default function DigitaalBezitPage() {
         <VoorbeeldDialog domein="digitaal-bezit" />
         <SectieNotitie sectie="digitaal-bezit" />
       </div>
+
+      <DomainStatusBanner domein="digitaal-bezit" />
 
       <div className="rounded-lg border border-green-200 bg-green-50 p-4">
         <p className="text-sm text-green-800">

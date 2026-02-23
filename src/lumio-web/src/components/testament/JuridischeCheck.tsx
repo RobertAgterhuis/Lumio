@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Scale, AlertTriangle, Info, CheckCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface Waarschuwing {
   ernst: "hoog" | "middel" | "info";
@@ -95,25 +96,18 @@ export function JuridischeCheck() {
         </Button>
 
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-            <p className="text-sm text-red-800">{error}</p>
-          </div>
+          <Alert variant="danger">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
 
         {result && (
           <div className="space-y-3">
             {result.aantalWaarschuwingen === 0 ? (
-              <div className="rounded-lg border border-green-300 bg-green-50 p-4 flex items-center gap-3">
-                <CheckCircle className="h-5 w-5 text-green-600" />
-                <div>
-                  <p className="text-sm font-medium text-green-800">
-                    {t("geenWaarschuwingen")}
-                  </p>
-                  <p className="text-xs text-green-700 mt-1">
-                    {t("geenWaarschuwingenTekst")}
-                  </p>
-                </div>
-              </div>
+              <Alert variant="success">
+                <AlertTitle>{t("geenWaarschuwingen")}</AlertTitle>
+                <AlertDescription>{t("geenWaarschuwingenTekst")}</AlertDescription>
+              </Alert>
             ) : (
               <>
                 <p className="text-sm text-muted-foreground">

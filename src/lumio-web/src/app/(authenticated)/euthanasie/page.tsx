@@ -14,6 +14,8 @@ import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { PersonSelect } from "@/components/PersonSelect";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Wilsverklaring {
   id: string;
@@ -144,6 +146,8 @@ export default function EuthanasiePage() {
           </Button>
         </Link>
       </div>
+
+      <DomainStatusBanner domein="euthanasie" />
 
       <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
         <p className="text-sm text-purple-800"
@@ -299,10 +303,7 @@ export default function EuthanasiePage() {
               <p className="text-sm text-red-800">{editError}</p>
             </div>
           )}
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="wil-euthanasie" checked={editForm.wilEuthanasie} onChange={(e) => setEditForm((f) => ({ ...f, wilEuthanasie: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="wil-euthanasie">{t("editDialog.wilEuthanasie")}</Label>
-          </div>
+          <Checkbox id="wil-euthanasie" checked={editForm.wilEuthanasie} onChange={(e) => setEditForm((f) => ({ ...f, wilEuthanasie: e.target.checked }))} label={t("editDialog.wilEuthanasie")} />
           <div className="space-y-2">
             <Label>{t("editDialog.datumOndertekening")}</Label>
           </div>
@@ -375,10 +376,7 @@ export default function EuthanasiePage() {
           </div>
           <hr />
           <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieClausules")}</p>
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="dementie-clausule" checked={editForm.dementieClausule} onChange={(e) => setEditForm((f) => ({ ...f, dementieClausule: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="dementie-clausule">{t("editDialog.dementieclausule")}</Label>
-          </div>
+          <Checkbox id="dementie-clausule" checked={editForm.dementieClausule} onChange={(e) => setEditForm((f) => ({ ...f, dementieClausule: e.target.checked }))} label={t("editDialog.dementieclausule")} />
           {editForm.dementieClausule && (
             <div className="space-y-2">
               <Label>{t("editDialog.toelichtingDementie")}</Label>

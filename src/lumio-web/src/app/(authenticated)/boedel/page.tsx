@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { PersonSelect } from "@/components/PersonSelect";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Samenvatting {
   totaalBezittingen: number;
@@ -322,6 +323,8 @@ export default function BoedelPage() {
         <VoorbeeldDialog domein="boedel" />
         <SectieNotitie sectie="boedel" />
       </div>
+
+      <DomainStatusBanner domein="boedel" />
 
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
         <p className="text-sm text-amber-800">

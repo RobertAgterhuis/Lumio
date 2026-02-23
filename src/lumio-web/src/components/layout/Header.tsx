@@ -8,6 +8,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useTranslations } from "next-intl";
 import { Lock, Search, UserCircle, Moon, Sun } from "lucide-react";
 import { SearchDialog } from "./SearchDialog";
+import { NotificationsDropdown } from "./NotificationsDropdown";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -57,9 +58,9 @@ export function Header() {
 
   return (
     <>
-      <header className="flex h-16 items-center justify-between border-b border-border bg-background px-6">
+      <header className="flex h-16 items-center justify-between border-b border-border bg-primary px-6 text-primary-foreground">
         {activeProfile ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-primary-foreground/80">
             {fotoUrl ? (
               <img
                 src={fotoUrl}
@@ -76,22 +77,24 @@ export function Header() {
         )}
         <div className="flex items-center gap-2">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={toggleSearch}
-            className="gap-2 text-muted-foreground"
+            className="gap-2 border border-primary-foreground/25 text-primary-foreground hover:bg-primary-foreground/10"
           >
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">{t("zoeken")}</span>
-            <kbd className="ml-1 hidden rounded border bg-muted px-1.5 py-0.5 text-xs sm:inline-block">
+            <kbd className="ml-1 hidden rounded border border-primary-foreground/25 bg-primary-foreground/10 px-1.5 py-0.5 text-xs sm:inline-block">
               Ctrl+K
             </kbd>
           </Button>
+          <NotificationsDropdown />
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
             title={theme === "dark" ? t("lichtThema") : t("donkerThema")}
+            className="text-primary-foreground hover:bg-primary-foreground/10"
           >
             {theme === "dark" ? (
               <Sun className="h-4 w-4" />
@@ -99,7 +102,12 @@ export function Header() {
               <Moon className="h-4 w-4" />
             )}
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleLock} className="gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLock}
+            className="gap-2 text-primary-foreground hover:bg-primary-foreground/10"
+          >
             <Lock className="h-4 w-4" />
             {t("vergrendelen")}
           </Button>

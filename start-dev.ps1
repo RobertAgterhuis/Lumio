@@ -4,21 +4,26 @@
     Builds and starts both the Lumio backend and frontend for local development.
 
 .DESCRIPTION
-    1. Kills any running Lumio.Api and Next.js processes
-    2. Builds the .NET backend (Debug)
-    3. Builds the Next.js frontend (static export)
-    4. Starts the backend with the frontend served as static files
-    5. Opens the browser at http://127.0.0.1:5123
+    1. Kills any running Lumio.Api, Next.js, and Storybook processes
+    2. Builds the Next.js frontend (static export)
+    3. Builds the .NET backend (Debug)
+    4. Starts Storybook dev server (background)
+    5. Starts the backend with the frontend served as static files
+    6. Opens the browser at http://127.0.0.1:5123
 
 .PARAMETER SkipBuild
     Skip building and just (re)start the processes.
 
 .PARAMETER Port
     Port for the backend API. Default: 5123.
+
+.PARAMETER StorybookPort
+    Port for the Storybook dev server. Default: 6006.
 #>
 param(
     [switch]$SkipBuild,
-    [int]$Port = 5123
+    [int]$Port = 5123,
+    [int]$StorybookPort = 6006
 )
 
 $ErrorActionPreference = "Stop"
@@ -32,13 +37,14 @@ $DataDir = Join-Path $Root "data"
 Write-Host ""
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host "  Lumio — Dev Start Script" -ForegroundColor Cyan
-Write-Host "  Port: $Port" -ForegroundColor Cyan
+Write-Host "  API Port:       $Port" -ForegroundColor Cyan
+Write-Host "  Storybook Port: $StorybookPort" -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 
 # ─── Step 1: Kill existing processes ─────────────────────────────────────────
 
-Write-Host "[1/4] Killing existing processes..." -ForegroundColor Yellow
+Write-Host "[1/5] Killing existing processes..." -ForegroundColor Yellow
 
 # Kill any running Lumio.Api processes
 $apiProcesses = Get-Process -Name "Lumio.Api" -ErrorAction SilentlyContinue
@@ -63,7 +69,7 @@ if ($dotnetProcesses) {
     Start-Sleep -Milliseconds 500
 }
 
-# Kill any Node/Next.js dev processes on our port
+# Kill any processes on API port
 $portListeners = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
 if ($portListeners) {
     foreach ($conn in $portListeners) {
@@ -76,13 +82,26 @@ if ($portListeners) {
     Start-Sleep -Milliseconds 500
 }
 
-Write-Host "[1/4] Clean slate." -ForegroundColor Green
+# Kill any processes on Storybook port
+$sbPortListeners = Get-NetTCPConnection -LocalPort $StorybookPort -State Listen -ErrorAction SilentlyContinue
+if ($sbPortListeners) {
+    foreach ($conn in $sbPortListeners) {
+        $proc = Get-Process -Id $conn.OwningProcess -ErrorAction SilentlyContinue
+        if ($proc) {
+            Write-Host "  Stopping process '$($proc.ProcessName)' (PID $($proc.Id)) on port $StorybookPort (Storybook)..."
+            Stop-Process -Id $proc.Id -Force
+        }
+    }
+    Start-Sleep -Milliseconds 500
+}
+
+Write-Host "[1/5] Clean slate." -ForegroundColor Green
 Write-Host ""
 
 # ─── Step 2: Build frontend ─────────────────────────────────────────────────
 
 if (-not $SkipBuild) {
-    Write-Host "[2/4] Building Next.js frontend..." -ForegroundColor Yellow
+    Write-Host "[2/5] Building Next.js frontend..." -ForegroundColor Yellow
 
     if (-not (Test-Path (Join-Path $WebDir "package.json"))) {
         Write-Error "Frontend project not found at $WebDir"
@@ -122,11 +141,11 @@ if (-not $SkipBuild) {
         exit 1
     }
 
-    Write-Host "[2/4] Frontend build complete." -ForegroundColor Green
+    Write-Host "[2/5] Frontend build complete." -ForegroundColor Green
     Write-Host ""
 }
 else {
-    Write-Host "[2/4] Skipping frontend build." -ForegroundColor DarkGray
+    Write-Host "[2/5] Skipping frontend build." -ForegroundColor DarkGray
     if (-not (Test-Path $FrontendOut)) {
         Write-Warning "Frontend output not found at $FrontendOut. Run without -SkipBuild first."
     }
@@ -136,7 +155,7 @@ else {
 # ─── Step 3: Build backend ──────────────────────────────────────────────────
 
 if (-not $SkipBuild) {
-    Write-Host "[3/4] Building .NET backend..." -ForegroundColor Yellow
+    Write-Host "[3/5] Building .NET backend..." -ForegroundColor Yellow
 
     if (-not (Test-Path $ApiProject)) {
         Write-Error "Backend project not found at $ApiProject"
@@ -149,17 +168,29 @@ if (-not $SkipBuild) {
         exit 1
     }
 
-    Write-Host "[3/4] Backend build complete." -ForegroundColor Green
+    Write-Host "[3/5] Backend build complete." -ForegroundColor Green
     Write-Host ""
 }
 else {
-    Write-Host "[3/4] Skipping backend build." -ForegroundColor DarkGray
+    Write-Host "[3/5] Skipping backend build." -ForegroundColor DarkGray
     Write-Host ""
 }
 
-# ─── Step 4: Start backend ──────────────────────────────────────────────────
+# ─── Step 4: Start Storybook ─────────────────────────────────────────────────
 
-Write-Host "[4/4] Starting Lumio backend..." -ForegroundColor Yellow
+Write-Host "[4/5] Starting Storybook dev server (port $StorybookPort)..." -ForegroundColor Yellow
+
+$storybookJob = Start-Job -ScriptBlock {
+    Set-Location $using:WebDir
+    npx storybook dev --port $using:StorybookPort --no-open 2>&1
+}
+
+Write-Host "[4/5] Storybook starting in background (Job $($storybookJob.Id))." -ForegroundColor Green
+Write-Host ""
+
+# ─── Step 5: Start backend ──────────────────────────────────────────────────
+
+Write-Host "[5/5] Starting Lumio backend..." -ForegroundColor Yellow
 
 # Ensure data directory exists
 if (-not (Test-Path $DataDir)) {
@@ -188,6 +219,7 @@ Write-Host "  Lumio is starting!" -ForegroundColor Green
 Write-Host "" -ForegroundColor Cyan
 Write-Host "  URL:          http://127.0.0.1:$Port" -ForegroundColor Cyan
 Write-Host "  Swagger:      http://127.0.0.1:$Port/swagger" -ForegroundColor Cyan
+Write-Host "  Storybook:    http://127.0.0.1:$StorybookPort" -ForegroundColor Cyan
 Write-Host "  Frontend:     $FrontendOut" -ForegroundColor Cyan
 Write-Host "  Data:         $DataDir" -ForegroundColor Cyan
 Write-Host "" -ForegroundColor Cyan
@@ -195,16 +227,37 @@ Write-Host "  Press Ctrl+C to stop." -ForegroundColor DarkGray
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Open browser after a short delay
+# Open browsers after a short delay
 Start-Job -ScriptBlock {
     Start-Sleep -Seconds 3
     Start-Process "http://127.0.0.1:$using:Port"
+    Start-Process "http://127.0.0.1:$using:StorybookPort"
 } | Out-Null
 
 # Start the backend (blocking — Ctrl+C stops everything)
-if ($useDotnetRun) {
-    dotnet run --project $ApiProject --configuration Debug --no-build
+try {
+    if ($useDotnetRun) {
+        dotnet run --project $ApiProject --configuration Debug --no-build
+    }
+    else {
+        & $BackendExe
+    }
 }
-else {
-    & $BackendExe
+finally {
+    # Clean up Storybook background job on exit
+    if ($storybookJob) {
+        Write-Host ""
+        Write-Host "Stopping Storybook..." -ForegroundColor Yellow
+        Stop-Job -Job $storybookJob -ErrorAction SilentlyContinue
+        Remove-Job -Job $storybookJob -Force -ErrorAction SilentlyContinue
+
+        # Also kill any process still on Storybook port
+        $sbCleanup = Get-NetTCPConnection -LocalPort $StorybookPort -State Listen -ErrorAction SilentlyContinue
+        if ($sbCleanup) {
+            foreach ($conn in $sbCleanup) {
+                Stop-Process -Id $conn.OwningProcess -Force -ErrorAction SilentlyContinue
+            }
+        }
+        Write-Host "Storybook stopped." -ForegroundColor Green
+    }
 }

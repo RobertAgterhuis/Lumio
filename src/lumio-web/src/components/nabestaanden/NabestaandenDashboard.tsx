@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { api } from "@/lib/api-client";
 import {
   ShieldAlert,
@@ -286,12 +287,12 @@ export function NabestaandenDashboard() {
       </div>
 
       {/* Empathische hulptekst */}
-      <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900 dark:bg-blue-950/30">
-        <p className="text-sm text-blue-800 dark:text-blue-300 leading-relaxed">
+      <Alert variant="info">
+        <AlertDescription>
           <strong>{t("hulpTitel")}</strong>{" "}
           {t("hulpTekst")}
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       {/* Voortgang afhandeling */}
       {totaalItems > 0 && (

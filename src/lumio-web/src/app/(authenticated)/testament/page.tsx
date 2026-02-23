@@ -17,7 +17,10 @@ import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { JuridischeCheck } from "@/components/testament/JuridischeCheck";
 import { PersonSelect } from "@/components/PersonSelect";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useTranslations, useLocale } from "next-intl";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface LegitimairePortieWaarschuwing {
   naam: string;
@@ -392,40 +395,37 @@ export default function TestamentPage() {
         </Link>
       </div>
 
+      <DomainStatusBanner domein="testament" />
+
       {testament ? (
         <>
         {/* P-S14: Legitimaire portie waarschuwing */}
         {legitiemaireCheck?.heeftWaarschuwing && (
-          <div className="rounded-lg border border-amber-300 bg-amber-50 p-4">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
-              <div>
-                <p className="font-medium text-amber-900">
-                  {t("legitimairePortie.titel")}
-                </p>
-                <p className="text-sm text-amber-800 mt-1">
-                  {t("legitimairePortie.beschrijving", {
-                    aantalKinderen: legitiemaireCheck.aantalKinderen,
-                    heeftPartner: String(legitiemaireCheck.heeftPartner),
-                    percentage: legitiemaireCheck.minimumPercentagePerKind,
-                  })}
-                </p>
-                <ul className="mt-2 space-y-1">
-                  {legitiemaireCheck.waarschuwingen.map((w, i) => (
-                    <li key={i} className="text-sm text-amber-800">
-                      <strong>{w.naam}</strong>:{" "}
-                      {w.toegewezenPercentage != null
-                        ? t("legitimairePortie.toegewezen", { percentage: w.toegewezenPercentage, minimum: w.minimumPercentage })
-                        : t("legitimairePortie.nietOpgenomen", { minimum: w.minimumPercentage })}
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-xs text-amber-700 mt-2">
-                  {t("legitimairePortie.disclaimer")}
-                </p>
-              </div>
-            </div>
-          </div>
+          <Alert variant="warning">
+            <AlertTitle>{t("legitimairePortie.titel")}</AlertTitle>
+            <AlertDescription>
+              <p className="text-sm mt-1">
+                {t("legitimairePortie.beschrijving", {
+                  aantalKinderen: legitiemaireCheck.aantalKinderen,
+                  heeftPartner: String(legitiemaireCheck.heeftPartner),
+                  percentage: legitiemaireCheck.minimumPercentagePerKind,
+                })}
+              </p>
+              <ul className="mt-2 space-y-1">
+                {legitiemaireCheck.waarschuwingen.map((w, i) => (
+                  <li key={i} className="text-sm">
+                    <strong>{w.naam}</strong>:{" "}
+                    {w.toegewezenPercentage != null
+                      ? t("legitimairePortie.toegewezen", { percentage: w.toegewezenPercentage, minimum: w.minimumPercentage })
+                      : t("legitimairePortie.nietOpgenomen", { minimum: w.minimumPercentage })}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs mt-2">
+                {t("legitimairePortie.disclaimer")}
+              </p>
+            </AlertDescription>
+          </Alert>
         )}
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -470,9 +470,9 @@ export default function TestamentPage() {
             </CardHeader>
             <CardContent>
               {begError && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-2 mb-3">
-                  <p className="text-sm text-red-800">{begError}</p>
-                </div>
+                <Alert variant="danger" className="mb-3">
+                  <AlertDescription>{begError}</AlertDescription>
+                </Alert>
               )}
               {begunstigden.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t("begunstigden.geenBegunstigden")}</p>
@@ -775,10 +775,7 @@ export default function TestamentPage() {
             <Label>{t("testEditDialog.locatie")}</Label>
             <Input value={testEditForm.testamentLocatie} onChange={(e) => setTestEditForm((f) => ({ ...f, testamentLocatie: e.target.value }))} placeholder={t("testEditDialog.locatiePlaceholder")} />
           </div>
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="uitsluitingsclausule" checked={testEditForm.uitsluitingsClausule} onChange={(e) => setTestEditForm((f) => ({ ...f, uitsluitingsClausule: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="uitsluitingsclausule">{t("testEditDialog.uitsluitingsclausule")}</Label>
-          </div>
+          <Checkbox id="uitsluitingsclausule" checked={testEditForm.uitsluitingsClausule} onChange={(e) => setTestEditForm((f) => ({ ...f, uitsluitingsClausule: e.target.checked }))} label={t("testEditDialog.uitsluitingsclausule")} />
           <div className="space-y-2">
             <Label>{t("testEditDialog.legaten")}</Label>
             <Textarea value={testEditForm.legaten} onChange={(e) => setTestEditForm((f) => ({ ...f, legaten: e.target.value }))} placeholder={t("testEditDialog.legatenPlaceholder")} rows={2} />
