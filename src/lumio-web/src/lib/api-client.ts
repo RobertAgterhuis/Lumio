@@ -3,13 +3,23 @@
 // For standalone dev, set NEXT_PUBLIC_API_URL=http://127.0.0.1:5123
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
+function getLocale(): string {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("lumio-locale") ?? "nl";
+  }
+  return "nl";
+}
+
 async function request<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
-    headers: options?.headers ?? {},
+    headers: {
+      ...options?.headers,
+      "Accept-Language": getLocale(),
+    },
   });
 
   if (res.status === 423) {
@@ -52,7 +62,9 @@ export const api = {
       body: formData,
     }),
   download: async (path: string) => {
-    const res = await fetch(`${API_BASE}${path}`);
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: { "Accept-Language": getLocale() },
+    });
     if (res.status === 423) throw new Error("LOCKED");
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));

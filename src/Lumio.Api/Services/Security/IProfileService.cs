@@ -4,7 +4,8 @@ namespace Lumio.Api.Services.Security;
 
 public interface IProfileService
 {
-    /// <summary>Maximum number of profiles allowed per installation.</summary>
+    /// <summary>Maximum number of profiles allowed per installation. Deprecated: use IOptions&lt;LimietenOptions&gt;.MaxProfielen.</summary>
+    [Obsolete("Gebruik IOptions<LimietenOptions>.MaxProfielen in plaats van deze constante.")]
     const int MaxProfiles = 5;
 
     /// <summary>All registered profiles.</summary>
@@ -39,4 +40,7 @@ public interface IProfileService
 
     /// <summary>Check if the active profile's database file exists.</summary>
     bool ActiveProfileDbExists { get; }
+
+    /// <summary>Update the active profile's photo thumbnail (stored in profiles.json).</summary>
+    void UpdateActiveProfileThumbnail(string? base64Thumbnail);
 }

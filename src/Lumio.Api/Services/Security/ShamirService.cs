@@ -1,3 +1,5 @@
+using Lumio.Api.Rules.Configuration;
+using Microsoft.Extensions.Options;
 using SecretSharingDotNet.Cryptography;
 using SecretSharingDotNet.Cryptography.ShamirsSecretSharing;
 using SecretSharingDotNet.Math;
@@ -7,10 +9,17 @@ namespace Lumio.Api.Services.Security;
 
 public class ShamirService : IShamirService
 {
+    private readonly LimietenOptions _limieten;
+
+    public ShamirService(IOptions<LimietenOptions> limieten)
+    {
+        _limieten = limieten.Value;
+    }
+
     public ShamirResult GenerateShares(string secret, int totalShares, int threshold)
     {
-        if (threshold < 2)
-            throw new ArgumentException("Drempel moet minimaal 2 zijn.", nameof(threshold));
+        if (threshold < _limieten.ShamirMinDrempel)
+            throw new ArgumentException($"Drempel moet minimaal {_limieten.ShamirMinDrempel} zijn.", nameof(threshold));
         if (totalShares < threshold)
             throw new ArgumentException("Totaal aantal delen moet >= drempel zijn.", nameof(totalShares));
 

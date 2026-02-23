@@ -20,7 +20,7 @@ public class ProfileController : ControllerBase
     public ActionResult<List<ProfileResponse>> GetAll()
     {
         var profiles = _profileService.GetProfiles()
-            .Select(p => new ProfileResponse(p.Id, p.Naam, p.Relatie, p.IsPrimair, p.AangemaaktOp))
+            .Select(p => new ProfileResponse(p.Id, p.Naam, p.Relatie, p.IsPrimair, p.AangemaaktOp, p.FotoThumbnail))
             .ToList();
         return Ok(profiles);
     }
@@ -42,7 +42,7 @@ public class ProfileController : ControllerBase
         try
         {
             var profile = _profileService.CreateProfile(request.Naam, request.Relatie);
-            return Ok(new ProfileResponse(profile.Id, profile.Naam, profile.Relatie, profile.IsPrimair, profile.AangemaaktOp));
+            return Ok(new ProfileResponse(profile.Id, profile.Naam, profile.Relatie, profile.IsPrimair, profile.AangemaaktOp, profile.FotoThumbnail));
         }
         catch (InvalidOperationException ex)
         {

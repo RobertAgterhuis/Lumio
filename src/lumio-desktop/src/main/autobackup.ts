@@ -4,6 +4,7 @@ import * as path from "path";
 import * as http from "http";
 import { getDataDir } from "./paths";
 import { getBackendPort } from "./sidecar";
+import { t } from "./i18n";
 
 interface AutoBackupConfig {
   pad: string;
@@ -42,10 +43,10 @@ function saveConfig(config: AutoBackupConfig | null): void {
  */
 function performBackup(): Promise<{ success: boolean; error?: string }> {
   const config = loadConfig();
-  if (!config) return Promise.resolve({ success: false, error: "Geen auto-backup geconfigureerd." });
+  if (!config) return Promise.resolve({ success: false, error: t("noAutoBackupConfigured") });
 
   if (!fs.existsSync(config.pad)) {
-    return Promise.resolve({ success: false, error: `Backupdirectory niet gevonden: ${config.pad}` });
+    return Promise.resolve({ success: false, error: t("backupDirNotFound", { path: config.pad }) });
   }
 
   return new Promise((resolve) => {
@@ -53,7 +54,7 @@ function performBackup(): Promise<{ success: boolean; error?: string }> {
     const req = http.get(`http://127.0.0.1:${port}/api/backup`, (res) => {
       if (res.statusCode !== 200) {
         res.resume();
-        resolve({ success: false, error: `Backup API retourneerde status ${res.statusCode}. Is de database ontgrendeld?` });
+        resolve({ success: false, error: t("backupApiError", { status: String(res.statusCode) }) });
         return;
       }
 
@@ -83,7 +84,7 @@ function performBackup(): Promise<{ success: boolean; error?: string }> {
     });
     req.setTimeout(30_000, () => {
       req.destroy();
-      resolve({ success: false, error: "Backup timeout (30s)." });
+      resolve({ success: false, error: t("backupTimeout") });
     });
   });
 }
@@ -142,7 +143,7 @@ export function registerAutoBackupHandlers(): void {
 
     const result = await dialog.showOpenDialog(win, {
       properties: ["openDirectory"],
-      title: "Selecteer backup locatie",
+      title: t("selectBackupLocation"),
     });
 
     if (result.canceled || result.filePaths.length === 0) return null;

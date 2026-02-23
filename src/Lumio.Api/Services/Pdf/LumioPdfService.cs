@@ -2,6 +2,7 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Domain.AssetRegistry;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -31,10 +32,12 @@ public interface ILumioPdfService
 public class LumioPdfService : ILumioPdfService
 {
     private readonly LumioDbContext _db;
+    private readonly IStringLocalizer<LumioPdfService> L;
 
-    public LumioPdfService(LumioDbContext db)
+    public LumioPdfService(LumioDbContext db, IStringLocalizer<LumioPdfService> localizer)
     {
         _db = db;
+        L = localizer;
     }
 
     public async Task<byte[]> GenerateTestamentPdf()
@@ -58,35 +61,35 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Testament", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_Testament"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
                     if (eigenaar != null)
-                        Section(col, "Eigenaar", t =>
+                        Section(col, L["Section_Eigenaar"].Value, t =>
                         {
-                            Row(t, "Naam", $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim());
+                            Row(t, L["Label_Naam"].Value, $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim());
                         });
                     if (testament != null)
-                        Section(col, "Testament Informatie", t =>
+                        Section(col, L["Section_TestamentInformatie"].Value, t =>
                         {
-                            Row(t, "Type", testament.TestamentType ?? "—");
-                            Row(t, "Notaris", testament.NotarisNaam ?? "—");
-                            Row(t, "Kantoor", testament.NotarisKantoor ?? "—");
-                            Row(t, "Datum", testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
-                            Row(t, "CTR Nummer", testament.CTR_Nummer ?? "—");
-                            Row(t, "Bewaarlocatie", testament.TestamentLocatie ?? "—");
+                            Row(t, L["Label_Type"].Value, testament.TestamentType ?? "—");
+                            Row(t, L["Label_Notaris"].Value, testament.NotarisNaam ?? "—");
+                            Row(t, L["Label_Kantoor"].Value, testament.NotarisKantoor ?? "—");
+                            Row(t, L["Label_Datum"].Value, testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
+                            Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer ?? "—");
+                            Row(t, L["Label_Bewaarlocatie"].Value, testament.TestamentLocatie ?? "—");
                             if (!string.IsNullOrEmpty(testament.AlgemeneWensen))
-                                Row(t, "Algemene wensen", testament.AlgemeneWensen);
+                                Row(t, L["Label_AlgemeneWensen"].Value, testament.AlgemeneWensen);
                         });
                     if (begunstigden.Count > 0)
-                        Section(col, "Begunstigden", t =>
+                        Section(col, L["Section_Begunstigden"].Value, t =>
                         {
                             foreach (var b in begunstigden)
                                 Row(t, b.Naam, $"{b.Relatie} — {b.Percentage}%");
                         });
                     if (executeurs.Count > 0)
-                        Section(col, "Executeurs", t =>
+                        Section(col, L["Section_Executeurs"].Value, t =>
                         {
                             foreach (var e in executeurs)
                                 Row(t, e.Naam, e.Relatie ?? "");
@@ -114,25 +117,25 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Wilsverklaring Euthanasie", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_WilsverklaringEuthanasie"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
                     if (wv != null)
-                        Section(col, "Wilsverklaring", t =>
+                        Section(col, L["Section_Wilsverklaring"].Value, t =>
                         {
-                            Row(t, "Wil euthanasie", wv.WilEuthanasie ? "Ja" : "Nee");
-                            Row(t, "Situatie", wv.SituatieBeschrijving ?? "—");
-                            Row(t, "Huisarts", wv.Huisarts ?? "—");
-                            Row(t, "Praktijk", wv.HuisartsPraktijk ?? "—");
-                            Row(t, "Vertegenwoordiger", wv.VertegenwoordigerNaam ?? "—");
-                            Row(t, "Relatie vertegenw.", wv.VertegenwoordigerRelatie ?? "—");
+                            Row(t, L["Label_WilEuthanasie"].Value, wv.WilEuthanasie ? L["Value_Ja"].Value : L["Value_Nee"].Value);
+                            Row(t, L["Label_Situatie"].Value, wv.SituatieBeschrijving ?? "—");
+                            Row(t, L["Label_Huisarts"].Value, wv.Huisarts ?? "—");
+                            Row(t, L["Label_Praktijk"].Value, wv.HuisartsPraktijk ?? "—");
+                            Row(t, L["Label_Vertegenwoordiger"].Value, wv.VertegenwoordigerNaam ?? "—");
+                            Row(t, L["Label_RelatieVertegenwoordiger"].Value, wv.VertegenwoordigerRelatie ?? "—");
                             if (!string.IsNullOrEmpty(wv.AanvullendeWensen))
-                                Row(t, "Aanvullende wensen", wv.AanvullendeWensen);
-                            Row(t, "Datum ondertekening", wv.DatumOndertekening?.ToString("dd-MM-yyyy") ?? "—");
+                                Row(t, L["Label_AanvullendeWensen"].Value, wv.AanvullendeWensen);
+                            Row(t, L["Label_DatumOndertekening"].Value, wv.DatumOndertekening?.ToString("dd-MM-yyyy") ?? "—");
                         });
                     if (voorwaarden.Count > 0)
-                        Section(col, "Voorwaarden", t =>
+                        Section(col, L["Section_Voorwaarden"].Value, t =>
                         {
                             foreach (var v in voorwaarden)
                                 Row(t, v.Voorwaarde, v.Toelichting ?? "");
@@ -160,25 +163,25 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Donorregistratie", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_Donorregistratie"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
                     if (donor != null)
-                        Section(col, "Registratie", t =>
+                        Section(col, L["Section_Registratie"].Value, t =>
                         {
-                            Row(t, "Keuze", donor.Keuze);
-                            Row(t, "Donorregister", donor.IsGeregistreerdBijDonorregister ? "Ja" : "Nee");
+                            Row(t, L["Label_Keuze"].Value, donor.Keuze);
+                            Row(t, L["Label_Donorregister"].Value, donor.IsGeregistreerdBijDonorregister ? L["Value_Ja"].Value : L["Value_Nee"].Value);
                             if (!string.IsNullOrEmpty(donor.DonorregisterReferentie))
-                                Row(t, "Referentie", donor.DonorregisterReferentie);
+                                Row(t, L["Label_Referentie"].Value, donor.DonorregisterReferentie);
                             if (!string.IsNullOrEmpty(donor.Toelichting))
-                                Row(t, "Toelichting", donor.Toelichting);
+                                Row(t, L["Label_Toelichting"].Value, donor.Toelichting);
                         });
                     if (organen.Count > 0)
-                        Section(col, "Orgaankeuzes", t =>
+                        Section(col, L["Section_Orgaankeuzes"].Value, t =>
                         {
                             foreach (var o in organen)
-                                Row(t, o.Orgaan, o.WelDoneren ? "Ja" : "Nee");
+                                Row(t, o.Orgaan, o.WelDoneren ? L["Value_Ja"].Value : L["Value_Nee"].Value);
                         });
                 });
                 page.Footer().Element(Footer);
@@ -204,28 +207,28 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Digitaal Bezit", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_DigitaalBezit"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
                     if (accounts.Count > 0)
-                        Section(col, "Online Accounts", t =>
+                        Section(col, L["Section_OnlineAccounts"].Value, t =>
                         {
                             foreach (var a in accounts)
                                 Row(t, a.PlatformNaam, $"{a.GewensteActie ?? ""} — {a.Gebruikersnaam ?? ""}");
                         });
                     if (wachtwoorden.Count > 0)
-                        Section(col, "Wachtwoorden", t =>
+                        Section(col, L["Section_Wachtwoorden"].Value, t =>
                         {
-                            t.Item().Text("Wachtwoorden zijn versleuteld en worden niet in de PDF opgenomen.")
+                            t.Item().Text(L["Text_WachtwoordenVersleuteld"].Value)
                                 .Italic().FontSize(9).FontColor(Colors.Grey.Medium);
                             foreach (var w in wachtwoorden)
                                 Row(t, w.Naam, w.Gebruikersnaam ?? "");
                         });
                     if (wallets.Count > 0)
-                        Section(col, "Crypto Wallets", t =>
+                        Section(col, L["Section_CryptoWallets"].Value, t =>
                         {
-                            t.Item().Text("Seed phrases zijn versleuteld en worden niet in de PDF opgenomen.")
+                            t.Item().Text(L["Text_SeedPhrasesVersleuteld"].Value)
                                 .Italic().FontSize(9).FontColor(Colors.Grey.Medium);
                             foreach (var cw in wallets)
                                 Row(t, cw.WalletNaam, $"{cw.CryptoType} — {cw.Exchange ?? ""}");
@@ -256,30 +259,30 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Boedel", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_Boedel"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
                     if (bezittingen.Count > 0)
-                        Section(col, "Bezittingen", t =>
+                        Section(col, L["Section_Bezittingen"].Value, t =>
                         {
                             foreach (var b in bezittingen)
                                 Row(t, b.Omschrijving, $"{b.Categorie}{(b.GeschatteWaarde.HasValue ? $" — € {b.GeschatteWaarde:N2}" : "")}");
                         });
                     if (rekeningen.Count > 0)
-                        Section(col, "Bankrekeningen", t =>
+                        Section(col, L["Section_Bankrekeningen"].Value, t =>
                         {
                             foreach (var r in rekeningen)
                                 Row(t, $"{r.BankNaam} ({r.RekeningType})", r.IBAN);
                         });
                     if (verzekeringen.Count > 0)
-                        Section(col, "Verzekeringen", t =>
+                        Section(col, L["Section_Verzekeringen"].Value, t =>
                         {
                             foreach (var v in verzekeringen)
-                                Row(t, $"{v.Verzekeraar} ({v.Type})", $"Polis: {v.PolisNummer}");
+                                Row(t, $"{v.Verzekeraar} ({v.Type})", string.Format(L["Text_PolisPrefix"].Value, v.PolisNummer));
                         });
                     if (schulden.Count > 0)
-                        Section(col, "Schulden", t =>
+                        Section(col, L["Section_Schulden"].Value, t =>
                         {
                             foreach (var s in schulden)
                                 Row(t, s.Schuldeiser, $"{s.Type} — € {s.Bedrag:N2}");
@@ -307,31 +310,31 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Uitvaartwensen", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_Uitvaartwensen"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
                     if (uitvaart != null)
-                        Section(col, "Uitvaart", t =>
+                        Section(col, L["Section_Uitvaart"].Value, t =>
                         {
-                            Row(t, "Type", uitvaart.VoorkeurType ?? "—");
-                            Row(t, "Begraafplaats", uitvaart.Begraafplaats ?? "—");
-                            Row(t, "Ondernemer", uitvaart.UitvaartOndernemer ?? "—");
+                            Row(t, L["Label_Type"].Value, uitvaart.VoorkeurType ?? "—");
+                            Row(t, L["Label_Begraafplaats"].Value, uitvaart.Begraafplaats ?? "—");
+                            Row(t, L["Label_Ondernemer"].Value, uitvaart.UitvaartOndernemer ?? "—");
                             if (!string.IsNullOrEmpty(uitvaart.Muziekwensen))
-                                Row(t, "Muziek", uitvaart.Muziekwensen);
+                                Row(t, L["Label_Muziek"].Value, uitvaart.Muziekwensen);
                             if (!string.IsNullOrEmpty(uitvaart.Bloemen))
-                                Row(t, "Bloemen", uitvaart.Bloemen);
+                                Row(t, L["Label_Bloemen"].Value, uitvaart.Bloemen);
                             if (!string.IsNullOrEmpty(uitvaart.Kledingwensen))
-                                Row(t, "Kleding", uitvaart.Kledingwensen);
+                                Row(t, L["Label_Kleding"].Value, uitvaart.Kledingwensen);
                             if (!string.IsNullOrEmpty(uitvaart.RouwkaartTekst))
-                                Row(t, "Rouwkaart", uitvaart.RouwkaartTekst);
+                                Row(t, L["Label_Rouwkaart"].Value, uitvaart.RouwkaartTekst);
                             if (!string.IsNullOrEmpty(uitvaart.Condoleance))
-                                Row(t, "Condoleance", uitvaart.Condoleance);
+                                Row(t, L["Label_Condoleance"].Value, uitvaart.Condoleance);
                             if (!string.IsNullOrEmpty(uitvaart.OverigeWensen))
-                                Row(t, "Overige wensen", uitvaart.OverigeWensen);
+                                Row(t, L["Label_OverigeWensen"].Value, uitvaart.OverigeWensen);
                         });
                     if (details.Count > 0)
-                        Section(col, "Ceremonie Details", t =>
+                        Section(col, L["Section_CeremonieDetails"].Value, t =>
                         {
                             foreach (var d in details)
                                 Row(t, d.Onderdeel, d.Beschrijving ?? "");
@@ -355,18 +358,18 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Documenten Overzicht", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_DocumentenOverzicht"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
                     if (documenten.Count > 0)
-                        Section(col, "Opgeslagen Documenten", t =>
+                        Section(col, L["Section_OpgeslagenDocumenten"].Value, t =>
                         {
                             foreach (var d in documenten)
                                 Row(t, d.Naam, $"{d.Categorie} — {d.BestandsNaam}");
                         });
                     else
-                        col.Item().Text("Geen documenten opgeslagen.").Italic().FontColor(Colors.Grey.Medium);
+                        col.Item().Text(L["Text_GeenDocumenten"].Value).Italic().FontColor(Colors.Grey.Medium);
                 });
                 page.Footer().Element(Footer);
             });
@@ -426,7 +429,7 @@ public class LumioPdfService : ILumioPdfService
             });
 
             if (erfgenamen.Count > 0)
-                AddPage(container, "Erfgenamen", col =>
+                AddPage(container, L["Page_Erfgenamen"].Value, col =>
                 {
                     Section(col, "Erfgenamen", t =>
                     {
@@ -440,9 +443,9 @@ public class LumioPdfService : ILumioPdfService
                 {
                     Section(col, "Testament Informatie", t =>
                     {
-                        Row(t, "Type", testament.TestamentType ?? "—");
-                        Row(t, "Notaris", testament.NotarisNaam ?? "—");
-                        Row(t, "Datum", testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
+                        Row(t, L["Label_Type"].Value, testament.TestamentType ?? "—");
+                        Row(t, L["Label_Notaris"].Value, testament.NotarisNaam ?? "—");
+                        Row(t, L["Label_Datum"].Value, testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
                     });
                     if (begunstigden.Count > 0)
                         Section(col, "Begunstigden", t =>
@@ -461,9 +464,9 @@ public class LumioPdfService : ILumioPdfService
                 {
                     Section(col, "Wilsverklaring", t =>
                     {
-                        Row(t, "Wil euthanasie", wv.WilEuthanasie ? "Ja" : "Nee");
-                        Row(t, "Huisarts", wv.Huisarts ?? "—");
-                        Row(t, "Vertegenwoordiger", wv.VertegenwoordigerNaam ?? "—");
+                        Row(t, L["Label_WilEuthanasie"].Value, wv.WilEuthanasie ? L["Value_Ja"].Value : L["Value_Nee"].Value);
+                        Row(t, L["Label_Huisarts"].Value, wv.Huisarts ?? "—");
+                        Row(t, L["Label_Vertegenwoordiger"].Value, wv.VertegenwoordigerNaam ?? "—");
                     });
                 });
 
@@ -472,13 +475,13 @@ public class LumioPdfService : ILumioPdfService
                 {
                     Section(col, "Registratie", t =>
                     {
-                        Row(t, "Keuze", donor.Keuze);
-                        Row(t, "Donorregister", donor.IsGeregistreerdBijDonorregister ? "Ja" : "Nee");
+                        Row(t, L["Label_Keuze"].Value, donor.Keuze);
+                        Row(t, L["Label_Donorregister"].Value, donor.IsGeregistreerdBijDonorregister ? L["Value_Ja"].Value : L["Value_Nee"].Value);
                     });
                     if (organen.Count > 0)
                         Section(col, "Orgaankeuzes", t =>
                         {
-                            foreach (var o in organen) Row(t, o.Orgaan, o.WelDoneren ? "Ja" : "Nee");
+                            foreach (var o in organen) Row(t, o.Orgaan, o.WelDoneren ? L["Value_Ja"].Value : L["Value_Nee"].Value);
                         });
                 });
 
@@ -527,15 +530,15 @@ public class LumioPdfService : ILumioPdfService
                 {
                     Section(col, "Uitvaart", t =>
                     {
-                        Row(t, "Type", uitvaart.VoorkeurType ?? "—");
-                        Row(t, "Begraafplaats", uitvaart.Begraafplaats ?? "—");
-                        if (!string.IsNullOrEmpty(uitvaart.Muziekwensen)) Row(t, "Muziek", uitvaart.Muziekwensen);
-                        if (!string.IsNullOrEmpty(uitvaart.RouwkaartTekst)) Row(t, "Rouwkaart", uitvaart.RouwkaartTekst);
+                        Row(t, L["Label_Type"].Value, uitvaart.VoorkeurType ?? "—");
+                        Row(t, L["Label_Begraafplaats"].Value, uitvaart.Begraafplaats ?? "—");
+                        if (!string.IsNullOrEmpty(uitvaart.Muziekwensen)) Row(t, L["Label_Muziek"].Value, uitvaart.Muziekwensen);
+                        if (!string.IsNullOrEmpty(uitvaart.RouwkaartTekst)) Row(t, L["Label_Rouwkaart"].Value, uitvaart.RouwkaartTekst);
                     });
                 });
 
             if (documenten.Count > 0)
-                AddPage(container, "Documenten", col =>
+                AddPage(container, L["Page_Documenten"].Value, col =>
                 {
                     Section(col, "Opgeslagen Documenten", t =>
                     {
@@ -567,7 +570,7 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Noodkaart", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_Noodkaart"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(8);
@@ -575,7 +578,7 @@ public class LumioPdfService : ILumioPdfService
                     // Disclaimer
                     col.Item().Background(Colors.Blue.Lighten5).Padding(8).Column(disclaimer =>
                     {
-                        disclaimer.Item().Text("NOODKAART — Bewaar dit document op een veilige, toegankelijke plek")
+                        disclaimer.Item().Text(L["Text_NoodkaartDisclaimer"].Value)
                             .Bold().FontSize(10).FontColor(Colors.Blue.Darken3);
                         disclaimer.Item().Text($"Gegenereerd op {DateTime.Now:dd-MM-yyyy}")
                             .FontSize(8).FontColor(Colors.Grey.Medium);
@@ -583,19 +586,19 @@ public class LumioPdfService : ILumioPdfService
 
                     // Eigenaar gegevens
                     if (eigenaar != null)
-                        Section(col, "Persoonlijke gegevens", t =>
+                        Section(col, L["Section_PersoonlijkeGegevens"].Value, t =>
                         {
-                            Row(t, "Naam", $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim());
-                            Row(t, "Geboortedatum", eigenaar.Geboortedatum.ToString("dd-MM-yyyy"));
-                            if (!string.IsNullOrEmpty(eigenaar.BSN)) Row(t, "BSN", eigenaar.BSN);
-                            if (!string.IsNullOrEmpty(eigenaar.Adres)) Row(t, "Adres", $"{eigenaar.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}");
-                            if (!string.IsNullOrEmpty(eigenaar.Telefoon)) Row(t, "Telefoon", eigenaar.Telefoon);
-                            if (!string.IsNullOrEmpty(eigenaar.Email)) Row(t, "Email", eigenaar.Email);
+                            Row(t, L["Label_Naam"].Value, $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim());
+                            Row(t, L["Label_Geboortedatum"].Value, eigenaar.Geboortedatum.ToString("dd-MM-yyyy"));
+                            if (!string.IsNullOrEmpty(eigenaar.BSN)) Row(t, L["Label_BSN"].Value, eigenaar.BSN);
+                            if (!string.IsNullOrEmpty(eigenaar.Adres)) Row(t, L["Label_Adres"].Value, $"{eigenaar.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}");
+                            if (!string.IsNullOrEmpty(eigenaar.Telefoon)) Row(t, L["Label_Telefoon"].Value, eigenaar.Telefoon);
+                            if (!string.IsNullOrEmpty(eigenaar.Email)) Row(t, L["Label_EMail"].Value, eigenaar.Email);
                         });
 
                     // Noodcontacten
                     if (noodcontacten.Count > 0)
-                        Section(col, "Noodcontacten", t =>
+                        Section(col, L["Section_Noodcontacten"].Value, t =>
                         {
                             foreach (var nc in noodcontacten)
                             {
@@ -609,20 +612,20 @@ public class LumioPdfService : ILumioPdfService
                         });
 
                     // Testament & notaris
-                    Section(col, "Testament & Notaris", t =>
+                    Section(col, L["Section_TestamentEnNotaris"].Value, t =>
                     {
                         if (testament != null)
                         {
-                            Row(t, "Type testament", testament.TestamentType ?? "—");
-                            Row(t, "Bewaarlocatie", testament.TestamentLocatie ?? "—");
-                            Row(t, "Notaris", testament.NotarisNaam ?? eigenaar?.Notaris ?? "—");
-                            Row(t, "Notariskantoor", testament.NotarisKantoor ?? eigenaar?.NotarisKantoor ?? "—");
-                            if (!string.IsNullOrEmpty(testament.CTR_Nummer)) Row(t, "CTR Nummer", testament.CTR_Nummer);
+                            Row(t, L["Label_TypeTestament"].Value, testament.TestamentType ?? "—");
+                            Row(t, L["Label_Bewaarlocatie"].Value, testament.TestamentLocatie ?? "—");
+                            Row(t, L["Label_Notaris"].Value, testament.NotarisNaam ?? eigenaar?.Notaris ?? "—");
+                            Row(t, L["Label_Notariskantoor"].Value, testament.NotarisKantoor ?? eigenaar?.NotarisKantoor ?? "—");
+                            if (!string.IsNullOrEmpty(testament.CTR_Nummer)) Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer);
                         }
                         else
                         {
-                            Row(t, "Notaris", eigenaar?.Notaris ?? "Niet ingevuld");
-                            Row(t, "Notariskantoor", eigenaar?.NotarisKantoor ?? "Niet ingevuld");
+                            Row(t, L["Label_Notaris"].Value, eigenaar?.Notaris ?? L["Value_NietIngevuld"].Value);
+                            Row(t, L["Label_Notariskantoor"].Value, eigenaar?.NotarisKantoor ?? L["Value_NietIngevuld"].Value);
                         }
                     });
 
@@ -630,8 +633,8 @@ public class LumioPdfService : ILumioPdfService
                     if (uitvaart != null)
                         Section(col, "Uitvaart", t =>
                         {
-                            Row(t, "Voorkeur", uitvaart.VoorkeurType ?? "—");
-                            Row(t, "Uitvaartondernemer", uitvaart.UitvaartOndernemer ?? "Niet ingevuld");
+                            Row(t, L["Label_Voorkeur"].Value, uitvaart.VoorkeurType ?? "—");
+                            Row(t, L["Label_Uitvaartondernemer"].Value, uitvaart.UitvaartOndernemer ?? L["Value_NietIngevuld"].Value);
                         });
 
                     // Verzekeringen
@@ -639,7 +642,7 @@ public class LumioPdfService : ILumioPdfService
                         Section(col, "Verzekeringen", t =>
                         {
                             foreach (var v in verzekeringen)
-                                Row(t, $"{v.Verzekeraar} ({v.Type})", $"Polis: {v.PolisNummer}");
+                                Row(t, $"{v.Verzekeraar} ({v.Type})", string.Format(L["Text_PolisPrefix"].Value, v.PolisNummer));
                         });
                 });
                 page.Footer().Element(Footer);
@@ -662,7 +665,7 @@ public class LumioPdfService : ILumioPdfService
 
         var eigenaarNaam = eigenaar != null
             ? $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim()
-            : "Onbekend";
+            : L["Value_Onbekend"].Value;
         var isNotarieel = testament?.TestamentType == "Notarieel";
 
         var laatstBijgewerkt = new[] { eigenaar?.GewijzigdOp, testament?.GewijzigdOp }
@@ -673,7 +676,7 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, isNotarieel ? "Concept Testament (Notarieel)" : "Concept Testament (Codicil)", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, isNotarieel ? L["Page_ConceptTestamentNotarieel"].Value : L["Page_ConceptTestamentCodicil"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(8);
@@ -681,42 +684,42 @@ public class LumioPdfService : ILumioPdfService
                     // Disclaimer
                     col.Item().Border(1).BorderColor(Colors.Orange.Darken1).Background(Colors.Orange.Lighten4).Padding(10).Column(d =>
                     {
-                        d.Item().Text("CONCEPT-DOCUMENT — GEEN RECHTSGELDIG TESTAMENT").Bold().FontSize(10).FontColor(Colors.Orange.Darken3);
+                        d.Item().Text(L["Legal_ConceptDocumentDisclaimer"].Value).Bold().FontSize(10).FontColor(Colors.Orange.Darken3);
                         d.Item().PaddingTop(4).Text(isNotarieel
-                            ? "Dit conceptdocument dient als voorbereiding op uw bezoek aan de notaris. Alleen een door de notaris opgesteld en ondertekend testament is rechtsgeldig (Boek 4 BW)."
-                            : "Een codicil (onderhands testament) is alleen geldig als het eigenhandig is geschreven, gedateerd en ondertekend. Een geprint document is NIET rechtsgeldig. Gebruik dit concept als voorbeeld om af te schrijven."
+                            ? L["Legal_ConceptNotarieelToelichting"].Value
+                            : L["Legal_ConceptCodicilToelichting"].Value
                         ).FontSize(8).FontColor(Colors.Orange.Darken2);
                     });
 
                     // Kop
-                    col.Item().PaddingTop(10).Text("UITERSTE WILSBESCHIKKING").Bold().FontSize(14).AlignCenter();
-                    col.Item().Text($"van {eigenaarNaam}").FontSize(11).AlignCenter();
+                    col.Item().PaddingTop(10).Text(L["Legal_UitersteWilsbeschikking"].Value).Bold().FontSize(14).AlignCenter();
+                    col.Item().Text(string.Format(L["Text_Van"].Value, eigenaarNaam)).FontSize(11).AlignCenter();
                     col.Item().PaddingTop(8);
 
                     // Art. 1 — Persoonlijke gegevens
-                    Section(col, "Artikel 1 — Ondergetekende", t =>
+                    Section(col, L["Section_Artikel1Ondergetekende"].Value, t =>
                     {
-                        Row(t, "Naam", eigenaarNaam);
+                        Row(t, L["Label_Naam"].Value, eigenaarNaam);
                         if (eigenaar?.Geboortedatum != default)
-                            Row(t, "Geboortedatum", eigenaar!.Geboortedatum.ToString("dd-MM-yyyy"));
+                            Row(t, L["Label_Geboortedatum"].Value, eigenaar!.Geboortedatum.ToString("dd-MM-yyyy"));
                         if (!string.IsNullOrEmpty(eigenaar?.BSN))
-                            Row(t, "BSN", eigenaar!.BSN);
+                            Row(t, L["Label_BSN"].Value, eigenaar!.BSN);
                         if (!string.IsNullOrEmpty(eigenaar?.Adres))
-                            Row(t, "Woonplaats", $"{eigenaar!.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
-                        t.Item().PaddingTop(5).Text("verklaart bij deze uiterste wilsbeschikking te beschikken als volgt:").FontSize(9).Italic();
+                            Row(t, L["Label_Woonplaats"].Value, $"{eigenaar!.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
+                        t.Item().PaddingTop(5).Text(L["Legal_VerklaartTeSchikken"].Value).FontSize(9).Italic();
                     });
 
                     // Art. 2 — Erfgenamen
                     if (begunstigden.Count > 0)
                     {
-                        Section(col, "Artikel 2 — Erfgenamen en Begunstigden", t =>
+                        Section(col, L["Section_Artikel2ErfgenamenBegunstigden"].Value, t =>
                         {
-                            t.Item().Text("Ik benoem tot mijn erfgenamen:").FontSize(9);
+                            t.Item().Text(L["Legal_IkBenoemErfgenamen"].Value).FontSize(9);
                             t.Item().PaddingTop(4);
                             foreach (var b in begunstigden)
                             {
                                 var detail = b.Percentage != null ? $" — {b.Percentage}%" : "";
-                                if (b.IsLegitiemePortie) detail += " (legitieme portie)";
+                                if (b.IsLegitiemePortie) detail += $" {L["Value_LegitiemePortie"].Value}";
                                 Row(t, b.Naam, $"{b.Relatie}{detail}");
                             }
                         });
@@ -725,15 +728,15 @@ public class LumioPdfService : ILumioPdfService
                     // Art. 3 — Executeur
                     if (executeurs.Count > 0)
                     {
-                        Section(col, "Artikel 3 — Executeur", t =>
+                        Section(col, L["Section_Artikel3Executeur"].Value, t =>
                         {
-                            t.Item().Text("Ik benoem tot executeur van mijn nalatenschap:").FontSize(9);
+                            t.Item().Text(L["Legal_IkBenoemExecuteur"].Value).FontSize(9);
                             t.Item().PaddingTop(4);
                             foreach (var e in executeurs)
                             {
-                                Row(t, e.Naam, e.Bevoegdheden ?? "Beheer en beschikking");
+                                Row(t, e.Naam, e.Bevoegdheden ?? L["Value_BeheerEnBeschikking"].Value);
                                 if (!string.IsNullOrEmpty(e.Telefoon) || !string.IsNullOrEmpty(e.Email))
-                                    Row(t, "Contact", $"{e.Telefoon ?? ""} {e.Email ?? ""}".Trim());
+                                    Row(t, L["Label_Contact"].Value, $"{e.Telefoon ?? ""} {e.Email ?? ""}".Trim());
                             }
                         });
                     }
@@ -741,19 +744,16 @@ public class LumioPdfService : ILumioPdfService
                     // Art. 4 — Uitsluitingsclausule
                     if (testament?.UitsluitingsClausule == true)
                     {
-                        Section(col, "Artikel 4 — Uitsluitingsclausule", t =>
+                        Section(col, L["Section_Artikel4Uitsluitingsclausule"].Value, t =>
                         {
-                            t.Item().Text("Ik bepaal dat al hetgeen uit mijn nalatenschap wordt verkregen, " +
-                                "alsmede de vruchten daarvan, niet zal vallen in enige gemeenschap van goederen " +
-                                "waarin een verkrijger gehuwd mocht zijn of komen te huwen, noch onderwerp zal zijn " +
-                                "van enig verrekenbeding.").FontSize(9);
+                            t.Item().Text(L["Legal_Uitsluitingsclausule"].Value).FontSize(9);
                         });
                     }
 
                     // Art. 5 — Legaten
                     if (!string.IsNullOrEmpty(testament?.Legaten))
                     {
-                        Section(col, $"Artikel {(testament?.UitsluitingsClausule == true ? 5 : 4)} — Legaten", t =>
+                        Section(col, string.Format(L["Section_ArtikelLegaten"].Value, testament?.UitsluitingsClausule == true ? 5 : 4), t =>
                         {
                             t.Item().Text(testament!.Legaten).FontSize(9);
                         });
@@ -762,7 +762,7 @@ public class LumioPdfService : ILumioPdfService
                     // Bijzondere bepalingen
                     if (!string.IsNullOrEmpty(testament?.BijzondereBepalingen))
                     {
-                        Section(col, "Bijzondere Bepalingen", t =>
+                        Section(col, L["Section_BijzondereBepalingen"].Value, t =>
                         {
                             t.Item().Text(testament!.BijzondereBepalingen).FontSize(9);
                         });
@@ -771,7 +771,7 @@ public class LumioPdfService : ILumioPdfService
                     // Algemene wensen
                     if (!string.IsNullOrEmpty(testament?.AlgemeneWensen))
                     {
-                        Section(col, "Algemene Wensen", t =>
+                        Section(col, L["Section_AlgemeneWensen"].Value, t =>
                         {
                             t.Item().Text(testament!.AlgemeneWensen).FontSize(9);
                         });
@@ -780,30 +780,30 @@ public class LumioPdfService : ILumioPdfService
                     // Notaris
                     if (!string.IsNullOrEmpty(testament?.NotarisNaam))
                     {
-                        Section(col, "Notaris", t =>
+                        Section(col, L["Section_Notaris"].Value, t =>
                         {
-                            Row(t, "Notaris", testament!.NotarisNaam ?? "—");
-                            Row(t, "Kantoor", testament.NotarisKantoor ?? "—");
+                            Row(t, L["Label_Notaris"].Value, testament!.NotarisNaam ?? "—");
+                            Row(t, L["Label_Kantoor"].Value, testament.NotarisKantoor ?? "—");
                             if (!string.IsNullOrEmpty(testament.NotarisTelefoon))
-                                Row(t, "Telefoon", testament.NotarisTelefoon);
+                                Row(t, L["Label_Telefoon"].Value, testament.NotarisTelefoon);
                             if (!string.IsNullOrEmpty(testament.NotarisEmail))
-                                Row(t, "E-mail", testament.NotarisEmail);
+                                Row(t, L["Label_EMail"].Value, testament.NotarisEmail);
                             if (!string.IsNullOrEmpty(testament.CTR_Nummer))
-                                Row(t, "CTR Nummer", testament.CTR_Nummer);
+                                Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer);
                         });
                     }
 
                     // Ondertekening
                     col.Item().PaddingTop(20).Column(sig =>
                     {
-                        sig.Item().Text("Ondertekening").FontSize(11).SemiBold();
-                        sig.Item().PaddingTop(10).Text($"Aldus opgemaakt te _______________________ op {(testament?.DatumTestament != null ? testament.DatumTestament.Value.ToString("dd-MM-yyyy") : "____-____-________")}").FontSize(9);
-                        sig.Item().PaddingTop(30).Text("Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().Text(L["Signing_Ondertekening"].Value).FontSize(11).SemiBold();
+                        sig.Item().PaddingTop(10).Text(string.Format(L["Signing_AldusOpgemaakt"].Value, testament?.DatumTestament != null ? testament.DatumTestament.Value.ToString("dd-MM-yyyy") : "____-____-________")).FontSize(9);
+                        sig.Item().PaddingTop(30).Text(L["Signing_Handtekening"].Value).FontSize(9);
                         sig.Item().PaddingTop(5).Text(eigenaarNaam).FontSize(9);
                     });
                 });
                 page.Footer().Element(c => FooterWithDisclaimer(c,
-                    "Dit conceptdocument heeft geen juridische werking. Gebaseerd op Boek 4 BW, geldend per 01-01-2026."));
+                    L["Footer_TestamentConceptDisclaimer"].Value));
             });
         }).GeneratePdf();
     }
@@ -838,51 +838,46 @@ public class LumioPdfService : ILumioPdfService
                     // Disclaimer
                     col.Item().Border(1).BorderColor(Colors.Purple.Darken1).Background(Colors.Purple.Lighten5).Padding(10).Column(d =>
                     {
-                        d.Item().Text("SCHRIFTELIJKE WILSVERKLARING — Conform Wet toetsing levensbeëindiging (Wtl)").Bold().FontSize(10).FontColor(Colors.Purple.Darken3);
+                        d.Item().Text(L["Legal_WilsverklaringHeader"].Value).Bold().FontSize(10).FontColor(Colors.Purple.Darken3);
                         d.Item().PaddingTop(4).Text(
-                            "Deze wilsverklaring is een schriftelijke vastlegging van uw wensen. " +
-                            "Dit document vervangt geen gesprek met uw huisarts. Overhandig een ondertekend exemplaar " +
-                            "aan uw huisarts en bewaar een kopie op een toegankelijke locatie."
+                            L["Legal_WilsverklaringToelichting"].Value
                         ).FontSize(8).FontColor(Colors.Purple.Darken2);
                     });
 
                     // Kop
-                    col.Item().PaddingTop(10).Text("SCHRIFTELIJKE WILSVERKLARING EUTHANASIE").Bold().FontSize(14).AlignCenter();
-                    col.Item().Text("Conform artikel 2, eerste lid, sub b, Wet toetsing levensbeëindiging op verzoek en hulp bij zelfdoding").FontSize(8).FontColor(Colors.Grey.Darken1).AlignCenter();
+                    col.Item().PaddingTop(10).Text(L["Legal_WilsverklaringEuthanasieTitle"].Value).Bold().FontSize(14).AlignCenter();
+                    col.Item().Text(L["Legal_ConformArtikel2"].Value).FontSize(8).FontColor(Colors.Grey.Darken1).AlignCenter();
                     col.Item().PaddingTop(8);
 
                     // Ondergetekende
-                    Section(col, "Ondergetekende", t =>
+                    Section(col, L["Section_Ondergetekende"].Value, t =>
                     {
-                        Row(t, "Naam", eigenaarNaam);
+                        Row(t, L["Label_Naam"].Value, eigenaarNaam);
                         if (eigenaar?.Geboortedatum != default)
-                            Row(t, "Geboortedatum", eigenaar!.Geboortedatum.ToString("dd-MM-yyyy"));
+                            Row(t, L["Label_Geboortedatum"].Value, eigenaar!.Geboortedatum.ToString("dd-MM-yyyy"));
                         if (!string.IsNullOrEmpty(eigenaar?.BSN))
-                            Row(t, "BSN", eigenaar!.BSN);
+                            Row(t, L["Label_BSN"].Value, eigenaar!.BSN);
                         if (!string.IsNullOrEmpty(eigenaar?.Adres))
-                            Row(t, "Woonplaats", $"{eigenaar!.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
+                            Row(t, L["Label_Woonplaats"].Value, $"{eigenaar!.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
                     });
 
                     // Verklaring
-                    Section(col, "Verklaring", t =>
+                    Section(col, L["Section_Verklaring"].Value, t =>
                     {
                         if (wilsverklaring?.WilEuthanasie == true)
                         {
-                            t.Item().Text("Ondergetekende verklaart hierbij, in het volle bezit van zijn/haar geestelijke vermogens, " +
-                                "het nadrukkelijke verzoek te doen om euthanasie te laten toepassen wanneer " +
-                                "onderstaande situatie(s) zich voordoen en ondergetekende niet meer in staat is " +
-                                "zijn/haar wil kenbaar te maken.").FontSize(9);
+                            t.Item().Text(L["Legal_EuthanasieVerklaring"].Value).FontSize(9);
                         }
                         else
                         {
-                            t.Item().Text("Ondergetekende verklaart hierbij GEEN euthanasie te wensen.").FontSize(9);
+                            t.Item().Text(L["Legal_GeenEuthanasie"].Value).FontSize(9);
                         }
                     });
 
                     // Situatiebeschrijving
                     if (!string.IsNullOrEmpty(wilsverklaring?.SituatieBeschrijving))
                     {
-                        Section(col, "Situatie waarin euthanasie gewenst is", t =>
+                        Section(col, L["Section_SituatieEuthanasie"].Value, t =>
                         {
                             t.Item().Text(wilsverklaring!.SituatieBeschrijving).FontSize(9);
                         });
@@ -891,7 +886,7 @@ public class LumioPdfService : ILumioPdfService
                     // Voorwaarden
                     if (voorwaarden.Count > 0)
                     {
-                        Section(col, "Specifieke voorwaarden", t =>
+                        Section(col, L["Section_SpecifiekeVoorwaarden"].Value, t =>
                         {
                             foreach (var v in voorwaarden)
                             {
@@ -905,10 +900,9 @@ public class LumioPdfService : ILumioPdfService
                     // Dementie-clausule
                     if (wilsverklaring?.DementieClausule == true)
                     {
-                        Section(col, "Dementie-clausule", t =>
+                        Section(col, L["Section_DementieClausule"].Value, t =>
                         {
-                            t.Item().Text("Ondergetekende verklaart dat deze wilsverklaring ook geldt in het geval van " +
-                                "vergevorderde dementie of een andere aandoening die leidt tot wilsonbekwaamheid.").FontSize(9);
+                            t.Item().Text(L["Legal_DementieClausule"].Value).FontSize(9);
                             if (!string.IsNullOrEmpty(wilsverklaring.DementieClausuleToelichting))
                             {
                                 t.Item().PaddingTop(4).Text(wilsverklaring.DementieClausuleToelichting).FontSize(9);
@@ -919,35 +913,35 @@ public class LumioPdfService : ILumioPdfService
                     // Behandelverbod
                     if (!string.IsNullOrEmpty(wilsverklaring?.BehandelVerbod))
                     {
-                        Section(col, "Behandelverbod", t =>
+                        Section(col, L["Section_Behandelverbod"].Value, t =>
                         {
-                            t.Item().Text("Ondergetekende weigert de volgende medische behandelingen:").FontSize(9);
+                            t.Item().Text(L["Legal_Behandelverbod"].Value).FontSize(9);
                             t.Item().PaddingTop(4).Text(wilsverklaring!.BehandelVerbod).FontSize(9);
                         });
                     }
 
                     // Huisarts
-                    Section(col, "Huisarts", t =>
+                    Section(col, L["Section_Huisarts"].Value, t =>
                     {
-                        Row(t, "Naam", wilsverklaring?.Huisarts ?? "Niet ingevuld");
-                        Row(t, "Praktijk", wilsverklaring?.HuisartsPraktijk ?? "—");
+                        Row(t, L["Label_Naam"].Value, wilsverklaring?.Huisarts ?? "Niet ingevuld");
+                        Row(t, L["Label_Praktijk"].Value, wilsverklaring?.HuisartsPraktijk ?? "—");
                         if (!string.IsNullOrEmpty(wilsverklaring?.HuisartsTelefoon))
-                            Row(t, "Telefoon", wilsverklaring!.HuisartsTelefoon);
+                            Row(t, L["Label_Telefoon"].Value, wilsverklaring!.HuisartsTelefoon);
                         if (!string.IsNullOrEmpty(wilsverklaring?.HuisartsEmail))
-                            Row(t, "E-mail", wilsverklaring!.HuisartsEmail);
+                            Row(t, L["Label_EMail"].Value, wilsverklaring!.HuisartsEmail);
                     });
 
                     // Vertegenwoordiger
                     if (!string.IsNullOrEmpty(wilsverklaring?.VertegenwoordigerNaam))
                     {
-                        Section(col, "Gevolmachtigde vertegenwoordiger (art. 7:465 BW)", t =>
+                        Section(col, L["Section_GevolmachtigdeVertegenwoordiger"].Value, t =>
                         {
-                            Row(t, "Naam", wilsverklaring!.VertegenwoordigerNaam);
-                            Row(t, "Relatie", wilsverklaring.VertegenwoordigerRelatie ?? "—");
+                            Row(t, L["Label_Naam"].Value, wilsverklaring!.VertegenwoordigerNaam);
+                            Row(t, L["Label_Relatie"].Value, wilsverklaring.VertegenwoordigerRelatie ?? "—");
                             if (!string.IsNullOrEmpty(wilsverklaring.VertegenwoordigerTelefoon))
-                                Row(t, "Telefoon", wilsverklaring.VertegenwoordigerTelefoon);
+                                Row(t, L["Label_Telefoon"].Value, wilsverklaring.VertegenwoordigerTelefoon);
                             if (!string.IsNullOrEmpty(wilsverklaring.VertegenwoordigerEmail))
-                                Row(t, "E-mail", wilsverklaring.VertegenwoordigerEmail);
+                                Row(t, L["Label_EMail"].Value, wilsverklaring.VertegenwoordigerEmail);
                             if (!string.IsNullOrEmpty(wilsverklaring.VertegenwoordigerAdres))
                                 Row(t, "Adres", $"{wilsverklaring.VertegenwoordigerAdres}, {wilsverklaring.VertegenwoordigerPostcode} {wilsverklaring.VertegenwoordigerWoonplaats}".Trim().TrimEnd(','));
                         });
@@ -956,7 +950,7 @@ public class LumioPdfService : ILumioPdfService
                     // Aanvullende wensen
                     if (!string.IsNullOrEmpty(wilsverklaring?.AanvullendeWensen))
                     {
-                        Section(col, "Aanvullende wensen", t =>
+                        Section(col, L["Section_AanvullendeWensen"].Value, t =>
                         {
                             t.Item().Text(wilsverklaring!.AanvullendeWensen).FontSize(9);
                         });
@@ -965,28 +959,28 @@ public class LumioPdfService : ILumioPdfService
                     // Ondertekening
                     col.Item().PaddingTop(20).Column(sig =>
                     {
-                        sig.Item().Text("Ondertekening").FontSize(11).SemiBold();
-                        sig.Item().PaddingTop(5).Text("Ondergetekende verklaart deze wilsverklaring bij helder bewustzijn en uit vrije wil te hebben opgesteld.").FontSize(9);
-                        sig.Item().PaddingTop(10).Text($"Datum: {(wilsverklaring?.DatumOndertekening != null ? wilsverklaring.DatumOndertekening.Value.ToString("dd-MM-yyyy") : "____-____-________")}").FontSize(9);
-                        sig.Item().PaddingTop(5).Text($"Plaats: _______________________").FontSize(9);
-                        sig.Item().PaddingTop(25).Text("Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().Text(L["Signing_Ondertekening"].Value).FontSize(11).SemiBold();
+                        sig.Item().PaddingTop(5).Text(L["Legal_HelderBewustzijn"].Value).FontSize(9);
+                        sig.Item().PaddingTop(10).Text(string.Format(L["Signing_DatumPrefix"].Value, wilsverklaring?.DatumOndertekening != null ? wilsverklaring.DatumOndertekening.Value.ToString("dd-MM-yyyy") : "____-____-________")).FontSize(9);
+                        sig.Item().PaddingTop(5).Text(L["Signing_Plaats"].Value).FontSize(9);
+                        sig.Item().PaddingTop(25).Text(L["Signing_Handtekening"].Value).FontSize(9);
                         sig.Item().PaddingTop(5).Text(eigenaarNaam).FontSize(9);
                     });
 
                     // Getuigen
                     col.Item().PaddingTop(20).Column(wit =>
                     {
-                        wit.Item().Text("Getuigen (optioneel, versterkt de rechtsgeldigheid)").FontSize(11).SemiBold();
-                        wit.Item().PaddingTop(10).Text("Getuige 1:").FontSize(9).SemiBold();
-                        wit.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
-                        wit.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
-                        wit.Item().PaddingTop(15).Text("Getuige 2:").FontSize(9).SemiBold();
-                        wit.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
-                        wit.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+                        wit.Item().Text(L["Signing_Getuigen"].Value).FontSize(11).SemiBold();
+                        wit.Item().PaddingTop(10).Text(L["Signing_Getuige1"].Value).FontSize(9).SemiBold();
+                        wit.Item().PaddingTop(5).Text(L["Signing_Naam"].Value).FontSize(9);
+                        wit.Item().PaddingTop(5).Text(L["Signing_Handtekening"].Value).FontSize(9);
+                        wit.Item().PaddingTop(15).Text(L["Signing_Getuige2"].Value).FontSize(9).SemiBold();
+                        wit.Item().PaddingTop(5).Text(L["Signing_Naam"].Value).FontSize(9);
+                        wit.Item().PaddingTop(5).Text(L["Signing_Handtekening"].Value).FontSize(9);
                     });
                 });
                 page.Footer().Element(c => FooterWithDisclaimer(c,
-                    "Gebaseerd op Wet toetsing levensbeëindiging (Wtl), geldend per 01-01-2026."));
+                    L["Footer_WilsverklaringDisclaimer"].Value));
             });
         }).GeneratePdf();
     }
@@ -1006,13 +1000,13 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Noodprocedure — Stappen voor Nabestaanden", laatstBijgewerkt));
+                page.Header().Element(c => Header(c, L["Page_Noodprocedure"].Value, laatstBijgewerkt));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
 
                     // Intro
-                    col.Item().Text("Dit document bevat de stappen die nabestaanden moeten volgen om toegang te krijgen tot de digitale nalatenschap in Lumio. Bewaar dit document op een veilige, bereikbare plek.")
+                    col.Item().Text(L["Text_NoodprocedureIntro"].Value)
                         .FontSize(9).FontColor(Colors.Grey.Darken1);
 
                     col.Item().PaddingTop(5);
@@ -1020,20 +1014,20 @@ public class LumioPdfService : ILumioPdfService
                     // Eigenaar info
                     if (eigenaar != null)
                     {
-                        Section(col, "Gegevens overledene", t =>
+                        Section(col, L["Section_GegevensOverledene"].Value, t =>
                         {
-                            Row(t, "Naam", $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim());
+                            Row(t, L["Label_Naam"].Value, $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Trim());
                             if (!string.IsNullOrEmpty(eigenaar.Telefoon))
-                                Row(t, "Telefoon", eigenaar.Telefoon);
+                                Row(t, L["Label_Telefoon"].Value, eigenaar.Telefoon);
                             if (!string.IsNullOrEmpty(eigenaar.Email))
-                                Row(t, "E-mail", eigenaar.Email);
+                                Row(t, L["Label_EMail"].Value, eigenaar.Email);
                         });
                     }
 
                     // Stap 1: Noodcontacten
-                    Section(col, "Stap 1 — Noodcontacten informeren", t =>
+                    Section(col, L["Section_Stap1Noodcontacten"].Value, t =>
                     {
-                        t.Item().Text("Neem zo snel mogelijk contact op met de volgende personen:")
+                        t.Item().Text(L["Text_NeemContactOp"].Value)
                             .FontSize(9).FontColor(Colors.Grey.Darken1);
                         t.Item().PaddingTop(3);
                         if (noodcontacten.Count > 0)
@@ -1042,76 +1036,76 @@ public class LumioPdfService : ILumioPdfService
                             {
                                 Row(t, $"{nc.Naam} ({nc.Rol})", $"{nc.Telefoon ?? "—"} / {nc.Email ?? "—"}");
                                 if (!string.IsNullOrEmpty(nc.Instructies))
-                                    Row(t, "  Instructie", nc.Instructies);
+                                    Row(t, L["Label_Instructie"].Value, nc.Instructies);
                             }
                         }
                         else
                         {
-                            t.Item().Text("Geen noodcontacten vastgelegd.").FontSize(9).Italic();
+                            t.Item().Text(L["Text_GeenNoodcontacten"].Value).FontSize(9).Italic();
                         }
                     });
 
                     // Stap 2: Shamir-sleuteldelen verzamelen
-                    Section(col, "Stap 2 — Shamir-sleuteldelen verzamelen", t =>
+                    Section(col, L["Section_Stap2ShamirSleuteldelen"].Value, t =>
                     {
-                        t.Item().Text($"Om Lumio te ontgrendelen zijn minimaal {drempel} sleuteldelen nodig. De volgende erfgenamen hebben een sleuteldeel ontvangen:")
+                        t.Item().Text(string.Format(L["Text_ShamirSleuteldelenNodig"].Value, drempel))
                             .FontSize(9).FontColor(Colors.Grey.Darken1);
                         t.Item().PaddingTop(3);
                         if (erfgenamen.Count > 0)
                         {
                             foreach (var e in erfgenamen)
                             {
-                                Row(t, $"Deel #{e.ShareIndex}", $"{e.Voornaam} {e.Achternaam} — {e.Telefoon ?? e.Email ?? "geen contact"}");
+                                Row(t, string.Format(L["Label_DeelNummer"].Value, e.ShareIndex), $"{e.Voornaam} {e.Achternaam} — {e.Telefoon ?? e.Email ?? L["Text_GeenContact"].Value}");
                             }
                         }
                         else
                         {
-                            t.Item().Text("Geen sleuteldelen verdeeld — neem contact op met de notaris.").FontSize(9).Italic();
+                            t.Item().Text(L["Text_GeenSleuteldelen"].Value).FontSize(9).Italic();
                         }
                     });
 
                     // Stap 3: Lumio installeren
-                    Section(col, "Stap 3 — Lumio installeren", t =>
+                    Section(col, L["Section_Stap3LumioInstalleren"].Value, t =>
                     {
-                        t.Item().Text("Lumio is een desktopapplicatie die lokaal draait. Volg deze stappen:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().Text(L["Text_LumioDesktopInstructie"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                         t.Item().PaddingTop(3);
-                        Row(t, "3a", "Download Lumio vanaf de oorspronkelijke bron (USB-stick, gedeelde map, of website).");
-                        Row(t, "3b", "Installeer de applicatie op uw computer (Windows/macOS/Linux).");
-                        Row(t, "3c", "Start Lumio — de applicatie opent in uw webbrowser.");
+                        Row(t, "3a", L["Text_Stap3aInstructie"].Value);
+                        Row(t, "3b", L["Text_Stap3bInstructie"].Value);
+                        Row(t, "3c", L["Text_Stap3cInstructie"].Value);
                     });
 
                     // Stap 4: Backup herstellen
-                    Section(col, "Stap 4 — Backup herstellen", t =>
+                    Section(col, L["Section_Stap4BackupHerstellen"].Value, t =>
                     {
-                        t.Item().Text("Als u een backup-bestand (.db) heeft ontvangen:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().Text(L["Text_AlsBackupOntvangen"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                         t.Item().PaddingTop(3);
-                        Row(t, "4a", "Ga in Lumio naar Instellingen → Backup herstellen.");
-                        Row(t, "4b", "Selecteer het backup-bestand (.db).");
-                        Row(t, "4c", "Het profiel wordt automatisch geladen.");
+                        Row(t, "4a", L["Text_Stap4aInstructie"].Value);
+                        Row(t, "4b", L["Text_Stap4bInstructie"].Value);
+                        Row(t, "4c", L["Text_Stap4cInstructie"].Value);
                     });
 
                     // Stap 5: Ontgrendelen
-                    Section(col, "Stap 5 — Ontgrendelen met sleuteldelen", t =>
+                    Section(col, L["Section_Stap5Ontgrendelen"].Value, t =>
                     {
-                        t.Item().Text("Na het herstellen van de backup:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().Text(L["Text_NaHerstellen"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                         t.Item().PaddingTop(3);
-                        Row(t, "5a", "Selecteer het juiste profiel op het inlogscherm.");
-                        Row(t, "5b", "Klik op 'Ik ben een erfgenaam (ontgrendelen met sleuteldelen)'.");
-                        Row(t, "5c", $"Voer minimaal {drempel} sleuteldelen in (elk in een apart veld).");
-                        Row(t, "5d", "Klik op 'Ontgrendelen met sleuteldelen'.");
-                        Row(t, "5e", "U heeft nu alleen-lezen toegang tot alle vastgelegde gegevens.");
+                        Row(t, "5a", L["Text_Stap5aInstructie"].Value);
+                        Row(t, "5b", L["Text_Stap5bInstructie"].Value);
+                        Row(t, "5c", string.Format(L["Text_Stap5cInstructie"].Value, drempel));
+                        Row(t, "5d", L["Text_Stap5dInstructie"].Value);
+                        Row(t, "5e", L["Text_Stap5eInstructie"].Value);
                     });
 
                     // Stap 6: Wat te doen
-                    Section(col, "Stap 6 — Gegevens raadplegen", t =>
+                    Section(col, L["Section_Stap6GegevensRaadplegen"].Value, t =>
                     {
-                        t.Item().Text("Na ontgrendeling kunt u:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().Text(L["Text_NaOntgrendeling"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                         t.Item().PaddingTop(3);
-                        Row(t, "•", "Het nabestaanden-dashboard volgen met een stappenplan");
-                        Row(t, "•", "Alle vastgelegde wensen en informatie inzien");
-                        Row(t, "•", "PDF-documenten exporteren per onderdeel");
-                        Row(t, "•", "Een compleet ZIP-pakket downloaden met alle documenten");
-                        Row(t, "•", "De voortgang van afhandeling bijhouden");
+                        Row(t, "•", L["Text_DashboardStappenplan"].Value);
+                        Row(t, "•", L["Text_WensenInzien"].Value);
+                        Row(t, "•", L["Text_PdfExporteren"].Value);
+                        Row(t, "•", L["Text_ZipDownloaden"].Value);
+                        Row(t, "•", L["Text_VoortgangBijhouden"].Value);
                     });
                 });
                 page.Footer().Element(Footer);
@@ -1137,7 +1131,7 @@ public class LumioPdfService : ILumioPdfService
 
         var eigenaarNaam = eigenaar != null
             ? $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Replace("  ", " ").Trim()
-            : "Onbekend";
+            : L["Value_Onbekend"].Value;
 
         // Bereken totalen
         var totaalBezittingenPrivé = bezittingen.Where(b => b.VermogensSoort == VermogensSoort.Prive).Sum(b => b.GeschatteWaarde ?? 0);
@@ -1168,7 +1162,7 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, "Boedelbeschrijving (Art. 4:146 BW)", laatsteWijziging));
+                page.Header().Element(c => Header(c, L["Page_Boedelbeschrijving"].Value, laatsteWijziging));
                 page.Content().Column(col =>
                 {
                     col.Spacing(8);
@@ -1176,60 +1170,58 @@ public class LumioPdfService : ILumioPdfService
                     // Juridische disclaimer (P-M19)
                     col.Item().Background(Colors.Grey.Lighten4).Padding(8).Column(disc =>
                     {
-                        disc.Item().Text("JURIDISCHE DISCLAIMER").FontSize(8).Bold().FontColor(Colors.Grey.Darken2);
+                        disc.Item().Text(L["Legal_JuridischeDisclaimer"].Value).FontSize(8).Bold().FontColor(Colors.Grey.Darken2);
                         disc.Item().PaddingTop(3).Text(
-                            $"Opgesteld op {DateTime.Now:dd-MM-yyyy} op basis van Boek 4 BW, " +
-                            "geldend per 01-01-2026. Dit document is een concept en heeft geen juridische " +
-                            "waarde zonder ondertekening door alle betrokken partijen en vaststelling door een notaris.")
+                            string.Format(L["Legal_BoedelbeschrijvingDisclaimer"].Value, DateTime.Now.ToString("dd-MM-yyyy")))
                             .FontSize(7).FontColor(Colors.Grey.Darken1);
                     });
 
                     // Persoonsgegevens overledene
                     if (eigenaar != null)
                     {
-                        Section(col, "1. Persoonsgegevens", t =>
+                        Section(col, L["Section_1Persoonsgegevens"].Value, t =>
                         {
-                            Row(t, "Naam", eigenaarNaam);
-                            Row(t, "Geboortedatum", eigenaar.Geboortedatum.ToString("dd-MM-yyyy"));
+                            Row(t, L["Label_Naam"].Value, eigenaarNaam);
+                            Row(t, L["Label_Geboortedatum"].Value, eigenaar.Geboortedatum.ToString("dd-MM-yyyy"));
                             if (!string.IsNullOrEmpty(eigenaar.Adres))
-                                Row(t, "Adres", $"{eigenaar.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
-                            Row(t, "Burgerlijke staat", eigenaar.BurgerlijkeStaat switch
+                                Row(t, L["Label_Adres"].Value, $"{eigenaar.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
+                            Row(t, L["Label_BurgerlijkeStaat"].Value, eigenaar.BurgerlijkeStaat switch
                             {
-                                BurgerlijkeStaat.Ongehuwd => "Ongehuwd",
-                                BurgerlijkeStaat.Gehuwd => "Gehuwd",
-                                BurgerlijkeStaat.GeregistreerdPartnerschap => "Geregistreerd partnerschap",
-                                BurgerlijkeStaat.Gescheiden => "Gescheiden",
-                                BurgerlijkeStaat.Weduwe => "Weduwe/Weduwnaar",
+                                BurgerlijkeStaat.Ongehuwd => L["Value_Ongehuwd"].Value,
+                                BurgerlijkeStaat.Gehuwd => L["Value_Gehuwd"].Value,
+                                BurgerlijkeStaat.GeregistreerdPartnerschap => L["Value_GeregistreerdPartnerschap"].Value,
+                                BurgerlijkeStaat.Gescheiden => L["Value_Gescheiden"].Value,
+                                BurgerlijkeStaat.Weduwe => L["Value_WeduweWeduwnaar"].Value,
                                 _ => "—"
                             });
                             if (eigenaar.BurgerlijkeStaat is BurgerlijkeStaat.Gehuwd or BurgerlijkeStaat.GeregistreerdPartnerschap)
                             {
-                                Row(t, "Huwelijksvoorwaarden", eigenaar.HuwelijksVoorwaarden switch
+                                Row(t, L["Label_Huwelijksvoorwaarden"].Value, eigenaar.HuwelijksVoorwaarden switch
                                 {
-                                    HuwelijksVoorwaarden.GemeenschapVanGoederen => "Gemeenschap van goederen",
-                                    HuwelijksVoorwaarden.BeperkteGemeenschap => "Beperkte gemeenschap",
-                                    HuwelijksVoorwaarden.KoudeUitsluiting => "Koude uitsluiting",
-                                    _ => "Niet van toepassing"
+                                    HuwelijksVoorwaarden.GemeenschapVanGoederen => L["Value_GemeenschapVanGoederen"].Value,
+                                    HuwelijksVoorwaarden.BeperkteGemeenschap => L["Value_BeperkteGemeenschap"].Value,
+                                    HuwelijksVoorwaarden.KoudeUitsluiting => L["Value_KoudeUitsluiting"].Value,
+                                    _ => L["Value_NietVanToepassing"].Value
                                 });
                                 if (eigenaar.DatumHuwelijk.HasValue)
-                                    Row(t, "Datum huwelijk", eigenaar.DatumHuwelijk.Value.ToString("dd-MM-yyyy"));
+                                    Row(t, L["Label_DatumHuwelijk"].Value, eigenaar.DatumHuwelijk.Value.ToString("dd-MM-yyyy"));
                             }
                             // Legitimatiegegevens
                             if (eigenaar.LegitimatieSoort != LegitimatieSoort.Geen)
                             {
-                                Row(t, "Legitimatie", eigenaar.LegitimatieSoort switch
+                                Row(t, L["Label_Legitimatie"].Value, eigenaar.LegitimatieSoort switch
                                 {
-                                    LegitimatieSoort.Paspoort => "Paspoort",
-                                    LegitimatieSoort.Identiteitskaart => "Identiteitskaart",
-                                    LegitimatieSoort.Rijbewijs => "Rijbewijs",
+                                    LegitimatieSoort.Paspoort => L["Value_Paspoort"].Value,
+                                    LegitimatieSoort.Identiteitskaart => L["Value_Identiteitskaart"].Value,
+                                    LegitimatieSoort.Rijbewijs => L["Value_Rijbewijs"].Value,
                                     _ => "—"
                                 });
                                 if (!string.IsNullOrEmpty(eigenaar.LegitimatieNummer))
-                                    Row(t, "Documentnummer", eigenaar.LegitimatieNummer);
+                                    Row(t, L["Label_Documentnummer"].Value, eigenaar.LegitimatieNummer);
                                 if (eigenaar.LegitimatieDatumAfgifte.HasValue)
-                                    Row(t, "Datum afgifte", eigenaar.LegitimatieDatumAfgifte.Value.ToString("dd-MM-yyyy"));
+                                    Row(t, L["Label_DatumAfgifte"].Value, eigenaar.LegitimatieDatumAfgifte.Value.ToString("dd-MM-yyyy"));
                                 if (eigenaar.LegitimatieGeldigTot.HasValue)
-                                    Row(t, "Geldig tot", eigenaar.LegitimatieGeldigTot.Value.ToString("dd-MM-yyyy"));
+                                    Row(t, L["Label_GeldigTot"].Value, eigenaar.LegitimatieGeldigTot.Value.ToString("dd-MM-yyyy"));
                             }
                         });
                     }
@@ -1237,7 +1229,7 @@ public class LumioPdfService : ILumioPdfService
                     // Erfgenamen
                     if (erfgenamen.Count > 0)
                     {
-                        Section(col, "2. Erfgenamen", t =>
+                        Section(col, L["Section_2Erfgenamen"].Value, t =>
                         {
                             foreach (var e in erfgenamen)
                             {
@@ -1248,9 +1240,9 @@ public class LumioPdfService : ILumioPdfService
                     }
 
                     // ACTIVA
-                    Section(col, "3. Activa", t =>
+                    Section(col, L["Section_3Activa"].Value, t =>
                     {
-                        t.Item().Text("a) Fysieke bezittingen").FontSize(10).SemiBold();
+                        t.Item().Text(L["Text_FysiekeBezittingen"].Value).FontSize(10).SemiBold();
                         if (bezittingen.Count > 0)
                         {
                             foreach (var b in bezittingen)
@@ -1258,12 +1250,12 @@ public class LumioPdfService : ILumioPdfService
                                 var verm = b.VermogensSoort == VermogensSoort.Gemeenschap ? " [G]" : " [P]";
                                 Row(t, $"  {b.Omschrijving}{verm}", b.GeschatteWaarde.HasValue ? $"€ {b.GeschatteWaarde:N2}" : "—");
                             }
-                            Row(t, "  Subtotaal bezittingen", $"€ {(totaalBezittingenPrivé + totaalBezittingenGem):N2}");
+                            Row(t, L["Label_SubtotaalBezittingen"].Value, $"€ {(totaalBezittingenPrivé + totaalBezittingenGem):N2}");
                         }
                         else
-                            t.Item().Text("  Geen bezittingen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                            t.Item().Text(L["Text_GeenBezittingen"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
 
-                        t.Item().PaddingTop(5).Text("b) Bankrekeningen").FontSize(10).SemiBold();
+                        t.Item().PaddingTop(5).Text(L["Text_Bankrekeningen"].Value).FontSize(10).SemiBold();
                         if (rekeningen.Count > 0)
                         {
                             foreach (var r in rekeningen)
@@ -1271,12 +1263,12 @@ public class LumioPdfService : ILumioPdfService
                                 var verm = r.VermogensSoort == VermogensSoort.Gemeenschap ? " [G]" : " [P]";
                                 Row(t, $"  {r.BankNaam} ({r.IBAN}){verm}", r.Saldo.HasValue ? $"€ {r.Saldo:N2}" : "—");
                             }
-                            Row(t, "  Subtotaal saldi", $"€ {(totaalSaldiPrivé + totaalSaldiGem):N2}");
+                            Row(t, L["Label_SubtotaalSaldi"].Value, $"€ {(totaalSaldiPrivé + totaalSaldiGem):N2}");
                         }
                         else
-                            t.Item().Text("  Geen bankrekeningen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                            t.Item().Text(L["Text_GeenBankrekeningen"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
 
-                        t.Item().PaddingTop(5).Text("c) Verzekeringen").FontSize(10).SemiBold();
+                        t.Item().PaddingTop(5).Text(L["Text_Verzekeringen"].Value).FontSize(10).SemiBold();
                         if (verzekeringen.Count > 0)
                         {
                             foreach (var v in verzekeringen)
@@ -1284,17 +1276,17 @@ public class LumioPdfService : ILumioPdfService
                                 var verm = v.VermogensSoort == VermogensSoort.Gemeenschap ? " [G]" : " [P]";
                                 Row(t, $"  {v.Verzekeraar} ({v.Type}){verm}", v.VerzekerdBedrag.HasValue ? $"€ {v.VerzekerdBedrag:N2}" : "—");
                             }
-                            Row(t, "  Subtotaal verzekeringen", $"€ {(totaalVerzekeringenPrivé + totaalVerzekeringenGem):N2}");
+                            Row(t, L["Label_SubtotaalVerzekeringen"].Value, $"€ {(totaalVerzekeringenPrivé + totaalVerzekeringenGem):N2}");
                         }
                         else
-                            t.Item().Text("  Geen verzekeringen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                            t.Item().Text(L["Text_GeenVerzekeringen"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
 
                         t.Item().PaddingTop(8);
-                        Row(t, "TOTAAL ACTIVA (bruto)", $"€ {brutoTotaal:N2}");
+                        Row(t, L["Label_TotaalActivaBruto"].Value, $"€ {brutoTotaal:N2}");
                     });
 
                     // PASSIVA
-                    Section(col, "4. Passiva", t =>
+                    Section(col, L["Section_4Passiva"].Value, t =>
                     {
                         if (schulden.Count > 0)
                         {
@@ -1303,10 +1295,10 @@ public class LumioPdfService : ILumioPdfService
                                 var verm = s.VermogensSoort == VermogensSoort.Gemeenschap ? " [G]" : " [P]";
                                 Row(t, $"  {s.Schuldeiser} ({s.Type}){verm}", $"€ {s.Bedrag:N2}");
                             }
-                            Row(t, "  TOTAAL PASSIVA", $"€ {(totaalSchuldenPrivé + totaalSchuldenGem):N2}");
+                            Row(t, L["Label_TotaalPassiva"].Value, $"€ {(totaalSchuldenPrivé + totaalSchuldenGem):N2}");
                         }
                         else
-                            t.Item().Text("  Geen schulden vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                            t.Item().Text(L["Text_GeenSchulden"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
                     });
 
                     // Saldo
@@ -1314,7 +1306,7 @@ public class LumioPdfService : ILumioPdfService
                     {
                         saldo.Item().Row(row =>
                         {
-                            row.ConstantItem(150).Text("NETTO NALATENSCHAP").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
+                            row.ConstantItem(150).Text(L["Label_NettoNalatenschap"].Value).FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
                             row.RelativeItem().AlignRight().Text($"€ {nettoTotaal:N2}").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
                         });
                         if (eigenaar?.BurgerlijkeStaat is BurgerlijkeStaat.Gehuwd or BurgerlijkeStaat.GeregistreerdPartnerschap &&
@@ -1322,54 +1314,54 @@ public class LumioPdfService : ILumioPdfService
                         {
                             saldo.Item().PaddingTop(3).Row(row =>
                             {
-                                row.ConstantItem(150).Text("  waarvan privé").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.ConstantItem(150).Text(L["Label_WaarvanPrive"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                                 row.RelativeItem().AlignRight().Text($"€ {nettoPrivé:N2}").FontSize(9);
                             });
                             saldo.Item().Row(row =>
                             {
-                                row.ConstantItem(150).Text("  waarvan gemeenschap").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.ConstantItem(150).Text(L["Label_WaarvanGemeenschap"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                                 row.RelativeItem().AlignRight().Text($"€ {nettoGem:N2}").FontSize(9);
                             });
                         }
                     });
 
                     // Legenda
-                    col.Item().PaddingTop(5).Text("[P] = privévermogen  |  [G] = gemeenschap van goederen")
+                    col.Item().PaddingTop(5).Text(L["Text_Legenda"].Value)
                         .FontSize(7).FontColor(Colors.Grey.Medium);
 
                     // Ondertekening
                     col.Item().PaddingTop(20).Column(sig =>
                     {
-                        sig.Item().Text("Ondertekening").FontSize(11).SemiBold();
-                        sig.Item().PaddingTop(5).Text("Ondertekend voor gezien en akkoord:").FontSize(9);
+                        sig.Item().Text(L["Signing_Ondertekening"].Value).FontSize(11).SemiBold();
+                        sig.Item().PaddingTop(5).Text(L["Text_OndertekendVoorGezien"].Value).FontSize(9);
 
                         // Executeur
                         if (executeurs.Count > 0)
                         {
                             foreach (var ex in executeurs)
                             {
-                                sig.Item().PaddingTop(15).Text($"Executeur — {ex.Naam}").FontSize(9).SemiBold();
-                                sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                                sig.Item().PaddingTop(15).Text(string.Format(L["Signing_ExecuteurPrefix"].Value, ex.Naam)).FontSize(9).SemiBold();
+                                sig.Item().PaddingTop(5).Text(L["Signing_DatumHandtekening"].Value).FontSize(9);
                             }
                         }
                         else
                         {
-                            sig.Item().PaddingTop(15).Text("Executeur:").FontSize(9).SemiBold();
-                            sig.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
-                            sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                            sig.Item().PaddingTop(15).Text(L["Signing_Executeur"].Value).FontSize(9).SemiBold();
+                            sig.Item().PaddingTop(5).Text(L["Signing_Naam"].Value).FontSize(9);
+                            sig.Item().PaddingTop(5).Text(L["Signing_DatumHandtekening"].Value).FontSize(9);
                         }
 
                         // Erfgenamen
                         foreach (var e in erfgenamen)
                         {
                             var naam = $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}".Replace("  ", " ").Trim();
-                            sig.Item().PaddingTop(15).Text($"Erfgenaam — {naam}").FontSize(9).SemiBold();
-                            sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                            sig.Item().PaddingTop(15).Text(string.Format(L["Signing_ErfgenaamPrefix"].Value, naam)).FontSize(9).SemiBold();
+                            sig.Item().PaddingTop(5).Text(L["Signing_DatumHandtekening"].Value).FontSize(9);
                         }
                     });
                 });
                 page.Footer().Element(c => FooterWithDisclaimer(c,
-                    $"Opgesteld op {DateTime.Now:dd-MM-yyyy} op basis van Boek 4 BW, geldend per 01-01-2026."));
+                    string.Format(L["Footer_BoedelbeschrijvingOpgesteld"].Value, DateTime.Now.ToString("dd-MM-yyyy"))));
             });
         }).GeneratePdf();
     }
@@ -1424,57 +1416,57 @@ public class LumioPdfService : ILumioPdfService
             container.Page(page =>
             {
                 ConfigurePage(page);
-                page.Header().Element(c => Header(c, $"Persoonlijk overzicht — {volleNaam}"));
+                page.Header().Element(c => Header(c, string.Format(L["Page_ErfgenaamInformatie"].Value, volleNaam)));
                 page.Content().Column(col =>
                 {
                     col.Spacing(10);
 
                     // Intro
-                    col.Item().Text($"Dit document bevat de gegevens uit de digitale nalatenschap van {eigenaarNaam} die relevant zijn voor {volleNaam}.")
+                    col.Item().Text(string.Format(L["Text_ErfgenaamPdfIntro"].Value, eigenaarNaam, volleNaam))
                         .FontSize(9).Italic().FontColor(Colors.Grey.Darken1);
 
                     // Gegevens van de erfgenaam
-                    Section(col, "Uw gegevens", section =>
+                    Section(col, L["Section_UwGegevens"].Value, section =>
                     {
-                        Row(section, "Naam", volleNaam);
-                        Row(section, "Relatie", erfgenaam.Relatie);
+                        Row(section, L["Label_Naam"].Value, volleNaam);
+                        Row(section, L["Label_Relatie"].Value, erfgenaam.Relatie);
                         if (!string.IsNullOrWhiteSpace(erfgenaam.Telefoon))
-                            Row(section, "Telefoon", erfgenaam.Telefoon);
+                            Row(section, L["Label_Telefoon"].Value, erfgenaam.Telefoon);
                         if (!string.IsNullOrWhiteSpace(erfgenaam.Email))
-                            Row(section, "E-mail", erfgenaam.Email);
+                            Row(section, L["Label_EMail"].Value, erfgenaam.Email);
                         if (!string.IsNullOrWhiteSpace(erfgenaam.Adres))
-                            Row(section, "Adres", $"{erfgenaam.Adres}, {erfgenaam.Postcode} {erfgenaam.Woonplaats}");
+                            Row(section, L["Label_Adres"].Value, $"{erfgenaam.Adres}, {erfgenaam.Postcode} {erfgenaam.Woonplaats}");
                     });
 
                     // Eigenaar overzicht
-                    Section(col, "Gegevens erflater", section =>
+                    Section(col, L["Section_GegevensErflater"].Value, section =>
                     {
-                        Row(section, "Naam", eigenaarNaam);
+                        Row(section, L["Label_Naam"].Value, eigenaarNaam);
                         if (!string.IsNullOrWhiteSpace(eigenaar.Telefoon))
-                            Row(section, "Telefoon", eigenaar.Telefoon);
+                            Row(section, L["Label_Telefoon"].Value, eigenaar.Telefoon);
                         if (!string.IsNullOrWhiteSpace(eigenaar.Email))
-                            Row(section, "E-mail", eigenaar.Email);
+                            Row(section, L["Label_EMail"].Value, eigenaar.Email);
                         if (!string.IsNullOrWhiteSpace(eigenaar.Notaris))
-                            Row(section, "Notaris", $"{eigenaar.Notaris} ({eigenaar.NotarisKantoor})");
+                            Row(section, L["Label_Notaris"].Value, $"{eigenaar.Notaris} ({eigenaar.NotarisKantoor})");
                     });
 
                     // Testament-begunstiging
                     if (begunstigde is not null)
                     {
-                        Section(col, "Testament — Uw positie", section =>
+                        Section(col, L["Section_TestamentUwPositie"].Value, section =>
                         {
                             if (!string.IsNullOrWhiteSpace(begunstigde.Omschrijving))
-                                Row(section, "Omschrijving", begunstigde.Omschrijving);
+                                Row(section, L["Label_Omschrijving"].Value, begunstigde.Omschrijving);
                             if (begunstigde.Percentage.HasValue)
-                                Row(section, "Percentage", $"{begunstigde.Percentage}%");
-                            Row(section, "Legitieme portie", begunstigde.IsLegitiemePortie ? "Ja" : "Nee");
+                                Row(section, L["Label_Percentage"].Value, $"{begunstigde.Percentage}%");
+                            Row(section, L["Label_LegitiemePortie"].Value, begunstigde.IsLegitiemePortie ? L["Value_Ja"].Value : L["Value_Nee"].Value);
                         });
                     }
 
                     // Toegewezen bezittingen
                     if (bezittingen.Count > 0)
                     {
-                        Section(col, "Aan u toegewezen bezittingen", section =>
+                        Section(col, L["Section_ToegewezenBezittingen"].Value, section =>
                         {
                             foreach (var b in bezittingen)
                             {
@@ -1483,11 +1475,11 @@ public class LumioPdfService : ILumioPdfService
                                     item.Item().Text($"• {b.Omschrijving} ({b.Categorie})")
                                         .FontSize(9).SemiBold();
                                     if (b.GeschatteWaarde.HasValue)
-                                        item.Item().PaddingLeft(12).Text($"Geschatte waarde: €{b.GeschatteWaarde:N2}")
+                                        item.Item().PaddingLeft(12).Text(string.Format(L["Text_GeschatteWaardePrefix"].Value, b.GeschatteWaarde))
                                             .FontSize(8).FontColor(Colors.Grey.Darken1);
                                     var instr = toewijzingen.FirstOrDefault(t => t.EntityId == b.Id)?.Instructies;
                                     if (!string.IsNullOrWhiteSpace(instr))
-                                        item.Item().PaddingLeft(12).Text($"Instructie: {instr}")
+                                        item.Item().PaddingLeft(12).Text(string.Format(L["Text_InstructiePrefix"].Value, instr))
                                             .FontSize(8).Italic().FontColor(Colors.Grey.Darken1);
                                 });
                             }
@@ -1497,7 +1489,7 @@ public class LumioPdfService : ILumioPdfService
                     // Toegewezen bankrekeningen
                     if (bankrekeningen.Count > 0)
                     {
-                        Section(col, "Aan u toegewezen bankrekeningen", section =>
+                        Section(col, L["Section_ToegewezenBankrekeningen"].Value, section =>
                         {
                             foreach (var b in bankrekeningen)
                             {
@@ -1506,7 +1498,7 @@ public class LumioPdfService : ILumioPdfService
                                     item.Item().Text($"• {b.BankNaam} — {b.IBAN}")
                                         .FontSize(9).SemiBold();
                                     if (b.Saldo.HasValue)
-                                        item.Item().PaddingLeft(12).Text($"Saldo: €{b.Saldo:N2}")
+                                        item.Item().PaddingLeft(12).Text(string.Format(L["Text_SaldoPrefix"].Value, b.Saldo))
                                             .FontSize(8).FontColor(Colors.Grey.Darken1);
                                 });
                             }
@@ -1516,7 +1508,7 @@ public class LumioPdfService : ILumioPdfService
                     // Toegewezen verzekeringen
                     if (verzekeringen.Count > 0)
                     {
-                        Section(col, "Aan u toegewezen verzekeringen", section =>
+                        Section(col, L["Section_ToegewezenVerzekeringen"].Value, section =>
                         {
                             foreach (var v in verzekeringen)
                             {
@@ -1525,7 +1517,7 @@ public class LumioPdfService : ILumioPdfService
                                     item.Item().Text($"• {v.Verzekeraar} — {v.Type} (polis {v.PolisNummer})")
                                         .FontSize(9).SemiBold();
                                     if (v.VerzekerdBedrag.HasValue)
-                                        item.Item().PaddingLeft(12).Text($"Verzekerd bedrag: €{v.VerzekerdBedrag:N2}")
+                                        item.Item().PaddingLeft(12).Text(string.Format(L["Text_VerzekerdBedragPrefix"].Value, v.VerzekerdBedrag))
                                             .FontSize(8).FontColor(Colors.Grey.Darken1);
                                 });
                             }
@@ -1535,7 +1527,7 @@ public class LumioPdfService : ILumioPdfService
                     // Toegewezen digitale accounts
                     if (accounts.Count > 0)
                     {
-                        Section(col, "Aan u toegewezen digitale accounts", section =>
+                        Section(col, L["Section_ToegewezenDigitaleAccounts"].Value, section =>
                         {
                             foreach (var a in accounts)
                             {
@@ -1543,9 +1535,9 @@ public class LumioPdfService : ILumioPdfService
                                 {
                                     item.Item().Text($"• {a.PlatformNaam}")
                                         .FontSize(9).SemiBold();
-                                    Row(section, "  Gewenste actie", a.GewensteActie);
+                                    Row(section, "  " + L["Label_GewensteActie"].Value, a.GewensteActie);
                                     if (!string.IsNullOrWhiteSpace(a.Notities))
-                                        item.Item().PaddingLeft(12).Text($"Notitie: {a.Notities}")
+                                        item.Item().PaddingLeft(12).Text(string.Format(L["Text_NotitiePrefix"].Value, a.Notities))
                                             .FontSize(8).FontColor(Colors.Grey.Darken1);
                                 });
                             }
@@ -1555,7 +1547,7 @@ public class LumioPdfService : ILumioPdfService
                     // Noodcontacten
                     if (noodcontacten.Count > 0)
                     {
-                        Section(col, "Belangrijke contactpersonen", section =>
+                        Section(col, L["Section_BelangrijkeContactpersonen"].Value, section =>
                         {
                             foreach (var n in noodcontacten)
                             {
@@ -1564,9 +1556,9 @@ public class LumioPdfService : ILumioPdfService
                                     item.Item().Text($"• {n.Naam} — {n.Rol}")
                                         .FontSize(9).SemiBold();
                                     if (!string.IsNullOrWhiteSpace(n.Telefoon))
-                                        item.Item().PaddingLeft(12).Text($"Tel: {n.Telefoon}").FontSize(8);
+                                        item.Item().PaddingLeft(12).Text(string.Format(L["Text_TelPrefix"].Value, n.Telefoon)).FontSize(8);
                                     if (!string.IsNullOrWhiteSpace(n.Email))
-                                        item.Item().PaddingLeft(12).Text($"E-mail: {n.Email}").FontSize(8);
+                                        item.Item().PaddingLeft(12).Text(string.Format(L["Text_EMailPrefix"].Value, n.Email)).FontSize(8);
                                 });
                             }
                         });
@@ -1576,8 +1568,7 @@ public class LumioPdfService : ILumioPdfService
                     if (toewijzingen.Count == 0 && begunstigde is null)
                     {
                         col.Item().PaddingTop(10).Text(
-                            "Er zijn momenteel geen specifieke bezittingen of vermogensbestanddelen aan u toegewezen. " +
-                            "Neem contact op met de erflater of notaris voor meer informatie.")
+                            L["Text_GeenToewijzingen"].Value)
                             .FontSize(9).Italic().FontColor(Colors.Grey.Darken1);
                     }
                 });
@@ -1607,7 +1598,7 @@ public class LumioPdfService : ILumioPdfService
 
         var eigenaarNaam = eigenaar != null
             ? $"{eigenaar.Voornaam} {eigenaar.Tussenvoegsel} {eigenaar.Achternaam}".Replace("  ", " ").Trim()
-            : "Onbekend";
+            : L["Value_Onbekend"].Value;
 
         // Totalen
         var totActiva = bezittingen.Sum(b => b.GeschatteWaarde ?? 0)
@@ -1619,42 +1610,40 @@ public class LumioPdfService : ILumioPdfService
         return Document.Create(container =>
         {
             // ── Pagina 1: Overzicht & executeur ──
-            AddPage(container, "Executeur-rapport", col =>
+            AddPage(container, L["Page_ExecuteurRapport"].Value, col =>
             {
                 // Disclaimer
                 col.Item().Background(Colors.Grey.Lighten4).Padding(8).Column(disc =>
                 {
-                    disc.Item().Text("CONCEPT — GEEN JURIDISCH DOCUMENT").FontSize(8).Bold().FontColor(Colors.Grey.Darken2);
+                    disc.Item().Text(L["Legal_ConceptGeenJuridisch"].Value).FontSize(8).Bold().FontColor(Colors.Grey.Darken2);
                     disc.Item().PaddingTop(3).Text(
-                        "Dit rapport is bedoeld als hulpmiddel voor de executeur bij de afwikkeling van de " +
-                        $"nalatenschap. Opgesteld op {DateTime.Now:dd-MM-yyyy}. Raadpleeg altijd een notaris " +
-                        "voor de formele afwikkeling.").FontSize(7).FontColor(Colors.Grey.Darken1);
+                        string.Format(L["Legal_ExecuteurRapportDisclaimer"].Value, DateTime.Now.ToString("dd-MM-yyyy"))).FontSize(7).FontColor(Colors.Grey.Darken1);
                 });
 
                 // 1. Erflater
                 if (eigenaar != null)
                 {
-                    Section(col, "1. Gegevens erflater", t =>
+                    Section(col, L["Section_1GegevensErflater"].Value, t =>
                     {
-                        Row(t, "Naam", eigenaarNaam);
-                        Row(t, "Geboortedatum", eigenaar.Geboortedatum.ToString("dd-MM-yyyy"));
+                        Row(t, L["Label_Naam"].Value, eigenaarNaam);
+                        Row(t, L["Label_Geboortedatum"].Value, eigenaar.Geboortedatum.ToString("dd-MM-yyyy"));
                         if (!string.IsNullOrEmpty(eigenaar.Adres))
-                            Row(t, "Adres", $"{eigenaar.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
+                            Row(t, L["Label_Adres"].Value, $"{eigenaar.Adres}, {eigenaar.Postcode} {eigenaar.Woonplaats}".Trim().TrimEnd(','));
                         if (!string.IsNullOrEmpty(eigenaar.BSN))
-                            Row(t, "BSN", eigenaar.BSN);
-                        Row(t, "Burgerlijke staat", eigenaar.BurgerlijkeStaat switch
+                            Row(t, L["Label_BSN"].Value, eigenaar.BSN);
+                        Row(t, L["Label_BurgerlijkeStaat"].Value, eigenaar.BurgerlijkeStaat switch
                         {
-                            BurgerlijkeStaat.Gehuwd => "Gehuwd",
-                            BurgerlijkeStaat.GeregistreerdPartnerschap => "Geregistreerd partnerschap",
-                            BurgerlijkeStaat.Gescheiden => "Gescheiden",
-                            BurgerlijkeStaat.Weduwe => "Weduwe/Weduwnaar",
-                            _ => "Ongehuwd"
+                            BurgerlijkeStaat.Gehuwd => L["Value_Gehuwd"].Value,
+                            BurgerlijkeStaat.GeregistreerdPartnerschap => L["Value_GeregistreerdPartnerschap"].Value,
+                            BurgerlijkeStaat.Gescheiden => L["Value_Gescheiden"].Value,
+                            BurgerlijkeStaat.Weduwe => L["Value_WeduweWeduwnaar"].Value,
+                            _ => L["Value_Ongehuwd"].Value
                         });
                     });
                 }
 
                 // 2. Executeur(s)
-                Section(col, "2. Executeur(s)", t =>
+                Section(col, L["Section_2Executeurs"].Value, t =>
                 {
                     if (executeurs.Count > 0)
                     {
@@ -1664,57 +1653,57 @@ public class LumioPdfService : ILumioPdfService
                             {
                                 item.Item().Text($"• {ex.Naam}").FontSize(9).SemiBold();
                                 if (!string.IsNullOrEmpty(ex.Relatie))
-                                    Row(t, "  Relatie", ex.Relatie);
+                                    Row(t, "  " + L["Label_Relatie"].Value, ex.Relatie);
                                 if (!string.IsNullOrEmpty(ex.Bevoegdheden))
-                                    Row(t, "  Bevoegdheden", ex.Bevoegdheden);
+                                    Row(t, "  " + L["Label_Bevoegdheden"].Value, ex.Bevoegdheden);
                                 if (!string.IsNullOrEmpty(ex.Telefoon))
-                                    Row(t, "  Telefoon", ex.Telefoon);
+                                    Row(t, "  " + L["Label_Telefoon"].Value, ex.Telefoon);
                                 if (!string.IsNullOrEmpty(ex.Email))
-                                    Row(t, "  E-mail", ex.Email);
+                                    Row(t, "  " + L["Label_EMail"].Value, ex.Email);
                                 if (!string.IsNullOrEmpty(ex.Adres))
-                                    Row(t, "  Adres", $"{ex.Adres}, {ex.Postcode} {ex.Woonplaats}".Trim().TrimEnd(','));
+                                    Row(t, "  " + L["Label_Adres"].Value, $"{ex.Adres}, {ex.Postcode} {ex.Woonplaats}".Trim().TrimEnd(','));
                             });
                         }
                     }
                     else
-                        t.Item().Text("Geen executeur aangewezen.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                        t.Item().Text(L["Text_GeenExecuteur"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
                 });
 
                 // 3. Testamentaire informatie
-                Section(col, "3. Testament", t =>
+                Section(col, L["Section_3Testament"].Value, t =>
                 {
                     if (testament != null)
                     {
                         if (!string.IsNullOrEmpty(testament.TestamentType))
-                            Row(t, "Type", testament.TestamentType);
+                            Row(t, L["Label_Type"].Value, testament.TestamentType);
                         if (testament.DatumTestament.HasValue)
-                            Row(t, "Datum testament", testament.DatumTestament.Value.ToString("dd-MM-yyyy"));
+                            Row(t, L["Label_DatumTestament"].Value, testament.DatumTestament.Value.ToString("dd-MM-yyyy"));
                         if (!string.IsNullOrEmpty(testament.CTR_Nummer))
-                            Row(t, "CTR-nummer", testament.CTR_Nummer);
+                            Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer);
                         if (!string.IsNullOrEmpty(testament.NotarisNaam))
-                            Row(t, "Notaris", $"{testament.NotarisNaam}{(string.IsNullOrEmpty(testament.NotarisKantoor) ? "" : $" ({testament.NotarisKantoor})")}");
+                            Row(t, L["Label_Notaris"].Value, $"{testament.NotarisNaam}{(string.IsNullOrEmpty(testament.NotarisKantoor) ? "" : $" ({testament.NotarisKantoor})")}");
                         if (!string.IsNullOrEmpty(testament.NotarisTelefoon))
-                            Row(t, "Tel. notaris", testament.NotarisTelefoon);
+                            Row(t, L["Label_TelNotaris"].Value, testament.NotarisTelefoon);
                         if (!string.IsNullOrEmpty(testament.NotarisEmail))
-                            Row(t, "E-mail notaris", testament.NotarisEmail);
+                            Row(t, L["Label_EMailNotaris"].Value, testament.NotarisEmail);
                         if (testament.UitsluitingsClausule)
-                            Row(t, "Uitsluitingsclausule", "Ja");
+                            Row(t, L["Label_Uitsluitingsclausule"].Value, L["Value_Ja"].Value);
                         if (!string.IsNullOrEmpty(testament.Legaten))
-                            Row(t, "Legaten", testament.Legaten);
+                            Row(t, L["Label_Legaten"].Value, testament.Legaten);
                         if (!string.IsNullOrEmpty(testament.AlgemeneWensen))
-                            Row(t, "Algemene wensen", testament.AlgemeneWensen);
+                            Row(t, L["Label_AlgemeneWensen"].Value, testament.AlgemeneWensen);
                         if (!string.IsNullOrEmpty(testament.BijzondereBepalingen))
-                            Row(t, "Bijzondere bepalingen", testament.BijzondereBepalingen);
+                            Row(t, L["Label_BijzondereBepalingen"].Value, testament.BijzondereBepalingen);
                     }
                     else
-                        t.Item().Text("Geen testamentinformatie vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                        t.Item().Text(L["Text_GeenTestamentInfo"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
                 });
             });
 
             // ── Pagina 2: Erfgenamen & begunstigden ──
-            AddPage(container, "Executeur-rapport — Erfgenamen", col =>
+            AddPage(container, L["Page_ExecuteurRapportActiva"].Value, col =>
             {
-                Section(col, "4. Erfgenamen", t =>
+                Section(col, L["Section_4Erfgenamen"].Value, t =>
                 {
                     if (erfgenamen.Count > 0)
                     {
@@ -1725,32 +1714,32 @@ public class LumioPdfService : ILumioPdfService
                             {
                                 item.Item().Text($"• {naam} — {e.Relatie}").FontSize(9).SemiBold();
                                 if (e.Geboortedatum.HasValue)
-                                    Row(t, "  Geboortedatum", e.Geboortedatum.Value.ToString("dd-MM-yyyy"));
+                                    Row(t, "  " + L["Label_Geboortedatum"].Value, e.Geboortedatum.Value.ToString("dd-MM-yyyy"));
                                 if (!string.IsNullOrEmpty(e.BSN))
-                                    Row(t, "  BSN", e.BSN);
+                                    Row(t, "  " + L["Label_BSN"].Value, e.BSN);
                                 if (!string.IsNullOrEmpty(e.Telefoon))
-                                    Row(t, "  Telefoon", e.Telefoon);
+                                    Row(t, "  " + L["Label_Telefoon"].Value, e.Telefoon);
                                 if (!string.IsNullOrEmpty(e.Email))
-                                    Row(t, "  E-mail", e.Email);
+                                    Row(t, "  " + L["Label_EMail"].Value, e.Email);
                                 if (!string.IsNullOrEmpty(e.Adres))
-                                    Row(t, "  Adres", $"{e.Adres}, {e.Postcode} {e.Woonplaats}".Trim().TrimEnd(','));
+                                    Row(t, "  " + L["Label_Adres"].Value, $"{e.Adres}, {e.Postcode} {e.Woonplaats}".Trim().TrimEnd(','));
                                 if (e.LegitimatieSoort != LegitimatieSoort.Geen)
-                                    Row(t, "  Legitimatie", $"{e.LegitimatieSoort} — {e.LegitimatieNummer}");
+                                    Row(t, "  " + L["Label_Legitimatie"].Value, $"{e.LegitimatieSoort} — {e.LegitimatieNummer}");
                             });
                         }
                     }
                     else
-                        t.Item().Text("Geen erfgenamen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                        t.Item().Text(L["Text_GeenErfgenamen"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
                 });
 
                 if (begunstigden.Count > 0)
                 {
-                    Section(col, "5. Begunstigden (testamentair)", t =>
+                    Section(col, L["Section_5BegunstigdenTestamentair"].Value, t =>
                     {
                         foreach (var b in begunstigden)
                         {
                             var perc = b.Percentage.HasValue ? $" — {b.Percentage:0.##}%" : "";
-                            var legPo = b.IsLegitiemePortie ? " (legitieme portie)" : "";
+                            var legPo = b.IsLegitiemePortie ? " (" + L["Value_LegitiemePortie"].Value + ")" : "";
                             t.Item().PaddingBottom(2).Column(item =>
                             {
                                 item.Item().Text($"• {b.Naam} ({b.Relatie}){perc}{legPo}").FontSize(9).SemiBold();
@@ -1763,12 +1752,12 @@ public class LumioPdfService : ILumioPdfService
             });
 
             // ── Pagina 3: Financieel overzicht ──
-            AddPage(container, "Executeur-rapport — Boedeloverzicht", col =>
+            AddPage(container, L["Page_ExecuteurRapportVerdeling"].Value, col =>
             {
                 // Activa
-                Section(col, "6. Activa", t =>
+                Section(col, L["Section_6Activa"].Value, t =>
                 {
-                    t.Item().Text("a) Fysieke bezittingen").FontSize(10).SemiBold();
+                    t.Item().Text(L["Section_ER6aFysiekeBezittingen"].Value).FontSize(10).SemiBold();
                     if (bezittingen.Count > 0)
                     {
                         foreach (var b in bezittingen)
@@ -1780,49 +1769,49 @@ public class LumioPdfService : ILumioPdfService
                             var extraStr = extra.Count > 0 ? $" ({string.Join(", ", extra)})" : "";
                             Row(t, $"  {b.Omschrijving}{extraStr}", b.GeschatteWaarde.HasValue ? $"€ {b.GeschatteWaarde:N2}" : "—");
                             if (!string.IsNullOrEmpty(b.BestemdeErfgenaam))
-                                t.Item().PaddingLeft(12).Text($"Bestemd voor: {b.BestemdeErfgenaam}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                                t.Item().PaddingLeft(12).Text(string.Format(L["Text_BestemdeVoorPrefix"].Value, b.BestemdeErfgenaam)).FontSize(8).FontColor(Colors.Grey.Darken1);
                         }
                     }
                     else
-                        t.Item().Text("  Geen bezittingen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                        t.Item().Text("  " + L["Text_GeenBezittingen"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
 
-                    t.Item().PaddingTop(5).Text("b) Bankrekeningen").FontSize(10).SemiBold();
+                    t.Item().PaddingTop(5).Text(L["Section_ER6bBankrekeningen"].Value).FontSize(10).SemiBold();
                     if (rekeningen.Count > 0)
                     {
                         foreach (var r in rekeningen)
                             Row(t, $"  {r.BankNaam} ({r.IBAN})", r.Saldo.HasValue ? $"€ {r.Saldo:N2}" : "—");
                     }
                     else
-                        t.Item().Text("  Geen bankrekeningen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                        t.Item().Text("  " + L["Text_GeenBankrekeningen"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
 
-                    t.Item().PaddingTop(5).Text("c) Verzekeringen").FontSize(10).SemiBold();
+                    t.Item().PaddingTop(5).Text(L["Section_ER6cVerzekeringen"].Value).FontSize(10).SemiBold();
                     if (verzekeringen.Count > 0)
                     {
                         foreach (var v in verzekeringen)
                         {
                             Row(t, $"  {v.Verzekeraar} ({v.Type})", v.VerzekerdBedrag.HasValue ? $"€ {v.VerzekerdBedrag:N2}" : "—");
                             if (!string.IsNullOrEmpty(v.PolisNummer))
-                                t.Item().PaddingLeft(12).Text($"Polisnr: {v.PolisNummer}").FontSize(8).FontColor(Colors.Grey.Darken1);
+                                t.Item().PaddingLeft(12).Text(string.Format(L["Text_PolisnrPrefix"].Value, v.PolisNummer)).FontSize(8).FontColor(Colors.Grey.Darken1);
                         }
                     }
                     else
-                        t.Item().Text("  Geen verzekeringen vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                        t.Item().Text("  " + L["Text_GeenVerzekeringen"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
 
                     t.Item().PaddingTop(8);
-                    Row(t, "TOTAAL ACTIVA (bruto)", $"€ {totActiva:N2}");
+                    Row(t, L["Label_TotaalActivaBruto"].Value, $"€ {totActiva:N2}");
                 });
 
                 // Passiva
-                Section(col, "7. Passiva", t =>
+                Section(col, L["Section_7Passiva"].Value, t =>
                 {
                     if (schulden.Count > 0)
                     {
                         foreach (var s in schulden)
                             Row(t, $"  {s.Schuldeiser} ({s.Type})", $"€ {s.Bedrag:N2}");
-                        Row(t, "  TOTAAL PASSIVA", $"€ {totPassiva:N2}");
+                        Row(t, "  " + L["Label_TotaalPassiva"].Value, $"€ {totPassiva:N2}");
                     }
                     else
-                        t.Item().Text("  Geen schulden vastgelegd.").FontSize(9).Italic().FontColor(Colors.Grey.Medium);
+                        t.Item().Text("  " + L["Text_GeenSchulden"].Value).FontSize(9).Italic().FontColor(Colors.Grey.Medium);
                 });
 
                 // Netto nalatenschap
@@ -1830,7 +1819,7 @@ public class LumioPdfService : ILumioPdfService
                 {
                     saldo.Item().Row(row =>
                     {
-                        row.ConstantItem(200).Text("NETTO NALATENSCHAP").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
+                        row.ConstantItem(200).Text(L["Label_NettoNalatenschap"].Value).FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
                         row.RelativeItem().AlignRight().Text($"€ {nettoNalatenschap:N2}").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
                     });
                 });
@@ -1838,15 +1827,15 @@ public class LumioPdfService : ILumioPdfService
                 // Verdeling indicatie
                 if (erfgenamen.Count > 0 && begunstigden.Count > 0)
                 {
-                    Section(col, "8. Indicatieve verdeling", t =>
+                    Section(col, L["Section_8IndicatieveVerdeling"].Value, t =>
                     {
-                        t.Item().Text("Op basis van de testamentaire percentages:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                        t.Item().Text(L["Text_OpBasisPercentages"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                         foreach (var b in begunstigden.Where(b => b.Percentage.HasValue && b.Percentage > 0))
                         {
                             var aandeel = nettoNalatenschap * (b.Percentage!.Value / 100m);
                             Row(t, $"  {b.Naam} ({b.Percentage:0.##}%)", $"€ {aandeel:N2}");
                         }
-                        t.Item().PaddingTop(5).Text("Let op: deze bedragen zijn indicatief. De notaris stelt de definitieve verdeling vast.")
+                        t.Item().PaddingTop(5).Text(L["Text_BedragenIndicatief"].Value)
                             .FontSize(7).Italic().FontColor(Colors.Grey.Medium);
                     });
                 }
@@ -1854,7 +1843,7 @@ public class LumioPdfService : ILumioPdfService
                 // Relevante contactpersonen
                 if (noodcontacten.Count > 0)
                 {
-                    Section(col, "9. Relevante contactpersonen", t =>
+                    Section(col, L["Section_9RelevanteContactpersonen"].Value, t =>
                     {
                         foreach (var n in noodcontacten)
                         {
@@ -1868,10 +1857,9 @@ public class LumioPdfService : ILumioPdfService
             });
 
             // ── Pagina 4: Ondertekening ──
-            AddPage(container, "Executeur-rapport — Ondertekening", col =>
+            AddPage(container, L["Page_ExecuteurRapportContactpersonen"].Value, col =>
             {
-                col.Item().Text("Ondergetekende(n) verklaren kennis te hebben genomen van bovenstaand rapport " +
-                    "en bevestigen de juistheid van de hierin vermelde gegevens, voor zover hen bekend.")
+                col.Item().Text(L["Legal_OndertekeningVerklaring"].Value)
                     .FontSize(9);
 
                 col.Item().PaddingTop(15).Column(sig =>
@@ -1881,30 +1869,30 @@ public class LumioPdfService : ILumioPdfService
                     {
                         foreach (var ex in executeurs)
                         {
-                            sig.Item().PaddingTop(15).Text($"Executeur — {ex.Naam}").FontSize(9).SemiBold();
-                            sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                            sig.Item().PaddingTop(15).Text(string.Format(L["Signing_ExecuteurPrefix"].Value, ex.Naam)).FontSize(9).SemiBold();
+                            sig.Item().PaddingTop(5).Text(L["Signing_DatumHandtekening"].Value).FontSize(9);
                         }
                     }
                     else
                     {
-                        sig.Item().PaddingTop(15).Text("Executeur:").FontSize(9).SemiBold();
-                        sig.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
-                        sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().PaddingTop(15).Text(L["Signing_Executeur"].Value).FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Text(L["Signing_Naam"].Value).FontSize(9);
+                        sig.Item().PaddingTop(5).Text(L["Signing_DatumHandtekening"].Value).FontSize(9);
                     }
 
                     // Erfgenamen
                     foreach (var e in erfgenamen)
                     {
                         var naam = $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}".Replace("  ", " ").Trim();
-                        sig.Item().PaddingTop(15).Text($"Erfgenaam — {naam}").FontSize(9).SemiBold();
-                        sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().PaddingTop(15).Text(string.Format(L["Signing_ErfgenaamPrefix"].Value, naam)).FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(5).Text(L["Signing_DatumHandtekening"].Value).FontSize(9);
                     }
 
                     // Notaris
-                    sig.Item().PaddingTop(20).Text("Notaris:").FontSize(9).SemiBold();
-                    sig.Item().PaddingTop(5).Text("Naam: ___________________________________________").FontSize(9);
-                    sig.Item().PaddingTop(5).Text("Datum: ____-____-________     Handtekening: ___________________________________________").FontSize(9);
-                    sig.Item().PaddingTop(5).Text("Stempel:").FontSize(9);
+                    sig.Item().PaddingTop(20).Text(L["Signing_Notaris"].Value).FontSize(9).SemiBold();
+                    sig.Item().PaddingTop(5).Text(L["Signing_Naam"].Value).FontSize(9);
+                    sig.Item().PaddingTop(5).Text(L["Signing_DatumHandtekening"].Value).FontSize(9);
+                    sig.Item().PaddingTop(5).Text(L["Signing_Stempel"].Value + ":").FontSize(9);
                 });
             });
         }).GeneratePdf();
@@ -1934,7 +1922,7 @@ public class LumioPdfService : ILumioPdfService
         var nu = DateTime.Now;
         var naam = eigenaar != null
             ? $"{eigenaar.Voornaam} {(string.IsNullOrWhiteSpace(eigenaar.Tussenvoegsel) ? "" : eigenaar.Tussenvoegsel + " ")}{eigenaar.Achternaam}"
-            : "Onbekend";
+            : L["Value_Onbekend"].Value;
 
         return Document.Create(container =>
         {
@@ -1954,13 +1942,13 @@ public class LumioPdfService : ILumioPdfService
                     {
                         row.RelativeItem().Column(left =>
                         {
-                            left.Item().Text("NOTARIEEL DOSSIER").FontSize(14).Bold().FontColor(Colors.Blue.Darken4);
-                            left.Item().PaddingTop(3).Text("Lumio — Digitale Nalatenschap").FontSize(8).FontColor(Colors.Grey.Medium);
+                            left.Item().Text(L["Page_NotarieelDossier"].Value).FontSize(14).Bold().FontColor(Colors.Blue.Darken4);
+                            left.Item().PaddingTop(3).Text(L["Header_LumioDigitaleNalatenschap"].Value).FontSize(8).FontColor(Colors.Grey.Medium);
                         });
                         row.ConstantItem(200).AlignRight().Column(right =>
                         {
-                            right.Item().Text($"Datum: {nu:dd-MM-yyyy}").FontSize(8);
-                            right.Item().Text($"Tijdstip: {nu:HH:mm}").FontSize(8);
+                            right.Item().Text($"{L["Label_Datum"].Value}: {nu:dd-MM-yyyy}").FontSize(8);
+                            right.Item().Text(string.Format(L["Header_Tijdstip"].Value, nu.ToString("HH:mm"))).FontSize(8);
                         });
                     });
                     col.Item().PaddingTop(5).LineHorizontal(1f).LineColor(Colors.Blue.Darken4);
@@ -1968,22 +1956,22 @@ public class LumioPdfService : ILumioPdfService
                     // Referentie-vak
                     col.Item().PaddingTop(10).Border(0.5f).BorderColor(Colors.Grey.Lighten2).Padding(8).Column(ref_ =>
                     {
-                        ref_.Item().Text("REFERENTIEGEGEVENS").FontSize(8).Bold().FontColor(Colors.Blue.Darken3);
+                        ref_.Item().Text(L["Header_Referentiegegevens"].Value).FontSize(8).Bold().FontColor(Colors.Blue.Darken3);
                         ref_.Item().PaddingTop(3).Row(row =>
                         {
-                            row.ConstantItem(120).Text("Dossiernaam:").FontSize(9).FontColor(Colors.Grey.Darken1);
-                            row.RelativeItem().Text($"Nalatenschap {naam}").FontSize(9);
+                            row.ConstantItem(120).Text(L["Label_Dossiernaam"].Value + ":").FontSize(9).FontColor(Colors.Grey.Darken1);
+                            row.RelativeItem().Text(string.Format(L["Header_NalatenschapPrefix"].Value, naam)).FontSize(9);
                         });
                         ref_.Item().Row(row =>
                         {
-                            row.ConstantItem(120).Text("Erflater:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                            row.ConstantItem(120).Text(L["Label_ErflaterColon"].Value).FontSize(9).FontColor(Colors.Grey.Darken1);
                             row.RelativeItem().Text(naam).FontSize(9);
                         });
                         if (eigenaar?.Geboortedatum != default)
                         {
                             ref_.Item().Row(row =>
                             {
-                                row.ConstantItem(120).Text("Geboortedatum:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.ConstantItem(120).Text(L["Label_Geboortedatum"].Value + ":").FontSize(9).FontColor(Colors.Grey.Darken1);
                                 row.RelativeItem().Text(eigenaar!.Geboortedatum.ToString("dd-MM-yyyy")).FontSize(9);
                             });
                         }
@@ -1991,7 +1979,7 @@ public class LumioPdfService : ILumioPdfService
                         {
                             ref_.Item().Row(row =>
                             {
-                                row.ConstantItem(120).Text("BSN:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.ConstantItem(120).Text(L["Label_BSN"].Value + ":").FontSize(9).FontColor(Colors.Grey.Darken1);
                                 row.RelativeItem().Text(eigenaar.BSN).FontSize(9);
                             });
                         }
@@ -1999,13 +1987,13 @@ public class LumioPdfService : ILumioPdfService
                         {
                             ref_.Item().Row(row =>
                             {
-                                row.ConstantItem(120).Text("Woonplaats:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                                row.ConstantItem(120).Text(L["Label_Woonplaats"].Value + ":").FontSize(9).FontColor(Colors.Grey.Darken1);
                                 row.RelativeItem().Text(eigenaar.Woonplaats).FontSize(9);
                             });
                         }
                         ref_.Item().Row(row =>
                         {
-                            row.ConstantItem(120).Text("Dossiernummer:").FontSize(9).FontColor(Colors.Grey.Darken1);
+                            row.ConstantItem(120).Text(L["Label_Dossiernummer"].Value + ":").FontSize(9).FontColor(Colors.Grey.Darken1);
                             row.RelativeItem().Text("________________________________").FontSize(9).FontColor(Colors.Grey.Lighten1);
                         });
                     });
@@ -2020,24 +2008,24 @@ public class LumioPdfService : ILumioPdfService
                     // Testament
                     if (testament != null)
                     {
-                        Section(col, "1. Testamentaire gegevens", section =>
+                        Section(col, L["Section_1TestamentaireGegevens"].Value, section =>
                         {
-                            Row(section, "Type testament:", testament.TestamentType ?? "Niet opgegeven");
-                            Row(section, "Datum testament:", testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
-                            Row(section, "CTR-nummer:", testament.CTR_Nummer ?? "—");
-                            Row(section, "Locatie:", testament.TestamentLocatie ?? "—");
-                            Row(section, "Notaris:", testament.NotarisNaam ?? "—");
-                            Row(section, "Kantoor:", testament.NotarisKantoor ?? "—");
-                            Row(section, "Uitsluitingsclausule:", testament.UitsluitingsClausule ? "Ja" : "Nee");
+                            Row(section, L["Label_TypeTestament"].Value, testament.TestamentType ?? L["Value_NietOpgegeven"].Value);
+                            Row(section, L["Label_DatumTestament"].Value, testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
+                            Row(section, L["Label_CTRNummer"].Value, testament.CTR_Nummer ?? "—");
+                            Row(section, L["Label_LocatieColon"].Value, testament.TestamentLocatie ?? "—");
+                            Row(section, L["Label_Notaris"].Value, testament.NotarisNaam ?? "—");
+                            Row(section, L["Label_Kantoor"].Value, testament.NotarisKantoor ?? "—");
+                            Row(section, L["Label_Uitsluitingsclausule"].Value, testament.UitsluitingsClausule ? L["Value_Ja"].Value : L["Value_Nee"].Value);
                             if (!string.IsNullOrWhiteSpace(testament.AlgemeneWensen))
-                                Row(section, "Algemene wensen:", testament.AlgemeneWensen);
+                                Row(section, L["Label_AlgemeneWensen"].Value, testament.AlgemeneWensen);
                             if (!string.IsNullOrWhiteSpace(testament.BijzondereBepalingen))
-                                Row(section, "Bijzondere bepalingen:", testament.BijzondereBepalingen);
+                                Row(section, L["Label_BijzondereBepalingen"].Value, testament.BijzondereBepalingen);
                             if (!string.IsNullOrWhiteSpace(testament.Legaten))
-                                Row(section, "Legaten:", testament.Legaten);
+                                Row(section, L["Label_Legaten"].Value, testament.Legaten);
 
                             // Aantekeningen ruimte
-                            section.Item().PaddingTop(5).Text("Aantekeningen notaris:").FontSize(8).Italic().FontColor(Colors.Grey.Darken1);
+                            section.Item().PaddingTop(5).Text(L["Label_AantekeningenNotaris"].Value).FontSize(8).Italic().FontColor(Colors.Grey.Darken1);
                             section.Item().PaddingTop(3).MinHeight(40).Border(0.3f).BorderColor(Colors.Grey.Lighten2).Padding(5)
                                 .Text(" ").FontSize(8);
                         });
@@ -2046,7 +2034,7 @@ public class LumioPdfService : ILumioPdfService
                     // Erfgenamen
                     if (erfgenamen.Count > 0)
                     {
-                        Section(col, "2. Erfgenamen", section =>
+                        Section(col, L["Section_N2Erfgenamen"].Value, section =>
                         {
                             foreach (var e in erfgenamen)
                             {
@@ -2066,7 +2054,7 @@ public class LumioPdfService : ILumioPdfService
                     // Begunstigden
                     if (begunstigden.Count > 0)
                     {
-                        Section(col, "3. Begunstigden", section =>
+                        Section(col, L["Section_3Begunstigden"].Value, section =>
                         {
                             foreach (var b in begunstigden)
                             {
@@ -2083,7 +2071,7 @@ public class LumioPdfService : ILumioPdfService
                     // Executeurs
                     if (executeurs.Count > 0)
                     {
-                        Section(col, "4. Executeur(s)", section =>
+                        Section(col, L["Section_4Executeurs"].Value, section =>
                         {
                             foreach (var ex in executeurs)
                             {
@@ -2100,7 +2088,7 @@ public class LumioPdfService : ILumioPdfService
                     // Noodcontacten
                     if (noodcontacten.Count > 0)
                     {
-                        Section(col, "5. Contactpersonen", section =>
+                        Section(col, L["Section_5Contactpersonen"].Value, section =>
                         {
                             foreach (var n in noodcontacten)
                             {
@@ -2118,62 +2106,61 @@ public class LumioPdfService : ILumioPdfService
                     // Handtekeningblokken
                     col.Item().PaddingTop(30).Column(sig =>
                     {
-                        sig.Item().Text("ONDERTEKENING").FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
+                        sig.Item().Text(L["Signing_Ondertekening"].Value).FontSize(11).Bold().FontColor(Colors.Blue.Darken3);
                         sig.Item().PaddingTop(5).LineHorizontal(0.3f).LineColor(Colors.Grey.Lighten3);
 
-                        sig.Item().PaddingTop(15).Text("Erflater / Testateur:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(15).Text(L["Signing_ErflaterTestateur"].Value).FontSize(9).SemiBold();
                         sig.Item().PaddingTop(5).Row(row =>
                         {
-                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
-                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                            row.ConstantItem(250).Text(L["Signing_Naam"].Value).FontSize(9);
+                            row.RelativeItem().Text(L["Signing_Datum"].Value).FontSize(9);
                         });
-                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().PaddingTop(5).Text(L["Signing_Handtekening"].Value).FontSize(9);
 
-                        sig.Item().PaddingTop(20).Text("Notaris:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(20).Text(L["Signing_Notaris"].Value).FontSize(9).SemiBold();
                         sig.Item().PaddingTop(5).Row(row =>
                         {
-                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
-                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                            row.ConstantItem(250).Text(L["Signing_Naam"].Value).FontSize(9);
+                            row.RelativeItem().Text(L["Signing_Datum"].Value).FontSize(9);
                         });
-                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
-                        sig.Item().PaddingTop(5).Text("Stempel:").FontSize(9);
+                        sig.Item().PaddingTop(5).Text(L["Signing_Handtekening"].Value).FontSize(9);
+                        sig.Item().PaddingTop(5).Text(L["Signing_StempelKantoor"].Value).FontSize(9);
 
-                        sig.Item().PaddingTop(20).Text("Getuige 1:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(20).Text(L["Signing_Getuige1"].Value).FontSize(9).SemiBold();
                         sig.Item().PaddingTop(5).Row(row =>
                         {
-                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
-                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                            row.ConstantItem(250).Text(L["Signing_Naam"].Value).FontSize(9);
+                            row.RelativeItem().Text(L["Signing_Datum"].Value).FontSize(9);
                         });
-                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().PaddingTop(5).Text(L["Signing_Handtekening"].Value).FontSize(9);
 
-                        sig.Item().PaddingTop(20).Text("Getuige 2:").FontSize(9).SemiBold();
+                        sig.Item().PaddingTop(20).Text(L["Signing_Getuige2"].Value).FontSize(9).SemiBold();
                         sig.Item().PaddingTop(5).Row(row =>
                         {
-                            row.ConstantItem(250).Text("Naam: ___________________________________________").FontSize(9);
-                            row.RelativeItem().Text("Datum: ____-____-________").FontSize(9);
+                            row.ConstantItem(250).Text(L["Signing_Naam"].Value).FontSize(9);
+                            row.RelativeItem().Text(L["Signing_Datum"].Value).FontSize(9);
                         });
-                        sig.Item().PaddingTop(5).Text("Handtekening: ___________________________________________").FontSize(9);
+                        sig.Item().PaddingTop(5).Text(L["Signing_Handtekening"].Value).FontSize(9);
                     });
                 });
 
                 page.Footer().Column(col =>
                 {
                     col.Item().LineHorizontal(0.5f).LineColor(Colors.Blue.Darken4);
-                    col.Item().PaddingTop(3).Text("Dit document is gegenereerd door Lumio en dient als werkdocument voor notarieel gebruik. " +
-                        "Het heeft geen juridische geldigheid zonder notariële verlijding.")
+                    col.Item().PaddingTop(3).Text(L["Legal_NotarisWerkdocument"].Value)
                         .FontSize(6).Italic().FontColor(Colors.Grey.Medium);
                     col.Item().PaddingTop(3).Row(row =>
                     {
                         row.RelativeItem().Text(t =>
                         {
-                            t.Span("Gegenereerd op ").FontSize(7).FontColor(Colors.Grey.Medium);
+                            t.Span(L["Footer_GegenereerOp"].Value).FontSize(7).FontColor(Colors.Grey.Medium);
                             t.Span(nu.ToString("dd-MM-yyyy HH:mm")).FontSize(7).FontColor(Colors.Grey.Medium);
                         });
                         row.RelativeItem().AlignRight().Text(t =>
                         {
-                            t.Span("Pagina ").FontSize(7).FontColor(Colors.Grey.Medium);
+                            t.Span(L["Footer_Pagina"].Value).FontSize(7).FontColor(Colors.Grey.Medium);
                             t.CurrentPageNumber().FontSize(7).FontColor(Colors.Grey.Medium);
-                            t.Span(" / ").FontSize(7).FontColor(Colors.Grey.Medium);
+                            t.Span(L["Footer_Slash"].Value).FontSize(7).FontColor(Colors.Grey.Medium);
                             t.TotalPages().FontSize(7).FontColor(Colors.Grey.Medium);
                         });
                     });
@@ -2191,7 +2178,7 @@ public class LumioPdfService : ILumioPdfService
         page.DefaultTextStyle(x => x.FontSize(10));
     }
 
-    private static void AddPage(IDocumentContainer container, string title, Action<ColumnDescriptor> content)
+    private void AddPage(IDocumentContainer container, string title, Action<ColumnDescriptor> content)
     {
         container.Page(page =>
         {
@@ -2206,13 +2193,13 @@ public class LumioPdfService : ILumioPdfService
         });
     }
 
-    private static void Header(IContainer container, string title, DateTime? laatstBijgewerkt = null)
+    private void Header(IContainer container, string title, DateTime? laatstBijgewerkt = null)
     {
         container.Column(col =>
         {
             col.Item().Row(row =>
             {
-                row.RelativeItem().Text("Lumio — Digitale Nalatenschap")
+                row.RelativeItem().Text(L["Header_LumioDigitaleNalatenschap"].Value)
                     .FontSize(8).FontColor(Colors.Grey.Medium);
                 row.RelativeItem().AlignRight().Text(title)
                     .FontSize(8).FontColor(Colors.Grey.Medium);
@@ -2220,13 +2207,13 @@ public class LumioPdfService : ILumioPdfService
             col.Item().PaddingTop(5).LineHorizontal(0.5f).LineColor(Colors.Grey.Lighten2);
             col.Item().PaddingTop(10).Text(title).FontSize(18).Bold().FontColor(Colors.Blue.Darken3);
             if (laatstBijgewerkt.HasValue)
-                col.Item().Text($"Gegevens voor het laatst bijgewerkt op {laatstBijgewerkt.Value.ToLocalTime():dd-MM-yyyy HH:mm}")
+                col.Item().Text(string.Format(L["Header_LaatsteUpdate"].Value, laatstBijgewerkt.Value.ToLocalTime().ToString("dd-MM-yyyy HH:mm")))
                     .FontSize(8).Italic().FontColor(Colors.Grey.Darken1);
             col.Item().PaddingBottom(10);
         });
     }
 
-    private static void Footer(IContainer container)
+    private void Footer(IContainer container)
     {
         container.Column(col =>
         {
@@ -2235,21 +2222,20 @@ public class LumioPdfService : ILumioPdfService
             {
                 row.RelativeItem().Text(t =>
                 {
-                    t.Span("Gegenereerd door Lumio op ").FontSize(7).FontColor(Colors.Grey.Medium);
-                    t.Span(DateTime.Now.ToString("dd-MM-yyyy HH:mm")).FontSize(7).FontColor(Colors.Grey.Medium);
+                    t.Span(string.Format(L["Footer_GegenereerDoorLumio"].Value, DateTime.Now.ToString("dd-MM-yyyy HH:mm"))).FontSize(7).FontColor(Colors.Grey.Medium);
                 });
                 row.RelativeItem().AlignRight().Text(t =>
                 {
-                    t.Span("Pagina ").FontSize(7).FontColor(Colors.Grey.Medium);
+                    t.Span(L["Footer_Pagina"].Value).FontSize(7).FontColor(Colors.Grey.Medium);
                     t.CurrentPageNumber().FontSize(7).FontColor(Colors.Grey.Medium);
-                    t.Span(" / ").FontSize(7).FontColor(Colors.Grey.Medium);
+                    t.Span(L["Footer_Slash"].Value).FontSize(7).FontColor(Colors.Grey.Medium);
                     t.TotalPages().FontSize(7).FontColor(Colors.Grey.Medium);
                 });
             });
         });
     }
 
-    private static void FooterWithDisclaimer(IContainer container, string disclaimer)
+    private void FooterWithDisclaimer(IContainer container, string disclaimer)
     {
         container.Column(col =>
         {
@@ -2259,14 +2245,13 @@ public class LumioPdfService : ILumioPdfService
             {
                 row.RelativeItem().Text(t =>
                 {
-                    t.Span("Gegenereerd door Lumio op ").FontSize(7).FontColor(Colors.Grey.Medium);
-                    t.Span(DateTime.Now.ToString("dd-MM-yyyy HH:mm")).FontSize(7).FontColor(Colors.Grey.Medium);
+                    t.Span(string.Format(L["Footer_GegenereerDoorLumio"].Value, DateTime.Now.ToString("dd-MM-yyyy HH:mm"))).FontSize(7).FontColor(Colors.Grey.Medium);
                 });
                 row.RelativeItem().AlignRight().Text(t =>
                 {
-                    t.Span("Pagina ").FontSize(7).FontColor(Colors.Grey.Medium);
+                    t.Span(L["Footer_Pagina"].Value).FontSize(7).FontColor(Colors.Grey.Medium);
                     t.CurrentPageNumber().FontSize(7).FontColor(Colors.Grey.Medium);
-                    t.Span(" / ").FontSize(7).FontColor(Colors.Grey.Medium);
+                    t.Span(L["Footer_Slash"].Value).FontSize(7).FontColor(Colors.Grey.Medium);
                     t.TotalPages().FontSize(7).FontColor(Colors.Grey.Medium);
                 });
             });

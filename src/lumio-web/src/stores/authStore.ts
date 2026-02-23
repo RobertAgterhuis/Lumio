@@ -6,6 +6,7 @@ export interface Profile {
   relatie: string;
   isPrimair: boolean;
   aangemaaktOp: string;
+  fotoThumbnail?: string | null;
 }
 
 interface AuthState {

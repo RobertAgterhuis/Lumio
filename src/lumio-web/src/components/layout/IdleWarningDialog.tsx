@@ -8,6 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { useTranslations } from "next-intl";
 import { Timer } from "lucide-react";
 
 interface IdleWarningDialogProps {
@@ -21,21 +22,22 @@ export function IdleWarningDialog({
   secondsLeft,
   onDismiss,
 }: IdleWarningDialogProps) {
+  const t = useTranslations("idle");
+  const tc = useTranslations("common");
+
   return (
     <Dialog open={open} onOpenChange={() => onDismiss()}>
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2">
           <Timer className="h-5 w-5 text-warning" />
-          Sessie verloopt
+          {t("sessieVerloopt")}
         </DialogTitle>
         <DialogDescription>
-          Uw sessie wordt over{" "}
-          <span className="font-semibold text-foreground">{secondsLeft}</span>{" "}
-          seconden automatisch vergrendeld wegens inactiviteit.
+          {t("sessieWaarschuwing", { seconds: secondsLeft })}
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
-        <Button onClick={onDismiss}>Actief blijven</Button>
+        <Button onClick={onDismiss}>{tc("actiefBlijven")}</Button>
       </DialogFooter>
     </Dialog>
   );

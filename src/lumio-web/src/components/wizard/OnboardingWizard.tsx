@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 import {
   User,
   Phone,
@@ -21,8 +22,7 @@ import {
 
 interface OnboardingStap {
   id: string;
-  titel: string;
-  beschrijving: string;
+  stapKey: string;
   icon: React.ElementType;
   href: string;
   checkFn: () => Promise<boolean>;
@@ -33,8 +33,7 @@ const ONBOARDING_KEY = "lumio_onboarding_completed";
 const stappen: OnboardingStap[] = [
   {
     id: "profiel",
-    titel: "Mijn Profiel",
-    beschrijving: "Sla uw persoonlijke gegevens op als basis voor uw nalatenschap.",
+    stapKey: "profiel",
     icon: User,
     href: "/eigenaar",
     checkFn: async () => {
@@ -48,8 +47,7 @@ const stappen: OnboardingStap[] = [
   },
   {
     id: "noodcontacten",
-    titel: "Noodcontacten",
-    beschrijving: "Wie moet er gebeld worden in geval van nood?",
+    stapKey: "noodcontacten",
     icon: Phone,
     href: "/noodcontacten",
     checkFn: async () => {
@@ -63,8 +61,7 @@ const stappen: OnboardingStap[] = [
   },
   {
     id: "testament",
-    titel: "Testament",
-    beschrijving: "Leg testamentaire informatie vast, zoals executeurs en begunstigden.",
+    stapKey: "testament",
     icon: ScrollText,
     href: "/testament",
     checkFn: async () => {
@@ -78,8 +75,7 @@ const stappen: OnboardingStap[] = [
   },
   {
     id: "uitvaart",
-    titel: "Uitvaartwensen",
-    beschrijving: "Beschrijf hoe u wilt dat uw uitvaart wordt geregeld.",
+    stapKey: "uitvaart",
     icon: Church,
     href: "/uitvaart",
     checkFn: async () => {
@@ -93,8 +89,7 @@ const stappen: OnboardingStap[] = [
   },
   {
     id: "erfgenamen",
-    titel: "Erfgenamen",
-    beschrijving: "Registreer uw erfgenamen en verdeel eventueel noodcodes.",
+    stapKey: "erfgenamen",
     icon: Users,
     href: "/erfgenamen",
     checkFn: async () => {
@@ -108,14 +103,12 @@ const stappen: OnboardingStap[] = [
   },
   {
     id: "backup",
-    titel: "Backup maken",
-    beschrijving: "Maak een eerste backup om uw gegevens veilig te stellen.",
+    stapKey: "backup",
     icon: Download,
     href: "/instellingen",
     checkFn: async () => {
       try {
         const data = await api.get<{ meldingen: { categorie: string }[] }>("/api/status/meldingen");
-        // If there's no backup warning, a backup has been made
         return !data?.meldingen?.some((m) => m.categorie === "backup");
       } catch {
         return false;
@@ -126,6 +119,7 @@ const stappen: OnboardingStap[] = [
 
 export function OnboardingWizard() {
   const router = useRouter();
+  const t = useTranslations("wizard");
   const [visible, setVisible] = useState(false);
   const [stapStatus, setStapStatus] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
@@ -186,9 +180,9 @@ export function OnboardingWizard() {
               <Sparkles className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold">Welkom bij Lumio</h2>
+              <h2 className="text-lg font-semibold">{t("welkom")}</h2>
               <p className="text-sm text-muted-foreground">
-                Doorloop deze stappen om uw nalatenschap in te richten
+                {t("doorloop")}
               </p>
             </div>
           </div>
@@ -197,7 +191,7 @@ export function OnboardingWizard() {
             size="sm"
             className="h-8 w-8 p-0"
             onClick={handleComplete}
-            title="Wizard sluiten"
+            title={t("sluiten")}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -207,7 +201,7 @@ export function OnboardingWizard() {
         <div className="px-6 pt-4">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              {completedCount} van {stappen.length} voltooid
+              {t("voltooid", { voltooid: completedCount, totaal: stappen.length })}
             </span>
             <span className="font-medium text-primary">
               {Math.round((completedCount / stappen.length) * 100)}%
@@ -257,10 +251,10 @@ export function OnboardingWizard() {
                         isDone && "text-green-700"
                       )}
                     >
-                      {stap.titel}
+                      {t(`stappen.${stap.stapKey}.titel`)}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {stap.beschrijving}
+                      {t(`stappen.${stap.stapKey}.beschrijving`)}
                     </p>
                   </div>
                   {!isDone && (
@@ -275,12 +269,12 @@ export function OnboardingWizard() {
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-border px-6 py-4">
           <Button variant="ghost" onClick={handleComplete}>
-            Later invullen
+            {t("laterInvullen")}
           </Button>
           {completedCount === stappen.length && (
             <Button onClick={handleComplete}>
               <Check className="h-4 w-4 mr-2" />
-              Afronden
+              {t("afronden")}
             </Button>
           )}
         </div>

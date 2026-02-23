@@ -8,8 +8,8 @@ export interface AfsluitInstructie {
   platform: string;
   /** Zoekwoorden waarmee we op platformNaam matchen (lowercase) */
   zoekwoorden: string[];
-  /** Korte beschrijving van de procedure */
-  beschrijving: string;
+  /** Vertaalsleutel voor de beschrijving van de procedure */
+  beschrijvingKey: string;
   /** URL naar de officiële afsluitprocedure */
   url: string;
   /** Categorie voor fallback-matching */
@@ -21,48 +21,42 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "Facebook / Meta",
     zoekwoorden: ["facebook", "meta", "fb"],
-    beschrijving:
-      "Herdenkingsstatus aanvragen of account laten verwijderen via het speciale herdenkingsformulier van Meta. Vereist overlijdensakte.",
+    beschrijvingKey: "facebook",
     url: "https://www.facebook.com/help/1506822589577997",
     categorie: "Social Media",
   },
   {
     platform: "Instagram",
     zoekwoorden: ["instagram", "insta"],
-    beschrijving:
-      "Herdenkingsaccount aanvragen of verwijdering via Instagram's nabestaandenformulier. Bewijs van overlijden vereist.",
+    beschrijvingKey: "instagram",
     url: "https://help.instagram.com/264154560391256",
     categorie: "Social Media",
   },
   {
     platform: "X (Twitter)",
     zoekwoorden: ["twitter", "x.com", "tweet"],
-    beschrijving:
-      "Deactivering aanvragen door nabestaanden via het privacyformulier. Overlijdensakte en identiteitsbewijs vereist.",
+    beschrijvingKey: "twitter",
     url: "https://help.twitter.com/nl/rules-and-policies/contact-twitter-about-a-deceased-family-members-account",
     categorie: "Social Media",
   },
   {
     platform: "LinkedIn",
     zoekwoorden: ["linkedin"],
-    beschrijving:
-      "Profiel van een overleden lid verwijderen via het nabestaandenformulier. Verificatie vereist.",
+    beschrijvingKey: "linkedin",
     url: "https://www.linkedin.com/help/linkedin/answer/a1339498",
     categorie: "Social Media",
   },
   {
     platform: "TikTok",
     zoekwoorden: ["tiktok"],
-    beschrijving:
-      "Account verwijderen door nabestaanden via contactformulier. Bewijs van overlijden nodig.",
+    beschrijvingKey: "tiktok",
     url: "https://support.tiktok.com/nl",
     categorie: "Social Media",
   },
   {
     platform: "Snapchat",
     zoekwoorden: ["snapchat", "snap"],
-    beschrijving:
-      "Nabestaanden kunnen een verwijderingsverzoek indienen via het ondersteuningsformulier.",
+    beschrijvingKey: "snapchat",
     url: "https://support.snapchat.com/nl-NL",
     categorie: "Social Media",
   },
@@ -71,32 +65,28 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "Google (Gmail, Drive, YouTube)",
     zoekwoorden: ["google", "gmail", "youtube", "drive", "android"],
-    beschrijving:
-      "Inactieve Account Manager instellen of account laten verwijderen door nabestaanden. Google biedt een uitgebreide procedure inclusief gegevenstoegang.",
+    beschrijvingKey: "google",
     url: "https://support.google.com/accounts/troubleshooter/6357590",
     categorie: "Email",
   },
   {
     platform: "Microsoft (Outlook, OneDrive)",
     zoekwoorden: ["microsoft", "outlook", "hotmail", "live", "onedrive", "xbox"],
-    beschrijving:
-      "Nabestaanden kunnen een verzoek indienen om het account te sluiten of gegevens op te vragen via het 'Next of Kin'-proces.",
+    beschrijvingKey: "microsoft",
     url: "https://support.microsoft.com/nl-nl/account-billing/toegang-tot-het-account-van-een-onlangs-overleden-persoon-7e7c2fbf-4e6c-4e1c-9e6b-d8e5e9f0e1c5",
     categorie: "Email",
   },
   {
     platform: "Apple (iCloud)",
     zoekwoorden: ["apple", "icloud", "itunes", "iphone", "imac", "macbook"],
-    beschrijving:
-      "Digital Legacy-programma of verzoek tot accountsluiting. Apple vereist een gerechtelijk bevel of overlijdensakte.",
+    beschrijvingKey: "apple",
     url: "https://support.apple.com/nl-nl/102638",
     categorie: "Cloud",
   },
   {
     platform: "Yahoo Mail",
     zoekwoorden: ["yahoo"],
-    beschrijving:
-      "Account sluiten via nabestaandenverzoek. Overlijdensakte en identiteitsbewijs vereist.",
+    beschrijvingKey: "yahoo",
     url: "https://help.yahoo.com/kb/close-account-background-sln2044.html",
     categorie: "Email",
   },
@@ -105,40 +95,35 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "ING",
     zoekwoorden: ["ing"],
-    beschrijving:
-      "Neem contact op met de bank over overlijden. ING regelt afsluiting via het kantoor of telefonisch.",
+    beschrijvingKey: "ing",
     url: "https://www.ing.nl/particulier/bij-overlijden",
     categorie: "Banking",
   },
   {
     platform: "Rabobank",
     zoekwoorden: ["rabobank", "rabo"],
-    beschrijving:
-      "Overlijden melden via het kantoor of telefonisch. Rabobank begeleidt het afwikkelingsproces.",
+    beschrijvingKey: "rabobank",
     url: "https://www.rabobank.nl/particulieren/service/overlijden",
     categorie: "Banking",
   },
   {
     platform: "ABN AMRO",
     zoekwoorden: ["abn", "amro", "abn amro"],
-    beschrijving:
-      "Overlijden melden en bankzaken regelen. ABN AMRO biedt een speciaal overlijdensteam.",
+    beschrijvingKey: "abnAmro",
     url: "https://www.abnamro.nl/nl/prive/bij-een-overlijden/index.html",
     categorie: "Banking",
   },
   {
     platform: "SNS Bank",
     zoekwoorden: ["sns"],
-    beschrijving:
-      "Overlijden doorgeven en rekeningen laten afwikkelen via het kantoor.",
+    beschrijvingKey: "sns",
     url: "https://www.snsbank.nl/service/overlijden.html",
     categorie: "Banking",
   },
   {
     platform: "PayPal",
     zoekwoorden: ["paypal"],
-    beschrijving:
-      "Account sluiten na overlijden door contact met PayPal klantenservice. Overlijdensakte vereist.",
+    beschrijvingKey: "paypal",
     url: "https://www.paypal.com/nl/webapps/mpp/close-account",
     categorie: "Banking",
   },
@@ -147,24 +132,21 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "Bol.com",
     zoekwoorden: ["bol.com", "bol"],
-    beschrijving:
-      "Neem contact op met de klantenservice om het account te laten opheffen.",
+    beschrijvingKey: "bolcom",
     url: "https://www.bol.com/nl/rnwy/account/",
     categorie: "Shopping",
   },
   {
     platform: "Amazon",
     zoekwoorden: ["amazon"],
-    beschrijving:
-      "Account sluiten via het ondersteuningsformulier. Nabestaanden moeten overlijdensakte overleggen.",
+    beschrijvingKey: "amazon",
     url: "https://www.amazon.nl/gp/help/customer/display.html?nodeId=GDK92DNLSGWTV66W",
     categorie: "Shopping",
   },
   {
     platform: "Coolblue",
     zoekwoorden: ["coolblue"],
-    beschrijving:
-      "Neem contact op met de klantenservice voor accountverwijdering.",
+    beschrijvingKey: "coolblue",
     url: "https://www.coolblue.nl/klantenservice",
     categorie: "Shopping",
   },
@@ -173,24 +155,21 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "Netflix",
     zoekwoorden: ["netflix"],
-    beschrijving:
-      "Abonnement opzeggen en account verwijderen via de accountinstellingen of klantenservice.",
+    beschrijvingKey: "netflix",
     url: "https://help.netflix.com/nl/node/407",
     categorie: "Streaming",
   },
   {
     platform: "Spotify",
     zoekwoorden: ["spotify"],
-    beschrijving:
-      "Account sluiten via de accountinstellingen of door contact met ondersteuning.",
+    beschrijvingKey: "spotify",
     url: "https://support.spotify.com/nl/article/close-account/",
     categorie: "Streaming",
   },
   {
     platform: "Disney+",
     zoekwoorden: ["disney"],
-    beschrijving:
-      "Abonnement opzeggen en account verwijderen via accountbeheer.",
+    beschrijvingKey: "disney",
     url: "https://help.disneyplus.com/nl-NL",
     categorie: "Streaming",
   },
@@ -199,24 +178,21 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "Steam",
     zoekwoorden: ["steam", "valve"],
-    beschrijving:
-      "Account overdracht is officieel niet ondersteund. Neem contact op met Steam Support.",
+    beschrijvingKey: "steam",
     url: "https://help.steampowered.com/nl/",
     categorie: "Gaming",
   },
   {
     platform: "PlayStation (Sony)",
     zoekwoorden: ["playstation", "psn", "sony"],
-    beschrijving:
-      "Account sluiten via PlayStation Support. Overlijdensakte vereist.",
+    beschrijvingKey: "playstation",
     url: "https://www.playstation.com/nl-nl/support/",
     categorie: "Gaming",
   },
   {
     platform: "Xbox (Microsoft)",
     zoekwoorden: ["xbox"],
-    beschrijving:
-      "Valt onder Microsoft Next of Kin-proces. Account sluiten via Microsoft Support.",
+    beschrijvingKey: "xbox",
     url: "https://support.xbox.com/nl-NL/help/account-profile/manage-account/close-account",
     categorie: "Gaming",
   },
@@ -225,16 +201,14 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "DigiD",
     zoekwoorden: ["digid"],
-    beschrijving:
-      "DigiD wordt automatisch ingetrokken bij de gemeente na registratie van het overlijden.",
+    beschrijvingKey: "digid",
     url: "https://www.digid.nl/over-digid/veelgestelde-vragen",
     categorie: "Overheid",
   },
   {
     platform: "MijnOverheid",
     zoekwoorden: ["mijnoverheid", "mijn overheid"],
-    beschrijving:
-      "Account wordt gekoppeld aan DigiD en vervalt automatisch na overlijden.",
+    beschrijvingKey: "mijnOverheid",
     url: "https://mijn.overheid.nl/",
     categorie: "Overheid",
   },
@@ -243,16 +217,14 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   {
     platform: "Slack",
     zoekwoorden: ["slack"],
-    beschrijving:
-      "Workspace-beheerder kan het account deactiveren. Neem contact op met de IT-afdeling van de werkgever.",
+    beschrijvingKey: "slack",
     url: "https://slack.com/intl/nl-nl/help/articles/204475027",
     categorie: "Werk",
   },
   {
     platform: "Zoom",
     zoekwoorden: ["zoom"],
-    beschrijving:
-      "Account verwijderen via accountinstellingen of door de beheerder.",
+    beschrijvingKey: "zoom",
     url: "https://support.zoom.com/hc/nl/article?id=zm_kb&sysparm_article=KB0060411",
     categorie: "Werk",
   },

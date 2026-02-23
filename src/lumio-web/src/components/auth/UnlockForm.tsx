@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
+import { useTranslations } from "next-intl";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
 export function UnlockForm() {
@@ -15,6 +16,7 @@ export function UnlockForm() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { setUnlocked } = useAuthStore();
+  const t = useTranslations("auth.ontgrendel");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +27,7 @@ export function UnlockForm() {
       await api.post("/api/auth/ontgrendel", { wachtwoord: password });
       setUnlocked(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ontgrendelen mislukt");
+      setError(err instanceof Error ? err.message : t("mislukt"));
     } finally {
       setLoading(false);
     }
@@ -37,22 +39,22 @@ export function UnlockForm() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
           <Lock className="h-8 w-8 text-primary" />
         </div>
-        <CardTitle>Lumio Ontgrendelen</CardTitle>
+        <CardTitle>{t("titel")}</CardTitle>
         <CardDescription>
-          Voer uw wachtwoord in om toegang te krijgen tot uw digitale nalatenschap.
+          {t("beschrijving")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="password">Wachtwoord</Label>
+            <Label htmlFor="password">{t("wachtwoord")}</Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Voer uw wachtwoord in"
+                placeholder={t("wachtwoordPlaceholder")}
                 required
                 autoFocus
               />
@@ -71,7 +73,7 @@ export function UnlockForm() {
           )}
 
           <Button type="submit" className="w-full" disabled={loading || !password}>
-            {loading ? "Ontgrendelen..." : "Ontgrendelen"}
+            {loading ? t("bezig") : t("ontgrendelen")}
           </Button>
         </form>
       </CardContent>

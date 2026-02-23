@@ -1,7 +1,9 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
+using Lumio.Api.Rules.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
 
@@ -10,8 +12,13 @@ namespace Lumio.Api.Controllers;
 public class AuditLogController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly LimietenOptions _limieten;
 
-    public AuditLogController(LumioDbContext db) => _db = db;
+    public AuditLogController(LumioDbContext db, IOptions<LimietenOptions> limieten)
+    {
+        _db = db;
+        _limieten = limieten.Value;
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<AuditLogDto>>> GetAll(
@@ -32,7 +39,7 @@ public class AuditLogController : ControllerBase
         if (limit.HasValue && limit.Value > 0)
             query = query.Take(limit.Value);
         else
-            query = query.Take(200);
+            query = query.Take(_limieten.AuditLogStandaardLimiet);
 
         var items = await query.Select(a => new AuditLogDto
         {

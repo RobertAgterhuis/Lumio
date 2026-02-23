@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -23,6 +24,7 @@ interface GranulairData {
 export function VoortgangGranulair() {
   const [data, setData] = useState<GranulairData | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const t = useTranslations("dashboard.voortgangGranulair");
 
   useEffect(() => {
     api
@@ -36,7 +38,7 @@ export function VoortgangGranulair() {
   return (
     <div className="rounded-lg border bg-card p-5">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold">Gedetailleerde voortgang</h2>
+        <h2 className="text-sm font-semibold">{t("titel")}</h2>
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-primary">
             {data.percentage}%
@@ -64,7 +66,7 @@ export function VoortgangGranulair() {
         />
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
-        {data.totaalIngevuld} van {data.totaalVelden} velden ingevuld
+        {t("veldenIngevuld", { ingevuld: data.totaalIngevuld, totaal: data.totaalVelden })}
       </p>
 
       {/* Per-domain breakdown */}

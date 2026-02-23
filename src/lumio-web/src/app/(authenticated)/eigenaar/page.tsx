@@ -15,6 +15,9 @@ import { api } from "@/lib/api-client";
 import { User, Save, Loader2, Camera, Trash2 } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useTranslations } from "next-intl";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Eigenaar {
   id: string;
@@ -73,6 +76,8 @@ const emptyForm = {
 };
 
 export default function EigenaarPage() {
+  const t = useTranslations("eigenaar");
+  const te = useTranslations("enums");
   const [exists, setExists] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -166,9 +171,9 @@ export default function EigenaarPage() {
         await api.post("/api/eigenaar", payload);
         setExists(true);
       }
-      setSuccess("Profiel opgeslagen.");
+      setSuccess(t("profielOpgeslagen"));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
@@ -186,7 +191,7 @@ export default function EigenaarPage() {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
       setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Foto uploaden mislukt.");
+      setError(err instanceof Error ? err.message : t("foto.uploadMislukt"));
     } finally {
       setFotoUploading(false);
     }
@@ -199,7 +204,7 @@ export default function EigenaarPage() {
       await api.delete("/api/eigenaar/foto");
       setFotoUrl(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Foto verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("foto.verwijderenMislukt"));
     } finally {
       setFotoUploading(false);
     }
@@ -208,7 +213,7 @@ export default function EigenaarPage() {
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
@@ -217,20 +222,20 @@ export default function EigenaarPage() {
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <User className="h-8 w-8 text-primary" />
-          Mijn Profiel
+          {t("titel")}
         </h1>
         <p className="text-muted-foreground mt-1">
-          Uw persoonsgegevens als eigenaar van deze nalatenschap
+          {t("beschrijving")}
         </p>
         <VoorbeeldDialog domein="eigenaar" />
       </div>
 
+      <DomainStatusBanner domein="eigenaar" />
+
       {!exists && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
           <p className="text-sm text-amber-800">
-            <strong>Belangrijk:</strong> U moet eerst uw profiel aanmaken voordat
-            u andere gegevens kunt opslaan. Vul onderstaand formulier in en klik
-            op Opslaan.
+            <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
           </p>
         </div>
       )}
@@ -238,9 +243,9 @@ export default function EigenaarPage() {
       {exists && (
         <Card>
           <CardHeader>
-            <CardTitle>Profielfoto</CardTitle>
+            <CardTitle>{t("foto.titel")}</CardTitle>
             <CardDescription>
-              Upload een pasfoto, bijvoorbeeld voor de rouwkaart.
+              {t("foto.beschrijving")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -249,7 +254,7 @@ export default function EigenaarPage() {
                 {fotoUrl ? (
                   <img
                     src={fotoUrl}
-                    alt="Profielfoto"
+                    alt={t("foto.alt")}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -271,7 +276,7 @@ export default function EigenaarPage() {
                     ) : (
                       <Camera className="h-4 w-4 mr-2" />
                     )}
-                    {fotoUrl ? "Wijzigen" : "Uploaden"}
+                    {fotoUrl ? t("foto.wijzigen") : t("foto.uploaden")}
                   </Button>
                   {fotoUrl && (
                     <Button
@@ -280,12 +285,12 @@ export default function EigenaarPage() {
                       disabled={fotoUploading}
                       onClick={handleFotoDelete}
                     >
-                      <Trash2 className="h-4 w-4 mr-2" /> Verwijderen
+                      <Trash2 className="h-4 w-4 mr-2" /> {t("foto.verwijderen")}
                     </Button>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  JPG, PNG of WebP. Maximaal 10 MB.
+                  {t("foto.formaat")}
                 </p>
                 <input
                   id="foto-input"
@@ -302,43 +307,43 @@ export default function EigenaarPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Persoonsgegevens</CardTitle>
+          <CardTitle>{t("persoon.titel")}</CardTitle>
           <CardDescription>
-            Deze gegevens worden gebruikt in uw nalatenschap en PDF-exports.
+            {t("persoon.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>Voornaam *</Label>
+                <Label>{t("persoon.voornaamVerplicht")}</Label>
                 <Input
                   value={form.voornaam}
                   onChange={(e) => update("voornaam", e.target.value)}
-                  placeholder="Voornaam"
+                  placeholder={t("persoon.voornaam")}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Tussenvoegsel</Label>
+                <Label>{t("persoon.tussenvoegsel")}</Label>
                 <Input
                   value={form.tussenvoegsel}
                   onChange={(e) => update("tussenvoegsel", e.target.value)}
-                  placeholder="bijv. van, de"
+                  placeholder={t("persoon.tussenvoegselPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Achternaam *</Label>
+                <Label>{t("persoon.achternaamVerplicht")}</Label>
                 <Input
                   value={form.achternaam}
                   onChange={(e) => update("achternaam", e.target.value)}
-                  placeholder="Achternaam"
+                  placeholder={t("persoon.achternaam")}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Geboortedatum *</Label>
+                <Label>{t("persoon.geboortedatumVerplicht")}</Label>
                 <Input
                   type="date"
                   value={form.geboortedatum}
@@ -346,58 +351,58 @@ export default function EigenaarPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>BSN</Label>
+                <Label>{t("persoon.bsn")}</Label>
                 <Input
                   value={form.bsn}
                   onChange={(e) => update("bsn", e.target.value)}
-                  placeholder="Burgerservicenummer"
+                  placeholder={t("persoon.bsnPlaceholder")}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2 md:col-span-2">
-                <Label>Adres</Label>
+                <Label>{t("persoon.adres")}</Label>
                 <Input
                   value={form.adres}
                   onChange={(e) => update("adres", e.target.value)}
-                  placeholder="Straat en huisnummer"
+                  placeholder={t("persoon.adresPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Postcode</Label>
+                <Label>{t("persoon.postcode")}</Label>
                 <Input
                   value={form.postcode}
                   onChange={(e) => update("postcode", e.target.value)}
-                  placeholder="1234 AB"
+                  placeholder={t("persoon.postcodePlaceholder")}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label>Woonplaats</Label>
+                <Label>{t("persoon.woonplaats")}</Label>
                 <Input
                   value={form.woonplaats}
                   onChange={(e) => update("woonplaats", e.target.value)}
-                  placeholder="Woonplaats"
+                  placeholder={t("persoon.woonplaats")}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Telefoon</Label>
+                <Label>{t("persoon.telefoon")}</Label>
                 <Input
                   value={form.telefoon}
                   onChange={(e) => update("telefoon", e.target.value)}
-                  placeholder="06-12345678"
+                  placeholder={t("persoon.telefoonPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label>E-mail</Label>
+                <Label>{t("persoon.email")}</Label>
                 <Input
                   type="email"
                   value={form.email}
                   onChange={(e) => update("email", e.target.value)}
-                  placeholder="uw@email.nl"
+                  placeholder={t("persoon.emailPlaceholder")}
                 />
               </div>
             </div>
@@ -407,38 +412,38 @@ export default function EigenaarPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Burgerlijke staat</CardTitle>
+          <CardTitle>{t("burgerlijkeStaat.titel")}</CardTitle>
           <CardDescription>
-            Uw burgerlijke staat en eventuele huwelijksvoorwaarden.
+            {t("burgerlijkeStaat.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Burgerlijke staat</Label>
+                <Label>{t("burgerlijkeStaat.label")}</Label>
                 <Select
                   value={form.burgerlijkeStaat}
                   onChange={(e) => update("burgerlijkeStaat", e.target.value)}
                 >
-                  <option value="0">Ongehuwd</option>
-                  <option value="1">Gehuwd</option>
-                  <option value="2">Geregistreerd partnerschap</option>
-                  <option value="3">Gescheiden</option>
-                  <option value="4">Weduwe / Weduwnaar</option>
+                  <option value="0">{te("burgerlijkeStaat.ongehuwd")}</option>
+                  <option value="1">{te("burgerlijkeStaat.gehuwd")}</option>
+                  <option value="2">{te("burgerlijkeStaat.geregistreerdPartnerschap")}</option>
+                  <option value="3">{te("burgerlijkeStaat.gescheiden")}</option>
+                  <option value="4">{te("burgerlijkeStaat.weduwWeduwnaar")}</option>
                 </Select>
               </div>
               {(form.burgerlijkeStaat === "1" || form.burgerlijkeStaat === "2") && (
                 <div className="space-y-2">
-                  <Label>Huwelijksvoorwaarden</Label>
+                  <Label>{t("burgerlijkeStaat.huwelijksVoorwaarden")}</Label>
                   <Select
                     value={form.huwelijksVoorwaarden}
                     onChange={(e) => update("huwelijksVoorwaarden", e.target.value)}
                   >
-                    <option value="0">Niet van toepassing</option>
-                    <option value="1">Gemeenschap van goederen</option>
-                    <option value="2">Beperkte gemeenschap</option>
-                    <option value="3">Koude uitsluiting</option>
+                    <option value="0">{te("huwelijksVoorwaarden.nietVanToepassing")}</option>
+                    <option value="1">{te("huwelijksVoorwaarden.gemeenschapVanGoederen")}</option>
+                    <option value="2">{te("huwelijksVoorwaarden.beperktGemeenschap")}</option>
+                    <option value="3">{te("huwelijksVoorwaarden.koudeUitsluiting")}</option>
                   </Select>
                 </div>
               )}
@@ -446,7 +451,7 @@ export default function EigenaarPage() {
             {(form.burgerlijkeStaat === "1" || form.burgerlijkeStaat === "2") && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Datum huwelijk / partnerschap</Label>
+                  <Label>{t("burgerlijkeStaat.datumHuwelijk")}</Label>
                   <Input
                     type="date"
                     value={form.datumHuwelijk}
@@ -461,33 +466,33 @@ export default function EigenaarPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Identificatie</CardTitle>
+          <CardTitle>{t("identificatie.titel")}</CardTitle>
           <CardDescription>
-            Legitimatiegegevens voor juridische documenten.
+            {t("identificatie.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Soort legitimatie</Label>
+                <Label>{t("identificatie.soort")}</Label>
                 <Select
                   value={form.legitimatieSoort}
                   onChange={(e) => update("legitimatieSoort", e.target.value)}
                 >
-                  <option value="0">Geen</option>
-                  <option value="1">Paspoort</option>
-                  <option value="2">Identiteitskaart</option>
-                  <option value="3">Rijbewijs</option>
+                  <option value="0">{te("legitimatie.geen")}</option>
+                  <option value="1">{te("legitimatie.paspoort")}</option>
+                  <option value="2">{te("legitimatie.identiteitskaart")}</option>
+                  <option value="3">{te("legitimatie.rijbewijs")}</option>
                 </Select>
               </div>
               {form.legitimatieSoort !== "0" && (
                 <div className="space-y-2">
-                  <Label>Documentnummer</Label>
+                  <Label>{t("identificatie.documentnummer")}</Label>
                   <Input
                     value={form.legitimatieNummer}
                     onChange={(e) => update("legitimatieNummer", e.target.value)}
-                    placeholder="Documentnummer"
+                    placeholder={t("identificatie.documentnummer")}
                   />
                 </div>
               )}
@@ -495,7 +500,7 @@ export default function EigenaarPage() {
             {form.legitimatieSoort !== "0" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Datum afgifte</Label>
+                  <Label>{t("identificatie.datumAfgifte")}</Label>
                   <Input
                     type="date"
                     value={form.legitimatieDatumAfgifte}
@@ -503,7 +508,7 @@ export default function EigenaarPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Geldig tot</Label>
+                  <Label>{t("identificatie.geldigTot")}</Label>
                   <Input
                     type="date"
                     value={form.legitimatieGeldigTot}
@@ -518,87 +523,87 @@ export default function EigenaarPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Notaris</CardTitle>
+          <CardTitle>{t("notaris.titel")}</CardTitle>
           <CardDescription>
-            Gegevens van uw notaris (optioneel).
+            {t("notaris.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Naam notaris</Label>
+              <Label>{t("notaris.naam")}</Label>
               <Input
                 value={form.notaris}
                 onChange={(e) => update("notaris", e.target.value)}
-                placeholder="bijv. mr. J. de Vries"
+                placeholder={t("notaris.naamPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Notariskantoor</Label>
+              <Label>{t("notaris.kantoor")}</Label>
               <Input
                 value={form.notarisKantoor}
                 onChange={(e) => update("notarisKantoor", e.target.value)}
-                placeholder="bijv. De Vries & Partners Notarissen"
+                placeholder={t("notaris.kantoorPlaceholder")}
               />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Telefoon notaris</Label>
+              <Label>{t("notaris.telefoon")}</Label>
               <Input
                 value={form.notarisTelefoon}
                 onChange={(e) => update("notarisTelefoon", e.target.value)}
-                placeholder="Telefoonnummer"
+                placeholder={t("notaris.telefoonPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>E-mail notaris</Label>
+              <Label>{t("notaris.email")}</Label>
               <Input
                 type="email"
                 value={form.notarisEmail}
                 onChange={(e) => update("notarisEmail", e.target.value)}
-                placeholder="notaris@kantoor.nl"
+                placeholder={t("notaris.emailPlaceholder")}
               />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2 md:col-span-2">
-              <Label>Adres notaris</Label>
+              <Label>{t("notaris.adres")}</Label>
               <Input
                 value={form.notarisAdres}
                 onChange={(e) => update("notarisAdres", e.target.value)}
-                placeholder="Straat en huisnummer"
+                placeholder={t("notaris.adresPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("notaris.postcode")}</Label>
               <Input
                 value={form.notarisPostcode}
                 onChange={(e) => update("notarisPostcode", e.target.value)}
-                placeholder="1234 AB"
+                placeholder={t("notaris.postcodePlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Plaats</Label>
+            <Label>{t("notaris.plaats")}</Label>
             <Input
               value={form.notarisPlaats}
               onChange={(e) => update("notarisPlaats", e.target.value)}
-              placeholder="Plaats"
+              placeholder={t("notaris.plaats")}
             />
           </div>
         </CardContent>
       </Card>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
-        </div>
+        <Alert variant="danger">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-          <p className="text-sm text-green-800">{success}</p>
-        </div>
+        <Alert variant="success">
+          <AlertDescription>{success}</AlertDescription>
+        </Alert>
       )}
 
       <div className="flex justify-end">
@@ -608,11 +613,11 @@ export default function EigenaarPage() {
         >
           {saving ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Opslaan...
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t("opslaanBezig")}
             </>
           ) : (
             <>
-              <Save className="h-4 w-4 mr-2" /> Opslaan
+              <Save className="h-4 w-4 mr-2" /> {t("opslaan")}
             </>
           )}
         </Button>

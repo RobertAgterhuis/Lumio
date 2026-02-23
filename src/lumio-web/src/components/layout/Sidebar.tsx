@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
   ScrollText,
@@ -22,25 +23,26 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/eigenaar", label: "Mijn Profiel", icon: User },
-  { href: "/testament", label: "Testament", icon: ScrollText },
-  { href: "/euthanasie", label: "Wilsverklaring", icon: Stethoscope },
-  { href: "/donor", label: "Donorregistratie", icon: Heart },
-  { href: "/digitaal-bezit", label: "Digitaal Bezit", icon: Globe },
-  { href: "/boedel", label: "Boedel", icon: Wallet },
-  { href: "/uitvaart", label: "Uitvaartwensen", icon: Church },
-  { href: "/documenten", label: "Documenten", icon: FileText },
-  { href: "/erfgenamen", label: "Erfgenamen", icon: Users },
-  { href: "/noodcontacten", label: "Noodcontacten", icon: Phone },
-  { href: "/tijdlijn", label: "Tijdlijn Overlijden", icon: ListChecks },
-  { href: "/export", label: "Exporteren", icon: Download },
-  { href: "/audit-log", label: "Activiteitenlog", icon: ClipboardList },
-  { href: "/instellingen", label: "Instellingen", icon: Settings },
+  { href: "/dashboard", labelKey: "dashboard" as const, icon: LayoutDashboard },
+  { href: "/eigenaar", labelKey: "mijnProfiel" as const, icon: User },
+  { href: "/testament", labelKey: "testament" as const, icon: ScrollText },
+  { href: "/euthanasie", labelKey: "wilsverklaring" as const, icon: Stethoscope },
+  { href: "/donor", labelKey: "donorregistratie" as const, icon: Heart },
+  { href: "/digitaal-bezit", labelKey: "digitaalBezit" as const, icon: Globe },
+  { href: "/boedel", labelKey: "boedel" as const, icon: Wallet },
+  { href: "/uitvaart", labelKey: "uitvaartwensen" as const, icon: Church },
+  { href: "/documenten", labelKey: "documenten" as const, icon: FileText },
+  { href: "/erfgenamen", labelKey: "erfgenamen" as const, icon: Users },
+  { href: "/noodcontacten", labelKey: "noodcontacten" as const, icon: Phone },
+  { href: "/tijdlijn", labelKey: "tijdlijnOverlijden" as const, icon: ListChecks },
+  { href: "/export", labelKey: "exporteren" as const, icon: Download },
+  { href: "/audit-log", labelKey: "activiteitenlog" as const, icon: ClipboardList },
+  { href: "/instellingen", labelKey: "instellingen" as const, icon: Settings },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <aside className="flex h-full w-64 flex-col border-r border-border bg-sidebar">
@@ -63,7 +65,7 @@ export function Sidebar() {
               )}
             >
               <Icon className="h-4 w-4" />
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}

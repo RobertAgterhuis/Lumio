@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="DomainMyProfile" xml:space="preserve"><value>Mijn Profiel</value></data>
+  <data name="DomainTestament" xml:space="preserve"><value>Testament</value></data>
+  <data name="DomainLivingWill" xml:space="preserve"><value>Wilsverklaring</value></data>
+  <data name="DomainDonor" xml:space="preserve"><value>Donorregistratie</value></data>
+  <data name="DomainEstate" xml:space="preserve"><value>Boedel</value></data>
+  <data name="DomainFuneral" xml:space="preserve"><value>Uitvaartwensen</value></data>
+  <data name="DomainHeirs" xml:space="preserve"><value>Erfgenamen</value></data>
+  <data name="DomainDocuments" xml:space="preserve"><value>Documenten</value></data>
+  <data name="DomainDigitalAssets" xml:space="preserve"><value>Digitaal Bezit</value></data>
+  <data name="DomainEmergencyContacts" xml:space="preserve"><value>Noodcontacten</value></data>
+  <data name="SnapshotDescription" xml:space="preserve"><value>Digitale handtekening van de huidige data-staat. Als deze hash verandert, is de onderliggende data gewijzigd.</value></data>
+</root>

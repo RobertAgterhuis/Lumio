@@ -1,9 +1,12 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Services.Security;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
 
@@ -12,8 +15,15 @@ namespace Lumio.Api.Controllers;
 public class EigenaarController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly LimietenOptions _limieten;
+    private readonly IProfileService _profileService;
 
-    public EigenaarController(LumioDbContext db) => _db = db;
+    public EigenaarController(LumioDbContext db, IOptions<LimietenOptions> limieten, IProfileService profileService)
+    {
+        _db = db;
+        _limieten = limieten.Value;
+        _profileService = profileService;
+    }
 
     [HttpGet]
     public async Task<ActionResult<EigenaarResponse>> Get()
@@ -65,7 +75,7 @@ public class EigenaarController : ControllerBase
     }
 
     [HttpPost("foto")]
-    [RequestSizeLimit(10_485_760)] // 10 MB
+    [RequestSizeLimit(10_485_760)] // 10 MB (compile-time upper bound)
     public async Task<IActionResult> UploadFoto([FromForm] IFormFile bestand)
     {
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
@@ -75,6 +85,9 @@ public class EigenaarController : ControllerBase
         if (!bestand.ContentType.StartsWith("image/"))
             return BadRequest(new { error = "Alleen afbeeldingen zijn toegestaan." });
 
+        if (bestand.Length > _limieten.FotoMaxBytes)
+            return BadRequest(new { error = $"Bestand is te groot. Maximum is {_limieten.FotoMaxBytes / 1_048_576} MB." });
+
         using var ms = new MemoryStream();
         await bestand.CopyToAsync(ms);
 
@@ -82,6 +95,10 @@ public class EigenaarController : ControllerBase
         eigenaar.ProfielFotoContentType = bestand.ContentType;
         eigenaar.ProfielFotoNaam = bestand.FileName;
         await _db.SaveChangesAsync();
+
+        // Save a small thumbnail in profiles.json (available before DB unlock)
+        var thumbnailBase64 = $"data:{bestand.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+        _profileService.UpdateActiveProfileThumbnail(thumbnailBase64);
 
         return Ok(new { message = "Profielfoto opgeslagen." });
     }
@@ -97,6 +114,9 @@ public class EigenaarController : ControllerBase
         eigenaar.ProfielFotoContentType = null;
         eigenaar.ProfielFotoNaam = null;
         await _db.SaveChangesAsync();
+
+        // Clear thumbnail from profiles.json
+        _profileService.UpdateActiveProfileThumbnail(null);
 
         return NoContent();
     }

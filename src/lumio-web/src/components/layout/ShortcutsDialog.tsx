@@ -6,10 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useTranslations } from "next-intl";
 import { SHORTCUT_LIST } from "@/hooks/useKeyboardShortcuts";
 
 export function ShortcutsDialog() {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("shortcuts");
 
   useEffect(() => {
     const handler = () => setOpen(true);
@@ -20,7 +22,7 @@ export function ShortcutsDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
-        <DialogTitle>Sneltoetsen</DialogTitle>
+        <DialogTitle>{t("titel")}</DialogTitle>
       </DialogHeader>
       <div className="py-4">
         <div className="grid gap-1.5">
@@ -30,7 +32,7 @@ export function ShortcutsDialog() {
               className="flex items-center justify-between py-1.5 px-1"
             >
               <span className="text-sm text-foreground">
-                {s.beschrijving}
+                {t(s.beschrijvingKey)}
               </span>
               <div className="flex items-center gap-1">
                 {s.keys.split("+").map((key, i) => (

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
+import { useTranslations } from "next-intl";
 import { Shield } from "lucide-react";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 
@@ -16,18 +17,19 @@ export function SetupForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { setUnlocked, setFirstRun } = useAuthStore();
+  const t = useTranslations("auth.setup");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (password.length < 8) {
-      setError("Wachtwoord moet minimaal 8 tekens bevatten.");
+      setError(t("foutMinimaal"));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Wachtwoorden komen niet overeen.");
+      setError(t("foutOvereenkomst"));
       return;
     }
 
@@ -37,7 +39,7 @@ export function SetupForm() {
       setFirstRun(false);
       setUnlocked(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Setup mislukt");
+      setError(err instanceof Error ? err.message : t("foutSetup"));
     } finally {
       setLoading(false);
     }
@@ -49,22 +51,21 @@ export function SetupForm() {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
           <Shield className="h-8 w-8 text-primary" />
         </div>
-        <CardTitle>Welkom bij Lumio</CardTitle>
+        <CardTitle>{t("titel")}</CardTitle>
         <CardDescription>
-          Kies een sterk wachtwoord om uw digitale nalatenschap te beveiligen.
-          Dit wachtwoord versleutelt al uw gegevens.
+          {t("beschrijving")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="password">Wachtwoord</Label>
+            <Label htmlFor="password">{t("wachtwoord")}</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimaal 8 tekens"
+              placeholder={t("wachtwoordPlaceholder")}
               required
               autoFocus
             />
@@ -72,13 +73,13 @@ export function SetupForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirm">Bevestig wachtwoord</Label>
+            <Label htmlFor="confirm">{t("bevestig")}</Label>
             <Input
               id="confirm"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Herhaal uw wachtwoord"
+              placeholder={t("bevestigPlaceholder")}
               required
             />
           </div>
@@ -88,11 +89,11 @@ export function SetupForm() {
           )}
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Database aanmaken..." : "Database Aanmaken"}
+            {loading ? t("bezig") : t("aanmaken")}
           </Button>
 
           <p className="text-xs text-muted-foreground text-center">
-            Uw gegevens worden versleuteld opgeslagen. Bewaar uw wachtwoord goed — zonder wachtwoord is de data niet toegankelijk.
+            {t("disclaimer")}
           </p>
         </form>
       </CardContent>

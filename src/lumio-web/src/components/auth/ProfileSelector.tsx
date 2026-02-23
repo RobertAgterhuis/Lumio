@@ -13,7 +13,9 @@ import {
 } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
 import { useAuthStore, type Profile } from "@/stores/authStore";
+import { useTranslations } from "next-intl";
 import { Users, Plus, UserCircle } from "lucide-react";
+import { LanguageSelector } from "@/components/common/LanguageSelector";
 
 interface ProfileSelectorProps {
   onProfileSelected: () => void;
@@ -27,6 +29,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
   const [newRelatie, setNewRelatie] = useState("Partner");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const t = useTranslations("auth.profiel");
 
   const handleSelect = async (profile: Profile) => {
     setError("");
@@ -41,7 +44,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
       setProfileNeedsSetup(result.heeftSetupNodig);
       onProfileSelected();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Profiel selecteren mislukt");
+      setError(err instanceof Error ? err.message : t("selecterenMislukt"));
     } finally {
       setLoading(false);
     }
@@ -64,12 +67,17 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
       // Auto-select the new profile
       await handleSelect(profile);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Profiel aanmaken mislukt");
+      setError(err instanceof Error ? err.message : t("aanmakenMislukt"));
       setLoading(false);
     }
   };
 
-  const relatieOptions = ["Partner", "Kind", "Ouder", "Overig"];
+  const relatieOptions = [
+    { value: "Partner", label: t("partner") },
+    { value: "Kind", label: t("kind") },
+    { value: "Ouder", label: t("ouder") },
+    { value: "Overig", label: t("overig") },
+  ];
 
   return (
     <Card className="w-full max-w-md">
@@ -77,11 +85,11 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
           <Users className="h-8 w-8 text-primary" />
         </div>
-        <CardTitle>Profiel kiezen</CardTitle>
+        <CardTitle>{t("titel")}</CardTitle>
         <CardDescription>
           {profiles.length === 0
-            ? "Maak uw eerste profiel aan om te beginnen."
-            : "Selecteer een profiel om door te gaan."}
+            ? t("geenProfielen")
+            : t("selecteer")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -95,7 +103,15 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                 disabled={loading}
                 className="flex w-full items-center gap-3 rounded-lg border border-border p-3 text-left transition-colors hover:bg-accent hover:border-primary/50 disabled:opacity-50"
               >
-                <UserCircle className="h-10 w-10 text-primary/60 shrink-0" />
+                {profile.fotoThumbnail ? (
+                  <img
+                    src={profile.fotoThumbnail}
+                    alt={profile.naam}
+                    className="h-10 w-10 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <UserCircle className="h-10 w-10 text-primary/60 shrink-0" />
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">{profile.naam}</p>
                   <p className="text-sm text-muted-foreground">{profile.relatie}</p>
@@ -109,12 +125,12 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
         {(showCreate || profiles.length === 0) && (
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="profile-name">Naam</Label>
+              <Label htmlFor="profile-name">{t("naam")}</Label>
               <Input
                 id="profile-name"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="Bijv. Jan, Mijn profiel"
+                placeholder={t("naamPlaceholder")}
                 required
                 autoFocus
               />
@@ -122,17 +138,17 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
 
             {profiles.length > 0 && (
               <div className="space-y-2">
-                <Label htmlFor="profile-relatie">Relatie</Label>
+                <Label htmlFor="profile-relatie">{t("relatie")}</Label>
                 <div className="flex flex-wrap gap-2">
                   {relatieOptions.map((rel) => (
                     <Button
-                      key={rel}
+                      key={rel.value}
                       type="button"
-                      variant={newRelatie === rel ? "default" : "outline"}
+                      variant={newRelatie === rel.value ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setNewRelatie(rel)}
+                      onClick={() => setNewRelatie(rel.value)}
                     >
-                      {rel}
+                      {rel.label}
                     </Button>
                   ))}
                 </div>
@@ -140,7 +156,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
             )}
 
             <Button type="submit" className="w-full" disabled={loading || !newName.trim()}>
-              {loading ? "Aanmaken..." : "Profiel aanmaken"}
+              {loading ? t("bezig") : t("aanmaken")}
             </Button>
 
             {profiles.length > 0 && (
@@ -150,7 +166,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                 className="w-full"
                 onClick={() => setShowCreate(false)}
               >
-                Annuleren
+                {t("annuleren")}
               </Button>
             )}
           </form>
@@ -167,15 +183,20 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
             disabled={loading}
           >
             <Plus className="h-4 w-4 mr-2" />
-            Nieuw profiel toevoegen
+            {t("toevoegen")}
           </Button>
         )}
 
         {profiles.length >= 5 && !showCreate && (
           <p className="text-xs text-muted-foreground text-center">
-            Maximaal 5 profielen bereikt.
+            {t("maximaal")}
           </p>
         )}
+
+        {/* Language selector */}
+        <div className="flex justify-center pt-2 border-t border-border">
+          <LanguageSelector />
+        </div>
       </CardContent>
     </Card>
   );

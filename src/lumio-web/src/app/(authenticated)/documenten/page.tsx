@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,17 @@ import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock } from "lucide-react";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+
+const CATEGORIE_KEYS: Record<string, string> = {
+  "Testament": "testament",
+  "Identiteitsbewijs": "identiteitsbewijs",
+  "Akte": "akte",
+  "Verzekeringspolis": "verzekeringspolis",
+  "Medisch": "medisch",
+  "Financieel": "financieel",
+  "Overig": "overig",
+};
 
 interface PersoonlijkDocument {
   id: string;
@@ -41,6 +53,9 @@ interface DocumentVersie {
 }
 
 export default function DocumentenPage() {
+  const t = useTranslations("documenten");
+  const tEnum = useTranslations("enums");
+  const locale = useLocale();
   const [documenten, setDocumenten] = useState<PersoonlijkDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -127,7 +142,7 @@ export default function DocumentenPage() {
       const item = dropUploads[i];
       if (item.status === "done") continue;
       if (!item.naam || !item.categorie) {
-        updateDropUpload(i, { status: "error", error: "Naam en categorie zijn verplicht." });
+        updateDropUpload(i, { status: "error", error: t("naamCategorieVerplicht") });
         continue;
       }
 
@@ -142,7 +157,7 @@ export default function DocumentenPage() {
       } catch (err) {
         updateDropUpload(i, {
           status: "error",
-          error: err instanceof Error ? err.message : "Upload mislukt.",
+          error: err instanceof Error ? err.message : t("uploadMislukt"),
         });
       }
     }
@@ -169,7 +184,7 @@ export default function DocumentenPage() {
       if (fileRef.current) fileRef.current.value = "";
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Uploaden mislukt.");
+      setError(err instanceof Error ? err.message : t("uploadenMislukt"));
     } finally {
       setUploading(false);
     }
@@ -179,7 +194,7 @@ export default function DocumentenPage() {
     setError(null);
     try {
       const response = await fetch(`/api/documenten/${id}/download`);
-      if (!response.ok) throw new Error(`Download mislukt (${response.status})`);
+      if (!response.ok) throw new Error(`${t("downloadMislukt")} (${response.status})`);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -188,7 +203,7 @@ export default function DocumentenPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Download mislukt.");
+      setError(err instanceof Error ? err.message : t("downloadMislukt"));
     }
   };
 
@@ -199,7 +214,7 @@ export default function DocumentenPage() {
       if (expandedVersions === id) setExpandedVersions(null);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
@@ -210,7 +225,7 @@ export default function DocumentenPage() {
       setExpandedVersions(null);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
@@ -226,7 +241,7 @@ export default function DocumentenPage() {
       setVersionHistory(versies ?? []);
       setExpandedVersions(docId);
     } catch {
-      setError("Versiegeschiedenis laden mislukt.");
+      setError(t("versieLadenMislukt"));
     } finally {
       setLoadingVersions(false);
     }
@@ -244,15 +259,15 @@ export default function DocumentenPage() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const diffDays = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays < 0) return { label: "Verlopen", variant: "destructive" as const, icon: AlertTriangle };
-    if (diffDays <= 30) return { label: `Verloopt over ${diffDays} dag${diffDays !== 1 ? "en" : ""}`, variant: "warning" as const, icon: Clock };
+    if (diffDays < 0) return { label: t("verlopen"), variant: "destructive" as const, icon: AlertTriangle };
+    if (diffDays <= 30) return { label: t("verlooptOver", { dagen: diffDays }), variant: "warning" as const, icon: Clock };
     return null;
   };
 
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
@@ -270,10 +285,10 @@ export default function DocumentenPage() {
           <div className="flex flex-col items-center gap-2">
             <CloudUpload className="h-12 w-12 text-primary" />
             <p className="text-lg font-semibold text-primary">
-              Bestanden hier loslaten
+              {t("dropzone.titel")}
             </p>
             <p className="text-sm text-muted-foreground">
-              Sleep bestanden hierheen om te uploaden
+              {t("dropzone.beschrijving")}
             </p>
           </div>
         </div>
@@ -281,23 +296,21 @@ export default function DocumentenPage() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Documenten</h1>
+          <h1 className="text-3xl font-bold">{t("titel")}</h1>
           <p className="text-muted-foreground mt-1">
-            Belangrijke documenten veilig opslaan
+            {t("beschrijving")}
           </p>
           <SectieNotitie sectie="documenten" />
         </div>
         <Button onClick={() => setUploadOpen(true)}>
-          <Upload className="h-4 w-4 mr-2" /> Document uploaden
+          <Upload className="h-4 w-4 mr-2" /> {t("uploaden")}
         </Button>
       </div>
 
+      <DomainStatusBanner domein="documenten" />
+
       <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-4">
-        <p className="text-sm text-cyan-800">
-          <strong>Let op:</strong> Documenten worden versleuteld opgeslagen in de
-          database. Upload hier kopieën van belangrijke documenten zoals uw
-          testament, paspoort of verzekeringspapieren.
-        </p>
+        <p className="text-sm text-cyan-800" dangerouslySetInnerHTML={{ __html: t.raw("letOp") }} />
       </div>
 
       {error && (
@@ -311,10 +324,10 @@ export default function DocumentenPage() {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <FileText className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
-              Nog geen documenten geüpload.
+              {t("geenDocumenten")}
             </p>
             <Button className="mt-4" onClick={() => setUploadOpen(true)}>
-              Document uploaden
+              {t("uploaden")}
             </Button>
           </CardContent>
         </Card>
@@ -322,7 +335,7 @@ export default function DocumentenPage() {
         <Card>
           <CardHeader>
             <CardTitle>
-              Opgeslagen documenten ({documenten.length})
+              {t("opgeslagenDocumenten", { aantal: documenten.length })}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -337,12 +350,12 @@ export default function DocumentenPage() {
                         <p className="text-xs text-muted-foreground">
                           {doc.bestandsNaam} &mdash;{" "}
                           {formatSize(doc.bestandsGrootte)}
-                          {doc.versie > 1 && ` — versie ${doc.versie}`}
+                          {doc.versie > 1 && ` — ${t("versie", { nummer: doc.versie })}`}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary">{doc.categorie}</Badge>
+                      <Badge variant="secondary">{tEnum(`documentCategorie.${CATEGORIE_KEYS[doc.categorie] ?? "overig"}`)}</Badge>
                       {(() => {
                         const expiry = getExpiryStatus(doc.verlooptOp);
                         if (!expiry) return null;
@@ -360,7 +373,7 @@ export default function DocumentenPage() {
                           size="sm"
                           onClick={() => toggleVersions(doc.id)}
                           disabled={loadingVersions}
-                          title="Versiegeschiedenis"
+                          title={t("versiegeschiedenis")}
                         >
                           <History className="h-4 w-4 mr-1" />
                           <span className="text-xs">{doc.aantalVersies}</span>
@@ -395,7 +408,7 @@ export default function DocumentenPage() {
                   {expandedVersions === doc.id && versionHistory.length > 0 && (
                     <div className="ml-8 mt-1 mb-2 space-y-1 border-l-2 border-muted pl-4">
                       <p className="text-xs font-medium text-muted-foreground mb-1">
-                        Versiegeschiedenis
+                        {t("versiegeschiedenis")}
                       </p>
                       {versionHistory.map((v) => (
                         <div
@@ -418,7 +431,7 @@ export default function DocumentenPage() {
                               {v.bestandsNaam} — {formatSize(v.bestandsGrootte)}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              {new Date(v.aangemaaktOp).toLocaleDateString("nl-NL")}
+                              {new Date(v.aangemaaktOp).toLocaleDateString(locale)}
                             </span>
                           </div>
                           <div className="flex items-center gap-1">
@@ -456,49 +469,49 @@ export default function DocumentenPage() {
 
       <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
         <DialogHeader>
-          <DialogTitle>Document uploaden</DialogTitle>
+          <DialogTitle>{t("uploadDialog.titel")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Naam</Label>
+            <Label>{t("uploadDialog.naam")}</Label>
             <Input
               value={naam}
               onChange={(e) => setNaam(e.target.value)}
-              placeholder="bijv. Kopie testament, Paspoort"
+              placeholder={t("uploadDialog.naamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Categorie</Label>
+            <Label>{t("uploadDialog.categorie")}</Label>
             <Select value={categorie} onChange={(e) => setCategorie(e.target.value)}>
-              <option value="">Selecteer...</option>
-              <option value="Testament">Testament</option>
-              <option value="Identiteitsbewijs">Identiteitsbewijs</option>
-              <option value="Akte">Akte</option>
-              <option value="Verzekeringspolis">Verzekeringspolis</option>
-              <option value="Medisch">Medisch document</option>
-              <option value="Financieel">Financieel document</option>
-              <option value="Overig">Overig</option>
+              <option value="">{tEnum("documentCategorie.selecteer")}</option>
+              <option value="Testament">{tEnum("documentCategorie.testament")}</option>
+              <option value="Identiteitsbewijs">{tEnum("documentCategorie.identiteitsbewijs")}</option>
+              <option value="Akte">{tEnum("documentCategorie.akte")}</option>
+              <option value="Verzekeringspolis">{tEnum("documentCategorie.verzekeringspolis")}</option>
+              <option value="Medisch">{tEnum("documentCategorie.medisch")}</option>
+              <option value="Financieel">{tEnum("documentCategorie.financieel")}</option>
+              <option value="Overig">{tEnum("documentCategorie.overig")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Bestand</Label>
+            <Label>{t("uploadDialog.bestand")}</Label>
             <Input ref={fileRef} type="file" />
           </div>
           <div className="space-y-2">
-            <Label>Verloopdatum <span className="text-muted-foreground text-xs font-normal">(optioneel)</span></Label>
+            <Label>{t("uploadDialog.verloopdatum")} <span className="text-muted-foreground text-xs font-normal">{t("uploadDialog.optioneel")}</span></Label>
             <Input
               type="date"
               value={verlooptOp}
               onChange={(e) => setVerlooptOp(e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
-              Stel een verloopdatum in om een herinnering te ontvangen wanneer dit document vernieuwd moet worden.
+              {t("uploadDialog.verloopdatumHint")}
             </p>
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setUploadOpen(false)}>
-            Annuleren
+            {t("uploadDialog.annuleren")}
           </Button>
           <Button
             onClick={handleUpload}
@@ -506,11 +519,11 @@ export default function DocumentenPage() {
           >
             {uploading ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploaden...
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t("uploadDialog.uploadenBezig")}
               </>
             ) : (
               <>
-                <Upload className="h-4 w-4 mr-2" /> Uploaden
+                <Upload className="h-4 w-4 mr-2" /> {t("uploadDialog.uploaden")}
               </>
             )}
           </Button>
@@ -521,7 +534,7 @@ export default function DocumentenPage() {
       <Dialog open={dropDialogOpen} onOpenChange={setDropDialogOpen}>
         <DialogHeader>
           <DialogTitle>
-            {dropUploads.length} bestand{dropUploads.length !== 1 ? "en" : ""} uploaden
+            {t("dropDialog.titel", { aantal: dropUploads.length })}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-3 py-4 max-h-80 overflow-y-auto">
@@ -544,7 +557,7 @@ export default function DocumentenPage() {
                     <Input
                       value={item.naam}
                       onChange={(e) => updateDropUpload(idx, { naam: e.target.value })}
-                      placeholder="Naam"
+                      placeholder={t("dropDialog.naamPlaceholder")}
                       disabled={item.status === "uploading"}
                     />
                   </div>
@@ -554,24 +567,24 @@ export default function DocumentenPage() {
                       onChange={(e) => updateDropUpload(idx, { categorie: e.target.value })}
                       disabled={item.status === "uploading"}
                     >
-                      <option value="Testament">Testament</option>
-                      <option value="Identiteitsbewijs">Identiteitsbewijs</option>
-                      <option value="Akte">Akte</option>
-                      <option value="Verzekeringspolis">Verzekeringspolis</option>
-                      <option value="Medisch">Medisch document</option>
-                      <option value="Financieel">Financieel document</option>
-                      <option value="Overig">Overig</option>
+                      <option value="Testament">{tEnum("documentCategorie.testament")}</option>
+                      <option value="Identiteitsbewijs">{tEnum("documentCategorie.identiteitsbewijs")}</option>
+                      <option value="Akte">{tEnum("documentCategorie.akte")}</option>
+                      <option value="Verzekeringspolis">{tEnum("documentCategorie.verzekeringspolis")}</option>
+                      <option value="Medisch">{tEnum("documentCategorie.medisch")}</option>
+                      <option value="Financieel">{tEnum("documentCategorie.financieel")}</option>
+                      <option value="Overig">{tEnum("documentCategorie.overig")}</option>
                     </Select>
                   </div>
                 </div>
               )}
               {item.status === "uploading" && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Loader2 className="h-3 w-3 animate-spin" /> Uploaden...
+                  <Loader2 className="h-3 w-3 animate-spin" /> {t("dropDialog.uploadenBezig")}
                 </div>
               )}
               {item.status === "done" && (
-                <p className="text-xs text-green-700">Geüpload</p>
+                <p className="text-xs text-green-700">{t("dropDialog.geupload")}</p>
               )}
               {item.status === "error" && (
                 <p className="text-xs text-red-700">{item.error}</p>
@@ -581,7 +594,7 @@ export default function DocumentenPage() {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDropDialogOpen(false)}>
-            Sluiten
+            {t("dropDialog.sluiten")}
           </Button>
           <Button
             onClick={handleDropUploadAll}
@@ -589,8 +602,8 @@ export default function DocumentenPage() {
           >
             <Upload className="h-4 w-4 mr-2" />
             {dropUploads.every((u) => u.status === "done")
-              ? "Klaar"
-              : `Alles uploaden (${dropUploads.filter((u) => u.status !== "done").length})`}
+              ? t("dropDialog.klaar")
+              : t("dropDialog.allesUploaden", { aantal: dropUploads.filter((u) => u.status !== "done").length })}
           </Button>
         </DialogFooter>
       </Dialog>

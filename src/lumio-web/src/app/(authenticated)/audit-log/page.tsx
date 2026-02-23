@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Card,
   CardContent,
@@ -31,10 +32,23 @@ const actieKleuren: Record<string, string> = {
   "Wachtwoord gewijzigd": "bg-orange-100 text-orange-800",
 };
 
+const ACTIE_KEYS: Record<string, string> = {
+  Aangemaakt: "aangemaakt",
+  Gewijzigd: "gewijzigd",
+  Verwijderd: "verwijderd",
+  Ontgrendeld: "ontgrendeld",
+  Vergrendeld: "vergrendeld",
+  "Wachtwoord gewijzigd": "wachtwoordGewijzigd",
+  Export: "export",
+};
+
 export default function AuditLogPage() {
   const [entries, setEntries] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("");
+  const t = useTranslations("auditLog");
+  const tEnum = useTranslations("enums");
+  const locale = useLocale();
 
   const loadEntries = async () => {
     setLoading(true);
@@ -66,9 +80,9 @@ export default function AuditLogPage() {
       <div className="flex items-center gap-3">
         <ClipboardList className="h-8 w-8 text-primary" />
         <div>
-          <h1 className="text-2xl font-bold">Activiteitenlogboek</h1>
+          <h1 className="text-2xl font-bold">{t("titel")}</h1>
           <p className="text-sm text-muted-foreground">
-            Overzicht van alle acties die in uw nalatenschap zijn uitgevoerd
+            {t("beschrijving")}
           </p>
         </div>
       </div>
@@ -77,9 +91,9 @@ export default function AuditLogPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Recente activiteiten</CardTitle>
+              <CardTitle>{t("recenteActiviteiten")}</CardTitle>
               <CardDescription>
-                {entries.length} activiteiten gevonden
+                {t("activiteitenGevonden", { aantal: entries.length })}
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
@@ -91,14 +105,14 @@ export default function AuditLogPage() {
                   onChange={(e) => setFilter(e.target.value)}
                   className="rounded-md border bg-background px-3 py-1.5 text-sm"
                 >
-                  <option value="">Alle acties</option>
-                  <option value="Aangemaakt">Aangemaakt</option>
-                  <option value="Gewijzigd">Gewijzigd</option>
-                  <option value="Verwijderd">Verwijderd</option>
-                  <option value="Ontgrendeld">Ontgrendeld</option>
-                  <option value="Vergrendeld">Vergrendeld</option>
-                  <option value="Wachtwoord gewijzigd">Wachtwoord gewijzigd</option>
-                  <option value="Export">Export</option>
+                  <option value="">{t("alleActies")}</option>
+                  <option value="Aangemaakt">{tEnum("auditActie.aangemaakt")}</option>
+                  <option value="Gewijzigd">{tEnum("auditActie.gewijzigd")}</option>
+                  <option value="Verwijderd">{tEnum("auditActie.verwijderd")}</option>
+                  <option value="Ontgrendeld">{tEnum("auditActie.ontgrendeld")}</option>
+                  <option value="Vergrendeld">{tEnum("auditActie.vergrendeld")}</option>
+                  <option value="Wachtwoord gewijzigd">{tEnum("auditActie.wachtwoordGewijzigd")}</option>
+                  <option value="Export">{tEnum("auditActie.export")}</option>
                 </select>
               </div>
               <Button
@@ -108,7 +122,7 @@ export default function AuditLogPage() {
                 className="gap-2"
               >
                 <RefreshCw className="h-4 w-4" />
-                Vernieuwen
+                {t("vernieuwen")}
               </Button>
             </div>
           </div>
@@ -116,11 +130,11 @@ export default function AuditLogPage() {
         <CardContent>
           {loading ? (
             <p className="py-8 text-center text-sm text-muted-foreground">
-              Laden...
+              {t("laden")}
             </p>
           ) : entries.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">
-              Nog geen activiteiten geregistreerd.
+              {t("geenActiviteiten")}
             </p>
           ) : (
             <div className="space-y-1">
@@ -136,7 +150,7 @@ export default function AuditLogPage() {
                         "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {entry.actie}
+                      {tEnum(`auditActie.${ACTIE_KEYS[entry.actie] ?? entry.actie}`)}
                     </span>
                     <div>
                       <p className="text-sm font-medium">
@@ -153,7 +167,7 @@ export default function AuditLogPage() {
                     </div>
                   </div>
                   <time className="text-xs text-muted-foreground">
-                    {new Date(entry.tijdstip).toLocaleString("nl-NL", {
+                    {new Date(entry.tijdstip).toLocaleString(locale, {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>1.3</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+  <data name="CategoryNotaryInconsistency" xml:space="preserve"><value>Notary inconsistency</value></data>
+  <data name="MessageNotaryInconsistency" xml:space="preserve"><value>The notary in your profile ("{0}") differs from the notary in your will ("{1}"). Is this correct?</value></data>
+  <data name="SuggestionNotaryInconsistency" xml:space="preserve"><value>Check whether you mean the same notary and update the details.</value></data>
+  <data name="CategoryNotaryEmergency" xml:space="preserve"><value>Notary emergency contact</value></data>
+  <data name="MessageNotaryEmergency" xml:space="preserve"><value>Notary "{0}" is listed in your will but not registered as an emergency contact.</value></data>
+  <data name="SuggestionNotaryEmergency" xml:space="preserve"><value>Add your notary as an emergency contact with their phone number.</value></data>
+  <data name="CategoryFuneralDirectorEmergency" xml:space="preserve"><value>Funeral director emergency contact</value></data>
+  <data name="MessageFuneralDirectorEmergency" xml:space="preserve"><value>Funeral director "{0}" is not registered as an emergency contact.</value></data>
+  <data name="SuggestionFuneralDirectorEmergency" xml:space="preserve"><value>Add your funeral director as an emergency contact.</value></data>
+  <data name="CategoryMissingEmergencyContact" xml:space="preserve"><value>Missing emergency contact</value></data>
+  <data name="MessageMissingGP" xml:space="preserve"><value>No general practitioner is registered as an emergency contact. A GP is important in the event of death and for medical documentation.</value></data>
+  <data name="SuggestionAddGP" xml:space="preserve"><value>Add your general practitioner as an emergency contact.</value></data>
+  <data name="CategoryHeirEmergencyLink" xml:space="preserve"><value>Heir ↔ Emergency contact</value></data>
+  <data name="MessageHeirNotEmergency" xml:space="preserve"><value>Heir "{0}" is not registered as an emergency contact. Consider adding this person as an emergency contact so they can be reached in an emergency.</value></data>
+  <data name="SuggestionGoToEmergencyContacts" xml:space="preserve"><value>Go to Emergency Contacts and add this person.</value></data>
+  <data name="CategoryEmergencyHeirLink" xml:space="preserve"><value>Emergency contact ↔ Heir</value></data>
+  <data name="MessageEmergencyNotHeir" xml:space="preserve"><value>Trusted person "{0}" is not registered as an heir. Would you like to add this person as an heir as well?</value></data>
+  <data name="SuggestionGoToHeirs" xml:space="preserve"><value>Go to Heirs and add this person.</value></data>
+  <data name="CategoryBeneficiaryHeirLink" xml:space="preserve"><value>Beneficiary ↔ Heir</value></data>
+  <data name="MessageBeneficiaryNotHeir" xml:space="preserve"><value>Beneficiary "{0}" in the will is not registered as an heir.</value></data>
+  <data name="SuggestionCheckBeneficiaryHeir" xml:space="preserve"><value>Check whether this person should also be added as an heir.</value></data>
+</root>

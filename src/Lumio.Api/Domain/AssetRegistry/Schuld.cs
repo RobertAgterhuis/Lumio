@@ -14,4 +14,11 @@ public class Schuld : BaseEntity
     public string? Referentie { get; set; }
     public VermogensSoort VermogensSoort { get; set; } = VermogensSoort.Prive;
     public string? Notities { get; set; }
+
+    // Hypotheek-specifieke velden
+    public string? HypotheekVorm { get; set; }
+    public decimal? Rentepercentage { get; set; }
+    public decimal? MaandelijkseRente { get; set; }
+    public DateTime? Einddatum { get; set; }
+    public decimal? Restschuld { get; set; }
 }

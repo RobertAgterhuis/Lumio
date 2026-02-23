@@ -13,4 +13,9 @@ public class Profile
     public string DbBestand { get; set; } = string.Empty; // e.g. "{id}.db"
     public DateTime AangemaaktOp { get; set; } = DateTime.UtcNow;
     public bool IsPrimair { get; set; }
+    /// <summary>
+    /// Small base64-encoded thumbnail of the profile photo (max ~10KB).
+    /// Stored in profiles.json so it's available before DB unlock.
+    /// </summary>
+    public string? FotoThumbnail { get; set; }
 }

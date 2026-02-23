@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lumio-rules.schema.json",
+  "title": "Lumio Business Rules Configuratie",
+  "description": "JSON Schema voor rules/lumio-rules.json — de externe configuratie van alle Lumio business rules.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Verwijzing naar dit schema-bestand."
+    },
+    "lumioRules": {
+      "type": "object",
+      "description": "Metagegevens van de regelconfiguratie.",
+      "properties": {
+        "versie": {
+          "type": "string",
+          "description": "Versienummer van de regelconfiguratie (bijv. \"2025.1\")."
+        },
+        "laatstGewijzigd": {
+          "type": "string",
+          "format": "date",
+          "description": "Datum van laatste wijziging (ISO 8601, bijv. \"2025-01-01\")."
+        }
+      },
+      "required": ["versie", "laatstGewijzigd"],
+      "additionalProperties": false
+    },
+    "erfbelasting": {
+      "type": "object",
+      "description": "Tarieven en vrijstellingen voor erfbelasting-berekening.",
+      "properties": {
+        "jaar": {
+          "type": "integer",
+          "minimum": 2020,
+          "description": "Belastingjaar waarvoor de tarieven gelden."
+        },
+        "relatieTarieven": {
+          "type": "array",
+          "description": "Tarieven per relatietype (partner, kind, kleinkind, ouder).",
+          "items": { "$ref": "#/$defs/relatieTarief" },
+          "minItems": 1
+        },
+        "defaultTarief": {
+          "$ref": "#/$defs/relatieTarief",
+          "description": "Standaardtarief voor overige relaties (Tariefgroep 2)."
+        },
+        "kindRelatiesLegitimairePortie": {
+          "type": "array",
+          "description": "Relatie-keywords die als 'kind' tellen voor de legitieme portie.",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "disclaimerTemplate": {
+          "type": "string",
+          "description": "Disclaimer-template voor erfbelastingberekeningen ({0} = jaar)."
+        }
+      },
+      "required": ["jaar", "relatieTarieven", "defaultTarief", "kindRelatiesLegitimairePortie", "disclaimerTemplate"],
+      "additionalProperties": false
+    },
+    "limieten": {
+      "type": "object",
+      "description": "Applicatie-brede limieten en drempels.",
+      "properties": {
+        "maxProfielen": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum aantal profielen per installatie."
+        },
+        "wachtwoordMinLengte": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Minimale wachtwoordlengte."
+        },
+        "shamirMinDrempel": {
+          "type": "integer",
+          "minimum": 2,
+          "description": "Minimum drempel voor Shamir secret sharing."
+        },
+        "backupVerouderdDagen": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal dagen waarna een backup als verouderd wordt beschouwd."
+        },
+        "documentVerlooptWaarschuwingDagen": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal dagen voor verloopdatum waarop een waarschuwing wordt getoond."
+        },
+        "actualisatieIntervalDagen": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal dagen na de laatste actualisatie waarna een herinnering wordt getoond."
+        },
+        "auditLogStandaardLimiet": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Standaard limiet voor het aantal audit-logregels."
+        },
+        "zoekenMinQueryLengte": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Minimale querylengte voor zoekfunctionaliteit."
+        },
+        "fotoMaxBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale bestandsgrootte voor foto's in bytes."
+        },
+        "documentMaxBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale bestandsgrootte voor documenten in bytes."
+        }
+      },
+      "required": [
+        "maxProfielen", "wachtwoordMinLengte", "shamirMinDrempel",
+        "backupVerouderdDagen", "documentVerlooptWaarschuwingDagen",
+        "actualisatieIntervalDagen", "auditLogStandaardLimiet",
+        "zoekenMinQueryLengte", "fotoMaxBytes", "documentMaxBytes"
+      ],
+      "additionalProperties": false
+    },
+    "veldLengtes": {
+      "type": "object",
+      "description": "Maximale veldlengtes voor invoervalidatie.",
+      "properties": {
+        "naamMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor namen (voor- en achternaam)."
+        },
+        "tussenvoegselMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor tussenvoegsels."
+        },
+        "postcodeMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor postcodes."
+        },
+        "emailMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor e-mailadressen."
+        },
+        "telefoonMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor telefoonnummers."
+        },
+        "adresMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor adresregels."
+        },
+        "omschrijvingMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor omschrijvingen."
+        },
+        "notitieMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor notities."
+        },
+        "urlMax": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximale lengte voor URLs."
+        }
+      },
+      "required": [
+        "naamMax", "tussenvoegselMax", "postcodeMax", "emailMax",
+        "telefoonMax", "adresMax", "omschrijvingMax", "notitieMax", "urlMax"
+      ],
+      "additionalProperties": false
+    },
+    "validatie": {
+      "type": "object",
+      "description": "Regex-patronen voor veldvalidatie.",
+      "properties": {
+        "ibanRegex": {
+          "type": "string",
+          "description": "Regex-patroon voor IBAN-validatie."
+        },
+        "postcodeRegex": {
+          "type": "string",
+          "description": "Regex-patroon voor Nederlandse postcode-validatie."
+        },
+        "telefoonRegex": {
+          "type": "string",
+          "description": "Regex-patroon voor telefoonnummer-validatie."
+        }
+      },
+      "required": ["ibanRegex", "postcodeRegex", "telefoonRegex"],
+      "additionalProperties": false
+    },
+    "encryptie": {
+      "type": "object",
+      "description": "Parameters voor versleuteling (PBKDF2 + AES-GCM).",
+      "properties": {
+        "pbkdf2Iteraties": {
+          "type": "integer",
+          "minimum": 10000,
+          "description": "Aantal PBKDF2-iteraties voor key derivation."
+        },
+        "saltLengteBytes": {
+          "type": "integer",
+          "minimum": 16,
+          "description": "Lengte van de salt in bytes."
+        },
+        "nonceLengteBytes": {
+          "type": "integer",
+          "enum": [12],
+          "description": "Lengte van de AES-GCM nonce in bytes (altijd 12)."
+        },
+        "tagLengteBytes": {
+          "type": "integer",
+          "enum": [16],
+          "description": "Lengte van de AES-GCM tag in bytes (altijd 16)."
+        },
+        "keyLengteBytes": {
+          "type": "integer",
+          "enum": [32],
+          "description": "Lengte van de AES-sleutel in bytes (altijd 32 = 256-bit)."
+        }
+      },
+      "required": ["pbkdf2Iteraties", "saltLengteBytes", "nonceLengteBytes", "tagLengteBytes", "keyLengteBytes"],
+      "additionalProperties": false
+    },
+    "export": {
+      "type": "object",
+      "description": "Instellingen voor PDF-export.",
+      "properties": {
+        "standaardPapierformaat": {
+          "type": "string",
+          "enum": ["A4", "Letter"],
+          "description": "Standaard papierformaat voor PDF-export."
+        },
+        "pdfMarginPt": {
+          "type": "number",
+          "minimum": 0,
+          "description": "PDF-marge in punten."
+        },
+        "toegestaneBestandstypes": {
+          "type": "array",
+          "description": "Lijst van toegestane bestandsextensies voor documenten.",
+          "items": {
+            "type": "string",
+            "pattern": "^\\.[a-zA-Z0-9]+$"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["standaardPapierformaat", "pdfMarginPt", "toegestaneBestandstypes"],
+      "additionalProperties": false
+    },
+    "compleetheid": {
+      "type": "object",
+      "description": "Gewichten en caps voor de compleetheidsberekening.",
+      "properties": {
+        "digitaalBezitCap": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Cap voor digitaal bezit (max items die meetellen)."
+        },
+        "documentenCap": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Cap voor documenten."
+        },
+        "erfgenamenCap": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Cap voor erfgenamen."
+        },
+        "noodcontactenCap": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Cap voor noodcontacten."
+        },
+        "eigenaarVelden": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal eigenaar-velden voor compleetheidsberekening."
+        },
+        "testamentVelden": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal testament-velden."
+        },
+        "euthanasieVelden": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal euthanasie-velden."
+        },
+        "donorVelden": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal donor-velden."
+        },
+        "uitvaartVelden": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Aantal uitvaart-velden."
+        }
+      },
+      "required": [
+        "digitaalBezitCap", "documentenCap", "erfgenamenCap", "noodcontactenCap",
+        "eigenaarVelden", "testamentVelden", "euthanasieVelden", "donorVelden", "uitvaartVelden"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": ["lumioRules", "erfbelasting", "limieten", "veldLengtes", "validatie", "encryptie", "export", "compleetheid"],
+  "additionalProperties": false,
+  "$defs": {
+    "relatieTarief": {
+      "type": "object",
+      "description": "Tariefinformatie voor een relatietype.",
+      "properties": {
+        "naam": {
+          "type": "string",
+          "description": "Naam van het tarief / de tariefgroep."
+        },
+        "keywords": {
+          "type": "array",
+          "description": "Keywords voor automatische relatieherkenning.",
+          "items": { "type": "string" }
+        },
+        "vrijstelling": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Vrijstellingsbedrag in euro's."
+        },
+        "schijf1Percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Belastingpercentage eerste schijf (0-1)."
+        },
+        "schijf2Percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Belastingpercentage tweede schijf (0-1)."
+        },
+        "schijf1Grens": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Bovengrens eerste schijf in euro's."
+        }
+      },
+      "required": ["naam", "keywords", "vrijstelling", "schijf1Percentage", "schijf2Percentage", "schijf1Grens"],
+      "additionalProperties": false
+    }
+  }
+}

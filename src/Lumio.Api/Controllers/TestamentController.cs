@@ -4,9 +4,14 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Domain.Testament;
 using Lumio.Api.Dtos.Testament;
+using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Rules.Facts;
+using Lumio.Api.Rules.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
 
@@ -15,8 +20,21 @@ namespace Lumio.Api.Controllers;
 public class TestamentController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly ErfbelastingOptions _erfbelasting;
+    private readonly ILegitimairePortieService _legitiemairePortieService;
+    private readonly IStringLocalizer<TestamentController> L;
 
-    public TestamentController(LumioDbContext db) => _db = db;
+    public TestamentController(
+        LumioDbContext db,
+        IOptions<ErfbelastingOptions> erfbelasting,
+        ILegitimairePortieService legitiemairePortieService,
+        IStringLocalizer<TestamentController> localizer)
+    {
+        _db = db;
+        _erfbelasting = erfbelasting.Value;
+        _legitiemairePortieService = legitiemairePortieService;
+        L = localizer;
+    }
 
     [HttpGet]
     public async Task<ActionResult<TestamentInfoResponse>> Get()
@@ -60,77 +78,50 @@ public class TestamentController : ControllerBase
     public async Task<ActionResult<LegitimairePortieCheckResult>> LegitimairePortieCheck()
     {
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null)
-            return Ok(new LegitimairePortieCheckResult(false, 0, false, 0, []));
-
         var testament = await _db.Testamenten.FirstOrDefaultAsync();
-        if (testament is null)
-            return Ok(new LegitimairePortieCheckResult(false, 0, false, 0, []));
 
-        // Tel kinderen in de erfgenamenlijst
-        var erfgenamen = await _db.Erfgenamen
-            .Where(e => e.EigenaarId == eigenaar.Id)
-            .ToListAsync();
+        // Haal erfgenamen en filter kinderen
+        var erfgenamen = eigenaar is not null
+            ? await _db.Erfgenamen.Where(e => e.EigenaarId == eigenaar.Id).ToListAsync()
+            : [];
 
-        string[] kindRelaties = ["kind", "zoon", "dochter", "stiefkind", "stiefzoon", "stiefdochter"];
+        string[] kindRelaties = _erfbelasting.KindRelatiesLegitimairePortie;
         var kinderen = erfgenamen
             .Where(e => kindRelaties.Any(r => e.Relatie.Contains(r, StringComparison.OrdinalIgnoreCase)))
             .ToList();
 
-        int aantalKinderen = kinderen.Count;
-        if (aantalKinderen == 0)
-            return Ok(new LegitimairePortieCheckResult(false, 0, false, 0, []));
+        // Haal begunstigden
+        var begunstigden = testament is not null
+            ? await _db.Begunstigden.Where(b => b.TestamentInfoId == testament.Id).ToListAsync()
+            : [];
 
-        // Bepaal of er een partner is
-        bool heeftPartner = eigenaar.BurgerlijkeStaat is BurgerlijkeStaat.Gehuwd
-            or BurgerlijkeStaat.GeregistreerdPartnerschap;
-
-        // Intestaat erfdeel per kind: partner telt als 1 extra erfgenaam
-        int aantalErfgenamen = aantalKinderen + (heeftPartner ? 1 : 0);
-        decimal intestaatPerKind = 100m / aantalErfgenamen;
-
-        // Legitimaire portie = 50% van het intestaat erfdeel
-        decimal minimumPerKind = Math.Round(intestaatPerKind / 2m, 2);
-
-        // Controleer begunstigden met relatie "kind" etc.
-        var begunstigden = await _db.Begunstigden
-            .Where(b => b.TestamentInfoId == testament.Id)
-            .ToListAsync();
-
-        var waarschuwingen = new List<LegitimairePortieWaarschuwing>();
-
-        // Controleer elk kind-erfgenaam of ze als begunstigde voorkomen
-        foreach (var kind in kinderen)
-        {
-            string volledigeNaam = string.IsNullOrEmpty(kind.Tussenvoegsel)
-                ? $"{kind.Voornaam} {kind.Achternaam}"
-                : $"{kind.Voornaam} {kind.Tussenvoegsel} {kind.Achternaam}";
-
-            // Zoek matchende begunstigde (op naam)
-            var begunstigde = begunstigden.FirstOrDefault(b =>
-                b.Naam.Contains(kind.Voornaam, StringComparison.OrdinalIgnoreCase) &&
-                b.Naam.Contains(kind.Achternaam, StringComparison.OrdinalIgnoreCase));
-
-            if (begunstigde is null)
+        // Bouw facts
+        var facts = new LegitimairePortieFacts(
+            eigenaar is not null,
+            testament is not null,
+            eigenaar?.BurgerlijkeStaat switch
             {
-                // Kind is niet als begunstigde opgenomen → waarschuwing
-                waarschuwingen.Add(new LegitimairePortieWaarschuwing(
-                    volledigeNaam, null, minimumPerKind));
-            }
-            else if (begunstigde.Percentage.HasValue && begunstigde.Percentage.Value < minimumPerKind)
-            {
-                // Lager dan legitimaire portie → waarschuwing
-                waarschuwingen.Add(new LegitimairePortieWaarschuwing(
-                    volledigeNaam, begunstigde.Percentage.Value, minimumPerKind));
-            }
-        }
+                BurgerlijkeStaat.Gehuwd => BurgerlijkeStaatFact.Gehuwd,
+                BurgerlijkeStaat.GeregistreerdPartnerschap => BurgerlijkeStaatFact.GeregistreerdPartnerschap,
+                _ => BurgerlijkeStaatFact.Alleenstaand
+            },
+            kinderen.Select(k => new KindErfgenaamFact(
+                k.Id,
+                string.IsNullOrEmpty(k.Tussenvoegsel) ? $"{k.Voornaam} {k.Achternaam}" : $"{k.Voornaam} {k.Tussenvoegsel} {k.Achternaam}",
+                k.Voornaam,
+                k.Achternaam)).ToList(),
+            begunstigden.Select(b => new BegunstigdeFact(b.Naam, b.Percentage)).ToList());
+
+        // Delegeer naar service
+        var result = _legitiemairePortieService.Bereken(facts);
+        var r = result.Resultaat;
 
         return Ok(new LegitimairePortieCheckResult(
-            waarschuwingen.Count > 0,
-            aantalKinderen,
-            heeftPartner,
-            minimumPerKind,
-            waarschuwingen));
+            r.HeeftWaarschuwing,
+            r.AantalKinderen,
+            r.HeeftPartner,
+            r.MinimumPercentagePerKind,
+            r.Waarschuwingen.Select(w => new LegitimairePortieWaarschuwing(w.Naam, w.ToegewezenPercentage, w.MinimumPercentage)).ToList()));
     }
 
     // --- Begunstigden ---
@@ -327,21 +318,21 @@ public class TestamentController : ControllerBase
         var bCount2 = b2?.Count ?? 0;
         if (bCount1 != bCount2)
         {
-            verschillen.Add(new TestamentVerschil("Aantal begunstigden", bCount1.ToString(), bCount2.ToString()));
+            verschillen.Add(new TestamentVerschil(L["NumberOfBeneficiaries"].Value, bCount1.ToString(), bCount2.ToString()));
         }
 
         // Detail per begunstigde: compare by position
         var maxB = Math.Max(bCount1, bCount2);
         for (int i = 0; i < maxB; i++)
         {
-            var name1 = b1?.ElementAtOrDefault(i)?["naam"]?.ToString() ?? "(geen)";
-            var name2 = b2?.ElementAtOrDefault(i)?["naam"]?.ToString() ?? "(geen)";
+            var name1 = b1?.ElementAtOrDefault(i)?["naam"]?.ToString() ?? L["NoneValue"].Value;
+            var name2 = b2?.ElementAtOrDefault(i)?["naam"]?.ToString() ?? L["NoneValue"].Value;
             var pct1 = b1?.ElementAtOrDefault(i)?["percentage"]?.ToString() ?? "—";
             var pct2 = b2?.ElementAtOrDefault(i)?["percentage"]?.ToString() ?? "—";
             if (name1 != name2 || pct1 != pct2)
             {
                 verschillen.Add(new TestamentVerschil(
-                    $"Begunstigde {i + 1}",
+                    L["BeneficiaryLabel", i + 1].Value,
                     $"{name1} ({pct1}%)",
                     $"{name2} ({pct2}%)"));
             }
@@ -400,11 +391,10 @@ public class TestamentController : ControllerBase
             {
                 waarschuwingen.Add(new
                 {
-                    ernst = "hoog",
-                    categorie = "Testament type",
-                    melding = "U kiest voor een codicil, maar u heeft onroerend goed. " +
-                        "Verdeling van onroerend goed is alleen rechtsgeldig via een notarieel testament (art. 4:97 BW).",
-                    suggestie = "Overweeg een notarieel testament op te laten stellen."
+                    ernst = L["SeverityHigh"].Value,
+                    categorie = L["CategoryTestamentType"].Value,
+                    melding = L["WarningCodicilRealEstate"].Value,
+                    suggestie = L["SuggestionConsiderNotarialWill"].Value
                 });
             }
 
@@ -414,12 +404,10 @@ public class TestamentController : ControllerBase
             {
                 waarschuwingen.Add(new
                 {
-                    ernst = "middel",
-                    categorie = "Executeur",
-                    melding = "U heeft een executeur aangewezen in een handgeschreven testament. " +
-                        "Een executeur kan alleen 'drie-sterren-bevoegdheden' (beheer, verdeling, te-gelde-making) " +
-                        "krijgen via een notarieel testament.",
-                    suggestie = "Laat de executeurbenoeming opnemen in een notarieel testament."
+                    ernst = L["SeverityMedium"].Value,
+                    categorie = L["CategoryExecutor"].Value,
+                    melding = L["WarningHandwrittenExecutor"].Value,
+                    suggestie = L["SuggestionIncludeExecutorInNotarialWill"].Value
                 });
             }
 
@@ -432,12 +420,10 @@ public class TestamentController : ControllerBase
             {
                 waarschuwingen.Add(new
                 {
-                    ernst = "info",
-                    categorie = "Uitsluitingsclausule",
-                    melding = "U heeft kinderen maar geen uitsluitingsclausule. " +
-                        "Zonder uitsluitingsclausule kan de erfenis van uw kinderen bij een scheiding " +
-                        "in de gemeenschap van goederen vallen.",
-                    suggestie = "Overweeg een uitsluitingsclausule toe te voegen."
+                    ernst = L["SeverityInfo"].Value,
+                    categorie = L["CategoryExclusionClause"].Value,
+                    melding = L["WarningNoExclusionClause"].Value,
+                    suggestie = L["SuggestionAddExclusionClause"].Value
                 });
             }
 
@@ -447,11 +433,10 @@ public class TestamentController : ControllerBase
             {
                 waarschuwingen.Add(new
                 {
-                    ernst = "middel",
-                    categorie = "Verdeling",
-                    melding = $"De percentages van de begunstigden tellen op tot {totPct}% (verwacht: 100%). " +
-                        "Dit kan leiden tot onduidelijkheid over de verdeling.",
-                    suggestie = "Controleer de verdeling en zorg dat de percentages optellen tot 100%."
+                    ernst = L["SeverityMedium"].Value,
+                    categorie = L["CategoryDistribution"].Value,
+                    melding = L["WarningPercentageMismatch", totPct].Value,
+                    suggestie = L["SuggestionCheckPercentages"].Value
                 });
             }
 
@@ -460,11 +445,10 @@ public class TestamentController : ControllerBase
             {
                 waarschuwingen.Add(new
                 {
-                    ernst = "info",
-                    categorie = "Notaris",
-                    melding = "Er is geen notaris ingevuld bij het testament. " +
-                        "Voor een geldig notarieel testament is een notaris vereist.",
-                    suggestie = "Vul de gegevens van uw notaris in."
+                    ernst = L["SeverityInfo"].Value,
+                    categorie = L["CategoryNotary"].Value,
+                    melding = L["WarningNoNotary"].Value,
+                    suggestie = L["SuggestionFillInNotary"].Value
                 });
             }
         }
@@ -474,13 +458,17 @@ public class TestamentController : ControllerBase
             string.IsNullOrWhiteSpace(e.Telefoon) && string.IsNullOrWhiteSpace(e.Email)).ToList();
         if (zonderContact.Count > 0)
         {
+            var namen = string.Join(", ", zonderContact.Select(e =>
+                string.IsNullOrWhiteSpace(e.Tussenvoegsel)
+                    ? $"{e.Voornaam} {e.Achternaam}"
+                    : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}"));
+            var key = zonderContact.Count == 1 ? "WarningHeirWithoutContactSingle" : "WarningHeirsWithoutContactMultiple";
             waarschuwingen.Add(new
             {
-                ernst = "info",
-                categorie = "Contactgegevens",
-                melding = $"{zonderContact.Count} erfgena{(zonderContact.Count == 1 ? "am" : "men")} " +
-                    $"zonder telefoon of e-mail: {string.Join(", ", zonderContact.Select(e => string.IsNullOrWhiteSpace(e.Tussenvoegsel) ? $"{e.Voornaam} {e.Achternaam}" : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}"))}.",
-                suggestie = "Vul contactgegevens in zodat erfgenamen bereikbaar zijn."
+                ernst = L["SeverityInfo"].Value,
+                categorie = L["CategoryContactDetails"].Value,
+                melding = L[key, zonderContact.Count, namen].Value,
+                suggestie = L["SuggestionFillContactDetails"].Value
             });
         }
 

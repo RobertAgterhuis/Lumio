@@ -4,6 +4,8 @@ import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export interface WizardStep {
   id: string;
@@ -21,6 +23,7 @@ interface WizardShellProps {
 }
 
 export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShellProps) {
+  const t = useTranslations("wizard.shell");
   const [currentStep, setCurrentStep] = useState(0);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +38,7 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
       try {
         await onComplete();
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Opslaan mislukt.");
+        setError(err instanceof Error ? err.message : t("opslaanMislukt"));
       } finally {
         setCompleting(false);
       }
@@ -49,7 +52,7 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
       <div>
         <h2 className="text-2xl font-bold text-foreground">{titel}</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Stap {currentStep + 1} van {stappen.length}: {step.titel}
+          {t("stap", { huidig: currentStep + 1, totaal: stappen.length, titel: step.titel })}
         </p>
       </div>
 
@@ -97,9 +100,9 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
 
       {/* Error display */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
-        </div>
+        <Alert variant="danger">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       {/* Navigation */}
@@ -107,7 +110,7 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
         <div>
           {onCancel && (
             <Button variant="ghost" onClick={onCancel}>
-              Annuleren
+              {t("annuleren")}
             </Button>
           )}
         </div>
@@ -118,14 +121,14 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
             disabled={currentStep === 0}
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
-            Vorige
+            {t("vorige")}
           </Button>
           <Button onClick={handleNext} disabled={completing}>
             {isLastStep ? (
-              completing ? "Opslaan..." : "Opslaan"
+              completing ? t("opslaanBezig") : t("opslaan")
             ) : (
               <>
-                Volgende
+                {t("volgende")}
                 <ChevronRight className="h-4 w-4 ml-1" />
               </>
             )}

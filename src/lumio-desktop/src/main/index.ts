@@ -1,8 +1,9 @@
-import { app, dialog } from "electron";
+import { app, dialog, ipcMain } from "electron";
 import { startBackend, stopBackend } from "./sidecar";
 import { createMainWindow } from "./window";
-import { getBackendPath, getFrontendPath } from "./paths";
+import { getBackendPath, getFrontendPath, getDataDir } from "./paths";
 import { registerAutoBackupHandlers, startAutoBackupScheduler, stopAutoBackupScheduler } from "./autobackup";
+import { loadLocale, t, getLocale, setLocale, persistLocale } from "./i18n";
 
 // Single instance lock — prevent multiple Lumio instances
 const gotLock = app.requestSingleInstanceLock();
@@ -36,6 +37,19 @@ app.whenReady().then(async () => {
     const port = await findPort();
     console.log(`[lumio] Starting with backend port ${port}`);
 
+    // Load locale preference
+    const dataDir = getDataDir();
+    loadLocale(dataDir);
+
+    // Register locale IPC handlers
+    ipcMain.handle("get-locale", () => getLocale());
+    ipcMain.handle("set-locale", (_event: unknown, locale: string) => {
+      if (locale === "nl" || locale === "en") {
+        setLocale(locale);
+        persistLocale(dataDir, locale);
+      }
+    });
+
     // Register IPC handlers before creating window
     registerAutoBackupHandlers();
 
@@ -50,8 +64,8 @@ app.whenReady().then(async () => {
   } catch (err) {
     console.error("[lumio] Failed to start:", err);
     dialog.showErrorBox(
-      "Lumio — Fout bij opstarten",
-      `Lumio kon niet worden gestart.\n\n${err}\n\nBackend: ${getBackendPath()}\nFrontend: ${getFrontendPath()}`
+      t("errorStartTitle"),
+      t("errorStartBody", { error: String(err), backend: getBackendPath(), frontend: getFrontendPath() })
     );
     app.quit();
   }

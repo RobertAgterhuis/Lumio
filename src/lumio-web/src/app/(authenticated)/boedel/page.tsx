@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +30,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { PersonSelect } from "@/components/PersonSelect";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Samenvatting {
   totaalBezittingen: number;
@@ -88,11 +91,20 @@ interface Schuld {
   referentie?: string;
   notities?: string;
   vermogensSoort: number;
+  hypotheekVorm?: string;
+  rentepercentage?: number;
+  maandelijkseRente?: number;
+  einddatum?: string;
+  restschuld?: number;
 }
 
 type DialogKind = "bezit" | "rekening" | "verzekering" | "schuld" | null;
 
 export default function BoedelPage() {
+  const t = useTranslations("boedel");
+  const tEnum = useTranslations("enums");
+  const locale = useLocale();
+  const currencyLocale = locale === "en" ? "en-NL" : "nl-NL";
   const [tab, setTab] = useState("bezittingen");
   const [bezittingen, setBezittingen] = useState<FysiekBezit[]>([]);
   const [rekeningen, setRekeningen] = useState<Bankrekening[]>([]);
@@ -109,7 +121,7 @@ export default function BoedelPage() {
   const [bezitForm, setBezitForm] = useState({ categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0", kadastraalNummer: "", kenteken: "", kvKNummer: "" });
   const [rekeningForm, setRekeningForm] = useState({ bankNaam: "", rekeningType: "", iban: "", notities: "", saldo: "", vermogensSoort: "0" });
   const [verzekerForm, setVerzekerForm] = useState({ verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "", vermogensSoort: "0" });
-  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0" });
+  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0", hypotheekVorm: "", rentepercentage: "", maandelijkseRente: "", einddatum: "", restschuld: "" });
 
   const loadData = () => {
     Promise.all([
@@ -190,7 +202,12 @@ export default function BoedelPage() {
       referentie: item.referentie ?? "",
       notities: item.notities ?? "",
       vermogensSoort: String(item.vermogensSoort ?? 0),
-    } : { schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0" });
+      hypotheekVorm: item.hypotheekVorm ?? "",
+      rentepercentage: item.rentepercentage?.toString() ?? "",
+      maandelijkseRente: item.maandelijkseRente?.toString() ?? "",
+      einddatum: item.einddatum ? item.einddatum.substring(0, 10) : "",
+      restschuld: item.restschuld?.toString() ?? "",
+    } : { schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0", hypotheekVorm: "", rentepercentage: "", maandelijkseRente: "", einddatum: "", restschuld: "" });
     setDialogKind("schuld");
   };
 
@@ -213,7 +230,7 @@ export default function BoedelPage() {
       if (editId) await api.put(`/api/boedel/bezittingen/${editId}`, payload);
       else await api.post("/api/boedel/bezittingen", payload);
       setDialogKind(null); loadData();
-    } catch (err) { setError(err instanceof Error ? err.message : "Opslaan mislukt."); }
+    } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
   };
   const saveRekening = async () => {
@@ -231,7 +248,7 @@ export default function BoedelPage() {
       if (editId) await api.put(`/api/boedel/bankrekeningen/${editId}`, payload);
       else await api.post("/api/boedel/bankrekeningen", payload);
       setDialogKind(null); loadData();
-    } catch (err) { setError(err instanceof Error ? err.message : "Opslaan mislukt."); }
+    } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
   };
   const saveVerzekering = async () => {
@@ -252,7 +269,7 @@ export default function BoedelPage() {
       if (editId) await api.put(`/api/boedel/verzekeringen/${editId}`, payload);
       else await api.post("/api/boedel/verzekeringen", payload);
       setDialogKind(null); loadData();
-    } catch (err) { setError(err instanceof Error ? err.message : "Opslaan mislukt."); }
+    } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
   };
   const saveSchuld = async () => {
@@ -269,11 +286,16 @@ export default function BoedelPage() {
         referentie: schuldForm.referentie || null,
         notities: schuldForm.notities || null,
         vermogensSoort: parseInt(schuldForm.vermogensSoort),
+        hypotheekVorm: schuldForm.type === "Hypotheek" ? (schuldForm.hypotheekVorm || null) : null,
+        rentepercentage: schuldForm.type === "Hypotheek" && schuldForm.rentepercentage ? parseFloat(schuldForm.rentepercentage) : null,
+        maandelijkseRente: schuldForm.type === "Hypotheek" && schuldForm.maandelijkseRente ? parseFloat(schuldForm.maandelijkseRente) : null,
+        einddatum: schuldForm.type === "Hypotheek" && schuldForm.einddatum ? schuldForm.einddatum : null,
+        restschuld: schuldForm.type === "Hypotheek" && schuldForm.restschuld ? parseFloat(schuldForm.restschuld) : null,
       };
       if (editId) await api.put(`/api/boedel/schulden/${editId}`, payload);
       else await api.post("/api/boedel/schulden", payload);
       setDialogKind(null); loadData();
-    } catch (err) { setError(err instanceof Error ? err.message : "Opslaan mislukt."); }
+    } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
   };
 
@@ -282,62 +304,64 @@ export default function BoedelPage() {
       await api.delete(`/api/boedel/${type}/${id}`);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Boedel</h1>
-        <p className="text-muted-foreground mt-1">Bezittingen, bankrekeningen, verzekeringen en schulden</p>
+        <h1 className="text-3xl font-bold">{t("titel")}</h1>
+        <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
         <VoorbeeldDialog domein="boedel" />
         <SectieNotitie sectie="boedel" />
       </div>
 
+      <DomainStatusBanner domein="boedel" />
+
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
         <p className="text-sm text-amber-800">
-          <strong>Tip:</strong> Een volledig overzicht van uw boedel helpt erfgenamen bij de afwikkeling conform BW Boek 4.
+          <strong>{t("tipLabel")}</strong> {t("tip")}
         </p>
       </div>
 
       {samenvatting && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5" /> Financieel overzicht</CardTitle>
+            <CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5" /> {t("overzicht.titel")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div>
-                <p className="text-xs text-muted-foreground">Bezittingen ({samenvatting.aantalBezittingen})</p>
-                <p className="text-lg font-semibold">&euro; {samenvatting.totaalBezittingen.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground">{t("overzicht.bezittingen", { aantal: samenvatting.aantalBezittingen })}</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.totaalBezittingen.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Saldi ({samenvatting.aantalRekeningen})</p>
-                <p className="text-lg font-semibold">&euro; {samenvatting.totaalSaldi.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground">{t("overzicht.saldi", { aantal: samenvatting.aantalRekeningen })}</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.totaalSaldi.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Verzekeringen ({samenvatting.aantalVerzekeringen})</p>
-                <p className="text-lg font-semibold">&euro; {samenvatting.totaalVerzekeringen.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground">{t("overzicht.verzekeringen", { aantal: samenvatting.aantalVerzekeringen })}</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.totaalVerzekeringen.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Schulden ({samenvatting.aantalSchulden})</p>
-                <p className="text-lg font-semibold text-red-600">&euro; {samenvatting.totaalSchulden.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground">{t("overzicht.schulden", { aantal: samenvatting.aantalSchulden })}</p>
+                <p className="text-lg font-semibold text-red-600">&euro; {samenvatting.totaalSchulden.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Bruto nalatenschap</p>
-                <p className="text-lg font-semibold">&euro; {samenvatting.brutoNalatenschap.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground">{t("overzicht.brutoNalatenschap")}</p>
+                <p className="text-lg font-semibold">&euro; {samenvatting.brutoNalatenschap.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Netto nalatenschap</p>
-                <p className={`text-lg font-bold ${samenvatting.nettoNalatenschap >= 0 ? "text-green-600" : "text-red-600"}`}>&euro; {samenvatting.nettoNalatenschap.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-muted-foreground">{t("overzicht.nettoNalatenschap")}</p>
+                <p className={`text-lg font-bold ${samenvatting.nettoNalatenschap >= 0 ? "text-green-600" : "text-red-600"}`}>&euro; {samenvatting.nettoNalatenschap.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
             </div>
           </CardContent>
@@ -346,34 +370,34 @@ export default function BoedelPage() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
-          <TabsTrigger value="bezittingen"><Wallet className="h-4 w-4 mr-1" /> Bezittingen ({bezittingen.length})</TabsTrigger>
-          <TabsTrigger value="rekeningen"><Building2 className="h-4 w-4 mr-1" /> Rekeningen ({rekeningen.length})</TabsTrigger>
-          <TabsTrigger value="verzekeringen"><Shield className="h-4 w-4 mr-1" /> Verzekeringen ({verzekeringen.length})</TabsTrigger>
-          <TabsTrigger value="schulden"><CreditCard className="h-4 w-4 mr-1" /> Schulden ({schulden.length})</TabsTrigger>
+          <TabsTrigger value="bezittingen"><Wallet className="h-4 w-4 mr-1" /> {t("tabs.bezittingen", { aantal: bezittingen.length })}</TabsTrigger>
+          <TabsTrigger value="rekeningen"><Building2 className="h-4 w-4 mr-1" /> {t("tabs.rekeningen", { aantal: rekeningen.length })}</TabsTrigger>
+          <TabsTrigger value="verzekeringen"><Shield className="h-4 w-4 mr-1" /> {t("tabs.verzekeringen", { aantal: verzekeringen.length })}</TabsTrigger>
+          <TabsTrigger value="schulden"><CreditCard className="h-4 w-4 mr-1" /> {t("tabs.schulden", { aantal: schulden.length })}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="bezittingen">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Bezittingen</CardTitle>
-              <Button size="sm" onClick={() => openBezit()}><Plus className="h-4 w-4 mr-1" /> Toevoegen</Button>
+              <CardTitle>{t("bezittingen.titel")}</CardTitle>
+              <Button size="sm" onClick={() => openBezit()}><Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}</Button>
             </CardHeader>
             <CardContent>
               {bezittingen.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Nog geen bezittingen. Klik op Toevoegen.</p>
+                <p className="text-sm text-muted-foreground text-center py-8">{t("bezittingen.geenBezittingen")}</p>
               ) : (
                 <div className="space-y-2">
                   {bezittingen.map((b) => (
                     <div key={b.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={b.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{b.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <Badge variant={b.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{b.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{b.omschrijving}</p>
-                          <p className="text-xs text-muted-foreground">{b.categorie}{b.locatie ? ` \u2014 ${b.locatie}` : ""}{b.kadastraalNummer ? ` \u2014 Kad: ${b.kadastraalNummer}` : ""}{b.kenteken ? ` \u2014 ${b.kenteken}` : ""}{b.kvKNummer ? ` \u2014 KvK: ${b.kvKNummer}` : ""}</p>
+                          <p className="text-xs text-muted-foreground">{b.categorie}{b.locatie ? ` \u2014 ${b.locatie}` : ""}{b.kadastraalNummer ? ` \u2014 ${t("bezittingen.kadLabel")} ${b.kadastraalNummer}` : ""}{b.kenteken ? ` \u2014 ${b.kenteken}` : ""}{b.kvKNummer ? ` \u2014 ${t("bezittingen.kvkLabel")} ${b.kvKNummer}` : ""}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {b.geschatteWaarde != null && <span className="text-sm font-medium">&euro; {b.geschatteWaarde.toLocaleString("nl-NL")}</span>}
+                        {b.geschatteWaarde != null && <span className="text-sm font-medium">&euro; {b.geschatteWaarde.toLocaleString(currencyLocale)}</span>}
                         <Button variant="ghost" size="sm" onClick={() => openBezit(b)}><Pencil className="h-3 w-3" /></Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteItem("bezittingen", b.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
                       </div>
@@ -388,25 +412,25 @@ export default function BoedelPage() {
         <TabsContent value="rekeningen">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Bankrekeningen</CardTitle>
-              <Button size="sm" onClick={() => openRekening()}><Plus className="h-4 w-4 mr-1" /> Toevoegen</Button>
+              <CardTitle>{t("rekeningen.titel")}</CardTitle>
+              <Button size="sm" onClick={() => openRekening()}><Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}</Button>
             </CardHeader>
             <CardContent>
               {rekeningen.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Nog geen rekeningen. Klik op Toevoegen.</p>
+                <p className="text-sm text-muted-foreground text-center py-8">{t("rekeningen.geenRekeningen")}</p>
               ) : (
                 <div className="space-y-2">
                   {rekeningen.map((r) => (
                     <div key={r.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={r.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{r.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <Badge variant={r.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{r.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{r.bankNaam}</p>
                           <p className="text-xs text-muted-foreground">{r.rekeningType} &mdash; {r.iban}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {r.saldo != null && <span className="text-sm font-medium">&euro; {r.saldo.toLocaleString("nl-NL", { minimumFractionDigits: 2 })}</span>}
+                        {r.saldo != null && <span className="text-sm font-medium">&euro; {r.saldo.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</span>}
                         <Button variant="ghost" size="sm" onClick={() => openRekening(r)}><Pencil className="h-3 w-3" /></Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteItem("bankrekeningen", r.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
                       </div>
@@ -421,25 +445,25 @@ export default function BoedelPage() {
         <TabsContent value="verzekeringen">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Verzekeringen</CardTitle>
-              <Button size="sm" onClick={() => openVerzekering()}><Plus className="h-4 w-4 mr-1" /> Toevoegen</Button>
+              <CardTitle>{t("verzekeringen.titel")}</CardTitle>
+              <Button size="sm" onClick={() => openVerzekering()}><Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}</Button>
             </CardHeader>
             <CardContent>
               {verzekeringen.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Nog geen verzekeringen. Klik op Toevoegen.</p>
+                <p className="text-sm text-muted-foreground text-center py-8">{t("verzekeringen.geenVerzekeringen")}</p>
               ) : (
                 <div className="space-y-2">
                   {verzekeringen.map((v) => (
                     <div key={v.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={v.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{v.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <Badge variant={v.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{v.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{v.verzekeraar}</p>
-                          <p className="text-xs text-muted-foreground">{v.type} &mdash; Polis: {v.polisNummer}</p>
+                          <p className="text-xs text-muted-foreground">{v.type} &mdash; {t("verzekeringen.polisLabel")} {v.polisNummer}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {v.verzekerdBedrag != null && <span className="text-sm font-medium">&euro; {v.verzekerdBedrag.toLocaleString("nl-NL")}</span>}
+                        {v.verzekerdBedrag != null && <span className="text-sm font-medium">&euro; {v.verzekerdBedrag.toLocaleString(currencyLocale)}</span>}
                         <Button variant="ghost" size="sm" onClick={() => openVerzekering(v)}><Pencil className="h-3 w-3" /></Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteItem("verzekeringen", v.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
                       </div>
@@ -454,25 +478,25 @@ export default function BoedelPage() {
         <TabsContent value="schulden">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Schulden</CardTitle>
-              <Button size="sm" onClick={() => openSchuld()}><Plus className="h-4 w-4 mr-1" /> Toevoegen</Button>
+              <CardTitle>{t("schulden.titel")}</CardTitle>
+              <Button size="sm" onClick={() => openSchuld()}><Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}</Button>
             </CardHeader>
             <CardContent>
               {schulden.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Nog geen schulden. Klik op Toevoegen.</p>
+                <p className="text-sm text-muted-foreground text-center py-8">{t("schulden.geenSchulden")}</p>
               ) : (
                 <div className="space-y-2">
                   {schulden.map((s) => (
                     <div key={s.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={s.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{s.vermogensSoort === 1 ? "G" : "P"}</Badge>
+                        <Badge variant={s.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{s.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{s.schuldeiser}</p>
                           <p className="text-xs text-muted-foreground">{s.type}{s.referentie ? ` \u2014 ${s.referentie}` : ""}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-red-600">&euro; {s.bedrag.toLocaleString("nl-NL")}</span>
+                        <span className="text-sm font-medium text-red-600">&euro; {s.bedrag.toLocaleString(currencyLocale)}</span>
                         <Button variant="ghost" size="sm" onClick={() => openSchuld(s)}><Pencil className="h-3 w-3" /></Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteItem("schulden", s.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
                       </div>
@@ -493,149 +517,187 @@ export default function BoedelPage() {
 
       {/* Bezit Dialog */}
       <Dialog open={dialogKind === "bezit"} onOpenChange={() => setDialogKind(null)}>
-        <DialogHeader><DialogTitle>{editId ? "Bezit bewerken" : "Bezit toevoegen"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{editId ? t("bezitDialog.bewerken") : t("bezitDialog.toevoegen")}</DialogTitle></DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="space-y-2"><Label>Categorie</Label>
+          <div className="space-y-2"><Label>{t("bezitDialog.categorie")}</Label>
             <Select value={bezitForm.categorie} onChange={(e) => setBezitForm((f) => ({ ...f, categorie: e.target.value }))}>
-              <option value="">Selecteer...</option>
-              <option value="Onroerend goed">Onroerend goed</option>
-              <option value="Voertuig">Voertuig</option>
-              <option value="Sieraden">Sieraden</option>
-              <option value="Kunst">Kunst</option>
-              <option value="Elektronica">Elektronica</option>
-              <option value="Meubels">Meubels</option>
-              <option value="Overig">Overig</option>
+              <option value="">{tEnum("bezitCategorie.selecteer")}</option>
+              <option value="Onroerend goed">{tEnum("bezitCategorie.onroerendGoed")}</option>
+              <option value="Voertuig">{tEnum("bezitCategorie.voertuig")}</option>
+              <option value="Sieraden">{tEnum("bezitCategorie.sieraden")}</option>
+              <option value="Kunst">{tEnum("bezitCategorie.kunst")}</option>
+              <option value="Elektronica">{tEnum("bezitCategorie.elektronica")}</option>
+              <option value="Meubels">{tEnum("bezitCategorie.meubels")}</option>
+              <option value="Overig">{tEnum("bezitCategorie.overig")}</option>
             </Select>
           </div>
-          <div className="space-y-2"><Label>Omschrijving</Label><Input value={bezitForm.omschrijving} onChange={(e) => setBezitForm((f) => ({ ...f, omschrijving: e.target.value }))} placeholder="bijv. Woning aan de Keizersgracht, BMW 3-serie" /></div>
-          <div className="space-y-2"><Label>Geschatte waarde (&euro;)</Label><Input type="number" value={bezitForm.geschatteWaarde} onChange={(e) => setBezitForm((f) => ({ ...f, geschatteWaarde: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Locatie</Label><Input value={bezitForm.locatie} onChange={(e) => setBezitForm((f) => ({ ...f, locatie: e.target.value }))} placeholder="Waar bevindt dit zich?" /></div>
-          <div className="space-y-2"><Label>Bestemde erfgenaam</Label><Input value={bezitForm.bestemdeErfgenaam} onChange={(e) => setBezitForm((f) => ({ ...f, bestemdeErfgenaam: e.target.value }))} placeholder="Wie moet dit ontvangen?" /></div>
-          <div className="space-y-2"><Label>Vermogenssoort</Label> <HelpTooltip tekst="Privévermogen is eigendom van één persoon. Gemeenschapsvermogen valt in de gemeenschap van goederen en wordt bij scheiding of overlijden verdeeld. Dit onderscheid is belangrijk voor de erfbelasting en verdeling." />
+          <div className="space-y-2"><Label>{t("bezitDialog.omschrijving")}</Label><Input value={bezitForm.omschrijving} onChange={(e) => setBezitForm((f) => ({ ...f, omschrijving: e.target.value }))} placeholder={t("bezitDialog.omschrijvingPlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("bezitDialog.geschatteWaarde")}</Label><Input type="number" value={bezitForm.geschatteWaarde} onChange={(e) => setBezitForm((f) => ({ ...f, geschatteWaarde: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>{t("bezitDialog.locatie")}</Label><Input value={bezitForm.locatie} onChange={(e) => setBezitForm((f) => ({ ...f, locatie: e.target.value }))} placeholder={t("bezitDialog.locatiePlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("bezitDialog.bestemdeErfgenaam")}</Label><PersonSelect value={bezitForm.bestemdeErfgenaam} onChange={(v) => setBezitForm((f) => ({ ...f, bestemdeErfgenaam: v }))} source="erfgenamen" placeholder={t("bezitDialog.bestemdeErfgenaamPlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("bezitDialog.vermogensSoort")}</Label> <HelpTooltip tekst={t("bezitDialog.vermogensSoortTooltip")} />
             <Select value={bezitForm.vermogensSoort} onChange={(e) => setBezitForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
-              <option value="0">Privé</option>
-              <option value="1">Gemeenschap</option>
+              <option value="0">{tEnum("vermogensSoort.prive")}</option>
+              <option value="1">{tEnum("vermogensSoort.gemeenschap")}</option>
             </Select>
           </div>
           {/* P-S3: Registerreferenties */}
           {(bezitForm.categorie === "Onroerend goed" || bezitForm.kadastraalNummer) && (
-            <div className="space-y-2"><Label>Kadastraal nummer</Label><Input value={bezitForm.kadastraalNummer} onChange={(e) => setBezitForm((f) => ({ ...f, kadastraalNummer: e.target.value }))} placeholder="bijv. ASD02 K 1234" /></div>
+            <div className="space-y-2"><Label>{t("bezitDialog.kadastraalNummer")}</Label><Input value={bezitForm.kadastraalNummer} onChange={(e) => setBezitForm((f) => ({ ...f, kadastraalNummer: e.target.value }))} placeholder={t("bezitDialog.kadastraalPlaceholder")} /></div>
           )}
           {(bezitForm.categorie === "Voertuig" || bezitForm.kenteken) && (
-            <div className="space-y-2"><Label>Kenteken</Label><Input value={bezitForm.kenteken} onChange={(e) => setBezitForm((f) => ({ ...f, kenteken: e.target.value }))} placeholder="bijv. AB-123-CD" /></div>
+            <div className="space-y-2"><Label>{t("bezitDialog.kenteken")}</Label><Input value={bezitForm.kenteken} onChange={(e) => setBezitForm((f) => ({ ...f, kenteken: e.target.value }))} placeholder={t("bezitDialog.kentekenPlaceholder")} /></div>
           )}
-          <div className="space-y-2"><Label>KvK-nummer</Label><Input value={bezitForm.kvKNummer} onChange={(e) => setBezitForm((f) => ({ ...f, kvKNummer: e.target.value }))} placeholder="Kamer van Koophandel nummer (indien van toepassing)" /></div>
-          <div className="space-y-2"><Label>Notities</Label><Textarea value={bezitForm.notities} onChange={(e) => setBezitForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
+          <div className="space-y-2"><Label>{t("bezitDialog.kvkNummer")}</Label><Input value={bezitForm.kvKNummer} onChange={(e) => setBezitForm((f) => ({ ...f, kvKNummer: e.target.value }))} placeholder={t("bezitDialog.kvkPlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("bezitDialog.notities")}</Label><Textarea value={bezitForm.notities} onChange={(e) => setBezitForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setDialogKind(null)}>Annuleren</Button>
-          <Button onClick={saveBezit} disabled={saving}>{saving ? "Opslaan..." : "Opslaan"}</Button>
+          <Button variant="outline" onClick={() => setDialogKind(null)}>{t("annuleren")}</Button>
+          <Button onClick={saveBezit} disabled={saving}>{saving ? t("opslaanBezig") : t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
       {/* Rekening Dialog */}
       <Dialog open={dialogKind === "rekening"} onOpenChange={() => setDialogKind(null)}>
-        <DialogHeader><DialogTitle>{editId ? "Rekening bewerken" : "Rekening toevoegen"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{editId ? t("rekeningDialog.bewerken") : t("rekeningDialog.toevoegen")}</DialogTitle></DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="space-y-2"><Label>Bank</Label><Input value={rekeningForm.bankNaam} onChange={(e) => setRekeningForm((f) => ({ ...f, bankNaam: e.target.value }))} placeholder="bijv. ING, ABN AMRO, Rabobank" /></div>
-          <div className="space-y-2"><Label>Type</Label>
+          <div className="space-y-2"><Label>{t("rekeningDialog.bank")}</Label><Input value={rekeningForm.bankNaam} onChange={(e) => setRekeningForm((f) => ({ ...f, bankNaam: e.target.value }))} placeholder={t("rekeningDialog.bankPlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("rekeningDialog.type")}</Label>
             <Select value={rekeningForm.rekeningType} onChange={(e) => setRekeningForm((f) => ({ ...f, rekeningType: e.target.value }))}>
-              <option value="">Selecteer...</option>
-              <option value="Betaalrekening">Betaalrekening</option>
-              <option value="Spaarrekening">Spaarrekening</option>
-              <option value="Beleggingsrekening">Beleggingsrekening</option>
-              <option value="Deposito">Deposito</option>
-              <option value="Overig">Overig</option>
+              <option value="">{tEnum("rekeningType.selecteer")}</option>
+              <option value="Betaalrekening">{tEnum("rekeningType.betaalrekening")}</option>
+              <option value="Spaarrekening">{tEnum("rekeningType.spaarrekening")}</option>
+              <option value="Beleggingsrekening">{tEnum("rekeningType.beleggingsrekening")}</option>
+              <option value="Deposito">{tEnum("rekeningType.deposito")}</option>
+              <option value="Overig">{tEnum("rekeningType.overig")}</option>
             </Select>
           </div>
-          <div className="space-y-2"><Label>IBAN</Label><Input value={rekeningForm.iban} onChange={(e) => setRekeningForm((f) => ({ ...f, iban: e.target.value }))} placeholder="NL00 BANK 0000 0000 00" /></div>
-          <div className="space-y-2"><Label>Saldo (&euro;)</Label><Input type="number" value={rekeningForm.saldo} onChange={(e) => setRekeningForm((f) => ({ ...f, saldo: e.target.value }))} placeholder="Huidig saldo" /></div>
-          <div className="space-y-2"><Label>Vermogenssoort</Label>
+          <div className="space-y-2"><Label>{t("rekeningDialog.iban")}</Label><Input value={rekeningForm.iban} onChange={(e) => setRekeningForm((f) => ({ ...f, iban: e.target.value }))} placeholder={t("rekeningDialog.ibanPlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("rekeningDialog.saldo")}</Label><Input type="number" value={rekeningForm.saldo} onChange={(e) => setRekeningForm((f) => ({ ...f, saldo: e.target.value }))} placeholder={t("rekeningDialog.saldoPlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("rekeningDialog.vermogensSoort")}</Label>
             <Select value={rekeningForm.vermogensSoort} onChange={(e) => setRekeningForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
-              <option value="0">Privé</option>
-              <option value="1">Gemeenschap</option>
+              <option value="0">{tEnum("vermogensSoort.prive")}</option>
+              <option value="1">{tEnum("vermogensSoort.gemeenschap")}</option>
             </Select>
           </div>
-          <div className="space-y-2"><Label>Notities</Label><Textarea value={rekeningForm.notities} onChange={(e) => setRekeningForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
+          <div className="space-y-2"><Label>{t("rekeningDialog.notities")}</Label><Textarea value={rekeningForm.notities} onChange={(e) => setRekeningForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setDialogKind(null)}>Annuleren</Button>
-          <Button onClick={saveRekening} disabled={saving}>{saving ? "Opslaan..." : "Opslaan"}</Button>
+          <Button variant="outline" onClick={() => setDialogKind(null)}>{t("annuleren")}</Button>
+          <Button onClick={saveRekening} disabled={saving}>{saving ? t("opslaanBezig") : t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
       {/* Verzekering Dialog */}
       <Dialog open={dialogKind === "verzekering"} onOpenChange={() => setDialogKind(null)}>
-        <DialogHeader><DialogTitle>{editId ? "Verzekering bewerken" : "Verzekering toevoegen"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{editId ? t("verzekerDialog.bewerken") : t("verzekerDialog.toevoegen")}</DialogTitle></DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="space-y-2"><Label>Verzekeraar</Label><Input value={verzekerForm.verzekeraar} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraar: e.target.value }))} placeholder="bijv. Nationale-Nederlanden, Aegon" /></div>
+          <div className="space-y-2"><Label>{t("verzekerDialog.verzekeraar")}</Label><Input value={verzekerForm.verzekeraar} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraar: e.target.value }))} placeholder={t("verzekerDialog.verzekeraarPlaceholder")} /></div>
           <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-2"><Label>Telefoon verzekeraar</Label><Input value={verzekerForm.verzekeraarTelefoon} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraarTelefoon: e.target.value }))} placeholder="Telefoonnummer" /></div>
-            <div className="space-y-2"><Label>E-mail verzekeraar</Label><Input type="email" value={verzekerForm.verzekeraarEmail} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraarEmail: e.target.value }))} placeholder="info@verzekeraar.nl" /></div>
+            <div className="space-y-2"><Label>{t("verzekerDialog.telefoon")}</Label><Input value={verzekerForm.verzekeraarTelefoon} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraarTelefoon: e.target.value }))} placeholder={t("verzekerDialog.telefoonPlaceholder")} /></div>
+            <div className="space-y-2"><Label>{t("verzekerDialog.email")}</Label><Input type="email" value={verzekerForm.verzekeraarEmail} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekeraarEmail: e.target.value }))} placeholder={t("verzekerDialog.emailPlaceholder")} /></div>
           </div>
-          <div className="space-y-2"><Label>Type</Label>
+          <div className="space-y-2"><Label>{t("verzekerDialog.type")}</Label>
             <Select value={verzekerForm.type} onChange={(e) => setVerzekerForm((f) => ({ ...f, type: e.target.value }))}>
-              <option value="">Selecteer...</option>
-              <option value="Levensverzekering">Levensverzekering</option>
-              <option value="Uitvaartverzekering">Uitvaartverzekering</option>
-              <option value="Overlijdensrisicoverzekering">Overlijdensrisicoverzekering</option>
-              <option value="Woonverzekering">Woonverzekering</option>
-              <option value="Autoverzekering">Autoverzekering</option>
-              <option value="Zorgverzekering">Zorgverzekering</option>
-              <option value="Overig">Overig</option>
+              <option value="">{tEnum("verzekeringsType.selecteer")}</option>
+              <option value="Levensverzekering">{tEnum("verzekeringsType.levensverzekering")}</option>
+              <option value="Uitvaartverzekering">{tEnum("verzekeringsType.uitvaartverzekering")}</option>
+              <option value="Overlijdensrisicoverzekering">{tEnum("verzekeringsType.overlijdensrisicoverzekering")}</option>
+              <option value="Woonverzekering">{tEnum("verzekeringsType.woonverzekering")}</option>
+              <option value="Autoverzekering">{tEnum("verzekeringsType.autoverzekering")}</option>
+              <option value="Zorgverzekering">{tEnum("verzekeringsType.zorgverzekering")}</option>
+              <option value="Overig">{tEnum("verzekeringsType.overig")}</option>
             </Select>
           </div>
-          <div className="space-y-2"><Label>Polisnummer</Label><Input value={verzekerForm.polisNummer} onChange={(e) => setVerzekerForm((f) => ({ ...f, polisNummer: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Verzekerd bedrag (&euro;)</Label><Input type="number" value={verzekerForm.verzekerdBedrag} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekerdBedrag: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Begunstigde</Label><Input value={verzekerForm.begunstigde} onChange={(e) => setVerzekerForm((f) => ({ ...f, begunstigde: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Vermogenssoort</Label>
+          <div className="space-y-2"><Label>{t("verzekerDialog.polisNummer")}</Label><Input value={verzekerForm.polisNummer} onChange={(e) => setVerzekerForm((f) => ({ ...f, polisNummer: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>{t("verzekerDialog.verzekerdBedrag")}</Label><Input type="number" value={verzekerForm.verzekerdBedrag} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekerdBedrag: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>{t("verzekerDialog.begunstigde")}</Label><PersonSelect value={verzekerForm.begunstigde} onChange={(v) => setVerzekerForm((f) => ({ ...f, begunstigde: v }))} source="erfgenamen" /></div>
+          <div className="space-y-2"><Label>{t("verzekerDialog.vermogensSoort")}</Label>
             <Select value={verzekerForm.vermogensSoort} onChange={(e) => setVerzekerForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
-              <option value="0">Privé</option>
-              <option value="1">Gemeenschap</option>
+              <option value="0">{tEnum("vermogensSoort.prive")}</option>
+              <option value="1">{tEnum("vermogensSoort.gemeenschap")}</option>
             </Select>
           </div>
-          <div className="space-y-2"><Label>Notities</Label><Textarea value={verzekerForm.notities} onChange={(e) => setVerzekerForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
+          <div className="space-y-2"><Label>{t("verzekerDialog.notities")}</Label><Textarea value={verzekerForm.notities} onChange={(e) => setVerzekerForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setDialogKind(null)}>Annuleren</Button>
-          <Button onClick={saveVerzekering} disabled={saving}>{saving ? "Opslaan..." : "Opslaan"}</Button>
+          <Button variant="outline" onClick={() => setDialogKind(null)}>{t("annuleren")}</Button>
+          <Button onClick={saveVerzekering} disabled={saving}>{saving ? t("opslaanBezig") : t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
       {/* Schuld Dialog */}
       <Dialog open={dialogKind === "schuld"} onOpenChange={() => setDialogKind(null)}>
-        <DialogHeader><DialogTitle>{editId ? "Schuld bewerken" : "Schuld toevoegen"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{editId ? t("schuldDialog.bewerken") : t("schuldDialog.toevoegen")}</DialogTitle></DialogHeader>
         <div className="space-y-4 py-4">
-          <div className="space-y-2"><Label>Schuldeiser</Label><Input value={schuldForm.schuldeiser} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiser: e.target.value }))} placeholder="bijv. ING, DUO, Rabobank" /></div>
+          <div className="space-y-2"><Label>{t("schuldDialog.schuldeiser")}</Label><Input value={schuldForm.schuldeiser} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiser: e.target.value }))} placeholder={t("schuldDialog.schuldeiserPlaceholder")} /></div>
           <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-2"><Label>Telefoon schuldeiser</Label><Input value={schuldForm.schuldeiserTelefoon} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiserTelefoon: e.target.value }))} placeholder="Telefoonnummer" /></div>
-            <div className="space-y-2"><Label>E-mail schuldeiser</Label><Input type="email" value={schuldForm.schuldeiserEmail} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiserEmail: e.target.value }))} placeholder="info@schuldeiser.nl" /></div>
+            <div className="space-y-2"><Label>{t("schuldDialog.telefoon")}</Label><Input value={schuldForm.schuldeiserTelefoon} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiserTelefoon: e.target.value }))} placeholder={t("schuldDialog.telefoonPlaceholder")} /></div>
+            <div className="space-y-2"><Label>{t("schuldDialog.email")}</Label><Input type="email" value={schuldForm.schuldeiserEmail} onChange={(e) => setSchuldForm((f) => ({ ...f, schuldeiserEmail: e.target.value }))} placeholder={t("schuldDialog.emailPlaceholder")} /></div>
           </div>
-          <div className="space-y-2"><Label>Type</Label>
+          <div className="space-y-2"><Label>{t("schuldDialog.type")}</Label>
             <Select value={schuldForm.type} onChange={(e) => setSchuldForm((f) => ({ ...f, type: e.target.value }))}>
-              <option value="">Selecteer...</option>
-              <option value="Hypotheek">Hypotheek</option>
-              <option value="Persoonlijke lening">Persoonlijke lening</option>
-              <option value="Studielening">Studielening</option>
-              <option value="Creditcard">Creditcard</option>
-              <option value="Zakelijke lening">Zakelijke lening</option>
-              <option value="Overig">Overig</option>
+              <option value="">{tEnum("schuldType.selecteer")}</option>
+              <option value="Hypotheek">{tEnum("schuldType.hypotheek")}</option>
+              <option value="Persoonlijke lening">{tEnum("schuldType.persoonlijkeLening")}</option>
+              <option value="Studielening">{tEnum("schuldType.studielening")}</option>
+              <option value="Creditcard">{tEnum("schuldType.creditcard")}</option>
+              <option value="Zakelijke lening">{tEnum("schuldType.zakelijkeLening")}</option>
+              <option value="Overig">{tEnum("schuldType.overig")}</option>
             </Select>
           </div>
-          <div className="space-y-2"><Label>Bedrag (&euro;)</Label><Input type="number" value={schuldForm.bedrag} onChange={(e) => setSchuldForm((f) => ({ ...f, bedrag: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Maandelijkse aflossing (&euro;)</Label><Input type="number" value={schuldForm.maandelijkseAflossing} onChange={(e) => setSchuldForm((f) => ({ ...f, maandelijkseAflossing: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Referentie / contractnummer</Label><Input value={schuldForm.referentie} onChange={(e) => setSchuldForm((f) => ({ ...f, referentie: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Vermogenssoort</Label>
+          {schuldForm.type === "Hypotheek" && (
+            <>
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 space-y-4">
+                <p className="text-xs font-medium text-blue-800">{t("schuldDialog.hypotheekDetails")}</p>
+                <div className="space-y-2">
+                  <Label>{t("schuldDialog.hypotheekVorm")}</Label>
+                  <Select value={schuldForm.hypotheekVorm} onChange={(e) => setSchuldForm((f) => ({ ...f, hypotheekVorm: e.target.value }))}>
+                    <option value="">{tEnum("hypotheekVorm.selecteer")}</option>
+                    <option value="Aflossingsvrij">{tEnum("hypotheekVorm.aflossingsvrij")}</option>
+                    <option value="Lineair">{tEnum("hypotheekVorm.lineair")}</option>
+                    <option value="Annuïteit">{tEnum("hypotheekVorm.annuitair")}</option>
+                    <option value="Spaarhypotheek">{tEnum("hypotheekVorm.spaarhypotheek")}</option>
+                    <option value="Beleggingshypotheek">{tEnum("hypotheekVorm.beleggingshypotheek")}</option>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.rentepercentage")}</Label>
+                    <Input type="number" step="0.01" value={schuldForm.rentepercentage} onChange={(e) => setSchuldForm((f) => ({ ...f, rentepercentage: e.target.value }))} placeholder="bijv. 3.5" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.maandelijkseRente")}</Label>
+                    <Input type="number" value={schuldForm.maandelijkseRente} onChange={(e) => setSchuldForm((f) => ({ ...f, maandelijkseRente: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.einddatum")}</Label>
+                    <Input type="date" value={schuldForm.einddatum} onChange={(e) => setSchuldForm((f) => ({ ...f, einddatum: e.target.value }))} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.restschuld")}</Label>
+                    <Input type="number" value={schuldForm.restschuld} onChange={(e) => setSchuldForm((f) => ({ ...f, restschuld: e.target.value }))} />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+          <div className="space-y-2"><Label>{t("schuldDialog.bedrag")}</Label><Input type="number" value={schuldForm.bedrag} onChange={(e) => setSchuldForm((f) => ({ ...f, bedrag: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>{t("schuldDialog.maandelijkseAflossing")}</Label><Input type="number" value={schuldForm.maandelijkseAflossing} onChange={(e) => setSchuldForm((f) => ({ ...f, maandelijkseAflossing: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>{t("schuldDialog.referentie")}</Label><Input value={schuldForm.referentie} onChange={(e) => setSchuldForm((f) => ({ ...f, referentie: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>{t("schuldDialog.vermogensSoort")}</Label>
             <Select value={schuldForm.vermogensSoort} onChange={(e) => setSchuldForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
-              <option value="0">Privé</option>
-              <option value="1">Gemeenschap</option>
+              <option value="0">{tEnum("vermogensSoort.prive")}</option>
+              <option value="1">{tEnum("vermogensSoort.gemeenschap")}</option>
             </Select>
           </div>
-          <div className="space-y-2"><Label>Notities</Label><Textarea value={schuldForm.notities} onChange={(e) => setSchuldForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
+          <div className="space-y-2"><Label>{t("schuldDialog.notities")}</Label><Textarea value={schuldForm.notities} onChange={(e) => setSchuldForm((f) => ({ ...f, notities: e.target.value }))} rows={2} /></div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setDialogKind(null)}>Annuleren</Button>
-          <Button onClick={saveSchuld} disabled={saving}>{saving ? "Opslaan..." : "Opslaan"}</Button>
+          <Button variant="outline" onClick={() => setDialogKind(null)}>{t("annuleren")}</Button>
+          <Button onClick={saveSchuld} disabled={saving}>{saving ? t("opslaanBezig") : t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
     </div>

@@ -12,7 +12,9 @@ import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 import { ShieldAlert } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function AuthenticatedLayout({
   children,
@@ -23,6 +25,7 @@ export default function AuthenticatedLayout({
   const { isUnlocked, setUnlocked, lock, setProfiles, setActiveProfile, setProfileSelected, setReadOnly, isReadOnly } =
     useAuthStore();
   const [checking, setChecking] = useState(!isUnlocked);
+  const t = useTranslations("auth.sessie");
 
   const handleIdleLock = async () => {
     try {
@@ -87,7 +90,7 @@ export default function AuthenticatedLayout({
   if (checking) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-muted-foreground">Sessie controleren...</p>
+        <p className="text-muted-foreground">{t("controleren")}</p>
       </div>
     );
   }
@@ -100,13 +103,11 @@ export default function AuthenticatedLayout({
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header />
         {isReadOnly && (
-          <div className="flex items-center gap-2 bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800">
-            <ShieldAlert className="h-4 w-4 shrink-0" />
-            <span>
-              <strong>Alleen-lezen modus</strong> — U bent ingelogd als erfgenaam.
-              Gegevens kunnen alleen worden bekeken en geëxporteerd, niet gewijzigd.
-            </span>
-          </div>
+          <Alert variant="warning" className="rounded-none border-x-0 border-t-0">
+            <AlertDescription>
+              <strong>{t("alleenLezen")}</strong> — {t("alleenLezenBeschrijving")}
+            </AlertDescription>
+          </Alert>
         )}
         <ErrorBoundary>
           <main className="flex-1 overflow-y-auto p-6">

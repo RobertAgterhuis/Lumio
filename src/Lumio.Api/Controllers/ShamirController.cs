@@ -1,8 +1,10 @@
 using Lumio.Api.Data;
 using Lumio.Api.Dtos.Shamir;
+using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
 
@@ -13,19 +15,25 @@ public class ShamirController : ControllerBase
     private readonly IShamirService _shamirService;
     private readonly IMasterPasswordService _masterPassword;
     private readonly LumioDbContext _db;
+    private readonly LimietenOptions _limieten;
 
-    public ShamirController(IShamirService shamirService, IMasterPasswordService masterPassword, LumioDbContext db)
+    public ShamirController(
+        IShamirService shamirService,
+        IMasterPasswordService masterPassword,
+        LumioDbContext db,
+        IOptions<LimietenOptions> limieten)
     {
         _shamirService = shamirService;
         _masterPassword = masterPassword;
         _db = db;
+        _limieten = limieten.Value;
     }
 
     [HttpPost("genereer")]
     public async Task<ActionResult<GenereerSharesResponse>> Genereer([FromBody] GenereerSharesRequest request)
     {
-        if (request.Drempel < 2)
-            return BadRequest(new { error = "Drempel moet minimaal 2 zijn." });
+        if (request.Drempel < _limieten.ShamirMinDrempel)
+            return BadRequest(new { error = $"Drempel moet minimaal {_limieten.ShamirMinDrempel} zijn." });
         if (request.AantalDelen < request.Drempel)
             return BadRequest(new { error = "Aantal delen moet >= drempel zijn." });
 

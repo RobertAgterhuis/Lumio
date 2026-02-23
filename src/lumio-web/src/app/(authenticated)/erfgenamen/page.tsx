@@ -38,6 +38,9 @@ import {
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { ErfbelastingCalculator } from "@/components/erfgenamen/ErfbelastingCalculator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useTranslations } from "next-intl";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Erfgenaam {
   id: string;
@@ -88,13 +91,7 @@ interface AssetItem {
   type: string;
 }
 
-const ENTITY_TYPE_LABELS: Record<string, string> = {
-  FysiekBezit: "Bezitting",
-  Bankrekening: "Bankrekening",
-  Verzekering: "Verzekering",
-  DigitaalAccount: "Digitaal Account",
-  CryptoWallet: "Crypto Wallet",
-};
+const ENTITY_TYPE_KEYS = ["FysiekBezit", "Bankrekening", "Verzekering", "DigitaalAccount", "CryptoWallet"] as const;
 
 const emptyForm = {
   voornaam: "",
@@ -121,6 +118,8 @@ function displayName(e: Erfgenaam): string {
 }
 
 export default function ErfgenamenPage() {
+  const t = useTranslations("erfgenamen");
+  const te = useTranslations("enums");
   const [erfgenamen, setErfgenamen] = useState<Erfgenaam[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -250,7 +249,7 @@ export default function ErfgenamenPage() {
       setDialogOpen(false);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
@@ -261,7 +260,7 @@ export default function ErfgenamenPage() {
       await api.delete(`/api/erfgenamen/${id}`);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
@@ -274,7 +273,7 @@ export default function ErfgenamenPage() {
       if (response.status === 423) { window.location.href = "/"; return; }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `Export mislukt (${response.status})`);
+        throw new Error(body.error || t("exportMisluktCode", { code: response.status }));
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -284,7 +283,7 @@ export default function ErfgenamenPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     }
   };
 
@@ -295,7 +294,7 @@ export default function ErfgenamenPage() {
       if (response.status === 423) { window.location.href = "/"; return; }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `Export mislukt (${response.status})`);
+        throw new Error(body.error || t("exportMisluktCode", { code: response.status }));
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -305,7 +304,7 @@ export default function ErfgenamenPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     }
   };
 
@@ -320,7 +319,7 @@ export default function ErfgenamenPage() {
       setGeneratedShares(result);
       loadData();
     } catch (err) {
-      setError("Sleuteldelen genereren mislukt.");
+      setError(t("sleuteldelenMislukt"));
     } finally {
       setShamirGenerating(false);
     }
@@ -371,7 +370,7 @@ export default function ErfgenamenPage() {
       setToewijzingDialogOpen(false);
       loadToewijzingen();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Toewijzing opslaan mislukt.");
+      setError(err instanceof Error ? err.message : t("toewijzingOpslaanMislukt"));
     } finally {
       setToewijzingSaving(false);
     }
@@ -382,7 +381,7 @@ export default function ErfgenamenPage() {
       await api.delete(`/api/toewijzingen/${id}`);
       loadToewijzingen();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Toewijzing verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("toewijzingVerwijderenMislukt"));
     }
   };
 
@@ -392,7 +391,7 @@ export default function ErfgenamenPage() {
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
@@ -400,9 +399,9 @@ export default function ErfgenamenPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Erfgenamen</h1>
+          <h1 className="text-3xl font-bold">{t("titel")}</h1>
           <p className="text-muted-foreground mt-1">
-            Erfgenamen beheren en noodcodes verdelen
+            {t("beschrijving")}
           </p>
           <VoorbeeldDialog domein="erfgenamen" />
           <SectieNotitie sectie="erfgenamen" />
@@ -413,21 +412,20 @@ export default function ErfgenamenPage() {
               variant="outline"
               onClick={() => setShamirDialogOpen(true)}
             >
-              <KeyRound className="h-4 w-4 mr-2" /> Noodcodes verdelen
+              <KeyRound className="h-4 w-4 mr-2" /> {t("noodcodesVerdelen")}
             </Button>
           )}
           <Button onClick={() => openDialog()}>
-            <Plus className="h-4 w-4 mr-2" /> Erfgenaam toevoegen
+            <Plus className="h-4 w-4 mr-2" /> {t("toevoegen")}
           </Button>
         </div>
       </div>
 
+      <DomainStatusBanner domein="erfgenamen" />
+
       <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
         <p className="text-sm text-indigo-800">
-          <strong>Noodcodes verdelen:</strong> Uw hoofdwachtwoord wordt veilig
-          opgesplitst in unieke codes voor uw erfgenamen. Pas wanneer genoeg
-          erfgenamen (de &apos;drempel&apos;) hun code samenvoegen, kan het
-          wachtwoord worden hersteld. Eén code alleen is waardeloos.
+          <strong>{t("noodcodesInfoLabel")}</strong> {t("noodcodesInfo")}
         </p>
       </div>
 
@@ -445,17 +443,17 @@ export default function ErfgenamenPage() {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Users className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
-              Nog geen erfgenamen toegevoegd.
+              {t("geenErfgenamen")}
             </p>
             <Button className="mt-4" onClick={() => openDialog()}>
-              Erfgenaam toevoegen
+              {t("toevoegen")}
             </Button>
           </CardContent>
         </Card>
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>Erfgenamen ({erfgenamen.length})</CardTitle>
+            <CardTitle>{t("aantal", { aantal: erfgenamen.length })}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -471,7 +469,7 @@ export default function ErfgenamenPage() {
                     <div className="flex-1 cursor-pointer" onClick={() => setExpandedErfgenaam(isExpanded ? null : e.id)}>
                       <p className="text-sm font-medium">{displayName(e)}</p>
                       <p className="text-xs text-muted-foreground">
-                        {e.relatie}
+                        {te(`relatie.${e.relatie}`)}
                         {e.email && ` \u2014 ${e.email}`}
                         {e.telefoon && ` \u2014 ${e.telefoon}`}
                       </p>
@@ -493,7 +491,7 @@ export default function ErfgenamenPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => openToewijzingDialog(e.id)}
-                        title="Bezit toewijzen"
+                        title={t("bezitToewijzen")}
                       >
                         <Package className="h-3 w-3" />
                       </Button>
@@ -501,7 +499,7 @@ export default function ErfgenamenPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleExportErfgenaam(e.id, e.voornaam)}
-                        title="PDF downloaden"
+                        title={t("pdfDownloaden")}
                       >
                         <Download className="h-3 w-3" />
                       </Button>
@@ -509,7 +507,7 @@ export default function ErfgenamenPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDeelMetErfgenaam(e.id, e.voornaam)}
-                        title="Deel overzicht (HTML)"
+                        title={t("deelOverzicht")}
                       >
                         <Share2 className="h-3 w-3" />
                       </Button>
@@ -533,33 +531,33 @@ export default function ErfgenamenPage() {
                     <div className="mt-3 border-t pt-3">
                       {erfToewijzingen.length === 0 ? (
                         <p className="text-xs text-muted-foreground italic">
-                          Nog geen bezittingen toegewezen.{" "}
+                          {t("geenBezittingen")}{" "}
                           <button
                             className="underline text-primary"
                             onClick={() => openToewijzingDialog(e.id)}
                           >
-                            Toewijzen
+                            {t("toewijzenKnop")}
                           </button>
                         </p>
                       ) : (
                         <div className="space-y-2">
-                          <p className="text-xs font-medium text-muted-foreground">Toegewezen bezittingen:</p>
-                          {erfToewijzingen.map((t) => (
+                          <p className="text-xs font-medium text-muted-foreground">{t("toegewezenBezittingen")}</p>
+                          {erfToewijzingen.map((tw) => (
                             <div
-                              key={t.id}
+                              key={tw.id}
                               className="flex items-center justify-between rounded bg-muted/50 px-3 py-2"
                             >
                               <div>
-                                <p className="text-sm">{t.entityNaam}</p>
+                                <p className="text-sm">{tw.entityNaam}</p>
                                 <p className="text-xs text-muted-foreground">
-                                  {ENTITY_TYPE_LABELS[t.entityType] ?? t.entityType}
-                                  {t.instructies && ` — ${t.instructies}`}
+                                  {te(`entityType.${tw.entityType}`)}
+                                  {tw.instructies && ` — ${tw.instructies}`}
                                 </p>
                               </div>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleDeleteToewijzing(t.id)}
+                                onClick={() => handleDeleteToewijzing(tw.id)}
                               >
                                 <Trash2 className="h-3 w-3 text-red-500" />
                               </Button>
@@ -581,65 +579,65 @@ export default function ErfgenamenPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogHeader>
           <DialogTitle>
-            {editId ? "Erfgenaam bewerken" : "Erfgenaam toevoegen"}
+            {editId ? t("dialog.bewerken") : t("dialog.toevoegen")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Voornaam</Label>
+              <Label>{t("dialog.voornaam")}</Label>
               <Input
                 value={form.voornaam}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, voornaam: e.target.value }))
                 }
-                placeholder="Voornaam"
+                placeholder={t("dialog.voornaam")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Achternaam</Label>
+              <Label>{t("dialog.achternaam")}</Label>
               <Input
                 value={form.achternaam}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, achternaam: e.target.value }))
                 }
-                placeholder="Achternaam"
+                placeholder={t("dialog.achternaam")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Tussenvoegsel</Label>
+            <Label>{t("dialog.tussenvoegsel")}</Label>
             <Input
               value={form.tussenvoegsel}
               onChange={(e) =>
                 setForm((f) => ({ ...f, tussenvoegsel: e.target.value }))
               }
-              placeholder="bijv. van, de, van der"
+              placeholder={t("dialog.tussenvoegselPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Relatie</Label>
+            <Label>{t("dialog.relatie")}</Label>
             <Select
               value={form.relatie}
               onChange={(e) =>
                 setForm((f) => ({ ...f, relatie: e.target.value }))
               }
             >
-              <option value="">Selecteer...</option>
-              <option value="Partner">Partner</option>
-              <option value="Kind">Kind</option>
-              <option value="Ouder">Ouder</option>
-              <option value="Broer/Zus">Broer/Zus</option>
-              <option value="Kleinkind">Kleinkind</option>
-              <option value="Neef/Nicht">Neef/Nicht</option>
-              <option value="Vriend">Vriend(in)</option>
-              <option value="Organisatie">Organisatie</option>
-              <option value="Anders">Anders</option>
+              <option value="">{te("relatie.selecteer")}</option>
+              <option value="Partner">{te("relatie.Partner")}</option>
+              <option value="Kind">{te("relatie.Kind")}</option>
+              <option value="Ouder">{te("relatie.Ouder")}</option>
+              <option value="Broer/Zus">{te("relatie.Broer/Zus")}</option>
+              <option value="Kleinkind">{te("relatie.Kleinkind")}</option>
+              <option value="Neef/Nicht">{te("relatie.Neef/Nicht")}</option>
+              <option value="Vriend">{te("relatie.Vriend")}</option>
+              <option value="Organisatie">{te("relatie.Organisatie")}</option>
+              <option value="Anders">{te("relatie.Anders")}</option>
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>E-mail</Label>
+              <Label>{t("dialog.email")}</Label>
               <Input
                 type="email"
                 value={form.email}
@@ -649,7 +647,7 @@ export default function ErfgenamenPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Telefoon</Label>
+              <Label>{t("dialog.telefoon")}</Label>
               <Input
                 value={form.telefoon}
                 onChange={(e) =>
@@ -659,7 +657,7 @@ export default function ErfgenamenPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Geboortedatum</Label>
+            <Label>{t("dialog.geboortedatum")}</Label>
             <Input
               type="date"
               value={form.geboortedatum}
@@ -669,71 +667,71 @@ export default function ErfgenamenPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>BSN (optioneel)</Label> <HelpTooltip tekst="Het Burgerservicenummer is nodig voor notariële aktes. Dit veld wordt versleuteld opgeslagen." />
+            <Label>{t("dialog.bsn")}</Label> <HelpTooltip tekst={t("dialog.bsnTooltip")} />
             <Input
               value={form.bsn}
               onChange={(e) =>
                 setForm((f) => ({ ...f, bsn: e.target.value }))
               }
-              placeholder="123456789"
+              placeholder={t("dialog.bsnPlaceholder")}
             />
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2 col-span-2">
-              <Label>Adres</Label>
+              <Label>{t("dialog.adres")}</Label>
               <Input
                 value={form.adres}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, adres: e.target.value }))
                 }
-                placeholder="Straat en huisnummer"
+                placeholder={t("dialog.adresPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("dialog.postcode")}</Label>
               <Input
                 value={form.postcode}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, postcode: e.target.value }))
                 }
-                placeholder="1234 AB"
+                placeholder={t("dialog.postcodePlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Woonplaats</Label>
+            <Label>{t("dialog.woonplaats")}</Label>
             <Input
               value={form.woonplaats}
               onChange={(e) =>
                 setForm((f) => ({ ...f, woonplaats: e.target.value }))
               }
-              placeholder="Woonplaats"
+              placeholder={t("dialog.woonplaats")}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Legitimatie</Label>
+              <Label>{t("dialog.legitimatie")}</Label>
               <Select
                 value={form.legitimatieSoort}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, legitimatieSoort: e.target.value }))
                 }
               >
-                <option value="0">Geen</option>
-                <option value="1">Paspoort</option>
-                <option value="2">Identiteitskaart</option>
-                <option value="3">Rijbewijs</option>
+                <option value="0">{te("legitimatie.geen")}</option>
+                <option value="1">{te("legitimatie.paspoort")}</option>
+                <option value="2">{te("legitimatie.identiteitskaart")}</option>
+                <option value="3">{te("legitimatie.rijbewijs")}</option>
               </Select>
             </div>
             {form.legitimatieSoort !== "0" && (
               <div className="space-y-2">
-                <Label>Documentnummer</Label>
+                <Label>{t("dialog.documentnummer")}</Label>
                 <Input
                   value={form.legitimatieNummer}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, legitimatieNummer: e.target.value }))
                   }
-                  placeholder="Documentnummer"
+                  placeholder={t("dialog.documentnummer")}
                 />
               </div>
             )}
@@ -741,7 +739,7 @@ export default function ErfgenamenPage() {
           {form.legitimatieSoort !== "0" && (
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Datum afgifte</Label>
+                <Label>{t("dialog.datumAfgifte")}</Label>
                 <Input
                   type="date"
                   value={form.legitimatieDatumAfgifte}
@@ -751,7 +749,7 @@ export default function ErfgenamenPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Geldig tot</Label>
+                <Label>{t("dialog.geldigTot")}</Label>
                 <Input
                   type="date"
                   value={form.legitimatieGeldigTot}
@@ -765,10 +763,10 @@ export default function ErfgenamenPage() {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogOpen(false)}>
-            Annuleren
+            {t("dialog.annuleren")}
           </Button>
           <Button onClick={handleSave} disabled={saving}>
-            {saving ? "Opslaan..." : "Opslaan"}
+            {saving ? t("dialog.opslaanBezig") : t("dialog.opslaan")}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -776,21 +774,21 @@ export default function ErfgenamenPage() {
       {/* Toewijzing Dialog */}
       <Dialog open={toewijzingDialogOpen} onOpenChange={setToewijzingDialogOpen}>
         <DialogHeader>
-          <DialogTitle>Bezit toewijzen aan erfgenaam</DialogTitle>
+          <DialogTitle>{t("toewijzingDialog.titel")}</DialogTitle>
           <DialogDescription>
-            Wijs een bezitting, rekening of account toe aan een erfgenaam.
+            {t("toewijzingDialog.beschrijving")}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Erfgenaam</Label>
+            <Label>{t("toewijzingDialog.erfgenaam")}</Label>
             <Select
               value={toewijzingForm.erfgenaamId}
               onChange={(e) =>
                 setToewijzingForm((f) => ({ ...f, erfgenaamId: e.target.value }))
               }
             >
-              <option value="">Selecteer erfgenaam...</option>
+              <option value="">{t("toewijzingDialog.erfgenaamSelecteer")}</option>
               {erfgenamen.map((e) => (
                 <option key={e.id} value={e.id}>
                   {displayName(e)}
@@ -799,7 +797,7 @@ export default function ErfgenamenPage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Type bezit</Label>
+            <Label>{t("toewijzingDialog.typeBezit")}</Label>
             <Select
               value={toewijzingForm.entityType}
               onChange={(e) =>
@@ -810,45 +808,50 @@ export default function ErfgenamenPage() {
                 }))
               }
             >
-              <option value="">Alle types...</option>
-              {Object.entries(ENTITY_TYPE_LABELS).map(([key, label]) => (
+              <option value="">{t("toewijzingDialog.alleTypes")}</option>
+              {ENTITY_TYPE_KEYS.map((key) => (
                 <option key={key} value={key}>
-                  {label}
+                  {te(`entityType.${key}`)}
                 </option>
               ))}
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Bezit</Label>
+            <Label>{t("toewijzingDialog.bezit")}</Label>
             <Select
               value={toewijzingForm.entityId}
-              onChange={(e) =>
-                setToewijzingForm((f) => ({ ...f, entityId: e.target.value }))
-              }
+              onChange={(e) => {
+                const selectedAsset = filteredAssets.find(a => a.id === e.target.value);
+                setToewijzingForm((f) => ({
+                  ...f,
+                  entityId: e.target.value,
+                  entityType: selectedAsset?.type ?? f.entityType,
+                }));
+              }}
             >
-              <option value="">Selecteer bezit...</option>
+              <option value="">{t("toewijzingDialog.bezitSelecteer")}</option>
               {filteredAssets.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.naam} ({ENTITY_TYPE_LABELS[a.type] ?? a.type})
+                  {a.naam} ({te(`entityType.${a.type}`)})
                 </option>
               ))}
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Instructies (optioneel)</Label>
+            <Label>{t("toewijzingDialog.instructies")}</Label>
             <Textarea
               value={toewijzingForm.instructies}
               onChange={(e) =>
                 setToewijzingForm((f) => ({ ...f, instructies: e.target.value }))
               }
-              placeholder="Bijv. 'Bewaar dit als aandenken' of 'Verkopen en opbrengst verdelen'"
+              placeholder={t("toewijzingDialog.instructiesPlaceholder")}
               rows={3}
             />
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setToewijzingDialogOpen(false)}>
-            Annuleren
+            {t("toewijzingDialog.annuleren")}
           </Button>
           <Button
             onClick={handleSaveToewijzing}
@@ -859,7 +862,7 @@ export default function ErfgenamenPage() {
               !toewijzingForm.entityId
             }
           >
-            {toewijzingSaving ? "Opslaan..." : "Toewijzen"}
+            {toewijzingSaving ? t("toewijzingDialog.opslaanBezig") : t("toewijzingDialog.toewijzen")}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -867,11 +870,9 @@ export default function ErfgenamenPage() {
       {/* Shamir Generate Dialog */}
       <Dialog open={shamirDialogOpen} onOpenChange={closeShamirDialog}>
         <DialogHeader>
-          <DialogTitle>Noodcodes Genereren</DialogTitle>
+          <DialogTitle>{t("shamir.titel")}</DialogTitle>
           <DialogDescription>
-            Verdeel uw hoofdwachtwoord in {erfgenamen.length} unieke noodcodes. Alleen
-            wanneer het minimum aantal personen (drempel) hun code samenvoegt,
-            kan het wachtwoord worden gereconstrueerd.
+            {t("shamir.beschrijving", { aantal: erfgenamen.length })}
           </DialogDescription>
         </DialogHeader>
 
@@ -880,24 +881,22 @@ export default function ErfgenamenPage() {
             <div className="space-y-4 py-4">
               <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
                 <p className="text-sm text-amber-800">
-                  <strong>Waarschuwing:</strong> De noodcodes worden NIET
-                  opgeslagen in Lumio. Noteer ze zorgvuldig of druk ze af.
-                  Verloren codes kunnen niet worden hersteld.
+                  <strong>{t("shamir.waarschuwing")}</strong> {t("shamir.waarschuwingTekst")}
                 </p>
               </div>
               <div className="space-y-2">
-                <Label>Uw hoofdwachtwoord</Label>
+                <Label>{t("shamir.wachtwoord")}</Label>
                 <Input
                   type="password"
                   value={shamirPassword}
                   onChange={(e) => setShamirPassword(e.target.value)}
-                  placeholder="Voer uw Lumio hoofdwachtwoord in"
+                  placeholder={t("shamir.wachtwoordPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
                 <Label>
-                  Drempel (minimum aantal noodcodes voor reconstructie)
-                  <HelpTooltip tekst="De drempel bepaalt hoeveel erfgenamen samen nodig zijn om uw hoofdwachtwoord te reconstrueren. Bij een drempel van 3 moeten minimaal 3 erfgenamen hun code samenvoegen. Een hogere drempel is veiliger, maar vereist meer samenwerking." />
+                  {t("shamir.drempel")}
+                  <HelpTooltip tekst={t("shamir.drempelTooltip")} />
                 </Label>
                 <Select
                   value={shamirThreshold}
@@ -908,22 +907,24 @@ export default function ErfgenamenPage() {
                     (_, i) => i + 2
                   ).map((n) => (
                     <option key={n} value={n.toString()}>
-                      {n} van {erfgenamen.length} personen
+                      {t("shamir.drempelOptie", { n, totaal: erfgenamen.length })}
                     </option>
                   ))}
                 </Select>
               </div>
               <div className="text-sm text-muted-foreground">
                 <p>
-                  Er worden <strong>{erfgenamen.length}</strong> delen
-                  gegenereerd, waarvan er minimaal{" "}
-                  <strong>{shamirThreshold}</strong> nodig zijn.
+                  {t.rich("shamir.delenInfo", {
+                    aantal: erfgenamen.length,
+                    drempel: shamirThreshold,
+                    strong: (chunks) => <strong>{chunks}</strong>
+                  })}
                 </p>
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={closeShamirDialog}>
-                Annuleren
+                {t("shamir.annuleren")}
               </Button>
               <Button
                 onClick={handleGenerateShares}
@@ -932,12 +933,12 @@ export default function ErfgenamenPage() {
                 {shamirGenerating ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Genereren...
+                    {t("shamir.genererenBezig")}
                   </>
                 ) : (
                   <>
                     <KeyRound className="h-4 w-4 mr-2" />
-                    Genereren
+                    {t("shamir.genereren")}
                   </>
                 )}
               </Button>
@@ -946,14 +947,11 @@ export default function ErfgenamenPage() {
         ) : (
           <>
             <div className="space-y-4 py-4">
-              <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-                <p className="text-sm text-green-800">
-                  <strong>Succes!</strong> Er zijn{" "}
-                  {generatedShares.totaalAantalDelen} delen gegenereerd met een
-                  drempel van {generatedShares.drempel}. Kopieer elk deel en
-                  geef het aan de betreffende erfgenaam.
-                </p>
-              </div>
+              <Alert variant="success">
+                <AlertDescription>
+                  <strong>{t("shamir.succes")}</strong> {t("shamir.succesTekst", { aantal: generatedShares.totaalAantalDelen, drempel: generatedShares.drempel })}
+                </AlertDescription>
+              </Alert>
               <div className="space-y-3">
                 {generatedShares.delen.map((share, i) => (
                   <div
@@ -962,8 +960,8 @@ export default function ErfgenamenPage() {
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">
-                        Deel {share.index} &mdash;{" "}
-                        {erfgenamen[i] ? displayName(erfgenamen[i]) : `Erfgenaam ${i + 1}`}
+                        {t("shamir.deel", { index: share.index })} &mdash;{" "}
+                        {erfgenamen[i] ? displayName(erfgenamen[i]) : t("shamir.erfgenaamFallback", { nummer: i + 1 })}
                       </span>
                       <Button
                         variant="ghost"
@@ -972,11 +970,11 @@ export default function ErfgenamenPage() {
                       >
                         {copiedIndex === share.index ? (
                           <>
-                            <Check className="h-3 w-3 mr-1" /> Gekopieerd
+                            <Check className="h-3 w-3 mr-1" /> {t("shamir.gekopieerd")}
                           </>
                         ) : (
                           <>
-                            <Copy className="h-3 w-3 mr-1" /> Kopiëren
+                            <Copy className="h-3 w-3 mr-1" /> {t("shamir.kopieren")}
                           </>
                         )}
                       </Button>
@@ -989,7 +987,7 @@ export default function ErfgenamenPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={closeShamirDialog}>Sluiten</Button>
+              <Button onClick={closeShamirDialog}>{t("shamir.sluiten")}</Button>
             </DialogFooter>
           </>
         )}

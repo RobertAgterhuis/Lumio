@@ -1,15 +1,19 @@
 using FluentValidation;
 using Lumio.Api.Dtos.AssetRegistry;
+using Lumio.Api.Rules.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Validators;
 
 public class BankrekeningUpsertRequestValidator : AbstractValidator<BankrekeningUpsertRequest>
 {
-    public BankrekeningUpsertRequestValidator()
+    public BankrekeningUpsertRequestValidator(IOptions<ValidatieOptions> validatie)
     {
+        var regex = validatie.Value.IbanRegex;
+
         RuleFor(x => x.BankNaam).NotEmpty();
         RuleFor(x => x.IBAN).NotEmpty()
-            .Matches(@"^[A-Z]{2}\d{2}[A-Z0-9]{4,30}$")
+            .Matches(regex)
             .When(x => !string.IsNullOrEmpty(x.IBAN))
             .WithMessage("IBAN heeft een ongeldig formaat.");
     }

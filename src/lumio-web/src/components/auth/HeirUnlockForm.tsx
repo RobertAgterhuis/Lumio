@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
+import { useTranslations } from "next-intl";
 import { KeyRound, Plus, Trash2, Loader2, Unlock } from "lucide-react";
 
 export function HeirUnlockForm() {
@@ -20,6 +21,7 @@ export function HeirUnlockForm() {
   const [shares, setShares] = useState<string[]>([""]);
   const [error, setError] = useState<string | null>(null);
   const [reconstructing, setReconstructing] = useState(false);
+  const t = useTranslations("auth.erfgenaam");
 
   const addShare = () => setShares((s) => [...s, ""]);
 
@@ -33,7 +35,7 @@ export function HeirUnlockForm() {
     setError(null);
     const validShares = shares.filter((s) => s.trim().length > 0);
     if (validShares.length < 2) {
-      setError("Minimaal 2 noodcodes zijn vereist.");
+      setError(t("minimaalCodes"));
       return;
     }
 
@@ -54,9 +56,7 @@ export function HeirUnlockForm() {
       setReadOnly(true);
       setUnlocked(true);
     } catch {
-      setError(
-        "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd."
-      );
+      setError(t("reconstructieMislukt"));
     } finally {
       setReconstructing(false);
     }
@@ -68,10 +68,9 @@ export function HeirUnlockForm() {
         <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50">
           <KeyRound className="h-6 w-6 text-indigo-600" />
         </div>
-        <CardTitle>Erfgenaam Toegang</CardTitle>
+        <CardTitle>{t("titel")}</CardTitle>
         <CardDescription>
-          Voer de noodcodes in om het hoofdwachtwoord te
-          reconstrueren. U heeft minimaal het drempelaantal codes nodig.
+          {t("beschrijving")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -80,11 +79,11 @@ export function HeirUnlockForm() {
             {shares.map((share, i) => (
               <div key={i} className="flex gap-2">
                 <div className="flex-1 space-y-1">
-                  <Label className="text-xs">Code {i + 1}</Label>
+                  <Label className="text-xs">{t("codeLabel", { nummer: i + 1 })}</Label>
                   <Input
                     value={share}
                     onChange={(e) => updateShare(i, e.target.value)}
-                    placeholder="Plak hier de noodcode..."
+                    placeholder={t("codePlaceholder")}
                     className="font-mono text-xs"
                   />
                 </div>
@@ -108,7 +107,7 @@ export function HeirUnlockForm() {
             onClick={addShare}
             className="w-full"
           >
-            <Plus className="h-4 w-4 mr-2" /> Nog een code toevoegen
+            <Plus className="h-4 w-4 mr-2" /> {t("codeToevoegen")}
           </Button>
 
           {error && (
@@ -123,12 +122,12 @@ export function HeirUnlockForm() {
             {reconstructing ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Reconstrueren...
+                {t("bezig")}
               </>
             ) : (
               <>
                 <Unlock className="h-4 w-4 mr-2" />
-                Ontgrendelen met noodcodes
+                {t("ontgrendelen")}
               </>
             )}
           </Button>

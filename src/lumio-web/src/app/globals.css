@@ -1,59 +1,125 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* =============================================================================
+   TAILWIND THEME — Semantic token → utility class mapping
+
+   Maps base primitives (from tokens.css) to Tailwind utility names.
+   All values are direct hex so opacity modifiers (bg-primary/10) work correctly.
+   Dark mode overrides below swap values per-token.
+   ============================================================================= */
 
 @theme {
-  --color-primary: #1e3a5f;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #f0f4f8;
-  --color-secondary-foreground: #1e3a5f;
-  --color-accent: #2d6a9f;
-  --color-accent-foreground: #ffffff;
-  --color-destructive: #dc2626;
-  --color-destructive-foreground: #ffffff;
-  --color-muted: #f1f5f9;
-  --color-muted-foreground: #64748b;
-  --color-border: #e2e8f0;
-  --color-input: #e2e8f0;
-  --color-ring: #2d6a9f;
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
-  --color-card: #ffffff;
-  --color-card-foreground: #0f172a;
-  --color-sidebar: #f8fafc;
-  --color-sidebar-foreground: #334155;
-  --color-sidebar-active: #1e3a5f;
-  --color-sidebar-active-foreground: #ffffff;
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+  /* ── Primary (teal) ── */
+  --color-primary: #355E68;
+  --color-primary-foreground: #FFFFFF;
+  --color-primary-700: #2C4A52;
+  --color-primary-600: #355E68;
+  --color-primary-500: #4F7A83;
+  --color-primary-400: #7A9EA6;
+  --color-primary-100: #E6EFF1;
+  --color-primary-50:  #F3F7F8;
+
+  /* ── Secondary ── */
+  --color-secondary: #F3F4F6;
+  --color-secondary-foreground: #2C4A52;
+
+  /* ── Accent ── */
+  --color-accent: #4F7A83;
+  --color-accent-foreground: #FFFFFF;
+
+  /* ── Destructive / Danger ── */
+  --color-destructive: #B44A4A;
+  --color-destructive-foreground: #FFFFFF;
+
+  /* ── Muted ── */
+  --color-muted: #F3F4F6;
+  --color-muted-foreground: #6B7280;
+
+  /* ── Borders & Inputs ── */
+  --color-border: #E5E7EB;
+  --color-input: #E5E7EB;
+  --color-ring: #4F7A83;
+
+  /* ── Background / Foreground ── */
+  --color-background: #F3F7F8;
+  --color-foreground: #1F2933;
+
+  /* ── Card ── */
+  --color-card: #FFFFFF;
+  --color-card-foreground: #1F2933;
+
+  /* ── Sidebar ── */
+  --color-sidebar: #F9FAFB;
+  --color-sidebar-foreground: #4B5563;
+  --color-sidebar-active: #355E68;
+  --color-sidebar-active-foreground: #FFFFFF;
+
+  /* ── Status ── */
+  --color-success: #5E8C61;
+  --color-success-100: #E8F5E9;
+  --color-warning: #D4A017;
+  --color-warning-100: #FFF8E1;
+  --color-danger: #B44A4A;
+  --color-danger-100: #FDE8E8;
+  --color-info: #3A506B;
+  --color-info-100: #E3EDF5;
+
+  /* ── Sage (nature / calm) ── */
+  --color-sage: #6B8E7A;
+  --color-sage-100: #E8F0EB;
+
+  /* ── Secure (blue — security signaling) ── */
+  --color-secure: #2563EB;
+  --color-secure-100: #DBEAFE;
+
+  /* ── Radius (8pt grid) ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
 }
 
-/* Dark mode overrides */
+/* ── Dark Mode overrides ─────────────────────────────────────────────────────── */
 .dark {
-  --color-primary: #60a5fa;
-  --color-primary-foreground: #0f172a;
-  --color-secondary: #1e293b;
-  --color-secondary-foreground: #e2e8f0;
-  --color-accent: #3b82f6;
-  --color-accent-foreground: #ffffff;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
-  --color-muted: #1e293b;
-  --color-muted-foreground: #94a3b8;
+  --color-primary: #8CC4CE;
+  --color-primary-foreground: #1F2933;
+  --color-primary-700: #7AB5C0;
+  --color-primary-600: #8CC4CE;
+  --color-primary-500: #9ED3DC;
+  --color-primary-400: #5C9AA5;
+  --color-primary-100: #1A2C30;
+  --color-primary-50:  #0F1A1D;
+  --color-secondary: #1E293B;
+  --color-secondary-foreground: #E5E7EB;
+  --color-accent: #60A5FA;
+  --color-accent-foreground: #FFFFFF;
+  --color-destructive: #E06060;
+  --color-destructive-foreground: #FFFFFF;
+  --color-muted: #1E293B;
+  --color-muted-foreground: #9CA3AF;
   --color-border: #334155;
   --color-input: #334155;
-  --color-ring: #3b82f6;
-  --color-background: #0f172a;
-  --color-foreground: #e2e8f0;
-  --color-card: #1e293b;
-  --color-card-foreground: #e2e8f0;
-  --color-sidebar: #0f172a;
-  --color-sidebar-foreground: #94a3b8;
-  --color-sidebar-active: #3b82f6;
-  --color-sidebar-active-foreground: #ffffff;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
+  --color-ring: #60A5FA;
+  --color-background: #0F172A;
+  --color-foreground: #E5E7EB;
+  --color-card: #1E293B;
+  --color-card-foreground: #E5E7EB;
+  --color-sidebar: #0F172A;
+  --color-sidebar-foreground: #9CA3AF;
+  --color-sidebar-active: #60A5FA;
+  --color-sidebar-active-foreground: #FFFFFF;
+  --color-success: #7DBF80;
+  --color-success-100: #1A2E1A;
+  --color-warning: #F0C040;
+  --color-warning-100: #2E2A10;
+  --color-danger: #E06060;
+  --color-danger-100: #2E1A1A;
+  --color-info: #6A8AA6;
+  --color-info-100: #1A2430;
+  --color-sage: #8CB89E;
+  --color-sage-100: #1A2A20;
+  --color-secure: #60A5FA;
+  --color-secure-100: #1E2A40;
 }
 
 body {

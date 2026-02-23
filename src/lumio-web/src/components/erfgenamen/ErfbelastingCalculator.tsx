@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
-import { Calculator, AlertTriangle, TrendingDown, Euro } from "lucide-react";
+import { Calculator, TrendingDown, Euro } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 
 interface ErfbelastingResultaat {
   erfgenaamId: string;
@@ -25,18 +27,20 @@ interface ErfbelastingResponse {
   disclaimer: string;
 }
 
-function formatBedrag(bedrag: number): string {
-  return new Intl.NumberFormat("nl-NL", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: 2,
-  }).format(bedrag);
-}
-
 export function ErfbelastingCalculator() {
+  const t = useTranslations("erfbelasting");
+  const locale = useLocale();
   const [data, setData] = useState<ErfbelastingResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const formatBedrag = (bedrag: number): string => {
+    return new Intl.NumberFormat(locale === "en" ? "en-NL" : "nl-NL", {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 2,
+    }).format(bedrag);
+  };
 
   const berekenen = async () => {
     setLoading(true);
@@ -62,7 +66,7 @@ export function ErfbelastingCalculator() {
         className="gap-2"
       >
         <Calculator className="h-4 w-4" />
-        {loading ? "Berekenen..." : "Erfbelasting berekenen"}
+        {loading ? t("berekenBezig") : t("berekenen")}
       </Button>
 
       {open && data && (
@@ -71,7 +75,7 @@ export function ErfbelastingCalculator() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Euro className="h-5 w-5 text-primary" />
-                Indicatieve erfbelasting
+                {t("titel")}
               </CardTitle>
               <Button
                 variant="ghost"
@@ -79,14 +83,14 @@ export function ErfbelastingCalculator() {
                 onClick={() => setOpen(false)}
                 className="text-xs"
               >
-                Sluiten
+                {t("sluiten")}
               </Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Netto nalatenschap */}
             <div className="flex items-center justify-between rounded-md border p-3 bg-muted/50">
-              <span className="text-sm font-medium">Netto nalatenschap</span>
+              <span className="text-sm font-medium">{t("nettoNalatenschap")}</span>
               <span className="text-sm font-bold">
                 {formatBedrag(data.nettoNalatenschap)}
               </span>
@@ -95,18 +99,18 @@ export function ErfbelastingCalculator() {
             {/* Per erfgenaam */}
             {data.resultaten.length > 0 ? (
               <div className="space-y-3">
-                <h3 className="text-sm font-semibold">Per erfgenaam</h3>
+                <h3 className="text-sm font-semibold">{t("perErfgenaam")}</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b text-left text-muted-foreground">
-                        <th className="pb-2 pr-4">Naam</th>
-                        <th className="pb-2 pr-4">Tariefgroep</th>
-                        <th className="pb-2 pr-4 text-right">Erfdeel</th>
-                        <th className="pb-2 pr-4 text-right">Vrijstelling</th>
-                        <th className="pb-2 pr-4 text-right">Belastbaar</th>
-                        <th className="pb-2 pr-4 text-right">Erfbelasting</th>
-                        <th className="pb-2 text-right">Netto</th>
+                        <th className="pb-2 pr-4">{t("kolomNaam")}</th>
+                        <th className="pb-2 pr-4">{t("kolomTariefgroep")}</th>
+                        <th className="pb-2 pr-4 text-right">{t("kolomErfdeel")}</th>
+                        <th className="pb-2 pr-4 text-right">{t("kolomVrijstelling")}</th>
+                        <th className="pb-2 pr-4 text-right">{t("kolomBelastbaar")}</th>
+                        <th className="pb-2 pr-4 text-right">{t("kolomErfbelasting")}</th>
+                        <th className="pb-2 text-right">{t("kolomNetto")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -137,7 +141,7 @@ export function ErfbelastingCalculator() {
                     <tfoot>
                       <tr className="border-t font-semibold">
                         <td className="pt-2 pr-4" colSpan={5}>
-                          Totaal erfbelasting
+                          {t("totaalErfbelasting")}
                         </td>
                         <td className="pt-2 pr-4 text-right text-red-700">
                           <TrendingDown className="inline h-3 w-3 mr-1" />
@@ -163,17 +167,16 @@ export function ErfbelastingCalculator() {
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Voeg eerst erfgenamen toe om de erfbelasting te berekenen.
+                {t("geenErfgenamen")}
               </p>
             )}
 
             {/* Disclaimer */}
-            <div className="flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
-              <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-              <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+            <Alert variant="warning">
+              <AlertDescription className="text-xs leading-relaxed">
                 {data.disclaimer}
-              </p>
-            </div>
+              </AlertDescription>
+            </Alert>
           </CardContent>
         </Card>
       )}

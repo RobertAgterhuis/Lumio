@@ -8,10 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 import { Stethoscope, Pencil } from "lucide-react";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { PersonSelect } from "@/components/PersonSelect";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 
 interface Wilsverklaring {
   id: string;
@@ -36,6 +40,7 @@ interface Wilsverklaring {
 }
 
 export default function EuthanasiePage() {
+  const t = useTranslations("euthanasie");
   const [data, setData] = useState<Wilsverklaring | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -104,7 +109,7 @@ export default function EuthanasiePage() {
       setData(updated);
       setEditOpen(false);
     } catch (err) {
-      setEditError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
   };
 
@@ -119,7 +124,7 @@ export default function EuthanasiePage() {
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
@@ -127,9 +132,9 @@ export default function EuthanasiePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Wilsverklaring Euthanasie</h1>
+          <h1 className="text-3xl font-bold">{t("titel")}</h1>
           <p className="text-muted-foreground mt-1">
-            Uw wensen conform de WGBO
+            {t("beschrijving")}
           </p>
           <VoorbeeldDialog domein="euthanasie" />
           <SectieNotitie sectie="euthanasie" />
@@ -137,18 +142,17 @@ export default function EuthanasiePage() {
         <Link href="/euthanasie/wizard">
           <Button>
             <Stethoscope className="h-4 w-4 mr-2" />
-            {data ? "Bewerken" : "Wizard starten"}
+            {data ? t("bewerken") : t("wizardStarten")}
           </Button>
         </Link>
       </div>
 
+      <DomainStatusBanner domein="euthanasie" />
+
       <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-        <p className="text-sm text-purple-800">
-          <strong>Belangrijk:</strong> Een schriftelijke wilsverklaring
-          euthanasie is geen garantie dat euthanasie wordt uitgevoerd. De arts
-          moet altijd de zorgvuldigheidseisen van de Wet toetsing
-          levensbeëindiging (Wtl) toetsen.
-        </p>
+        <p className="text-sm text-purple-800"
+          dangerouslySetInnerHTML={{ __html: t.raw("disclaimer") }}
+        />
       </div>
 
       {!data ? (
@@ -156,10 +160,10 @@ export default function EuthanasiePage() {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Stethoscope className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
-              Nog geen wilsverklaring vastgelegd.
+              {t("geenWilsverklaring")}
             </p>
             <Link href="/euthanasie/wizard">
-              <Button className="mt-4">Wizard starten</Button>
+              <Button className="mt-4">{t("wizardStarten")}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -169,33 +173,33 @@ export default function EuthanasiePage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Wilsverklaring</CardTitle>
+                <CardTitle>{t("wilsverklaringCard.titel")}</CardTitle>
                 <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <p>
-                <span className="text-muted-foreground">Wil euthanasie:</span>{" "}
-                {data.wilEuthanasie ? "Ja" : "Nee"}
+                <span className="text-muted-foreground">{t("wilsverklaringCard.wilEuthanasie")}</span>{" "}
+                {data.wilEuthanasie ? t("ja") : t("nee")}
               </p>
               {data.datumOndertekening && (
                 <p>
                   <span className="text-muted-foreground">
-                    Datum ondertekening:
+                    {t("wilsverklaringCard.datumOndertekening")}
                   </span>{" "}
                   {data.datumOndertekening}
                 </p>
               )}
               {data.situatieBeschrijving && (
                 <p>
-                  <span className="text-muted-foreground">Situatie:</span>{" "}
+                  <span className="text-muted-foreground">{t("wilsverklaringCard.situatie")}</span>{" "}
                   {data.situatieBeschrijving}
                 </p>
               )}
               {data.aanvullendeWensen && (
                 <p>
                   <span className="text-muted-foreground">
-                    Aanvullende wensen:
+                    {t("wilsverklaringCard.aanvullendeWensen")}
                   </span>{" "}
                   {data.aanvullendeWensen}
                 </p>
@@ -205,58 +209,58 @@ export default function EuthanasiePage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Huisarts & Vertegenwoordiger</CardTitle>
+                <CardTitle>{t("contactCard.titel")}</CardTitle>
                 <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               {data.huisarts && (
                 <p>
-                  <span className="text-muted-foreground">Huisarts:</span>{" "}
+                  <span className="text-muted-foreground">{t("contactCard.huisarts")}</span>{" "}
                   {data.huisarts}
                 </p>
               )}
               {data.huisartsPraktijk && (
                 <p>
-                  <span className="text-muted-foreground">Praktijk:</span>{" "}
+                  <span className="text-muted-foreground">{t("contactCard.praktijk")}</span>{" "}
                   {data.huisartsPraktijk}
                 </p>
               )}
               {data.huisartsTelefoon && (
                 <p>
-                  <span className="text-muted-foreground">Telefoon huisarts:</span>{" "}
+                  <span className="text-muted-foreground">{t("contactCard.telefoonHuisarts")}</span>{" "}
                   {data.huisartsTelefoon}
                 </p>
               )}
               {data.huisartsEmail && (
                 <p>
-                  <span className="text-muted-foreground">E-mail huisarts:</span>{" "}
+                  <span className="text-muted-foreground">{t("contactCard.emailHuisarts")}</span>{" "}
                   {data.huisartsEmail}
                 </p>
               )}
               {data.vertegenwoordigerNaam && (
                 <p>
                   <span className="text-muted-foreground">
-                    Vertegenwoordiger:
+                    {t("contactCard.vertegenwoordiger")}
                   </span>{" "}
                   {data.vertegenwoordigerNaam} ({data.vertegenwoordigerRelatie})
                 </p>
               )}
               {data.vertegenwoordigerTelefoon && (
                 <p>
-                  <span className="text-muted-foreground">Tel. vertegenwoordiger:</span>{" "}
+                  <span className="text-muted-foreground">{t("contactCard.telVertegenwoordiger")}</span>{" "}
                   {data.vertegenwoordigerTelefoon}
                 </p>
               )}
               {data.vertegenwoordigerEmail && (
                 <p>
-                  <span className="text-muted-foreground">E-mail vertegenwoordiger:</span>{" "}
+                  <span className="text-muted-foreground">{t("contactCard.emailVertegenwoordiger")}</span>{" "}
                   {data.vertegenwoordigerEmail}
                 </p>
               )}
               {data.vertegenwoordigerAdres && (
                 <p>
-                  <span className="text-muted-foreground">Adres vertegenwoordiger:</span>{" "}
+                  <span className="text-muted-foreground">{t("contactCard.adresVertegenwoordiger")}</span>{" "}
                   {data.vertegenwoordigerAdres}
                   {data.vertegenwoordigerPostcode ? `, ${data.vertegenwoordigerPostcode}` : ""}
                   {data.vertegenwoordigerWoonplaats ? ` ${data.vertegenwoordigerWoonplaats}` : ""}
@@ -270,17 +274,17 @@ export default function EuthanasiePage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Aanvullende clausules</CardTitle>
+                <CardTitle>{t("clausulesCard.titel")}</CardTitle>
                 <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <p><span className="text-muted-foreground">Dementieclausule:</span> {data.dementieClausule ? "Ja" : "Nee"}</p>
+              <p><span className="text-muted-foreground">{t("clausulesCard.dementieclausule")}</span> {data.dementieClausule ? t("ja") : t("nee")}</p>
               {data.dementieClausuleToelichting && (
-                <p><span className="text-muted-foreground">Toelichting:</span> {data.dementieClausuleToelichting}</p>
+                <p><span className="text-muted-foreground">{t("clausulesCard.toelichting")}</span> {data.dementieClausuleToelichting}</p>
               )}
               {data.behandelVerbod && (
-                <p><span className="text-muted-foreground">Behandelverbod:</span> {data.behandelVerbod}</p>
+                <p><span className="text-muted-foreground">{t("clausulesCard.behandelverbod")}</span> {data.behandelVerbod}</p>
               )}
             </CardContent>
           </Card>
@@ -291,7 +295,7 @@ export default function EuthanasiePage() {
       {/* P-S5: Direct-edit dialog */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogHeader>
-          <DialogTitle>Wilsverklaring bewerken</DialogTitle>
+          <DialogTitle>{t("editDialog.titel")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
           {editError && (
@@ -299,100 +303,93 @@ export default function EuthanasiePage() {
               <p className="text-sm text-red-800">{editError}</p>
             </div>
           )}
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="wil-euthanasie" checked={editForm.wilEuthanasie} onChange={(e) => setEditForm((f) => ({ ...f, wilEuthanasie: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="wil-euthanasie">Wil euthanasie</Label>
+          <Checkbox id="wil-euthanasie" checked={editForm.wilEuthanasie} onChange={(e) => setEditForm((f) => ({ ...f, wilEuthanasie: e.target.checked }))} label={t("editDialog.wilEuthanasie")} />
+          <div className="space-y-2">
+            <Label>{t("editDialog.datumOndertekening")}</Label>
           </div>
           <div className="space-y-2">
-            <Label>Datum ondertekening</Label>
-            <Input type="date" value={editForm.datumOndertekening} onChange={(e) => setEditForm((f) => ({ ...f, datumOndertekening: e.target.value }))} />
+            <Label>{t("editDialog.situatiebeschrijving")}</Label>
           </div>
           <div className="space-y-2">
-            <Label>Situatiebeschrijving</Label>
-            <Textarea value={editForm.situatieBeschrijving} onChange={(e) => setEditForm((f) => ({ ...f, situatieBeschrijving: e.target.value }))} rows={3} />
-          </div>
-          <div className="space-y-2">
-            <Label>Aanvullende wensen</Label>
-            <Textarea value={editForm.aanvullendeWensen} onChange={(e) => setEditForm((f) => ({ ...f, aanvullendeWensen: e.target.value }))} rows={2} />
+            <Label>{t("editDialog.aanvullendeWensen")}</Label>
           </div>
           <hr />
-          <p className="text-sm font-medium text-muted-foreground">Huisarts</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieHuisarts")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Naam huisarts</Label>
-              <Input value={editForm.huisarts} onChange={(e) => setEditForm((f) => ({ ...f, huisarts: e.target.value }))} />
+              <Label>{t("editDialog.naamHuisarts")}</Label>
+              <PersonSelect
+                value={editForm.huisarts}
+                onChange={(v) => setEditForm((f) => ({ ...f, huisarts: v }))}
+                onPersonSelect={(p) => setEditForm((f) => ({ ...f, huisarts: p.naam, huisartsTelefoon: p.telefoon ?? f.huisartsTelefoon, huisartsEmail: p.email ?? f.huisartsEmail }))}
+                source={{ noodcontactRol: "Huisarts" }}
+              />
             </div>
             <div className="space-y-2">
-              <Label>Praktijk</Label>
-              <Input value={editForm.huisartsPraktijk} onChange={(e) => setEditForm((f) => ({ ...f, huisartsPraktijk: e.target.value }))} />
+              <Label>{t("editDialog.praktijk")}</Label>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Telefoon</Label>
+              <Label>{t("editDialog.telefoon")}</Label>
               <Input value={editForm.huisartsTelefoon} onChange={(e) => setEditForm((f) => ({ ...f, huisartsTelefoon: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>E-mail</Label>
-              <Input value={editForm.huisartsEmail} onChange={(e) => setEditForm((f) => ({ ...f, huisartsEmail: e.target.value }))} />
+              <Label>{t("editDialog.email")}</Label>
             </div>
           </div>
           <hr />
-          <p className="text-sm font-medium text-muted-foreground">Vertegenwoordiger</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieVertegenwoordiger")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Naam</Label>
-              <Input value={editForm.vertegenwoordigerNaam} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerNaam: e.target.value }))} />
+              <Label>{t("editDialog.naam")}</Label>
+              <PersonSelect
+                value={editForm.vertegenwoordigerNaam}
+                onChange={(v) => setEditForm((f) => ({ ...f, vertegenwoordigerNaam: v }))}
+                onPersonSelect={(p) => setEditForm((f) => ({ ...f, vertegenwoordigerNaam: p.naam, vertegenwoordigerRelatie: p.relatie ?? f.vertegenwoordigerRelatie, vertegenwoordigerTelefoon: p.telefoon ?? f.vertegenwoordigerTelefoon, vertegenwoordigerEmail: p.email ?? f.vertegenwoordigerEmail, vertegenwoordigerAdres: p.adres ?? f.vertegenwoordigerAdres, vertegenwoordigerPostcode: p.postcode ?? f.vertegenwoordigerPostcode, vertegenwoordigerWoonplaats: p.woonplaats ?? f.vertegenwoordigerWoonplaats }))}
+                source="both"
+              />
             </div>
             <div className="space-y-2">
-              <Label>Relatie</Label>
-              <Input value={editForm.vertegenwoordigerRelatie} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerRelatie: e.target.value }))} />
+              <Label>{t("editDialog.relatie")}</Label>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Telefoon</Label>
+              <Label>{t("editDialog.telefoon")}</Label>
               <Input value={editForm.vertegenwoordigerTelefoon} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerTelefoon: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>E-mail</Label>
-              <Input value={editForm.vertegenwoordigerEmail} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerEmail: e.target.value }))} />
+              <Label>{t("editDialog.email")}</Label>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
-              <Label>Adres</Label>
-              <Input value={editForm.vertegenwoordigerAdres} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerAdres: e.target.value }))} />
+              <Label>{t("editDialog.adres")}</Label>
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
-              <Input value={editForm.vertegenwoordigerPostcode} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerPostcode: e.target.value }))} />
+              <Label>{t("editDialog.postcode")}</Label>
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Woonplaats</Label>
-            <Input value={editForm.vertegenwoordigerWoonplaats} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerWoonplaats: e.target.value }))} />
+            <Label>{t("editDialog.woonplaats")}</Label>
           </div>
           <hr />
-          <p className="text-sm font-medium text-muted-foreground">Aanvullende clausules</p>
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="dementie-clausule" checked={editForm.dementieClausule} onChange={(e) => setEditForm((f) => ({ ...f, dementieClausule: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="dementie-clausule">Dementieclausule</Label>
-          </div>
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieClausules")}</p>
+          <Checkbox id="dementie-clausule" checked={editForm.dementieClausule} onChange={(e) => setEditForm((f) => ({ ...f, dementieClausule: e.target.checked }))} label={t("editDialog.dementieclausule")} />
           {editForm.dementieClausule && (
             <div className="space-y-2">
-              <Label>Toelichting dementieclausule</Label>
-              <Textarea value={editForm.dementieClausuleToelichting} onChange={(e) => setEditForm((f) => ({ ...f, dementieClausuleToelichting: e.target.value }))} rows={2} />
+              <Label>{t("editDialog.toelichtingDementie")}</Label>
             </div>
           )}
           <div className="space-y-2">
-            <Label>Behandelverbod</Label>
-            <Textarea value={editForm.behandelVerbod} onChange={(e) => setEditForm((f) => ({ ...f, behandelVerbod: e.target.value }))} rows={2} placeholder="Welke behandelingen wilt u weigeren?" />
+            <Label>{t("editDialog.behandelverbod")}</Label>
+            <Textarea value={editForm.behandelVerbod} onChange={(e) => setEditForm((f) => ({ ...f, behandelVerbod: e.target.value }))} rows={2} placeholder={t("editDialog.behandelverbodPlaceholder")} />
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setEditOpen(false)}>Annuleren</Button>
-          <Button onClick={saveEdit}>Opslaan</Button>
+          <Button variant="outline" onClick={() => setEditOpen(false)}>{t("annuleren")}</Button>
+          <Button onClick={saveEdit}>{t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
     </div>

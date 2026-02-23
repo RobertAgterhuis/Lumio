@@ -1,0 +1,107 @@
+{
+  "$schema": "./lumio-rules.schema.json",
+  "lumioRules": {
+    "versie": "2025.1",
+    "laatstGewijzigd": "2025-01-01"
+  },
+  "erfbelasting": {
+    "jaar": 2025,
+    "relatieTarieven": [
+      {
+        "naam": "Partner (Tariefgroep 1)",
+        "keywords": [ "partner", "echtgen", "gehuwd", "samenwon" ],
+        "vrijstelling": 795156,
+        "schijf1Percentage": 0.10,
+        "schijf2Percentage": 0.20,
+        "schijf1Grens": 154197
+      },
+      {
+        "naam": "Kleinkind (Tariefgroep 1a)",
+        "keywords": [ "kleinkind", "kleinzoon", "kleindochter" ],
+        "vrijstelling": 25187,
+        "schijf1Percentage": 0.18,
+        "schijf2Percentage": 0.36,
+        "schijf1Grens": 154197
+      },
+      {
+        "naam": "Kind (Tariefgroep 1)",
+        "keywords": [ "kind", "zoon", "dochter", "stief" ],
+        "vrijstelling": 25187,
+        "schijf1Percentage": 0.10,
+        "schijf2Percentage": 0.20,
+        "schijf1Grens": 154197
+      },
+      {
+        "naam": "Ouder (Tariefgroep 1)",
+        "keywords": [ "ouder", "vader", "moeder" ],
+        "vrijstelling": 56724,
+        "schijf1Percentage": 0.10,
+        "schijf2Percentage": 0.20,
+        "schijf1Grens": 154197
+      }
+    ],
+    "defaultTarief": {
+      "naam": "Overig (Tariefgroep 2)",
+      "keywords": [],
+      "vrijstelling": 2658,
+      "schijf1Percentage": 0.30,
+      "schijf2Percentage": 0.40,
+      "schijf1Grens": 154197
+    },
+    "kindRelatiesLegitimairePortie": [
+      "kind", "zoon", "dochter", "stiefkind", "stiefzoon", "stiefdochter"
+    ],
+    "disclaimerTemplate": "Dit is een indicatieve berekening op basis van de erfbelastingtarieven {0}. De werkelijke erfbelasting kan afwijken door testamentaire bepalingen, huwelijkse voorwaarden, schenkingen en andere fiscale factoren. Raadpleeg een notaris of belastingadviseur voor een exacte berekening."
+  },
+  "limieten": {
+    "maxProfielen": 5,
+    "wachtwoordMinLengte": 8,
+    "shamirMinDrempel": 2,
+    "backupVerouderdDagen": 30,
+    "documentVerlooptWaarschuwingDagen": 30,
+    "actualisatieIntervalDagen": 90,
+    "auditLogStandaardLimiet": 200,
+    "zoekenMinQueryLengte": 2,
+    "fotoMaxBytes": 10485760,
+    "documentMaxBytes": 52428800
+  },
+  "veldLengtes": {
+    "naamMax": 100,
+    "tussenvoegselMax": 20,
+    "postcodeMax": 10,
+    "emailMax": 254,
+    "telefoonMax": 20,
+    "adresMax": 200,
+    "omschrijvingMax": 500,
+    "notitieMax": 2000,
+    "urlMax": 2048
+  },
+  "validatie": {
+    "ibanRegex": "^[A-Z]{2}\\d{2}[A-Z0-9]{4,30}$",
+    "postcodeRegex": "^[1-9][0-9]{3}\\s?[a-zA-Z]{2}$",
+    "telefoonRegex": "^[+]?[0-9\\s\\-()]{7,20}$"
+  },
+  "encryptie": {
+    "pbkdf2Iteraties": 100000,
+    "saltLengteBytes": 32,
+    "nonceLengteBytes": 12,
+    "tagLengteBytes": 16,
+    "keyLengteBytes": 32
+  },
+  "export": {
+    "standaardPapierformaat": "A4",
+    "pdfMarginPt": 40,
+    "toegestaneBestandstypes": [ ".pdf", ".jpg", ".jpeg", ".png", ".doc", ".docx" ]
+  },
+  "compleetheid": {
+    "digitaalBezitCap": 3,
+    "documentenCap": 3,
+    "erfgenamenCap": 2,
+    "noodcontactenCap": 2,
+    "eigenaarVelden": 8,
+    "testamentVelden": 6,
+    "euthanasieVelden": 3,
+    "donorVelden": 1,
+    "uitvaartVelden": 4
+  }
+}

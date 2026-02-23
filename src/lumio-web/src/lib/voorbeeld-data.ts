@@ -18,405 +18,311 @@ export interface VoorbeeldData {
   secties: VoorbeeldSectie[];
 }
 
-export const voorbeeldData: Record<string, VoorbeeldData> = {
-  eigenaar: {
-    domein: "eigenaar",
-    titel: "Mijn Profiel — Voorbeeld",
-    beschrijving:
-      "Hieronder ziet u een voorbeeld van een ingevuld profiel. Gebruik dit als inspiratie voor uw eigen gegevens.",
-    secties: [
-      {
-        titel: "Persoonsgegevens",
-        velden: [
-          { label: "Voornaam", waarde: "Pieter" },
-          { label: "Tussenvoegsel", waarde: "de" },
-          { label: "Achternaam", waarde: "Voorbeeld" },
-          { label: "Geboortedatum", waarde: "15-03-1965" },
-          { label: "BSN", waarde: "123456789" },
-          { label: "Telefoon", waarde: "06-12345678" },
-          { label: "E-mail", waarde: "pieter@voorbeeld.nl" },
-        ],
-      },
-      {
-        titel: "Adresgegevens",
-        velden: [
-          { label: "Adres", waarde: "Voorbeeldstraat 42" },
-          { label: "Postcode", waarde: "1234 AB" },
-          { label: "Woonplaats", waarde: "Voorbeeldstad" },
-        ],
-      },
-      {
-        titel: "Burgerlijke staat",
-        velden: [
-          { label: "Burgerlijke staat", waarde: "Gehuwd" },
-          { label: "Huwelijksvoorwaarden", waarde: "Beperkte gemeenschap" },
-          { label: "Datum huwelijk", waarde: "22-06-1992" },
-        ],
-      },
-      {
-        titel: "Legitimatie",
-        velden: [
-          { label: "Soort", waarde: "Paspoort" },
-          { label: "Documentnummer", waarde: "NX1234567" },
-          { label: "Datum afgifte", waarde: "01-02-2022" },
-          { label: "Geldig tot", waarde: "01-02-2032" },
-        ],
-      },
-    ],
-  },
+export function getVoorbeeldData(
+  t: (key: string) => string,
+): Record<string, VoorbeeldData> {
+  return {
+    eigenaar: {
+      domein: "eigenaar",
+      titel: t("eigenaar.titel"),
+      beschrijving: t("eigenaar.beschrijving"),
+      secties: [
+        {
+          titel: t("eigenaar.secties.persoonsgegevens.titel"),
+          velden: [
+            { label: t("eigenaar.secties.persoonsgegevens.voornaam"), waarde: t("eigenaar.secties.persoonsgegevens.voornaamWaarde") },
+            { label: t("eigenaar.secties.persoonsgegevens.tussenvoegsel"), waarde: t("eigenaar.secties.persoonsgegevens.tussenvoegselWaarde") },
+            { label: t("eigenaar.secties.persoonsgegevens.achternaam"), waarde: t("eigenaar.secties.persoonsgegevens.achternaamWaarde") },
+            { label: t("eigenaar.secties.persoonsgegevens.geboortedatum"), waarde: t("eigenaar.secties.persoonsgegevens.geboortedatumWaarde") },
+            { label: t("eigenaar.secties.persoonsgegevens.bsn"), waarde: t("eigenaar.secties.persoonsgegevens.bsnWaarde") },
+            { label: t("eigenaar.secties.persoonsgegevens.telefoon"), waarde: t("eigenaar.secties.persoonsgegevens.telefoonWaarde") },
+            { label: t("eigenaar.secties.persoonsgegevens.email"), waarde: t("eigenaar.secties.persoonsgegevens.emailWaarde") },
+          ],
+        },
+        {
+          titel: t("eigenaar.secties.adresgegevens.titel"),
+          velden: [
+            { label: t("eigenaar.secties.adresgegevens.adres"), waarde: t("eigenaar.secties.adresgegevens.adresWaarde") },
+            { label: t("eigenaar.secties.adresgegevens.postcode"), waarde: t("eigenaar.secties.adresgegevens.postcodeWaarde") },
+            { label: t("eigenaar.secties.adresgegevens.woonplaats"), waarde: t("eigenaar.secties.adresgegevens.woonplaatsWaarde") },
+          ],
+        },
+        {
+          titel: t("eigenaar.secties.burgerlijkeStaat.titel"),
+          velden: [
+            { label: t("eigenaar.secties.burgerlijkeStaat.burgerlijkeStaat"), waarde: t("eigenaar.secties.burgerlijkeStaat.burgerlijkeStaatWaarde") },
+            { label: t("eigenaar.secties.burgerlijkeStaat.huwelijksvoorwaarden"), waarde: t("eigenaar.secties.burgerlijkeStaat.huwelijksvoorwaardenWaarde") },
+            { label: t("eigenaar.secties.burgerlijkeStaat.datumHuwelijk"), waarde: t("eigenaar.secties.burgerlijkeStaat.datumHuwelijkWaarde") },
+          ],
+        },
+        {
+          titel: t("eigenaar.secties.legitimatie.titel"),
+          velden: [
+            { label: t("eigenaar.secties.legitimatie.soort"), waarde: t("eigenaar.secties.legitimatie.soortWaarde") },
+            { label: t("eigenaar.secties.legitimatie.documentnummer"), waarde: t("eigenaar.secties.legitimatie.documentnummerWaarde") },
+            { label: t("eigenaar.secties.legitimatie.datumAfgifte"), waarde: t("eigenaar.secties.legitimatie.datumAfgifteWaarde") },
+            { label: t("eigenaar.secties.legitimatie.geldigTot"), waarde: t("eigenaar.secties.legitimatie.geldigTotWaarde") },
+          ],
+        },
+      ],
+    },
 
-  testament: {
-    domein: "testament",
-    titel: "Testament — Voorbeeld",
-    beschrijving:
-      "Een voorbeeld van testamentaire informatie. De inhoud is fictief.",
-    secties: [
-      {
-        titel: "Testamentgegevens",
-        velden: [
-          { label: "Type testament", waarde: "Notarieel testament" },
-          { label: "Datum testament", waarde: "10-09-2020" },
-          { label: "CTR-nummer", waarde: "CTR-2020-098765" },
-          { label: "Locatie", waarde: "Kluis bij notaris" },
-        ],
-      },
-      {
-        titel: "Notaris",
-        velden: [
-          { label: "Naam", waarde: "Mr. J.H. Bakker" },
-          { label: "Kantoor", waarde: "Bakker & Partners Notarissen" },
-          { label: "Telefoon", waarde: "020-1234567" },
-          { label: "E-mail", waarde: "info@bakkernotarissen.nl" },
-          { label: "Adres", waarde: "Keizersgracht 100, 1015 AB Amsterdam" },
-        ],
-      },
-      {
-        titel: "Executeur",
-        velden: [
-          { label: "Naam", waarde: "Maria de Voorbeeld-Jansen" },
-          { label: "Relatie", waarde: "Echtgenote" },
-          {
-            label: "Bevoegdheden",
-            waarde: "Driestereenexecuteur (beheer, verdeling, verkoop)",
-          },
-          { label: "Telefoon", waarde: "06-98765432" },
-        ],
-      },
-      {
-        titel: "Begunstigden",
-        velden: [
-          { label: "Maria de Voorbeeld-Jansen", waarde: "Echtgenote — 50%" },
-          { label: "Thomas de Voorbeeld", waarde: "Zoon — 25%" },
-          { label: "Sophie de Voorbeeld", waarde: "Dochter — 25%" },
-        ],
-      },
-      {
-        titel: "Aanvullend",
-        velden: [
-          { label: "Uitsluitingsclausule", waarde: "Ja" },
-          {
-            label: "Legaten",
-            waarde: "Schilderij van opa → aan neef Karel",
-          },
-          {
-            label: "Algemene wensen",
-            waarde:
-              "Mijn boekencollectie mag verdeeld worden onder de kinderen.",
-          },
-        ],
-      },
-    ],
-  },
+    testament: {
+      domein: "testament",
+      titel: t("testament.titel"),
+      beschrijving: t("testament.beschrijving"),
+      secties: [
+        {
+          titel: t("testament.secties.testamentgegevens.titel"),
+          velden: [
+            { label: t("testament.secties.testamentgegevens.typeTestament"), waarde: t("testament.secties.testamentgegevens.typeTestamentWaarde") },
+            { label: t("testament.secties.testamentgegevens.datumTestament"), waarde: t("testament.secties.testamentgegevens.datumTestamentWaarde") },
+            { label: t("testament.secties.testamentgegevens.ctrNummer"), waarde: t("testament.secties.testamentgegevens.ctrNummerWaarde") },
+            { label: t("testament.secties.testamentgegevens.locatie"), waarde: t("testament.secties.testamentgegevens.locatieWaarde") },
+          ],
+        },
+        {
+          titel: t("testament.secties.notaris.titel"),
+          velden: [
+            { label: t("testament.secties.notaris.naam"), waarde: t("testament.secties.notaris.naamWaarde") },
+            { label: t("testament.secties.notaris.kantoor"), waarde: t("testament.secties.notaris.kantoorWaarde") },
+            { label: t("testament.secties.notaris.telefoon"), waarde: t("testament.secties.notaris.telefoonWaarde") },
+            { label: t("testament.secties.notaris.email"), waarde: t("testament.secties.notaris.emailWaarde") },
+            { label: t("testament.secties.notaris.adres"), waarde: t("testament.secties.notaris.adresWaarde") },
+          ],
+        },
+        {
+          titel: t("testament.secties.executeur.titel"),
+          velden: [
+            { label: t("testament.secties.executeur.naam"), waarde: t("testament.secties.executeur.naamWaarde") },
+            { label: t("testament.secties.executeur.relatie"), waarde: t("testament.secties.executeur.relatieWaarde") },
+            { label: t("testament.secties.executeur.bevoegdheden"), waarde: t("testament.secties.executeur.bevoegdhedenWaarde") },
+            { label: t("testament.secties.executeur.telefoon"), waarde: t("testament.secties.executeur.telefoonWaarde") },
+          ],
+        },
+        {
+          titel: t("testament.secties.begunstigden.titel"),
+          velden: [
+            { label: t("testament.secties.begunstigden.maria"), waarde: t("testament.secties.begunstigden.mariaWaarde") },
+            { label: t("testament.secties.begunstigden.thomas"), waarde: t("testament.secties.begunstigden.thomasWaarde") },
+            { label: t("testament.secties.begunstigden.sophie"), waarde: t("testament.secties.begunstigden.sophieWaarde") },
+          ],
+        },
+        {
+          titel: t("testament.secties.aanvullend.titel"),
+          velden: [
+            { label: t("testament.secties.aanvullend.uitsluitingsclausule"), waarde: t("testament.secties.aanvullend.uitsluitingsclausuleWaarde") },
+            { label: t("testament.secties.aanvullend.legaten"), waarde: t("testament.secties.aanvullend.legatenWaarde") },
+            { label: t("testament.secties.aanvullend.algemeneWensen"), waarde: t("testament.secties.aanvullend.algemeneWensenWaarde") },
+          ],
+        },
+      ],
+    },
 
-  euthanasie: {
-    domein: "euthanasie",
-    titel: "Wilsverklaring — Voorbeeld",
-    beschrijving:
-      "Een voorbeeld van een vastgelegde wilsverklaring euthanasie.",
-    secties: [
-      {
-        titel: "Wilsverklaring",
-        velden: [
-          { label: "Type", waarde: "Euthanasieverzoek" },
-          { label: "Datum opgesteld", waarde: "05-01-2021" },
-          { label: "Locatie document", waarde: "Huisarts en thuiskluis" },
-          {
-            label: "Huisarts",
-            waarde: "Dr. A.B. Smit — Huisartsenpraktijk Centrum",
-          },
-          { label: "Telefoon huisarts", waarde: "020-7654321" },
-        ],
-      },
-      {
-        titel: "Wensen & voorwaarden",
-        velden: [
-          {
-            label: "Wanneer van toepassing",
-            waarde:
-              "Bij uitzichtloos en ondraaglijk lijden, ook bij vergevorderde dementie waarbij ik mijzelf en naasten niet meer herken.",
-          },
-          {
-            label: "Behandelverbod",
-            waarde:
-              "Geen reanimatie, geen kunstmatige beademing, geen sondevoeding.",
-          },
-          {
-            label: "Aanvullende wensen",
-            waarde: "Ik wil in mijn eigen huis overlijden indien mogelijk.",
-          },
-        ],
-      },
-    ],
-  },
+    euthanasie: {
+      domein: "euthanasie",
+      titel: t("euthanasie.titel"),
+      beschrijving: t("euthanasie.beschrijving"),
+      secties: [
+        {
+          titel: t("euthanasie.secties.wilsverklaring.titel"),
+          velden: [
+            { label: t("euthanasie.secties.wilsverklaring.type"), waarde: t("euthanasie.secties.wilsverklaring.typeWaarde") },
+            { label: t("euthanasie.secties.wilsverklaring.datumOpgesteld"), waarde: t("euthanasie.secties.wilsverklaring.datumOpgesteldWaarde") },
+            { label: t("euthanasie.secties.wilsverklaring.locatieDocument"), waarde: t("euthanasie.secties.wilsverklaring.locatieDocumentWaarde") },
+            { label: t("euthanasie.secties.wilsverklaring.huisarts"), waarde: t("euthanasie.secties.wilsverklaring.huisartsWaarde") },
+            { label: t("euthanasie.secties.wilsverklaring.telefoonHuisarts"), waarde: t("euthanasie.secties.wilsverklaring.telefoonHuisartsWaarde") },
+          ],
+        },
+        {
+          titel: t("euthanasie.secties.wensenEnVoorwaarden.titel"),
+          velden: [
+            { label: t("euthanasie.secties.wensenEnVoorwaarden.wanneerVanToepassing"), waarde: t("euthanasie.secties.wensenEnVoorwaarden.wanneerVanToepassingWaarde") },
+            { label: t("euthanasie.secties.wensenEnVoorwaarden.behandelverbod"), waarde: t("euthanasie.secties.wensenEnVoorwaarden.behandelverbodWaarde") },
+            { label: t("euthanasie.secties.wensenEnVoorwaarden.aanvullendeWensen"), waarde: t("euthanasie.secties.wensenEnVoorwaarden.aanvullendeWensenWaarde") },
+          ],
+        },
+      ],
+    },
 
-  donor: {
-    domein: "donor",
-    titel: "Donorregistratie — Voorbeeld",
-    beschrijving: "Een voorbeeld van een donorregistratie.",
-    secties: [
-      {
-        titel: "Registratie",
-        velden: [
-          { label: "Keuze", waarde: "Ja, ik geef toestemming" },
-          {
-            label: "Specificatie",
-            waarde: "Alle organen en weefsels, behalve cornea (ogen)",
-          },
-          { label: "Geregistreerd op", waarde: "12-04-2019" },
-          { label: "Donorregister", waarde: "Ja, ingeschreven bij het Donorregister" },
-        ],
-      },
-    ],
-  },
+    donor: {
+      domein: "donor",
+      titel: t("donor.titel"),
+      beschrijving: t("donor.beschrijving"),
+      secties: [
+        {
+          titel: t("donor.secties.registratie.titel"),
+          velden: [
+            { label: t("donor.secties.registratie.keuze"), waarde: t("donor.secties.registratie.keuzeWaarde") },
+            { label: t("donor.secties.registratie.specificatie"), waarde: t("donor.secties.registratie.specificatieWaarde") },
+            { label: t("donor.secties.registratie.geregistreerdOp"), waarde: t("donor.secties.registratie.geregistreerdOpWaarde") },
+            { label: t("donor.secties.registratie.donorregister"), waarde: t("donor.secties.registratie.donorregisterWaarde") },
+          ],
+        },
+      ],
+    },
 
-  boedel: {
-    domein: "boedel",
-    titel: "Boedel — Voorbeeld",
-    beschrijving:
-      "Een voorbeeld van een ingevulde boedel met bezittingen, rekeningen, verzekeringen en schulden.",
-    secties: [
-      {
-        titel: "Fysieke bezittingen",
-        velden: [
-          {
-            label: "Woning Voorbeeldstraat 42",
-            waarde: "€ 425.000 — Kad. ASD01-A-1234",
-          },
-          { label: "Volkswagen ID.4 (2023)", waarde: "€ 35.000 — AB-123-CD" },
-          { label: "Antiek dressoir (erfstuk)", waarde: "€ 2.500" },
-          { label: "Zonnepanelen (12 stuks)", waarde: "€ 4.000" },
-        ],
-      },
-      {
-        titel: "Bankrekeningen",
-        velden: [
-          { label: "ING Betaalrekening", waarde: "NL91INGB0001234567 — € 8.450" },
-          { label: "Rabobank Spaarrekening", waarde: "NL20RABO9876543210 — € 52.300" },
-          { label: "ABN AMRO Beleggingsrekening", waarde: "NL44ABNA5678901234 — € 87.000" },
-        ],
-      },
-      {
-        titel: "Verzekeringen",
-        velden: [
-          {
-            label: "Overlijdensrisicoverzekering",
-            waarde: "Nationale-Nederlanden — € 200.000 — Polis VZ-2019-4567",
-          },
-          {
-            label: "Uitvaartverzekering",
-            waarde: "DELA — € 12.500 — Polis UIT-2015-8901",
-          },
-          {
-            label: "Inboedelverzekering",
-            waarde: "Centraal Beheer — € 75.000",
-          },
-        ],
-      },
-      {
-        titel: "Schulden",
-        velden: [
-          {
-            label: "Hypotheek woning",
-            waarde: "Rabobank — € 195.000 (restschuld)",
-          },
-          {
-            label: "Persoonlijke lening",
-            waarde: "ING — € 5.000",
-          },
-        ],
-      },
-    ],
-  },
+    boedel: {
+      domein: "boedel",
+      titel: t("boedel.titel"),
+      beschrijving: t("boedel.beschrijving"),
+      secties: [
+        {
+          titel: t("boedel.secties.fysiekeBezittingen.titel"),
+          velden: [
+            { label: t("boedel.secties.fysiekeBezittingen.woning"), waarde: t("boedel.secties.fysiekeBezittingen.woningWaarde") },
+            { label: t("boedel.secties.fysiekeBezittingen.auto"), waarde: t("boedel.secties.fysiekeBezittingen.autoWaarde") },
+            { label: t("boedel.secties.fysiekeBezittingen.antiekDressoir"), waarde: t("boedel.secties.fysiekeBezittingen.antiekDressoirWaarde") },
+            { label: t("boedel.secties.fysiekeBezittingen.zonnepanelen"), waarde: t("boedel.secties.fysiekeBezittingen.zonnepanelenWaarde") },
+          ],
+        },
+        {
+          titel: t("boedel.secties.bankrekeningen.titel"),
+          velden: [
+            { label: t("boedel.secties.bankrekeningen.ingBetaalrekening"), waarde: t("boedel.secties.bankrekeningen.ingBetaalrekeningWaarde") },
+            { label: t("boedel.secties.bankrekeningen.rabobankSpaarrekening"), waarde: t("boedel.secties.bankrekeningen.rabobankSpaarrekeningWaarde") },
+            { label: t("boedel.secties.bankrekeningen.abnAmroBeleggingsrekening"), waarde: t("boedel.secties.bankrekeningen.abnAmroBeleggingsrekeningWaarde") },
+          ],
+        },
+        {
+          titel: t("boedel.secties.verzekeringen.titel"),
+          velden: [
+            { label: t("boedel.secties.verzekeringen.overlijdensrisicoverzekering"), waarde: t("boedel.secties.verzekeringen.overlijdensrisicoverzekeringWaarde") },
+            { label: t("boedel.secties.verzekeringen.uitvaartverzekering"), waarde: t("boedel.secties.verzekeringen.uitvaartverzekeringWaarde") },
+            { label: t("boedel.secties.verzekeringen.inboedelverzekering"), waarde: t("boedel.secties.verzekeringen.inboedelverzekeringWaarde") },
+          ],
+        },
+        {
+          titel: t("boedel.secties.schulden.titel"),
+          velden: [
+            { label: t("boedel.secties.schulden.hypotheekWoning"), waarde: t("boedel.secties.schulden.hypotheekWoningWaarde") },
+            { label: t("boedel.secties.schulden.persoonlijkeLening"), waarde: t("boedel.secties.schulden.persoonlijkeLeningWaarde") },
+          ],
+        },
+      ],
+    },
 
-  uitvaart: {
-    domein: "uitvaart",
-    titel: "Uitvaartwensen — Voorbeeld",
-    beschrijving: "Een voorbeeld van vastgelegde uitvaartwensen.",
-    secties: [
-      {
-        titel: "Vorm & locatie",
-        velden: [
-          { label: "Voorkeur", waarde: "Crematie" },
-          {
-            label: "Locatie",
-            waarde: "Crematorium Westgaarde, Amsterdam",
-          },
-          { label: "Uitvaartondernemer", waarde: "Monuta" },
-          {
-            label: "Verzekeraar",
-            waarde: "DELA — Polisnummer UIT-2015-8901",
-          },
-        ],
-      },
-      {
-        titel: "Ceremonie",
-        velden: [
-          { label: "Type", waarde: "Persoonlijke niet-religieuze bijeenkomst" },
-          {
-            label: "Muziek",
-            waarde: "Time to Say Goodbye (Andrea Bocelli), Imagine (John Lennon)",
-          },
-          {
-            label: "Spreker(s)",
-            waarde: "Maria (echtgenote), Thomas (zoon), collega Jan",
-          },
-          { label: "Bloemen", waarde: "Witte rozen, geen kransen" },
-          { label: "Dresscode", waarde: "Geen zwart, kleurrijke kleding gewenst" },
-        ],
-      },
-      {
-        titel: "Na de uitvaart",
-        velden: [
-          {
-            label: "Asbestemming",
-            waarde: "Verstrooien op de Noordzee bij Scheveningen",
-          },
-          { label: "Rouwkaart", waarde: "Eenvoudig, met foto uit 2023" },
-          {
-            label: "Condoleance",
-            waarde: "Thuis, op de dag van de uitvaart",
-          },
-        ],
-      },
-    ],
-  },
+    uitvaart: {
+      domein: "uitvaart",
+      titel: t("uitvaart.titel"),
+      beschrijving: t("uitvaart.beschrijving"),
+      secties: [
+        {
+          titel: t("uitvaart.secties.vormEnLocatie.titel"),
+          velden: [
+            { label: t("uitvaart.secties.vormEnLocatie.voorkeur"), waarde: t("uitvaart.secties.vormEnLocatie.voorkeurWaarde") },
+            { label: t("uitvaart.secties.vormEnLocatie.locatie"), waarde: t("uitvaart.secties.vormEnLocatie.locatieWaarde") },
+            { label: t("uitvaart.secties.vormEnLocatie.uitvaartondernemer"), waarde: t("uitvaart.secties.vormEnLocatie.uitvaartondernemerWaarde") },
+            { label: t("uitvaart.secties.vormEnLocatie.verzekeraar"), waarde: t("uitvaart.secties.vormEnLocatie.verzekeraarWaarde") },
+          ],
+        },
+        {
+          titel: t("uitvaart.secties.ceremonie.titel"),
+          velden: [
+            { label: t("uitvaart.secties.ceremonie.type"), waarde: t("uitvaart.secties.ceremonie.typeWaarde") },
+            { label: t("uitvaart.secties.ceremonie.muziek"), waarde: t("uitvaart.secties.ceremonie.muziekWaarde") },
+            { label: t("uitvaart.secties.ceremonie.sprekers"), waarde: t("uitvaart.secties.ceremonie.sprekersWaarde") },
+            { label: t("uitvaart.secties.ceremonie.bloemen"), waarde: t("uitvaart.secties.ceremonie.bloemenWaarde") },
+            { label: t("uitvaart.secties.ceremonie.dresscode"), waarde: t("uitvaart.secties.ceremonie.dresscodeWaarde") },
+          ],
+        },
+        {
+          titel: t("uitvaart.secties.naDeUitvaart.titel"),
+          velden: [
+            { label: t("uitvaart.secties.naDeUitvaart.asbestemming"), waarde: t("uitvaart.secties.naDeUitvaart.asbestemmingWaarde") },
+            { label: t("uitvaart.secties.naDeUitvaart.rouwkaart"), waarde: t("uitvaart.secties.naDeUitvaart.rouwkaartWaarde") },
+            { label: t("uitvaart.secties.naDeUitvaart.condoleance"), waarde: t("uitvaart.secties.naDeUitvaart.condoleanceWaarde") },
+          ],
+        },
+      ],
+    },
 
-  erfgenamen: {
-    domein: "erfgenamen",
-    titel: "Erfgenamen — Voorbeeld",
-    beschrijving: "Een voorbeeld van vastgelegde erfgenamen.",
-    secties: [
-      {
-        titel: "Erfgenaam 1",
-        velden: [
-          { label: "Naam", waarde: "Maria de Voorbeeld-Jansen" },
-          { label: "Relatie", waarde: "Echtgenote" },
-          { label: "Geboortedatum", waarde: "28-07-1967" },
-          { label: "BSN", waarde: "987654321" },
-          { label: "Telefoon", waarde: "06-98765432" },
-          { label: "E-mail", waarde: "maria@voorbeeld.nl" },
-          { label: "Legitimatie", waarde: "Identiteitskaart — ID9876543" },
-        ],
-      },
-      {
-        titel: "Erfgenaam 2",
-        velden: [
-          { label: "Naam", waarde: "Thomas de Voorbeeld" },
-          { label: "Relatie", waarde: "Kind" },
-          { label: "Geboortedatum", waarde: "14-11-1995" },
-          { label: "Telefoon", waarde: "06-11223344" },
-          { label: "E-mail", waarde: "thomas@voorbeeld.nl" },
-        ],
-      },
-      {
-        titel: "Erfgenaam 3",
-        velden: [
-          { label: "Naam", waarde: "Sophie de Voorbeeld" },
-          { label: "Relatie", waarde: "Kind" },
-          { label: "Geboortedatum", waarde: "03-05-1998" },
-          { label: "Telefoon", waarde: "06-55667788" },
-          { label: "E-mail", waarde: "sophie@voorbeeld.nl" },
-        ],
-      },
-    ],
-  },
+    erfgenamen: {
+      domein: "erfgenamen",
+      titel: t("erfgenamen.titel"),
+      beschrijving: t("erfgenamen.beschrijving"),
+      secties: [
+        {
+          titel: t("erfgenamen.secties.erfgenaam1.titel"),
+          velden: [
+            { label: t("erfgenamen.secties.erfgenaam1.naam"), waarde: t("erfgenamen.secties.erfgenaam1.naamWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam1.relatie"), waarde: t("erfgenamen.secties.erfgenaam1.relatieWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam1.geboortedatum"), waarde: t("erfgenamen.secties.erfgenaam1.geboortedatumWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam1.bsn"), waarde: t("erfgenamen.secties.erfgenaam1.bsnWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam1.telefoon"), waarde: t("erfgenamen.secties.erfgenaam1.telefoonWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam1.email"), waarde: t("erfgenamen.secties.erfgenaam1.emailWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam1.legitimatie"), waarde: t("erfgenamen.secties.erfgenaam1.legitimatieWaarde") },
+          ],
+        },
+        {
+          titel: t("erfgenamen.secties.erfgenaam2.titel"),
+          velden: [
+            { label: t("erfgenamen.secties.erfgenaam2.naam"), waarde: t("erfgenamen.secties.erfgenaam2.naamWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam2.relatie"), waarde: t("erfgenamen.secties.erfgenaam2.relatieWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam2.geboortedatum"), waarde: t("erfgenamen.secties.erfgenaam2.geboortedatumWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam2.telefoon"), waarde: t("erfgenamen.secties.erfgenaam2.telefoonWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam2.email"), waarde: t("erfgenamen.secties.erfgenaam2.emailWaarde") },
+          ],
+        },
+        {
+          titel: t("erfgenamen.secties.erfgenaam3.titel"),
+          velden: [
+            { label: t("erfgenamen.secties.erfgenaam3.naam"), waarde: t("erfgenamen.secties.erfgenaam3.naamWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam3.relatie"), waarde: t("erfgenamen.secties.erfgenaam3.relatieWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam3.geboortedatum"), waarde: t("erfgenamen.secties.erfgenaam3.geboortedatumWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam3.telefoon"), waarde: t("erfgenamen.secties.erfgenaam3.telefoonWaarde") },
+            { label: t("erfgenamen.secties.erfgenaam3.email"), waarde: t("erfgenamen.secties.erfgenaam3.emailWaarde") },
+          ],
+        },
+      ],
+    },
 
-  "digitaal-bezit": {
-    domein: "digitaal-bezit",
-    titel: "Digitaal Bezit — Voorbeeld",
-    beschrijving:
-      "Een voorbeeld van vastgelegde online accounts en digitale bezittingen.",
-    secties: [
-      {
-        titel: "E-mail & Cloud",
-        velden: [
-          {
-            label: "Google (pieter@gmail.com)",
-            waarde: "Verwijderen na overlijden — Inactief Account Beheerder ingesteld",
-          },
-          {
-            label: "iCloud (pieter@icloud.com)",
-            waarde: "Overdragen aan echtgenote — Digital Legacy contact ingesteld",
-          },
-        ],
-      },
-      {
-        titel: "Social media",
-        velden: [
-          {
-            label: "Facebook",
-            waarde: "In memorial-modus plaatsen",
-          },
-          { label: "LinkedIn", waarde: "Profiel verwijderen" },
-          { label: "Instagram (@pietervoorbeeld)", waarde: "Verwijderen" },
-        ],
-      },
-      {
-        titel: "Financieel & Crypto",
-        velden: [
-          {
-            label: "PayPal",
-            waarde: "Saldo overmaken en sluiten",
-          },
-          {
-            label: "Bitcoin wallet (Ledger Nano)",
-            waarde: "Seed phrase in kluis — overdragen aan Thomas",
-          },
-        ],
-      },
-    ],
-  },
+    "digitaal-bezit": {
+      domein: "digitaal-bezit",
+      titel: t("digitaalBezit.titel"),
+      beschrijving: t("digitaalBezit.beschrijving"),
+      secties: [
+        {
+          titel: t("digitaalBezit.secties.emailEnCloud.titel"),
+          velden: [
+            { label: t("digitaalBezit.secties.emailEnCloud.google"), waarde: t("digitaalBezit.secties.emailEnCloud.googleWaarde") },
+            { label: t("digitaalBezit.secties.emailEnCloud.icloud"), waarde: t("digitaalBezit.secties.emailEnCloud.icloudWaarde") },
+          ],
+        },
+        {
+          titel: t("digitaalBezit.secties.socialMedia.titel"),
+          velden: [
+            { label: t("digitaalBezit.secties.socialMedia.facebook"), waarde: t("digitaalBezit.secties.socialMedia.facebookWaarde") },
+            { label: t("digitaalBezit.secties.socialMedia.linkedin"), waarde: t("digitaalBezit.secties.socialMedia.linkedinWaarde") },
+            { label: t("digitaalBezit.secties.socialMedia.instagram"), waarde: t("digitaalBezit.secties.socialMedia.instagramWaarde") },
+          ],
+        },
+        {
+          titel: t("digitaalBezit.secties.financieelEnCrypto.titel"),
+          velden: [
+            { label: t("digitaalBezit.secties.financieelEnCrypto.paypal"), waarde: t("digitaalBezit.secties.financieelEnCrypto.paypalWaarde") },
+            { label: t("digitaalBezit.secties.financieelEnCrypto.bitcoinWallet"), waarde: t("digitaalBezit.secties.financieelEnCrypto.bitcoinWalletWaarde") },
+          ],
+        },
+      ],
+    },
 
-  noodcontacten: {
-    domein: "noodcontacten",
-    titel: "Noodcontacten — Voorbeeld",
-    beschrijving: "Een voorbeeld van vastgelegde noodcontacten.",
-    secties: [
-      {
-        titel: "Contactpersonen",
-        velden: [
-          {
-            label: "Maria de Voorbeeld-Jansen",
-            waarde: "Echtgenote — 06-98765432 — maria@voorbeeld.nl",
-          },
-          {
-            label: "Mr. J.H. Bakker",
-            waarde: "Notaris — 020-1234567 — info@bakkernotarissen.nl",
-          },
-          {
-            label: "Dr. A.B. Smit",
-            waarde: "Huisarts — 020-7654321",
-          },
-          {
-            label: "Jan de Vries",
-            waarde: "Financieel adviseur — 030-9876543",
-          },
-          {
-            label: "Karel Jansen",
-            waarde: "Buurman (sleutelhouder) — 06-44556677",
-          },
-        ],
-      },
-    ],
-  },
-};
+    noodcontacten: {
+      domein: "noodcontacten",
+      titel: t("noodcontacten.titel"),
+      beschrijving: t("noodcontacten.beschrijving"),
+      secties: [
+        {
+          titel: t("noodcontacten.secties.contactpersonen.titel"),
+          velden: [
+            { label: t("noodcontacten.secties.contactpersonen.maria"), waarde: t("noodcontacten.secties.contactpersonen.mariaWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.notaris"), waarde: t("noodcontacten.secties.contactpersonen.notarisWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.huisarts"), waarde: t("noodcontacten.secties.contactpersonen.huisartsWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.financieelAdviseur"), waarde: t("noodcontacten.secties.contactpersonen.financieelAdviseurWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.buurman"), waarde: t("noodcontacten.secties.contactpersonen.buurmanWaarde") },
+          ],
+        },
+      ],
+    },
+  };
+}

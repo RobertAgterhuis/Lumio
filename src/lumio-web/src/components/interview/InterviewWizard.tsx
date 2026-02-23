@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { WizardShell } from "@/components/wizard/WizardShell";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { api } from "@/lib/api-client";
 
 interface InterviewData {
@@ -86,6 +88,7 @@ interface InterviewWizardProps {
 
 export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) {
   const [data, setData] = useState<InterviewData>(initial);
+  const t = useTranslations("interview");
 
   const update = (field: keyof InterviewData, value: string) =>
     setData((prev) => ({ ...prev, [field]: value }));
@@ -155,36 +158,35 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
   const stappen = [
     {
       id: "persoonlijk",
-      titel: "Over uzelf",
-      beschrijving:
-        "Laten we beginnen. We stellen u een paar vragen om uw profiel op te zetten.",
+      titel: t("stappen.persoonlijk.titel"),
+      beschrijving: t("stappen.persoonlijk.beschrijving"),
       content: (
         <div className="space-y-4">
           <QuestionBlock
-            vraag="Hoe heet u?"
-            toelichting="Uw volledige naam zoals op uw identiteitsbewijs."
+            vraag={t("stappen.persoonlijk.vraagNaam")}
+            toelichting={t("stappen.persoonlijk.toelichtingNaam")}
           >
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label>Voornaam</Label>
+                <Label>{t("stappen.persoonlijk.voornaam")}</Label>
                 <Input
                   value={data.voornaam}
                   onChange={(e) => update("voornaam", e.target.value)}
-                  placeholder="Jan"
+                  placeholder={t("stappen.persoonlijk.voornaamPlaceholder")}
                 />
               </div>
               <div className="space-y-1">
-                <Label>Achternaam</Label>
+                <Label>{t("stappen.persoonlijk.achternaam")}</Label>
                 <Input
                   value={data.achternaam}
                   onChange={(e) => update("achternaam", e.target.value)}
-                  placeholder="de Vries"
+                  placeholder={t("stappen.persoonlijk.achternaamPlaceholder")}
                 />
               </div>
             </div>
           </QuestionBlock>
 
-          <QuestionBlock vraag="Wat is uw geboortedatum?">
+          <QuestionBlock vraag={t("stappen.persoonlijk.vraagGeboortedatum")}>
             <Input
               type="date"
               value={data.geboortedatum}
@@ -193,35 +195,35 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
             />
           </QuestionBlock>
 
-          <QuestionBlock vraag="Waar woont u?">
+          <QuestionBlock vraag={t("stappen.persoonlijk.vraagWoonplaats")}>
             <Input
               value={data.woonplaats}
               onChange={(e) => update("woonplaats", e.target.value)}
-              placeholder="Amsterdam"
+              placeholder={t("stappen.persoonlijk.woonplaatsPlaceholder")}
               className="max-w-xs"
             />
           </QuestionBlock>
 
           <QuestionBlock
-            vraag="Hoe kunnen nabestaanden u bereiken?"
-            toelichting="Optioneel — wordt gebruikt voor uw noodkaart."
+            vraag={t("stappen.persoonlijk.vraagContact")}
+            toelichting={t("stappen.persoonlijk.toelichtingContact")}
           >
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label>Telefoon</Label>
+                <Label>{t("stappen.persoonlijk.telefoon")}</Label>
                 <Input
                   value={data.telefoon}
                   onChange={(e) => update("telefoon", e.target.value)}
-                  placeholder="06-12345678"
+                  placeholder={t("stappen.persoonlijk.telefoonPlaceholder")}
                 />
               </div>
               <div className="space-y-1">
-                <Label>E-mail</Label>
+                <Label>{t("stappen.persoonlijk.email")}</Label>
                 <Input
                   type="email"
                   value={data.email}
                   onChange={(e) => update("email", e.target.value)}
-                  placeholder="jan@voorbeeld.nl"
+                  placeholder={t("stappen.persoonlijk.emailPlaceholder")}
                 />
               </div>
             </div>
@@ -231,61 +233,60 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
     },
     {
       id: "noodcontact",
-      titel: "Vertrouwenspersoon",
-      beschrijving:
-        "Wie is de allerbelangrijkste persoon die moet worden geïnformeerd als u iets overkomt?",
+      titel: t("stappen.noodcontact.titel"),
+      beschrijving: t("stappen.noodcontact.beschrijving"),
       isOptional: true,
       content: (
         <div className="space-y-4">
           <QuestionBlock
-            vraag="Wie is uw eerste contactpersoon?"
-            toelichting="Dit kan uw partner, kind, vriend(in) of buurvrouw zijn."
+            vraag={t("stappen.noodcontact.vraagContactpersoon")}
+            toelichting={t("stappen.noodcontact.toelichtingContactpersoon")}
           >
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label>Naam</Label>
+                <Label>{t("stappen.noodcontact.naam")}</Label>
                 <Input
                   value={data.noodcontactNaam}
                   onChange={(e) => update("noodcontactNaam", e.target.value)}
-                  placeholder="Maria de Vries"
+                  placeholder={t("stappen.noodcontact.naamPlaceholder")}
                 />
               </div>
               <div className="space-y-1">
-                <Label>Relatie</Label>
+                <Label>{t("stappen.noodcontact.relatie")}</Label>
                 <Input
                   value={data.noodcontactRelatie}
                   onChange={(e) =>
                     update("noodcontactRelatie", e.target.value)
                   }
-                  placeholder="Partner, kind, vriend"
+                  placeholder={t("stappen.noodcontact.relatiePlaceholder")}
                 />
               </div>
             </div>
           </QuestionBlock>
 
-          <QuestionBlock vraag="Op welk nummer is deze persoon bereikbaar?">
+          <QuestionBlock vraag={t("stappen.noodcontact.vraagTelefoon")}>
             <Input
               value={data.noodcontactTelefoon}
               onChange={(e) => update("noodcontactTelefoon", e.target.value)}
-              placeholder="06-12345678"
+              placeholder={t("stappen.persoonlijk.telefoonPlaceholder")}
               className="max-w-xs"
             />
           </QuestionBlock>
 
           <QuestionBlock
-            vraag="Welke rol heeft deze persoon?"
-            toelichting="U kunt later meer contacten toevoegen (huisarts, notaris, etc.)."
+            vraag={t("stappen.noodcontact.vraagRol")}
+            toelichting={t("stappen.noodcontact.toelichtingRol")}
           >
             <Select
               value={data.noodcontactRol}
               onChange={(e) => update("noodcontactRol", e.target.value)}
               className="max-w-xs"
             >
-              <option value="Vertrouwenspersoon">Vertrouwenspersoon</option>
-              <option value="Huisarts">Huisarts</option>
-              <option value="Notaris">Notaris</option>
-              <option value="Uitvaartondernemer">Uitvaartondernemer</option>
-              <option value="Overig">Overig</option>
+              <option value="Vertrouwenspersoon">{t("stappen.noodcontact.rolVertrouwenspersoon")}</option>
+              <option value="Huisarts">{t("stappen.noodcontact.rolHuisarts")}</option>
+              <option value="Notaris">{t("stappen.noodcontact.rolNotaris")}</option>
+              <option value="Uitvaartondernemer">{t("stappen.noodcontact.rolUitvaartondernemer")}</option>
+              <option value="Overig">{t("stappen.noodcontact.rolOverig")}</option>
             </Select>
           </QuestionBlock>
         </div>
@@ -293,21 +294,20 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
     },
     {
       id: "testament",
-      titel: "Testament",
-      beschrijving:
-        "Heeft u al een testament? En zo ja, wat voor soort? Dit hoeft niet — u kunt het altijd later invullen.",
+      titel: t("stappen.testament.titel"),
+      beschrijving: t("stappen.testament.beschrijving"),
       isOptional: true,
       content: (
         <div className="space-y-4">
           <QuestionBlock
-            vraag="Heeft u een testament?"
-            toelichting="Een testament regelt wie uw erfgenamen zijn en hoe uw bezittingen worden verdeeld."
+            vraag={t("stappen.testament.vraagHeeftTestament")}
+            toelichting={t("stappen.testament.toelichtingTestament")}
           >
             <div className="flex gap-3">
               {[
-                { value: "ja", label: "Ja, ik heb een testament" },
-                { value: "nee", label: "Nee, (nog) niet" },
-                { value: "weet-niet", label: "Ik weet het niet zeker" },
+                { value: "ja", label: t("stappen.testament.jaTestament") },
+                { value: "nee", label: t("stappen.testament.neeTestament") },
+                { value: "weet-niet", label: t("stappen.testament.weetNiet") },
               ].map((opt) => (
                 <button
                   key={opt.value}
@@ -326,27 +326,27 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
 
           {data.heeftTestament === "ja" && (
             <>
-              <QuestionBlock vraag="Wat voor soort testament heeft u?">
+              <QuestionBlock vraag={t("stappen.testament.vraagSoort")}>
                 <Select
                   value={data.testamentSoort}
                   onChange={(e) => update("testamentSoort", e.target.value)}
                   className="max-w-xs"
                 >
-                  <option value="">Selecteer...</option>
-                  <option value="0">Notarieel testament</option>
-                  <option value="1">Codicil (handgeschreven)</option>
-                  <option value="2">Holografisch testament</option>
+                  <option value="">{t("stappen.testament.selecteer")}</option>
+                  <option value="0">{t("stappen.testament.notarieel")}</option>
+                  <option value="1">{t("stappen.testament.codicil")}</option>
+                  <option value="2">{t("stappen.testament.holografisch")}</option>
                 </Select>
               </QuestionBlock>
 
               <QuestionBlock
-                vraag="Bij welke notaris ligt uw testament?"
-                toelichting="Optioneel — handig voor nabestaanden om dit te weten."
+                vraag={t("stappen.testament.vraagNotaris")}
+                toelichting={t("stappen.testament.toelichtingNotaris")}
               >
                 <Input
                   value={data.notarisNaam}
                   onChange={(e) => update("notarisNaam", e.target.value)}
-                  placeholder="Naam van de notaris"
+                  placeholder={t("stappen.testament.notarisPlaceholder")}
                   className="max-w-sm"
                 />
               </QuestionBlock>
@@ -354,35 +354,32 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
           )}
 
           {data.heeftTestament === "weet-niet" && (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-              <p className="text-sm text-amber-800">
-                <strong>Tip:</strong> U kunt dit controleren via het Centraal Testamentenregister
-                (CTR) of bij uw notaris. Lumio helpt u vervolgens alles netjes vast te
-                leggen.
-              </p>
-            </div>
+            <Alert variant="warning">
+              <AlertDescription>
+                <strong>{t("stappen.testament.tipTitel")}</strong> {t("stappen.testament.tipTekst")}
+              </AlertDescription>
+            </Alert>
           )}
         </div>
       ),
     },
     {
       id: "uitvaart",
-      titel: "Uitvaartwensen",
-      beschrijving:
-        "Heeft u al nagedacht over uw uitvaartwensen? U hoeft niet alles nu in te vullen — elke keuze helpt uw naasten later.",
+      titel: t("stappen.uitvaart.titel"),
+      beschrijving: t("stappen.uitvaart.beschrijving"),
       isOptional: true,
       content: (
         <div className="space-y-4">
           <QuestionBlock
-            vraag="Heeft u een voorkeur voor begraven of cremeren?"
-            toelichting="U kunt dit altijd later aanpassen."
+            vraag={t("stappen.uitvaart.vraagVoorkeur")}
+            toelichting={t("stappen.uitvaart.toelichtingVoorkeur")}
           >
             <div className="flex gap-3">
               {[
-                { value: "0", label: "Begraven" },
-                { value: "1", label: "Cremeren" },
-                { value: "2", label: "Natuurbegraven" },
-                { value: "", label: "Nog geen voorkeur" },
+                { value: "0", label: t("stappen.uitvaart.begraven") },
+                { value: "1", label: t("stappen.uitvaart.cremeren") },
+                { value: "2", label: t("stappen.uitvaart.natuurbegraven") },
+                { value: "", label: t("stappen.uitvaart.geenVoorkeur") },
               ].map((opt) => (
                 <button
                   key={opt.value}
@@ -400,26 +397,26 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
           </QuestionBlock>
 
           <QuestionBlock
-            vraag="Heeft u een voorkeur voor een locatie?"
-            toelichting="Bijv. een kerk, aula, thuis, of een specifieke begraafplaats."
+            vraag={t("stappen.uitvaart.vraagLocatie")}
+            toelichting={t("stappen.uitvaart.toelichtingLocatie")}
           >
             <Input
               value={data.uitvaartLocatie}
               onChange={(e) => update("uitvaartLocatie", e.target.value)}
-              placeholder="Bijv. Nieuwe Kerk, Amsterdam"
+              placeholder={t("stappen.uitvaart.locatiePlaceholder")}
               className="max-w-sm"
             />
           </QuestionBlock>
 
           <QuestionBlock
-            vraag="Is er muziek die u graag wilt laten spelen?"
-            toelichting="U kunt hier een lied of meerdere nummers noemen."
+            vraag={t("stappen.uitvaart.vraagMuziek")}
+            toelichting={t("stappen.uitvaart.toelichtingMuziek")}
           >
             <Textarea
               value={data.uitvaartMuziek}
               onChange={(e) => update("uitvaartMuziek", e.target.value)}
               rows={2}
-              placeholder="Bijv. 'Aan de Amsterdamse grachten' van Wim Sonneveld"
+              placeholder={t("stappen.uitvaart.muziekPlaceholder")}
             />
           </QuestionBlock>
         </div>
@@ -427,49 +424,48 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
     },
     {
       id: "digitaal",
-      titel: "Digitaal bezit",
-      beschrijving:
-        "Heeft u belangrijke online accounts? Denk aan e-mail, sociale media, of cloud-opslag. Eén voorbeeld is genoeg om te beginnen.",
+      titel: t("stappen.digitaal.titel"),
+      beschrijving: t("stappen.digitaal.beschrijving"),
       isOptional: true,
       content: (
         <div className="space-y-4">
           <QuestionBlock
-            vraag="Welk online account is voor u het belangrijkst?"
-            toelichting="Denk aan uw e-mail, Facebook, Google, iCloud, of bankrekening-app."
+            vraag={t("stappen.digitaal.vraagAccount")}
+            toelichting={t("stappen.digitaal.toelichtingAccount")}
           >
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label>Naam / dienst</Label>
+                <Label>{t("stappen.digitaal.naamDienst")}</Label>
                 <Input
                   value={data.belangrijksteAccountNaam}
                   onChange={(e) =>
                     update("belangrijksteAccountNaam", e.target.value)
                   }
-                  placeholder="Bijv. Gmail, Facebook"
+                  placeholder={t("stappen.digitaal.naamDienstPlaceholder")}
                 />
               </div>
               <div className="space-y-1">
-                <Label>Type</Label>
+                <Label>{t("stappen.digitaal.type")}</Label>
                 <Select
                   value={data.belangrijksteAccountType}
                   onChange={(e) =>
                     update("belangrijksteAccountType", e.target.value)
                   }
                 >
-                  <option value="">Selecteer...</option>
-                  <option value="E-mail">E-mail</option>
-                  <option value="Social media">Social media</option>
-                  <option value="Cloud-opslag">Cloud-opslag</option>
-                  <option value="Bankieren">Bankieren</option>
-                  <option value="Overig">Overig</option>
+                  <option value="">{t("stappen.digitaal.typeSelecteer")}</option>
+                  <option value="E-mail">{t("stappen.digitaal.typeEmail")}</option>
+                  <option value="Social media">{t("stappen.digitaal.typeSocialMedia")}</option>
+                  <option value="Cloud-opslag">{t("stappen.digitaal.typeCloudOpslag")}</option>
+                  <option value="Bankieren">{t("stappen.digitaal.typeBankieren")}</option>
+                  <option value="Overig">{t("stappen.digitaal.typeOverig")}</option>
                 </Select>
               </div>
             </div>
           </QuestionBlock>
 
           <QuestionBlock
-            vraag="Wat moeten nabestaanden met dit account doen?"
-            toelichting="Bijv. bewaren, verwijderen, herdenkingsstatus instellen."
+            vraag={t("stappen.digitaal.vraagInstructie")}
+            toelichting={t("stappen.digitaal.toelichtingInstructie")}
           >
             <Textarea
               value={data.belangrijksteAccountInstructie}
@@ -477,16 +473,15 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
                 update("belangrijksteAccountInstructie", e.target.value)
               }
               rows={2}
-              placeholder="Bijv. 'Account sluiten na overlijden' of 'Foto's bewaren'"
+              placeholder={t("stappen.digitaal.instructiePlaceholder")}
             />
           </QuestionBlock>
 
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-blue-800">
-              <strong>Goed om te weten:</strong> U kunt later onbeperkt accounts, bezittingen
-              en wachtwoorden toevoegen. Dit is slechts een startpunt.
-            </p>
-          </div>
+          <Alert variant="info">
+            <AlertDescription>
+              <strong>{t("stappen.digitaal.infoTitel")}</strong> {t("stappen.digitaal.infoTekst")}
+            </AlertDescription>
+          </Alert>
         </div>
       ),
     },
@@ -494,7 +489,7 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
 
   return (
     <WizardShell
-      titel="Uw nalatenschap vastleggen"
+      titel={t("titel")}
       stappen={stappen}
       onComplete={handleSave}
       onCancel={onCancel}

@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Lumio.Api.Domain.Common;
+using Lumio.Api.Rules.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Services.Security;
 
@@ -8,6 +10,7 @@ public class ProfileService : IProfileService
     private readonly string _dataDir;
     private readonly string _profilesPath;
     private readonly object _lock = new();
+    private readonly int _maxProfielen;
     private List<Profile> _profiles;
     private Profile? _activeProfile;
 
@@ -17,11 +20,12 @@ public class ProfileService : IProfileService
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public ProfileService(IConfiguration config)
+    public ProfileService(IConfiguration config, IOptions<LimietenOptions> limieten)
     {
         _dataDir = config["DataDir"]
             ?? throw new InvalidOperationException("DataDir is not configured.");
         _profilesPath = Path.Combine(_dataDir, "profiles.json");
+        _maxProfielen = limieten.Value.MaxProfielen;
         _profiles = LoadProfiles();
 
         // Migration: if no profiles.json exists but lumio.db does, create a default profile
@@ -97,8 +101,8 @@ public class ProfileService : IProfileService
     {
         lock (_lock)
         {
-            if (_profiles.Count >= IProfileService.MaxProfiles)
-                throw new InvalidOperationException($"Maximaal {IProfileService.MaxProfiles} profielen toegestaan.");
+            if (_profiles.Count >= _maxProfielen)
+                throw new InvalidOperationException($"Maximaal {_maxProfielen} profielen toegestaan.");
 
             var isPrimary = _profiles.Count == 0;
             var profile = new Profile
@@ -139,6 +143,16 @@ public class ProfileService : IProfileService
             if (_activeProfile?.Id == profileId)
                 _activeProfile = null;
 
+            SaveProfiles();
+        }
+    }
+
+    public void UpdateActiveProfileThumbnail(string? base64Thumbnail)
+    {
+        lock (_lock)
+        {
+            if (_activeProfile == null) return;
+            _activeProfile.FotoThumbnail = base64Thumbnail;
             SaveProfiles();
         }
     }

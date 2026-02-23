@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
+using Lumio.Api.Rules.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Services.Security;
 
@@ -10,9 +12,15 @@ namespace Lumio.Api.Services.Security;
 public class EncryptionService : IEncryptionService
 {
     private readonly byte[] _key;
+    private readonly EncryptieOptions _encryptie;
 
-    public EncryptionService(IMasterPasswordService passwordService, IProfileService profileService)
+    public EncryptionService(
+        IMasterPasswordService passwordService,
+        IProfileService profileService,
+        IOptions<EncryptieOptions> encryptie)
     {
+        _encryptie = encryptie.Value;
+
         if (!passwordService.IsUnlocked || passwordService.CurrentPassword is null)
             throw new InvalidOperationException("Database moet ontgrendeld zijn voor veldversleuteling.");
 
@@ -26,13 +34,13 @@ public class EncryptionService : IEncryptionService
     public string Encrypt(string plaintext)
     {
         var plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
-        var nonce = new byte[12];
+        var nonce = new byte[_encryptie.NonceLengteBytes];
         RandomNumberGenerator.Fill(nonce);
 
         var ciphertext = new byte[plaintextBytes.Length];
-        var tag = new byte[16];
+        var tag = new byte[_encryptie.TagLengteBytes];
 
-        using var aes = new AesGcm(_key, 16);
+        using var aes = new AesGcm(_key, _encryptie.TagLengteBytes);
         aes.Encrypt(nonce, plaintextBytes, ciphertext, tag);
 
         // Format: base64(nonce + tag + ciphertext)
@@ -48,12 +56,14 @@ public class EncryptionService : IEncryptionService
     {
         var data = Convert.FromBase64String(encoded);
 
-        var nonce = data[..12];
-        var tag = data[12..28];
-        var ciphertext = data[28..];
+        var nonceLen = _encryptie.NonceLengteBytes;
+        var tagLen = _encryptie.TagLengteBytes;
+        var nonce = data[..nonceLen];
+        var tag = data[nonceLen..(nonceLen + tagLen)];
+        var ciphertext = data[(nonceLen + tagLen)..];
         var plaintext = new byte[ciphertext.Length];
 
-        using var aes = new AesGcm(_key, 16);
+        using var aes = new AesGcm(_key, tagLen);
         aes.Decrypt(nonce, ciphertext, tag, plaintext);
 
         return Encoding.UTF8.GetString(plaintext);
@@ -64,7 +74,7 @@ public class EncryptionService : IEncryptionService
     /// Falls back to the legacy fixed salt if the .salt file doesn't exist and the DB already does
     /// (backwards compatibility with existing encrypted data).
     /// </summary>
-    private static byte[] GetOrCreateSalt(string dbPath)
+    private byte[] GetOrCreateSalt(string dbPath)
     {
         var saltPath = Path.ChangeExtension(dbPath, ".salt");
 
@@ -79,20 +89,20 @@ public class EncryptionService : IEncryptionService
             return "Lumio.FieldEncryption.v1"u8.ToArray();
         }
 
-        // New database: generate a random 32-byte salt
-        var salt = new byte[32];
+        // New database: generate a random salt
+        var salt = new byte[_encryptie.SaltLengteBytes];
         RandomNumberGenerator.Fill(salt);
         File.WriteAllBytes(saltPath, salt);
         return salt;
     }
 
-    private static byte[] DeriveKey(string password, byte[] salt)
+    private byte[] DeriveKey(string password, byte[] salt)
     {
         return Rfc2898DeriveBytes.Pbkdf2(
             Encoding.UTF8.GetBytes(password),
             salt,
-            iterations: 100_000,
+            iterations: _encryptie.Pbkdf2Iteraties,
             HashAlgorithmName.SHA256,
-            outputLength: 32);
+            outputLength: _encryptie.KeyLengteBytes);
     }
 }

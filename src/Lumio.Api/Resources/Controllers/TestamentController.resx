@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Snapshot comparison -->
+  <data name="NumberOfBeneficiaries" xml:space="preserve"><value>Aantal begunstigden</value></data>
+  <data name="NoneValue" xml:space="preserve"><value>(geen)</value></data>
+  <data name="BeneficiaryLabel" xml:space="preserve"><value>Begunstigde {0}</value></data>
+
+  <!-- Juridische check: severity -->
+  <data name="SeverityHigh" xml:space="preserve"><value>hoog</value></data>
+  <data name="SeverityMedium" xml:space="preserve"><value>middel</value></data>
+  <data name="SeverityInfo" xml:space="preserve"><value>info</value></data>
+
+  <!-- Juridische check: categories -->
+  <data name="CategoryTestamentType" xml:space="preserve"><value>Testament type</value></data>
+  <data name="CategoryExecutor" xml:space="preserve"><value>Executeur</value></data>
+  <data name="CategoryExclusionClause" xml:space="preserve"><value>Uitsluitingsclausule</value></data>
+  <data name="CategoryDistribution" xml:space="preserve"><value>Verdeling</value></data>
+  <data name="CategoryNotary" xml:space="preserve"><value>Notaris</value></data>
+  <data name="CategoryContactDetails" xml:space="preserve"><value>Contactgegevens</value></data>
+
+  <!-- Juridische check: warnings -->
+  <data name="WarningCodicilRealEstate" xml:space="preserve"><value>U kiest voor een codicil, maar u heeft onroerend goed. Verdeling van onroerend goed is alleen rechtsgeldig via een notarieel testament (art. 4:97 BW).</value></data>
+  <data name="WarningHandwrittenExecutor" xml:space="preserve"><value>U heeft een executeur aangewezen in een handgeschreven testament. Een executeur kan alleen 'drie-sterren-bevoegdheden' (beheer, verdeling, te-gelde-making) krijgen via een notarieel testament.</value></data>
+  <data name="WarningNoExclusionClause" xml:space="preserve"><value>U heeft kinderen maar geen uitsluitingsclausule. Zonder uitsluitingsclausule kan de erfenis van uw kinderen bij een scheiding in de gemeenschap van goederen vallen.</value></data>
+  <data name="WarningPercentageMismatch" xml:space="preserve"><value>De percentages van de begunstigden tellen op tot {0}% (verwacht: 100%). Dit kan leiden tot onduidelijkheid over de verdeling.</value></data>
+  <data name="WarningNoNotary" xml:space="preserve"><value>Er is geen notaris ingevuld bij het testament. Voor een geldig notarieel testament is een notaris vereist.</value></data>
+  <data name="WarningHeirWithoutContactSingle" xml:space="preserve"><value>{0} erfgenaam zonder telefoon of e-mail: {1}.</value></data>
+  <data name="WarningHeirsWithoutContactMultiple" xml:space="preserve"><value>{0} erfgenamen zonder telefoon of e-mail: {1}.</value></data>
+
+  <!-- Juridische check: suggestions -->
+  <data name="SuggestionConsiderNotarialWill" xml:space="preserve"><value>Overweeg een notarieel testament op te laten stellen.</value></data>
+  <data name="SuggestionIncludeExecutorInNotarialWill" xml:space="preserve"><value>Laat de executeurbenoeming opnemen in een notarieel testament.</value></data>
+  <data name="SuggestionAddExclusionClause" xml:space="preserve"><value>Overweeg een uitsluitingsclausule toe te voegen.</value></data>
+  <data name="SuggestionCheckPercentages" xml:space="preserve"><value>Controleer de verdeling en zorg dat de percentages optellen tot 100%.</value></data>
+  <data name="SuggestionFillInNotary" xml:space="preserve"><value>Vul de gegevens van uw notaris in.</value></data>
+  <data name="SuggestionFillContactDetails" xml:space="preserve"><value>Vul contactgegevens in zodat erfgenamen bereikbaar zijn.</value></data>
+</root>

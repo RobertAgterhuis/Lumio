@@ -1,9 +1,11 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.Documents;
 using Lumio.Api.Dtos.Documents;
+using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
 
@@ -12,8 +14,13 @@ namespace Lumio.Api.Controllers;
 public class DocumentenController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly LimietenOptions _limieten;
 
-    public DocumentenController(LumioDbContext db) => _db = db;
+    public DocumentenController(LumioDbContext db, IOptions<LimietenOptions> limieten)
+    {
+        _db = db;
+        _limieten = limieten.Value;
+    }
 
     /// <summary>
     /// Returns the latest version of each document group.
@@ -84,7 +91,7 @@ public class DocumentenController : ControllerBase
     }
 
     [HttpPost("uploaden")]
-    [RequestSizeLimit(52_428_800)] // 50 MB
+    [RequestSizeLimit(52_428_800)] // 50 MB (compile-time upper bound)
     public async Task<ActionResult<DocumentResponse>> Upload(
         [FromForm] IFormFile bestand,
         [FromForm] string naam,
@@ -95,6 +102,9 @@ public class DocumentenController : ControllerBase
     {
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+
+        if (bestand.Length > _limieten.DocumentMaxBytes)
+            return BadRequest(new { error = $"Bestand is te groot. Maximum is {_limieten.DocumentMaxBytes / 1_048_576} MB." });
 
         using var ms = new MemoryStream();
         await bestand.CopyToAsync(ms);

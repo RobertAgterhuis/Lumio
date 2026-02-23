@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
 using Lumio.Api.Middleware;
+using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services.Security;
@@ -25,6 +26,9 @@ dataDir = Path.GetFullPath(dataDir);
 Directory.CreateDirectory(dataDir);
 
 builder.Configuration["DataDir"] = dataDir;
+
+// ── Business Rules configuratie laden ──
+builder.Services.AddLumioRules(builder.Configuration);
 
 // Profile service (singleton — manages profile manifest)
 builder.Services.AddSingleton<IProfileService, ProfileService>();
@@ -67,6 +71,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -90,6 +95,15 @@ builder.WebHost.UseUrls(port);
 var app = builder.Build();
 
 app.UseCors();
+
+var supportedCultures = new[] { "nl", "en" };
+app.UseRequestLocalization(options =>
+{
+    options.SetDefaultCulture("nl")
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+});
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<DatabaseUnlockMiddleware>();
 

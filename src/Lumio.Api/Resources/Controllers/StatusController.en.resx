@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="DomainMyProfile" xml:space="preserve"><value>My Profile</value></data>
+  <data name="DomainTestament" xml:space="preserve"><value>Will</value></data>
+  <data name="DomainLivingWill" xml:space="preserve"><value>Living Will</value></data>
+  <data name="DomainDonor" xml:space="preserve"><value>Donor Registration</value></data>
+  <data name="DomainEstate" xml:space="preserve"><value>Estate</value></data>
+  <data name="DomainFuneral" xml:space="preserve"><value>Funeral Wishes</value></data>
+  <data name="DomainHeirs" xml:space="preserve"><value>Heirs</value></data>
+  <data name="DomainDocuments" xml:space="preserve"><value>Documents</value></data>
+  <data name="DomainDigitalAssets" xml:space="preserve"><value>Digital Assets</value></data>
+  <data name="DomainEmergencyContacts" xml:space="preserve"><value>Emergency Contacts</value></data>
+  <data name="SnapshotDescription" xml:space="preserve"><value>Digital signature of the current data state. If this hash changes, the underlying data has been modified.</value></data>
+</root>
