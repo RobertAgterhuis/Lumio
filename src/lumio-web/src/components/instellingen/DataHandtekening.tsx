@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { Fingerprint, Copy, Check, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 interface Snapshot {
   hash: string;
@@ -16,6 +18,8 @@ export function DataHandtekening() {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const t = useTranslations("dataHandtekening");
+  const locale = useLocale();
 
   const genereer = async () => {
     setLoading(true);
@@ -57,7 +61,7 @@ export function DataHandtekening() {
           <div className="flex items-center gap-2">
             <Fingerprint className="h-4 w-4 text-primary shrink-0" />
             <span className="text-xs font-semibold text-muted-foreground">
-              {snapshot.algoritme} — {new Date(snapshot.tijdstip).toLocaleString("nl-NL")}
+              {snapshot.algoritme} — {new Date(snapshot.tijdstip).toLocaleString(locale)}
             </span>
           </div>
           <div className="flex items-center gap-2">

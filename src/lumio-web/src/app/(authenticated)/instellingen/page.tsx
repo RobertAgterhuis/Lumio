@@ -23,10 +23,12 @@ import {
 import { api } from "@/lib/api-client";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { LanguageSelector } from "@/components/common/LanguageSelector";
 import {
   getIdleTimeoutMinutes,
   setIdleTimeoutMinutes,
 } from "@/hooks/useIdleTimer";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Settings,
   Key,
@@ -46,21 +48,16 @@ import {
   CheckCircle2,
   AlertTriangle,
   Type,
+  Globe,
 } from "lucide-react";
 
-const TIMEOUT_OPTIONS = [
-  { value: 1, label: "1 minuut" },
-  { value: 2, label: "2 minuten" },
-  { value: 5, label: "5 minuten" },
-  { value: 10, label: "10 minuten" },
-  { value: 15, label: "15 minuten" },
-  { value: 30, label: "30 minuten" },
-  { value: 0, label: "Uitgeschakeld" },
-];
+const TIMEOUT_VALUES = [1, 2, 5, 10, 15, 30, 0];
 
 export default function InstellingenPage() {
   const router = useRouter();
   const { lock, profiles, activeProfile, setProfiles } = useAuthStore();
+  const t = useTranslations("instellingen");
+  const locale = useLocale();
 
   // Profile management state
   const [newProfileName, setNewProfileName] = useState("");
@@ -217,9 +214,9 @@ export default function InstellingenPage() {
     try {
       await api.post("/api/status/actualisatie/alles", {});
       await loadActualisatie();
-      setActualisatieMessage({ type: "success", text: "Alle domeinen als actueel bevestigd." });
+      setActualisatieMessage({ type: "success", text: t("actualisatie.bevestigdSucces") });
     } catch {
-      setActualisatieMessage({ type: "error", text: "Bevestiging mislukt." });
+      setActualisatieMessage({ type: "error", text: t("actualisatie.bevestigdFout") });
     } finally {
       setActualisatieConfirming(null);
     }
@@ -232,7 +229,7 @@ export default function InstellingenPage() {
       await api.post(`/api/status/actualisatie/${domein}`, {});
       await loadActualisatie();
     } catch {
-      setActualisatieMessage({ type: "error", text: "Bevestiging mislukt." });
+      setActualisatieMessage({ type: "error", text: t("actualisatie.bevestigdFout") });
     } finally {
       setActualisatieConfirming(null);
     }
@@ -252,11 +249,11 @@ export default function InstellingenPage() {
       setProfiles([...profiles, profile]);
       setNewProfileName("");
       setShowCreateProfile(false);
-      setProfileMessage({ type: "success", text: `Profiel "${profile.naam}" aangemaakt.` });
+      setProfileMessage({ type: "success", text: t("profielen.aangemaakt", { naam: profile.naam }) });
     } catch (err) {
       setProfileMessage({
         type: "error",
-        text: err instanceof Error ? err.message : "Profiel aanmaken mislukt.",
+        text: err instanceof Error ? err.message : t("profielen.aanmakenMislukt"),
       });
     } finally {
       setProfileSaving(false);
@@ -269,11 +266,11 @@ export default function InstellingenPage() {
     try {
       await api.delete(`/api/profielen/${profileId}`);
       setProfiles(profiles.filter((p) => p.id !== profileId));
-      setProfileMessage({ type: "success", text: "Profiel verwijderd." });
+      setProfileMessage({ type: "success", text: t("profielen.verwijderd") });
     } catch (err) {
       setProfileMessage({
         type: "error",
-        text: err instanceof Error ? err.message : "Profiel verwijderen mislukt.",
+        text: err instanceof Error ? err.message : t("profielen.verwijderenMislukt"),
       });
     }
   };
@@ -283,14 +280,14 @@ export default function InstellingenPage() {
     setMessage(null);
 
     if (nieuwWachtwoord !== bevestigWachtwoord) {
-      setMessage({ type: "error", text: "Wachtwoorden komen niet overeen." });
+      setMessage({ type: "error", text: t("wachtwoord.nietOvereen") });
       return;
     }
 
     if (nieuwWachtwoord.length < 8) {
       setMessage({
         type: "error",
-        text: "Wachtwoord moet minimaal 8 tekens bevatten.",
+        text: t("wachtwoord.teKort"),
       });
       return;
     }
@@ -303,7 +300,7 @@ export default function InstellingenPage() {
       });
       setMessage({
         type: "success",
-        text: "Wachtwoord succesvol gewijzigd.",
+        text: t("wachtwoord.gewijzigd"),
       });
       setHuidigWachtwoord("");
       setNieuwWachtwoord("");
@@ -311,7 +308,7 @@ export default function InstellingenPage() {
     } catch {
       setMessage({
         type: "error",
-        text: "Wachtwoord wijzigen mislukt. Controleer uw huidige wachtwoord.",
+        text: t("wachtwoord.wijzigenMislukt"),
       });
     } finally {
       setSaving(false);
@@ -336,11 +333,11 @@ export default function InstellingenPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      setBackupMessage({ type: "success", text: "Backup gedownload." });
+      setBackupMessage({ type: "success", text: t("backup.gedownload") });
     } catch {
       setBackupMessage({
         type: "error",
-        text: "Backup downloaden mislukt.",
+        text: t("backup.downloadMislukt"),
       });
     } finally {
       setDownloading(false);
@@ -359,7 +356,7 @@ export default function InstellingenPage() {
       await api.upload("/api/backup/restore", formData);
       setRestoreMessage({
         type: "success",
-        text: "Backup hersteld. U wordt doorgestuurd naar het ontgrendelscherm.",
+        text: t("backup.hersteld"),
       });
       setRestoreFile(null);
       setRestorePassword("");
@@ -374,7 +371,7 @@ export default function InstellingenPage() {
         text:
           err instanceof Error
             ? err.message
-            : "Backup herstellen mislukt.",
+            : t("backup.herstelMislukt"),
       });
     } finally {
       setRestoring(false);
@@ -398,13 +395,13 @@ export default function InstellingenPage() {
           pad: autoBackupPad,
           frequentie: autoBackupFrequentie,
         });
-        setAutoBackupMessage({ type: "success", text: "Auto-backup instellingen opgeslagen." });
+        setAutoBackupMessage({ type: "success", text: t("autoBackup.opgeslagen") });
       } else {
         await (window as any).lumio.setAutoBackupConfig(null);
-        setAutoBackupMessage({ type: "success", text: "Auto-backup uitgeschakeld." });
+        setAutoBackupMessage({ type: "success", text: t("autoBackup.uitgeschakeld") });
       }
     } catch {
-      setAutoBackupMessage({ type: "error", text: "Opslaan mislukt." });
+      setAutoBackupMessage({ type: "error", text: t("autoBackup.opslaanMislukt") });
     } finally {
       setAutoBackupSaving(false);
     }
@@ -417,12 +414,12 @@ export default function InstellingenPage() {
     try {
       const result = await (window as any).lumio.triggerAutoBackup();
       if (result.success) {
-        setAutoBackupMessage({ type: "success", text: "Test-backup succesvol aangemaakt." });
+        setAutoBackupMessage({ type: "success", text: t("autoBackup.testSucces") });
       } else {
-        setAutoBackupMessage({ type: "error", text: result.error || "Backup mislukt." });
+        setAutoBackupMessage({ type: "error", text: result.error || t("autoBackup.backupMislukt") });
       }
     } catch {
-      setAutoBackupMessage({ type: "error", text: "Backup mislukt." });
+      setAutoBackupMessage({ type: "error", text: t("autoBackup.backupMislukt") });
     } finally {
       setAutoBackupTesting(false);
     }
@@ -438,7 +435,7 @@ export default function InstellingenPage() {
       });
       setDeleteMessage({
         type: "success",
-        text: "Alle gegevens zijn verwijderd. U wordt doorgestuurd...",
+        text: t("verwijderen.succes"),
       });
       setDeletePassword("");
       setTimeout(() => {
@@ -451,7 +448,7 @@ export default function InstellingenPage() {
         text:
           err instanceof Error
             ? err.message
-            : "Verwijderen mislukt. Controleer uw wachtwoord.",
+            : t("verwijderen.mislukt"),
       });
     } finally {
       setDeleting(false);
@@ -461,9 +458,9 @@ export default function InstellingenPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Instellingen</h1>
+        <h1 className="text-3xl font-bold">{t("titel")}</h1>
         <p className="text-muted-foreground mt-1">
-          Beheer uw beveiligingsinstellingen
+          {t("ondertitel")}
         </p>
       </div>
 
@@ -471,23 +468,22 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Timer className="h-5 w-5" /> Auto-vergrendeling
+            <Timer className="h-5 w-5" /> {t("autoLock.titel")}
           </CardTitle>
           <CardDescription>
-            Vergrendel de app automatisch na een periode van inactiviteit. U
-            krijgt 30 seconden voor vergrendeling een waarschuwing.
+            {t("autoLock.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
-            {TIMEOUT_OPTIONS.map((opt) => (
+            {TIMEOUT_VALUES.map((value) => (
               <Button
-                key={opt.value}
-                variant={idleTimeout === opt.value ? "default" : "outline"}
+                key={value}
+                variant={idleTimeout === value ? "default" : "outline"}
                 size="sm"
-                onClick={() => handleIdleTimeoutChange(opt.value)}
+                onClick={() => handleIdleTimeoutChange(value)}
               >
-                {opt.label}
+                {t(`timeoutOpties.${value}`)}
               </Button>
             ))}
           </div>
@@ -498,10 +494,10 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Type className="h-5 w-5" /> Grote-tekst modus
+            <Type className="h-5 w-5" /> {t("groteTekst.titel")}
           </CardTitle>
           <CardDescription>
-            Vergroot de tekst in de hele applicatie voor betere leesbaarheid.
+            {t("groteTekst.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -511,16 +507,31 @@ export default function InstellingenPage() {
               size="sm"
               onClick={() => toggleGroteTekst(false)}
             >
-              Normaal
+              {t("groteTekst.normaal")}
             </Button>
             <Button
               variant={groteTekst ? "default" : "outline"}
               size="sm"
               onClick={() => toggleGroteTekst(true)}
             >
-              Grote tekst
+              {t("groteTekst.groot")}
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Taalkeuze */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" /> {t("taal.titel")}
+          </CardTitle>
+          <CardDescription>
+            {t("taal.beschrijving")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LanguageSelector />
         </CardContent>
       </Card>
 
@@ -528,10 +539,10 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <RefreshCw className="h-5 w-5" /> Periodieke actualisatie
+            <RefreshCw className="h-5 w-5" /> {t("actualisatie.titel")}
           </CardTitle>
           <CardDescription>
-            Controleer regelmatig of uw gegevens nog up-to-date zijn. Lumio herinnert u elk kwartaal (90 dagen) per onderdeel.
+            {t("actualisatie.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -557,8 +568,8 @@ export default function InstellingenPage() {
                         <p className="text-sm font-medium truncate">{d.label}</p>
                         <p className="text-xs text-muted-foreground">
                           {d.laatsteBevestiging
-                            ? `Gecontroleerd: ${new Date(d.laatsteBevestiging).toLocaleDateString("nl-NL")}`
-                            : "Nog niet gecontroleerd"}
+                            ? t("actualisatie.gecontroleerd", { datum: new Date(d.laatsteBevestiging).toLocaleDateString(locale) })
+                            : t("actualisatie.nietGecontroleerd")}
                         </p>
                       </div>
                     </div>
@@ -601,13 +612,13 @@ export default function InstellingenPage() {
                   {actualisatieConfirming === "alles" && (
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   )}
-                  Alles als actueel bevestigen
+                  {t("actualisatie.allesBevestigen")}
                 </Button>
               )}
             </>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Actualisatiestatus wordt geladen...
+              {t("actualisatie.laden")}
             </p>
           )}
         </CardContent>
@@ -617,11 +628,10 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" /> Profielen
+            <Users className="h-5 w-5" /> {t("profielen.titel")}
           </CardTitle>
           <CardDescription>
-            Beheer profielen voor uzelf en uw naasten. Elk profiel heeft een
-            eigen versleutelde database. Maximaal 5 profielen.
+            {t("profielen.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -638,10 +648,10 @@ export default function InstellingenPage() {
                     <p className="font-medium truncate">
                       {profile.naam}
                       {activeProfile?.id === profile.id && (
-                        <span className="ml-2 text-xs text-primary font-normal">(actief)</span>
+                        <span className="ml-2 text-xs text-primary font-normal">{t("profielen.actief")}</span>
                       )}
                     </p>
-                    <p className="text-sm text-muted-foreground">{profile.relatie}</p>
+                    <p className="text-sm text-muted-foreground">{t(`profielen.relaties.${profile.relatie}`)}</p>
                   </div>
                 </div>
                 {!profile.isPrimair && profile.id !== activeProfile?.id && (
@@ -674,20 +684,20 @@ export default function InstellingenPage() {
           {showCreateProfile ? (
             <form onSubmit={handleCreateProfile} className="space-y-3 max-w-md rounded-lg border border-border p-4">
               <div className="space-y-2">
-                <Label htmlFor="new-profile-name">Naam</Label>
+                <Label htmlFor="new-profile-name">{t("profielen.naam")}</Label>
                 <Input
                   id="new-profile-name"
                   value={newProfileName}
                   onChange={(e) => setNewProfileName(e.target.value)}
-                  placeholder="Bijv. Jan, Partner"
+                  placeholder={t("profielen.naamPlaceholder")}
                   required
                   autoFocus
                 />
               </div>
               <div className="space-y-2">
-                <Label>Relatie</Label>
+                <Label>{t("profielen.relatie")}</Label>
                 <div className="flex flex-wrap gap-2">
-                  {["Partner", "Kind", "Ouder", "Overig"].map((rel) => (
+                  {(["Partner", "Kind", "Ouder", "Overig"] as const).map((rel) => (
                     <Button
                       key={rel}
                       type="button"
@@ -695,7 +705,7 @@ export default function InstellingenPage() {
                       size="sm"
                       onClick={() => setNewProfileRelatie(rel)}
                     >
-                      {rel}
+                      {t(`profielen.relaties.${rel}`)}
                     </Button>
                   ))}
                 </div>
@@ -703,7 +713,7 @@ export default function InstellingenPage() {
               <div className="flex gap-2">
                 <Button type="submit" size="sm" disabled={profileSaving || !newProfileName.trim()}>
                   {profileSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Aanmaken
+                  {t("profielen.aanmaken")}
                 </Button>
                 <Button
                   type="button"
@@ -711,7 +721,7 @@ export default function InstellingenPage() {
                   size="sm"
                   onClick={() => setShowCreateProfile(false)}
                 >
-                  Annuleren
+                  {t("profielen.annuleren")}
                 </Button>
               </div>
             </form>
@@ -722,11 +732,11 @@ export default function InstellingenPage() {
               onClick={() => setShowCreateProfile(true)}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Nieuw profiel toevoegen
+              {t("profielen.nieuwProfiel")}
             </Button>
           ) : (
             <p className="text-xs text-muted-foreground">
-              Maximaal 5 profielen bereikt.
+              {t("profielen.maxBereikt")}
             </p>
           )}
         </CardContent>
@@ -736,17 +746,16 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Key className="h-5 w-5" /> Wachtwoord wijzigen
+            <Key className="h-5 w-5" /> {t("wachtwoord.titel")}
           </CardTitle>
           <CardDescription>
-            Wijzig uw hoofdwachtwoord. Na wijziging wordt de database opnieuw
-            versleuteld met het nieuwe wachtwoord.
+            {t("wachtwoord.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
             <div className="space-y-2">
-              <Label htmlFor="huidig">Huidig wachtwoord</Label>
+              <Label htmlFor="huidig">{t("wachtwoord.huidig")}</Label>
               <Input
                 id="huidig"
                 type="password"
@@ -756,7 +765,7 @@ export default function InstellingenPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="nieuw">Nieuw wachtwoord</Label>
+              <Label htmlFor="nieuw">{t("wachtwoord.nieuw")}</Label>
               <Input
                 id="nieuw"
                 type="password"
@@ -768,7 +777,7 @@ export default function InstellingenPage() {
               <PasswordStrengthMeter password={nieuwWachtwoord} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="bevestig">Bevestig nieuw wachtwoord</Label>
+              <Label htmlFor="bevestig">{t("wachtwoord.bevestig")}</Label>
               <Input
                 id="bevestig"
                 type="password"
@@ -791,7 +800,7 @@ export default function InstellingenPage() {
             )}
             <Button type="submit" disabled={saving}>
               {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Wachtwoord wijzigen
+              {t("wachtwoord.wijzigen")}
             </Button>
           </form>
         </CardContent>
@@ -801,20 +810,18 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Download className="h-5 w-5" /> Backup & Herstel
+            <Download className="h-5 w-5" /> {t("backup.titel")}
           </CardTitle>
           <CardDescription>
-            Maak een backup van uw versleutelde database of herstel een eerdere
-            backup.
+            {t("backup.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Download backup */}
           <div className="space-y-3">
-            <h3 className="text-sm font-medium">Backup downloaden</h3>
+            <h3 className="text-sm font-medium">{t("backup.downloadTitel")}</h3>
             <p className="text-sm text-muted-foreground">
-              Download een versleuteld ZIP-bestand met uw volledige database.
-              Bewaar dit bestand op een veilige locatie.
+              {t("backup.downloadBeschrijving")}
             </p>
             <Button
               onClick={handleDownloadBackup}
@@ -826,7 +833,7 @@ export default function InstellingenPage() {
               ) : (
                 <Download className="h-4 w-4 mr-2" />
               )}
-              Download backup
+              {t("backup.downloadKnop")}
             </Button>
             {backupMessage && (
               <p
@@ -845,13 +852,12 @@ export default function InstellingenPage() {
 
           {/* Restore backup */}
           <div className="space-y-3 max-w-md">
-            <h3 className="text-sm font-medium">Backup herstellen</h3>
+            <h3 className="text-sm font-medium">{t("backup.herstelTitel")}</h3>
             <p className="text-sm text-muted-foreground">
-              Herstel een eerdere backup. Dit vervangt alle huidige gegevens. U
-              hebt het wachtwoord van de backup nodig.
+              {t("backup.herstelBeschrijving")}
             </p>
             <div className="space-y-2">
-              <Label htmlFor="restore-file">Backup-bestand (.zip)</Label>
+              <Label htmlFor="restore-file">{t("backup.bestandLabel")}</Label>
               <Input
                 ref={fileInputRef}
                 id="restore-file"
@@ -862,14 +868,14 @@ export default function InstellingenPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="restore-password">
-                Wachtwoord van de backup
+                {t("backup.wachtwoordLabel")}
               </Label>
               <Input
                 id="restore-password"
                 type="password"
                 value={restorePassword}
                 onChange={(e) => setRestorePassword(e.target.value)}
-                placeholder="Wachtwoord waarmee de backup is versleuteld"
+                placeholder={t("backup.wachtwoordPlaceholder")}
               />
             </div>
             <Button
@@ -882,7 +888,7 @@ export default function InstellingenPage() {
               ) : (
                 <Upload className="h-4 w-4 mr-2" />
               )}
-              Backup herstellen
+              {t("backup.herstelKnop")}
             </Button>
             {restoreMessage && (
               <p
@@ -904,16 +910,16 @@ export default function InstellingenPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <HardDrive className="h-5 w-5" /> Automatische backup
+              <HardDrive className="h-5 w-5" /> {t("autoBackup.titel")}
             </CardTitle>
             <CardDescription>
-              Configureer automatische backups naar een map op uw computer of USB-stick.
+              {t("autoBackup.beschrijving")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
               <Label htmlFor="auto-backup-toggle" className="flex-1">
-                Automatische backup inschakelen
+                {t("autoBackup.inschakelen")}
               </Label>
               <button
                 id="auto-backup-toggle"
@@ -935,32 +941,32 @@ export default function InstellingenPage() {
             {autoBackupEnabled && (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Backup-map</Label>
+                  <Label>{t("autoBackup.backupMap")}</Label>
                   <div className="flex gap-2">
                     <Input
                       readOnly
                       value={autoBackupPad}
-                      placeholder="Selecteer een map..."
+                      placeholder={t("autoBackup.selecteerMap")}
                       className="flex-1"
                     />
                     <Button variant="outline" onClick={handleSelectBackupDirectory}>
                       <FolderOpen className="h-4 w-4 mr-2" />
-                      Bladeren
+                      {t("autoBackup.bladeren")}
                     </Button>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="auto-backup-freq">Frequentie</Label>
+                  <Label htmlFor="auto-backup-freq">{t("autoBackup.frequentie")}</Label>
                   <select
                     id="auto-backup-freq"
                     value={autoBackupFrequentie}
                     onChange={(e) => setAutoBackupFrequentie(e.target.value)}
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   >
-                    <option value="dagelijks">Dagelijks</option>
-                    <option value="wekelijks">Wekelijks</option>
-                    <option value="maandelijks">Maandelijks</option>
+                    <option value="dagelijks">{t("autoBackup.dagelijks")}</option>
+                    <option value="wekelijks">{t("autoBackup.wekelijks")}</option>
+                    <option value="maandelijks">{t("autoBackup.maandelijks")}</option>
                   </select>
                 </div>
 
@@ -974,7 +980,7 @@ export default function InstellingenPage() {
                     ) : (
                       <Check className="h-4 w-4 mr-2" />
                     )}
-                    Opslaan
+                    {t("autoBackup.opslaan")}
                   </Button>
                   <Button
                     variant="outline"
@@ -986,7 +992,7 @@ export default function InstellingenPage() {
                     ) : (
                       <Download className="h-4 w-4 mr-2" />
                     )}
-                    Nu backup maken
+                    {t("autoBackup.nuBackup")}
                   </Button>
                 </div>
               </div>
@@ -1011,37 +1017,36 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" /> Beveiliging
+            <Shield className="h-5 w-5" /> {t("beveiliging.titel")}
           </CardTitle>
           <CardDescription>
-            Informatie over de beveiliging van uw gegevens.
+            {t("beveiliging.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span>Database versleuteld met SQLCipher (AES-256-CBC)</span>
+            <span>{t("beveiliging.sqlcipher")}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-green-500" />
             <span>
-              Gevoelige velden extra versleuteld (AES-256-GCM)
+              {t("beveiliging.aesGcm")}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span>Alleen lokale verbinding (127.0.0.1)</span>
+            <span>{t("beveiliging.lokaal")}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span>Geen internetverbinding vereist</span>
+            <span>{t("beveiliging.geenInternet")}</span>
           </div>
 
           <div className="border-t pt-3 mt-3">
-            <h3 className="text-sm font-semibold mb-2">Digitale handtekening</h3>
+            <h3 className="text-sm font-semibold mb-2">{t("beveiliging.handtekeningTitel")}</h3>
             <p className="text-xs text-muted-foreground mb-3">
-              Genereer een unieke hash van uw huidige gegevens. Hiermee kunt u later
-              verifiëren dat uw data niet is gewijzigd.
+              {t("beveiliging.handtekeningBeschrijving")}
             </p>
             <DataHandtekening />
           </div>
@@ -1052,17 +1057,15 @@ export default function InstellingenPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" /> Over Lumio
+            <Settings className="h-5 w-5" /> {t("overLumio.titel")}
           </CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
           <p>
-            Lumio is een hulpmiddel voor het vastleggen van uw digitale
-            nalatenschap. Alle gegevens worden lokaal en versleuteld opgeslagen.
+            {t("overLumio.beschrijving")}
           </p>
           <p className="mt-2">
-            Een notarieel testament blijft vereist voor juridische geldigheid
-            conform het Burgerlijk Wetboek (BW Boek 4).
+            {t("overLumio.juridisch")}
           </p>
         </CardContent>
       </Card>
@@ -1071,25 +1074,23 @@ export default function InstellingenPage() {
       <Card className="border-destructive/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
-            <Trash2 className="h-5 w-5" /> Alle gegevens wissen
+            <Trash2 className="h-5 w-5" /> {t("verwijderen.titel")}
           </CardTitle>
           <CardDescription>
-            Verwijder uw volledige database permanent. Dit kan niet ongedaan
-            worden gemaakt. Maak eerst een backup als u uw gegevens wilt
-            bewaren.
+            {t("verwijderen.beschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 max-w-md">
           <div className="space-y-2">
             <Label htmlFor="delete-password">
-              Bevestig met uw wachtwoord
+              {t("verwijderen.bevestigLabel")}
             </Label>
             <Input
               id="delete-password"
               type="password"
               value={deletePassword}
               onChange={(e) => setDeletePassword(e.target.value)}
-              placeholder="Voer uw wachtwoord in ter bevestiging"
+              placeholder={t("verwijderen.bevestigPlaceholder")}
             />
           </div>
           {deleteMessage && (
@@ -1113,7 +1114,7 @@ export default function InstellingenPage() {
             ) : (
               <Trash2 className="h-4 w-4 mr-2" />
             )}
-            Alle gegevens permanent verwijderen
+            {t("verwijderen.knop")}
           </Button>
         </CardContent>
       </Card>
@@ -1124,11 +1125,9 @@ export default function InstellingenPage() {
         onOpenChange={setShowRestoreConfirm}
       >
         <DialogHeader>
-          <DialogTitle>Backup herstellen?</DialogTitle>
+          <DialogTitle>{t("dialogen.herstel.titel")}</DialogTitle>
           <DialogDescription>
-            Weet u het zeker? Dit vervangt alle huidige gegevens door de
-            gegevens uit de backup. Deze actie kan niet ongedaan worden
-            gemaakt.
+            {t("dialogen.herstel.beschrijving")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -1136,9 +1135,9 @@ export default function InstellingenPage() {
             variant="outline"
             onClick={() => setShowRestoreConfirm(false)}
           >
-            Annuleren
+            {t("dialogen.herstel.annuleren")}
           </Button>
-          <Button onClick={handleRestore}>Ja, herstel backup</Button>
+          <Button onClick={handleRestore}>{t("dialogen.herstel.bevestigen")}</Button>
         </DialogFooter>
       </Dialog>
 
@@ -1149,13 +1148,10 @@ export default function InstellingenPage() {
       >
         <DialogHeader>
           <DialogTitle className="text-destructive">
-            Alle gegevens permanent verwijderen?
+            {t("dialogen.verwijderAlles.titel")}
           </DialogTitle>
           <DialogDescription>
-            Weet u het zeker? Alle gegevens worden permanent verwijderd. Dit
-            omvat uw profiel, wachtwoorden, documenten, testament-gegevens en
-            alle andere opgeslagen informatie. Deze actie kan niet ongedaan
-            worden gemaakt.
+            {t("dialogen.verwijderAlles.beschrijving")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -1163,10 +1159,10 @@ export default function InstellingenPage() {
             variant="outline"
             onClick={() => setShowDeleteConfirm(false)}
           >
-            Annuleren
+            {t("dialogen.verwijderAlles.annuleren")}
           </Button>
           <Button variant="destructive" onClick={handleDeleteAccount}>
-            Ja, verwijder alles permanent
+            {t("dialogen.verwijderAlles.bevestigen")}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -1178,11 +1174,10 @@ export default function InstellingenPage() {
       >
         <DialogHeader>
           <DialogTitle className="text-destructive">
-            Profiel verwijderen?
+            {t("dialogen.verwijderProfiel.titel")}
           </DialogTitle>
           <DialogDescription>
-            Weet u het zeker? Het profiel en de bijbehorende database worden
-            permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.
+            {t("dialogen.verwijderProfiel.beschrijving")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -1190,7 +1185,7 @@ export default function InstellingenPage() {
             variant="outline"
             onClick={() => setShowDeleteProfileConfirm(null)}
           >
-            Annuleren
+            {t("dialogen.verwijderProfiel.annuleren")}
           </Button>
           <Button
             variant="destructive"
@@ -1199,7 +1194,7 @@ export default function InstellingenPage() {
               handleDeleteProfile(showDeleteProfileConfirm)
             }
           >
-            Ja, verwijder profiel
+            {t("dialogen.verwijderProfiel.bevestigen")}
           </Button>
         </DialogFooter>
       </Dialog>

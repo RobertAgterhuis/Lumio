@@ -111,6 +111,7 @@ const emptyCrypto = {
 export default function DigitaalBezitPage() {
   const t = useTranslations("digitaalBezit");
   const tEnum = useTranslations("enums");
+  const tAfsluit = useTranslations("afsluitInstructies");
   const [tab, setTab] = useState("accounts");
   const [accounts, setAccounts] = useState<DigitaalAccount[]>([]);
   const [wachtwoorden, setWachtwoorden] = useState<WachtwoordEntry[]>([]);
@@ -501,7 +502,7 @@ export default function DigitaalBezitPage() {
                             {t("accounts.afsluitInstructies", { platform: instructie.platform })}
                           </p>
                           <p className="text-xs text-blue-800">
-                            {instructie.beschrijving}
+                            {tAfsluit(instructie.beschrijvingKey)}
                           </p>
                           <a
                             href={instructie.url}

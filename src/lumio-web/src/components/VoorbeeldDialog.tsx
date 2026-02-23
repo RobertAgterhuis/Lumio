@@ -9,7 +9,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Eye } from "lucide-react";
-import { voorbeeldData, type VoorbeeldData } from "@/lib/voorbeeld-data";
+import { getVoorbeeldData, type VoorbeeldData } from "@/lib/voorbeeld-data";
+import { useTranslations } from "next-intl";
 
 interface VoorbeeldDialogProps {
   domein: string;
@@ -17,6 +18,8 @@ interface VoorbeeldDialogProps {
 
 export function VoorbeeldDialog({ domein }: VoorbeeldDialogProps) {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("voorbeeldData");
+  const voorbeeldData = getVoorbeeldData(t);
   const data: VoorbeeldData | undefined = voorbeeldData[domein];
 
   if (!data) return null;
@@ -30,7 +33,7 @@ export function VoorbeeldDialog({ domein }: VoorbeeldDialogProps) {
         onClick={() => setOpen(true)}
       >
         <Eye className="h-4 w-4" />
-        Bekijk voorbeeld
+        {t("bekijkVoorbeeld")}
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
@@ -62,8 +65,7 @@ export function VoorbeeldDialog({ domein }: VoorbeeldDialogProps) {
         </div>
         <div className="pt-3 border-t">
           <p className="text-xs text-muted-foreground italic">
-            Dit is fictieve voorbeelddata van &quot;Familie de Voorbeeld&quot;. Geen
-            echte personen of gegevens.
+            {t("disclaimer")}
           </p>
         </div>
       </Dialog>

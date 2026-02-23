@@ -32,7 +32,7 @@ export function ShortcutsDialog() {
               className="flex items-center justify-between py-1.5 px-1"
             >
               <span className="text-sm text-foreground">
-                {s.beschrijving}
+                {t(s.beschrijvingKey)}
               </span>
               <div className="flex items-center gap-1">
                 {s.keys.split("+").map((key, i) => (

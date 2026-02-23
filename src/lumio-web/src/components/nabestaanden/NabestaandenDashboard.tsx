@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,9 +62,8 @@ interface AfhandelingsItemDto {
 }
 
 interface StappenplanItem {
+  id: string;
   fase: "urgent" | "week1" | "maand1" | "afronden";
-  titel: string;
-  beschrijving: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   domein?: string;
@@ -72,36 +72,29 @@ interface StappenplanItem {
 const stappenplan: StappenplanItem[] = [
   // Urgent — eerste 24-48 uur
   {
+    id: "noodcontacten",
     fase: "urgent",
-    titel: "Noodcontacten informeren",
-    beschrijving:
-      "Neem contact op met de huisarts, notaris en andere vertrouwenspersonen.",
     href: "/noodcontacten",
     icon: Phone,
     domein: "noodcontacten",
   },
   {
+    id: "uitvaart",
     fase: "urgent",
-    titel: "Uitvaartwensen bekijken",
-    beschrijving: "Bekijk de vastgelegde wensen voor de uitvaart en ceremonie.",
     href: "/uitvaart",
     icon: Church,
     domein: "uitvaart",
   },
   {
+    id: "donor",
     fase: "urgent",
-    titel: "Donorregistratie controleren",
-    beschrijving:
-      "Controleer of er een donorregistratie is vastgelegd — dit heeft urgentie.",
     href: "/donor",
     icon: Heart,
     domein: "donor",
   },
   {
+    id: "euthanasie",
     fase: "urgent",
-    titel: "Wilsverklaring euthanasie",
-    beschrijving:
-      "Bekijk of er een wilsverklaring euthanasie is opgesteld.",
     href: "/euthanasie",
     icon: Stethoscope,
     domein: "euthanasie",
@@ -109,27 +102,22 @@ const stappenplan: StappenplanItem[] = [
 
   // Week 1
   {
+    id: "testament",
     fase: "week1",
-    titel: "Testament bekijken",
-    beschrijving:
-      "Bekijk de testamentaire informatie, begunstigden en de aangewezen executeur.",
     href: "/testament",
     icon: ScrollText,
     domein: "testament",
   },
   {
+    id: "erfgenamen",
     fase: "week1",
-    titel: "Erfgenamen overzicht",
-    beschrijving: "Bekijk wie als erfgenaam is aangewezen en hun contactgegevens.",
     href: "/erfgenamen",
     icon: Users,
     domein: "erfgenamen",
   },
   {
+    id: "documenten",
     fase: "week1",
-    titel: "Belangrijke documenten",
-    beschrijving:
-      "Download kopieën van opgeslagen documenten (ID, polis, aktes).",
     href: "/documenten",
     icon: FileText,
     domein: "documenten",
@@ -137,19 +125,15 @@ const stappenplan: StappenplanItem[] = [
 
   // Maand 1
   {
+    id: "boedel",
     fase: "maand1",
-    titel: "Boedel & financiën",
-    beschrijving:
-      "Overzicht van bezittingen, bankrekeningen, verzekeringen en schulden.",
     href: "/boedel",
     icon: Wallet,
     domein: "boedel",
   },
   {
+    id: "digitaalBezit",
     fase: "maand1",
-    titel: "Digitaal bezit",
-    beschrijving:
-      "Online accounts, wachtwoorden en crypto wallets die afgehandeld moeten worden.",
     href: "/digitaal-bezit",
     icon: Globe,
     domein: "digitaal-bezit",
@@ -157,18 +141,14 @@ const stappenplan: StappenplanItem[] = [
 
   // Afronden
   {
+    id: "export",
     fase: "afronden",
-    titel: "Compleet dossier exporteren",
-    beschrijving:
-      "Download alle informatie als PDF of ZIP voor uw administratie.",
     href: "/export",
     icon: Download,
   },
   {
+    id: "eigenaar",
     fase: "afronden",
-    titel: "Persoonsgegevens overledene",
-    beschrijving:
-      "Persoonlijke gegevens voor overlijdensaangifte en uitvaartregeling.",
     href: "/eigenaar",
     icon: User,
     domein: "eigenaar",
@@ -177,7 +157,6 @@ const stappenplan: StappenplanItem[] = [
 
 const faseConfig = {
   urgent: {
-    label: "Direct — eerste 24 uur",
     icon: AlertTriangle,
     color: "text-red-700",
     bgColor: "bg-red-50",
@@ -185,7 +164,6 @@ const faseConfig = {
     badgeClass: "bg-red-100 text-red-800",
   },
   week1: {
-    label: "Week 1 — eerste week",
     icon: Clock,
     color: "text-amber-700",
     bgColor: "bg-amber-50",
@@ -193,7 +171,6 @@ const faseConfig = {
     badgeClass: "bg-amber-100 text-amber-800",
   },
   maand1: {
-    label: "Maand 1 — eerste maand",
     icon: Calendar,
     color: "text-blue-700",
     bgColor: "bg-blue-50",
@@ -201,7 +178,6 @@ const faseConfig = {
     badgeClass: "bg-blue-100 text-blue-800",
   },
   afronden: {
-    label: "Afronden",
     icon: Flag,
     color: "text-green-700",
     bgColor: "bg-green-50",
@@ -218,6 +194,7 @@ const faseOrder: Array<"urgent" | "week1" | "maand1" | "afronden"> = [
 ];
 
 export function NabestaandenDashboard() {
+  const t = useTranslations("nabestaanden");
   const [compleetheid, setCompleetheid] = useState<Compleetheid | null>(null);
   const [afhandelingsItems, setAfhandelingsItems] = useState<AfhandelingsItemDto[]>([]);
 
@@ -282,15 +259,13 @@ export function NabestaandenDashboard() {
       <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-stone-50 to-white p-6 dark:border-stone-700 dark:from-stone-900 dark:to-stone-950">
         <div className="flex items-center gap-2 mb-2">
           <ShieldAlert className="h-5 w-5 text-stone-500" />
-          <h1 className="text-3xl font-bold">Nabestaanden Dashboard</h1>
+          <h1 className="text-3xl font-bold">{t("titel")}</h1>
         </div>
         <p className="text-muted-foreground mt-1 leading-relaxed">
-          Gecondoleerd met uw verlies. Dit dashboard helpt u stap voor stap bij het afhandelen
-          van de nalatenschap. Neem de tijd — u hoeft niet alles tegelijk te doen.
+          {t("introTekst")}
         </p>
         <p className="text-sm text-muted-foreground mt-2">
-          Alle gegevens zijn beschikbaar in alleen-lezen modus. Gebruik de knoppen hieronder
-          om bij te houden wat u al heeft afgehandeld.
+          {t("gegevensInfo")}
         </p>
       </div>
 
@@ -299,13 +274,13 @@ export function NabestaandenDashboard() {
         <Link href="/export">
           <Button>
             <Download className="h-4 w-4 mr-2" />
-            Alles exporteren
+            {t("exporteren")}
           </Button>
         </Link>
         <Link href="/noodcontacten">
           <Button variant="outline">
             <Phone className="h-4 w-4 mr-2" />
-            Noodcontacten bekijken
+            {t("noodcontactenBekijken")}
           </Button>
         </Link>
       </div>
@@ -313,10 +288,8 @@ export function NabestaandenDashboard() {
       {/* Empathische hulptekst */}
       <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900 dark:bg-blue-950/30">
         <p className="text-sm text-blue-800 dark:text-blue-300 leading-relaxed">
-          <strong>Hulp nodig?</strong> Het is normaal als dit overweldigend voelt.
-          Begin met de urgente zaken bovenaan en werk rustig naar beneden. U kunt altijd
-          terugkomen en verder gaan waar u gebleven was. Schakel hulp in van een notaris
-          of uitvaartverzorger als dat prettig voelt.
+          <strong>{t("hulpTitel")}</strong>{" "}
+          {t("hulpTekst")}
         </p>
       </div>
 
@@ -324,7 +297,7 @@ export function NabestaandenDashboard() {
       {totaalItems > 0 && (
         <div className="rounded-lg border bg-card p-5">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold">Voortgang afhandeling</h2>
+            <h2 className="text-sm font-semibold">{t("voortgangTitel")}</h2>
             <span className="text-sm font-bold text-primary">
               {voortgangPercentage}%
             </span>
@@ -336,7 +309,7 @@ export function NabestaandenDashboard() {
             />
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            {afgehandeldCount} van {totaalItems} onderdelen afgehandeld
+            {t("voortgangTekst", { afgehandeld: afgehandeldCount, totaal: totaalItems })}
           </p>
         </div>
       )}
@@ -352,7 +325,7 @@ export function NabestaandenDashboard() {
             <div className="flex items-center gap-2">
               <FaseIcon className={`h-5 w-5 ${config.color}`} />
               <h2 className={`text-lg font-semibold ${config.color}`}>
-                {config.label}
+                {t(`fases.${fase}`)}
               </h2>
             </div>
 
@@ -366,34 +339,34 @@ export function NabestaandenDashboard() {
                   afhandeling.status === "Afgehandeld" ? (
                     <Badge className="bg-green-100 text-green-800 hover:bg-green-100 gap-1 text-xs">
                       <CheckCircle2 className="h-3 w-3" />
-                      Afgehandeld
+                      {t("statusAfgehandeld")}
                     </Badge>
                   ) : afhandeling.status === "InBehandeling" ? (
                     <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 gap-1 text-xs">
                       <Clock className="h-3 w-3" />
-                      In behandeling
+                      {t("statusInBehandeling")}
                     </Badge>
                   ) : status === true ? (
                     <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 gap-1 text-xs">
                       <Circle className="h-3 w-3" />
-                      Beschikbaar
+                      {t("statusBeschikbaar")}
                     </Badge>
                   ) : status === false ? (
                     <Badge variant="secondary" className="gap-1 text-xs">
                       <Circle className="h-3 w-3" />
-                      Niet ingevuld
+                      {t("statusNietIngevuld")}
                     </Badge>
                   ) : null
                 ) : status === true ? (
                   <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 gap-1 text-xs">
                     <Circle className="h-3 w-3" />
-                    Beschikbaar
+                    {t("statusBeschikbaar")}
                   </Badge>
                 ) : null;
 
                 return (
                   <Card
-                    key={item.titel}
+                    key={item.id}
                     className={`h-full transition-shadow hover:shadow-md border ${config.borderColor}`}
                   >
                     <Link href={item.href}>
@@ -407,15 +380,15 @@ export function NabestaandenDashboard() {
                           {statusBadge}
                         </div>
                         <CardTitle className="text-base mt-2">
-                          {item.titel}
+                          {t(`stappen.${item.id}.titel`)}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <CardDescription className="text-xs">
-                          {item.beschrijving}
+                          {t(`stappen.${item.id}.beschrijving`)}
                         </CardDescription>
                         <div className="mt-2 flex items-center text-xs text-primary">
-                          Bekijken <ArrowRight className="ml-1 h-3 w-3" />
+                          {t("bekijken")} <ArrowRight className="ml-1 h-3 w-3" />
                         </div>
                       </CardContent>
                     </Link>
@@ -433,7 +406,7 @@ export function NabestaandenDashboard() {
                             }}
                           >
                             <CalendarDays className="h-3 w-3 mr-1" />
-                            Start
+                            {t("start")}
                           </Button>
                         )}
                         <Button
@@ -446,7 +419,7 @@ export function NabestaandenDashboard() {
                           }}
                         >
                           <CheckCircle2 className="h-3 w-3 mr-1" />
-                          Afgehandeld
+                          {t("markeerAfgehandeld")}
                         </Button>
                       </div>
                     )}

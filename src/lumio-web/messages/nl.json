@@ -55,7 +55,25 @@
     "sessieWaarschuwing": "Uw sessie wordt over {seconds} seconden automatisch vergrendeld wegens inactiviteit."
   },
   "shortcuts": {
-    "titel": "Sneltoetsen"
+    "titel": "Sneltoetsen",
+    "zoeken": "Zoeken",
+    "vergrendelen": "Vergrendelen",
+    "nieuwItem": "Nieuw item",
+    "sneltoetsenTonen": "Sneltoetsen tonen",
+    "gaNaarDashboard": "Ga naar Dashboard",
+    "gaNaarProfiel": "Ga naar Profiel",
+    "gaNaarTestament": "Ga naar Testament",
+    "gaNaarWilsverklaring": "Ga naar Wilsverklaring",
+    "gaNaarDonorregistratie": "Ga naar Donorregistratie",
+    "gaNaarDigitaalBezit": "Ga naar Digitaal Bezit",
+    "gaNaarBoedel": "Ga naar Boedel",
+    "gaNaarUitvaartwensen": "Ga naar Uitvaartwensen",
+    "gaNaarDocumenten": "Ga naar Documenten",
+    "gaNaarErfgenamen": "Ga naar Erfgenamen",
+    "gaNaarNoodcontacten": "Ga naar Noodcontacten",
+    "gaNaarExporteren": "Ga naar Exporteren",
+    "gaNaarActiviteitenlog": "Ga naar Activiteitenlog",
+    "gaNaarInstellingen": "Ga naar Instellingen"
   },
   "auth": {
     "laden": "Lumio laden...",
@@ -1410,5 +1428,710 @@
     "ernstMiddel": "Middel",
     "ernstInfo": "Informatief",
     "disclaimer": "Deze controle is informatief en vervangt geen juridisch advies. Raadpleeg altijd een notaris voor uw specifieke situatie."
+  },
+  "sectieNotitie": {
+    "toevoegen": "Notitie toevoegen",
+    "titel": "Notitie",
+    "placeholder": "bijv. Let op: de originele aktes liggen in de kluis in de slaapkamer.",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "opslaanBezig": "Opslaan..."
+  },
+  "dataHandtekening": {
+    "genereren": "Digitale handtekening genereren",
+    "kopieer": "Kopiëren"
+  },
+  "wachtwoordGenerator": {
+    "titel": "Wachtwoord generator",
+    "lengte": "Lengte: {lengte}",
+    "opties": "Opties",
+    "nieuw": "Nieuw",
+    "gebruikWachtwoord": "Gebruik dit wachtwoord"
+  },
+  "afsluitInstructies": {
+    "facebook": "Herdenkingsstatus aanvragen of account laten verwijderen via het speciale herdenkingsformulier van Meta. Vereist overlijdensakte.",
+    "instagram": "Herdenkingsaccount aanvragen of verwijdering via Instagram's nabestaandenformulier. Bewijs van overlijden vereist.",
+    "twitter": "Deactivering aanvragen door nabestaanden via het privacyformulier. Overlijdensakte en identiteitsbewijs vereist.",
+    "linkedin": "Profiel van een overleden lid verwijderen via het nabestaandenformulier. Verificatie vereist.",
+    "tiktok": "Account verwijderen door nabestaanden via contactformulier. Bewijs van overlijden nodig.",
+    "snapchat": "Nabestaanden kunnen een verwijderingsverzoek indienen via het ondersteuningsformulier.",
+    "google": "Inactieve Account Manager instellen of account laten verwijderen door nabestaanden. Google biedt een uitgebreide procedure inclusief gegevenstoegang.",
+    "microsoft": "Nabestaanden kunnen een verzoek indienen om het account te sluiten of gegevens op te vragen via het 'Next of Kin'-proces.",
+    "apple": "Digital Legacy-programma of verzoek tot accountsluiting. Apple vereist een gerechtelijk bevel of overlijdensakte.",
+    "yahoo": "Account sluiten via nabestaandenverzoek. Overlijdensakte en identiteitsbewijs vereist.",
+    "ing": "Neem contact op met de bank over overlijden. ING regelt afsluiting via het kantoor of telefonisch.",
+    "rabobank": "Overlijden melden via het kantoor of telefonisch. Rabobank begeleidt het afwikkelingsproces.",
+    "abnAmro": "Overlijden melden en bankzaken regelen. ABN AMRO biedt een speciaal overlijdensteam.",
+    "sns": "Overlijden doorgeven en rekeningen laten afwikkelen via het kantoor.",
+    "paypal": "Account sluiten na overlijden door contact met PayPal klantenservice. Overlijdensakte vereist.",
+    "bolcom": "Neem contact op met de klantenservice om het account te laten opheffen.",
+    "amazon": "Account sluiten via het ondersteuningsformulier. Nabestaanden moeten overlijdensakte overleggen.",
+    "coolblue": "Neem contact op met de klantenservice voor accountverwijdering.",
+    "netflix": "Abonnement opzeggen en account verwijderen via de accountinstellingen of klantenservice.",
+    "spotify": "Account sluiten via de accountinstellingen of door contact met ondersteuning.",
+    "disney": "Abonnement opzeggen en account verwijderen via accountbeheer.",
+    "steam": "Account overdracht is officieel niet ondersteund. Neem contact op met Steam Support.",
+    "playstation": "Account sluiten via PlayStation Support. Overlijdensakte vereist.",
+    "xbox": "Valt onder Microsoft Next of Kin-proces. Account sluiten via Microsoft Support.",
+    "digid": "DigiD wordt automatisch ingetrokken bij de gemeente na registratie van het overlijden.",
+    "mijnOverheid": "Account wordt gekoppeld aan DigiD en vervalt automatisch na overlijden.",
+    "slack": "Workspace-beheerder kan het account deactiveren. Neem contact op met de IT-afdeling van de werkgever.",
+    "zoom": "Account verwijderen via accountinstellingen of door de beheerder."
+  },
+  "instellingen": {
+    "titel": "Instellingen",
+    "ondertitel": "Beheer uw beveiligingsinstellingen",
+    "timeoutOpties": {
+      "1": "1 minuut",
+      "2": "2 minuten",
+      "5": "5 minuten",
+      "10": "10 minuten",
+      "15": "15 minuten",
+      "30": "30 minuten",
+      "0": "Uitgeschakeld"
+    },
+    "autoLock": {
+      "titel": "Auto-vergrendeling",
+      "beschrijving": "Vergrendel de app automatisch na een periode van inactiviteit. U krijgt 30 seconden voor vergrendeling een waarschuwing."
+    },
+    "groteTekst": {
+      "titel": "Grote-tekst modus",
+      "beschrijving": "Vergroot de tekst in de hele applicatie voor betere leesbaarheid.",
+      "normaal": "Normaal",
+      "groot": "Grote tekst"
+    },
+    "taal": {
+      "titel": "Taal",
+      "beschrijving": "Kies de taal van de applicatie."
+    },
+    "actualisatie": {
+      "titel": "Periodieke actualisatie",
+      "beschrijving": "Controleer regelmatig of uw gegevens nog up-to-date zijn. Lumio herinnert u elk kwartaal (90 dagen) per onderdeel.",
+      "gecontroleerd": "Gecontroleerd: {datum}",
+      "nietGecontroleerd": "Nog niet gecontroleerd",
+      "allesBevestigen": "Alles als actueel bevestigen",
+      "laden": "Actualisatiestatus wordt geladen...",
+      "bevestigdSucces": "Alle domeinen als actueel bevestigd.",
+      "bevestigdFout": "Bevestiging mislukt."
+    },
+    "profielen": {
+      "titel": "Profielen",
+      "beschrijving": "Beheer profielen voor uzelf en uw naasten. Elk profiel heeft een eigen versleutelde database. Maximaal 5 profielen.",
+      "actief": "(actief)",
+      "naam": "Naam",
+      "naamPlaceholder": "Bijv. Jan, Partner",
+      "relatie": "Relatie",
+      "aanmaken": "Aanmaken",
+      "annuleren": "Annuleren",
+      "nieuwProfiel": "Nieuw profiel toevoegen",
+      "maxBereikt": "Maximaal 5 profielen bereikt.",
+      "aangemaakt": "Profiel \"{naam}\" aangemaakt.",
+      "aanmakenMislukt": "Profiel aanmaken mislukt.",
+      "verwijderd": "Profiel verwijderd.",
+      "verwijderenMislukt": "Profiel verwijderen mislukt.",
+      "relaties": {
+        "Partner": "Partner",
+        "Kind": "Kind",
+        "Ouder": "Ouder",
+        "Overig": "Overig"
+      }
+    },
+    "wachtwoord": {
+      "titel": "Wachtwoord wijzigen",
+      "beschrijving": "Wijzig uw hoofdwachtwoord. Na wijziging wordt de database opnieuw versleuteld met het nieuwe wachtwoord.",
+      "huidig": "Huidig wachtwoord",
+      "nieuw": "Nieuw wachtwoord",
+      "bevestig": "Bevestig nieuw wachtwoord",
+      "wijzigen": "Wachtwoord wijzigen",
+      "nietOvereen": "Wachtwoorden komen niet overeen.",
+      "teKort": "Wachtwoord moet minimaal 8 tekens bevatten.",
+      "gewijzigd": "Wachtwoord succesvol gewijzigd.",
+      "wijzigenMislukt": "Wachtwoord wijzigen mislukt. Controleer uw huidige wachtwoord."
+    },
+    "backup": {
+      "titel": "Backup & Herstel",
+      "beschrijving": "Maak een backup van uw versleutelde database of herstel een eerdere backup.",
+      "downloadTitel": "Backup downloaden",
+      "downloadBeschrijving": "Download een versleuteld ZIP-bestand met uw volledige database. Bewaar dit bestand op een veilige locatie.",
+      "downloadKnop": "Download backup",
+      "gedownload": "Backup gedownload.",
+      "downloadMislukt": "Backup downloaden mislukt.",
+      "herstelTitel": "Backup herstellen",
+      "herstelBeschrijving": "Herstel een eerdere backup. Dit vervangt alle huidige gegevens. U hebt het wachtwoord van de backup nodig.",
+      "bestandLabel": "Backup-bestand (.zip)",
+      "wachtwoordLabel": "Wachtwoord van de backup",
+      "wachtwoordPlaceholder": "Wachtwoord waarmee de backup is versleuteld",
+      "herstelKnop": "Backup herstellen",
+      "hersteld": "Backup hersteld. U wordt doorgestuurd naar het ontgrendelscherm.",
+      "herstelMislukt": "Backup herstellen mislukt."
+    },
+    "autoBackup": {
+      "titel": "Automatische backup",
+      "beschrijving": "Configureer automatische backups naar een map op uw computer of USB-stick.",
+      "inschakelen": "Automatische backup inschakelen",
+      "backupMap": "Backup-map",
+      "selecteerMap": "Selecteer een map...",
+      "bladeren": "Bladeren",
+      "frequentie": "Frequentie",
+      "dagelijks": "Dagelijks",
+      "wekelijks": "Wekelijks",
+      "maandelijks": "Maandelijks",
+      "opslaan": "Opslaan",
+      "nuBackup": "Nu backup maken",
+      "opgeslagen": "Auto-backup instellingen opgeslagen.",
+      "uitgeschakeld": "Auto-backup uitgeschakeld.",
+      "opslaanMislukt": "Opslaan mislukt.",
+      "testSucces": "Test-backup succesvol aangemaakt.",
+      "backupMislukt": "Backup mislukt."
+    },
+    "beveiliging": {
+      "titel": "Beveiliging",
+      "beschrijving": "Informatie over de beveiliging van uw gegevens.",
+      "sqlcipher": "Database versleuteld met SQLCipher (AES-256-CBC)",
+      "aesGcm": "Gevoelige velden extra versleuteld (AES-256-GCM)",
+      "lokaal": "Alleen lokale verbinding (127.0.0.1)",
+      "geenInternet": "Geen internetverbinding vereist",
+      "handtekeningTitel": "Digitale handtekening",
+      "handtekeningBeschrijving": "Genereer een unieke hash van uw huidige gegevens. Hiermee kunt u later verifiëren dat uw data niet is gewijzigd."
+    },
+    "overLumio": {
+      "titel": "Over Lumio",
+      "beschrijving": "Lumio is een hulpmiddel voor het vastleggen van uw digitale nalatenschap. Alle gegevens worden lokaal en versleuteld opgeslagen.",
+      "juridisch": "Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4)."
+    },
+    "verwijderen": {
+      "titel": "Alle gegevens wissen",
+      "beschrijving": "Verwijder uw volledige database permanent. Dit kan niet ongedaan worden gemaakt. Maak eerst een backup als u uw gegevens wilt bewaren.",
+      "bevestigLabel": "Bevestig met uw wachtwoord",
+      "bevestigPlaceholder": "Voer uw wachtwoord in ter bevestiging",
+      "knop": "Alle gegevens permanent verwijderen",
+      "succes": "Alle gegevens zijn verwijderd. U wordt doorgestuurd...",
+      "mislukt": "Verwijderen mislukt. Controleer uw wachtwoord."
+    },
+    "dialogen": {
+      "herstel": {
+        "titel": "Backup herstellen?",
+        "beschrijving": "Weet u het zeker? Dit vervangt alle huidige gegevens door de gegevens uit de backup. Deze actie kan niet ongedaan worden gemaakt.",
+        "annuleren": "Annuleren",
+        "bevestigen": "Ja, herstel backup"
+      },
+      "verwijderAlles": {
+        "titel": "Alle gegevens permanent verwijderen?",
+        "beschrijving": "Weet u het zeker? Alle gegevens worden permanent verwijderd. Dit omvat uw profiel, wachtwoorden, documenten, testament-gegevens en alle andere opgeslagen informatie. Deze actie kan niet ongedaan worden gemaakt.",
+        "annuleren": "Annuleren",
+        "bevestigen": "Ja, verwijder alles permanent"
+      },
+      "verwijderProfiel": {
+        "titel": "Profiel verwijderen?",
+        "beschrijving": "Weet u het zeker? Het profiel en de bijbehorende database worden permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+        "annuleren": "Annuleren",
+        "bevestigen": "Ja, verwijder profiel"
+      }
+    }
+  },
+  "nabestaanden": {
+    "titel": "Nabestaanden Dashboard",
+    "introTekst": "Gecondoleerd met uw verlies. Dit dashboard helpt u stap voor stap bij het afhandelen van de nalatenschap. Neem de tijd — u hoeft niet alles tegelijk te doen.",
+    "gegevensInfo": "Alle gegevens zijn beschikbaar in alleen-lezen modus. Gebruik de knoppen hieronder om bij te houden wat u al heeft afgehandeld.",
+    "exporteren": "Alles exporteren",
+    "noodcontactenBekijken": "Noodcontacten bekijken",
+    "hulpTitel": "Hulp nodig?",
+    "hulpTekst": "Het is normaal als dit overweldigend voelt. Begin met de urgente zaken bovenaan en werk rustig naar beneden. U kunt altijd terugkomen en verder gaan waar u gebleven was. Schakel hulp in van een notaris of uitvaartverzorger als dat prettig voelt.",
+    "voortgangTitel": "Voortgang afhandeling",
+    "voortgangTekst": "{afgehandeld} van {totaal} onderdelen afgehandeld",
+    "bekijken": "Bekijken",
+    "start": "Start",
+    "markeerAfgehandeld": "Afgehandeld",
+    "statusAfgehandeld": "Afgehandeld",
+    "statusInBehandeling": "In behandeling",
+    "statusBeschikbaar": "Beschikbaar",
+    "statusNietIngevuld": "Niet ingevuld",
+    "fases": {
+      "urgent": "Direct — eerste 24 uur",
+      "week1": "Week 1 — eerste week",
+      "maand1": "Maand 1 — eerste maand",
+      "afronden": "Afronden"
+    },
+    "stappen": {
+      "noodcontacten": {
+        "titel": "Noodcontacten informeren",
+        "beschrijving": "Neem contact op met de huisarts, notaris en andere vertrouwenspersonen."
+      },
+      "uitvaart": {
+        "titel": "Uitvaartwensen bekijken",
+        "beschrijving": "Bekijk de vastgelegde wensen voor de uitvaart en ceremonie."
+      },
+      "donor": {
+        "titel": "Donorregistratie controleren",
+        "beschrijving": "Controleer of er een donorregistratie is vastgelegd — dit heeft urgentie."
+      },
+      "euthanasie": {
+        "titel": "Wilsverklaring euthanasie",
+        "beschrijving": "Bekijk of er een wilsverklaring euthanasie is opgesteld."
+      },
+      "testament": {
+        "titel": "Testament bekijken",
+        "beschrijving": "Bekijk de testamentaire informatie, begunstigden en de aangewezen executeur."
+      },
+      "erfgenamen": {
+        "titel": "Erfgenamen overzicht",
+        "beschrijving": "Bekijk wie als erfgenaam is aangewezen en hun contactgegevens."
+      },
+      "documenten": {
+        "titel": "Belangrijke documenten",
+        "beschrijving": "Download kopieën van opgeslagen documenten (ID, polis, aktes)."
+      },
+      "boedel": {
+        "titel": "Boedel & financiën",
+        "beschrijving": "Overzicht van bezittingen, bankrekeningen, verzekeringen en schulden."
+      },
+      "digitaalBezit": {
+        "titel": "Digitaal bezit",
+        "beschrijving": "Online accounts, wachtwoorden en crypto wallets die afgehandeld moeten worden."
+      },
+      "export": {
+        "titel": "Compleet dossier exporteren",
+        "beschrijving": "Download alle informatie als PDF of ZIP voor uw administratie."
+      },
+      "eigenaar": {
+        "titel": "Persoonsgegevens overledene",
+        "beschrijving": "Persoonlijke gegevens voor overlijdensaangifte en uitvaartregeling."
+      }
+    }
+  },
+  "interview": {
+    "titel": "Uw nalatenschap vastleggen",
+    "stappen": {
+      "persoonlijk": {
+        "titel": "Over uzelf",
+        "beschrijving": "Laten we beginnen. We stellen u een paar vragen om uw profiel op te zetten.",
+        "vraagNaam": "Hoe heet u?",
+        "toelichtingNaam": "Uw volledige naam zoals op uw identiteitsbewijs.",
+        "voornaam": "Voornaam",
+        "voornaamPlaceholder": "Jan",
+        "achternaam": "Achternaam",
+        "achternaamPlaceholder": "de Vries",
+        "vraagGeboortedatum": "Wat is uw geboortedatum?",
+        "vraagWoonplaats": "Waar woont u?",
+        "woonplaatsPlaceholder": "Amsterdam",
+        "vraagContact": "Hoe kunnen nabestaanden u bereiken?",
+        "toelichtingContact": "Optioneel — wordt gebruikt voor uw noodkaart.",
+        "telefoon": "Telefoon",
+        "telefoonPlaceholder": "06-12345678",
+        "email": "E-mail",
+        "emailPlaceholder": "jan@voorbeeld.nl"
+      },
+      "noodcontact": {
+        "titel": "Vertrouwenspersoon",
+        "beschrijving": "Wie is de allerbelangrijkste persoon die moet worden geïnformeerd als u iets overkomt?",
+        "vraagContactpersoon": "Wie is uw eerste contactpersoon?",
+        "toelichtingContactpersoon": "Dit kan uw partner, kind, vriend(in) of buurvrouw zijn.",
+        "naam": "Naam",
+        "naamPlaceholder": "Maria de Vries",
+        "relatie": "Relatie",
+        "relatiePlaceholder": "Partner, kind, vriend",
+        "vraagTelefoon": "Op welk nummer is deze persoon bereikbaar?",
+        "vraagRol": "Welke rol heeft deze persoon?",
+        "toelichtingRol": "U kunt later meer contacten toevoegen (huisarts, notaris, etc.).",
+        "rolVertrouwenspersoon": "Vertrouwenspersoon",
+        "rolHuisarts": "Huisarts",
+        "rolNotaris": "Notaris",
+        "rolUitvaartondernemer": "Uitvaartondernemer",
+        "rolOverig": "Overig"
+      },
+      "testament": {
+        "titel": "Testament",
+        "beschrijving": "Heeft u al een testament? En zo ja, wat voor soort? Dit hoeft niet — u kunt het altijd later invullen.",
+        "vraagHeeftTestament": "Heeft u een testament?",
+        "toelichtingTestament": "Een testament regelt wie uw erfgenamen zijn en hoe uw bezittingen worden verdeeld.",
+        "jaTestament": "Ja, ik heb een testament",
+        "neeTestament": "Nee, (nog) niet",
+        "weetNiet": "Ik weet het niet zeker",
+        "vraagSoort": "Wat voor soort testament heeft u?",
+        "selecteer": "Selecteer...",
+        "notarieel": "Notarieel testament",
+        "codicil": "Codicil (handgeschreven)",
+        "holografisch": "Holografisch testament",
+        "vraagNotaris": "Bij welke notaris ligt uw testament?",
+        "toelichtingNotaris": "Optioneel — handig voor nabestaanden om dit te weten.",
+        "notarisPlaceholder": "Naam van de notaris",
+        "tipTitel": "Tip:",
+        "tipTekst": "U kunt dit controleren via het Centraal Testamentenregister (CTR) of bij uw notaris. Lumio helpt u vervolgens alles netjes vast te leggen."
+      },
+      "uitvaart": {
+        "titel": "Uitvaartwensen",
+        "beschrijving": "Heeft u al nagedacht over uw uitvaartwensen? U hoeft niet alles nu in te vullen — elke keuze helpt uw naasten later.",
+        "vraagVoorkeur": "Heeft u een voorkeur voor begraven of cremeren?",
+        "toelichtingVoorkeur": "U kunt dit altijd later aanpassen.",
+        "begraven": "Begraven",
+        "cremeren": "Cremeren",
+        "natuurbegraven": "Natuurbegraven",
+        "geenVoorkeur": "Nog geen voorkeur",
+        "vraagLocatie": "Heeft u een voorkeur voor een locatie?",
+        "toelichtingLocatie": "Bijv. een kerk, aula, thuis, of een specifieke begraafplaats.",
+        "locatiePlaceholder": "Bijv. Nieuwe Kerk, Amsterdam",
+        "vraagMuziek": "Is er muziek die u graag wilt laten spelen?",
+        "toelichtingMuziek": "U kunt hier een lied of meerdere nummers noemen.",
+        "muziekPlaceholder": "Bijv. 'Aan de Amsterdamse grachten' van Wim Sonneveld"
+      },
+      "digitaal": {
+        "titel": "Digitaal bezit",
+        "beschrijving": "Heeft u belangrijke online accounts? Denk aan e-mail, sociale media, of cloud-opslag. Eén voorbeeld is genoeg om te beginnen.",
+        "vraagAccount": "Welk online account is voor u het belangrijkst?",
+        "toelichtingAccount": "Denk aan uw e-mail, Facebook, Google, iCloud, of bankrekening-app.",
+        "naamDienst": "Naam / dienst",
+        "naamDienstPlaceholder": "Bijv. Gmail, Facebook",
+        "type": "Type",
+        "typeSelecteer": "Selecteer...",
+        "typeEmail": "E-mail",
+        "typeSocialMedia": "Social media",
+        "typeCloudOpslag": "Cloud-opslag",
+        "typeBankieren": "Bankieren",
+        "typeOverig": "Overig",
+        "vraagInstructie": "Wat moeten nabestaanden met dit account doen?",
+        "toelichtingInstructie": "Bijv. bewaren, verwijderen, herdenkingsstatus instellen.",
+        "instructiePlaceholder": "Bijv. 'Account sluiten na overlijden' of 'Foto's bewaren'",
+        "infoTitel": "Goed om te weten:",
+        "infoTekst": "U kunt later onbeperkt accounts, bezittingen en wachtwoorden toevoegen. Dit is slechts een startpunt."
+      }
+    }
+  },
+  "voorbeeldData": {
+    "disclaimer": "Dit is fictieve voorbeelddata van \"Familie de Voorbeeld\". Geen echte personen of gegevens.",
+    "bekijkVoorbeeld": "Bekijk voorbeeld",
+    "eigenaar": {
+      "titel": "Mijn Profiel — Voorbeeld",
+      "beschrijving": "Hieronder ziet u een voorbeeld van een ingevuld profiel. Gebruik dit als inspiratie voor uw eigen gegevens.",
+      "secties": {
+        "persoonsgegevens": {
+          "titel": "Persoonsgegevens",
+          "voornaam": "Voornaam",
+          "voornaamWaarde": "Pieter",
+          "tussenvoegsel": "Tussenvoegsel",
+          "tussenvoegselWaarde": "de",
+          "achternaam": "Achternaam",
+          "achternaamWaarde": "Voorbeeld",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "15-03-1965",
+          "bsn": "BSN",
+          "bsnWaarde": "123456789",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-12345678",
+          "email": "E-mail",
+          "emailWaarde": "pieter@voorbeeld.nl"
+        },
+        "adresgegevens": {
+          "titel": "Adresgegevens",
+          "adres": "Adres",
+          "adresWaarde": "Voorbeeldstraat 42",
+          "postcode": "Postcode",
+          "postcodeWaarde": "1234 AB",
+          "woonplaats": "Woonplaats",
+          "woonplaatsWaarde": "Voorbeeldstad"
+        },
+        "burgerlijkeStaat": {
+          "titel": "Burgerlijke staat",
+          "burgerlijkeStaat": "Burgerlijke staat",
+          "burgerlijkeStaatWaarde": "Gehuwd",
+          "huwelijksvoorwaarden": "Huwelijksvoorwaarden",
+          "huwelijksvoorwaardenWaarde": "Beperkte gemeenschap",
+          "datumHuwelijk": "Datum huwelijk",
+          "datumHuwelijkWaarde": "22-06-1992"
+        },
+        "legitimatie": {
+          "titel": "Legitimatie",
+          "soort": "Soort",
+          "soortWaarde": "Paspoort",
+          "documentnummer": "Documentnummer",
+          "documentnummerWaarde": "NX1234567",
+          "datumAfgifte": "Datum afgifte",
+          "datumAfgifteWaarde": "01-02-2022",
+          "geldigTot": "Geldig tot",
+          "geldigTotWaarde": "01-02-2032"
+        }
+      }
+    },
+    "testament": {
+      "titel": "Testament — Voorbeeld",
+      "beschrijving": "Een voorbeeld van testamentaire informatie. De inhoud is fictief.",
+      "secties": {
+        "testamentgegevens": {
+          "titel": "Testamentgegevens",
+          "typeTestament": "Type testament",
+          "typeTestamentWaarde": "Notarieel testament",
+          "datumTestament": "Datum testament",
+          "datumTestamentWaarde": "10-09-2020",
+          "ctrNummer": "CTR-nummer",
+          "ctrNummerWaarde": "CTR-2020-098765",
+          "locatie": "Locatie",
+          "locatieWaarde": "Kluis bij notaris"
+        },
+        "notaris": {
+          "titel": "Notaris",
+          "naam": "Naam",
+          "naamWaarde": "Mr. J.H. Bakker",
+          "kantoor": "Kantoor",
+          "kantoorWaarde": "Bakker & Partners Notarissen",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "020-1234567",
+          "email": "E-mail",
+          "emailWaarde": "info@bakkernotarissen.nl",
+          "adres": "Adres",
+          "adresWaarde": "Keizersgracht 100, 1015 AB Amsterdam"
+        },
+        "executeur": {
+          "titel": "Executeur",
+          "naam": "Naam",
+          "naamWaarde": "Maria de Voorbeeld-Jansen",
+          "relatie": "Relatie",
+          "relatieWaarde": "Echtgenote",
+          "bevoegdheden": "Bevoegdheden",
+          "bevoegdhedenWaarde": "Driestereenexecuteur (beheer, verdeling, verkoop)",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-98765432"
+        },
+        "begunstigden": {
+          "titel": "Begunstigden",
+          "mariaDeVoorbeeldJansen": "Maria de Voorbeeld-Jansen",
+          "mariaDeVoorbeeldJansenWaarde": "Echtgenote — 50%",
+          "thomasDeVoorbeeld": "Thomas de Voorbeeld",
+          "thomasDeVoorbeeldWaarde": "Zoon — 25%",
+          "sophieDeVoorbeeld": "Sophie de Voorbeeld",
+          "sophieDeVoorbeeldWaarde": "Dochter — 25%"
+        },
+        "aanvullend": {
+          "titel": "Aanvullend",
+          "uitsluitingsclausule": "Uitsluitingsclausule",
+          "uitsluitingsclausuleWaarde": "Ja",
+          "legaten": "Legaten",
+          "legatenWaarde": "Schilderij van opa → aan neef Karel",
+          "algemeneWensen": "Algemene wensen",
+          "algemeneWensenWaarde": "Mijn boekencollectie mag verdeeld worden onder de kinderen."
+        }
+      }
+    },
+    "euthanasie": {
+      "titel": "Wilsverklaring — Voorbeeld",
+      "beschrijving": "Een voorbeeld van een vastgelegde wilsverklaring euthanasie.",
+      "secties": {
+        "wilsverklaring": {
+          "titel": "Wilsverklaring",
+          "type": "Type",
+          "typeWaarde": "Euthanasieverzoek",
+          "datumOpgesteld": "Datum opgesteld",
+          "datumOpgesteldWaarde": "05-01-2021",
+          "locatieDocument": "Locatie document",
+          "locatieDocumentWaarde": "Huisarts en thuiskluis",
+          "huisarts": "Huisarts",
+          "huisartsWaarde": "Dr. A.B. Smit — Huisartsenpraktijk Centrum",
+          "telefoonHuisarts": "Telefoon huisarts",
+          "telefoonHuisartsWaarde": "020-7654321"
+        },
+        "wensenEnVoorwaarden": {
+          "titel": "Wensen & voorwaarden",
+          "wanneerVanToepassing": "Wanneer van toepassing",
+          "wanneerVanToepassingWaarde": "Bij uitzichtloos en ondraaglijk lijden, ook bij vergevorderde dementie waarbij ik mijzelf en naasten niet meer herken.",
+          "behandelverbod": "Behandelverbod",
+          "behandelverbodWaarde": "Geen reanimatie, geen kunstmatige beademing, geen sondevoeding.",
+          "aanvullendeWensen": "Aanvullende wensen",
+          "aanvullendeWensenWaarde": "Ik wil in mijn eigen huis overlijden indien mogelijk."
+        }
+      }
+    },
+    "donor": {
+      "titel": "Donorregistratie — Voorbeeld",
+      "beschrijving": "Een voorbeeld van een donorregistratie.",
+      "secties": {
+        "registratie": {
+          "titel": "Registratie",
+          "keuze": "Keuze",
+          "keuzeWaarde": "Ja, ik geef toestemming",
+          "specificatie": "Specificatie",
+          "specificatieWaarde": "Alle organen en weefsels, behalve cornea (ogen)",
+          "geregistreerdOp": "Geregistreerd op",
+          "geregistreerdOpWaarde": "12-04-2019",
+          "donorregister": "Donorregister",
+          "donorregisterWaarde": "Ja, ingeschreven bij het Donorregister"
+        }
+      }
+    },
+    "boedel": {
+      "titel": "Boedel — Voorbeeld",
+      "beschrijving": "Een voorbeeld van een ingevulde boedel met bezittingen, rekeningen, verzekeringen en schulden.",
+      "secties": {
+        "fysiekeBezittingen": {
+          "titel": "Fysieke bezittingen",
+          "woningVoorbeeldstraat": "Woning Voorbeeldstraat 42",
+          "woningVoorbeeldstraatWaarde": "€ 425.000 — Kad. ASD01-A-1234",
+          "volkswagenId4": "Volkswagen ID.4 (2023)",
+          "volkswagenId4Waarde": "€ 35.000 — AB-123-CD",
+          "antiekDressoir": "Antiek dressoir (erfstuk)",
+          "antiekDressoirWaarde": "€ 2.500",
+          "zonnepanelen": "Zonnepanelen (12 stuks)",
+          "zonnepanelenWaarde": "€ 4.000"
+        },
+        "bankrekeningen": {
+          "titel": "Bankrekeningen",
+          "ingBetaalrekening": "ING Betaalrekening",
+          "ingBetaalrekeningWaarde": "NL91INGB0001234567 — € 8.450",
+          "rabobankSpaarrekening": "Rabobank Spaarrekening",
+          "rabobankSpaarrekeningWaarde": "NL20RABO9876543210 — € 52.300",
+          "abnAmroBeleggingsrekening": "ABN AMRO Beleggingsrekening",
+          "abnAmroBeleggingsrekeningWaarde": "NL44ABNA5678901234 — € 87.000"
+        },
+        "verzekeringen": {
+          "titel": "Verzekeringen",
+          "overlijdensrisicoverzekering": "Overlijdensrisicoverzekering",
+          "overlijdensrisicoverzekeringWaarde": "Nationale-Nederlanden — € 200.000 — Polis VZ-2019-4567",
+          "uitvaartverzekering": "Uitvaartverzekering",
+          "uitvaartverzekeringWaarde": "DELA — € 12.500 — Polis UIT-2015-8901",
+          "inboedelverzekering": "Inboedelverzekering",
+          "inboedelverzekeringWaarde": "Centraal Beheer — € 75.000"
+        },
+        "schulden": {
+          "titel": "Schulden",
+          "hypotheekWoning": "Hypotheek woning",
+          "hypotheekWoningWaarde": "Rabobank — € 195.000 (restschuld)",
+          "persoonlijkeLening": "Persoonlijke lening",
+          "persoonlijkeLeningWaarde": "ING — € 5.000"
+        }
+      }
+    },
+    "uitvaart": {
+      "titel": "Uitvaartwensen — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde uitvaartwensen.",
+      "secties": {
+        "vormEnLocatie": {
+          "titel": "Vorm & locatie",
+          "voorkeur": "Voorkeur",
+          "voorkeurWaarde": "Crematie",
+          "locatie": "Locatie",
+          "locatieWaarde": "Crematorium Westgaarde, Amsterdam",
+          "uitvaartondernemer": "Uitvaartondernemer",
+          "uitvaartondernemerWaarde": "Monuta",
+          "verzekeraar": "Verzekeraar",
+          "verzekeraarWaarde": "DELA — Polisnummer UIT-2015-8901"
+        },
+        "ceremonie": {
+          "titel": "Ceremonie",
+          "type": "Type",
+          "typeWaarde": "Persoonlijke niet-religieuze bijeenkomst",
+          "muziek": "Muziek",
+          "muziekWaarde": "Time to Say Goodbye (Andrea Bocelli), Imagine (John Lennon)",
+          "sprekers": "Spreker(s)",
+          "sprekersWaarde": "Maria (echtgenote), Thomas (zoon), collega Jan",
+          "bloemen": "Bloemen",
+          "bloemenWaarde": "Witte rozen, geen kransen",
+          "dresscode": "Dresscode",
+          "dresscodeWaarde": "Geen zwart, kleurrijke kleding gewenst"
+        },
+        "naDeUitvaart": {
+          "titel": "Na de uitvaart",
+          "asbestemming": "Asbestemming",
+          "asbestemmingWaarde": "Verstrooien op de Noordzee bij Scheveningen",
+          "rouwkaart": "Rouwkaart",
+          "rouwkaartWaarde": "Eenvoudig, met foto uit 2023",
+          "condoleance": "Condoleance",
+          "condoleanceWaarde": "Thuis, op de dag van de uitvaart"
+        }
+      }
+    },
+    "erfgenamen": {
+      "titel": "Erfgenamen — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde erfgenamen.",
+      "secties": {
+        "erfgenaam1": {
+          "titel": "Erfgenaam 1",
+          "naam": "Naam",
+          "naamWaarde": "Maria de Voorbeeld-Jansen",
+          "relatie": "Relatie",
+          "relatieWaarde": "Echtgenote",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "28-07-1967",
+          "bsn": "BSN",
+          "bsnWaarde": "987654321",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-98765432",
+          "email": "E-mail",
+          "emailWaarde": "maria@voorbeeld.nl",
+          "legitimatie": "Legitimatie",
+          "legitimatieWaarde": "Identiteitskaart — ID9876543"
+        },
+        "erfgenaam2": {
+          "titel": "Erfgenaam 2",
+          "naam": "Naam",
+          "naamWaarde": "Thomas de Voorbeeld",
+          "relatie": "Relatie",
+          "relatieWaarde": "Kind",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "14-11-1995",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-11223344",
+          "email": "E-mail",
+          "emailWaarde": "thomas@voorbeeld.nl"
+        },
+        "erfgenaam3": {
+          "titel": "Erfgenaam 3",
+          "naam": "Naam",
+          "naamWaarde": "Sophie de Voorbeeld",
+          "relatie": "Relatie",
+          "relatieWaarde": "Kind",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "03-05-1998",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-55667788",
+          "email": "E-mail",
+          "emailWaarde": "sophie@voorbeeld.nl"
+        }
+      }
+    },
+    "digitaalBezit": {
+      "titel": "Digitaal Bezit — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde online accounts en digitale bezittingen.",
+      "secties": {
+        "emailEnCloud": {
+          "titel": "E-mail & Cloud",
+          "google": "Google (pieter@gmail.com)",
+          "googleWaarde": "Verwijderen na overlijden — Inactief Account Beheerder ingesteld",
+          "icloud": "iCloud (pieter@icloud.com)",
+          "icloudWaarde": "Overdragen aan echtgenote — Digital Legacy contact ingesteld"
+        },
+        "socialMedia": {
+          "titel": "Social media",
+          "facebook": "Facebook",
+          "facebookWaarde": "In memorial-modus plaatsen",
+          "linkedin": "LinkedIn",
+          "linkedinWaarde": "Profiel verwijderen",
+          "instagram": "Instagram (@pietervoorbeeld)",
+          "instagramWaarde": "Verwijderen"
+        },
+        "financieelEnCrypto": {
+          "titel": "Financieel & Crypto",
+          "paypal": "PayPal",
+          "paypalWaarde": "Saldo overmaken en sluiten",
+          "bitcoinWallet": "Bitcoin wallet (Ledger Nano)",
+          "bitcoinWalletWaarde": "Seed phrase in kluis — overdragen aan Thomas"
+        }
+      }
+    },
+    "noodcontacten": {
+      "titel": "Noodcontacten — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde noodcontacten.",
+      "secties": {
+        "contactpersonen": {
+          "titel": "Contactpersonen",
+          "mariaDeVoorbeeldJansen": "Maria de Voorbeeld-Jansen",
+          "mariaDeVoorbeeldJansenWaarde": "Echtgenote — 06-98765432 — maria@voorbeeld.nl",
+          "mrJhBakker": "Mr. J.H. Bakker",
+          "mrJhBakkerWaarde": "Notaris — 020-1234567 — info@bakkernotarissen.nl",
+          "drAbSmit": "Dr. A.B. Smit",
+          "drAbSmitWaarde": "Huisarts — 020-7654321",
+          "janDeVries": "Jan de Vries",
+          "janDeVriesWaarde": "Financieel adviseur — 030-9876543",
+          "karelJansen": "Karel Jansen",
+          "karelJansenWaarde": "Buurman (sleutelhouder) — 06-44556677"
+        }
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RefreshCw, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PasswordGeneratorProps {
   onUse: (password: string) => void;
@@ -59,6 +60,7 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
   const [useSpecial, setUseSpecial] = useState(true);
   const [generated, setGenerated] = useState("");
   const [copied, setCopied] = useState(false);
+  const t = useTranslations("wachtwoordGenerator");
 
   const generate = useCallback(() => {
     const pw = generatePassword(length, useUppercase, useDigits, useSpecial);
@@ -89,7 +91,7 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
       >
         <span className="flex items-center gap-2">
           <RefreshCw className="h-3.5 w-3.5" />
-          Wachtwoord generator
+          {t("titel")}
         </span>
         {expanded ? (
           <ChevronUp className="h-4 w-4" />
@@ -125,7 +127,7 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
           {/* Options */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-xs">Lengte: {length}</Label>
+              <Label className="text-xs">{t("lengte", { lengte: length })}</Label>
               <input
                 type="range"
                 min={8}
@@ -136,7 +138,7 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">Opties</Label>
+              <Label className="text-xs">{t("opties")}</Label>
               <div className="flex flex-wrap gap-2">
                 <label className="flex items-center gap-1 text-xs">
                   <input
@@ -179,7 +181,7 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
               className="gap-1"
             >
               <RefreshCw className="h-3.5 w-3.5" />
-              Nieuw
+              {t("nieuw")}
             </Button>
             {generated && (
               <Button
@@ -188,7 +190,7 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
                 onClick={handleUse}
                 className="gap-1"
               >
-                Gebruik dit wachtwoord
+                {t("gebruikWachtwoord")}
               </Button>
             )}
           </div>
