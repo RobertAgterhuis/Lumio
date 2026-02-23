@@ -1,6 +1,8 @@
 using Lumio.Api.Data;
+using Lumio.Api.Rules.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
 
@@ -9,13 +11,18 @@ namespace Lumio.Api.Controllers;
 public class ZoekenController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly LimietenOptions _limieten;
 
-    public ZoekenController(LumioDbContext db) => _db = db;
+    public ZoekenController(LumioDbContext db, IOptions<LimietenOptions> limieten)
+    {
+        _db = db;
+        _limieten = limieten.Value;
+    }
 
     [HttpGet]
     public async Task<ActionResult<ZoekResultaat>> Zoeken([FromQuery] string q)
     {
-        if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+        if (string.IsNullOrWhiteSpace(q) || q.Length < _limieten.ZoekenMinQueryLengte)
             return Ok(new ZoekResultaat());
 
         var query = q.ToLowerInvariant();

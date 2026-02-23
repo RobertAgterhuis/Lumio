@@ -19,6 +19,8 @@ De Lumio backend is een ASP.NET Core Web API (.NET 10.0) die draait als een zelf
 | `Swashbuckle.AspNetCore` | 10.1.4 | Swagger/OpenAPI documentatie |
 | `Microsoft.AspNetCore.OpenApi` | 10.0.3 | OpenAPI-ondersteuning |
 | `Microsoft.EntityFrameworkCore.Design` | 10.0.3 | EF Core design-time tooling |
+| `RulesEngine` | 5.0.3 | Microsoft Rules Engine (JSON-workflow evaluatie) |
+| `System.Linq.Dynamic.Core` | 1.7.1 | Dynamische LINQ-expressies (voor RulesEngine) |
 
 ## 2.2 Applicatie Bootstrap (Program.cs)
 
@@ -58,8 +60,16 @@ Dit garandeert USB-portabiliteit: de data staat naast de applicatie.
 | `ILumioPdfService` → `LumioPdfService` | Scoped | PDF-documenten genereren |
 | `IAuditService` → `AuditService` | Singleton | Asynchrone audit logging |
 | `LumioDbContext` | Scoped | EF Core databasecontext |
+| `IWorkflowLoader` → `WorkflowLoader` | Singleton | Laadt en cached `lumio-workflows.json` |
+| `IRuleEngineService` → `RuleEngineService` | Singleton | Wrapper rond Microsoft RulesEngine |
+| `IErfbelastingService` → `ErfbelastingService` | Scoped | Erfbelastingberekening |
+| `INalatenschapService` → `NalatenschapService` | Scoped | Nalatenschapsverdeling |
+| `ICompleetheidsService` → `CompleetheidsService` | Scoped | Compleetheidsberekening per sectie |
+| `ILegitimairePortieService` → `LegitimairePortieService` | Scoped | Legitieme portie berekening |
+| `IMeldingService` → `MeldingService` | Scoped | Meldingen (engine-first + fallback) |
+| `ISuggestieService` → `SuggestieService` | Scoped | Suggesties (hybride engine + code) |
 
-**Let op:** `IMasterPasswordService` en `IProfileService` zijn singletons omdat ze in-memory state bijhouden (wachtwoord, actief profiel) die gedeeld wordt tussen requests.
+**Let op:** `IMasterPasswordService` en `IProfileService` zijn singletons omdat ze in-memory state bijhouden (wachtwoord, actief profiel) die gedeeld wordt tussen requests. De `IWorkflowLoader` en `IRuleEngineService` zijn singletons omdat workflow-definities eenmalig worden geladen bij startup.
 
 ### 2.2.4 Database-configuratie
 
@@ -447,15 +457,80 @@ FluentValidation validators worden automatisch gedetecteerd en toegepast via `Ad
 
 **Bestanden:** `Validators/`
 
-| Validator | Beschrijving |
-|-----------|-------------|
-| `AssetValidators.cs` | Validatie voor bezittingen, bankrekeningen, verzekeringen, schulden |
-| `AuthValidators.cs` | Wachtwoord-eisen (min. 8 tekens), setup en profiel validatie |
-| `DigitalEstateValidators.cs` | Validatie voor digitale accounts, wachtwoorden, crypto-wallets |
-| `EigenaarValidator.cs` | Validatie voor eigenaargegevens |
-| `ErfgenaamValidator.cs` | Validatie voor erfgenaamgegevens |
+| Validator | Beschrijving | Configuratiebron |
+|-----------|-------------|-----------------|
+| `AssetValidators.cs` | Validatie voor bezittingen, bankrekeningen, verzekeringen, schulden | `IOptions<ValidatieOptions>` (IBAN regex) |
+| `AuthValidators.cs` | Wachtwoord-eisen, setup en profiel validatie | `IOptions<LimietenOptions>` (wachtwoordMinLengte) |
+| `DigitalEstateValidators.cs` | Validatie voor digitale accounts, wachtwoorden, crypto-wallets | — |
+| `EigenaarValidator.cs` | Validatie voor eigenaargegevens | `IOptions<VeldLengtesOptions>` (naam, tussenvoegsel, postcode) |
+| `ErfgenaamValidator.cs` | Validatie voor erfgenaamgegevens | `IOptions<VeldLengtesOptions>` (naam) |
 
-## 2.7 Omgevingsvariabelen
+Alle configureerbare waarden (veldlengtes, regex-patronen, wachtwoordlimieten) worden gelezen uit `IOptions<T>`, waardoor ze aanpasbaar zijn via `rules/lumio-rules.json` zonder hercompilatie.
+
+## 2.7 Business Rules Layer
+
+### Architectuur
+
+Alle business rules zijn geëxternaliseerd in een gelaagde architectuur:
+
+```
+Controllers
+    │
+    ▼
+Rules/Services/           ← Domain services (Facts → Results)
+    │           │
+    ▼           ▼
+Rules/Engine/         Rules/Configuration/
+(RulesEngine)         (IOptions<T> + JSON)
+    │                     │
+    ▼                     ▼
+rules/lumio-workflows.json    rules/lumio-rules.json
+```
+
+### Configuratiebestanden
+
+| Bestand | Doel |
+|---------|------|
+| `rules/lumio-rules.json` | Configureerbare constanten: tarieven, limieten, veldlengtes, regex, encryptie, export, compleetheid |
+| `rules/lumio-rules.schema.json` | JSON Schema voor IDE-validatie en documentatie |
+| `rules/lumio-workflows.json` | Microsoft RulesEngine workflow-definities voor meldingen en suggesties |
+
+### IOptions<T> bindings
+
+| Options-klasse | JSON-sectie | Beschrijving |
+|---------------|------------|-------------|
+| `LumioRulesOptions` | `lumioRules` | Versienummer en datum van de regelconfiguratie |
+| `ErfbelastingOptions` | `erfbelasting` | Tarieven, vrijstellingen, schijfgrenzen per relatietype |
+| `LimietenOptions` | `limieten` | Applicatielimieten (wachtwoord, backup, shamir, bestanden) |
+| `VeldLengtesOptions` | `veldLengtes` | Maximale veldlengtes voor FluentValidation |
+| `ValidatieOptions` | `validatie` | Regex-patronen voor IBAN, postcode, telefoon |
+| `EncryptieOptions` | `encryptie` | PBKDF2-iteraties, salt/nonce/tag/key-lengtes |
+| `ExportOptions` | `export` | PDF-formaat, marges, toegestane bestandstypes |
+| `CompleetheidsOptions` | `compleetheid` | Caps en veldaantallen voor compleetheidsberekening |
+
+### Domain Services (Facts-in → Results-out)
+
+| Service | Input (Facts) | Output (Results) | Patroon |
+|---------|--------------|-------------------|---------|
+| `ErfbelastingService` | `ErfbelastingFacts` | `ErfbelastingResultaat` | Puur configuratie |
+| `NalatenschapService` | `NalatenschapFacts` | `NalatenschapResultaat` | Puur configuratie |
+| `CompleetheidsService` | `CompleteheidsFacts` | `CompleetheidsResultaat` | Puur configuratie |
+| `LegitimairePortieService` | `LegitimairePortieFacts` | `LegitimairePortieResultaat` | Puur configuratie |
+| `MeldingService` | `MeldingFacts` | `PolicyResult<MeldingResultaat>` | Engine-first + fallback |
+| `SuggestieService` | `SuggestieFacts` | `PolicyResult<SuggestieResultaat>` | Hybride (engine + code) |
+
+### RulesEngine integratie
+
+De `MeldingService` en `SuggestieService` gebruiken Microsoft RulesEngine met een robuust fallback-mechanisme:
+
+1. **Engine-first (MeldingService):** Probeert alle regels via `lumio-workflows.json` te evalueren; bij falen wordt teruggevallen op de hardcoded domeinlogica
+2. **Hybride (SuggestieService):** Eenvoudige boolean-regels via de engine, iteratieregels (foreach-matching) via code; bij engine-falen volledig via code
+
+Workflows bevatten 19 regels verdeeld over 2 workflows:
+- `MeldingenWorkflow` — 15 regels (profiel, testament, wilsverklaring, donor, uitvaart, erfgenamen, noodcontacten, documenten, backup, shamir, verlopen docs, actualisatie)
+- `SuggestiesWorkflow` — 4 regels (notaris inconsistentie, notaris noodcontact, uitvaartondernemer noodcontact, huisarts)
+
+## 2.8 Omgevingsvariabelen
 
 | Variabele | Standaard | Beschrijving |
 |-----------|-----------|-------------|
@@ -464,7 +539,7 @@ FluentValidation validators worden automatisch gedetecteerd en toegepast via `Ad
 | `LUMIO_DATA_DIR` | `../data` (relatief aan exe) | Pad naar data-directory |
 | `LUMIO_FRONTEND_DIR` | `../frontend` (relatief aan exe) | Pad naar Next.js export |
 
-## 2.8 Configuratiebestanden
+## 2.9 Configuratiebestanden
 
 ### appsettings.json
 
@@ -496,7 +571,7 @@ FluentValidation validators worden automatisch gedetecteerd en toegepast via `Ad
 
 Bevat ontwikkelprofielen voor `http` en `https` launch configurations.
 
-## 2.9 Foutafhandeling
+## 2.10 Foutafhandeling
 
 Alle API-responses volgen een consistent patroon:
 

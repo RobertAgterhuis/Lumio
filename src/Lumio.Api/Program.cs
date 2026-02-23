@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
 using Lumio.Api.Middleware;
+using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services.Security;
@@ -25,6 +26,9 @@ dataDir = Path.GetFullPath(dataDir);
 Directory.CreateDirectory(dataDir);
 
 builder.Configuration["DataDir"] = dataDir;
+
+// ── Business Rules configuratie laden ──
+builder.Services.AddLumioRules(builder.Configuration);
 
 // Profile service (singleton — manages profile manifest)
 builder.Services.AddSingleton<IProfileService, ProfileService>();

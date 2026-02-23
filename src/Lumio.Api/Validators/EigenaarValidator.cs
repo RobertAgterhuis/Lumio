@@ -1,16 +1,20 @@
 using FluentValidation;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Rules.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Validators;
 
 public class EigenaarUpsertRequestValidator : AbstractValidator<EigenaarUpsertRequest>
 {
-    public EigenaarUpsertRequestValidator()
+    public EigenaarUpsertRequestValidator(IOptions<VeldLengtesOptions> veldLengtes)
     {
-        RuleFor(x => x.Voornaam).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.Achternaam).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.Tussenvoegsel).MaximumLength(20);
+        var vl = veldLengtes.Value;
+
+        RuleFor(x => x.Voornaam).NotEmpty().MaximumLength(vl.NaamMax);
+        RuleFor(x => x.Achternaam).NotEmpty().MaximumLength(vl.NaamMax);
+        RuleFor(x => x.Tussenvoegsel).MaximumLength(vl.TussenvoegselMax);
         RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrEmpty(x.Email));
-        RuleFor(x => x.Postcode).MaximumLength(10);
+        RuleFor(x => x.Postcode).MaximumLength(vl.PostcodeMax);
     }
 }

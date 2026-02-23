@@ -1,14 +1,18 @@
 using FluentValidation;
 using Lumio.Api.Dtos.Auth;
+using Lumio.Api.Rules.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Validators;
 
 public class SetupRequestValidator : AbstractValidator<SetupRequest>
 {
-    public SetupRequestValidator()
+    public SetupRequestValidator(IOptions<LimietenOptions> limieten)
     {
-        RuleFor(x => x.Wachtwoord).NotEmpty().MinimumLength(8)
-            .WithMessage("Wachtwoord moet minimaal 8 tekens bevatten.");
+        var minLen = limieten.Value.WachtwoordMinLengte;
+
+        RuleFor(x => x.Wachtwoord).NotEmpty().MinimumLength(minLen)
+            .WithMessage($"Wachtwoord moet minimaal {minLen} tekens bevatten.");
     }
 }
 
@@ -22,11 +26,13 @@ public class OntgrendelRequestValidator : AbstractValidator<OntgrendelRequest>
 
 public class WachtwoordWijzigenRequestValidator : AbstractValidator<WachtwoordWijzigenRequest>
 {
-    public WachtwoordWijzigenRequestValidator()
+    public WachtwoordWijzigenRequestValidator(IOptions<LimietenOptions> limieten)
     {
+        var minLen = limieten.Value.WachtwoordMinLengte;
+
         RuleFor(x => x.HuidigWachtwoord).NotEmpty();
-        RuleFor(x => x.NieuwWachtwoord).NotEmpty().MinimumLength(8)
-            .WithMessage("Nieuw wachtwoord moet minimaal 8 tekens bevatten.");
+        RuleFor(x => x.NieuwWachtwoord).NotEmpty().MinimumLength(minLen)
+            .WithMessage($"Nieuw wachtwoord moet minimaal {minLen} tekens bevatten.");
     }
 }
 

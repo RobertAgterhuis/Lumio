@@ -1,14 +1,18 @@
 using FluentValidation;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Rules.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Validators;
 
 public class ErfgenaamUpsertRequestValidator : AbstractValidator<ErfgenaamUpsertRequest>
 {
-    public ErfgenaamUpsertRequestValidator()
+    public ErfgenaamUpsertRequestValidator(IOptions<VeldLengtesOptions> veldLengtes)
     {
-        RuleFor(x => x.Voornaam).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.Achternaam).NotEmpty().MaximumLength(100);
+        var vl = veldLengtes.Value;
+
+        RuleFor(x => x.Voornaam).NotEmpty().MaximumLength(vl.NaamMax);
+        RuleFor(x => x.Achternaam).NotEmpty().MaximumLength(vl.NaamMax);
         RuleFor(x => x.Relatie).NotEmpty();
         RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrEmpty(x.Email));
     }

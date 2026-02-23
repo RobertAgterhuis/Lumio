@@ -1,9 +1,11 @@
 using Lumio.Api.Data;
 using Lumio.Api.Dtos.Auth;
+using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
 
@@ -14,12 +16,18 @@ public class AuthController : ControllerBase
     private readonly IMasterPasswordService _passwordService;
     private readonly IProfileService _profileService;
     private readonly IAuditService _audit;
+    private readonly LimietenOptions _limieten;
 
-    public AuthController(IMasterPasswordService passwordService, IProfileService profileService, IAuditService audit)
+    public AuthController(
+        IMasterPasswordService passwordService,
+        IProfileService profileService,
+        IAuditService audit,
+        IOptions<LimietenOptions> limieten)
     {
         _passwordService = passwordService;
         _profileService = profileService;
         _audit = audit;
+        _limieten = limieten.Value;
     }
 
     [HttpGet("status")]
@@ -76,8 +84,8 @@ public class AuthController : ControllerBase
         if (!_passwordService.IsFirstRun)
             return BadRequest(new { error = "Database bestaat al. Gebruik ontgrendel." });
 
-        if (string.IsNullOrWhiteSpace(request.Wachtwoord) || request.Wachtwoord.Length < 8)
-            return BadRequest(new { error = "Wachtwoord moet minimaal 8 tekens bevatten." });
+        if (string.IsNullOrWhiteSpace(request.Wachtwoord) || request.Wachtwoord.Length < _limieten.WachtwoordMinLengte)
+            return BadRequest(new { error = $"Wachtwoord moet minimaal {_limieten.WachtwoordMinLengte} tekens bevatten." });
 
         // (1) Set the password — now IsUnlocked = true
         await _passwordService.SetupAsync(request.Wachtwoord);
@@ -127,8 +135,8 @@ public class AuthController : ControllerBase
         if (!_passwordService.IsUnlocked)
             return StatusCode(423, new { error = "Database is vergrendeld." });
 
-        if (string.IsNullOrWhiteSpace(request.NieuwWachtwoord) || request.NieuwWachtwoord.Length < 8)
-            return BadRequest(new { error = "Nieuw wachtwoord moet minimaal 8 tekens bevatten." });
+        if (string.IsNullOrWhiteSpace(request.NieuwWachtwoord) || request.NieuwWachtwoord.Length < _limieten.WachtwoordMinLengte)
+            return BadRequest(new { error = $"Nieuw wachtwoord moet minimaal {_limieten.WachtwoordMinLengte} tekens bevatten." });
 
         await _passwordService.ChangePasswordAsync(request.HuidigWachtwoord, request.NieuwWachtwoord);
         await _audit.LogAsync("Wachtwoord gewijzigd", details: $"Profiel: {_profileService.ActiveProfile?.Naam}");

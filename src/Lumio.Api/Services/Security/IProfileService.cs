@@ -4,7 +4,8 @@ namespace Lumio.Api.Services.Security;
 
 public interface IProfileService
 {
-    /// <summary>Maximum number of profiles allowed per installation.</summary>
+    /// <summary>Maximum number of profiles allowed per installation. Deprecated: use IOptions&lt;LimietenOptions&gt;.MaxProfielen.</summary>
+    [Obsolete("Gebruik IOptions<LimietenOptions>.MaxProfielen in plaats van deze constante.")]
     const int MaxProfiles = 5;
 
     /// <summary>All registered profiles.</summary>

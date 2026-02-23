@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.AssetRegistry;
 using Lumio.Api.Dtos.AssetRegistry;
+using Lumio.Api.Rules;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -39,8 +40,7 @@ public class BoedelController : ControllerBase
         var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
         var totaalVerzekeringen = verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
         var totaalSchulden = schulden.Sum(s => s.Bedrag);
-        var brutoNalatenschap = totaalBezittingen + totaalSaldi + totaalVerzekeringen;
-        var nettoNalatenschap = brutoNalatenschap - totaalSchulden;
+        var (brutoNalatenschap, nettoNalatenschap) = NalatenschapHelper.Bereken(totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden);
 
         return Ok(new
         {

@@ -29,8 +29,17 @@
 │  │  │              │  │ • Boedel     │  │ • PDF          │  │  │
 │  │  │              │  │ • Export     │  │ • Audit        │  │  │
 │  │  │              │  │ • ...        │  │                │  │  │
-│  │  └──────────────┘  └──────┬───────┘  └────────────────┘  │  │
-│  │                           │ EF Core                       │  │
+│  │  └──────────────┘  └──────┬───────┘  └────────────────┘  │  ││  │                           │                               │
+│  │                    ┌──────▼───────────────────────────┐   │
+│  │                    │       Rules Layer                 │   │
+│  │                    │  ┌────────────┐ ┌─────────────┐  │   │
+│  │                    │  │ Domain     │ │ Rules Engine │  │   │
+│  │                    │  │ Services   │ │ (Workflows)  │  │   │
+│  │                    │  └────────────┘ └─────────────┘  │   │
+│  │                    │  ┌────────────┐ ┌─────────────┐  │   │
+│  │                    │  │ IOptions<T>│ │ JSON Config  │  │   │
+│  │                    │  └────────────┘ └─────────────┘  │   │
+│  │                    └──────┬───────────────────────────┘   ││  │                           │ EF Core                       │  │
 │  │                    ┌──────▼───────┐                       │  │
 │  │                    │ LumioDbContext│                       │  │
 │  │                    └──────┬───────┘                       │  │
@@ -173,6 +182,16 @@ Lumio/
 │   │   ├── Domain/             # Entiteiten (domeinmodel)
 │   │   ├── Dtos/               # Data Transfer Objects
 │   │   ├── Middleware/         # HTTP middleware pipeline
+│   │   ├── Rules/              # Business Rules Engine
+│   │   │   ├── Configuration/  # IOptions<T> klassen, DI extensies
+│   │   │   ├── Engine/         # Microsoft RulesEngine wrapper
+│   │   │   ├── Facts/          # Input-modellen voor regelservices
+│   │   │   ├── Results/        # Output-modellen (PolicyResult<T>)
+│   │   │   └── Services/       # Domain services (Facts-in → Results-out)
+│   │   ├── rules/              # Externe JSON-configuratie
+│   │   │   ├── lumio-rules.json         # Configureerbare constanten
+│   │   │   ├── lumio-rules.schema.json  # JSON Schema
+│   │   │   └── lumio-workflows.json     # RulesEngine workflows
 │   │   ├── Services/           # Business logic & security
 │   │   ├── Validators/         # FluentValidation validators
 │   │   └── Program.cs          # Applicatie bootstrap

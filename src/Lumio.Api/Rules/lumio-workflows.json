@@ -1,0 +1,126 @@
+[
+  {
+    "WorkflowName": "MeldingenWorkflow",
+    "Rules": [
+      {
+        "RuleName": "GeenProfiel",
+        "Expression": "facts.HeeftEigenaar == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"profiel\",\"bericht\":\"U heeft nog geen persoonlijk profiel aangemaakt. Dit is de eerste stap.\",\"actie\":\"/eigenaar\"}"
+      },
+      {
+        "RuleName": "GeenTestament",
+        "Expression": "facts.HeeftTestament == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"testament\",\"bericht\":\"U heeft nog geen testamentaire informatie vastgelegd.\",\"actie\":\"/testament\"}"
+      },
+      {
+        "RuleName": "GeenWilsverklaring",
+        "Expression": "facts.HeeftWilsverklaring == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"euthanasie\",\"bericht\":\"U heeft nog geen wilsverklaring euthanasie opgesteld.\",\"actie\":\"/euthanasie\"}"
+      },
+      {
+        "RuleName": "GeenDonor",
+        "Expression": "facts.HeeftDonor == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"donor\",\"bericht\":\"U heeft uw donorregistratie nog niet vastgelegd.\",\"actie\":\"/donor\"}"
+      },
+      {
+        "RuleName": "GeenUitvaart",
+        "Expression": "facts.HeeftUitvaart == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"uitvaart\",\"bericht\":\"U heeft nog geen uitvaartwensen vastgelegd.\",\"actie\":\"/uitvaart\"}"
+      },
+      {
+        "RuleName": "GeenErfgenamen",
+        "Expression": "facts.HeeftErfgenamen == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"erfgenamen\",\"bericht\":\"U heeft nog geen erfgenamen geregistreerd.\",\"actie\":\"/erfgenamen\"}"
+      },
+      {
+        "RuleName": "GeenNoodcontacten",
+        "Expression": "facts.HeeftNoodcontacten == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"noodcontacten\",\"bericht\":\"U heeft nog geen noodcontacten opgegeven.\",\"actie\":\"/noodcontacten\"}"
+      },
+      {
+        "RuleName": "GeenDocumenten",
+        "Expression": "facts.HeeftDocumenten == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"documenten\",\"bericht\":\"U heeft nog geen belangrijke documenten ge\\u00fcpload.\",\"actie\":\"/documenten\"}"
+      },
+      {
+        "RuleName": "NooitBackup",
+        "Expression": "facts.LaatsteBackupTijdstip == null",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"backup\",\"bericht\":\"U heeft nog nooit een backup gemaakt. Maak een backup om dataverlies te voorkomen.\",\"actie\":\"/instellingen\"}"
+      },
+      {
+        "RuleName": "BackupVerouderd",
+        "Expression": "facts.LaatsteBackupTijdstip != null && facts.LaatsteBackupTijdstip.HasValue && (DateTime.UtcNow - facts.LaatsteBackupTijdstip.Value).TotalDays > 30",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"backup\",\"bericht\":\"Uw laatste backup is ouder dan 30 dagen. Overweeg een nieuwe backup te maken.\",\"actie\":\"/instellingen\"}"
+      },
+      {
+        "RuleName": "ShamirNietVerdeeld",
+        "Expression": "facts.ErfgenamenTotaal > 0 && facts.ErfgenamenMetSleutel == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"shamir\",\"bericht\":\"U heeft erfgenamen maar nog geen noodcodes verdeeld. Verdeel uw noodcodes zodat erfgenamen samen toegang kunnen krijgen.\",\"actie\":\"/erfgenamen\"}"
+      },
+      {
+        "RuleName": "VerlopenDocumenten",
+        "Expression": "facts.VerlopenDocumenten.Count > 0",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"documenten\",\"bericht\":\"Er zijn verlopen documenten aangetroffen. Controleer of ze nog actueel zijn.\",\"actie\":\"/documenten\"}"
+      },
+      {
+        "RuleName": "BijnaVerlopenDocumenten",
+        "Expression": "facts.BijnaVerlopenDocumenten.Count > 0",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"documenten\",\"bericht\":\"Er zijn documenten die binnenkort verlopen. Controleer of ze nog actueel zijn.\",\"actie\":\"/documenten\"}"
+      },
+      {
+        "RuleName": "NooitGeactualiseerd",
+        "Expression": "facts.HeeftEigenaar == true && facts.LaatsteActualisatie == null",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"actualisatie\",\"bericht\":\"Controleer regelmatig of al uw gegevens nog actueel zijn. Bevestig uw actualisatie via Instellingen.\",\"actie\":\"/instellingen\"}"
+      },
+      {
+        "RuleName": "ActualisatieVerlopen",
+        "Expression": "facts.HeeftEigenaar == true && facts.LaatsteActualisatie != null && facts.LaatsteActualisatie.HasValue && (DateTime.UtcNow - facts.LaatsteActualisatie.Value).TotalDays > 90",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"actualisatie\",\"bericht\":\"Het is langer dan 90 dagen geleden dat u uw gegevens heeft gecontroleerd. Controleer of alles nog actueel is.\",\"actie\":\"/instellingen\"}"
+      }
+    ]
+  },
+  {
+    "WorkflowName": "SuggestiesWorkflow",
+    "Rules": [
+      {
+        "RuleName": "NotarisInconsistentie",
+        "Expression": "facts.Testament != null && facts.EigenaarNotaris != null && facts.Testament.NotarisNaam != null && facts.EigenaarNotaris != facts.Testament.NotarisNaam",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Notaris inconsistentie\",\"melding\":\"De notaris in uw profiel verschilt van de notaris bij het testament. Klopt dit?\",\"actie\":\"Controleer of u dezelfde notaris bedoelt en werk de gegevens bij.\"}"
+      },
+      {
+        "RuleName": "NotarisGeenNoodcontact",
+        "Expression": "facts.Testament != null && facts.Testament.NotarisNaam != null && facts.Noodcontacten.Count(n => n.Rol == \"Notaris\") == 0",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Notaris noodcontact\",\"melding\":\"Uw notaris is niet als noodcontact geregistreerd.\",\"actie\":\"Voeg uw notaris toe als noodcontact met het contactnummer.\"}"
+      },
+      {
+        "RuleName": "UitvaartondernemerGeenNoodcontact",
+        "Expression": "facts.UitvaartOndernemer != null && facts.UitvaartOndernemer != \"\" && facts.Noodcontacten.Count(n => n.Rol == \"Uitvaartondernemer\" || n.Naam == facts.UitvaartOndernemer) == 0",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Uitvaartondernemer noodcontact\",\"melding\":\"Uw uitvaartondernemer is niet als noodcontact geregistreerd.\",\"actie\":\"Voeg uw uitvaartondernemer toe als noodcontact.\"}"
+      },
+      {
+        "RuleName": "GeenHuisarts",
+        "Expression": "facts.Erfgenamen.Count > 0 && facts.Noodcontacten.Count(n => n.Rol == \"Huisarts\") == 0",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Ontbrekend noodcontact\",\"melding\":\"Er is geen huisarts als noodcontact geregistreerd. Een huisarts is belangrijk bij overlijden en voor medische documentatie.\",\"actie\":\"Voeg uw huisarts toe als noodcontact.\"}"
+      }
+    ]
+  }
+]
