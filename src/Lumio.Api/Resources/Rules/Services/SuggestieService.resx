@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>1.3</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+  <data name="CategoryNotaryInconsistency" xml:space="preserve"><value>Notaris inconsistentie</value></data>
+  <data name="MessageNotaryInconsistency" xml:space="preserve"><value>De notaris in uw profiel ("{0}") verschilt van de notaris bij het testament ("{1}"). Klopt dit?</value></data>
+  <data name="SuggestionNotaryInconsistency" xml:space="preserve"><value>Controleer of u dezelfde notaris bedoelt en werk de gegevens bij.</value></data>
+  <data name="CategoryNotaryEmergency" xml:space="preserve"><value>Notaris noodcontact</value></data>
+  <data name="MessageNotaryEmergency" xml:space="preserve"><value>Notaris "{0}" is wel bij het testament ingevuld maar niet als noodcontact geregistreerd.</value></data>
+  <data name="SuggestionNotaryEmergency" xml:space="preserve"><value>Voeg uw notaris toe als noodcontact met het contactnummer.</value></data>
+  <data name="CategoryFuneralDirectorEmergency" xml:space="preserve"><value>Uitvaartondernemer noodcontact</value></data>
+  <data name="MessageFuneralDirectorEmergency" xml:space="preserve"><value>Uitvaartondernemer "{0}" is niet als noodcontact geregistreerd.</value></data>
+  <data name="SuggestionFuneralDirectorEmergency" xml:space="preserve"><value>Voeg uw uitvaartondernemer toe als noodcontact.</value></data>
+  <data name="CategoryMissingEmergencyContact" xml:space="preserve"><value>Ontbrekend noodcontact</value></data>
+  <data name="MessageMissingGP" xml:space="preserve"><value>Er is geen huisarts als noodcontact geregistreerd. Een huisarts is belangrijk bij overlijden en voor medische documentatie.</value></data>
+  <data name="SuggestionAddGP" xml:space="preserve"><value>Voeg uw huisarts toe als noodcontact.</value></data>
+  <data name="CategoryHeirEmergencyLink" xml:space="preserve"><value>Erfgenaam ↔ Noodcontact</value></data>
+  <data name="MessageHeirNotEmergency" xml:space="preserve"><value>Erfgenaam "{0}" is niet als noodcontact geregistreerd. Overweeg deze persoon ook als noodcontact toe te voegen zodat zij bereikbaar zijn bij nood.</value></data>
+  <data name="SuggestionGoToEmergencyContacts" xml:space="preserve"><value>Ga naar Noodcontacten en voeg deze persoon toe.</value></data>
+  <data name="CategoryEmergencyHeirLink" xml:space="preserve"><value>Noodcontact ↔ Erfgenaam</value></data>
+  <data name="MessageEmergencyNotHeir" xml:space="preserve"><value>Vertrouwenspersoon "{0}" is niet als erfgenaam geregistreerd. Wilt u deze persoon ook als erfgenaam toevoegen?</value></data>
+  <data name="SuggestionGoToHeirs" xml:space="preserve"><value>Ga naar Erfgenamen en voeg deze persoon toe.</value></data>
+  <data name="CategoryBeneficiaryHeirLink" xml:space="preserve"><value>Begunstigde ↔ Erfgenaam</value></data>
+  <data name="MessageBeneficiaryNotHeir" xml:space="preserve"><value>Begunstigde "{0}" in het testament is niet als erfgenaam geregistreerd.</value></data>
+  <data name="SuggestionCheckBeneficiaryHeir" xml:space="preserve"><value>Controleer of deze persoon ook als erfgenaam moet worden toegevoegd.</value></data>
+</root>

@@ -1,6 +1,7 @@
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Results;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Rules.Services;
@@ -23,13 +24,16 @@ public class CompleetheidsService : ICompleetheidsService
 {
     private readonly CompleetheidsOptions _options;
     private readonly string _regelVersie;
+    private readonly IStringLocalizer<CompleetheidsService> L;
 
     public CompleetheidsService(
         IOptions<CompleetheidsOptions> options,
-        IOptions<LumioRulesOptions> rootOptions)
+        IOptions<LumioRulesOptions> rootOptions,
+        IStringLocalizer<CompleetheidsService> localizer)
     {
         _options = options.Value;
         _regelVersie = rootOptions.Value.Versie;
+        L = localizer;
     }
 
     public PolicyResult<CompleetheidsResultaat> BerekenSimpel(CompleetFacts facts)
@@ -38,16 +42,16 @@ public class CompleetheidsService : ICompleetheidsService
 
         var domeinen = new List<DomeinCompleetheid>
         {
-            new("eigenaar", "Mijn Profiel", facts.Eigenaar is not null ? 1 : 0, 1),
-            new("testament", "Testament", facts.Testament is not null ? 1 : 0, 1),
-            new("euthanasie", "Wilsverklaring", facts.Euthanasie is not null ? 1 : 0, 1),
-            new("donor", "Donorregistratie", facts.HeeftDonor ? 1 : 0, 1),
-            new("digitaal-bezit", "Digitaal Bezit", facts.DigitaalBezitAantal > 0 ? 1 : 0, 1),
-            new("boedel", "Boedel", facts.BoedelCategorieën.Any(b => b) ? 1 : 0, 1),
-            new("uitvaart", "Uitvaartwensen", facts.Uitvaart is not null ? 1 : 0, 1),
-            new("documenten", "Documenten", facts.DocumentenAantal > 0 ? 1 : 0, 1),
-            new("erfgenamen", "Erfgenamen", facts.ErfgenamenAantal > 0 ? 1 : 0, 1),
-            new("noodcontacten", "Noodcontacten", facts.NoodcontactenAantal > 0 ? 1 : 0, 1),
+            new("eigenaar", L["DomainMyProfile"].Value, facts.Eigenaar is not null ? 1 : 0, 1),
+            new("testament", L["DomainTestament"].Value, facts.Testament is not null ? 1 : 0, 1),
+            new("euthanasie", L["DomainLivingWill"].Value, facts.Euthanasie is not null ? 1 : 0, 1),
+            new("donor", L["DomainDonor"].Value, facts.HeeftDonor ? 1 : 0, 1),
+            new("digitaal-bezit", L["DomainDigitalAssets"].Value, facts.DigitaalBezitAantal > 0 ? 1 : 0, 1),
+            new("boedel", L["DomainEstate"].Value, facts.BoedelCategorieën.Any(b => b) ? 1 : 0, 1),
+            new("uitvaart", L["DomainFuneral"].Value, facts.Uitvaart is not null ? 1 : 0, 1),
+            new("documenten", L["DomainDocuments"].Value, facts.DocumentenAantal > 0 ? 1 : 0, 1),
+            new("erfgenamen", L["DomainHeirs"].Value, facts.ErfgenamenAantal > 0 ? 1 : 0, 1),
+            new("noodcontacten", L["DomainEmergencyContacts"].Value, facts.NoodcontactenAantal > 0 ? 1 : 0, 1),
         };
 
         var aantalIngevuld = domeinen.Count(d => d.Ingevuld > 0);
@@ -71,55 +75,55 @@ public class CompleetheidsService : ICompleetheidsService
         if (facts.Eigenaar is { } eig)
         {
             var velden = new[] { eig.HeeftVoornaam, eig.HeeftAchternaam, eig.HeeftGeboortedatum, eig.HeeftTelefoon, eig.HeeftEmail, eig.HeeftAdres, eig.HeeftBSN, eig.HeeftNotaris };
-            domeinen.Add(new("eigenaar", "Mijn Profiel", velden.Count(v => v), velden.Length));
+            domeinen.Add(new("eigenaar", L["DomainMyProfile"].Value, velden.Count(v => v), velden.Length));
         }
         else
-            domeinen.Add(new("eigenaar", "Mijn Profiel", 0, _options.EigenaarVelden));
+            domeinen.Add(new("eigenaar", L["DomainMyProfile"].Value, 0, _options.EigenaarVelden));
 
         // Testament
         if (facts.Testament is { } test)
         {
             var velden = new[] { test.HeeftType, test.HeeftNotaris, test.HeeftDatum, test.HeeftWensen, test.AantalBegunstigden > 0, test.AantalExecuteurs > 0 };
-            domeinen.Add(new("testament", "Testament", velden.Count(v => v), velden.Length));
+            domeinen.Add(new("testament", L["DomainTestament"].Value, velden.Count(v => v), velden.Length));
         }
         else
-            domeinen.Add(new("testament", "Testament", 0, _options.TestamentVelden));
+            domeinen.Add(new("testament", L["DomainTestament"].Value, 0, _options.TestamentVelden));
 
         // Euthanasie
         if (facts.Euthanasie is { } euth)
         {
             var velden = new[] { euth.HeeftDatum, euth.HeeftHuisarts, euth.HeeftVertegenwoordiger };
-            domeinen.Add(new("euthanasie", "Wilsverklaring", velden.Count(v => v), velden.Length));
+            domeinen.Add(new("euthanasie", L["DomainLivingWill"].Value, velden.Count(v => v), velden.Length));
         }
         else
-            domeinen.Add(new("euthanasie", "Wilsverklaring", 0, _options.EuthanasieVelden));
+            domeinen.Add(new("euthanasie", L["DomainLivingWill"].Value, 0, _options.EuthanasieVelden));
 
         // Donor
-        domeinen.Add(new("donor", "Donorregistratie", facts.HeeftDonor ? 1 : 0, _options.DonorVelden));
+        domeinen.Add(new("donor", L["DomainDonor"].Value, facts.HeeftDonor ? 1 : 0, _options.DonorVelden));
 
         // Digitaal bezit
-        domeinen.Add(new("digitaal-bezit", "Digitaal Bezit", Math.Min(facts.DigitaalBezitAantal, _options.DigitaalBezitCap), _options.DigitaalBezitCap));
+        domeinen.Add(new("digitaal-bezit", L["DomainDigitalAssets"].Value, Math.Min(facts.DigitaalBezitAantal, _options.DigitaalBezitCap), _options.DigitaalBezitCap));
 
         // Boedel
-        domeinen.Add(new("boedel", "Boedel", facts.BoedelCategorieën.Count(v => v), facts.BoedelCategorieën.Length));
+        domeinen.Add(new("boedel", L["DomainEstate"].Value, facts.BoedelCategorieën.Count(v => v), facts.BoedelCategorieën.Length));
 
         // Uitvaart
         if (facts.Uitvaart is { } uitv)
         {
             var velden = new[] { uitv.HeeftVoorkeurType, uitv.HeeftOndernemer, uitv.HeeftCeremonie, uitv.HeeftRouwkaart };
-            domeinen.Add(new("uitvaart", "Uitvaartwensen", velden.Count(v => v), velden.Length));
+            domeinen.Add(new("uitvaart", L["DomainFuneral"].Value, velden.Count(v => v), velden.Length));
         }
         else
-            domeinen.Add(new("uitvaart", "Uitvaartwensen", 0, _options.UitvaartVelden));
+            domeinen.Add(new("uitvaart", L["DomainFuneral"].Value, 0, _options.UitvaartVelden));
 
         // Documenten
-        domeinen.Add(new("documenten", "Documenten", Math.Min(facts.DocumentenAantal, _options.DocumentenCap), _options.DocumentenCap));
+        domeinen.Add(new("documenten", L["DomainDocuments"].Value, Math.Min(facts.DocumentenAantal, _options.DocumentenCap), _options.DocumentenCap));
 
         // Erfgenamen
-        domeinen.Add(new("erfgenamen", "Erfgenamen", Math.Min(facts.ErfgenamenAantal, _options.ErfgenamenCap), _options.ErfgenamenCap));
+        domeinen.Add(new("erfgenamen", L["DomainHeirs"].Value, Math.Min(facts.ErfgenamenAantal, _options.ErfgenamenCap), _options.ErfgenamenCap));
 
         // Noodcontacten
-        domeinen.Add(new("noodcontacten", "Noodcontacten", Math.Min(facts.NoodcontactenAantal, _options.NoodcontactenCap), _options.NoodcontactenCap));
+        domeinen.Add(new("noodcontacten", L["DomainEmergencyContacts"].Value, Math.Min(facts.NoodcontactenAantal, _options.NoodcontactenCap), _options.NoodcontactenCap));
 
         var totaalIngevuld = domeinen.Sum(d => d.Ingevuld);
         var totaalVelden = domeinen.Sum(d => d.Totaal);

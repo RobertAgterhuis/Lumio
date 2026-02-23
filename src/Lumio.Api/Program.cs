@@ -71,6 +71,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -94,6 +95,15 @@ builder.WebHost.UseUrls(port);
 var app = builder.Build();
 
 app.UseCors();
+
+var supportedCultures = new[] { "nl", "en" };
+app.UseRequestLocalization(options =>
+{
+    options.SetDefaultCulture("nl")
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+});
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<DatabaseUnlockMiddleware>();
 

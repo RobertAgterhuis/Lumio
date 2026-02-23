@@ -2,6 +2,7 @@ using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Engine;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Results;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using RulesEngine.Models;
 
@@ -26,17 +27,20 @@ public class MeldingService : IMeldingService
     private readonly LimietenOptions _limieten;
     private readonly string _regelVersie;
     private readonly ILogger<MeldingService> _logger;
+    private readonly IStringLocalizer<MeldingService> L;
 
     public MeldingService(
         IRuleEngineService engine,
         IOptions<LimietenOptions> limieten,
         IOptions<LumioRulesOptions> rootOptions,
-        ILogger<MeldingService> logger)
+        ILogger<MeldingService> logger,
+        IStringLocalizer<MeldingService> localizer)
     {
         _engine = engine;
         _limieten = limieten.Value;
         _regelVersie = rootOptions.Value.Versie;
         _logger = logger;
+        L = localizer;
     }
 
     public async Task<PolicyResult<MeldingResultaat>> EvalueerAsync(MeldingFacts facts)
@@ -88,50 +92,50 @@ public class MeldingService : IMeldingService
         if (!facts.HeeftEigenaar)
         {
             meldingen.Add(new Melding("waarschuwing", "profiel",
-                "U heeft nog geen persoonlijk profiel aangemaakt. Dit is de eerste stap.", "/eigenaar"));
+                L["NoProfile"].Value, "/eigenaar"));
             toegepasteRegels.Add("BR-MELD-02: Geen eigenaar profiel");
         }
 
         // 2. Ontbrekende domeinen
         if (!facts.HeeftTestament)
             meldingen.Add(new Melding("herinnering", "testament",
-                "U heeft nog geen testamentaire informatie vastgelegd.", "/testament"));
+                L["NoTestament"].Value, "/testament"));
 
         if (!facts.HeeftWilsverklaring)
             meldingen.Add(new Melding("herinnering", "euthanasie",
-                "U heeft nog geen wilsverklaring euthanasie opgesteld.", "/euthanasie"));
+                L["NoLivingWill"].Value, "/euthanasie"));
 
         if (!facts.HeeftDonor)
             meldingen.Add(new Melding("herinnering", "donor",
-                "U heeft uw donorregistratie nog niet vastgelegd.", "/donor"));
+                L["NoDonor"].Value, "/donor"));
 
         if (!facts.HeeftUitvaart)
             meldingen.Add(new Melding("herinnering", "uitvaart",
-                "U heeft nog geen uitvaartwensen vastgelegd.", "/uitvaart"));
+                L["NoFuneral"].Value, "/uitvaart"));
 
         if (!facts.HeeftErfgenamen)
             meldingen.Add(new Melding("herinnering", "erfgenamen",
-                "U heeft nog geen erfgenamen geregistreerd.", "/erfgenamen"));
+                L["NoHeirs"].Value, "/erfgenamen"));
 
         if (!facts.HeeftNoodcontacten)
             meldingen.Add(new Melding("herinnering", "noodcontacten",
-                "U heeft nog geen noodcontacten opgegeven.", "/noodcontacten"));
+                L["NoEmergencyContacts"].Value, "/noodcontacten"));
 
         if (!facts.HeeftDocumenten)
             meldingen.Add(new Melding("herinnering", "documenten",
-                "U heeft nog geen belangrijke documenten geüpload.", "/documenten"));
+                L["NoDocuments"].Value, "/documenten"));
 
         // 3. Backup check
         if (facts.LaatsteBackupTijdstip is null)
         {
             meldingen.Add(new Melding("waarschuwing", "backup",
-                "U heeft nog nooit een backup gemaakt. Maak een backup om dataverlies te voorkomen.", "/instellingen"));
+                L["NoBackupEver"].Value, "/instellingen"));
             toegepasteRegels.Add("BR-MELD-03: Geen backup ooit gemaakt");
         }
         else if (facts.LaatsteBackupTijdstip.Value < DateTime.UtcNow.AddDays(-_limieten.BackupVerouderdDagen))
         {
             meldingen.Add(new Melding("herinnering", "backup",
-                $"Uw laatste backup is van {facts.LaatsteBackupTijdstip.Value:dd-MM-yyyy}. Overweeg een nieuwe backup.", "/instellingen"));
+                L["BackupOutdated", facts.LaatsteBackupTijdstip.Value.ToString("dd-MM-yyyy")].Value, "/instellingen"));
             toegepasteRegels.Add("BR-MELD-04: Backup verouderd");
         }
 
@@ -139,7 +143,7 @@ public class MeldingService : IMeldingService
         if (facts.ErfgenamenTotaal > 0 && !facts.ErfgenamenMetSleutel)
         {
             meldingen.Add(new Melding("herinnering", "shamir",
-                "U heeft erfgenamen maar nog geen noodcodes verdeeld. Verdeel uw noodcodes zodat erfgenamen samen toegang kunnen krijgen.", "/erfgenamen"));
+                L["ShamirNotDistributed"].Value, "/erfgenamen"));
             toegepasteRegels.Add("BR-MELD-05: Shamir niet verdeeld");
         }
 
@@ -148,7 +152,7 @@ public class MeldingService : IMeldingService
         {
             var namen = string.Join(", ", facts.VerlopenDocumenten);
             meldingen.Add(new Melding("waarschuwing", "documenten",
-                $"De volgende documenten zijn verlopen: {namen}. Controleer of ze nog actueel zijn.", "/documenten"));
+                L["DocumentsExpired", namen].Value, "/documenten"));
             toegepasteRegels.Add("BR-MELD-06: Verlopen documenten");
         }
 
@@ -156,7 +160,7 @@ public class MeldingService : IMeldingService
         {
             var namen = string.Join(", ", facts.BijnaVerlopenDocumenten);
             meldingen.Add(new Melding("herinnering", "documenten",
-                $"De volgende documenten verlopen binnenkort: {namen}.", "/documenten"));
+                L["DocumentsExpiringSoon", namen].Value, "/documenten"));
             toegepasteRegels.Add("BR-MELD-07: Bijna verlopen documenten");
         }
 
@@ -166,13 +170,13 @@ public class MeldingService : IMeldingService
             if (facts.LaatsteActualisatie is null)
             {
                 meldingen.Add(new Melding("herinnering", "actualisatie",
-                    "Controleer regelmatig of al uw gegevens nog actueel zijn. Bevestig uw actualisatie via Instellingen.", "/instellingen"));
+                    L["NeverActualized"].Value, "/instellingen"));
                 toegepasteRegels.Add("BR-MELD-08: Nooit geactualiseerd");
             }
             else if (facts.LaatsteActualisatie.Value < DateTime.UtcNow.AddDays(-_limieten.ActualisatieIntervalDagen))
             {
                 meldingen.Add(new Melding("herinnering", "actualisatie",
-                    $"Uw laatste actualisatie-controle was op {facts.LaatsteActualisatie.Value:dd-MM-yyyy}. Controleer of uw gegevens nog actueel zijn.", "/instellingen"));
+                    L["ActualizationExpired", facts.LaatsteActualisatie.Value.ToString("dd-MM-yyyy")].Value, "/instellingen"));
                 toegepasteRegels.Add("BR-MELD-09: Actualisatie verlopen");
             }
         }

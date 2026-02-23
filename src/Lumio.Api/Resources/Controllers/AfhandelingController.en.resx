@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="AlreadyInitialized" xml:space="preserve"><value>Settlement has already been initialized.</value></data>
+  <data name="Initialized" xml:space="preserve"><value>Settlement initialized.</value></data>
+  <data name="LabelNotifyEmergencyContacts" xml:space="preserve"><value>Notify emergency contacts</value></data>
+  <data name="LabelArrangeFuneral" xml:space="preserve"><value>Arrange funeral wishes</value></data>
+  <data name="LabelCheckDonor" xml:space="preserve"><value>Check donor registration</value></data>
+  <data name="LabelViewLivingWill" xml:space="preserve"><value>View living will</value></data>
+  <data name="LabelViewTestament" xml:space="preserve"><value>View will</value></data>
+  <data name="LabelNotifyHeirs" xml:space="preserve"><value>Notify heirs</value></data>
+  <data name="LabelCollectDocuments" xml:space="preserve"><value>Collect documents</value></data>
+  <data name="LabelSettleEstate" xml:space="preserve"><value>Settle estate</value></data>
+  <data name="LabelSettleDigitalAssets" xml:space="preserve"><value>Settle digital assets</value></data>
+  <data name="LabelPersonalData" xml:space="preserve"><value>Personal data for declaration</value></data>
+  <data name="LabelExportDossier" xml:space="preserve"><value>Export complete dossier</value></data>
+</root>

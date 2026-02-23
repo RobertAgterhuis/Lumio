@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using Microsoft.Extensions.Localization;
+using System.Globalization;
 
 namespace Lumio.Api.Controllers;
 
@@ -17,11 +19,13 @@ public class ExportController : ControllerBase
 {
     private readonly ILumioPdfService _pdfService;
     private readonly LumioDbContext _db;
+    private readonly IStringLocalizer<ExportController> L;
 
-    public ExportController(ILumioPdfService pdfService, LumioDbContext db)
+    public ExportController(ILumioPdfService pdfService, LumioDbContext db, IStringLocalizer<ExportController> localizer)
     {
         _pdfService = pdfService;
         _db = db;
+        L = localizer;
     }
 
     [HttpPost("testament")]
@@ -179,8 +183,8 @@ public class ExportController : ControllerBase
 
         var sb = new StringBuilder();
         sb.AppendLine("<!DOCTYPE html>");
-        sb.AppendLine("<html lang=\"nl\"><head><meta charset=\"UTF-8\">");
-        sb.AppendLine($"<title>Erfgenaam overzicht — {H(erfgenaamNaam)}</title>");
+        sb.AppendLine($"<html lang=\"{CultureInfo.CurrentUICulture.TwoLetterISOLanguageName}\"><head><meta charset=\"UTF-8\">");
+        sb.AppendLine($"<title>{L["HeirOverviewTitle"]} — {H(erfgenaamNaam)}</title>");
         sb.AppendLine("<style>");
         sb.AppendLine("body{font-family:system-ui,-apple-system,sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#1e293b;background:#fafafa}");
         sb.AppendLine("h1{color:#1e3a5f;border-bottom:2px solid #1e3a5f;padding-bottom:8px}");
@@ -193,21 +197,21 @@ public class ExportController : ControllerBase
         sb.AppendLine(".footer{margin-top:32px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:0.8em;color:#94a3b8}");
         sb.AppendLine("</style></head><body>");
 
-        sb.AppendLine($"<h1>Erfgenaam overzicht</h1>");
+        sb.AppendLine($"<h1>{L["HeirOverviewTitle"]}</h1>");
         sb.AppendLine($"<div class=\"info\">");
-        sb.AppendLine($"<strong>Betreft de nalatenschap van:</strong> {H(erflater)}<br>");
-        sb.AppendLine($"<strong>Erfgenaam:</strong> {H(erfgenaamNaam)} ({H(erfgenaam.Relatie)})<br>");
+        sb.AppendLine($"<strong>{L["RegardingEstateOf"]}</strong> {H(erflater)}<br>");
+        sb.AppendLine($"<strong>{L["HeirLabel"]}</strong> {H(erfgenaamNaam)} ({H(erfgenaam.Relatie)})<br>");
         if (!string.IsNullOrWhiteSpace(erfgenaam.Telefoon))
-            sb.AppendLine($"<strong>Telefoon:</strong> {H(erfgenaam.Telefoon)}<br>");
+            sb.AppendLine($"<strong>{L["PhoneLabel"]}</strong> {H(erfgenaam.Telefoon)}<br>");
         if (!string.IsNullOrWhiteSpace(erfgenaam.Email))
-            sb.AppendLine($"<strong>Email:</strong> {H(erfgenaam.Email)}<br>");
+            sb.AppendLine($"<strong>{L["EmailLabel"]}</strong> {H(erfgenaam.Email)}<br>");
         sb.AppendLine("</div>");
 
         // Noodcontacten
         if (noodcontacten.Count > 0)
         {
-            sb.AppendLine("<h2>Belangrijke contactpersonen</h2>");
-            sb.AppendLine("<table><tr><th>Naam</th><th>Rol</th><th>Telefoon</th><th>Email</th></tr>");
+            sb.AppendLine($"<h2>{L["ImportantContacts"]}</h2>");
+            sb.AppendLine($"<table><tr><th>{L["NameHeader"]}</th><th>{L["RoleHeader"]}</th><th>{L["PhoneLabel"]}</th><th>{L["EmailLabel"]}</th></tr>");
             foreach (var n in noodcontacten)
                 sb.AppendLine($"<tr><td>{H(n.Naam)}</td><td>{H(n.Rol)}</td><td>{H(n.Telefoon ?? "—")}</td><td>{H(n.Email ?? "—")}</td></tr>");
             sb.AppendLine("</table>");
@@ -216,57 +220,55 @@ public class ExportController : ControllerBase
         // Testament info
         if (testament != null)
         {
-            sb.AppendLine("<h2>Testamentaire informatie</h2>");
+            sb.AppendLine($"<h2>{L["TestamentaryInformation"]}</h2>");
             sb.AppendLine("<table>");
             if (!string.IsNullOrWhiteSpace(testament.TestamentType))
-                sb.AppendLine($"<tr><th>Type</th><td>{H(testament.TestamentType)}</td></tr>");
+                sb.AppendLine($"<tr><th>{L["TypeLabel"]}</th><td>{H(testament.TestamentType)}</td></tr>");
             if (!string.IsNullOrWhiteSpace(testament.NotarisNaam))
-                sb.AppendLine($"<tr><th>Notaris</th><td>{H(testament.NotarisNaam)} — {H(testament.NotarisKantoor ?? "")}</td></tr>");
+                sb.AppendLine($"<tr><th>{L["NotaryLabel"]}</th><td>{H(testament.NotarisNaam)} — {H(testament.NotarisKantoor ?? "")}</td></tr>");
             if (testament.DatumTestament.HasValue)
-                sb.AppendLine($"<tr><th>Datum</th><td>{testament.DatumTestament:dd-MM-yyyy}</td></tr>");
+                sb.AppendLine($"<tr><th>{L["DateLabel"]}</th><td>{testament.DatumTestament:dd-MM-yyyy}</td></tr>");
             if (!string.IsNullOrWhiteSpace(testament.CTR_Nummer))
-                sb.AppendLine($"<tr><th>CTR-nummer</th><td>{H(testament.CTR_Nummer)}</td></tr>");
+                sb.AppendLine($"<tr><th>{L["CtrNumberLabel"]}</th><td>{H(testament.CTR_Nummer)}</td></tr>");
             if (!string.IsNullOrWhiteSpace(testament.TestamentLocatie))
-                sb.AppendLine($"<tr><th>Locatie</th><td>{H(testament.TestamentLocatie)}</td></tr>");
+                sb.AppendLine($"<tr><th>{L["LocationLabel"]}</th><td>{H(testament.TestamentLocatie)}</td></tr>");
             sb.AppendLine("</table>");
         }
 
         // Toewijzingen
         if (toewijzingen.Count > 0)
         {
-            sb.AppendLine("<h2>Aan u toegewezen items</h2>");
-            sb.AppendLine("<table><tr><th>Type</th><th>Omschrijving</th><th>Instructies</th></tr>");
+            sb.AppendLine($"<h2>{L["ItemsAssignedToYou"]}</h2>");
+            sb.AppendLine($"<table><tr><th>{L["TypeLabel"]}</th><th>{L["DescriptionHeader"]}</th><th>{L["InstructionsHeader"]}</th></tr>");
             foreach (var b in bezittingen)
             {
                 var instr = toewijzingen.FirstOrDefault(t => t.EntityId == b.Id)?.Instructies ?? "—";
-                sb.AppendLine($"<tr><td>Bezitting</td><td>{H(b.Omschrijving)}</td><td>{H(instr)}</td></tr>");
+                sb.AppendLine($"<tr><td>{L["AssetType"]}</td><td>{H(b.Omschrijving)}</td><td>{H(instr)}</td></tr>");
             }
             foreach (var b in bankrekeningen)
             {
                 var instr = toewijzingen.FirstOrDefault(t => t.EntityId == b.Id)?.Instructies ?? "—";
-                sb.AppendLine($"<tr><td>Bankrekening</td><td>{H(b.BankNaam)} — {H(b.IBAN)}</td><td>{H(instr)}</td></tr>");
+                sb.AppendLine($"<tr><td>{L["BankAccountType"]}</td><td>{H(b.BankNaam)} — {H(b.IBAN)}</td><td>{H(instr)}</td></tr>");
             }
             foreach (var v in verzekeringen2)
             {
                 var instr = toewijzingen.FirstOrDefault(t => t.EntityId == v.Id)?.Instructies ?? "—";
-                sb.AppendLine($"<tr><td>Verzekering</td><td>{H(v.Verzekeraar)} — {H(v.PolisNummer)}</td><td>{H(instr)}</td></tr>");
+                sb.AppendLine($"<tr><td>{L["InsuranceType"]}</td><td>{H(v.Verzekeraar)} — {H(v.PolisNummer)}</td><td>{H(instr)}</td></tr>");
             }
             foreach (var a in accounts)
             {
                 var instr = toewijzingen.FirstOrDefault(t => t.EntityId == a.Id)?.Instructies ?? "—";
-                sb.AppendLine($"<tr><td>Digitaal account</td><td>{H(a.PlatformNaam)}</td><td>{H(instr)}</td></tr>");
+                sb.AppendLine($"<tr><td>{L["DigitalAccountType"]}</td><td>{H(a.PlatformNaam)}</td><td>{H(instr)}</td></tr>");
             }
             sb.AppendLine("</table>");
         }
 
         sb.AppendLine("<div class=\"disclaimer\">");
-        sb.AppendLine("<strong>Let op:</strong> Dit overzicht is informatief en gegenereerd door Lumio. ");
-        sb.AppendLine("Het bevat geen gevoelige gegevens zoals wachtwoorden of financiële details. ");
-        sb.AppendLine("Neem contact op met de notaris voor officiële informatie over de nalatenschap.");
+        sb.AppendLine($"<strong>{L["DisclaimerTitle"]}</strong> {L["DisclaimerText"]}");
         sb.AppendLine("</div>");
 
-        sb.AppendLine($"<div class=\"footer\">Gegenereerd door Lumio op {datum}. ");
-        sb.AppendLine("Dit document is bedoeld om te delen met mede-erfgenamen.</div>");
+        sb.AppendLine($"<div class=\"footer\">{L["GeneratedByLumioOn", datum]} ");
+        sb.AppendLine($"{L["DocumentIntendedForCoHeirs"]}</div>");
         sb.AppendLine("</body></html>");
 
         var bytes = Encoding.UTF8.GetBytes(sb.ToString());
@@ -344,27 +346,27 @@ public class ExportController : ControllerBase
 
             // Add INHOUD.txt index file
             var sb = new StringBuilder();
-            sb.AppendLine("LUMIO — COMPLEET EXPORT-PAKKET");
-            sb.AppendLine($"Gegenereerd op: {DateTime.Now:dd-MM-yyyy HH:mm}");
+            sb.AppendLine(L["ExportPackageTitle"]);
+            sb.AppendLine(L["GeneratedOn", DateTime.Now.ToString("dd-MM-yyyy HH:mm")]);
             sb.AppendLine(new string('=', 50));
             sb.AppendLine();
-            sb.AppendLine("INHOUD:");
+            sb.AppendLine(L["ContentsLabel"]);
             sb.AppendLine();
             sb.AppendLine("pdf/");
-            sb.AppendLine("  Alle PDF-documenten met uw vastgelegde gegevens.");
+            sb.AppendLine($"  {L["PdfDescription"]}");
             sb.AppendLine();
             if (documenten.Count > 0)
             {
                 sb.AppendLine("documenten/");
-                sb.AppendLine("  Uw geüploade documenten (ID-bewijs, polissen, aktes, etc.).");
-                sb.AppendLine($"  Aantal: {documenten.Count}");
+                sb.AppendLine($"  {L["UploadedDocsDescription"]}");
+                sb.AppendLine($"  {L["FileCount", documenten.Count]}");
                 sb.AppendLine();
             }
-            sb.AppendLine("INSTRUCTIES:");
-            sb.AppendLine("  1. Open de PDF-bestanden in de map 'pdf/' voor een overzicht.");
-            sb.AppendLine("  2. Het bestand 'lumio-compleet.pdf' bevat alle informatie in één document.");
-            sb.AppendLine("  3. Het bestand 'lumio-noodprocedure.pdf' bevat stappen voor nabestaanden.");
-            sb.AppendLine("  4. Bewaar dit pakket op een veilige locatie.");
+            sb.AppendLine(L["InstructionsTitle"]);
+            sb.AppendLine($"  {L["Instruction1"]}");
+            sb.AppendLine($"  {L["Instruction2"]}");
+            sb.AppendLine($"  {L["Instruction3"]}");
+            sb.AppendLine($"  {L["Instruction4"]}");
 
             var inhoudEntry = archive.CreateEntry("INHOUD.txt", CompressionLevel.Optimal);
             using var inhoudStream = inhoudEntry.Open();

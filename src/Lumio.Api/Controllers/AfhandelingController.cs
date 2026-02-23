@@ -3,6 +3,7 @@ using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace Lumio.Api.Controllers;
 
@@ -11,10 +12,12 @@ namespace Lumio.Api.Controllers;
 public class AfhandelingController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly IStringLocalizer<AfhandelingController> L;
 
-    public AfhandelingController(LumioDbContext db)
+    public AfhandelingController(LumioDbContext db, IStringLocalizer<AfhandelingController> localizer)
     {
         _db = db;
+        L = localizer;
     }
 
     [HttpGet]
@@ -154,49 +157,49 @@ public class AfhandelingController : ControllerBase
     {
         // Don't re-initialize if items already exist
         if (await _db.AfhandelingsItems.AnyAsync())
-            return Ok(new { bericht = "Afhandeling is al geïnitialiseerd.", aangemaakt = 0 });
+            return Ok(new { bericht = L["AlreadyInitialized"].Value, aangemaakt = 0 });
 
         var items = new List<AfhandelingsItem>();
 
         // Check each domain and create tracking items for domains that have data
         if (await _db.Noodcontacten.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "noodcontacten", Label = "Noodcontacten informeren" });
+            items.Add(new AfhandelingsItem { Domein = "noodcontacten", Label = L["LabelNotifyEmergencyContacts"].Value });
 
         if (await _db.UitvaartWensen.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "uitvaart", Label = "Uitvaartwensen regelen" });
+            items.Add(new AfhandelingsItem { Domein = "uitvaart", Label = L["LabelArrangeFuneral"].Value });
 
         if (await _db.DonorRegistraties.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "donor", Label = "Donorregistratie controleren" });
+            items.Add(new AfhandelingsItem { Domein = "donor", Label = L["LabelCheckDonor"].Value });
 
         if (await _db.Wilsverklaringen.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "euthanasie", Label = "Wilsverklaring bekijken" });
+            items.Add(new AfhandelingsItem { Domein = "euthanasie", Label = L["LabelViewLivingWill"].Value });
 
         if (await _db.Testamenten.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "testament", Label = "Testament bekijken" });
+            items.Add(new AfhandelingsItem { Domein = "testament", Label = L["LabelViewTestament"].Value });
 
         if (await _db.Erfgenamen.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "erfgenamen", Label = "Erfgenamen informeren" });
+            items.Add(new AfhandelingsItem { Domein = "erfgenamen", Label = L["LabelNotifyHeirs"].Value });
 
         if (await _db.Documenten.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "documenten", Label = "Documenten verzamelen" });
+            items.Add(new AfhandelingsItem { Domein = "documenten", Label = L["LabelCollectDocuments"].Value });
 
         if (await _db.FysiekeBezittingen.AnyAsync() || await _db.Bankrekeningen.AnyAsync()
             || await _db.Verzekeringen.AnyAsync() || await _db.Schulden.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "boedel", Label = "Boedel afhandelen" });
+            items.Add(new AfhandelingsItem { Domein = "boedel", Label = L["LabelSettleEstate"].Value });
 
         if (await _db.DigitaleAccounts.AnyAsync() || await _db.Wachtwoorden.AnyAsync()
             || await _db.CryptoWallets.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "digitaal-bezit", Label = "Digitaal bezit afhandelen" });
+            items.Add(new AfhandelingsItem { Domein = "digitaal-bezit", Label = L["LabelSettleDigitalAssets"].Value });
 
         if (await _db.Eigenaren.AnyAsync())
-            items.Add(new AfhandelingsItem { Domein = "eigenaar", Label = "Persoonsgegevens voor aangifte" });
+            items.Add(new AfhandelingsItem { Domein = "eigenaar", Label = L["LabelPersonalData"].Value });
 
         // Always add export item
-        items.Add(new AfhandelingsItem { Domein = "export", Label = "Compleet dossier exporteren" });
+        items.Add(new AfhandelingsItem { Domein = "export", Label = L["LabelExportDossier"].Value });
 
         _db.AfhandelingsItems.AddRange(items);
         await _db.SaveChangesAsync();
 
-        return Ok(new { bericht = "Afhandeling geïnitialiseerd.", aangemaakt = items.Count });
+        return Ok(new { bericht = L["Initialized"].Value, aangemaakt = items.Count });
     }
 }

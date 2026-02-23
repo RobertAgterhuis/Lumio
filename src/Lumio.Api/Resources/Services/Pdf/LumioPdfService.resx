@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>1.3</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Page Titles -->
+  <data name="Page_Testament" xml:space="preserve"><value>Testament</value></data>
+  <data name="Page_WilsverklaringEuthanasie" xml:space="preserve"><value>Wilsverklaring Euthanasie</value></data>
+  <data name="Page_Donorregistratie" xml:space="preserve"><value>Donorregistratie</value></data>
+  <data name="Page_DigitaalBezit" xml:space="preserve"><value>Digitaal Bezit</value></data>
+  <data name="Page_Boedel" xml:space="preserve"><value>Boedel</value></data>
+  <data name="Page_Uitvaartwensen" xml:space="preserve"><value>Uitvaartwensen</value></data>
+  <data name="Page_DocumentenOverzicht" xml:space="preserve"><value>Documenten Overzicht</value></data>
+  <data name="Page_Erfgenamen" xml:space="preserve"><value>Erfgenamen</value></data>
+  <data name="Page_Documenten" xml:space="preserve"><value>Documenten</value></data>
+  <data name="Page_Noodkaart" xml:space="preserve"><value>Noodkaart</value></data>
+  <data name="Page_ConceptTestamentNotarieel" xml:space="preserve"><value>Concept Testament (Notarieel)</value></data>
+  <data name="Page_ConceptTestamentCodicil" xml:space="preserve"><value>Concept Testament (Codicil)</value></data>
+  <data name="Page_Noodprocedure" xml:space="preserve"><value>Noodprocedure</value></data>
+  <data name="Page_Boedelbeschrijving" xml:space="preserve"><value>Boedelbeschrijving</value></data>
+  <data name="Page_PersoonlijkOverzicht" xml:space="preserve"><value>Persoonlijk overzicht</value></data>
+  <data name="Page_ErfgenaamInformatie" xml:space="preserve"><value>Erfgenaam-informatie — {0}</value></data>
+  <data name="Page_ExecuteurRapport" xml:space="preserve"><value>Executeur-rapport</value></data>
+  <data name="Page_ExecuteurRapportActiva" xml:space="preserve"><value>Executeur-rapport — Activa &amp; Passiva</value></data>
+  <data name="Page_ExecuteurRapportVerdeling" xml:space="preserve"><value>Executeur-rapport — Verdeling</value></data>
+  <data name="Page_ExecuteurRapportContactpersonen" xml:space="preserve"><value>Executeur-rapport — Contactpersonen</value></data>
+  <data name="Page_NotarieelDossier" xml:space="preserve"><value>NOTARIEEL DOSSIER</value></data>
+
+  <!-- Section Headers -->
+  <data name="Section_Eigenaar" xml:space="preserve"><value>Eigenaar</value></data>
+  <data name="Section_TestamentInformatie" xml:space="preserve"><value>Testament Informatie</value></data>
+  <data name="Section_Begunstigden" xml:space="preserve"><value>Begunstigden</value></data>
+  <data name="Section_Executeurs" xml:space="preserve"><value>Executeurs</value></data>
+  <data name="Section_Wilsverklaring" xml:space="preserve"><value>Wilsverklaring</value></data>
+  <data name="Section_Voorwaarden" xml:space="preserve"><value>Voorwaarden</value></data>
+  <data name="Section_Registratie" xml:space="preserve"><value>Registratie</value></data>
+  <data name="Section_Orgaankeuzes" xml:space="preserve"><value>Orgaankeuzes</value></data>
+  <data name="Section_OnlineAccounts" xml:space="preserve"><value>Online Accounts</value></data>
+  <data name="Section_Wachtwoorden" xml:space="preserve"><value>Wachtwoorden</value></data>
+  <data name="Section_CryptoWallets" xml:space="preserve"><value>Crypto Wallets</value></data>
+  <data name="Section_Bezittingen" xml:space="preserve"><value>Bezittingen</value></data>
+  <data name="Section_Bankrekeningen" xml:space="preserve"><value>Bankrekeningen</value></data>
+  <data name="Section_Verzekeringen" xml:space="preserve"><value>Verzekeringen</value></data>
+  <data name="Section_Schulden" xml:space="preserve"><value>Schulden</value></data>
+  <data name="Section_Uitvaart" xml:space="preserve"><value>Uitvaart</value></data>
+  <data name="Section_CeremonieDetails" xml:space="preserve"><value>Ceremonie Details</value></data>
+  <data name="Section_OpgeslagenDocumenten" xml:space="preserve"><value>Opgeslagen Documenten</value></data>
+  <data name="Section_PersoonlijkeGegevens" xml:space="preserve"><value>Persoonlijke gegevens</value></data>
+  <data name="Section_Noodcontacten" xml:space="preserve"><value>Noodcontacten</value></data>
+  <data name="Section_TestamentEnNotaris" xml:space="preserve"><value>Testament &amp; Notaris</value></data>
+  <data name="Section_Artikel1Ondergetekende" xml:space="preserve"><value>Artikel 1 — Ondergetekende</value></data>
+  <data name="Section_Artikel2ErfgenamenBegunstigden" xml:space="preserve"><value>Artikel 2 — Erfgenamen en Begunstigden</value></data>
+  <data name="Section_Artikel3Executeur" xml:space="preserve"><value>Artikel 3 — Executeur</value></data>
+  <data name="Section_Artikel4Uitsluitingsclausule" xml:space="preserve"><value>Artikel 4 — Uitsluitingsclausule</value></data>
+  <data name="Section_ArtikelLegaten" xml:space="preserve"><value>Artikel {0} — Legaten</value></data>
+  <data name="Section_BijzondereBepalingen" xml:space="preserve"><value>Bijzondere Bepalingen</value></data>
+  <data name="Section_AlgemeneWensen" xml:space="preserve"><value>Algemene Wensen</value></data>
+  <data name="Section_Notaris" xml:space="preserve"><value>Notaris</value></data>
+  <data name="Section_Ondergetekende" xml:space="preserve"><value>Ondergetekende</value></data>
+  <data name="Section_Verklaring" xml:space="preserve"><value>Verklaring</value></data>
+  <data name="Section_SituatieEuthanasie" xml:space="preserve"><value>Situatie waarin euthanasie gewenst is</value></data>
+  <data name="Section_SpecifiekeVoorwaarden" xml:space="preserve"><value>Specifieke voorwaarden</value></data>
+  <data name="Section_DementieClausule" xml:space="preserve"><value>Dementie-clausule</value></data>
+  <data name="Section_Behandelverbod" xml:space="preserve"><value>Behandelverbod</value></data>
+  <data name="Section_Huisarts" xml:space="preserve"><value>Huisarts</value></data>
+  <data name="Section_GevolmachtigdeVertegenwoordiger" xml:space="preserve"><value>Gevolmachtigde vertegenwoordiger (art. 7:465 BW)</value></data>
+  <data name="Section_AanvullendeWensen" xml:space="preserve"><value>Aanvullende wensen</value></data>
+  <data name="Section_GegevensOverledene" xml:space="preserve"><value>Gegevens overledene</value></data>
+  <data name="Section_Stap1Noodcontacten" xml:space="preserve"><value>Stap 1 — Noodcontacten informeren</value></data>
+  <data name="Section_Stap2ShamirSleuteldelen" xml:space="preserve"><value>Stap 2 — Shamir-sleuteldelen verzamelen</value></data>
+  <data name="Section_Stap3LumioInstalleren" xml:space="preserve"><value>Stap 3 — Lumio installeren</value></data>
+  <data name="Section_Stap4BackupHerstellen" xml:space="preserve"><value>Stap 4 — Backup herstellen</value></data>
+  <data name="Section_Stap5Ontgrendelen" xml:space="preserve"><value>Stap 5 — Ontgrendelen met sleuteldelen</value></data>
+  <data name="Section_Stap6GegevensRaadplegen" xml:space="preserve"><value>Stap 6 — Gegevens raadplegen</value></data>
+  <data name="Section_1Persoonsgegevens" xml:space="preserve"><value>1. Persoonsgegevens</value></data>
+  <data name="Section_2Erfgenamen" xml:space="preserve"><value>2. Erfgenamen</value></data>
+  <data name="Section_3Activa" xml:space="preserve"><value>3. Activa</value></data>
+  <data name="Section_4Passiva" xml:space="preserve"><value>4. Passiva</value></data>
+  <data name="Section_UwGegevens" xml:space="preserve"><value>Uw gegevens</value></data>
+  <data name="Section_GegevensErflater" xml:space="preserve"><value>Gegevens erflater</value></data>
+  <data name="Section_TestamentUwPositie" xml:space="preserve"><value>Testament — Uw positie</value></data>
+  <data name="Section_ToegewezenBezittingen" xml:space="preserve"><value>Aan u toegewezen bezittingen</value></data>
+  <data name="Section_ToegewezenBankrekeningen" xml:space="preserve"><value>Aan u toegewezen bankrekeningen</value></data>
+  <data name="Section_ToegewezenVerzekeringen" xml:space="preserve"><value>Aan u toegewezen verzekeringen</value></data>
+  <data name="Section_ToegewezenDigitaleAccounts" xml:space="preserve"><value>Aan u toegewezen digitale accounts</value></data>
+  <data name="Section_BelangrijkeContactpersonen" xml:space="preserve"><value>Belangrijke contactpersonen</value></data>
+  <data name="Section_1GegevensErflater" xml:space="preserve"><value>1. Gegevens erflater</value></data>
+  <data name="Section_2Executeurs" xml:space="preserve"><value>2. Executeur(s)</value></data>
+  <data name="Section_3Testament" xml:space="preserve"><value>3. Testament</value></data>
+  <data name="Section_4Erfgenamen" xml:space="preserve"><value>4. Erfgenamen</value></data>
+  <data name="Section_5BegunstigdenTestamentair" xml:space="preserve"><value>5. Begunstigden (testamentair)</value></data>
+  <data name="Section_6Activa" xml:space="preserve"><value>6. Activa</value></data>
+  <data name="Section_7Passiva" xml:space="preserve"><value>7. Passiva</value></data>
+  <data name="Section_8IndicatieveVerdeling" xml:space="preserve"><value>8. Indicatieve verdeling</value></data>
+  <data name="Section_9RelevanteContactpersonen" xml:space="preserve"><value>9. Relevante contactpersonen</value></data>
+  <data name="Section_1TestamentaireGegevens" xml:space="preserve"><value>1. Testamentaire gegevens</value></data>
+  <data name="Section_3Begunstigden" xml:space="preserve"><value>3. Begunstigden</value></data>
+  <data name="Section_4Executeurs" xml:space="preserve"><value>4. Executeur(s)</value></data>
+  <data name="Section_5Contactpersonen" xml:space="preserve"><value>5. Contactpersonen</value></data>
+  <data name="Section_N2Erfgenamen" xml:space="preserve"><value>2. Erfgenamen</value></data>
+  <data name="Section_ER6aFysiekeBezittingen" xml:space="preserve"><value>a) Fysieke bezittingen</value></data>
+  <data name="Section_ER6bBankrekeningen" xml:space="preserve"><value>b) Bankrekeningen</value></data>
+  <data name="Section_ER6cVerzekeringen" xml:space="preserve"><value>c) Verzekeringen</value></data>
+
+  <!-- Field Labels -->
+  <data name="Label_Naam" xml:space="preserve"><value>Naam</value></data>
+  <data name="Label_Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Label_Notaris" xml:space="preserve"><value>Notaris</value></data>
+  <data name="Label_Kantoor" xml:space="preserve"><value>Kantoor</value></data>
+  <data name="Label_Datum" xml:space="preserve"><value>Datum</value></data>
+  <data name="Label_CTRNummer" xml:space="preserve"><value>CTR Nummer</value></data>
+  <data name="Label_Bewaarlocatie" xml:space="preserve"><value>Bewaarlocatie</value></data>
+  <data name="Label_AlgemeneWensen" xml:space="preserve"><value>Algemene wensen</value></data>
+  <data name="Label_WilEuthanasie" xml:space="preserve"><value>Wil euthanasie</value></data>
+  <data name="Label_Situatie" xml:space="preserve"><value>Situatie</value></data>
+  <data name="Label_Huisarts" xml:space="preserve"><value>Huisarts</value></data>
+  <data name="Label_Praktijk" xml:space="preserve"><value>Praktijk</value></data>
+  <data name="Label_Vertegenwoordiger" xml:space="preserve"><value>Vertegenwoordiger</value></data>
+  <data name="Label_RelatieVertegenwoordiger" xml:space="preserve"><value>Relatie vertegenw.</value></data>
+  <data name="Label_AanvullendeWensen" xml:space="preserve"><value>Aanvullende wensen</value></data>
+  <data name="Label_DatumOndertekening" xml:space="preserve"><value>Datum ondertekening</value></data>
+  <data name="Label_Keuze" xml:space="preserve"><value>Keuze</value></data>
+  <data name="Label_Donorregister" xml:space="preserve"><value>Donorregister</value></data>
+  <data name="Label_Referentie" xml:space="preserve"><value>Referentie</value></data>
+  <data name="Label_Toelichting" xml:space="preserve"><value>Toelichting</value></data>
+  <data name="Label_Begraafplaats" xml:space="preserve"><value>Begraafplaats</value></data>
+  <data name="Label_Ondernemer" xml:space="preserve"><value>Ondernemer</value></data>
+  <data name="Label_Muziek" xml:space="preserve"><value>Muziek</value></data>
+  <data name="Label_Bloemen" xml:space="preserve"><value>Bloemen</value></data>
+  <data name="Label_Kleding" xml:space="preserve"><value>Kleding</value></data>
+  <data name="Label_Rouwkaart" xml:space="preserve"><value>Rouwkaart</value></data>
+  <data name="Label_Condoleance" xml:space="preserve"><value>Condoleance</value></data>
+  <data name="Label_OverigeWensen" xml:space="preserve"><value>Overige wensen</value></data>
+  <data name="Label_Geboortedatum" xml:space="preserve"><value>Geboortedatum</value></data>
+  <data name="Label_BSN" xml:space="preserve"><value>BSN</value></data>
+  <data name="Label_Adres" xml:space="preserve"><value>Adres</value></data>
+  <data name="Label_Telefoon" xml:space="preserve"><value>Telefoon</value></data>
+  <data name="Label_EMail" xml:space="preserve"><value>E-mail</value></data>
+  <data name="Label_TypeTestament" xml:space="preserve"><value>Type testament</value></data>
+  <data name="Label_Notariskantoor" xml:space="preserve"><value>Notariskantoor</value></data>
+  <data name="Label_CTRNummerDash" xml:space="preserve"><value>CTR-nummer</value></data>
+  <data name="Label_Voorkeur" xml:space="preserve"><value>Voorkeur</value></data>
+  <data name="Label_Uitvaartondernemer" xml:space="preserve"><value>Uitvaartondernemer</value></data>
+  <data name="Label_Woonplaats" xml:space="preserve"><value>Woonplaats</value></data>
+  <data name="Label_Contact" xml:space="preserve"><value>Contact</value></data>
+  <data name="Label_Relatie" xml:space="preserve"><value>Relatie</value></data>
+  <data name="Label_BurgerlijkeStaat" xml:space="preserve"><value>Burgerlijke staat</value></data>
+  <data name="Label_Huwelijksvoorwaarden" xml:space="preserve"><value>Huwelijksvoorwaarden</value></data>
+  <data name="Label_DatumHuwelijk" xml:space="preserve"><value>Datum huwelijk</value></data>
+  <data name="Label_Legitimatie" xml:space="preserve"><value>Legitimatie</value></data>
+  <data name="Label_Documentnummer" xml:space="preserve"><value>Documentnummer</value></data>
+  <data name="Label_DatumAfgifte" xml:space="preserve"><value>Datum afgifte</value></data>
+  <data name="Label_GeldigTot" xml:space="preserve"><value>Geldig tot</value></data>
+  <data name="Label_Omschrijving" xml:space="preserve"><value>Omschrijving</value></data>
+  <data name="Label_Percentage" xml:space="preserve"><value>Percentage</value></data>
+  <data name="Label_LegitiemePortie" xml:space="preserve"><value>Legitieme portie</value></data>
+  <data name="Label_GewensteActie" xml:space="preserve"><value>  Gewenste actie</value></data>
+  <data name="Label_Bevoegdheden" xml:space="preserve"><value>  Bevoegdheden</value></data>
+  <data name="Label_TelNotaris" xml:space="preserve"><value>Tel. notaris</value></data>
+  <data name="Label_EMailNotaris" xml:space="preserve"><value>E-mail notaris</value></data>
+  <data name="Label_Uitsluitingsclausule" xml:space="preserve"><value>Uitsluitingsclausule</value></data>
+  <data name="Label_Legaten" xml:space="preserve"><value>Legaten</value></data>
+  <data name="Label_BijzondereBepalingen" xml:space="preserve"><value>Bijzondere bepalingen</value></data>
+  <data name="Label_Instructie" xml:space="preserve"><value>  Instructie</value></data>
+  <data name="Label_SubtotaalBezittingen" xml:space="preserve"><value>  Subtotaal bezittingen</value></data>
+  <data name="Label_SubtotaalSaldi" xml:space="preserve"><value>  Subtotaal saldi</value></data>
+  <data name="Label_SubtotaalVerzekeringen" xml:space="preserve"><value>  Subtotaal verzekeringen</value></data>
+  <data name="Label_TotaalActivaBruto" xml:space="preserve"><value>TOTAAL ACTIVA (bruto)</value></data>
+  <data name="Label_TotaalPassiva" xml:space="preserve"><value>  TOTAAL PASSIVA</value></data>
+  <data name="Label_NettoNalatenschap" xml:space="preserve"><value>NETTO NALATENSCHAP</value></data>
+  <data name="Label_WaarvanPrive" xml:space="preserve"><value>  waarvan privé</value></data>
+  <data name="Label_WaarvanGemeenschap" xml:space="preserve"><value>  waarvan gemeenschap</value></data>
+  <data name="Label_DatumTestament" xml:space="preserve"><value>Datum testament</value></data>
+
+  <!-- Notaris-specific labels with colons -->
+  <data name="Label_TypeTestamentColon" xml:space="preserve"><value>Type testament:</value></data>
+  <data name="Label_DatumTestamentColon" xml:space="preserve"><value>Datum testament:</value></data>
+  <data name="Label_CTRNummerColon" xml:space="preserve"><value>CTR-nummer:</value></data>
+  <data name="Label_LocatieColon" xml:space="preserve"><value>Locatie:</value></data>
+  <data name="Label_NotarisColon" xml:space="preserve"><value>Notaris:</value></data>
+  <data name="Label_KantoorColon" xml:space="preserve"><value>Kantoor:</value></data>
+  <data name="Label_UitsluitingsclausuleColon" xml:space="preserve"><value>Uitsluitingsclausule:</value></data>
+  <data name="Label_AlgemeneWensenColon" xml:space="preserve"><value>Algemene wensen:</value></data>
+  <data name="Label_BijzondereBepalingenColon" xml:space="preserve"><value>Bijzondere bepalingen:</value></data>
+  <data name="Label_LegatenColon" xml:space="preserve"><value>Legaten:</value></data>
+  <data name="Label_Dossiernaam" xml:space="preserve"><value>Dossiernaam:</value></data>
+  <data name="Label_ErflaterColon" xml:space="preserve"><value>Erflater:</value></data>
+  <data name="Label_GeboortedatumColon" xml:space="preserve"><value>Geboortedatum:</value></data>
+  <data name="Label_BSNColon" xml:space="preserve"><value>BSN:</value></data>
+  <data name="Label_WoonplaatsColon" xml:space="preserve"><value>Woonplaats:</value></data>
+  <data name="Label_Dossiernummer" xml:space="preserve"><value>Dossiernummer:</value></data>
+  <data name="Label_AantekeningenNotaris" xml:space="preserve"><value>Aantekeningen notaris:</value></data>
+  <data name="Label_DeelNummer" xml:space="preserve"><value>Deel #{0}</value></data>
+
+  <!-- Static Text / Paragraphs -->
+  <data name="Text_WachtwoordenVersleuteld" xml:space="preserve"><value>Wachtwoorden zijn versleuteld en worden niet in de PDF opgenomen.</value></data>
+  <data name="Text_SeedPhrasesVersleuteld" xml:space="preserve"><value>Seed phrases zijn versleuteld en worden niet in de PDF opgenomen.</value></data>
+  <data name="Text_GeenDocumenten" xml:space="preserve"><value>Geen documenten opgeslagen.</value></data>
+  <data name="Text_Lumio" xml:space="preserve"><value>Lumio</value></data>
+  <data name="Text_DigitaleNalatenschap" xml:space="preserve"><value>Digitale Nalatenschap</value></data>
+  <data name="Text_GegeneerdOp" xml:space="preserve"><value>Gegenereerd op {0}</value></data>
+  <data name="Text_NoodkaartDisclaimer" xml:space="preserve"><value>NOODKAART — Bewaar dit document op een veilige, toegankelijke plek</value></data>
+  <data name="Text_NoodprocedureIntro" xml:space="preserve"><value>Dit document bevat de stappen die nabestaanden moeten volgen om toegang te krijgen tot de digitale nalatenschap in Lumio. Bewaar dit document op een veilige, bereikbare plek.</value></data>
+  <data name="Text_NeemContactOp" xml:space="preserve"><value>Neem zo snel mogelijk contact op met de volgende personen:</value></data>
+  <data name="Text_GeenNoodcontacten" xml:space="preserve"><value>Geen noodcontacten vastgelegd.</value></data>
+  <data name="Text_GeenSleuteldelen" xml:space="preserve"><value>Geen sleuteldelen verdeeld — neem contact op met de notaris.</value></data>
+  <data name="Text_LumioDesktopInstructie" xml:space="preserve"><value>Lumio is een desktopapplicatie die lokaal draait. Volg deze stappen:</value></data>
+  <data name="Text_Stap3aInstructie" xml:space="preserve"><value>Download Lumio vanaf de oorspronkelijke bron (USB-stick, gedeelde map, of website).</value></data>
+  <data name="Text_Stap3bInstructie" xml:space="preserve"><value>Installeer de applicatie op uw computer (Windows/macOS/Linux).</value></data>
+  <data name="Text_Stap3cInstructie" xml:space="preserve"><value>Start Lumio — de applicatie opent in uw webbrowser.</value></data>
+  <data name="Text_AlsBackupOntvangen" xml:space="preserve"><value>Als u een backup-bestand (.db) heeft ontvangen:</value></data>
+  <data name="Text_Stap4aInstructie" xml:space="preserve"><value>Ga in Lumio naar Instellingen → Backup herstellen.</value></data>
+  <data name="Text_Stap4bInstructie" xml:space="preserve"><value>Selecteer het backup-bestand (.db).</value></data>
+  <data name="Text_Stap4cInstructie" xml:space="preserve"><value>Het profiel wordt automatisch geladen.</value></data>
+  <data name="Text_NaHerstellen" xml:space="preserve"><value>Na het herstellen van de backup:</value></data>
+  <data name="Text_Stap5aInstructie" xml:space="preserve"><value>Selecteer het juiste profiel op het inlogscherm.</value></data>
+  <data name="Text_Stap5bInstructie" xml:space="preserve"><value>Klik op 'Ik ben een erfgenaam (ontgrendelen met sleuteldelen)'.</value></data>
+  <data name="Text_Stap5cInstructie" xml:space="preserve"><value>Voer minimaal {0} sleuteldelen in (elk in een apart veld).</value></data>
+  <data name="Text_Stap5dInstructie" xml:space="preserve"><value>Klik op 'Ontgrendelen met sleuteldelen'.</value></data>
+  <data name="Text_Stap5eInstructie" xml:space="preserve"><value>U heeft nu alleen-lezen toegang tot alle vastgelegde gegevens.</value></data>
+  <data name="Text_NaOntgrendeling" xml:space="preserve"><value>Na ontgrendeling kunt u:</value></data>
+  <data name="Text_DashboardStappenplan" xml:space="preserve"><value>Het nabestaanden-dashboard volgen met een stappenplan</value></data>
+  <data name="Text_WensenInzien" xml:space="preserve"><value>Alle vastgelegde wensen en informatie inzien</value></data>
+  <data name="Text_PdfExporteren" xml:space="preserve"><value>PDF-documenten exporteren per onderdeel</value></data>
+  <data name="Text_ZipDownloaden" xml:space="preserve"><value>Een compleet ZIP-pakket downloaden met alle documenten</value></data>
+  <data name="Text_VoortgangBijhouden" xml:space="preserve"><value>De voortgang van afhandeling bijhouden</value></data>
+  <data name="Text_FysiekeBezittingen" xml:space="preserve"><value>a) Fysieke bezittingen</value></data>
+  <data name="Text_GeenBezittingen" xml:space="preserve"><value>  Geen bezittingen vastgelegd.</value></data>
+  <data name="Text_Bankrekeningen" xml:space="preserve"><value>b) Bankrekeningen</value></data>
+  <data name="Text_GeenBankrekeningen" xml:space="preserve"><value>  Geen bankrekeningen vastgelegd.</value></data>
+  <data name="Text_Verzekeringen" xml:space="preserve"><value>c) Verzekeringen</value></data>
+  <data name="Text_GeenVerzekeringen" xml:space="preserve"><value>  Geen verzekeringen vastgelegd.</value></data>
+  <data name="Text_GeenSchulden" xml:space="preserve"><value>  Geen schulden vastgelegd.</value></data>
+  <data name="Text_Legenda" xml:space="preserve"><value>[P] = privévermogen  |  [G] = gemeenschap van goederen</value></data>
+  <data name="Text_OndertekendVoorGezien" xml:space="preserve"><value>Ondertekend voor gezien en akkoord:</value></data>
+  <data name="Text_GeenExecuteur" xml:space="preserve"><value>Geen executeur aangewezen.</value></data>
+  <data name="Text_GeenTestamentInfo" xml:space="preserve"><value>Geen testamentinformatie vastgelegd.</value></data>
+  <data name="Text_GeenErfgenamen" xml:space="preserve"><value>Geen erfgenamen vastgelegd.</value></data>
+  <data name="Text_OpBasisPercentages" xml:space="preserve"><value>Op basis van de testamentaire percentages:</value></data>
+  <data name="Text_BedragenIndicatief" xml:space="preserve"><value>Let op: deze bedragen zijn indicatief. De notaris stelt de definitieve verdeling vast.</value></data>
+  <data name="Text_GeenToewijzingen" xml:space="preserve"><value>Er zijn momenteel geen specifieke bezittingen of vermogensbestanddelen aan u toegewezen. Neem contact op met de erflater of notaris voor meer informatie.</value></data>
+  <data name="Text_ShamirSleuteldelenNodig" xml:space="preserve"><value>Om Lumio te ontgrendelen zijn minimaal {0} sleuteldelen nodig. De volgende erfgenamen hebben een sleuteldeel ontvangen:</value></data>
+  <data name="Text_GeenContact" xml:space="preserve"><value>geen contact</value></data>
+  <data name="Text_PolisPrefix" xml:space="preserve"><value>Polis: {0}</value></data>
+  <data name="Text_PolisnrPrefix" xml:space="preserve"><value>Polisnr: {0}</value></data>
+  <data name="Text_GeschatteWaardePrefix" xml:space="preserve"><value>Geschatte waarde: {0}</value></data>
+  <data name="Text_InstructiePrefix" xml:space="preserve"><value>Instructie: {0}</value></data>
+  <data name="Text_SaldoPrefix" xml:space="preserve"><value>Saldo: {0}</value></data>
+  <data name="Text_VerzekerdBedragPrefix" xml:space="preserve"><value>Verzekerd bedrag: {0}</value></data>
+  <data name="Text_NotitiePrefix" xml:space="preserve"><value>Notitie: {0}</value></data>
+  <data name="Text_TelPrefix" xml:space="preserve"><value>Tel: {0}</value></data>
+  <data name="Text_EMailPrefix" xml:space="preserve"><value>E-mail: {0}</value></data>
+  <data name="Text_BestemdeVoorPrefix" xml:space="preserve"><value>Bestemd voor: {0}</value></data>
+  <data name="Text_KadastraalPrefix" xml:space="preserve"><value>Kad. {0}</value></data>
+  <data name="Text_KvKPrefix" xml:space="preserve"><value>KvK {0}</value></data>
+  <data name="Text_ErfgenaamPdfIntro" xml:space="preserve"><value>Dit document bevat de gegevens uit de digitale nalatenschap van {0} die relevant zijn voor {1}.</value></data>
+  <data name="Text_Van" xml:space="preserve"><value>van {0}</value></data>
+  <data name="Text_GeborenPrefix" xml:space="preserve"><value>, geb. {0}</value></data>
+
+  <!-- Ja/Nee and Fallback Values -->
+  <data name="Value_Ja" xml:space="preserve"><value>Ja</value></data>
+  <data name="Value_Nee" xml:space="preserve"><value>Nee</value></data>
+  <data name="Value_NietIngevuld" xml:space="preserve"><value>Niet ingevuld</value></data>
+  <data name="Value_Onbekend" xml:space="preserve"><value>Onbekend</value></data>
+  <data name="Value_NietOpgegeven" xml:space="preserve"><value>Niet opgegeven</value></data>
+  <data name="Value_NietVanToepassing" xml:space="preserve"><value>Niet van toepassing</value></data>
+  <data name="Value_Ongehuwd" xml:space="preserve"><value>Ongehuwd</value></data>
+  <data name="Value_Gehuwd" xml:space="preserve"><value>Gehuwd</value></data>
+  <data name="Value_GeregistreerdPartnerschap" xml:space="preserve"><value>Geregistreerd partnerschap</value></data>
+  <data name="Value_Gescheiden" xml:space="preserve"><value>Gescheiden</value></data>
+  <data name="Value_WeduweWeduwnaar" xml:space="preserve"><value>Weduwe/Weduwnaar</value></data>
+  <data name="Value_GemeenschapVanGoederen" xml:space="preserve"><value>Gemeenschap van goederen</value></data>
+  <data name="Value_BeperkteGemeenschap" xml:space="preserve"><value>Beperkte gemeenschap</value></data>
+  <data name="Value_KoudeUitsluiting" xml:space="preserve"><value>Koude uitsluiting</value></data>
+  <data name="Value_Paspoort" xml:space="preserve"><value>Paspoort</value></data>
+  <data name="Value_Identiteitskaart" xml:space="preserve"><value>Identiteitskaart</value></data>
+  <data name="Value_Rijbewijs" xml:space="preserve"><value>Rijbewijs</value></data>
+  <data name="Value_BeheerEnBeschikking" xml:space="preserve"><value>Beheer en beschikking</value></data>
+  <data name="Value_LegitiemePortie" xml:space="preserve"><value>(legitieme portie)</value></data>
+
+  <!-- Legal Text -->
+  <data name="Legal_ConceptDocumentDisclaimer" xml:space="preserve"><value>CONCEPT-DOCUMENT — GEEN RECHTSGELDIG TESTAMENT</value></data>
+  <data name="Legal_ConceptNotarieelToelichting" xml:space="preserve"><value>Dit conceptdocument dient als voorbereiding op uw bezoek aan de notaris. Alleen een door de notaris opgesteld en ondertekend testament is rechtsgeldig (Boek 4 BW).</value></data>
+  <data name="Legal_ConceptCodicilToelichting" xml:space="preserve"><value>Een codicil (onderhands testament) is alleen geldig als het eigenhandig is geschreven, gedateerd en ondertekend. Een geprint document is NIET rechtsgeldig. Gebruik dit concept als voorbeeld om af te schrijven.</value></data>
+  <data name="Legal_UitersteWilsbeschikking" xml:space="preserve"><value>UITERSTE WILSBESCHIKKING</value></data>
+  <data name="Legal_VerklaartTeSchikken" xml:space="preserve"><value>verklaart bij deze uiterste wilsbeschikking te beschikken als volgt:</value></data>
+  <data name="Legal_IkBenoemErfgenamen" xml:space="preserve"><value>Ik benoem tot mijn erfgenamen:</value></data>
+  <data name="Legal_IkBenoemExecuteur" xml:space="preserve"><value>Ik benoem tot executeur van mijn nalatenschap:</value></data>
+  <data name="Legal_Uitsluitingsclausule" xml:space="preserve"><value>Ik bepaal dat al hetgeen uit mijn nalatenschap wordt verkregen, alsmede de vruchten daarvan, niet zal vallen in enige gemeenschap van goederen waarin een verkrijger gehuwd mocht zijn of komen te huwen, noch onderwerp zal zijn van enig verrekenbeding.</value></data>
+  <data name="Legal_WilsverklaringHeader" xml:space="preserve"><value>SCHRIFTELIJKE WILSVERKLARING — Conform Wet toetsing levensbeëindiging (Wtl)</value></data>
+  <data name="Legal_WilsverklaringToelichting" xml:space="preserve"><value>Deze wilsverklaring is een schriftelijke vastlegging van uw wensen. Dit document vervangt geen gesprek met uw huisarts. Overhandig een ondertekend exemplaar aan uw huisarts en bewaar een kopie op een toegankelijke locatie.</value></data>
+  <data name="Legal_WilsverklaringEuthanasieTitle" xml:space="preserve"><value>SCHRIFTELIJKE WILSVERKLARING EUTHANASIE</value></data>
+  <data name="Legal_ConformArtikel2" xml:space="preserve"><value>Conform artikel 2, eerste lid, sub b, Wet toetsing levensbeëindiging op verzoek en hulp bij zelfdoding</value></data>
+  <data name="Legal_EuthanasieVerklaring" xml:space="preserve"><value>Ondergetekende verklaart hierbij, in het volle bezit van zijn/haar geestelijke vermogens, het nadrukkelijke verzoek te doen om euthanasie te laten toepassen wanneer onderstaande situatie(s) zich voordoen en ondergetekende niet meer in staat is zijn/haar wil kenbaar te maken.</value></data>
+  <data name="Legal_GeenEuthanasie" xml:space="preserve"><value>Ondergetekende verklaart hierbij GEEN euthanasie te wensen.</value></data>
+  <data name="Legal_DementieClausule" xml:space="preserve"><value>Ondergetekende verklaart dat deze wilsverklaring ook geldt in het geval van vergevorderde dementie of een andere aandoening die leidt tot wilsonbekwaamheid.</value></data>
+  <data name="Legal_Behandelverbod" xml:space="preserve"><value>Ondergetekende weigert de volgende medische behandelingen:</value></data>
+  <data name="Legal_HelderBewustzijn" xml:space="preserve"><value>Ondergetekende verklaart deze wilsverklaring bij helder bewustzijn en uit vrije wil te hebben opgesteld.</value></data>
+  <data name="Legal_JuridischeDisclaimer" xml:space="preserve"><value>JURIDISCHE DISCLAIMER</value></data>
+  <data name="Legal_BoedelbeschrijvingDisclaimer" xml:space="preserve"><value>Opgesteld op {0} op basis van Boek 4 BW, geldend per 01-01-2026. Dit document is een concept en heeft geen juridische waarde zonder ondertekening door alle betrokken partijen en vaststelling door een notaris.</value></data>
+  <data name="Legal_ConceptGeenJuridisch" xml:space="preserve"><value>CONCEPT — GEEN JURIDISCH DOCUMENT</value></data>
+  <data name="Legal_ExecuteurRapportDisclaimer" xml:space="preserve"><value>Dit rapport is bedoeld als hulpmiddel voor de executeur bij de afwikkeling van de nalatenschap. Opgesteld op {0}. Raadpleeg altijd een notaris voor de formele afwikkeling.</value></data>
+  <data name="Legal_OndertekeningVerklaring" xml:space="preserve"><value>Ondergetekende(n) verklaren kennis te hebben genomen van bovenstaand rapport en bevestigen de juistheid van de hierin vermelde gegevens, voor zover hen bekend.</value></data>
+  <data name="Legal_NotarisWerkdocument" xml:space="preserve"><value>Dit document is gegenereerd door Lumio en dient als werkdocument voor notarieel gebruik. Het heeft geen juridische geldigheid zonder notariële verlijding.</value></data>
+
+  <!-- Footer / Header Text -->
+  <data name="Header_LumioDigitaleNalatenschap" xml:space="preserve"><value>Lumio — Digitale Nalatenschap</value></data>
+  <data name="Header_LaatsteUpdate" xml:space="preserve"><value>Gegevens voor het laatst bijgewerkt op {0}</value></data>
+  <data name="Footer_GegenereerDoorLumio" xml:space="preserve"><value>Gegenereerd door Lumio op {0}</value></data>
+  <data name="Footer_Pagina" xml:space="preserve"><value>Pagina </value></data>
+  <data name="Footer_Slash" xml:space="preserve"><value> / </value></data>
+  <data name="Footer_TestamentConceptDisclaimer" xml:space="preserve"><value>Dit conceptdocument heeft geen juridische werking. Gebaseerd op Boek 4 BW, geldend per 01-01-2026.</value></data>
+  <data name="Footer_WilsverklaringDisclaimer" xml:space="preserve"><value>Gebaseerd op Wet toetsing levensbeëindiging (Wtl), geldend per 01-01-2026.</value></data>
+  <data name="Footer_BoedelbeschrijvingOpgesteld" xml:space="preserve"><value>Opgesteld op {0} op basis van Boek 4 BW, geldend per 01-01-2026.</value></data>
+  <data name="Footer_GegenereerOp" xml:space="preserve"><value>Gegenereerd op {0}</value></data>
+  <data name="Header_Datum" xml:space="preserve"><value>Datum: {0}</value></data>
+  <data name="Header_Tijdstip" xml:space="preserve"><value>Tijdstip: {0}</value></data>
+  <data name="Header_Referentiegegevens" xml:space="preserve"><value>REFERENTIEGEGEVENS</value></data>
+  <data name="Header_NalatenschapPrefix" xml:space="preserve"><value>Nalatenschap {0}</value></data>
+
+  <!-- Signing / Form Text -->
+  <data name="Signing_Ondertekening" xml:space="preserve"><value>Ondertekening</value></data>
+  <data name="Signing_OndertekeningUpper" xml:space="preserve"><value>ONDERTEKENING</value></data>
+  <data name="Signing_AldusOpgemaakt" xml:space="preserve"><value>Aldus opgemaakt te _______________________ op {0}</value></data>
+  <data name="Signing_Handtekening" xml:space="preserve"><value>Handtekening: ___________________________________________</value></data>
+  <data name="Signing_Naam" xml:space="preserve"><value>Naam: ___________________________________________</value></data>
+  <data name="Signing_DatumHandtekening" xml:space="preserve"><value>Datum: ____-____-________     Handtekening: ___________________________________________</value></data>
+  <data name="Signing_Datum" xml:space="preserve"><value>Datum: ____-____-________</value></data>
+  <data name="Signing_Plaats" xml:space="preserve"><value>Plaats: _______________________</value></data>
+  <data name="Signing_Stempel" xml:space="preserve"><value>Stempel:</value></data>
+  <data name="Signing_StempelKantoor" xml:space="preserve"><value>Stempel kantoor:</value></data>
+  <data name="Signing_Getuigen" xml:space="preserve"><value>Getuigen (optioneel, versterkt de rechtsgeldigheid)</value></data>
+  <data name="Signing_Getuige1" xml:space="preserve"><value>Getuige 1:</value></data>
+  <data name="Signing_Getuige2" xml:space="preserve"><value>Getuige 2:</value></data>
+  <data name="Signing_Executeur" xml:space="preserve"><value>Executeur:</value></data>
+  <data name="Signing_ExecuteurPrefix" xml:space="preserve"><value>Executeur — {0}</value></data>
+  <data name="Signing_ErfgenaamPrefix" xml:space="preserve"><value>Erfgenaam — {0}</value></data>
+  <data name="Signing_Notaris" xml:space="preserve"><value>Notaris:</value></data>
+  <data name="Signing_ErflaterTestateur" xml:space="preserve"><value>Erflater / Testateur:</value></data>
+  <data name="Signing_DatumPrefix" xml:space="preserve"><value>Datum: {0}</value></data>
+</root>

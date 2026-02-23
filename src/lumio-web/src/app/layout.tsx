@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
+import { LocaleProvider } from "@/components/providers/LocaleProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,9 +26,9 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <NextIntlClientProvider messages={messages}>
+        <LocaleProvider defaultLocale={locale} defaultMessages={messages as Record<string, unknown>}>
           {children}
-        </NextIntlClientProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

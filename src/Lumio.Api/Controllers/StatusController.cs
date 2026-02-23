@@ -7,6 +7,7 @@ using Lumio.Api.Rules.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,17 +24,20 @@ public class StatusController : ControllerBase
     private readonly ICompleetheidsService _compleetheidsService;
     private readonly IMeldingService _meldingService;
     private readonly ISuggestieService _suggestieService;
+    private readonly IStringLocalizer<StatusController> L;
 
     public StatusController(
         IOptions<LimietenOptions> limieten,
         ICompleetheidsService compleetheidsService,
         IMeldingService meldingService,
-        ISuggestieService suggestieService)
+        ISuggestieService suggestieService,
+        IStringLocalizer<StatusController> localizer)
     {
         _limieten = limieten.Value;
         _compleetheidsService = compleetheidsService;
         _meldingService = meldingService;
         _suggestieService = suggestieService;
+        L = localizer;
     }
     [HttpGet]
     public IActionResult GetStatus(
@@ -106,16 +110,16 @@ public class StatusController : ControllerBase
 
         var domeinChecks = new[]
         {
-            new { domein = "eigenaar", label = "Mijn Profiel" },
-            new { domein = "testament", label = "Testament" },
-            new { domein = "euthanasie", label = "Wilsverklaring" },
-            new { domein = "donor", label = "Donorregistratie" },
-            new { domein = "boedel", label = "Boedel" },
-            new { domein = "uitvaart", label = "Uitvaartwensen" },
-            new { domein = "erfgenamen", label = "Erfgenamen" },
-            new { domein = "documenten", label = "Documenten" },
-            new { domein = "digitaal-bezit", label = "Digitaal Bezit" },
-            new { domein = "noodcontacten", label = "Noodcontacten" },
+            new { domein = "eigenaar", label = L["DomainMyProfile"].Value },
+            new { domein = "testament", label = L["DomainTestament"].Value },
+            new { domein = "euthanasie", label = L["DomainLivingWill"].Value },
+            new { domein = "donor", label = L["DomainDonor"].Value },
+            new { domein = "boedel", label = L["DomainEstate"].Value },
+            new { domein = "uitvaart", label = L["DomainFuneral"].Value },
+            new { domein = "erfgenamen", label = L["DomainHeirs"].Value },
+            new { domein = "documenten", label = L["DomainDocuments"].Value },
+            new { domein = "digitaal-bezit", label = L["DomainDigitalAssets"].Value },
+            new { domein = "noodcontacten", label = L["DomainEmergencyContacts"].Value },
         };
 
         var resultaat = domeinChecks.Select(d =>
@@ -273,8 +277,7 @@ public class StatusController : ControllerBase
             hash,
             algoritme = "SHA-256",
             tijdstip,
-            beschrijving = "Digitale handtekening van de huidige data-staat. " +
-                "Als deze hash verandert, is de onderliggende data gewijzigd.",
+            beschrijving = L["SnapshotDescription"].Value,
         });
     }
 

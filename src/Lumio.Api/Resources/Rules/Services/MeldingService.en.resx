@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>1.3</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+  <data name="NoProfile" xml:space="preserve"><value>You have not yet created a personal profile. This is the first step.</value></data>
+  <data name="NoTestament" xml:space="preserve"><value>You have not yet recorded any testamentary information.</value></data>
+  <data name="NoLivingWill" xml:space="preserve"><value>You have not yet drawn up a euthanasia living will.</value></data>
+  <data name="NoDonor" xml:space="preserve"><value>You have not yet recorded your organ donation registration.</value></data>
+  <data name="NoFuneral" xml:space="preserve"><value>You have not yet recorded your funeral wishes.</value></data>
+  <data name="NoHeirs" xml:space="preserve"><value>You have not yet registered any heirs.</value></data>
+  <data name="NoEmergencyContacts" xml:space="preserve"><value>You have not yet added any emergency contacts.</value></data>
+  <data name="NoDocuments" xml:space="preserve"><value>You have not yet uploaded any important documents.</value></data>
+  <data name="NoBackupEver" xml:space="preserve"><value>You have never made a backup. Create a backup to prevent data loss.</value></data>
+  <data name="BackupOutdated" xml:space="preserve"><value>Your last backup is from {0}. Consider making a new backup.</value></data>
+  <data name="ShamirNotDistributed" xml:space="preserve"><value>You have heirs but have not yet distributed emergency codes. Distribute your emergency codes so heirs can access the data together.</value></data>
+  <data name="DocumentsExpired" xml:space="preserve"><value>The following documents have expired: {0}. Check whether they are still current.</value></data>
+  <data name="DocumentsExpiringSoon" xml:space="preserve"><value>The following documents will expire soon: {0}.</value></data>
+  <data name="NeverActualized" xml:space="preserve"><value>Regularly check whether all your data is still up to date. Confirm your review via Settings.</value></data>
+  <data name="ActualizationExpired" xml:space="preserve"><value>Your last review was on {0}. Check whether your data is still up to date.</value></data>
+</root>

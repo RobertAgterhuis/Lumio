@@ -1,6 +1,7 @@
 import { BrowserWindow } from "electron";
 import * as path from "path";
 import { getBackendPort, getBackendUrl } from "./sidecar";
+import { t } from "./i18n";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -12,7 +13,7 @@ export function createMainWindow(): BrowserWindow {
     height: 800,
     minWidth: 900,
     minHeight: 600,
-    title: "Lumio — Digitale Nalatenschap",
+    title: t("windowTitle"),
     icon: undefined, // TODO: add icon
     webPreferences: {
       preload: path.join(__dirname, "..", "preload", "index.js"),

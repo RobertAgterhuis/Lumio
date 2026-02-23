@@ -3,6 +3,8 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("lumio", {
   platform: process.platform,
   isElectron: true,
+  getLocale: (): Promise<string> => ipcRenderer.invoke("get-locale"),
+  setLocale: (locale: string): Promise<void> => ipcRenderer.invoke("set-locale", locale),
   selectDirectory: (): Promise<string | null> =>
     ipcRenderer.invoke("select-directory"),
   getAutoBackupConfig: (): Promise<{ pad: string; frequentie: string } | null> =>

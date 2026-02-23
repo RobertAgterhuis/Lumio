@@ -2,6 +2,7 @@ using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Engine;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Results;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using RulesEngine.Models;
 
@@ -26,15 +27,18 @@ public class SuggestieService : ISuggestieService
     private readonly IRuleEngineService _engine;
     private readonly string _regelVersie;
     private readonly ILogger<SuggestieService> _logger;
+    private readonly IStringLocalizer<SuggestieService> L;
 
     public SuggestieService(
         IRuleEngineService engine,
         IOptions<LumioRulesOptions> rootOptions,
-        ILogger<SuggestieService> logger)
+        ILogger<SuggestieService> logger,
+        IStringLocalizer<SuggestieService> localizer)
     {
         _engine = engine;
         _regelVersie = rootOptions.Value.Versie;
         _logger = logger;
+        L = localizer;
     }
 
     public async Task<PolicyResult<SuggestieResultaat>> EvalueerAsync(SuggestieFacts facts)
@@ -120,10 +124,9 @@ public class SuggestieService : ISuggestieService
             !facts.EigenaarNotaris.Equals(testament.NotarisNaam, StringComparison.OrdinalIgnoreCase))
         {
             suggesties.Add(new Suggestie(
-                "Notaris inconsistentie",
-                $"De notaris in uw profiel (\"{facts.EigenaarNotaris}\") verschilt van de notaris " +
-                    $"bij het testament (\"{testament.NotarisNaam}\"). Klopt dit?",
-                "Controleer of u dezelfde notaris bedoelt en werk de gegevens bij."));
+                L["CategoryNotaryInconsistency"].Value,
+                L["MessageNotaryInconsistency", facts.EigenaarNotaris, testament.NotarisNaam].Value,
+                L["SuggestionNotaryInconsistency"].Value));
         }
 
         // Notaris in noodcontacten
@@ -134,10 +137,9 @@ public class SuggestieService : ISuggestieService
             if (notarisContact == null)
             {
                 suggesties.Add(new Suggestie(
-                    "Notaris noodcontact",
-                    $"Notaris \"{facts.Testament.NotarisNaam}\" is wel bij het testament ingevuld " +
-                        "maar niet als noodcontact geregistreerd.",
-                    "Voeg uw notaris toe als noodcontact met het contactnummer."));
+                    L["CategoryNotaryEmergency"].Value,
+                    L["MessageNotaryEmergency", facts.Testament.NotarisNaam].Value,
+                    L["SuggestionNotaryEmergency"].Value));
             }
         }
 
@@ -150,9 +152,9 @@ public class SuggestieService : ISuggestieService
             if (!heeftUitvaartContact)
             {
                 suggesties.Add(new Suggestie(
-                    "Uitvaartondernemer noodcontact",
-                    $"Uitvaartondernemer \"{facts.UitvaartOndernemer}\" is niet als noodcontact geregistreerd.",
-                    "Voeg uw uitvaartondernemer toe als noodcontact."));
+                    L["CategoryFuneralDirectorEmergency"].Value,
+                    L["MessageFuneralDirectorEmergency", facts.UitvaartOndernemer].Value,
+                    L["SuggestionFuneralDirectorEmergency"].Value));
             }
         }
 
@@ -164,10 +166,9 @@ public class SuggestieService : ISuggestieService
         if (!heeftHuisarts && facts.Erfgenamen.Count > 0)
         {
             suggesties.Add(new Suggestie(
-                "Ontbrekend noodcontact",
-                "Er is geen huisarts als noodcontact geregistreerd. " +
-                    "Een huisarts is belangrijk bij overlijden en voor medische documentatie.",
-                "Voeg uw huisarts toe als noodcontact."));
+                L["CategoryMissingEmergencyContact"].Value,
+                L["MessageMissingGP"].Value,
+                L["SuggestionAddGP"].Value));
         }
 
         return suggesties;
@@ -175,7 +176,7 @@ public class SuggestieService : ISuggestieService
 
     // ── Iteratie-gebaseerde regels (altijd via code) ─────────
 
-    private static List<Suggestie> EvalueerErfgenaamNoodcontactKoppeling(SuggestieFacts facts)
+    private List<Suggestie> EvalueerErfgenaamNoodcontactKoppeling(SuggestieFacts facts)
     {
         var suggesties = new List<Suggestie>();
         foreach (var e in facts.Erfgenamen)
@@ -186,16 +187,15 @@ public class SuggestieService : ISuggestieService
             if (!isNoodcontact)
             {
                 suggesties.Add(new Suggestie(
-                    "Erfgenaam ↔ Noodcontact",
-                    $"Erfgenaam \"{e.VolledigeNaam}\" is niet als noodcontact geregistreerd. " +
-                        "Overweeg deze persoon ook als noodcontact toe te voegen zodat zij bereikbaar zijn bij nood.",
-                    "Ga naar Noodcontacten en voeg deze persoon toe."));
+                    L["CategoryHeirEmergencyLink"].Value,
+                    L["MessageHeirNotEmergency", e.VolledigeNaam].Value,
+                    L["SuggestionGoToEmergencyContacts"].Value));
             }
         }
         return suggesties;
     }
 
-    private static List<Suggestie> EvalueerNoodcontactErfgenaamKoppeling(SuggestieFacts facts)
+    private List<Suggestie> EvalueerNoodcontactErfgenaamKoppeling(SuggestieFacts facts)
     {
         var suggesties = new List<Suggestie>();
         foreach (var n in facts.Noodcontacten.Where(n => n.Rol == "Vertrouwenspersoon"))
@@ -205,16 +205,15 @@ public class SuggestieService : ISuggestieService
             if (!isErfgenaam)
             {
                 suggesties.Add(new Suggestie(
-                    "Noodcontact ↔ Erfgenaam",
-                    $"Vertrouwenspersoon \"{n.Naam}\" is niet als erfgenaam geregistreerd. " +
-                        "Wilt u deze persoon ook als erfgenaam toevoegen?",
-                    "Ga naar Erfgenamen en voeg deze persoon toe."));
+                    L["CategoryEmergencyHeirLink"].Value,
+                    L["MessageEmergencyNotHeir", n.Naam].Value,
+                    L["SuggestionGoToHeirs"].Value));
             }
         }
         return suggesties;
     }
 
-    private static List<Suggestie> EvalueerBegunstigdeErfgenaamKoppeling(SuggestieFacts facts)
+    private List<Suggestie> EvalueerBegunstigdeErfgenaamKoppeling(SuggestieFacts facts)
     {
         if (facts.Testament is null) return [];
 
@@ -226,9 +225,9 @@ public class SuggestieService : ISuggestieService
             if (!isErfgenaam)
             {
                 suggesties.Add(new Suggestie(
-                    "Begunstigde ↔ Erfgenaam",
-                    $"Begunstigde \"{b}\" in het testament is niet als erfgenaam geregistreerd.",
-                    "Controleer of deze persoon ook als erfgenaam moet worden toegevoegd."));
+                    L["CategoryBeneficiaryHeirLink"].Value,
+                    L["MessageBeneficiaryNotHeir", b].Value,
+                    L["SuggestionCheckBeneficiaryHeir"].Value));
             }
         }
         return suggesties;
