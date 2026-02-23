@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
 import { Search, X } from "lucide-react";
 
@@ -26,18 +27,18 @@ interface ZoekResultaat {
   documenten: ZoekItem[];
 }
 
-const domeinLabels: Record<keyof ZoekResultaat, string> = {
-  erfgenamen: "Erfgenamen",
-  noodcontacten: "Noodcontacten",
-  digitaleAccounts: "Digitale Accounts",
-  wachtwoorden: "Wachtwoorden",
-  cryptoWallets: "Crypto Wallets",
-  bezittingen: "Bezittingen",
-  bankrekeningen: "Bankrekeningen",
-  verzekeringen: "Verzekeringen",
-  schulden: "Schulden",
-  documenten: "Documenten",
-};
+const domeinKeys: (keyof ZoekResultaat)[] = [
+  "erfgenamen",
+  "noodcontacten",
+  "digitaleAccounts",
+  "wachtwoorden",
+  "cryptoWallets",
+  "bezittingen",
+  "bankrekeningen",
+  "verzekeringen",
+  "schulden",
+  "documenten",
+];
 
 export function SearchDialog({
   open,
@@ -51,6 +52,8 @@ export function SearchDialog({
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const t = useTranslations("search");
+  const tc = useTranslations("common");
 
   // Focus input when opened
   useEffect(() => {
@@ -130,7 +133,7 @@ export function SearchDialog({
               ref={inputRef}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Zoeken in alle gegevens..."
+              placeholder={t("placeholder")}
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
             {query && (
@@ -150,69 +153,68 @@ export function SearchDialog({
           <div className="max-h-[60vh] overflow-y-auto p-2">
             {loading && (
               <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-                Zoeken...
+                {t("laden")}
               </p>
             )}
 
             {!loading && query.length >= 2 && totalResults === 0 && (
               <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-                Geen resultaten gevonden voor &ldquo;{query}&rdquo;
+                {t("geenResultaten", { query })}
               </p>
             )}
 
             {!loading && query.length < 2 && (
               <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-                Typ minimaal 2 tekens om te zoeken
+                {t("minimaalTekens")}
               </p>
             )}
 
             {results &&
-              (Object.keys(domeinLabels) as (keyof ZoekResultaat)[]).map(
-                (domein) => {
-                  const items = results[domein];
-                  if (!items || items.length === 0) return null;
-                  return (
-                    <div key={domein} className="mb-2">
-                      <h3 className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        {domeinLabels[domein]} ({items.length})
-                      </h3>
-                      {items.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => handleNavigate(item.link)}
-                          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors"
-                        >
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate font-medium">{item.titel}</p>
-                            {item.beschrijving && (
-                              <p className="truncate text-xs text-muted-foreground">
-                                {item.beschrijving}
-                              </p>
-                            )}
-                          </div>
-                          <span className="shrink-0 rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                            {item.type}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  );
-                }
-              )}
+              domeinKeys.map((domein) => {
+                const items = results[domein];
+                if (!items || items.length === 0) return null;
+                return (
+                  <div key={domein} className="mb-2">
+                    <h3 className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t(`domein.${domein}`)} ({items.length})
+                    </h3>
+                    {items.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleNavigate(item.link)}
+                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-medium">{item.titel}</p>
+                          {item.beschrijving && (
+                            <p className="truncate text-xs text-muted-foreground">
+                              {item.beschrijving}
+                            </p>
+                          )}
+                        </div>
+                        <span className="shrink-0 rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                          {item.type}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                );
+              })}
           </div>
 
           {/* Footer */}
           <div className="flex items-center justify-between border-t px-4 py-2 text-xs text-muted-foreground">
             <span>
               {totalResults > 0
-                ? `${totalResults} resultaten`
-                : "Zoek in erfgenamen, accounts, bezittingen..."}
+                ? t("resultaten", { count: totalResults })
+                : t("footer")}
             </span>
             <span className="hidden sm:inline">
               <kbd className="rounded border bg-muted px-1.5 py-0.5">Ctrl</kbd>
               {" + "}
               <kbd className="rounded border bg-muted px-1.5 py-0.5">K</kbd>
-              {" om te openen"}
+              {" "}
+              {tc("omTeOpenen")}
             </span>
           </div>
         </div>

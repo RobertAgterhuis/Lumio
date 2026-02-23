@@ -8,6 +8,7 @@ import { HeirUnlockForm } from "@/components/auth/HeirUnlockForm";
 import { ProfileSelector } from "@/components/auth/ProfileSelector";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 
 export default function HomePage() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function HomePage() {
     setProfileNeedsSetup,
   } = useAuthStore();
   const [heirMode, setHeirMode] = useState(false);
+  const t = useTranslations("auth");
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -76,7 +78,7 @@ export default function HomePage() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          <p className="text-muted-foreground">Lumio laden...</p>
+          <p className="text-muted-foreground">{t("laden")}</p>
         </div>
       </div>
     );
@@ -96,7 +98,7 @@ export default function HomePage() {
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold text-primary">Lumio</h1>
         <p className="mt-2 text-muted-foreground">
-          Uw digitale nalatenschap, veilig bewaard
+          {t("tagline")}
         </p>
       </div>
 
@@ -115,7 +117,7 @@ export default function HomePage() {
           onClick={() => setHeirMode((m) => !m)}
           className="mt-4 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
         >
-          Ik ben een erfgenaam (ontgrendelen met noodcodes)
+          {t("erfgenaamLink")}
         </button>
       )}
 
@@ -124,7 +126,7 @@ export default function HomePage() {
           onClick={() => setHeirMode(false)}
           className="mt-4 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
         >
-          Ontgrendelen met wachtwoord
+          {t("wachtwoordLink")}
         </button>
       )}
 
@@ -137,7 +139,7 @@ export default function HomePage() {
           }}
           className="mt-2 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
         >
-          ← Ander profiel kiezen
+          {t("anderProfiel")}
         </button>
       )}
     </div>

@@ -1,0 +1,492 @@
+{
+  "common": {
+    "zoeken": "Search",
+    "vergrendelen": "Lock",
+    "lichtThema": "Light theme",
+    "donkerThema": "Dark theme",
+    "opnieuwProberen": "Try again",
+    "naarDashboard": "Go to dashboard",
+    "actiefBlijven": "Stay active",
+    "omTeOpenen": "to open"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "mijnProfiel": "My Profile",
+    "testament": "Last Will",
+    "wilsverklaring": "Living Will",
+    "donorregistratie": "Donor Registration",
+    "digitaalBezit": "Digital Assets",
+    "boedel": "Estate",
+    "uitvaartwensen": "Funeral Wishes",
+    "documenten": "Documents",
+    "erfgenamen": "Heirs",
+    "noodcontacten": "Emergency Contacts",
+    "tijdlijnOverlijden": "Death Timeline",
+    "exporteren": "Export",
+    "activiteitenlog": "Activity Log",
+    "instellingen": "Settings"
+  },
+  "search": {
+    "placeholder": "Search all records...",
+    "laden": "Searching...",
+    "geenResultaten": "No results found for \"{query}\"",
+    "minimaalTekens": "Type at least 2 characters to search",
+    "resultaten": "{count, plural, one {# result} other {# results}}",
+    "footer": "Search heirs, accounts, assets...",
+    "domein": {
+      "erfgenamen": "Heirs",
+      "noodcontacten": "Emergency Contacts",
+      "digitaleAccounts": "Digital Accounts",
+      "wachtwoorden": "Passwords",
+      "cryptoWallets": "Crypto Wallets",
+      "bezittingen": "Assets",
+      "bankrekeningen": "Bank Accounts",
+      "verzekeringen": "Insurance",
+      "schulden": "Debts",
+      "documenten": "Documents"
+    }
+  },
+  "errors": {
+    "ietsMisgegaan": "Something went wrong",
+    "onverwachteFout": "An unexpected error occurred while loading this page. Please try again or go back to the dashboard."
+  },
+  "idle": {
+    "sessieVerloopt": "Session expiring",
+    "sessieWaarschuwing": "Your session will be automatically locked in {seconds} seconds due to inactivity."
+  },
+  "shortcuts": {
+    "titel": "Keyboard Shortcuts"
+  },
+  "auth": {
+    "laden": "Loading Lumio...",
+    "tagline": "Your digital legacy, securely preserved",
+    "erfgenaamLink": "I am an heir (unlock with emergency codes)",
+    "wachtwoordLink": "Unlock with password",
+    "anderProfiel": "\u2190 Choose another profile",
+    "profiel": {
+      "titel": "Choose Profile",
+      "geenProfielen": "Create your first profile to get started.",
+      "selecteer": "Select a profile to continue.",
+      "selecterenMislukt": "Failed to select profile",
+      "naam": "Name",
+      "naamPlaceholder": "E.g. John, My profile",
+      "relatie": "Relationship",
+      "aanmakenMislukt": "Failed to create profile",
+      "bezig": "Creating...",
+      "aanmaken": "Create Profile",
+      "annuleren": "Cancel",
+      "toevoegen": "Add new profile",
+      "maximaal": "Maximum of 5 profiles reached.",
+      "partner": "Partner",
+      "kind": "Child",
+      "ouder": "Parent",
+      "overig": "Other"
+    },
+    "setup": {
+      "titel": "Welcome to Lumio",
+      "beschrijving": "Choose a strong password to secure your digital legacy. This password encrypts all your data.",
+      "wachtwoord": "Password",
+      "wachtwoordPlaceholder": "At least 8 characters",
+      "bevestig": "Confirm password",
+      "bevestigPlaceholder": "Repeat your password",
+      "bezig": "Creating database...",
+      "aanmaken": "Create Database",
+      "disclaimer": "Your data is stored encrypted. Keep your password safe \u2014 without it, your data cannot be accessed.",
+      "foutMinimaal": "Password must contain at least 8 characters.",
+      "foutOvereenkomst": "Passwords do not match.",
+      "foutSetup": "Setup failed"
+    },
+    "ontgrendel": {
+      "titel": "Unlock Lumio",
+      "beschrijving": "Enter your password to access your digital legacy.",
+      "wachtwoord": "Password",
+      "wachtwoordPlaceholder": "Enter your password",
+      "bezig": "Unlocking...",
+      "ontgrendelen": "Unlock",
+      "mislukt": "Unlock failed"
+    },
+    "erfgenaam": {
+      "titel": "Heir Access",
+      "beschrijving": "Enter the emergency codes to reconstruct the master password. You need at least the threshold number of codes.",
+      "codeLabel": "Code {nummer}",
+      "codePlaceholder": "Paste the emergency code here...",
+      "codeToevoegen": "Add another code",
+      "minimaalCodes": "At least 2 emergency codes are required.",
+      "reconstructieMislukt": "Reconstruction failed. Please verify that you have entered enough valid emergency codes.",
+      "bezig": "Reconstructing...",
+      "ontgrendelen": "Unlock with emergency codes"
+    },
+    "wachtwoordsterkte": {
+      "zeerZwak": "Very weak",
+      "zwak": "Weak",
+      "matig": "Fair",
+      "sterk": "Strong",
+      "zeerSterk": "Very strong",
+      "minimaalTekens": "At least 8 characters",
+      "hoofdletters": "Upper and lowercase letters",
+      "cijfer": "At least 1 digit",
+      "speciaalTeken": "At least 1 special character"
+    },
+    "sessie": {
+      "controleren": "Checking session...",
+      "alleenLezen": "Read-only mode",
+      "alleenLezenBeschrijving": "You are logged in as an heir. Data can only be viewed and exported, not modified."
+    }
+  },
+  "dashboard": {
+    "titel": "Dashboard",
+    "beschrijving": "Manage your digital legacy. Click a section to get started.",
+    "voortgang": {
+      "titel": "Legacy progress",
+      "onderdelen": "{aantalIngevuld} of {totaal} sections completed"
+    },
+    "meldingen": {
+      "titel": "Notifications ({aantal})",
+      "verbergen": "Hide"
+    },
+    "geenProfiel": {
+      "titel": "Complete your profile to get started",
+      "beschrijving": "Before you can save data in Lumio, you need to fill in your personal information first. Choose how to start:",
+      "interview": "Guided setup (interview)",
+      "direct": "Create profile directly"
+    },
+    "letOp": "Note:",
+    "juridisch": "Lumio is a tool for recording your wishes. A notarial will remains required for legal validity under the Dutch Civil Code (BW Book 4).",
+    "status": {
+      "ingevuld": "Completed",
+      "beginnen": "Start",
+      "openen": "Open"
+    },
+    "domein": {
+      "eigenaar": {
+        "titel": "My Profile",
+        "beschrijving": "Personal details and contact information"
+      },
+      "testament": {
+        "titel": "Last Will",
+        "beschrijving": "Testamentary information, beneficiaries and executors"
+      },
+      "euthanasie": {
+        "titel": "Euthanasia Directive",
+        "beschrijving": "Your wishes regarding euthanasia and medical treatment"
+      },
+      "donor": {
+        "titel": "Donor Registration",
+        "beschrijving": "Organ donation choices and registration"
+      },
+      "digitaalBezit": {
+        "titel": "Digital Assets",
+        "beschrijving": "Online accounts, passwords and crypto wallets"
+      },
+      "boedel": {
+        "titel": "Estate",
+        "beschrijving": "Assets, bank accounts, insurance and debts"
+      },
+      "uitvaart": {
+        "titel": "Funeral Wishes",
+        "beschrijving": "Burial or cremation, ceremony and mourning card"
+      },
+      "documenten": {
+        "titel": "Documents",
+        "beschrijving": "Safely store important documents"
+      },
+      "erfgenamen": {
+        "titel": "Heirs",
+        "beschrijving": "Manage heirs and distribute emergency codes"
+      },
+      "noodcontacten": {
+        "titel": "Emergency Contacts",
+        "beschrijving": "Trusted persons and responders for emergencies"
+      }
+    },
+    "suggesties": {
+      "titel": "Smart suggestions",
+      "beschrijving": "Analyze your profile and receive suggestions for missing links and improvements.",
+      "analyseren": "Analyze profile",
+      "analyseMislukt": "Analysis failed",
+      "fout": "Could not perform the analysis.",
+      "geenSuggesties": "No suggestions",
+      "geenSuggestiesBeschrijving": "Your profile is well completed and all data is consistent.",
+      "aantalGevonden": "{aantal, plural, one {# suggestion} other {# suggestions}} found:"
+    },
+    "statistieken": {
+      "titel": "Statistics",
+      "erfgenamen": "Heirs",
+      "digitaleAccounts": "Digital accounts",
+      "documenten": "Documents",
+      "boedelitems": "Estate items",
+      "noodcontacten": "Emergency contacts",
+      "totaleWaarde": "Total value",
+      "schulden": "Debts",
+      "nettoNalatenschap": "Net estate"
+    },
+    "voortgangGranulair": {
+      "titel": "Detailed progress",
+      "veldenIngevuld": "{ingevuld} of {totaal} fields completed"
+    }
+  },
+  "wizard": {
+    "welkom": "Welcome to Lumio",
+    "doorloop": "Complete these steps to set up your legacy",
+    "sluiten": "Close wizard",
+    "voltooid": "{voltooid} of {totaal} completed",
+    "laterInvullen": "Fill in later",
+    "afronden": "Finish",
+    "stappen": {
+      "profiel": {
+        "titel": "My Profile",
+        "beschrijving": "Save your personal details as the foundation for your legacy."
+      },
+      "noodcontacten": {
+        "titel": "Emergency Contacts",
+        "beschrijving": "Who should be contacted in case of emergency?"
+      },
+      "testament": {
+        "titel": "Last Will",
+        "beschrijving": "Record testamentary information, such as executors and beneficiaries."
+      },
+      "uitvaart": {
+        "titel": "Funeral Wishes",
+        "beschrijving": "Describe how you want your funeral to be arranged."
+      },
+      "erfgenamen": {
+        "titel": "Heirs",
+        "beschrijving": "Register your heirs and optionally distribute emergency codes."
+      },
+      "backup": {
+        "titel": "Create Backup",
+        "beschrijving": "Create an initial backup to secure your data."
+      }
+    },
+    "shell": {
+      "opslaanMislukt": "Save failed.",
+      "stap": "Step {huidig} of {totaal}: {titel}",
+      "annuleren": "Cancel",
+      "vorige": "Previous",
+      "opslaanBezig": "Saving...",
+      "opslaan": "Save",
+      "volgende": "Next"
+    }
+  },
+  "eigenaar": {
+    "titel": "My Profile",
+    "beschrijving": "Your personal details as the owner of this legacy",
+    "laden": "Loading...",
+    "belangrijk": "Important:",
+    "eersteProfielMelding": "You must first create your profile before you can save other data. Fill in the form below and click Save.",
+    "profielOpgeslagen": "Profile saved.",
+    "opslaanMislukt": "Save failed.",
+    "opslaan": "Save",
+    "opslaanBezig": "Saving...",
+    "foto": {
+      "titel": "Profile Photo",
+      "beschrijving": "Upload a passport photo, for example for the mourning card.",
+      "alt": "Profile photo",
+      "wijzigen": "Change",
+      "uploaden": "Upload",
+      "verwijderen": "Delete",
+      "formaat": "JPG, PNG or WebP. Maximum 10 MB.",
+      "uploadMislukt": "Photo upload failed.",
+      "verwijderenMislukt": "Photo deletion failed."
+    },
+    "persoon": {
+      "titel": "Personal Details",
+      "beschrijving": "This data is used in your legacy and PDF exports.",
+      "voornaam": "First name",
+      "voornaamVerplicht": "First name *",
+      "tussenvoegsel": "Prefix",
+      "tussenvoegselPlaceholder": "e.g. van, de",
+      "achternaam": "Last name",
+      "achternaamVerplicht": "Last name *",
+      "geboortedatumVerplicht": "Date of birth *",
+      "bsn": "BSN",
+      "bsnPlaceholder": "Citizen service number",
+      "adres": "Address",
+      "adresPlaceholder": "Street and house number",
+      "postcode": "Postal code",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "City",
+      "telefoon": "Phone",
+      "telefoonPlaceholder": "06-12345678",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com"
+    },
+    "burgerlijkeStaat": {
+      "titel": "Marital Status",
+      "beschrijving": "Your marital status and any prenuptial agreements.",
+      "label": "Marital status",
+      "huwelijksVoorwaarden": "Prenuptial agreement",
+      "datumHuwelijk": "Date of marriage / partnership"
+    },
+    "identificatie": {
+      "titel": "Identification",
+      "beschrijving": "Identification details for legal documents.",
+      "soort": "Type of identification",
+      "documentnummer": "Document number",
+      "datumAfgifte": "Date of issue",
+      "geldigTot": "Valid until"
+    },
+    "notaris": {
+      "titel": "Notary",
+      "beschrijving": "Details of your notary (optional).",
+      "naam": "Notary name",
+      "naamPlaceholder": "e.g. mr. J. de Vries",
+      "kantoor": "Notary office",
+      "kantoorPlaceholder": "e.g. De Vries & Partners Notaries",
+      "telefoon": "Notary phone",
+      "telefoonPlaceholder": "Phone number",
+      "email": "Notary email",
+      "emailPlaceholder": "notary@office.com",
+      "adres": "Notary address",
+      "adresPlaceholder": "Street and house number",
+      "postcode": "Postal code",
+      "postcodePlaceholder": "1234 AB",
+      "plaats": "City"
+    }
+  },
+  "enums": {
+    "burgerlijkeStaat": {
+      "ongehuwd": "Unmarried",
+      "gehuwd": "Married",
+      "geregistreerdPartnerschap": "Registered partnership",
+      "gescheiden": "Divorced",
+      "weduwWeduwnaar": "Widow / Widower"
+    },
+    "huwelijksVoorwaarden": {
+      "nietVanToepassing": "Not applicable",
+      "gemeenschapVanGoederen": "Community of property",
+      "beperktGemeenschap": "Limited community",
+      "koudeUitsluiting": "Complete exclusion"
+    },
+    "legitimatie": {
+      "geen": "None",
+      "paspoort": "Passport",
+      "identiteitskaart": "Identity card",
+      "rijbewijs": "Driver's license"
+    },
+    "relatie": {
+      "Partner": "Partner",
+      "Kind": "Child",
+      "Ouder": "Parent",
+      "Broer/Zus": "Sibling",
+      "Kleinkind": "Grandchild",
+      "Neef/Nicht": "Nephew/Niece",
+      "Vriend": "Friend",
+      "Organisatie": "Organization",
+      "Anders": "Other",
+      "selecteer": "Select..."
+    },
+    "entityType": {
+      "FysiekBezit": "Asset",
+      "Bankrekening": "Bank account",
+      "Verzekering": "Insurance",
+      "DigitaalAccount": "Digital account",
+      "CryptoWallet": "Crypto wallet"
+    }
+  },
+  "erfgenamen": {
+    "titel": "Heirs",
+    "beschrijving": "Manage heirs and distribute emergency codes",
+    "laden": "Loading...",
+    "noodcodesVerdelen": "Distribute emergency codes",
+    "toevoegen": "Add heir",
+    "noodcodesInfoLabel": "Distribute emergency codes:",
+    "noodcodesInfo": "Your master password is securely split into unique codes for your heirs. Only when enough heirs (the 'threshold') combine their code can the password be recovered. A single code alone is worthless.",
+    "geenErfgenamen": "No heirs added yet.",
+    "aantal": "Heirs ({aantal})",
+    "opslaanMislukt": "Save failed.",
+    "verwijderenMislukt": "Delete failed.",
+    "exportMislukt": "Export failed.",
+    "exportMisluktCode": "Export failed ({code})",
+    "sleuteldelenMislukt": "Failed to generate key shares.",
+    "toewijzingOpslaanMislukt": "Failed to save assignment.",
+    "toewijzingVerwijderenMislukt": "Failed to delete assignment.",
+    "bezitToewijzen": "Assign asset",
+    "pdfDownloaden": "Download PDF",
+    "deelOverzicht": "Share overview (HTML)",
+    "geenBezittingen": "No assets assigned yet.",
+    "toewijzenKnop": "Assign",
+    "toegewezenBezittingen": "Assigned assets:",
+    "dialog": {
+      "bewerken": "Edit heir",
+      "toevoegen": "Add heir",
+      "voornaam": "First name",
+      "achternaam": "Last name",
+      "tussenvoegsel": "Prefix",
+      "tussenvoegselPlaceholder": "e.g. van, de, van der",
+      "relatie": "Relationship",
+      "email": "Email",
+      "telefoon": "Phone",
+      "geboortedatum": "Date of birth",
+      "bsn": "BSN (optional)",
+      "bsnTooltip": "The Citizen Service Number is required for notarial deeds. This field is stored encrypted.",
+      "bsnPlaceholder": "123456789",
+      "adres": "Address",
+      "adresPlaceholder": "Street and house number",
+      "postcode": "Postal code",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "City",
+      "legitimatie": "Identification",
+      "documentnummer": "Document number",
+      "datumAfgifte": "Date of issue",
+      "geldigTot": "Valid until",
+      "annuleren": "Cancel",
+      "opslaanBezig": "Saving...",
+      "opslaan": "Save"
+    },
+    "toewijzingDialog": {
+      "titel": "Assign asset to heir",
+      "beschrijving": "Assign an asset, account or policy to an heir.",
+      "erfgenaam": "Heir",
+      "erfgenaamSelecteer": "Select heir...",
+      "typeBezit": "Asset type",
+      "alleTypes": "All types...",
+      "bezit": "Asset",
+      "bezitSelecteer": "Select asset...",
+      "instructies": "Instructions (optional)",
+      "instructiesPlaceholder": "E.g. 'Keep as a memento' or 'Sell and divide proceeds'",
+      "annuleren": "Cancel",
+      "opslaanBezig": "Saving...",
+      "toewijzen": "Assign"
+    },
+    "shamir": {
+      "titel": "Generate Emergency Codes",
+      "beschrijving": "Split your master password into {aantal} unique emergency codes. Only when the minimum number of people (threshold) combine their code can the password be reconstructed.",
+      "waarschuwing": "Warning:",
+      "waarschuwingTekst": "The emergency codes are NOT stored in Lumio. Record them carefully or print them. Lost codes cannot be recovered.",
+      "wachtwoord": "Your master password",
+      "wachtwoordPlaceholder": "Enter your Lumio master password",
+      "drempel": "Threshold (minimum number of codes for reconstruction)",
+      "drempelTooltip": "The threshold determines how many heirs must cooperate to reconstruct your master password. With a threshold of 3, at least 3 heirs must combine their code. A higher threshold is more secure, but requires more cooperation.",
+      "drempelOptie": "{n} of {totaal} people",
+      "delenInfo": "<strong>{aantal}</strong> shares will be generated, of which at least <strong>{drempel}</strong> are required.",
+      "annuleren": "Cancel",
+      "genererenBezig": "Generating...",
+      "genereren": "Generate",
+      "succes": "Success!",
+      "succesTekst": "{aantal} shares have been generated with a threshold of {drempel}. Copy each share and give it to the respective heir.",
+      "deel": "Share {index}",
+      "erfgenaamFallback": "Heir {nummer}",
+      "gekopieerd": "Copied",
+      "kopieren": "Copy",
+      "sluiten": "Close"
+    }
+  },
+  "erfbelasting": {
+    "berekenBezig": "Calculating...",
+    "berekenen": "Calculate inheritance tax",
+    "titel": "Indicative inheritance tax",
+    "sluiten": "Close",
+    "nettoNalatenschap": "Net estate",
+    "perErfgenaam": "Per heir",
+    "kolomNaam": "Name",
+    "kolomTariefgroep": "Rate group",
+    "kolomErfdeel": "Inheritance share",
+    "kolomVrijstelling": "Exemption",
+    "kolomBelastbaar": "Taxable",
+    "kolomErfbelasting": "Inheritance tax",
+    "kolomNetto": "Net",
+    "totaalErfbelasting": "Total inheritance tax",
+    "geenErfgenamen": "Add heirs first to calculate inheritance tax."
+  }
+}

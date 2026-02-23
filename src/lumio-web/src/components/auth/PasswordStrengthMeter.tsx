@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 interface PasswordStrengthMeterProps {
   password: string;
@@ -8,12 +9,19 @@ interface PasswordStrengthMeterProps {
 
 interface StrengthResult {
   score: number; // 0-4
-  label: string;
   color: string;
 }
 
+const STRENGTH_COLORS = [
+  "bg-red-500",
+  "bg-orange-500",
+  "bg-yellow-500",
+  "bg-green-500",
+  "bg-green-600",
+];
+
 function evaluateStrength(password: string): StrengthResult {
-  if (!password) return { score: 0, label: "", color: "" };
+  if (!password) return { score: 0, color: "" };
 
   let score = 0;
 
@@ -29,27 +37,28 @@ function evaluateStrength(password: string): StrengthResult {
   // Cap at 4
   score = Math.min(score, 4);
 
-  const levels: StrengthResult[] = [
-    { score: 0, label: "Zeer zwak", color: "bg-red-500" },
-    { score: 1, label: "Zwak", color: "bg-orange-500" },
-    { score: 2, label: "Matig", color: "bg-yellow-500" },
-    { score: 3, label: "Sterk", color: "bg-green-500" },
-    { score: 4, label: "Zeer sterk", color: "bg-green-600" },
-  ];
-
-  return levels[score];
+  return { score, color: STRENGTH_COLORS[score] };
 }
+
+const STRENGTH_LABEL_KEYS = [
+  "zeerZwak",
+  "zwak",
+  "matig",
+  "sterk",
+  "zeerSterk",
+] as const;
 
 export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
   const strength = useMemo(() => evaluateStrength(password), [password]);
+  const t = useTranslations("auth.wachtwoordsterkte");
 
   if (!password) return null;
 
   const checks = [
-    { met: password.length >= 8, label: "Minimaal 8 tekens" },
-    { met: /[a-z]/.test(password) && /[A-Z]/.test(password), label: "Hoofd- en kleine letters" },
-    { met: /\d/.test(password), label: "Minimaal 1 cijfer" },
-    { met: /[^a-zA-Z0-9]/.test(password), label: "Minimaal 1 speciaal teken" },
+    { met: password.length >= 8, label: t("minimaalTekens") },
+    { met: /[a-z]/.test(password) && /[A-Z]/.test(password), label: t("hoofdletters") },
+    { met: /\d/.test(password), label: t("cijfer") },
+    { met: /[^a-zA-Z0-9]/.test(password), label: t("speciaalTeken") },
   ];
 
   return (
@@ -67,15 +76,15 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
           ))}
         </div>
         <span className="text-xs text-muted-foreground w-20 text-right">
-          {strength.label}
+          {t(STRENGTH_LABEL_KEYS[strength.score])}
         </span>
       </div>
 
       {/* Requirements checklist */}
       <ul className="space-y-1">
-        {checks.map((check) => (
+        {checks.map((check, i) => (
           <li
-            key={check.label}
+            key={i}
             className={`text-xs flex items-center gap-1.5 ${
               check.met ? "text-green-600" : "text-muted-foreground"
             }`}

@@ -1,0 +1,492 @@
+{
+  "common": {
+    "zoeken": "Zoeken",
+    "vergrendelen": "Vergrendelen",
+    "lichtThema": "Licht thema",
+    "donkerThema": "Donker thema",
+    "opnieuwProberen": "Opnieuw proberen",
+    "naarDashboard": "Naar dashboard",
+    "actiefBlijven": "Actief blijven",
+    "omTeOpenen": "om te openen"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "mijnProfiel": "Mijn Profiel",
+    "testament": "Testament",
+    "wilsverklaring": "Wilsverklaring",
+    "donorregistratie": "Donorregistratie",
+    "digitaalBezit": "Digitaal Bezit",
+    "boedel": "Boedel",
+    "uitvaartwensen": "Uitvaartwensen",
+    "documenten": "Documenten",
+    "erfgenamen": "Erfgenamen",
+    "noodcontacten": "Noodcontacten",
+    "tijdlijnOverlijden": "Tijdlijn Overlijden",
+    "exporteren": "Exporteren",
+    "activiteitenlog": "Activiteitenlog",
+    "instellingen": "Instellingen"
+  },
+  "search": {
+    "placeholder": "Zoeken in alle gegevens...",
+    "laden": "Zoeken...",
+    "geenResultaten": "Geen resultaten gevonden voor \"{query}\"",
+    "minimaalTekens": "Typ minimaal 2 tekens om te zoeken",
+    "resultaten": "{count, plural, one {# resultaat} other {# resultaten}}",
+    "footer": "Zoek in erfgenamen, accounts, bezittingen...",
+    "domein": {
+      "erfgenamen": "Erfgenamen",
+      "noodcontacten": "Noodcontacten",
+      "digitaleAccounts": "Digitale Accounts",
+      "wachtwoorden": "Wachtwoorden",
+      "cryptoWallets": "Crypto Wallets",
+      "bezittingen": "Bezittingen",
+      "bankrekeningen": "Bankrekeningen",
+      "verzekeringen": "Verzekeringen",
+      "schulden": "Schulden",
+      "documenten": "Documenten"
+    }
+  },
+  "errors": {
+    "ietsMisgegaan": "Er is iets misgegaan",
+    "onverwachteFout": "Er is een onverwachte fout opgetreden bij het laden van deze pagina. Probeer het opnieuw of ga terug naar het dashboard."
+  },
+  "idle": {
+    "sessieVerloopt": "Sessie verloopt",
+    "sessieWaarschuwing": "Uw sessie wordt over {seconds} seconden automatisch vergrendeld wegens inactiviteit."
+  },
+  "shortcuts": {
+    "titel": "Sneltoetsen"
+  },
+  "auth": {
+    "laden": "Lumio laden...",
+    "tagline": "Uw digitale nalatenschap, veilig bewaard",
+    "erfgenaamLink": "Ik ben een erfgenaam (ontgrendelen met noodcodes)",
+    "wachtwoordLink": "Ontgrendelen met wachtwoord",
+    "anderProfiel": "\u2190 Ander profiel kiezen",
+    "profiel": {
+      "titel": "Profiel kiezen",
+      "geenProfielen": "Maak uw eerste profiel aan om te beginnen.",
+      "selecteer": "Selecteer een profiel om door te gaan.",
+      "selecterenMislukt": "Profiel selecteren mislukt",
+      "naam": "Naam",
+      "naamPlaceholder": "Bijv. Jan, Mijn profiel",
+      "relatie": "Relatie",
+      "aanmakenMislukt": "Profiel aanmaken mislukt",
+      "bezig": "Aanmaken...",
+      "aanmaken": "Profiel aanmaken",
+      "annuleren": "Annuleren",
+      "toevoegen": "Nieuw profiel toevoegen",
+      "maximaal": "Maximaal 5 profielen bereikt.",
+      "partner": "Partner",
+      "kind": "Kind",
+      "ouder": "Ouder",
+      "overig": "Overig"
+    },
+    "setup": {
+      "titel": "Welkom bij Lumio",
+      "beschrijving": "Kies een sterk wachtwoord om uw digitale nalatenschap te beveiligen. Dit wachtwoord versleutelt al uw gegevens.",
+      "wachtwoord": "Wachtwoord",
+      "wachtwoordPlaceholder": "Minimaal 8 tekens",
+      "bevestig": "Bevestig wachtwoord",
+      "bevestigPlaceholder": "Herhaal uw wachtwoord",
+      "bezig": "Database aanmaken...",
+      "aanmaken": "Database Aanmaken",
+      "disclaimer": "Uw gegevens worden versleuteld opgeslagen. Bewaar uw wachtwoord goed \u2014 zonder wachtwoord is de data niet toegankelijk.",
+      "foutMinimaal": "Wachtwoord moet minimaal 8 tekens bevatten.",
+      "foutOvereenkomst": "Wachtwoorden komen niet overeen.",
+      "foutSetup": "Setup mislukt"
+    },
+    "ontgrendel": {
+      "titel": "Lumio Ontgrendelen",
+      "beschrijving": "Voer uw wachtwoord in om toegang te krijgen tot uw digitale nalatenschap.",
+      "wachtwoord": "Wachtwoord",
+      "wachtwoordPlaceholder": "Voer uw wachtwoord in",
+      "bezig": "Ontgrendelen...",
+      "ontgrendelen": "Ontgrendelen",
+      "mislukt": "Ontgrendelen mislukt"
+    },
+    "erfgenaam": {
+      "titel": "Erfgenaam Toegang",
+      "beschrijving": "Voer de noodcodes in om het hoofdwachtwoord te reconstrueren. U heeft minimaal het drempelaantal codes nodig.",
+      "codeLabel": "Code {nummer}",
+      "codePlaceholder": "Plak hier de noodcode...",
+      "codeToevoegen": "Nog een code toevoegen",
+      "minimaalCodes": "Minimaal 2 noodcodes zijn vereist.",
+      "reconstructieMislukt": "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd.",
+      "bezig": "Reconstrueren...",
+      "ontgrendelen": "Ontgrendelen met noodcodes"
+    },
+    "wachtwoordsterkte": {
+      "zeerZwak": "Zeer zwak",
+      "zwak": "Zwak",
+      "matig": "Matig",
+      "sterk": "Sterk",
+      "zeerSterk": "Zeer sterk",
+      "minimaalTekens": "Minimaal 8 tekens",
+      "hoofdletters": "Hoofd- en kleine letters",
+      "cijfer": "Minimaal 1 cijfer",
+      "speciaalTeken": "Minimaal 1 speciaal teken"
+    },
+    "sessie": {
+      "controleren": "Sessie controleren...",
+      "alleenLezen": "Alleen-lezen modus",
+      "alleenLezenBeschrijving": "U bent ingelogd als erfgenaam. Gegevens kunnen alleen worden bekeken en ge\u00ebxporteerd, niet gewijzigd."
+    }
+  },
+  "dashboard": {
+    "titel": "Dashboard",
+    "beschrijving": "Beheer uw digitale nalatenschap. Klik op een onderdeel om te beginnen.",
+    "voortgang": {
+      "titel": "Voortgang nalatenschap",
+      "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"
+    },
+    "meldingen": {
+      "titel": "Meldingen ({aantal})",
+      "verbergen": "Verbergen"
+    },
+    "geenProfiel": {
+      "titel": "Vul eerst uw profiel in om te beginnen",
+      "beschrijving": "Voordat u gegevens kunt opslaan in Lumio, moet u eerst uw persoonsgegevens invullen. Kies hoe u wilt starten:",
+      "interview": "Begeleid invullen (interview)",
+      "direct": "Direct profiel aanmaken"
+    },
+    "letOp": "Let op:",
+    "juridisch": "Lumio is een hulpmiddel voor het vastleggen van uw wensen. Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4).",
+    "status": {
+      "ingevuld": "Ingevuld",
+      "beginnen": "Beginnen",
+      "openen": "Openen"
+    },
+    "domein": {
+      "eigenaar": {
+        "titel": "Mijn Profiel",
+        "beschrijving": "Persoonlijke gegevens en contactinformatie"
+      },
+      "testament": {
+        "titel": "Testament",
+        "beschrijving": "Testamentaire informatie, begunstigden en executeurs"
+      },
+      "euthanasie": {
+        "titel": "Wilsverklaring Euthanasie",
+        "beschrijving": "Uw wensen rondom euthanasie en medische behandeling"
+      },
+      "donor": {
+        "titel": "Donorregistratie",
+        "beschrijving": "Orgaandonatie keuzes en registratie"
+      },
+      "digitaalBezit": {
+        "titel": "Digitaal Bezit",
+        "beschrijving": "Online accounts, wachtwoorden en crypto wallets"
+      },
+      "boedel": {
+        "titel": "Boedel",
+        "beschrijving": "Bezittingen, bankrekeningen, verzekeringen en schulden"
+      },
+      "uitvaart": {
+        "titel": "Uitvaartwensen",
+        "beschrijving": "Begrafenis of crematie, ceremonie en rouwkaart"
+      },
+      "documenten": {
+        "titel": "Documenten",
+        "beschrijving": "Belangrijke documenten veilig opslaan"
+      },
+      "erfgenamen": {
+        "titel": "Erfgenamen",
+        "beschrijving": "Erfgenamen beheren en noodcodes verdelen"
+      },
+      "noodcontacten": {
+        "titel": "Noodcontacten",
+        "beschrijving": "Vertrouwenspersonen en hulpverleners voor noodsituaties"
+      }
+    },
+    "suggesties": {
+      "titel": "Slimme suggesties",
+      "beschrijving": "Analyseer uw profiel en ontvang suggesties voor ontbrekende koppelingen en verbeteringen.",
+      "analyseren": "Profiel analyseren",
+      "analyseMislukt": "Analyse mislukt",
+      "fout": "Kon de analyse niet uitvoeren.",
+      "geenSuggesties": "Geen suggesties",
+      "geenSuggestiesBeschrijving": "Uw profiel is goed ingevuld en alle gegevens zijn consistent.",
+      "aantalGevonden": "{aantal, plural, one {# suggestie} other {# suggesties}} gevonden:"
+    },
+    "statistieken": {
+      "titel": "Statistieken",
+      "erfgenamen": "Erfgenamen",
+      "digitaleAccounts": "Digitale accounts",
+      "documenten": "Documenten",
+      "boedelitems": "Boedelitems",
+      "noodcontacten": "Noodcontacten",
+      "totaleWaarde": "Totale waarde",
+      "schulden": "Schulden",
+      "nettoNalatenschap": "Netto nalatenschap"
+    },
+    "voortgangGranulair": {
+      "titel": "Gedetailleerde voortgang",
+      "veldenIngevuld": "{ingevuld} van {totaal} velden ingevuld"
+    }
+  },
+  "wizard": {
+    "welkom": "Welkom bij Lumio",
+    "doorloop": "Doorloop deze stappen om uw nalatenschap in te richten",
+    "sluiten": "Wizard sluiten",
+    "voltooid": "{voltooid} van {totaal} voltooid",
+    "laterInvullen": "Later invullen",
+    "afronden": "Afronden",
+    "stappen": {
+      "profiel": {
+        "titel": "Mijn Profiel",
+        "beschrijving": "Sla uw persoonlijke gegevens op als basis voor uw nalatenschap."
+      },
+      "noodcontacten": {
+        "titel": "Noodcontacten",
+        "beschrijving": "Wie moet er gebeld worden in geval van nood?"
+      },
+      "testament": {
+        "titel": "Testament",
+        "beschrijving": "Leg testamentaire informatie vast, zoals executeurs en begunstigden."
+      },
+      "uitvaart": {
+        "titel": "Uitvaartwensen",
+        "beschrijving": "Beschrijf hoe u wilt dat uw uitvaart wordt geregeld."
+      },
+      "erfgenamen": {
+        "titel": "Erfgenamen",
+        "beschrijving": "Registreer uw erfgenamen en verdeel eventueel noodcodes."
+      },
+      "backup": {
+        "titel": "Backup maken",
+        "beschrijving": "Maak een eerste backup om uw gegevens veilig te stellen."
+      }
+    },
+    "shell": {
+      "opslaanMislukt": "Opslaan mislukt.",
+      "stap": "Stap {huidig} van {totaal}: {titel}",
+      "annuleren": "Annuleren",
+      "vorige": "Vorige",
+      "opslaanBezig": "Opslaan...",
+      "opslaan": "Opslaan",
+      "volgende": "Volgende"
+    }
+  },
+  "eigenaar": {
+    "titel": "Mijn Profiel",
+    "beschrijving": "Uw persoonsgegevens als eigenaar van deze nalatenschap",
+    "laden": "Laden...",
+    "belangrijk": "Belangrijk:",
+    "eersteProfielMelding": "U moet eerst uw profiel aanmaken voordat u andere gegevens kunt opslaan. Vul onderstaand formulier in en klik op Opslaan.",
+    "profielOpgeslagen": "Profiel opgeslagen.",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "opslaan": "Opslaan",
+    "opslaanBezig": "Opslaan...",
+    "foto": {
+      "titel": "Profielfoto",
+      "beschrijving": "Upload een pasfoto, bijvoorbeeld voor de rouwkaart.",
+      "alt": "Profielfoto",
+      "wijzigen": "Wijzigen",
+      "uploaden": "Uploaden",
+      "verwijderen": "Verwijderen",
+      "formaat": "JPG, PNG of WebP. Maximaal 10 MB.",
+      "uploadMislukt": "Foto uploaden mislukt.",
+      "verwijderenMislukt": "Foto verwijderen mislukt."
+    },
+    "persoon": {
+      "titel": "Persoonsgegevens",
+      "beschrijving": "Deze gegevens worden gebruikt in uw nalatenschap en PDF-exports.",
+      "voornaam": "Voornaam",
+      "voornaamVerplicht": "Voornaam *",
+      "tussenvoegsel": "Tussenvoegsel",
+      "tussenvoegselPlaceholder": "bijv. van, de",
+      "achternaam": "Achternaam",
+      "achternaamVerplicht": "Achternaam *",
+      "geboortedatumVerplicht": "Geboortedatum *",
+      "bsn": "BSN",
+      "bsnPlaceholder": "Burgerservicenummer",
+      "adres": "Adres",
+      "adresPlaceholder": "Straat en huisnummer",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "Woonplaats",
+      "telefoon": "Telefoon",
+      "telefoonPlaceholder": "06-12345678",
+      "email": "E-mail",
+      "emailPlaceholder": "uw@email.nl"
+    },
+    "burgerlijkeStaat": {
+      "titel": "Burgerlijke staat",
+      "beschrijving": "Uw burgerlijke staat en eventuele huwelijksvoorwaarden.",
+      "label": "Burgerlijke staat",
+      "huwelijksVoorwaarden": "Huwelijksvoorwaarden",
+      "datumHuwelijk": "Datum huwelijk / partnerschap"
+    },
+    "identificatie": {
+      "titel": "Identificatie",
+      "beschrijving": "Legitimatiegegevens voor juridische documenten.",
+      "soort": "Soort legitimatie",
+      "documentnummer": "Documentnummer",
+      "datumAfgifte": "Datum afgifte",
+      "geldigTot": "Geldig tot"
+    },
+    "notaris": {
+      "titel": "Notaris",
+      "beschrijving": "Gegevens van uw notaris (optioneel).",
+      "naam": "Naam notaris",
+      "naamPlaceholder": "bijv. mr. J. de Vries",
+      "kantoor": "Notariskantoor",
+      "kantoorPlaceholder": "bijv. De Vries & Partners Notarissen",
+      "telefoon": "Telefoon notaris",
+      "telefoonPlaceholder": "Telefoonnummer",
+      "email": "E-mail notaris",
+      "emailPlaceholder": "notaris@kantoor.nl",
+      "adres": "Adres notaris",
+      "adresPlaceholder": "Straat en huisnummer",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "1234 AB",
+      "plaats": "Plaats"
+    }
+  },
+  "enums": {
+    "burgerlijkeStaat": {
+      "ongehuwd": "Ongehuwd",
+      "gehuwd": "Gehuwd",
+      "geregistreerdPartnerschap": "Geregistreerd partnerschap",
+      "gescheiden": "Gescheiden",
+      "weduwWeduwnaar": "Weduwe / Weduwnaar"
+    },
+    "huwelijksVoorwaarden": {
+      "nietVanToepassing": "Niet van toepassing",
+      "gemeenschapVanGoederen": "Gemeenschap van goederen",
+      "beperktGemeenschap": "Beperkte gemeenschap",
+      "koudeUitsluiting": "Koude uitsluiting"
+    },
+    "legitimatie": {
+      "geen": "Geen",
+      "paspoort": "Paspoort",
+      "identiteitskaart": "Identiteitskaart",
+      "rijbewijs": "Rijbewijs"
+    },
+    "relatie": {
+      "Partner": "Partner",
+      "Kind": "Kind",
+      "Ouder": "Ouder",
+      "Broer/Zus": "Broer/Zus",
+      "Kleinkind": "Kleinkind",
+      "Neef/Nicht": "Neef/Nicht",
+      "Vriend": "Vriend(in)",
+      "Organisatie": "Organisatie",
+      "Anders": "Anders",
+      "selecteer": "Selecteer..."
+    },
+    "entityType": {
+      "FysiekBezit": "Bezitting",
+      "Bankrekening": "Bankrekening",
+      "Verzekering": "Verzekering",
+      "DigitaalAccount": "Digitaal Account",
+      "CryptoWallet": "Crypto Wallet"
+    }
+  },
+  "erfgenamen": {
+    "titel": "Erfgenamen",
+    "beschrijving": "Erfgenamen beheren en noodcodes verdelen",
+    "laden": "Laden...",
+    "noodcodesVerdelen": "Noodcodes verdelen",
+    "toevoegen": "Erfgenaam toevoegen",
+    "noodcodesInfoLabel": "Noodcodes verdelen:",
+    "noodcodesInfo": "Uw hoofdwachtwoord wordt veilig opgesplitst in unieke codes voor uw erfgenamen. Pas wanneer genoeg erfgenamen (de 'drempel') hun code samenvoegen, kan het wachtwoord worden hersteld. Eén code alleen is waardeloos.",
+    "geenErfgenamen": "Nog geen erfgenamen toegevoegd.",
+    "aantal": "Erfgenamen ({aantal})",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "exportMislukt": "Export mislukt.",
+    "exportMisluktCode": "Export mislukt ({code})",
+    "sleuteldelenMislukt": "Sleuteldelen genereren mislukt.",
+    "toewijzingOpslaanMislukt": "Toewijzing opslaan mislukt.",
+    "toewijzingVerwijderenMislukt": "Toewijzing verwijderen mislukt.",
+    "bezitToewijzen": "Bezit toewijzen",
+    "pdfDownloaden": "PDF downloaden",
+    "deelOverzicht": "Deel overzicht (HTML)",
+    "geenBezittingen": "Nog geen bezittingen toegewezen.",
+    "toewijzenKnop": "Toewijzen",
+    "toegewezenBezittingen": "Toegewezen bezittingen:",
+    "dialog": {
+      "bewerken": "Erfgenaam bewerken",
+      "toevoegen": "Erfgenaam toevoegen",
+      "voornaam": "Voornaam",
+      "achternaam": "Achternaam",
+      "tussenvoegsel": "Tussenvoegsel",
+      "tussenvoegselPlaceholder": "bijv. van, de, van der",
+      "relatie": "Relatie",
+      "email": "E-mail",
+      "telefoon": "Telefoon",
+      "geboortedatum": "Geboortedatum",
+      "bsn": "BSN (optioneel)",
+      "bsnTooltip": "Het Burgerservicenummer is nodig voor notariële aktes. Dit veld wordt versleuteld opgeslagen.",
+      "bsnPlaceholder": "123456789",
+      "adres": "Adres",
+      "adresPlaceholder": "Straat en huisnummer",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "Woonplaats",
+      "legitimatie": "Legitimatie",
+      "documentnummer": "Documentnummer",
+      "datumAfgifte": "Datum afgifte",
+      "geldigTot": "Geldig tot",
+      "annuleren": "Annuleren",
+      "opslaanBezig": "Opslaan...",
+      "opslaan": "Opslaan"
+    },
+    "toewijzingDialog": {
+      "titel": "Bezit toewijzen aan erfgenaam",
+      "beschrijving": "Wijs een bezitting, rekening of account toe aan een erfgenaam.",
+      "erfgenaam": "Erfgenaam",
+      "erfgenaamSelecteer": "Selecteer erfgenaam...",
+      "typeBezit": "Type bezit",
+      "alleTypes": "Alle types...",
+      "bezit": "Bezit",
+      "bezitSelecteer": "Selecteer bezit...",
+      "instructies": "Instructies (optioneel)",
+      "instructiesPlaceholder": "Bijv. 'Bewaar dit als aandenken' of 'Verkopen en opbrengst verdelen'",
+      "annuleren": "Annuleren",
+      "opslaanBezig": "Opslaan...",
+      "toewijzen": "Toewijzen"
+    },
+    "shamir": {
+      "titel": "Noodcodes Genereren",
+      "beschrijving": "Verdeel uw hoofdwachtwoord in {aantal} unieke noodcodes. Alleen wanneer het minimum aantal personen (drempel) hun code samenvoegt, kan het wachtwoord worden gereconstrueerd.",
+      "waarschuwing": "Waarschuwing:",
+      "waarschuwingTekst": "De noodcodes worden NIET opgeslagen in Lumio. Noteer ze zorgvuldig of druk ze af. Verloren codes kunnen niet worden hersteld.",
+      "wachtwoord": "Uw hoofdwachtwoord",
+      "wachtwoordPlaceholder": "Voer uw Lumio hoofdwachtwoord in",
+      "drempel": "Drempel (minimum aantal noodcodes voor reconstructie)",
+      "drempelTooltip": "De drempel bepaalt hoeveel erfgenamen samen nodig zijn om uw hoofdwachtwoord te reconstrueren. Bij een drempel van 3 moeten minimaal 3 erfgenamen hun code samenvoegen. Een hogere drempel is veiliger, maar vereist meer samenwerking.",
+      "drempelOptie": "{n} van {totaal} personen",
+      "delenInfo": "Er worden <strong>{aantal}</strong> delen gegenereerd, waarvan er minimaal <strong>{drempel}</strong> nodig zijn.",
+      "annuleren": "Annuleren",
+      "genererenBezig": "Genereren...",
+      "genereren": "Genereren",
+      "succes": "Succes!",
+      "succesTekst": "Er zijn {aantal} delen gegenereerd met een drempel van {drempel}. Kopieer elk deel en geef het aan de betreffende erfgenaam.",
+      "deel": "Deel {index}",
+      "erfgenaamFallback": "Erfgenaam {nummer}",
+      "gekopieerd": "Gekopieerd",
+      "kopieren": "Kopiëren",
+      "sluiten": "Sluiten"
+    }
+  },
+  "erfbelasting": {
+    "berekenBezig": "Berekenen...",
+    "berekenen": "Erfbelasting berekenen",
+    "titel": "Indicatieve erfbelasting",
+    "sluiten": "Sluiten",
+    "nettoNalatenschap": "Netto nalatenschap",
+    "perErfgenaam": "Per erfgenaam",
+    "kolomNaam": "Naam",
+    "kolomTariefgroep": "Tariefgroep",
+    "kolomErfdeel": "Erfdeel",
+    "kolomVrijstelling": "Vrijstelling",
+    "kolomBelastbaar": "Belastbaar",
+    "kolomErfbelasting": "Erfbelasting",
+    "kolomNetto": "Netto",
+    "totaalErfbelasting": "Totaal erfbelasting",
+    "geenErfgenamen": "Voeg eerst erfgenamen toe om de erfbelasting te berekenen."
+  }
+}

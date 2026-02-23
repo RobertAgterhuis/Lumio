@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 import { Lightbulb, Loader2, CheckCircle, Link2 } from "lucide-react";
 
 interface Suggestie {
@@ -26,6 +27,7 @@ export function ProfielSuggesties() {
   const [result, setResult] = useState<SuggestieResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("dashboard.suggesties");
 
   const handleCheck = async () => {
     setLoading(true);
@@ -37,11 +39,11 @@ export function ProfielSuggesties() {
         window.location.href = "/";
         return;
       }
-      if (!res.ok) throw new Error("Analyse mislukt");
+      if (!res.ok) throw new Error(t("analyseMislukt"));
       const data: SuggestieResult = await res.json();
       setResult(data);
     } catch {
-      setError("Kon de analyse niet uitvoeren.");
+      setError(t("fout"));
     } finally {
       setLoading(false);
     }
@@ -51,11 +53,10 @@ export function ProfielSuggesties() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Lightbulb className="h-5 w-5" /> Slimme suggesties
+          <Lightbulb className="h-5 w-5" /> {t("titel")}
         </CardTitle>
         <CardDescription>
-          Analyseer uw profiel en ontvang suggesties voor ontbrekende koppelingen
-          en verbeteringen.
+          {t("beschrijving")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -65,7 +66,7 @@ export function ProfielSuggesties() {
           ) : (
             <Lightbulb className="h-4 w-4 mr-2" />
           )}
-          Profiel analyseren
+          {t("analyseren")}
         </Button>
 
         {error && (
@@ -81,18 +82,17 @@ export function ProfielSuggesties() {
                 <CheckCircle className="h-5 w-5 text-green-600" />
                 <div>
                   <p className="text-sm font-medium text-green-800">
-                    Geen suggesties
+                    {t("geenSuggesties")}
                   </p>
                   <p className="text-xs text-green-700 mt-1">
-                    Uw profiel is goed ingevuld en alle gegevens zijn consistent.
+                    {t("geenSuggestiesBeschrijving")}
                   </p>
                 </div>
               </div>
             ) : (
               <>
                 <p className="text-sm text-muted-foreground">
-                  {result.aantalSuggesties} suggestie
-                  {result.aantalSuggesties !== 1 ? "s" : ""} gevonden:
+                  {t("aantalGevonden", { aantal: result.aantalSuggesties })}
                 </p>
                 {result.suggesties.map((s, i) => (
                   <div

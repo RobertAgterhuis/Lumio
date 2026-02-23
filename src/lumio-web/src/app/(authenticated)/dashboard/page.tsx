@@ -13,6 +13,7 @@ import { StatistiekenWidget } from "@/components/dashboard/StatistiekenWidget";
 import { VoortgangGranulair } from "@/components/dashboard/VoortgangGranulair";
 import { ProfielSuggesties } from "@/components/dashboard/ProfielSuggesties";
 import { InterviewWizard } from "@/components/interview/InterviewWizard";
+import { useTranslations } from "next-intl";
 import {
   ScrollText,
   Heart,
@@ -62,8 +63,7 @@ const domainCards = [
     href: "/eigenaar",
     domein: "eigenaar",
     icon: User,
-    titel: "Mijn Profiel",
-    beschrijving: "Persoonlijke gegevens en contactinformatie",
+    domeinKey: "eigenaar",
     color: "text-gray-600",
     bgColor: "bg-gray-50",
   },
@@ -71,8 +71,7 @@ const domainCards = [
     href: "/testament",
     domein: "testament",
     icon: ScrollText,
-    titel: "Testament",
-    beschrijving: "Testamentaire informatie, begunstigden en executeurs",
+    domeinKey: "testament",
     color: "text-blue-600",
     bgColor: "bg-blue-50",
   },
@@ -80,8 +79,7 @@ const domainCards = [
     href: "/euthanasie",
     domein: "euthanasie",
     icon: Stethoscope,
-    titel: "Wilsverklaring Euthanasie",
-    beschrijving: "Uw wensen rondom euthanasie en medische behandeling",
+    domeinKey: "euthanasie",
     color: "text-purple-600",
     bgColor: "bg-purple-50",
   },
@@ -89,8 +87,7 @@ const domainCards = [
     href: "/donor",
     domein: "donor",
     icon: Heart,
-    titel: "Donorregistratie",
-    beschrijving: "Orgaandonatie keuzes en registratie",
+    domeinKey: "donor",
     color: "text-red-600",
     bgColor: "bg-red-50",
   },
@@ -98,8 +95,7 @@ const domainCards = [
     href: "/digitaal-bezit",
     domein: "digitaal-bezit",
     icon: Globe,
-    titel: "Digitaal Bezit",
-    beschrijving: "Online accounts, wachtwoorden en crypto wallets",
+    domeinKey: "digitaalBezit",
     color: "text-green-600",
     bgColor: "bg-green-50",
   },
@@ -107,8 +103,7 @@ const domainCards = [
     href: "/boedel",
     domein: "boedel",
     icon: Wallet,
-    titel: "Boedel",
-    beschrijving: "Bezittingen, bankrekeningen, verzekeringen en schulden",
+    domeinKey: "boedel",
     color: "text-amber-600",
     bgColor: "bg-amber-50",
   },
@@ -116,8 +111,7 @@ const domainCards = [
     href: "/uitvaart",
     domein: "uitvaart",
     icon: Church,
-    titel: "Uitvaartwensen",
-    beschrijving: "Begrafenis of crematie, ceremonie en rouwkaart",
+    domeinKey: "uitvaart",
     color: "text-stone-600",
     bgColor: "bg-stone-50",
   },
@@ -125,8 +119,7 @@ const domainCards = [
     href: "/documenten",
     domein: "documenten",
     icon: FileText,
-    titel: "Documenten",
-    beschrijving: "Belangrijke documenten veilig opslaan",
+    domeinKey: "documenten",
     color: "text-cyan-600",
     bgColor: "bg-cyan-50",
   },
@@ -134,8 +127,7 @@ const domainCards = [
     href: "/erfgenamen",
     domein: "erfgenamen",
     icon: Users,
-    titel: "Erfgenamen",
-    beschrijving: "Erfgenamen beheren en noodcodes verdelen",
+    domeinKey: "erfgenamen",
     color: "text-indigo-600",
     bgColor: "bg-indigo-50",
   },
@@ -143,8 +135,7 @@ const domainCards = [
     href: "/noodcontacten",
     domein: "noodcontacten",
     icon: Phone,
-    titel: "Noodcontacten",
-    beschrijving: "Vertrouwenspersonen en hulpverleners voor noodsituaties",
+    domeinKey: "noodcontacten",
     color: "text-pink-600",
     bgColor: "bg-pink-50",
   },
@@ -157,6 +148,7 @@ export default function DashboardPage() {
   const [meldingen, setMeldingen] = useState<Melding[]>([]);
   const [meldingenOpen, setMeldingenOpen] = useState(true);
   const [showInterview, setShowInterview] = useState(false);
+  const t = useTranslations("dashboard");
 
   useEffect(() => {
     api
@@ -189,9 +181,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold">{t("titel")}</h1>
         <p className="text-muted-foreground mt-1">
-          Beheer uw digitale nalatenschap. Klik op een onderdeel om te beginnen.
+          {t("beschrijving")}
         </p>
       </div>
 
@@ -200,7 +192,7 @@ export default function DashboardPage() {
         <div className="rounded-lg border bg-card p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold">
-              Voortgang nalatenschap
+              {t("voortgang.titel")}
             </h2>
             <span className="text-sm font-bold text-primary">
               {compleetheid.percentage}%
@@ -213,8 +205,7 @@ export default function DashboardPage() {
             />
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            {compleetheid.aantalIngevuld} van {compleetheid.totaal} onderdelen
-            ingevuld
+            {t("voortgang.onderdelen", { aantalIngevuld: compleetheid.aantalIngevuld, totaal: compleetheid.totaal })}
           </p>
         </div>
       )}
@@ -226,7 +217,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2">
               <Bell className="h-4 w-4 text-primary" />
               <h2 className="text-sm font-semibold">
-                Meldingen ({meldingen.length})
+                {t("meldingen.titel", { aantal: meldingen.length })}
               </h2>
             </div>
             <Button
@@ -235,7 +226,7 @@ export default function DashboardPage() {
               onClick={() => setMeldingenOpen(false)}
               className="text-xs text-muted-foreground"
             >
-              Verbergen
+              {t("meldingen.verbergen")}
             </Button>
           </div>
           <div className="space-y-2">
@@ -295,19 +286,18 @@ export default function DashboardPage() {
             <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
             <div>
               <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-                Vul eerst uw profiel in om te beginnen
+                {t("geenProfiel.titel")}
               </p>
               <p className="text-sm text-amber-800 dark:text-amber-300 mt-1">
-                Voordat u gegevens kunt opslaan in Lumio, moet u eerst uw
-                persoonsgegevens invullen. Kies hoe u wilt starten:
+                {t("geenProfiel.beschrijving")}
               </p>
               <div className="flex gap-2 mt-3">
                 <Button size="sm" variant="outline" onClick={() => setShowInterview(true)}>
-                  <ScrollText className="h-4 w-4 mr-2" /> Begeleid invullen (interview)
+                  <ScrollText className="h-4 w-4 mr-2" /> {t("geenProfiel.interview")}
                 </Button>
                 <Link href="/eigenaar">
                   <Button size="sm">
-                    <User className="h-4 w-4 mr-2" /> Direct profiel aanmaken
+                    <User className="h-4 w-4 mr-2" /> {t("geenProfiel.direct")}
                   </Button>
                 </Link>
               </div>
@@ -318,9 +308,7 @@ export default function DashboardPage() {
 
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
         <p className="text-sm text-blue-800 dark:text-blue-300">
-          <strong>Let op:</strong> Lumio is een hulpmiddel voor het vastleggen van uw wensen.
-          Een notarieel testament blijft vereist voor juridische geldigheid conform het
-          Burgerlijk Wetboek (BW Boek 4).
+          <strong>{t("letOp")}</strong> {t("juridisch")}
         </p>
       </div>
 
@@ -339,23 +327,23 @@ export default function DashboardPage() {
                     {status === true ? (
                       <Badge className="bg-green-100 text-green-800 hover:bg-green-100 gap-1">
                         <CheckCircle2 className="h-3 w-3" />
-                        Ingevuld
+                        {t("status.ingevuld")}
                       </Badge>
                     ) : status === false ? (
                       <Badge variant="secondary" className="gap-1">
                         <Circle className="h-3 w-3" />
-                        Beginnen
+                        {t("status.beginnen")}
                       </Badge>
                     ) : (
-                      <Badge variant="secondary">Beginnen</Badge>
+                      <Badge variant="secondary">{t("status.beginnen")}</Badge>
                     )}
                   </div>
-                  <CardTitle className="text-lg mt-3">{card.titel}</CardTitle>
+                  <CardTitle className="text-lg mt-3">{t(`domein.${card.domeinKey}.titel`)}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>{card.beschrijving}</CardDescription>
+                  <CardDescription>{t(`domein.${card.domeinKey}.beschrijving`)}</CardDescription>
                   <div className="mt-3 flex items-center text-sm text-primary">
-                    Openen <ArrowRight className="ml-1 h-3 w-3" />
+                    {t("status.openen")} <ArrowRight className="ml-1 h-3 w-3" />
                   </div>
                 </CardContent>
               </Card>

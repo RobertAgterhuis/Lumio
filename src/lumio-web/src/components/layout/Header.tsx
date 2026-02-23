@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTheme } from "@/hooks/useTheme";
+import { useTranslations } from "next-intl";
 import { Lock, Search, UserCircle, Moon, Sun } from "lucide-react";
 import { SearchDialog } from "./SearchDialog";
 
@@ -12,6 +13,7 @@ export function Header() {
   const { lock, activeProfile } = useAuthStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const { theme, toggle: toggleTheme } = useTheme();
+  const t = useTranslations("common");
 
   const handleLock = async () => {
     try {
@@ -57,7 +59,7 @@ export function Header() {
             className="gap-2 text-muted-foreground"
           >
             <Search className="h-4 w-4" />
-            <span className="hidden sm:inline">Zoeken</span>
+            <span className="hidden sm:inline">{t("zoeken")}</span>
             <kbd className="ml-1 hidden rounded border bg-muted px-1.5 py-0.5 text-xs sm:inline-block">
               Ctrl+K
             </kbd>
@@ -66,7 +68,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            title={theme === "dark" ? "Licht thema" : "Donker thema"}
+            title={theme === "dark" ? t("lichtThema") : t("donkerThema")}
           >
             {theme === "dark" ? (
               <Sun className="h-4 w-4" />
@@ -76,7 +78,7 @@ export function Header() {
           </Button>
           <Button variant="ghost" size="sm" onClick={handleLock} className="gap-2">
             <Lock className="h-4 w-4" />
-            Vergrendelen
+            {t("vergrendelen")}
           </Button>
         </div>
       </header>
