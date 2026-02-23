@@ -50,6 +50,4 @@ data/
 *.db-shm
 *.db-wal
 
-#local settings
-Analyse/
-*.md
+
