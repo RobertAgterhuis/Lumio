@@ -2,6 +2,7 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
 using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Services.Security;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ public class EigenaarController : ControllerBase
 {
     private readonly LumioDbContext _db;
     private readonly LimietenOptions _limieten;
+    private readonly IProfileService _profileService;
 
-    public EigenaarController(LumioDbContext db, IOptions<LimietenOptions> limieten)
+    public EigenaarController(LumioDbContext db, IOptions<LimietenOptions> limieten, IProfileService profileService)
     {
         _db = db;
         _limieten = limieten.Value;
+        _profileService = profileService;
     }
 
     [HttpGet]
@@ -93,6 +96,10 @@ public class EigenaarController : ControllerBase
         eigenaar.ProfielFotoNaam = bestand.FileName;
         await _db.SaveChangesAsync();
 
+        // Save a small thumbnail in profiles.json (available before DB unlock)
+        var thumbnailBase64 = $"data:{bestand.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+        _profileService.UpdateActiveProfileThumbnail(thumbnailBase64);
+
         return Ok(new { message = "Profielfoto opgeslagen." });
     }
 
@@ -107,6 +114,9 @@ public class EigenaarController : ControllerBase
         eigenaar.ProfielFotoContentType = null;
         eigenaar.ProfielFotoNaam = null;
         await _db.SaveChangesAsync();
+
+        // Clear thumbnail from profiles.json
+        _profileService.UpdateActiveProfileThumbnail(null);
 
         return NoContent();
     }

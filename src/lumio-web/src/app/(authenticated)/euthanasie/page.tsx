@@ -13,6 +13,7 @@ import { Stethoscope, Pencil } from "lucide-react";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { PersonSelect } from "@/components/PersonSelect";
 
 interface Wilsverklaring {
   id: string;
@@ -316,7 +317,12 @@ export default function EuthanasiePage() {
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <Label>{t("editDialog.naamHuisarts")}</Label>
-              <Input value={editForm.huisarts} onChange={(e) => setEditForm((f) => ({ ...f, huisarts: e.target.value }))} />
+              <PersonSelect
+                value={editForm.huisarts}
+                onChange={(v) => setEditForm((f) => ({ ...f, huisarts: v }))}
+                onPersonSelect={(p) => setEditForm((f) => ({ ...f, huisarts: p.naam, huisartsTelefoon: p.telefoon ?? f.huisartsTelefoon, huisartsEmail: p.email ?? f.huisartsEmail }))}
+                source={{ noodcontactRol: "Huisarts" }}
+              />
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.praktijk")}</Label>
@@ -336,7 +342,12 @@ export default function EuthanasiePage() {
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <Label>{t("editDialog.naam")}</Label>
-              <Input value={editForm.vertegenwoordigerNaam} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerNaam: e.target.value }))} />
+              <PersonSelect
+                value={editForm.vertegenwoordigerNaam}
+                onChange={(v) => setEditForm((f) => ({ ...f, vertegenwoordigerNaam: v }))}
+                onPersonSelect={(p) => setEditForm((f) => ({ ...f, vertegenwoordigerNaam: p.naam, vertegenwoordigerRelatie: p.relatie ?? f.vertegenwoordigerRelatie, vertegenwoordigerTelefoon: p.telefoon ?? f.vertegenwoordigerTelefoon, vertegenwoordigerEmail: p.email ?? f.vertegenwoordigerEmail, vertegenwoordigerAdres: p.adres ?? f.vertegenwoordigerAdres, vertegenwoordigerPostcode: p.postcode ?? f.vertegenwoordigerPostcode, vertegenwoordigerWoonplaats: p.woonplaats ?? f.vertegenwoordigerWoonplaats }))}
+                source="both"
+              />
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.relatie")}</Label>

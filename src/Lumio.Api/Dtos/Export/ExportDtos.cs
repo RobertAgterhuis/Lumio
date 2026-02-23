@@ -250,7 +250,12 @@ public record SchuldExport(
     decimal? MaandelijkseAflossing,
     string? Referentie,
     string VermogensSoort,
-    string? Notities
+    string? Notities,
+    string? HypotheekVorm,
+    decimal? Rentepercentage,
+    decimal? MaandelijkseRente,
+    DateTime? Einddatum,
+    decimal? Restschuld
 );
 
 // ── Digitaal Account (exclusief wachtwoorden!) ──────────

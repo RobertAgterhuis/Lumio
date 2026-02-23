@@ -48,7 +48,10 @@ public record SchuldResponse(
     string Type,
     decimal Bedrag, decimal? MaandelijkseAflossing,
     string? Referentie, VermogensSoort VermogensSoort,
-    string? Notities);
+    string? Notities,
+    string? HypotheekVorm, decimal? Rentepercentage,
+    decimal? MaandelijkseRente, DateTime? Einddatum,
+    decimal? Restschuld);
 
 public record SchuldUpsertRequest(
     string Schuldeiser,
@@ -56,4 +59,7 @@ public record SchuldUpsertRequest(
     string Type,
     decimal Bedrag, decimal? MaandelijkseAflossing,
     string? Referentie, VermogensSoort VermogensSoort,
-    string? Notities);
+    string? Notities,
+    string? HypotheekVorm, decimal? Rentepercentage,
+    decimal? MaandelijkseRente, DateTime? Einddatum,
+    decimal? Restschuld);

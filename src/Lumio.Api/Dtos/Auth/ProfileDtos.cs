@@ -5,7 +5,8 @@ public record ProfileResponse(
     string Naam,
     string Relatie,
     bool IsPrimair,
-    DateTime AangemaaktOp);
+    DateTime AangemaaktOp,
+    string? FotoThumbnail);
 
 public record CreateProfileRequest(string Naam, string Relatie);
 

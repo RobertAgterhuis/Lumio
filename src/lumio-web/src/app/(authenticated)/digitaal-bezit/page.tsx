@@ -26,6 +26,7 @@ import {
   type AfsluitInstructie,
 } from "@/lib/afsluit-instructies";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { PersonSelect } from "@/components/PersonSelect";
 
 interface DigitaalAccount {
   id: string;
@@ -749,11 +750,12 @@ export default function DigitaalBezitPage() {
           </div>
           <div className="space-y-2">
             <Label>{t("accountDialog.overdrachtAan")}</Label>
-            <Input
+            <PersonSelect
               value={accountForm.overdrachtAan}
-              onChange={(e) =>
-                setAccountForm((f) => ({ ...f, overdrachtAan: e.target.value }))
+              onChange={(v) =>
+                setAccountForm((f) => ({ ...f, overdrachtAan: v }))
               }
+              source="erfgenamen"
               placeholder={t("accountDialog.overdrachtPlaceholder")}
             />
           </div>

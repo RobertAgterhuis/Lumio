@@ -147,6 +147,16 @@ public class ProfileService : IProfileService
         }
     }
 
+    public void UpdateActiveProfileThumbnail(string? base64Thumbnail)
+    {
+        lock (_lock)
+        {
+            if (_activeProfile == null) return;
+            _activeProfile.FotoThumbnail = base64Thumbnail;
+            SaveProfiles();
+        }
+    }
+
     private List<Profile> LoadProfiles()
     {
         if (!File.Exists(_profilesPath))

@@ -103,7 +103,15 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                 disabled={loading}
                 className="flex w-full items-center gap-3 rounded-lg border border-border p-3 text-left transition-colors hover:bg-accent hover:border-primary/50 disabled:opacity-50"
               >
-                <UserCircle className="h-10 w-10 text-primary/60 shrink-0" />
+                {profile.fotoThumbnail ? (
+                  <img
+                    src={profile.fotoThumbnail}
+                    alt={profile.naam}
+                    className="h-10 w-10 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <UserCircle className="h-10 w-10 text-primary/60 shrink-0" />
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">{profile.naam}</p>
                   <p className="text-sm text-muted-foreground">{profile.relatie}</p>

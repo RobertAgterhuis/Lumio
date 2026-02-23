@@ -19,6 +19,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { PersonSelect } from "@/components/PersonSelect";
 
 interface UitvaartWensen {
   id: string;
@@ -777,9 +778,11 @@ export default function UitvaartPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t("genodigdeDialog.naam")}</Label>
-              <Input
+              <PersonSelect
+                source="both"
                 value={genForm.naam}
-                onChange={(e) => setGenForm((f) => ({ ...f, naam: e.target.value }))}
+                onChange={(v) => setGenForm((f) => ({ ...f, naam: v }))}
+                onPersonSelect={(p) => setGenForm((f) => ({ ...f, relatie: p.relatie || f.relatie, telefoon: p.telefoon || f.telefoon, email: p.email || f.email, adres: p.adres || f.adres, postcode: p.postcode || f.postcode, woonplaats: p.woonplaats || f.woonplaats }))}
                 placeholder={t("genodigdeDialog.naamPlaceholder")}
               />
             </div>
@@ -803,6 +806,11 @@ export default function UitvaartPage() {
             </div>
             <div className="space-y-2">
               <Label>{t("genodigdeDialog.email")}</Label>
+              <Input
+                type="email"
+                value={genForm.email}
+                onChange={(e) => setGenForm((f) => ({ ...f, email: e.target.value }))}
+              />
             </div>
           </div>
           <div className="space-y-2">
@@ -822,6 +830,10 @@ export default function UitvaartPage() {
             </div>
             <div className="space-y-2">
               <Label>{t("genodigdeDialog.woonplaats")}</Label>
+              <Input
+                value={genForm.woonplaats}
+                onChange={(e) => setGenForm((f) => ({ ...f, woonplaats: e.target.value }))}
+              />
             </div>
           </div>
           <div className="space-y-2">
@@ -868,7 +880,12 @@ export default function UitvaartPage() {
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <Label>{t("editDialog.ondernemer")}</Label>
-              <Input value={uitvaartEditForm.uitvaartOndernemer} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, uitvaartOndernemer: e.target.value }))} />
+              <PersonSelect
+                source={{ noodcontactRol: "Uitvaartondernemer" }}
+                value={uitvaartEditForm.uitvaartOndernemer}
+                onChange={(v) => setUitvaartEditForm((f) => ({ ...f, uitvaartOndernemer: v }))}
+                onPersonSelect={(p) => setUitvaartEditForm((f) => ({ ...f, uitvaartOndernemerTelefoon: p.telefoon || f.uitvaartOndernemerTelefoon, uitvaartOndernemerEmail: p.email || f.uitvaartOndernemerEmail, uitvaartOndernemerAdres: p.adres || f.uitvaartOndernemerAdres, uitvaartOndernemerPostcode: p.postcode || f.uitvaartOndernemerPostcode, uitvaartOndernemerPlaats: p.woonplaats || f.uitvaartOndernemerPlaats }))}
+              />
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.telOndernemer")}</Label>

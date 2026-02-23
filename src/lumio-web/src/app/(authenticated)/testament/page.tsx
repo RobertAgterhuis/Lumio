@@ -16,6 +16,7 @@ import { ScrollText, Plus, Pencil, Trash2, AlertTriangle, History, GitCompareArr
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { JuridischeCheck } from "@/components/testament/JuridischeCheck";
+import { PersonSelect } from "@/components/PersonSelect";
 import { useTranslations, useLocale } from "next-intl";
 
 interface LegitimairePortieWaarschuwing {
@@ -645,9 +646,11 @@ export default function TestamentPage() {
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label>{t("execDialog.naam")}</Label>
-            <Input
+            <PersonSelect
               value={execForm.naam}
-              onChange={(e) => setExecForm((f) => ({ ...f, naam: e.target.value }))}
+              onChange={(v) => setExecForm((f) => ({ ...f, naam: v }))}
+              onPersonSelect={(p) => setExecForm((f) => ({ ...f, naam: p.naam, relatie: p.relatie ?? f.relatie, telefoon: p.telefoon ?? f.telefoon, email: p.email ?? f.email, adres: p.adres ?? f.adres, postcode: p.postcode ?? f.postcode, woonplaats: p.woonplaats ?? f.woonplaats }))}
+              source="both"
               placeholder={t("execDialog.naamPlaceholder")}
             />
           </div>
@@ -803,9 +806,11 @@ export default function TestamentPage() {
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <Label>{t("begDialog.naam")}</Label>
-              <Input
+              <PersonSelect
                 value={begForm.naam}
-                onChange={(e) => setBegForm((f) => ({ ...f, naam: e.target.value }))}
+                onChange={(v) => setBegForm((f) => ({ ...f, naam: v }))}
+                onPersonSelect={(p) => setBegForm((f) => ({ ...f, naam: p.naam, relatie: p.relatie ?? f.relatie, telefoon: p.telefoon ?? f.telefoon, email: p.email ?? f.email, adres: p.adres ?? f.adres, postcode: p.postcode ?? f.postcode, woonplaats: p.woonplaats ?? f.woonplaats }))}
+                source="erfgenamen"
                 placeholder={t("begDialog.naamPlaceholder")}
               />
             </div>

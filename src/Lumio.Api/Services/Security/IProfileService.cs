@@ -40,4 +40,7 @@ public interface IProfileService
 
     /// <summary>Check if the active profile's database file exists.</summary>
     bool ActiveProfileDbExists { get; }
+
+    /// <summary>Update the active profile's photo thumbnail (stored in profiles.json).</summary>
+    void UpdateActiveProfileThumbnail(string? base64Thumbnail);
 }

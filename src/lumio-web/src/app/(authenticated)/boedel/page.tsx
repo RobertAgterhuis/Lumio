@@ -30,6 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
+import { PersonSelect } from "@/components/PersonSelect";
 
 interface Samenvatting {
   totaalBezittingen: number;
@@ -89,6 +90,11 @@ interface Schuld {
   referentie?: string;
   notities?: string;
   vermogensSoort: number;
+  hypotheekVorm?: string;
+  rentepercentage?: number;
+  maandelijkseRente?: number;
+  einddatum?: string;
+  restschuld?: number;
 }
 
 type DialogKind = "bezit" | "rekening" | "verzekering" | "schuld" | null;
@@ -114,7 +120,7 @@ export default function BoedelPage() {
   const [bezitForm, setBezitForm] = useState({ categorie: "", omschrijving: "", geschatteWaarde: "", locatie: "", bestemdeErfgenaam: "", notities: "", vermogensSoort: "0", kadastraalNummer: "", kenteken: "", kvKNummer: "" });
   const [rekeningForm, setRekeningForm] = useState({ bankNaam: "", rekeningType: "", iban: "", notities: "", saldo: "", vermogensSoort: "0" });
   const [verzekerForm, setVerzekerForm] = useState({ verzekeraar: "", verzekeraarTelefoon: "", verzekeraarEmail: "", type: "", polisNummer: "", verzekerdBedrag: "", begunstigde: "", notities: "", vermogensSoort: "0" });
-  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0" });
+  const [schuldForm, setSchuldForm] = useState({ schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0", hypotheekVorm: "", rentepercentage: "", maandelijkseRente: "", einddatum: "", restschuld: "" });
 
   const loadData = () => {
     Promise.all([
@@ -195,7 +201,12 @@ export default function BoedelPage() {
       referentie: item.referentie ?? "",
       notities: item.notities ?? "",
       vermogensSoort: String(item.vermogensSoort ?? 0),
-    } : { schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0" });
+      hypotheekVorm: item.hypotheekVorm ?? "",
+      rentepercentage: item.rentepercentage?.toString() ?? "",
+      maandelijkseRente: item.maandelijkseRente?.toString() ?? "",
+      einddatum: item.einddatum ? item.einddatum.substring(0, 10) : "",
+      restschuld: item.restschuld?.toString() ?? "",
+    } : { schuldeiser: "", schuldeiserTelefoon: "", schuldeiserEmail: "", type: "", bedrag: "", maandelijkseAflossing: "", referentie: "", notities: "", vermogensSoort: "0", hypotheekVorm: "", rentepercentage: "", maandelijkseRente: "", einddatum: "", restschuld: "" });
     setDialogKind("schuld");
   };
 
@@ -274,6 +285,11 @@ export default function BoedelPage() {
         referentie: schuldForm.referentie || null,
         notities: schuldForm.notities || null,
         vermogensSoort: parseInt(schuldForm.vermogensSoort),
+        hypotheekVorm: schuldForm.type === "Hypotheek" ? (schuldForm.hypotheekVorm || null) : null,
+        rentepercentage: schuldForm.type === "Hypotheek" && schuldForm.rentepercentage ? parseFloat(schuldForm.rentepercentage) : null,
+        maandelijkseRente: schuldForm.type === "Hypotheek" && schuldForm.maandelijkseRente ? parseFloat(schuldForm.maandelijkseRente) : null,
+        einddatum: schuldForm.type === "Hypotheek" && schuldForm.einddatum ? schuldForm.einddatum : null,
+        restschuld: schuldForm.type === "Hypotheek" && schuldForm.restschuld ? parseFloat(schuldForm.restschuld) : null,
       };
       if (editId) await api.put(`/api/boedel/schulden/${editId}`, payload);
       else await api.post("/api/boedel/schulden", payload);
@@ -515,7 +531,7 @@ export default function BoedelPage() {
           <div className="space-y-2"><Label>{t("bezitDialog.omschrijving")}</Label><Input value={bezitForm.omschrijving} onChange={(e) => setBezitForm((f) => ({ ...f, omschrijving: e.target.value }))} placeholder={t("bezitDialog.omschrijvingPlaceholder")} /></div>
           <div className="space-y-2"><Label>{t("bezitDialog.geschatteWaarde")}</Label><Input type="number" value={bezitForm.geschatteWaarde} onChange={(e) => setBezitForm((f) => ({ ...f, geschatteWaarde: e.target.value }))} /></div>
           <div className="space-y-2"><Label>{t("bezitDialog.locatie")}</Label><Input value={bezitForm.locatie} onChange={(e) => setBezitForm((f) => ({ ...f, locatie: e.target.value }))} placeholder={t("bezitDialog.locatiePlaceholder")} /></div>
-          <div className="space-y-2"><Label>{t("bezitDialog.bestemdeErfgenaam")}</Label><Input value={bezitForm.bestemdeErfgenaam} onChange={(e) => setBezitForm((f) => ({ ...f, bestemdeErfgenaam: e.target.value }))} placeholder={t("bezitDialog.bestemdeErfgenaamPlaceholder")} /></div>
+          <div className="space-y-2"><Label>{t("bezitDialog.bestemdeErfgenaam")}</Label><PersonSelect value={bezitForm.bestemdeErfgenaam} onChange={(v) => setBezitForm((f) => ({ ...f, bestemdeErfgenaam: v }))} source="erfgenamen" placeholder={t("bezitDialog.bestemdeErfgenaamPlaceholder")} /></div>
           <div className="space-y-2"><Label>{t("bezitDialog.vermogensSoort")}</Label> <HelpTooltip tekst={t("bezitDialog.vermogensSoortTooltip")} />
             <Select value={bezitForm.vermogensSoort} onChange={(e) => setBezitForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
               <option value="0">{tEnum("vermogensSoort.prive")}</option>
@@ -592,7 +608,7 @@ export default function BoedelPage() {
           </div>
           <div className="space-y-2"><Label>{t("verzekerDialog.polisNummer")}</Label><Input value={verzekerForm.polisNummer} onChange={(e) => setVerzekerForm((f) => ({ ...f, polisNummer: e.target.value }))} /></div>
           <div className="space-y-2"><Label>{t("verzekerDialog.verzekerdBedrag")}</Label><Input type="number" value={verzekerForm.verzekerdBedrag} onChange={(e) => setVerzekerForm((f) => ({ ...f, verzekerdBedrag: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>{t("verzekerDialog.begunstigde")}</Label><Input value={verzekerForm.begunstigde} onChange={(e) => setVerzekerForm((f) => ({ ...f, begunstigde: e.target.value }))} /></div>
+          <div className="space-y-2"><Label>{t("verzekerDialog.begunstigde")}</Label><PersonSelect value={verzekerForm.begunstigde} onChange={(v) => setVerzekerForm((f) => ({ ...f, begunstigde: v }))} source="erfgenamen" /></div>
           <div className="space-y-2"><Label>{t("verzekerDialog.vermogensSoort")}</Label>
             <Select value={verzekerForm.vermogensSoort} onChange={(e) => setVerzekerForm((f) => ({ ...f, vermogensSoort: e.target.value }))}>
               <option value="0">{tEnum("vermogensSoort.prive")}</option>
@@ -627,6 +643,44 @@ export default function BoedelPage() {
               <option value="Overig">{tEnum("schuldType.overig")}</option>
             </Select>
           </div>
+          {schuldForm.type === "Hypotheek" && (
+            <>
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 space-y-4">
+                <p className="text-xs font-medium text-blue-800">{t("schuldDialog.hypotheekDetails")}</p>
+                <div className="space-y-2">
+                  <Label>{t("schuldDialog.hypotheekVorm")}</Label>
+                  <Select value={schuldForm.hypotheekVorm} onChange={(e) => setSchuldForm((f) => ({ ...f, hypotheekVorm: e.target.value }))}>
+                    <option value="">{tEnum("hypotheekVorm.selecteer")}</option>
+                    <option value="Aflossingsvrij">{tEnum("hypotheekVorm.aflossingsvrij")}</option>
+                    <option value="Lineair">{tEnum("hypotheekVorm.lineair")}</option>
+                    <option value="Annuïteit">{tEnum("hypotheekVorm.annuitair")}</option>
+                    <option value="Spaarhypotheek">{tEnum("hypotheekVorm.spaarhypotheek")}</option>
+                    <option value="Beleggingshypotheek">{tEnum("hypotheekVorm.beleggingshypotheek")}</option>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.rentepercentage")}</Label>
+                    <Input type="number" step="0.01" value={schuldForm.rentepercentage} onChange={(e) => setSchuldForm((f) => ({ ...f, rentepercentage: e.target.value }))} placeholder="bijv. 3.5" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.maandelijkseRente")}</Label>
+                    <Input type="number" value={schuldForm.maandelijkseRente} onChange={(e) => setSchuldForm((f) => ({ ...f, maandelijkseRente: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.einddatum")}</Label>
+                    <Input type="date" value={schuldForm.einddatum} onChange={(e) => setSchuldForm((f) => ({ ...f, einddatum: e.target.value }))} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("schuldDialog.restschuld")}</Label>
+                    <Input type="number" value={schuldForm.restschuld} onChange={(e) => setSchuldForm((f) => ({ ...f, restschuld: e.target.value }))} />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
           <div className="space-y-2"><Label>{t("schuldDialog.bedrag")}</Label><Input type="number" value={schuldForm.bedrag} onChange={(e) => setSchuldForm((f) => ({ ...f, bedrag: e.target.value }))} /></div>
           <div className="space-y-2"><Label>{t("schuldDialog.maandelijkseAflossing")}</Label><Input type="number" value={schuldForm.maandelijkseAflossing} onChange={(e) => setSchuldForm((f) => ({ ...f, maandelijkseAflossing: e.target.value }))} /></div>
           <div className="space-y-2"><Label>{t("schuldDialog.referentie")}</Label><Input value={schuldForm.referentie} onChange={(e) => setSchuldForm((f) => ({ ...f, referentie: e.target.value }))} /></div>

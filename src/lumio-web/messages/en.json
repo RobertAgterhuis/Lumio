@@ -438,6 +438,14 @@
       "zakelijkeLening": "Business loan",
       "overig": "Other"
     },
+    "hypotheekVorm": {
+      "selecteer": "Select mortgage type...",
+      "aflossingsvrij": "Interest-only",
+      "lineair": "Linear",
+      "annuitair": "Annuity",
+      "spaarhypotheek": "Savings mortgage",
+      "beleggingshypotheek": "Investment mortgage"
+    },
     "vermogensSoort": {
       "prive": "Private",
       "gemeenschap": "Community"
@@ -865,7 +873,13 @@
       "maandelijkseAflossing": "Monthly repayment (€)",
       "referentie": "Reference / contract number",
       "vermogensSoort": "Property type",
-      "notities": "Notes"
+      "notities": "Notes",
+      "hypotheekDetails": "Mortgage details",
+      "hypotheekVorm": "Mortgage type",
+      "rentepercentage": "Interest rate (%)",
+      "maandelijkseRente": "Monthly interest (€)",
+      "einddatum": "Mortgage end date",
+      "restschuld": "Remaining balance (€)"
     }
   },
   "digitaalBezit": {
@@ -1799,6 +1813,7 @@
   "voorbeeldData": {
     "disclaimer": "This is fictional example data from \"The Example Family\". No real persons or data.",
     "bekijkVoorbeeld": "View example",
+    "sluiten": "Close",
     "eigenaar": {
       "titel": "My Profile — Example",
       "beschrijving": "Below you see an example of a completed profile. Use this as inspiration for your own information.",
@@ -2133,5 +2148,11 @@
         }
       }
     }
+  },
+  "personSelect": {
+    "selecteer": "— Select existing person —",
+    "handmatig": "Other (enter manually)",
+    "kiesUitLijst": "← Select from existing persons",
+    "noodcontact": "Emergency contact"
   }
 }

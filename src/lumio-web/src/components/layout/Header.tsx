@@ -9,11 +9,26 @@ import { useTranslations } from "next-intl";
 import { Lock, Search, UserCircle, Moon, Sun } from "lucide-react";
 import { SearchDialog } from "./SearchDialog";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+
 export function Header() {
   const { lock, activeProfile } = useAuthStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const { theme, toggle: toggleTheme } = useTheme();
   const t = useTranslations("common");
+  const [fotoUrl, setFotoUrl] = useState<string | null>(null);
+
+  // Fetch profile photo when authenticated
+  useEffect(() => {
+    if (!activeProfile) return;
+    api.get<{ heeftProfielFoto?: boolean }>("/api/eigenaar")
+      .then((data) => {
+        if (data.heeftProfielFoto) {
+          setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+        }
+      })
+      .catch(() => { /* no eigenaar yet */ });
+  }, [activeProfile]);
 
   const handleLock = async () => {
     try {
@@ -45,7 +60,15 @@ export function Header() {
       <header className="flex h-16 items-center justify-between border-b border-border bg-background px-6">
         {activeProfile ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <UserCircle className="h-4 w-4" />
+            {fotoUrl ? (
+              <img
+                src={fotoUrl}
+                alt={activeProfile.naam}
+                className="h-6 w-6 rounded-full object-cover"
+              />
+            ) : (
+              <UserCircle className="h-4 w-4" />
+            )}
             <span>{activeProfile.naam}</span>
           </div>
         ) : (

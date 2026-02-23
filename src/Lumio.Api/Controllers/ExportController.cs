@@ -884,7 +884,10 @@ public class ExportController : ControllerBase
                 Schulden = schulden.Select(s => new SchuldExport(
                     s.Schuldeiser, s.Type, s.Bedrag,
                     s.MaandelijkseAflossing, s.Referentie,
-                    s.VermogensSoort.ToString(), s.Notities)).ToList(),
+                    s.VermogensSoort.ToString(), s.Notities,
+                    s.HypotheekVorm, s.Rentepercentage,
+                    s.MaandelijkseRente, s.Einddatum,
+                    s.Restschuld)).ToList(),
             },
 
             DigitaleAccounts = digitaleAccounts.Select(d => new DigitaalAccountExport(

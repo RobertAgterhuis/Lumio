@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Eye } from "lucide-react";
 import { getVoorbeeldData, type VoorbeeldData } from "@/lib/voorbeeld-data";
@@ -68,6 +69,11 @@ export function VoorbeeldDialog({ domein }: VoorbeeldDialogProps) {
             {t("disclaimer")}
           </p>
         </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            {t("sluiten")}
+          </Button>
+        </DialogFooter>
       </Dialog>
     </>
   );

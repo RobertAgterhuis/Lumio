@@ -438,6 +438,14 @@
       "zakelijkeLening": "Zakelijke lening",
       "overig": "Overig"
     },
+    "hypotheekVorm": {
+      "selecteer": "Selecteer hypotheekvorm...",
+      "aflossingsvrij": "Aflossingsvrij",
+      "lineair": "Lineair",
+      "annuitair": "Annuïteit",
+      "spaarhypotheek": "Spaarhypotheek",
+      "beleggingshypotheek": "Beleggingshypotheek"
+    },
     "vermogensSoort": {
       "prive": "Privé",
       "gemeenschap": "Gemeenschap"
@@ -865,7 +873,13 @@
       "maandelijkseAflossing": "Maandelijkse aflossing (€)",
       "referentie": "Referentie / contractnummer",
       "vermogensSoort": "Vermogenssoort",
-      "notities": "Notities"
+      "notities": "Notities",
+      "hypotheekDetails": "Hypotheek details",
+      "hypotheekVorm": "Hypotheekvorm",
+      "rentepercentage": "Rentepercentage (%)",
+      "maandelijkseRente": "Maandelijkse rente (€)",
+      "einddatum": "Einddatum hypotheek",
+      "restschuld": "Restschuld (€)"
     }
   },
   "digitaalBezit": {
@@ -1799,6 +1813,7 @@
   "voorbeeldData": {
     "disclaimer": "Dit is fictieve voorbeelddata van \"Familie de Voorbeeld\". Geen echte personen of gegevens.",
     "bekijkVoorbeeld": "Bekijk voorbeeld",
+    "sluiten": "Sluiten",
     "eigenaar": {
       "titel": "Mijn Profiel — Voorbeeld",
       "beschrijving": "Hieronder ziet u een voorbeeld van een ingevuld profiel. Gebruik dit als inspiratie voor uw eigen gegevens.",
@@ -2133,5 +2148,11 @@
         }
       }
     }
+  },
+  "personSelect": {
+    "selecteer": "— Kies bestaand persoon —",
+    "handmatig": "Anders (handmatig invoeren)",
+    "kiesUitLijst": "← Kies uit bestaande personen",
+    "noodcontact": "Noodcontact"
   }
 }
