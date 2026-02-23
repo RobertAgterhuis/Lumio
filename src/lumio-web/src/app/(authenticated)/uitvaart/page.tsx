@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 import { Church, Plus, Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -74,6 +75,7 @@ interface UitvaartGenodigde {
 }
 
 export default function UitvaartPage() {
+  const t = useTranslations("uitvaart");
   const [data, setData] = useState<UitvaartWensen | null>(null);
   const [details, setDetails] = useState<CeremonieDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -187,7 +189,7 @@ export default function UitvaartPage() {
       setData(updated);
       setUitvaartEditOpen(false);
     } catch (err) {
-      setUitvaartEditError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setUitvaartEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
   };
 
@@ -260,7 +262,7 @@ export default function UitvaartPage() {
       loadData();
     } catch (err) {
       setDetailError(
-        err instanceof Error ? err.message : "Opslaan mislukt."
+        err instanceof Error ? err.message : t("opslaanMislukt")
       );
     }
   };
@@ -271,7 +273,7 @@ export default function UitvaartPage() {
       setDetails((prev) => prev.filter((d) => d.id !== id));
     } catch (err) {
       setDetailError(
-        err instanceof Error ? err.message : "Verwijderen mislukt."
+        err instanceof Error ? err.message : t("verwijderenMislukt")
       );
     }
   };
@@ -319,7 +321,7 @@ export default function UitvaartPage() {
       setGenDialogOpen(false);
       loadData();
     } catch (err) {
-      setGenError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setGenError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
   };
 
@@ -328,14 +330,14 @@ export default function UitvaartPage() {
       await api.delete(`/api/uitvaart/genodigden/${id}`);
       setGenodigden((prev) => prev.filter((g) => g.id !== id));
     } catch (err) {
-      setGenError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setGenError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
@@ -343,9 +345,9 @@ export default function UitvaartPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Uitvaartwensen</h1>
+          <h1 className="text-3xl font-bold">{t("titel")}</h1>
           <p className="text-muted-foreground mt-1">
-            Begrafenis of crematie, ceremonie en rouwkaart
+            {t("beschrijving")}
           </p>
           <VoorbeeldDialog domein="uitvaart" />
           <SectieNotitie sectie="uitvaart" />
@@ -353,7 +355,7 @@ export default function UitvaartPage() {
         <Link href="/uitvaart/wizard">
           <Button>
             <Church className="h-4 w-4 mr-2" />
-            {data ? "Bewerken" : "Wizard starten"}
+            {data ? t("bewerken") : t("wizardStarten")}
           </Button>
         </Link>
       </div>
@@ -363,10 +365,10 @@ export default function UitvaartPage() {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Church className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
-              Nog geen uitvaartwensen vastgelegd.
+              {t("geenWensen")}
             </p>
             <Link href="/uitvaart/wizard">
-              <Button className="mt-4">Wizard starten</Button>
+              <Button className="mt-4">{t("wizardStarten")}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -376,19 +378,19 @@ export default function UitvaartPage() {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Uitvaart</CardTitle>
+                  <CardTitle>{t("uitvaartCard.titel")}</CardTitle>
                   <Button variant="ghost" size="sm" onClick={openUitvaartEdit}><Pencil className="h-4 w-4" /></Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 <p>
-                  <span className="text-muted-foreground">Type:</span>{" "}
+                  <span className="text-muted-foreground">{t("uitvaartCard.type")}</span>{" "}
                   <strong>{data.voorkeurType}</strong>
                 </p>
                 {data.begraafplaats && (
                   <p>
                     <span className="text-muted-foreground">
-                      Begraafplaats:
+                      {t("uitvaartCard.begraafplaats")}
                     </span>{" "}
                     {data.begraafplaats}
                   </p>
@@ -396,26 +398,26 @@ export default function UitvaartPage() {
                 {data.uitvaartOndernemer && (
                   <p>
                     <span className="text-muted-foreground">
-                      Ondernemer:
+                      {t("uitvaartCard.ondernemer")}
                     </span>{" "}
                     {data.uitvaartOndernemer}
                   </p>
                 )}
                 {data.uitvaartOndernemerTelefoon && (
                   <p>
-                    <span className="text-muted-foreground">Tel. ondernemer:</span>{" "}
+                    <span className="text-muted-foreground">{t("uitvaartCard.telOndernemer")}</span>{" "}
                     {data.uitvaartOndernemerTelefoon}
                   </p>
                 )}
                 {data.uitvaartOndernemerEmail && (
                   <p>
-                    <span className="text-muted-foreground">E-mail ondernemer:</span>{" "}
+                    <span className="text-muted-foreground">{t("uitvaartCard.emailOndernemer")}</span>{" "}
                     {data.uitvaartOndernemerEmail}
                   </p>
                 )}
                 {data.uitvaartOndernemerAdres && (
                   <p>
-                    <span className="text-muted-foreground">Adres ondernemer:</span>{" "}
+                    <span className="text-muted-foreground">{t("uitvaartCard.adresOndernemer")}</span>{" "}
                     {data.uitvaartOndernemerAdres}
                     {data.uitvaartOndernemerPostcode ? `, ${data.uitvaartOndernemerPostcode}` : ""}
                     {data.uitvaartOndernemerPlaats ? ` ${data.uitvaartOndernemerPlaats}` : ""}
@@ -423,13 +425,13 @@ export default function UitvaartPage() {
                 )}
                 {data.kledingwensen && (
                   <p>
-                    <span className="text-muted-foreground">Kleding:</span>{" "}
+                    <span className="text-muted-foreground">{t("uitvaartCard.kleding")}</span>{" "}
                     {data.kledingwensen}
                   </p>
                 )}
                 {data.budgetRichting && (
                   <p>
-                    <span className="text-muted-foreground">Budget:</span>{" "}
+                    <span className="text-muted-foreground">{t("uitvaartCard.budget")}</span>{" "}
                     {data.budgetRichting}
                   </p>
                 )}
@@ -438,14 +440,14 @@ export default function UitvaartPage() {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Ceremonie</CardTitle>
+                  <CardTitle>{t("ceremonieCard.titel")}</CardTitle>
                   <Button variant="ghost" size="sm" onClick={openUitvaartEdit}><Pencil className="h-4 w-4" /></Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 {data.ceremonieSoort && (
                   <p>
-                    <span className="text-muted-foreground">Soort:</span>{" "}
+                    <span className="text-muted-foreground">{t("ceremonieCard.soort")}</span>{" "}
                     {data.ceremonieSoort}
                     {data.ceremonieLocatie &&
                       ` — ${data.ceremonieLocatie}`}
@@ -453,20 +455,20 @@ export default function UitvaartPage() {
                 )}
                 {data.muziekwensen && (
                   <p>
-                    <span className="text-muted-foreground">Muziek:</span>{" "}
+                    <span className="text-muted-foreground">{t("ceremonieCard.muziek")}</span>{" "}
                     {data.muziekwensen}
                   </p>
                 )}
                 {data.bloemen && (
                   <p>
-                    <span className="text-muted-foreground">Bloemen:</span>{" "}
+                    <span className="text-muted-foreground">{t("ceremonieCard.bloemen")}</span>{" "}
                     {data.bloemen}
                   </p>
                 )}
                 {data.rouwkaartTekst && (
                   <p>
                     <span className="text-muted-foreground">
-                      Rouwkaart:
+                      {t("ceremonieCard.rouwkaart")}
                     </span>{" "}
                     {data.rouwkaartTekst}
                   </p>
@@ -474,7 +476,7 @@ export default function UitvaartPage() {
                 {data.rouwadvertentieTekst && (
                   <p>
                     <span className="text-muted-foreground">
-                      Rouwadvertentie:
+                      {t("ceremonieCard.rouwadvertentie")}
                     </span>{" "}
                     {data.rouwadvertentieTekst}
                   </p>
@@ -482,7 +484,7 @@ export default function UitvaartPage() {
                 {data.condoleance && (
                   <p>
                     <span className="text-muted-foreground">
-                      Condoleance:
+                      {t("ceremonieCard.condoleance")}
                     </span>{" "}
                     {data.condoleance}
                   </p>
@@ -490,7 +492,7 @@ export default function UitvaartPage() {
                 {data.overigeWensen && (
                   <p>
                     <span className="text-muted-foreground">
-                      Aanvullend:
+                      {t("ceremonieCard.aanvullend")}
                     </span>{" "}
                     {data.overigeWensen}
                   </p>
@@ -502,26 +504,26 @@ export default function UitvaartPage() {
           {(data.voorkeurBegraafplaatsNaam || data.voorkeurCrematoriumnaam || data.voorkeurAulaNaam) && (
             <Card>
               <CardHeader>
-                <CardTitle>Locatie-voorkeuren</CardTitle>
+                <CardTitle>{t("locatieCard.titel")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 {data.voorkeurBegraafplaatsNaam && (
                   <p>
-                    <span className="text-muted-foreground">Begraafplaats:</span>{" "}
+                    <span className="text-muted-foreground">{t("locatieCard.begraafplaats")}</span>{" "}
                     {data.voorkeurBegraafplaatsNaam}
                     {data.voorkeurBegraafplaatsAdres && ` \u2014 ${data.voorkeurBegraafplaatsAdres}`}
                   </p>
                 )}
                 {data.voorkeurCrematoriumnaam && (
                   <p>
-                    <span className="text-muted-foreground">Crematorium:</span>{" "}
+                    <span className="text-muted-foreground">{t("locatieCard.crematorium")}</span>{" "}
                     {data.voorkeurCrematoriumnaam}
                     {data.voorkeurCrematoriumAdres && ` \u2014 ${data.voorkeurCrematoriumAdres}`}
                   </p>
                 )}
                 {data.voorkeurAulaNaam && (
                   <p>
-                    <span className="text-muted-foreground">Aula:</span>{" "}
+                    <span className="text-muted-foreground">{t("locatieCard.aula")}</span>{" "}
                     {data.voorkeurAulaNaam}
                     {data.voorkeurAulaAdres && ` \u2014 ${data.voorkeurAulaAdres}`}
                   </p>
@@ -533,9 +535,9 @@ export default function UitvaartPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Ceremonieverloop</CardTitle>
+                <CardTitle>{t("verloop.titel")}</CardTitle>
                 <Button size="sm" onClick={() => openDetailDialog()}>
-                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                  <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
                 </Button>
               </div>
             </CardHeader>
@@ -547,7 +549,7 @@ export default function UitvaartPage() {
               )}
               {details.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  Nog geen ceremonie-onderdelen toegevoegd.
+                  {t("verloop.geenOnderdelen")}
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -605,17 +607,17 @@ export default function UitvaartPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                Genodigden
+                {t("genodigden.titel")}
                 <Badge variant="secondary">{genodigden.length}</Badge>
               </CardTitle>
               <Button size="sm" onClick={() => openGenDialog()}>
-                <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
               </Button>
             </CardHeader>
             <CardContent>
               {genodigden.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  Nog geen genodigden. Klik op Toevoegen.
+                  {t("genodigden.geenGenodigden")}
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -654,13 +656,13 @@ export default function UitvaartPage() {
         <DialogHeader>
           <DialogTitle>
             {editDetailId
-              ? "Onderdeel bewerken"
-              : "Onderdeel toevoegen"}
+              ? t("detailDialog.bewerken")
+              : t("detailDialog.toevoegen")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Onderdeel</Label>
+            <Label>{t("detailDialog.onderdeel")}</Label>
             <Input
               value={detailForm.onderdeel}
               onChange={(e) =>
@@ -669,11 +671,11 @@ export default function UitvaartPage() {
                   onderdeel: e.target.value,
                 }))
               }
-              placeholder="bijv. Welkom, Toespraak, Muziek, Afscheid"
+              placeholder={t("detailDialog.onderdeelPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Beschrijving</Label>
+            <Label>{t("detailDialog.beschrijving")}</Label>
             <Textarea
               value={detailForm.beschrijving}
               onChange={(e) =>
@@ -682,12 +684,12 @@ export default function UitvaartPage() {
                   beschrijving: e.target.value,
                 }))
               }
-              placeholder="Details over dit onderdeel..."
+              placeholder={t("detailDialog.beschrijvingPlaceholder")}
               rows={3}
             />
           </div>
           <div className="space-y-2">
-            <Label>Volgorde</Label>
+            <Label>{t("detailDialog.volgorde")}</Label>
             <Input
               type="number"
               value={detailForm.volgorde}
@@ -701,7 +703,7 @@ export default function UitvaartPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Muziekkeuze</Label>
+            <Label>{t("detailDialog.muziek")}</Label>
             <Input
               value={detailForm.muziek}
               onChange={(e) =>
@@ -710,11 +712,11 @@ export default function UitvaartPage() {
                   muziek: e.target.value,
                 }))
               }
-              placeholder="bijv. Ave Maria, live pianist"
+              placeholder={t("detailDialog.muziekPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Spreker</Label>
+            <Label>{t("detailDialog.spreker")}</Label>
             <Input
               value={detailForm.spreker}
               onChange={(e) =>
@@ -723,11 +725,11 @@ export default function UitvaartPage() {
                   spreker: e.target.value,
                 }))
               }
-              placeholder="Naam van de spreker"
+              placeholder={t("detailDialog.sprekerPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Tekstlezing</Label>
+            <Label>{t("detailDialog.tekstlezing")}</Label>
             <Input
               value={detailForm.tekstlezing}
               onChange={(e) =>
@@ -736,11 +738,11 @@ export default function UitvaartPage() {
                   tekstlezing: e.target.value,
                 }))
               }
-              placeholder="bijv. Psalm 23, eigen gedicht"
+              placeholder={t("detailDialog.tekstlezingPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Dresscode</Label>
+            <Label>{t("detailDialog.dresscode")}</Label>
             <Input
               value={detailForm.dresscode}
               onChange={(e) =>
@@ -749,7 +751,7 @@ export default function UitvaartPage() {
                   dresscode: e.target.value,
                 }))
               }
-              placeholder="bijv. Zwart, casual, kleurrijk"
+              placeholder={t("detailDialog.dresscodePlaceholder")}
             />
           </div>
         </div>
@@ -758,9 +760,9 @@ export default function UitvaartPage() {
             variant="outline"
             onClick={() => setDetailDialogOpen(false)}
           >
-            Annuleren
+            {t("annuleren")}
           </Button>
-          <Button onClick={saveDetail}>Opslaan</Button>
+          <Button onClick={saveDetail}>{t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
@@ -768,31 +770,31 @@ export default function UitvaartPage() {
       <Dialog open={genDialogOpen} onOpenChange={setGenDialogOpen}>
         <DialogHeader>
           <DialogTitle>
-            {editGenId ? "Genodigde bewerken" : "Genodigde toevoegen"}
+            {editGenId ? t("genodigdeDialog.bewerken") : t("genodigdeDialog.toevoegen")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Naam</Label>
+              <Label>{t("genodigdeDialog.naam")}</Label>
               <Input
                 value={genForm.naam}
                 onChange={(e) => setGenForm((f) => ({ ...f, naam: e.target.value }))}
-                placeholder="Volledige naam"
+                placeholder={t("genodigdeDialog.naamPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Relatie</Label>
+              <Label>{t("genodigdeDialog.relatie")}</Label>
               <Input
                 value={genForm.relatie}
                 onChange={(e) => setGenForm((f) => ({ ...f, relatie: e.target.value }))}
-                placeholder="bijv. Vriend, Collega, Familie"
+                placeholder={t("genodigdeDialog.relatiePlaceholder")}
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Telefoon</Label>
+              <Label>{t("genodigdeDialog.telefoon")}</Label>
               <Input
                 type="tel"
                 value={genForm.telefoon}
@@ -800,16 +802,11 @@ export default function UitvaartPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label>E-mail</Label>
-              <Input
-                type="email"
-                value={genForm.email}
-                onChange={(e) => setGenForm((f) => ({ ...f, email: e.target.value }))}
-              />
+              <Label>{t("genodigdeDialog.email")}</Label>
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Adres</Label>
+            <Label>{t("genodigdeDialog.adres")}</Label>
             <Input
               value={genForm.adres}
               onChange={(e) => setGenForm((f) => ({ ...f, adres: e.target.value }))}
@@ -817,43 +814,39 @@ export default function UitvaartPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("genodigdeDialog.postcode")}</Label>
               <Input
                 value={genForm.postcode}
                 onChange={(e) => setGenForm((f) => ({ ...f, postcode: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label>Woonplaats</Label>
-              <Input
-                value={genForm.woonplaats}
-                onChange={(e) => setGenForm((f) => ({ ...f, woonplaats: e.target.value }))}
-              />
+              <Label>{t("genodigdeDialog.woonplaats")}</Label>
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Notities</Label>
+            <Label>{t("genodigdeDialog.notities")}</Label>
             <Textarea
               value={genForm.notities}
               onChange={(e) => setGenForm((f) => ({ ...f, notities: e.target.value }))}
               rows={2}
-              placeholder="Bijzonderheden voor deze genodigde..."
+              placeholder={t("genodigdeDialog.notitiesPlaceholder")}
             />
           </div>
           {genError && <p className="text-sm text-red-500">{genError}</p>}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setGenDialogOpen(false)}>
-            Annuleren
+            {t("annuleren")}
           </Button>
-          <Button onClick={saveGen}>Opslaan</Button>
+          <Button onClick={saveGen}>{t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
       {/* P-S5: Direct-edit uitvaart dialog */}
       <Dialog open={uitvaartEditOpen} onOpenChange={setUitvaartEditOpen}>
         <DialogHeader>
-          <DialogTitle>Uitvaartwensen bewerken</DialogTitle>
+          <DialogTitle>{t("editDialog.titel")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
           {uitvaartEditError && (
@@ -861,125 +854,108 @@ export default function UitvaartPage() {
               <p className="text-sm text-red-800">{uitvaartEditError}</p>
             </div>
           )}
-          <p className="text-sm font-medium text-muted-foreground">Uitvaart</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieUitvaart")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Type</Label>
-              <Input value={uitvaartEditForm.voorkeurType} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurType: e.target.value }))} placeholder="Begrafenis of crematie" />
+              <Label>{t("editDialog.type")}</Label>
+              <Input value={uitvaartEditForm.voorkeurType} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurType: e.target.value }))} placeholder={t("editDialog.typePlaceholder")} />
             </div>
             <div className="space-y-2">
-              <Label>Budget</Label>
-              <Input value={uitvaartEditForm.budgetRichting} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, budgetRichting: e.target.value }))} placeholder="bijv. Eenvoudig, gemiddeld" />
+              <Label>{t("editDialog.budget")}</Label>
+              <Input value={uitvaartEditForm.budgetRichting} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, budgetRichting: e.target.value }))} placeholder={t("editDialog.budgetPlaceholder")} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Ondernemer</Label>
+              <Label>{t("editDialog.ondernemer")}</Label>
               <Input value={uitvaartEditForm.uitvaartOndernemer} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, uitvaartOndernemer: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>Tel. ondernemer</Label>
-              <Input value={uitvaartEditForm.uitvaartOndernemerTelefoon} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, uitvaartOndernemerTelefoon: e.target.value }))} />
+              <Label>{t("editDialog.telOndernemer")}</Label>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>E-mail ondernemer</Label>
-              <Input value={uitvaartEditForm.uitvaartOndernemerEmail} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, uitvaartOndernemerEmail: e.target.value }))} />
+              <Label>{t("editDialog.emailOndernemer")}</Label>
             </div>
             <div className="space-y-2">
-              <Label>Kleding</Label>
-              <Input value={uitvaartEditForm.kledingwensen} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, kledingwensen: e.target.value }))} />
+              <Label>{t("editDialog.kleding")}</Label>
             </div>
           </div>
           <div className="flex items-center space-x-2">
             <input type="checkbox" id="verzekering" checked={uitvaartEditForm.heeftUitvaartVerzekering} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, heeftUitvaartVerzekering: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="verzekering">Heeft uitvaartverzekering</Label>
+            <Label htmlFor="verzekering">{t("editDialog.heeftVerzekering")}</Label>
           </div>
           {uitvaartEditForm.heeftUitvaartVerzekering && (
             <div className="space-y-2">
-              <Label>Verzekeringsdetails</Label>
-              <Input value={uitvaartEditForm.uitvaartVerzekeringDetails} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, uitvaartVerzekeringDetails: e.target.value }))} />
+              <Label>{t("editDialog.verzekeringsdetails")}</Label>
             </div>
           )}
           <hr />
-          <p className="text-sm font-medium text-muted-foreground">Ceremonie</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieCeremonie")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Soort</Label>
+              <Label>{t("editDialog.soort")}</Label>
               <Input value={uitvaartEditForm.ceremonieSoort} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, ceremonieSoort: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>Locatie</Label>
-              <Input value={uitvaartEditForm.ceremonieLocatie} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, ceremonieLocatie: e.target.value }))} />
+              <Label>{t("editDialog.locatie")}</Label>
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Muziekwensen</Label>
-            <Input value={uitvaartEditForm.muziekwensen} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, muziekwensen: e.target.value }))} />
+            <Label>{t("editDialog.muziekwensen")}</Label>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Bloemen</Label>
-              <Input value={uitvaartEditForm.bloemen} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, bloemen: e.target.value }))} />
+              <Label>{t("editDialog.bloemen")}</Label>
             </div>
             <div className="space-y-2">
-              <Label>Sprekers</Label>
-              <Input value={uitvaartEditForm.sprekers} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, sprekers: e.target.value }))} />
+              <Label>{t("editDialog.sprekers")}</Label>
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Rouwkaarttekst</Label>
-            <Textarea value={uitvaartEditForm.rouwkaartTekst} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, rouwkaartTekst: e.target.value }))} rows={2} />
+            <Label>{t("editDialog.rouwkaarttekst")}</Label>
           </div>
           <div className="space-y-2">
-            <Label>Rouwadvertentietekst</Label>
-            <Textarea value={uitvaartEditForm.rouwadvertentieTekst} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, rouwadvertentieTekst: e.target.value }))} rows={2} />
+            <Label>{t("editDialog.rouwadvertentietekst")}</Label>
           </div>
           <div className="space-y-2">
-            <Label>Condoleance</Label>
-            <Input value={uitvaartEditForm.condoleance} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, condoleance: e.target.value }))} />
+            <Label>{t("editDialog.condoleance")}</Label>
           </div>
           <div className="space-y-2">
-            <Label>Overige wensen</Label>
-            <Textarea value={uitvaartEditForm.overigeWensen} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, overigeWensen: e.target.value }))} rows={2} />
+            <Label>{t("editDialog.overigeWensen")}</Label>
           </div>
           <hr />
-          <p className="text-sm font-medium text-muted-foreground">Locatie-voorkeuren</p>
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieLocatie")}</p>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Begraafplaats</Label>
+              <Label>{t("editDialog.begraafplaats")}</Label>
               <Input value={uitvaartEditForm.voorkeurBegraafplaatsNaam} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurBegraafplaatsNaam: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>Adres begraafplaats</Label>
-              <Input value={uitvaartEditForm.voorkeurBegraafplaatsAdres} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurBegraafplaatsAdres: e.target.value }))} />
+              <Label>{t("editDialog.adresBegraafplaats")}</Label>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Crematorium</Label>
-              <Input value={uitvaartEditForm.voorkeurCrematoriumnaam} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurCrematoriumnaam: e.target.value }))} />
+              <Label>{t("editDialog.crematorium")}</Label>
             </div>
             <div className="space-y-2">
-              <Label>Adres crematorium</Label>
-              <Input value={uitvaartEditForm.voorkeurCrematoriumAdres} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurCrematoriumAdres: e.target.value }))} />
+              <Label>{t("editDialog.adresCrematorium")}</Label>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Aula</Label>
-              <Input value={uitvaartEditForm.voorkeurAulaNaam} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurAulaNaam: e.target.value }))} />
+              <Label>{t("editDialog.aula")}</Label>
             </div>
             <div className="space-y-2">
-              <Label>Adres aula</Label>
-              <Input value={uitvaartEditForm.voorkeurAulaAdres} onChange={(e) => setUitvaartEditForm((f) => ({ ...f, voorkeurAulaAdres: e.target.value }))} />
+              <Label>{t("editDialog.adresAula")}</Label>
             </div>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setUitvaartEditOpen(false)}>Annuleren</Button>
-          <Button onClick={saveUitvaartEdit}>Opslaan</Button>
+          <Button variant="outline" onClick={() => setUitvaartEditOpen(false)}>{t("annuleren")}</Button>
+          <Button onClick={saveUitvaartEdit}>{t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
     </div>

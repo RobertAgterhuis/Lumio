@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +69,19 @@ const ACCOUNT_CATEGORIEEN = [
   "Overig",
 ];
 
+const CATEGORIE_KEYS: Record<string, string> = {
+  "Social Media": "socialMedia",
+  "Email": "email",
+  "Banking": "banking",
+  "Shopping": "shopping",
+  "Streaming": "streaming",
+  "Gaming": "gaming",
+  "Cloud": "cloud",
+  "Werk": "werk",
+  "Overheid": "overheid",
+  "Overig": "overig",
+};
+
 const emptyAccount = {
   platformNaam: "",
   categorie: "",
@@ -95,6 +109,8 @@ const emptyCrypto = {
 };
 
 export default function DigitaalBezitPage() {
+  const t = useTranslations("digitaalBezit");
+  const tEnum = useTranslations("enums");
   const [tab, setTab] = useState("accounts");
   const [accounts, setAccounts] = useState<DigitaalAccount[]>([]);
   const [wachtwoorden, setWachtwoorden] = useState<WachtwoordEntry[]>([]);
@@ -241,7 +257,7 @@ export default function DigitaalBezitPage() {
       setDialogType(null);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
@@ -273,7 +289,7 @@ export default function DigitaalBezitPage() {
       setDialogType(null);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
@@ -299,7 +315,7 @@ export default function DigitaalBezitPage() {
       setDialogType(null);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
@@ -310,7 +326,7 @@ export default function DigitaalBezitPage() {
       await api.delete(`/api/digitaal-bezit/${type}/${id}`);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
@@ -338,7 +354,7 @@ export default function DigitaalBezitPage() {
         });
       }, 10_000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ontsluiten mislukt.");
+      setError(err instanceof Error ? err.message : t("ontsluitenMislukt"));
     }
   };
 
@@ -360,7 +376,7 @@ export default function DigitaalBezitPage() {
       setImportResult(result);
       if (result.geimporteerd > 0) loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Importeren mislukt.");
+      setError(err instanceof Error ? err.message : t("importerenMislukt"));
     } finally {
       setImporting(false);
     }
@@ -369,16 +385,16 @@ export default function DigitaalBezitPage() {
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Digitaal Bezit</h1>
+        <h1 className="text-3xl font-bold">{t("titel")}</h1>
         <p className="text-muted-foreground mt-1">
-          Online accounts, wachtwoorden en crypto wallets
+          {t("beschrijving")}
         </p>
         <VoorbeeldDialog domein="digitaal-bezit" />
         <SectieNotitie sectie="digitaal-bezit" />
@@ -386,29 +402,27 @@ export default function DigitaalBezitPage() {
 
       <div className="rounded-lg border border-green-200 bg-green-50 p-4">
         <p className="text-sm text-green-800">
-          <strong>Let op:</strong> Wachtwoorden en seed phrases worden extra
-          versleuteld opgeslagen (AES-256-GCM). Alleen na ontgrendeling zijn
-          deze zichtbaar.
+          <strong>{t("beveiligingsTipLabel")}</strong> {t("beveiligingsTip")}
         </p>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="accounts">
-            <Globe className="h-4 w-4 mr-1" /> Accounts ({accounts.length})
+            <Globe className="h-4 w-4 mr-1" /> {t("tabs.accounts", { aantal: accounts.length })}
           </TabsTrigger>
           <TabsTrigger value="wachtwoorden">
-            <Key className="h-4 w-4 mr-1" /> Wachtwoorden ({wachtwoorden.length})
+            <Key className="h-4 w-4 mr-1" /> {t("tabs.wachtwoorden", { aantal: wachtwoorden.length })}
           </TabsTrigger>
           <TabsTrigger value="crypto">
-            <Bitcoin className="h-4 w-4 mr-1" /> Crypto ({wallets.length})
+            <Bitcoin className="h-4 w-4 mr-1" /> {t("tabs.crypto", { aantal: wallets.length })}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="accounts">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Online Accounts</CardTitle>
+              <CardTitle>{t("accounts.titel")}</CardTitle>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
                   <Filter className="h-4 w-4 text-muted-foreground" />
@@ -417,14 +431,14 @@ export default function DigitaalBezitPage() {
                     onChange={(e) => setCategorieFilter(e.target.value)}
                     className="w-40"
                   >
-                    <option value="">Alle categorieën</option>
+                    <option value="">{tEnum("accountCategorie.alle")}</option>
                     {ACCOUNT_CATEGORIEEN.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat} value={cat}>{tEnum(`accountCategorie.${CATEGORIE_KEYS[cat]}`)}</option>
                     ))}
                   </Select>
                 </div>
                 <Button size="sm" onClick={() => openAccountDialog()}>
-                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                  <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
                 </Button>
               </div>
             </CardHeader>
@@ -432,8 +446,8 @@ export default function DigitaalBezitPage() {
               {filteredAccounts.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">
                   {categorieFilter
-                    ? `Geen accounts in categorie "${categorieFilter}".`
-                    : "Nog geen accounts. Klik op Toevoegen."}
+                    ? t("accounts.geenInCategorie", { categorie: tEnum(`accountCategorie.${CATEGORIE_KEYS[categorieFilter]}`) })
+                    : t("accounts.geenAccounts")}
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -484,7 +498,7 @@ export default function DigitaalBezitPage() {
                       {instructie && instructieOpen[a.id] && (
                         <div className="border-t bg-blue-50 px-3 py-2">
                           <p className="text-xs font-medium text-blue-900 mb-1">
-                            Afsluitinstructies — {instructie.platform}
+                            {t("accounts.afsluitInstructies", { platform: instructie.platform })}
                           </p>
                           <p className="text-xs text-blue-800">
                             {instructie.beschrijving}
@@ -496,7 +510,7 @@ export default function DigitaalBezitPage() {
                             className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1"
                           >
                             <ExternalLink className="h-3 w-3" />
-                            Bekijk officiële instructies
+                            {t("accounts.bekijkInstructies")}
                           </a>
                         </div>
                       )}
@@ -512,20 +526,20 @@ export default function DigitaalBezitPage() {
         <TabsContent value="wachtwoorden">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Wachtwoorden</CardTitle>
+              <CardTitle>{t("wachtwoorden.titel")}</CardTitle>
               <div className="flex items-center gap-2">
                 <Button size="sm" variant="outline" onClick={() => { setImportOpen(true); setImportResult(null); }}>
-                  <Upload className="h-4 w-4 mr-1" /> Importeren
+                  <Upload className="h-4 w-4 mr-1" /> {t("wachtwoorden.importeren")}
                 </Button>
                 <Button size="sm" onClick={() => openWachtwoordDialog()}>
-                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                  <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
                 </Button>
               </div>
             </CardHeader>
             <CardContent>
               {wachtwoorden.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">
-                  Nog geen wachtwoorden. Klik op Toevoegen.
+                  {t("wachtwoorden.geenWachtwoorden")}
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -557,7 +571,7 @@ export default function DigitaalBezitPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleOntsluitel(w.id)}
-                          title={ontsleuteld[w.id] ? "Verbergen" : "Ontsluiten"}
+                          title={ontsleuteld[w.id] ? t("wachtwoorden.verbergen") : t("wachtwoorden.ontsluiten")}
                         >
                           {ontsleuteld[w.id] ? (
                             <EyeOff className="h-3 w-3" />
@@ -591,15 +605,15 @@ export default function DigitaalBezitPage() {
         <TabsContent value="crypto">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Crypto Wallets</CardTitle>
+              <CardTitle>{t("crypto.titel")}</CardTitle>
               <Button size="sm" onClick={() => openCryptoDialog()}>
-                <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
               </Button>
             </CardHeader>
             <CardContent>
               {wallets.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">
-                  Nog geen wallets. Klik op Toevoegen.
+                  {t("crypto.geenWallets")}
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -653,36 +667,36 @@ export default function DigitaalBezitPage() {
       >
         <DialogHeader>
           <DialogTitle>
-            {editId ? "Account bewerken" : "Account toevoegen"}
+            {editId ? t("accountDialog.bewerken") : t("accountDialog.toevoegen")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Platform naam</Label>
+            <Label>{t("accountDialog.platformNaam")}</Label>
             <Input
               value={accountForm.platformNaam}
               onChange={(e) =>
                 setAccountForm((f) => ({ ...f, platformNaam: e.target.value }))
               }
-              placeholder="bijv. Google, Facebook, LinkedIn"
+              placeholder={t("accountDialog.platformPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Categorie</Label>
+            <Label>{t("accountDialog.categorie")}</Label>
             <Select
               value={accountForm.categorie}
               onChange={(e) =>
                 setAccountForm((f) => ({ ...f, categorie: e.target.value }))
               }
             >
-              <option value="">Selecteer categorie...</option>
+              <option value="">{tEnum("accountCategorie.selecteer")}</option>
               {ACCOUNT_CATEGORIEEN.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat} value={cat}>{tEnum(`accountCategorie.${CATEGORIE_KEYS[cat]}`)}</option>
               ))}
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Gebruikersnaam</Label>
+            <Label>{t("accountDialog.gebruikersnaam")}</Label>
             <Input
               value={accountForm.gebruikersnaam}
               onChange={(e) =>
@@ -694,28 +708,28 @@ export default function DigitaalBezitPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>E-mailadres</Label>
+            <Label>{t("accountDialog.email")}</Label>
             <Input
               type="email"
               value={accountForm.emailAdres}
               onChange={(e) =>
                 setAccountForm((f) => ({ ...f, emailAdres: e.target.value }))
               }
-              placeholder="E-mailadres gekoppeld aan dit account"
+              placeholder={t("accountDialog.emailPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>URL</Label>
+            <Label>{t("accountDialog.url")}</Label>
             <Input
               value={accountForm.url}
               onChange={(e) =>
                 setAccountForm((f) => ({ ...f, url: e.target.value }))
               }
-              placeholder="https://..."
+              placeholder={t("accountDialog.urlPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Gewenste actie na overlijden</Label>
+            <Label>{t("accountDialog.gewensteActie")}</Label>
             <Select
               value={accountForm.gewensteActie}
               onChange={(e) =>
@@ -725,25 +739,25 @@ export default function DigitaalBezitPage() {
                 }))
               }
             >
-              <option value="">Selecteer...</option>
-              <option value="Verwijderen">Verwijderen</option>
-              <option value="Herdenkingsstatus">Herdenkingsstatus</option>
-              <option value="Overdragen">Overdragen aan erfgenaam</option>
-              <option value="Geen actie">Geen actie</option>
+              <option value="">{tEnum("gewensteActie.selecteer")}</option>
+              <option value="Verwijderen">{tEnum("gewensteActie.verwijderen")}</option>
+              <option value="Herdenkingsstatus">{tEnum("gewensteActie.herdenkingsstatus")}</option>
+              <option value="Overdragen">{tEnum("gewensteActie.overdragen")}</option>
+              <option value="Geen actie">{tEnum("gewensteActie.geenActie")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Overdracht aan</Label>
+            <Label>{t("accountDialog.overdrachtAan")}</Label>
             <Input
               value={accountForm.overdrachtAan}
               onChange={(e) =>
                 setAccountForm((f) => ({ ...f, overdrachtAan: e.target.value }))
               }
-              placeholder="Naam van de persoon (bij overdracht)"
+              placeholder={t("accountDialog.overdrachtPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Notities</Label>
+            <Label>{t("accountDialog.notities")}</Label>
             <Textarea
               value={accountForm.notities}
               onChange={(e) =>
@@ -755,10 +769,10 @@ export default function DigitaalBezitPage() {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogType(null)}>
-            Annuleren
+            {t("annuleren")}
           </Button>
           <Button onClick={saveAccount} disabled={saving}>
-            {saving ? "Opslaan..." : "Opslaan"}
+            {saving ? t("opslaanBezig") : t("opslaan")}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -770,22 +784,22 @@ export default function DigitaalBezitPage() {
       >
         <DialogHeader>
           <DialogTitle>
-            {editId ? "Wachtwoord bewerken" : "Wachtwoord toevoegen"}
+            {editId ? t("wachtwoordDialog.bewerken") : t("wachtwoordDialog.toevoegen")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Naam / dienst</Label>
+            <Label>{t("wachtwoordDialog.naam")}</Label>
             <Input
               value={wachtwoordForm.naam}
               onChange={(e) =>
                 setWachtwoordForm((f) => ({ ...f, naam: e.target.value }))
               }
-              placeholder="bijv. Gmail, DigiD"
+              placeholder={t("wachtwoordDialog.naamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Gebruikersnaam</Label>
+            <Label>{t("wachtwoordDialog.gebruikersnaam")}</Label>
             <Input
               value={wachtwoordForm.gebruikersnaam}
               onChange={(e) =>
@@ -797,14 +811,14 @@ export default function DigitaalBezitPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>{editId ? "Nieuw wachtwoord (laat leeg om niet te wijzigen)" : "Wachtwoord"}</Label>
+            <Label>{editId ? t("wachtwoordDialog.nieuwWachtwoord") : t("wachtwoordDialog.wachtwoord")}</Label>
             <Input
               type="password"
               value={wachtwoordForm.wachtwoord}
               onChange={(e) =>
                 setWachtwoordForm((f) => ({ ...f, wachtwoord: e.target.value }))
               }
-              placeholder={editId ? "Laat leeg om niet te wijzigen" : "Wachtwoord"}
+              placeholder={editId ? t("wachtwoordDialog.nieuwWachtwoordPlaceholder") : t("wachtwoordDialog.wachtwoordPlaceholder")}
             />
             <PasswordGenerator
               onUse={(pw) =>
@@ -813,33 +827,33 @@ export default function DigitaalBezitPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>URL</Label>
+            <Label>{t("wachtwoordDialog.url")}</Label>
             <Input
               value={wachtwoordForm.url}
               onChange={(e) =>
                 setWachtwoordForm((f) => ({ ...f, url: e.target.value }))
               }
-              placeholder="https://..."
+              placeholder={t("wachtwoordDialog.urlPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Notities</Label>
+            <Label>{t("wachtwoordDialog.notities")}</Label>
             <Textarea
               value={wachtwoordForm.notities}
               onChange={(e) =>
                 setWachtwoordForm((f) => ({ ...f, notities: e.target.value }))
               }
               rows={2}
-              placeholder="Hint of instructies voor nabestaanden..."
+              placeholder={t("wachtwoordDialog.notitiesPlaceholder")}
             />
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogType(null)}>
-            Annuleren
+            {t("annuleren")}
           </Button>
           <Button onClick={saveWachtwoord} disabled={saving}>
-            {saving ? "Opslaan..." : "Opslaan"}
+            {saving ? t("opslaanBezig") : t("opslaan")}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -851,88 +865,88 @@ export default function DigitaalBezitPage() {
       >
         <DialogHeader>
           <DialogTitle>
-            {editId ? "Wallet bewerken" : "Wallet toevoegen"}
+            {editId ? t("cryptoDialog.bewerken") : t("cryptoDialog.toevoegen")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Wallet naam</Label>
+            <Label>{t("cryptoDialog.walletNaam")}</Label>
             <Input
               value={cryptoForm.walletNaam}
               onChange={(e) =>
                 setCryptoForm((f) => ({ ...f, walletNaam: e.target.value }))
               }
-              placeholder="bijv. Mijn Bitcoin Wallet"
+              placeholder={t("cryptoDialog.walletPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Crypto type</Label>
+            <Label>{t("cryptoDialog.cryptoType")}</Label>
             <Select
               value={cryptoForm.cryptoType}
               onChange={(e) =>
                 setCryptoForm((f) => ({ ...f, cryptoType: e.target.value }))
               }
             >
-              <option value="">Selecteer...</option>
-              <option value="Bitcoin">Bitcoin (BTC)</option>
-              <option value="Ethereum">Ethereum (ETH)</option>
-              <option value="Solana">Solana (SOL)</option>
-              <option value="Cardano">Cardano (ADA)</option>
-              <option value="Overig">Overig</option>
+              <option value="">{tEnum("cryptoType.selecteer")}</option>
+              <option value="Bitcoin">{tEnum("cryptoType.bitcoin")}</option>
+              <option value="Ethereum">{tEnum("cryptoType.ethereum")}</option>
+              <option value="Solana">{tEnum("cryptoType.solana")}</option>
+              <option value="Cardano">{tEnum("cryptoType.cardano")}</option>
+              <option value="Overig">{tEnum("cryptoType.overig")}</option>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Wallet adres (publiek)</Label>
+            <Label>{t("cryptoDialog.walletAdres")}</Label>
             <Input
               value={cryptoForm.walletAdres}
               onChange={(e) =>
                 setCryptoForm((f) => ({ ...f, walletAdres: e.target.value }))
               }
-              placeholder="Publiek wallet adres"
+              placeholder={t("cryptoDialog.walletAdresPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Exchange</Label>
+            <Label>{t("cryptoDialog.exchange")}</Label>
             <Input
               value={cryptoForm.exchange}
               onChange={(e) =>
                 setCryptoForm((f) => ({ ...f, exchange: e.target.value }))
               }
-              placeholder="bijv. Coinbase, Binance, Bitvavo"
+              placeholder={t("cryptoDialog.exchangePlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Seed Phrase (optioneel)</Label>
+            <Label>{t("cryptoDialog.seedPhrase")}</Label>
             <Textarea
               value={cryptoForm.seedPhrase}
               onChange={(e) =>
                 setCryptoForm((f) => ({ ...f, seedPhrase: e.target.value }))
               }
-              placeholder="Uw seed phrase wordt versleuteld opgeslagen"
+              placeholder={t("cryptoDialog.seedPhrasePlaceholder")}
               rows={3}
             />
             <p className="text-xs text-muted-foreground">
-              De seed phrase wordt versleuteld opgeslagen met AES-256-GCM.
+              {t("cryptoDialog.seedPhraseInfo")}
             </p>
           </div>
           <div className="space-y-2">
-            <Label>Notities</Label>
+            <Label>{t("cryptoDialog.notities")}</Label>
             <Textarea
               value={cryptoForm.notities}
               onChange={(e) =>
                 setCryptoForm((f) => ({ ...f, notities: e.target.value }))
               }
               rows={2}
-              placeholder="Instructies voor toegang, locatie seed phrase..."
+              placeholder={t("cryptoDialog.notitiesPlaceholder")}
             />
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogType(null)}>
-            Annuleren
+            {t("annuleren")}
           </Button>
           <Button onClick={saveCrypto} disabled={saving}>
-            {saving ? "Opslaan..." : "Opslaan"}
+            {saving ? t("opslaanBezig") : t("opslaan")}
           </Button>
         </DialogFooter>
       </Dialog>
@@ -940,20 +954,16 @@ export default function DigitaalBezitPage() {
       {/* Import Wachtwoorden Dialog */}
       <Dialog open={importOpen} onOpenChange={setImportOpen}>
         <DialogHeader>
-          <DialogTitle>Wachtwoorden importeren</DialogTitle>
+          <DialogTitle>{t("importDialog.titel")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-blue-800">
-              Ondersteunt CSV-export van <strong>1Password</strong>,{" "}
-              <strong>Bitwarden</strong>, <strong>LastPass</strong>,{" "}
-              <strong>KeePass</strong> en <strong>Chrome</strong>.
-              Exporteer uw wachtwoorden als CSV vanuit uw huidige
-              wachtwoordmanager en upload het bestand hieronder.
-            </p>
+            <p className="text-sm text-blue-800"
+              dangerouslySetInnerHTML={{ __html: t.raw("importDialog.info") }}
+            />
           </div>
           <div className="space-y-2">
-            <Label>CSV-bestand</Label>
+            <Label>{t("importDialog.csvBestand")}</Label>
             <Input ref={importFileRef} type="file" accept=".csv" />
           </div>
           {importResult && (
@@ -965,9 +975,14 @@ export default function DigitaalBezitPage() {
               }`}
             >
               <p className="text-sm font-medium">
-                {importResult.geimporteerd} wachtwoorden geïmporteerd
-                {importResult.fouten > 0 &&
-                  `, ${importResult.fouten} fouten`}
+                {importResult.fouten > 0
+                  ? t("importDialog.resultaatMetFouten", {
+                      geimporteerd: importResult.geimporteerd,
+                      fouten: importResult.fouten,
+                    })
+                  : t("importDialog.resultaat", {
+                      geimporteerd: importResult.geimporteerd,
+                    })}
               </p>
               {importResult.details.length > 0 && (
                 <ul className="mt-1 text-xs text-muted-foreground list-disc list-inside">
@@ -981,16 +996,16 @@ export default function DigitaalBezitPage() {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setImportOpen(false)}>
-            Sluiten
+            {t("importDialog.sluiten")}
           </Button>
           <Button onClick={handleImport} disabled={importing}>
             {importing ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Importeren...
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t("importDialog.importerenBezig")}
               </>
             ) : (
               <>
-                <Upload className="h-4 w-4 mr-2" /> Importeren
+                <Upload className="h-4 w-4 mr-2" /> {t("importDialog.importerenKnop")}
               </>
             )}
           </Button>

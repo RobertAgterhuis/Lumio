@@ -382,6 +382,106 @@
       "Verzekering": "Verzekering",
       "DigitaalAccount": "Digitaal Account",
       "CryptoWallet": "Crypto Wallet"
+    },
+    "bezitCategorie": {
+      "selecteer": "Selecteer...",
+      "onroerendGoed": "Onroerend goed",
+      "voertuig": "Voertuig",
+      "sieraden": "Sieraden",
+      "kunst": "Kunst",
+      "elektronica": "Elektronica",
+      "meubels": "Meubels",
+      "overig": "Overig"
+    },
+    "rekeningType": {
+      "selecteer": "Selecteer...",
+      "betaalrekening": "Betaalrekening",
+      "spaarrekening": "Spaarrekening",
+      "beleggingsrekening": "Beleggingsrekening",
+      "deposito": "Deposito",
+      "overig": "Overig"
+    },
+    "verzekeringsType": {
+      "selecteer": "Selecteer...",
+      "levensverzekering": "Levensverzekering",
+      "uitvaartverzekering": "Uitvaartverzekering",
+      "overlijdensrisicoverzekering": "Overlijdensrisicoverzekering",
+      "woonverzekering": "Woonverzekering",
+      "autoverzekering": "Autoverzekering",
+      "zorgverzekering": "Zorgverzekering",
+      "overig": "Overig"
+    },
+    "schuldType": {
+      "selecteer": "Selecteer...",
+      "hypotheek": "Hypotheek",
+      "persoonlijkeLening": "Persoonlijke lening",
+      "studielening": "Studielening",
+      "creditcard": "Creditcard",
+      "zakelijkeLening": "Zakelijke lening",
+      "overig": "Overig"
+    },
+    "vermogensSoort": {
+      "prive": "Privé",
+      "gemeenschap": "Gemeenschap"
+    },
+    "gewensteActie": {
+      "selecteer": "Selecteer...",
+      "verwijderen": "Verwijderen",
+      "herdenkingsstatus": "Herdenkingsstatus",
+      "overdragen": "Overdragen aan erfgenaam",
+      "geenActie": "Geen actie"
+    },
+    "cryptoType": {
+      "selecteer": "Selecteer...",
+      "bitcoin": "Bitcoin (BTC)",
+      "ethereum": "Ethereum (ETH)",
+      "solana": "Solana (SOL)",
+      "cardano": "Cardano (ADA)",
+      "overig": "Overig"
+    },
+    "accountCategorie": {
+      "selecteer": "Selecteer categorie...",
+      "alle": "Alle categorieën",
+      "socialMedia": "Social Media",
+      "email": "Email",
+      "banking": "Banking",
+      "shopping": "Shopping",
+      "streaming": "Streaming",
+      "gaming": "Gaming",
+      "cloud": "Cloud",
+      "werk": "Werk",
+      "overheid": "Overheid",
+      "overig": "Overig"
+    },
+    "documentCategorie": {
+      "selecteer": "Selecteer...",
+      "testament": "Testament",
+      "identiteitsbewijs": "Identiteitsbewijs",
+      "akte": "Akte",
+      "verzekeringspolis": "Verzekeringspolis",
+      "medisch": "Medisch document",
+      "financieel": "Financieel document",
+      "overig": "Overig"
+    },
+    "noodcontactRol": {
+      "selecteer": "Selecteer rol...",
+      "vertrouwenspersoon": "Vertrouwenspersoon",
+      "huisarts": "Huisarts",
+      "notaris": "Notaris",
+      "uitvaartondernemer": "Uitvaartondernemer",
+      "advocaat": "Advocaat",
+      "financieelAdviseur": "Financieel adviseur",
+      "overig": "Overig"
+    },
+    "auditActie": {
+      "alleActies": "Alle acties",
+      "aangemaakt": "Aangemaakt",
+      "gewijzigd": "Gewijzigd",
+      "verwijderd": "Verwijderd",
+      "ontgrendeld": "Ontgrendeld",
+      "vergrendeld": "Vergrendeld",
+      "wachtwoordGewijzigd": "Wachtwoord gewijzigd",
+      "export": "Export"
     }
   },
   "erfgenamen": {
@@ -488,5 +588,827 @@
     "kolomNetto": "Netto",
     "totaalErfbelasting": "Totaal erfbelasting",
     "geenErfgenamen": "Voeg eerst erfgenamen toe om de erfbelasting te berekenen."
+  },
+  "testament": {
+    "laden": "Laden...",
+    "titel": "Testament",
+    "beschrijving": "Testamentaire informatie conform BW Boek 4",
+    "bewerken": "Bewerken",
+    "wizardStarten": "Wizard Starten",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "ja": "Ja",
+    "nee": "Nee",
+    "legitimairePortie": {
+      "titel": "Mogelijke schending legitimaire portie",
+      "beschrijving": "Op basis van {aantalKinderen, plural, one {# kind} other {# kinderen}}{heeftPartner, select, true { en een partner} other {}} bedraagt de minimale legitimaire portie per kind {percentage}% van de nalatenschap (BW Boek 4, art. 4:63-4:69).",
+      "toegewezen": "{percentage}% toegewezen (minimum {minimum}%)",
+      "nietOpgenomen": "niet als begunstigde opgenomen (minimum {minimum}%)",
+      "disclaimer": "Dit is een indicatie, geen juridisch advies. Raadpleeg een notaris voor zekerheid."
+    },
+    "notaris": {
+      "titel": "Notaris Gegevens",
+      "type": "Type:",
+      "notaris": "Notaris:",
+      "kantoor": "Kantoor:",
+      "telefoon": "Telefoon:",
+      "email": "E-mail:",
+      "adres": "Adres:",
+      "datum": "Datum:",
+      "ctrNummer": "CTR Nummer:",
+      "locatie": "Locatie:",
+      "uitsluitingsclausule": "Uitsluitingsclausule:",
+      "legaten": "Legaten:",
+      "algemeneWensen": "Algemene wensen:",
+      "bijzondereBepalingen": "Bijzondere bepalingen:"
+    },
+    "begunstigden": {
+      "titel": "Begunstigden",
+      "tooltip": "Een begunstigde is een persoon of organisatie die in uw testament iets ontvangt, zoals een geldbedrag, een goed of een percentage van uw nalatenschap.",
+      "toevoegen": "Toevoegen",
+      "geenBegunstigden": "Nog geen begunstigden toegevoegd."
+    },
+    "executeurs": {
+      "titel": "Executeurs",
+      "tooltip": "Een executeur (of executeur-testamentair) is de persoon die u aanwijst om uw nalatenschap af te wikkelen. Deze persoon beheert uw bezittingen, betaalt schulden en verdeelt de erfenis volgens uw wensen.",
+      "toevoegen": "Toevoegen",
+      "geenExecuteurs": "Nog geen executeurs toegevoegd."
+    },
+    "versies": {
+      "titel": "Versiegeschiedenis",
+      "snapshot": "Snapshot",
+      "geenVersies": "Nog geen versies opgeslagen. Maak een snapshot om de huidige staat vast te leggen.",
+      "versie": "Versie {nummer}",
+      "vergelijken": "Versies vergelijken",
+      "versieA": "Versie A",
+      "versieB": "Versie B",
+      "selecteer": "Selecteer...",
+      "vergelijkKnop": "Vergelijken",
+      "snapshotMislukt": "Snapshot aanmaken mislukt.",
+      "vergelijkingMislukt": "Vergelijking mislukt."
+    },
+    "geenTestament": "U heeft nog geen testamentaire informatie vastgelegd. Start de wizard om stap voor stap uw wensen vast te leggen.",
+    "execDialog": {
+      "bewerken": "Executeur bewerken",
+      "toevoegen": "Executeur toevoegen",
+      "naam": "Naam",
+      "naamPlaceholder": "Naam van de executeur",
+      "relatie": "Relatie",
+      "relatiePlaceholder": "bijv. Advocaat, Partner",
+      "telefoon": "Telefoon",
+      "telefoonPlaceholder": "Telefoonnummer",
+      "email": "E-mail",
+      "emailPlaceholder": "E-mailadres",
+      "adres": "Adres",
+      "adresPlaceholder": "Straat en huisnummer",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "Woonplaats",
+      "woonplaatsPlaceholder": "Woonplaats",
+      "annuleren": "Annuleren",
+      "opslaan": "Opslaan"
+    },
+    "testEditDialog": {
+      "titel": "Testament bewerken",
+      "typeTestament": "Type testament",
+      "typePlaceholder": "bijv. Langstlevende",
+      "datumTestament": "Datum testament",
+      "notaris": "Notaris",
+      "notarisPlaceholder": "Naam notaris",
+      "kantoor": "Kantoor",
+      "kantoorPlaceholder": "Notariskantoor",
+      "telefoon": "Telefoon",
+      "email": "E-mail",
+      "adres": "Adres",
+      "postcode": "Postcode",
+      "plaats": "Plaats",
+      "ctrNummer": "CTR Nummer",
+      "ctrPlaceholder": "Centraal Testamentenregister",
+      "locatie": "Locatie testament",
+      "locatiePlaceholder": "Waar wordt het testament bewaard?",
+      "uitsluitingsclausule": "Uitsluitingsclausule opnemen",
+      "legaten": "Legaten",
+      "legatenPlaceholder": "Specifieke goederen of bedragen voor bepaalde personen",
+      "algemeneWensen": "Algemene wensen",
+      "algemeneWensenPlaceholder": "Uw algemene wensen voor de nalatenschap",
+      "bijzondereBepalingen": "Bijzondere bepalingen",
+      "bijzonderePlaceholder": "Eventuele bijzondere bepalingen",
+      "annuleren": "Annuleren",
+      "opslaan": "Opslaan"
+    },
+    "begDialog": {
+      "bewerken": "Begunstigde bewerken",
+      "toevoegen": "Begunstigde toevoegen",
+      "naam": "Naam",
+      "naamPlaceholder": "Naam van de begunstigde",
+      "relatie": "Relatie",
+      "relatiePlaceholder": "bijv. Partner, Kind",
+      "telefoon": "Telefoon",
+      "telefoonPlaceholder": "Telefoonnummer",
+      "email": "E-mail",
+      "emailPlaceholder": "E-mailadres",
+      "adres": "Adres",
+      "adresPlaceholder": "Straat en huisnummer",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "Woonplaats",
+      "woonplaatsPlaceholder": "Woonplaats",
+      "percentage": "Percentage",
+      "percentagePlaceholder": "bijv. 50",
+      "legitiemePortie": "Legitieme portie",
+      "annuleren": "Annuleren",
+      "opslaan": "Opslaan"
+    },
+    "snapDialog": {
+      "titel": "Snapshot aanmaken",
+      "beschrijving": "Een snapshot slaat de huidige staat van uw testament, begunstigden en executeurs op. U kunt later versies met elkaar vergelijken.",
+      "notitie": "Notitie (optioneel)",
+      "notitiePlaceholder": "bijv. Versie na gesprek met notaris",
+      "annuleren": "Annuleren",
+      "opslaan": "Opslaan"
+    },
+    "vergelijkDialog": {
+      "titel": "Vergelijking: Versie {versie1} vs Versie {versie2}",
+      "geenVerschillen": "Geen verschillen gevonden tussen deze versies.",
+      "kolomVeld": "Veld",
+      "kolomVersie": "Versie {nummer}",
+      "sluiten": "Sluiten"
+    }
+  },
+  "boedel": {
+    "laden": "Laden...",
+    "titel": "Boedel",
+    "beschrijving": "Bezittingen, bankrekeningen, verzekeringen en schulden",
+    "tip": "Een volledig overzicht van uw boedel helpt erfgenamen bij de afwikkeling conform BW Boek 4.",
+    "tipLabel": "Tip:",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "toevoegen": "Toevoegen",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "opslaanBezig": "Opslaan...",
+    "overzicht": {
+      "titel": "Financieel overzicht",
+      "bezittingen": "Bezittingen ({aantal})",
+      "saldi": "Saldi ({aantal})",
+      "verzekeringen": "Verzekeringen ({aantal})",
+      "schulden": "Schulden ({aantal})",
+      "brutoNalatenschap": "Bruto nalatenschap",
+      "nettoNalatenschap": "Netto nalatenschap"
+    },
+    "tabs": {
+      "bezittingen": "Bezittingen ({aantal})",
+      "rekeningen": "Rekeningen ({aantal})",
+      "verzekeringen": "Verzekeringen ({aantal})",
+      "schulden": "Schulden ({aantal})"
+    },
+    "bezittingen": {
+      "titel": "Bezittingen",
+      "geenBezittingen": "Nog geen bezittingen. Klik op Toevoegen.",
+      "gemeenschap": "G",
+      "prive": "P",
+      "kadLabel": "Kad:",
+      "kvkLabel": "KvK:"
+    },
+    "rekeningen": {
+      "titel": "Bankrekeningen",
+      "geenRekeningen": "Nog geen rekeningen. Klik op Toevoegen."
+    },
+    "verzekeringen": {
+      "titel": "Verzekeringen",
+      "geenVerzekeringen": "Nog geen verzekeringen. Klik op Toevoegen.",
+      "polisLabel": "Polis:"
+    },
+    "schulden": {
+      "titel": "Schulden",
+      "geenSchulden": "Nog geen schulden. Klik op Toevoegen."
+    },
+    "bezitDialog": {
+      "bewerken": "Bezit bewerken",
+      "toevoegen": "Bezit toevoegen",
+      "categorie": "Categorie",
+      "omschrijving": "Omschrijving",
+      "omschrijvingPlaceholder": "bijv. Woning aan de Keizersgracht, BMW 3-serie",
+      "geschatteWaarde": "Geschatte waarde (€)",
+      "locatie": "Locatie",
+      "locatiePlaceholder": "Waar bevindt dit zich?",
+      "bestemdeErfgenaam": "Bestemde erfgenaam",
+      "bestemdeErfgenaamPlaceholder": "Wie moet dit ontvangen?",
+      "vermogensSoort": "Vermogenssoort",
+      "vermogensSoortTooltip": "Privévermogen is eigendom van één persoon. Gemeenschapsvermogen valt in de gemeenschap van goederen en wordt bij scheiding of overlijden verdeeld. Dit onderscheid is belangrijk voor de erfbelasting en verdeling.",
+      "kadastraalNummer": "Kadastraal nummer",
+      "kadastraalPlaceholder": "bijv. ASD02 K 1234",
+      "kenteken": "Kenteken",
+      "kentekenPlaceholder": "bijv. AB-123-CD",
+      "kvkNummer": "KvK-nummer",
+      "kvkPlaceholder": "Kamer van Koophandel nummer (indien van toepassing)",
+      "notities": "Notities"
+    },
+    "rekeningDialog": {
+      "bewerken": "Rekening bewerken",
+      "toevoegen": "Rekening toevoegen",
+      "bank": "Bank",
+      "bankPlaceholder": "bijv. ING, ABN AMRO, Rabobank",
+      "type": "Type",
+      "iban": "IBAN",
+      "ibanPlaceholder": "NL00 BANK 0000 0000 00",
+      "saldo": "Saldo (€)",
+      "saldoPlaceholder": "Huidig saldo",
+      "vermogensSoort": "Vermogenssoort",
+      "notities": "Notities"
+    },
+    "verzekerDialog": {
+      "bewerken": "Verzekering bewerken",
+      "toevoegen": "Verzekering toevoegen",
+      "verzekeraar": "Verzekeraar",
+      "verzekeraarPlaceholder": "bijv. Nationale-Nederlanden, Aegon",
+      "telefoon": "Telefoon verzekeraar",
+      "telefoonPlaceholder": "Telefoonnummer",
+      "email": "E-mail verzekeraar",
+      "emailPlaceholder": "info@verzekeraar.nl",
+      "type": "Type",
+      "polisNummer": "Polisnummer",
+      "verzekerdBedrag": "Verzekerd bedrag (€)",
+      "begunstigde": "Begunstigde",
+      "vermogensSoort": "Vermogenssoort",
+      "notities": "Notities"
+    },
+    "schuldDialog": {
+      "bewerken": "Schuld bewerken",
+      "toevoegen": "Schuld toevoegen",
+      "schuldeiser": "Schuldeiser",
+      "schuldeiserPlaceholder": "bijv. ING, DUO, Rabobank",
+      "telefoon": "Telefoon schuldeiser",
+      "telefoonPlaceholder": "Telefoonnummer",
+      "email": "E-mail schuldeiser",
+      "emailPlaceholder": "info@schuldeiser.nl",
+      "type": "Type",
+      "bedrag": "Bedrag (€)",
+      "maandelijkseAflossing": "Maandelijkse aflossing (€)",
+      "referentie": "Referentie / contractnummer",
+      "vermogensSoort": "Vermogenssoort",
+      "notities": "Notities"
+    }
+  },
+  "digitaalBezit": {
+    "laden": "Laden...",
+    "titel": "Digitaal Bezit",
+    "beschrijving": "Online accounts, wachtwoorden en crypto wallets",
+    "beveiligingsTip": "Wachtwoorden en seed phrases worden extra versleuteld opgeslagen (AES-256-GCM). Alleen na ontgrendeling zijn deze zichtbaar.",
+    "beveiligingsTipLabel": "Let op:",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "ontsluitenMislukt": "Ontsluiten mislukt.",
+    "importerenMislukt": "Importeren mislukt.",
+    "toevoegen": "Toevoegen",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "opslaanBezig": "Opslaan...",
+    "tabs": {
+      "accounts": "Accounts ({aantal})",
+      "wachtwoorden": "Wachtwoorden ({aantal})",
+      "crypto": "Crypto ({aantal})"
+    },
+    "accounts": {
+      "titel": "Online Accounts",
+      "geenAccounts": "Nog geen accounts. Klik op Toevoegen.",
+      "geenInCategorie": "Geen accounts in categorie \"{categorie}\".",
+      "afsluitInstructies": "Afsluitinstructies — {platform}",
+      "bekijkInstructies": "Bekijk officiële instructies",
+      "verbergen": "Verbergen",
+      "ontsluiten": "Ontsluiten"
+    },
+    "wachtwoorden": {
+      "titel": "Wachtwoorden",
+      "importeren": "Importeren",
+      "geenWachtwoorden": "Nog geen wachtwoorden. Klik op Toevoegen.",
+      "verbergen": "Verbergen",
+      "ontsluiten": "Ontsluiten"
+    },
+    "crypto": {
+      "titel": "Crypto Wallets",
+      "geenWallets": "Nog geen wallets. Klik op Toevoegen."
+    },
+    "accountDialog": {
+      "bewerken": "Account bewerken",
+      "toevoegen": "Account toevoegen",
+      "platformNaam": "Platform naam",
+      "platformPlaceholder": "bijv. Google, Facebook, LinkedIn",
+      "categorie": "Categorie",
+      "gebruikersnaam": "Gebruikersnaam",
+      "email": "E-mailadres",
+      "emailPlaceholder": "E-mailadres gekoppeld aan dit account",
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "gewensteActie": "Gewenste actie na overlijden",
+      "overdrachtAan": "Overdracht aan",
+      "overdrachtPlaceholder": "Naam van de persoon (bij overdracht)",
+      "notities": "Notities"
+    },
+    "wachtwoordDialog": {
+      "bewerken": "Wachtwoord bewerken",
+      "toevoegen": "Wachtwoord toevoegen",
+      "naam": "Naam / dienst",
+      "naamPlaceholder": "bijv. Gmail, DigiD",
+      "gebruikersnaam": "Gebruikersnaam",
+      "wachtwoord": "Wachtwoord",
+      "nieuwWachtwoord": "Nieuw wachtwoord (laat leeg om niet te wijzigen)",
+      "wachtwoordPlaceholder": "Wachtwoord",
+      "nieuwWachtwoordPlaceholder": "Laat leeg om niet te wijzigen",
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "notities": "Notities",
+      "notitiesPlaceholder": "Hint of instructies voor nabestaanden..."
+    },
+    "cryptoDialog": {
+      "bewerken": "Wallet bewerken",
+      "toevoegen": "Wallet toevoegen",
+      "walletNaam": "Wallet naam",
+      "walletPlaceholder": "bijv. Mijn Bitcoin Wallet",
+      "cryptoType": "Crypto type",
+      "walletAdres": "Wallet adres (publiek)",
+      "walletAdresPlaceholder": "Publiek wallet adres",
+      "exchange": "Exchange",
+      "exchangePlaceholder": "bijv. Coinbase, Binance, Bitvavo",
+      "seedPhrase": "Seed Phrase (optioneel)",
+      "seedPhrasePlaceholder": "Uw seed phrase wordt versleuteld opgeslagen",
+      "seedPhraseInfo": "De seed phrase wordt versleuteld opgeslagen met AES-256-GCM.",
+      "notities": "Notities",
+      "notitiesPlaceholder": "Instructies voor toegang, locatie seed phrase..."
+    },
+    "importDialog": {
+      "titel": "Wachtwoorden importeren",
+      "info": "Ondersteunt CSV-export van <strong>1Password</strong>, <strong>Bitwarden</strong>, <strong>LastPass</strong>, <strong>KeePass</strong> en <strong>Chrome</strong>. Exporteer uw wachtwoorden als CSV vanuit uw huidige wachtwoordmanager en upload het bestand hieronder.",
+      "csvBestand": "CSV-bestand",
+      "resultaat": "{geimporteerd} wachtwoorden geïmporteerd",
+      "resultaatMetFouten": "{geimporteerd} wachtwoorden geïmporteerd, {fouten} fouten",
+      "sluiten": "Sluiten",
+      "importerenKnop": "Importeren",
+      "importerenBezig": "Importeren..."
+    }
+  },
+  "uitvaart": {
+    "laden": "Laden...",
+    "titel": "Uitvaartwensen",
+    "beschrijving": "Begrafenis of crematie, ceremonie en rouwkaart",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "bewerken": "Bewerken",
+    "wizardStarten": "Wizard starten",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "toevoegen": "Toevoegen",
+    "geenWensen": "Nog geen uitvaartwensen vastgelegd.",
+    "ja": "Ja",
+    "nee": "Nee",
+    "uitvaartCard": {
+      "titel": "Uitvaart",
+      "type": "Type:",
+      "begraafplaats": "Begraafplaats:",
+      "ondernemer": "Ondernemer:",
+      "telOndernemer": "Tel. ondernemer:",
+      "emailOndernemer": "E-mail ondernemer:",
+      "adresOndernemer": "Adres ondernemer:",
+      "kleding": "Kleding:",
+      "budget": "Budget:"
+    },
+    "ceremonieCard": {
+      "titel": "Ceremonie",
+      "soort": "Soort:",
+      "muziek": "Muziek:",
+      "bloemen": "Bloemen:",
+      "rouwkaart": "Rouwkaart:",
+      "rouwadvertentie": "Rouwadvertentie:",
+      "condoleance": "Condoleance:",
+      "aanvullend": "Aanvullend:"
+    },
+    "locatieCard": {
+      "titel": "Locatie-voorkeuren",
+      "begraafplaats": "Begraafplaats:",
+      "crematorium": "Crematorium:",
+      "aula": "Aula:"
+    },
+    "verloop": {
+      "titel": "Ceremonieverloop",
+      "geenOnderdelen": "Nog geen ceremonie-onderdelen toegevoegd."
+    },
+    "genodigden": {
+      "titel": "Genodigden",
+      "geenGenodigden": "Nog geen genodigden. Klik op Toevoegen."
+    },
+    "detailDialog": {
+      "bewerken": "Onderdeel bewerken",
+      "toevoegen": "Onderdeel toevoegen",
+      "onderdeel": "Onderdeel",
+      "onderdeelPlaceholder": "bijv. Welkom, Toespraak, Muziek, Afscheid",
+      "beschrijving": "Beschrijving",
+      "beschrijvingPlaceholder": "Details over dit onderdeel...",
+      "volgorde": "Volgorde",
+      "muziek": "Muziekkeuze",
+      "muziekPlaceholder": "bijv. Ave Maria, live pianist",
+      "spreker": "Spreker",
+      "sprekerPlaceholder": "Naam van de spreker",
+      "tekstlezing": "Tekstlezing",
+      "tekstlezingPlaceholder": "bijv. Psalm 23, eigen gedicht",
+      "dresscode": "Dresscode",
+      "dresscodePlaceholder": "bijv. Zwart, casual, kleurrijk"
+    },
+    "genodigdeDialog": {
+      "bewerken": "Genodigde bewerken",
+      "toevoegen": "Genodigde toevoegen",
+      "naam": "Naam",
+      "naamPlaceholder": "Volledige naam",
+      "relatie": "Relatie",
+      "relatiePlaceholder": "bijv. Vriend, Collega, Familie",
+      "telefoon": "Telefoon",
+      "email": "E-mail",
+      "adres": "Adres",
+      "postcode": "Postcode",
+      "woonplaats": "Woonplaats",
+      "notities": "Notities",
+      "notitiesPlaceholder": "Bijzonderheden voor deze genodigde..."
+    },
+    "editDialog": {
+      "titel": "Uitvaartwensen bewerken",
+      "sectieUitvaart": "Uitvaart",
+      "type": "Type",
+      "typePlaceholder": "Begrafenis of crematie",
+      "budget": "Budget",
+      "budgetPlaceholder": "bijv. Eenvoudig, gemiddeld",
+      "ondernemer": "Ondernemer",
+      "telOndernemer": "Tel. ondernemer",
+      "emailOndernemer": "E-mail ondernemer",
+      "kleding": "Kleding",
+      "heeftVerzekering": "Heeft uitvaartverzekering",
+      "verzekeringsdetails": "Verzekeringsdetails",
+      "sectieCeremonie": "Ceremonie",
+      "soort": "Soort",
+      "locatie": "Locatie",
+      "muziekwensen": "Muziekwensen",
+      "bloemen": "Bloemen",
+      "sprekers": "Sprekers",
+      "rouwkaarttekst": "Rouwkaarttekst",
+      "rouwadvertentietekst": "Rouwadvertentietekst",
+      "condoleance": "Condoleance",
+      "overigeWensen": "Overige wensen",
+      "sectieLocatie": "Locatie-voorkeuren",
+      "begraafplaats": "Begraafplaats",
+      "adresBegraafplaats": "Adres begraafplaats",
+      "crematorium": "Crematorium",
+      "adresCrematorium": "Adres crematorium",
+      "aula": "Aula",
+      "adresAula": "Adres aula"
+    }
+  },
+  "euthanasie": {
+    "laden": "Laden...",
+    "titel": "Wilsverklaring Euthanasie",
+    "beschrijving": "Uw wensen conform de WGBO",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "bewerken": "Bewerken",
+    "wizardStarten": "Wizard starten",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "ja": "Ja",
+    "nee": "Nee",
+    "disclaimer": "<strong>Belangrijk:</strong> Een schriftelijke wilsverklaring euthanasie is geen garantie dat euthanasie wordt uitgevoerd. De arts moet altijd de zorgvuldigheidseisen van de Wet toetsing levensbeëindiging (Wtl) toetsen.",
+    "geenWilsverklaring": "Nog geen wilsverklaring vastgelegd.",
+    "wilsverklaringCard": {
+      "titel": "Wilsverklaring",
+      "wilEuthanasie": "Wil euthanasie:",
+      "datumOndertekening": "Datum ondertekening:",
+      "situatie": "Situatie:",
+      "aanvullendeWensen": "Aanvullende wensen:"
+    },
+    "contactCard": {
+      "titel": "Huisarts & Vertegenwoordiger",
+      "huisarts": "Huisarts:",
+      "praktijk": "Praktijk:",
+      "telefoonHuisarts": "Telefoon huisarts:",
+      "emailHuisarts": "E-mail huisarts:",
+      "vertegenwoordiger": "Vertegenwoordiger:",
+      "telVertegenwoordiger": "Tel. vertegenwoordiger:",
+      "emailVertegenwoordiger": "E-mail vertegenwoordiger:",
+      "adresVertegenwoordiger": "Adres vertegenwoordiger:"
+    },
+    "clausulesCard": {
+      "titel": "Aanvullende clausules",
+      "dementieclausule": "Dementieclausule:",
+      "toelichting": "Toelichting:",
+      "behandelverbod": "Behandelverbod:"
+    },
+    "editDialog": {
+      "titel": "Wilsverklaring bewerken",
+      "wilEuthanasie": "Wil euthanasie",
+      "datumOndertekening": "Datum ondertekening",
+      "situatiebeschrijving": "Situatiebeschrijving",
+      "aanvullendeWensen": "Aanvullende wensen",
+      "sectieHuisarts": "Huisarts",
+      "naamHuisarts": "Naam huisarts",
+      "praktijk": "Praktijk",
+      "telefoon": "Telefoon",
+      "email": "E-mail",
+      "sectieVertegenwoordiger": "Vertegenwoordiger",
+      "naam": "Naam",
+      "relatie": "Relatie",
+      "adres": "Adres",
+      "postcode": "Postcode",
+      "woonplaats": "Woonplaats",
+      "sectieClausules": "Aanvullende clausules",
+      "dementieclausule": "Dementieclausule",
+      "toelichtingDementie": "Toelichting dementieclausule",
+      "behandelverbod": "Behandelverbod",
+      "behandelverbodPlaceholder": "Welke behandelingen wilt u weigeren?"
+    }
+  },
+  "donor": {
+    "laden": "Laden...",
+    "titel": "Donorregistratie",
+    "beschrijving": "Uw keuze conform de Donorwet",
+    "bewerken": "Bewerken",
+    "registratieStarten": "Registratie starten",
+    "ja": "Ja",
+    "nee": "Nee",
+    "tip": "<strong>Tip:</strong> Registreer uw keuze ook officieel bij het Donorregister via donorregister.nl. De informatie hier is voor uw nabestaanden.",
+    "geenKeuze": "Nog geen donorkeuze vastgelegd.",
+    "keuzeCard": {
+      "titel": "Keuze",
+      "keuze": "Keuze:",
+      "geregistreerd": "Geregistreerd bij Donorregister:",
+      "referentie": "Referentie:",
+      "toelichting": "Toelichting:"
+    },
+    "orgaanCard": {
+      "titel": "Orgaankeuzes"
+    }
+  },
+  "documenten": {
+    "laden": "Laden...",
+    "titel": "Documenten",
+    "beschrijving": "Belangrijke documenten veilig opslaan",
+    "uploaden": "Document uploaden",
+    "uploadenBezig": "Uploaden...",
+    "uploadMislukt": "Upload mislukt.",
+    "uploadenMislukt": "Uploaden mislukt.",
+    "downloadMislukt": "Download mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "versieLadenMislukt": "Versiegeschiedenis laden mislukt.",
+    "naamCategorieVerplicht": "Naam en categorie zijn verplicht.",
+    "verlopen": "Verlopen",
+    "verlooptOver": "Verloopt over {dagen} {dagen, plural, one {dag} other {dagen}}",
+    "dropzone": {
+      "titel": "Bestanden hier loslaten",
+      "beschrijving": "Sleep bestanden hierheen om te uploaden"
+    },
+    "letOp": "<strong>Let op:</strong> Documenten worden versleuteld opgeslagen in de database. Upload hier kopieën van belangrijke documenten zoals uw testament, paspoort of verzekeringspapieren.",
+    "geenDocumenten": "Nog geen documenten geüpload.",
+    "opgeslagenDocumenten": "Opgeslagen documenten ({aantal})",
+    "versie": "versie {nummer}",
+    "versiegeschiedenis": "Versiegeschiedenis",
+    "uploadDialog": {
+      "titel": "Document uploaden",
+      "naam": "Naam",
+      "naamPlaceholder": "bijv. Kopie testament, Paspoort",
+      "categorie": "Categorie",
+      "selecteer": "Selecteer...",
+      "bestand": "Bestand",
+      "verloopdatum": "Verloopdatum",
+      "optioneel": "(optioneel)",
+      "verloopdatumHint": "Stel een verloopdatum in om een herinnering te ontvangen wanneer dit document vernieuwd moet worden.",
+      "annuleren": "Annuleren",
+      "uploaden": "Uploaden",
+      "uploadenBezig": "Uploaden..."
+    },
+    "dropDialog": {
+      "titel": "{aantal, plural, one {# bestand} other {# bestanden}} uploaden",
+      "naamPlaceholder": "Naam",
+      "uploadenBezig": "Uploaden...",
+      "geupload": "Geüpload",
+      "sluiten": "Sluiten",
+      "klaar": "Klaar",
+      "allesUploaden": "Alles uploaden ({aantal})"
+    }
+  },
+  "noodcontacten": {
+    "laden": "Laden...",
+    "titel": "Noodcontacten",
+    "beschrijving": "Personen die in een noodsituatie moeten worden gecontacteerd",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "exportMislukt": "Export mislukt.",
+    "importMislukt": "Import mislukt.",
+    "tip": "<strong>Tip:</strong> Voeg hier uw huisarts, notaris, uitvaartondernemer en vertrouwenspersonen toe. Deze contacten worden opgenomen in uw noodkaart PDF.",
+    "gedeeldeContacten": "Gedeelde contacten ({aantal})",
+    "gedeeldeBeschrijving": "Partners delen vaak dezelfde huisarts, notaris en uitvaartondernemer. Markeer contacten als 'gedeeld' en exporteer/importeer ze tussen profielen.",
+    "exporteer": "Exporteer",
+    "importeer": "Importeer",
+    "importResultaat": "{toegevoegd} contact(en) geïmporteerd, {overgeslagen} overgeslagen (duplicaat).",
+    "contactenTitel": "Contacten ({aantal})",
+    "toevoegen": "Toevoegen",
+    "geenContacten": "Nog geen noodcontacten. Klik op Toevoegen.",
+    "gedeeld": "Gedeeld",
+    "dialog": {
+      "bewerken": "Noodcontact bewerken",
+      "toevoegen": "Noodcontact toevoegen",
+      "naam": "Naam *",
+      "naamPlaceholder": "Volledige naam",
+      "relatie": "Relatie *",
+      "relatiePlaceholder": "bijv. Partner, Ouder, Vriend",
+      "rol": "Rol *",
+      "rolSelecteer": "Selecteer rol...",
+      "telefoon": "Telefoon",
+      "telefoonPlaceholder": "06-12345678",
+      "email": "E-mail",
+      "emailPlaceholder": "email@voorbeeld.nl",
+      "adres": "Adres",
+      "adresPlaceholder": "Straat en huisnummer",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "Woonplaats",
+      "instructies": "Instructies",
+      "instructiesPlaceholder": "Speciale instructies voor nabestaanden bij contact met deze persoon...",
+      "isGedeeld": "Gedeeld contact — ook relevant voor partner/andere profielen",
+      "annuleren": "Annuleren",
+      "opslaan": "Opslaan",
+      "opslaanBezig": "Opslaan..."
+    }
+  },
+  "noodkaartQR": {
+    "knop": "QR-code",
+    "titel": "Noodkaart QR-code",
+    "beschrijving": "Print of bewaar deze QR-code bij uw noodkaart. Nabestaanden kunnen de code scannen voor directe toegang tot uw noodcontacten.",
+    "privacyInfo": "De QR-code bevat de namen, telefoonnummers en rollen van uw noodcontacten. Geen wachtwoorden of gevoelige gegevens worden opgenomen.",
+    "sluiten": "Sluiten",
+    "downloaden": "Downloaden",
+    "qrTitel": "LUMIO NOODKAART",
+    "qrInstructie": "Bij overlijden, neem contact op met:",
+    "qrRelatie": "Relatie: {relatie}",
+    "qrRol": "Rol: {rol}",
+    "qrTel": "Tel: {telefoon}",
+    "qrEmail": "E-mail: {email}",
+    "qrOpgeslagen": "Gegevens opgeslagen in Lumio.",
+    "qrShamir": "Gebruik de Shamir-sleutels om de volledige gegevens te ontgrendelen."
+  },
+  "tijdlijn": {
+    "titel": "Tijdlijn na overlijden",
+    "beschrijving": "Een overzicht van wat er wanneer geregeld moet worden na een overlijden. Gebruik deze checklist als leidraad voor uw nabestaanden. De exacte volgorde kan per situatie verschillen.",
+    "disclaimer": "<strong>Let op:</strong> Dit overzicht is informatief en geen juridisch advies. De termijnen en verplichtingen kunnen per situatie verschillen. Raadpleeg altijd een notaris of juridisch adviseur voor uw specifieke situatie.",
+    "fasen": {
+      "24uur": {
+        "label": "Eerste 24 uur",
+        "huisarts": {
+          "titel": "Huisarts of behandelend arts bellen",
+          "beschrijving": "De arts stelt de dood vast en geeft een verklaring van overlijden af. Zonder deze verklaring kan de uitvaart niet geregeld worden."
+        },
+        "uitvaart": {
+          "titel": "Uitvaartondernemer inschakelen",
+          "beschrijving": "Neem contact op met de uitvaartondernemer of -verzekering. Zij begeleiden de verdere procedure en regelen het vervoer."
+        },
+        "naasten": {
+          "titel": "Naasten en noodcontacten informeren",
+          "beschrijving": "Breng directe familieleden, noodcontacten en eventueel de werkgever op de hoogte."
+        },
+        "donor": {
+          "titel": "Donorregistratie controleren",
+          "beschrijving": "Check zo snel mogelijk of er een donorregistratie is. Bij orgaandonatie is snelheid essentieel."
+        },
+        "wilsverklaring": {
+          "titel": "Wilsverklaring euthanasie raadplegen",
+          "beschrijving": "Indien van toepassing: controleer of er een wilsverklaring of behandelverbod is vastgelegd."
+        }
+      },
+      "week1": {
+        "label": "Eerste week",
+        "notaris": {
+          "titel": "Notaris informeren",
+          "beschrijving": "De notaris opent het testament en informeert over de erfgenamen, de executeur en eventuele legaten."
+        },
+        "werkgever": {
+          "titel": "Werkgever(s) informeren",
+          "beschrijving": "Meld het overlijden bij de werkgever. Bespreek eventueel recht op nabestaandenpensioen en uitkering van het vakantiegeld."
+        },
+        "aangifte": {
+          "titel": "Overlijdensaangifte bij gemeente",
+          "beschrijving": "Doe binnen 6 werkdagen aangifte van overlijden bij de burgerlijke stand van de gemeente waar het overlijden plaatsvond."
+        },
+        "documenten": {
+          "titel": "Belangrijke documenten verzamelen",
+          "beschrijving": "Verzamel het identiteitsbewijs, trouwboekje, polissen, testament en bankafschriften."
+        }
+      },
+      "maand1": {
+        "label": "Eerste maand",
+        "verzekeringen": {
+          "titel": "Verzekeringen afhandelen",
+          "beschrijving": "Meld het overlijden bij alle verzekeringsmaatschappijen: zorgverzekering, levensverzekering, inboedel, aansprakelijkheid, overlijdensrisico."
+        },
+        "bank": {
+          "titel": "Bankzaken regelen",
+          "beschrijving": "Informeer de bank. Rekeningen worden op naam van de erven gezet. Regel betaalopdrachten en eventueel een derdenrekening voor de boedel."
+        },
+        "abonnementen": {
+          "titel": "Abonnementen en contracten opzeggen",
+          "beschrijving": "Zeg telefoon-, internet-, tv-abonnementen, huur of leasecontracten, lidmaatschappen en streaming-diensten op."
+        },
+        "uitkeringen": {
+          "titel": "Uitkeringen en toeslagen stopzetten",
+          "beschrijving": "Meld het overlijden bij de SVB (AOW), UWV, gemeente (bijstand) en Belastingdienst (toeslagen)."
+        },
+        "digitaal": {
+          "titel": "Digitaal bezit afhandelen",
+          "beschrijving": "Online accounts sluiten of overnemen: e-mail, social media, cloud-opslag, webshops. Controleer of er cryptocurrency is."
+        }
+      },
+      "3maanden": {
+        "label": "Eerste 3 maanden",
+        "erfbelasting": {
+          "titel": "Aangifte erfbelasting",
+          "beschrijving": "Doe binnen 8 maanden aangifte erfbelasting bij de Belastingdienst. Begin tijdig met het inventariseren van de boedel."
+        },
+        "aanvaarding": {
+          "titel": "Aanvaarding of verwerping erfenis",
+          "beschrijving": "Erfgenamen moeten kiezen: zuiver aanvaarden, beneficiair aanvaarden of verwerpen. Beneficiair aanvaarden beschermt tegen schulden."
+        },
+        "boedelverdeling": {
+          "titel": "Boedelverdeling",
+          "beschrijving": "Inventariseer alle bezittingen en schulden. Verdeel de boedel volgens het testament of wettelijk erfrecht. De executeur coördineert dit."
+        },
+        "inkomstenbelasting": {
+          "titel": "Inkomstenbelasting overledene",
+          "beschrijving": "Doe aangifte inkomstenbelasting voor het jaar van overlijden (F-biljet). Deadline is meestal vóór 1 mei van het jaar erna."
+        },
+        "socialMedia": {
+          "titel": "Social media en online profielen",
+          "beschrijving": "Verwijder of memorial-modus instellen voor Facebook, Instagram, LinkedIn en andere social media-accounts."
+        }
+      }
+    }
+  },
+  "auditLog": {
+    "titel": "Activiteitenlogboek",
+    "beschrijving": "Overzicht van alle acties die in uw nalatenschap zijn uitgevoerd",
+    "recenteActiviteiten": "Recente activiteiten",
+    "activiteitenGevonden": "{aantal} activiteiten gevonden",
+    "laden": "Laden...",
+    "geenActiviteiten": "Nog geen activiteiten geregistreerd.",
+    "vernieuwen": "Vernieuwen",
+    "alleActies": "Alle acties"
+  },
+  "exporteren": {
+    "titel": "Exporteren",
+    "beschrijving": "Download uw gegevens als PDF-documenten",
+    "exportMislukt": "Export mislukt.",
+    "compleetOverzicht": "Compleet overzicht",
+    "compleetBeschrijving": "Exporteer alle vastgelegde informatie in één PDF-document.",
+    "allesExporteren": "Alles exporteren als PDF",
+    "compleetPakket": "Compleet pakket (ZIP)",
+    "gestructureerdeExport": "Gestructureerde export",
+    "gestructureerdeBeschrijving": "Exporteer alle gegevens als JSON of XML — ideaal voor overdracht aan een notaris of ander systeem. Wachtwoorden en gevoelige gegevens worden uitgesloten.",
+    "downloadenAlsJson": "Downloaden als JSON",
+    "downloadenAlsXml": "Downloaden als XML",
+    "csvExport": "CSV-export (Excel)",
+    "csvBeschrijving": "Exporteer lijsten als CSV-bestand — geschikt voor Excel, Google Sheets of andere spreadsheetprogramma's. Ideaal voor overzichten van erfgenamen, bezittingen of financiën.",
+    "nuvExport": "NUV-standaard export",
+    "nuvBeschrijving": "Exporteer uitvaartgegevens in het sectorstandaard formaat van de Nederlandse Uitvaart Verzorgers (NUV). Geschikt voor directe import in uitvaartsoftware.",
+    "nuvDownloaden": "NUV XML downloaden",
+    "pdfDownloaden": "PDF downloaden",
+    "opties": {
+      "testament": "Testament",
+      "euthanasie": "Wilsverklaring Euthanasie",
+      "donor": "Donorregistratie",
+      "digitaal-bezit": "Digitaal Bezit",
+      "boedel": "Boedel",
+      "uitvaart": "Uitvaartwensen",
+      "documenten": "Documenten",
+      "noodkaart": "Noodkaart",
+      "testament-concept": "Testament Concept (wettelijk)",
+      "wilsverklaring": "Wilsverklaring Euthanasie (wettelijk)",
+      "noodprocedure": "Noodprocedure & Instructie",
+      "boedelbeschrijving": "Boedelbeschrijving (wettelijk)",
+      "executeur-rapport": "Executeur-rapport",
+      "notaris": "Notaris-dossier (brief)"
+    },
+    "csvOpties": {
+      "erfgenamen": "Erfgenamen",
+      "bezittingen": "Bezittingen",
+      "bankrekeningen": "Bankrekeningen",
+      "verzekeringen": "Verzekeringen",
+      "schulden": "Schulden",
+      "noodcontacten": "Noodcontacten"
+    }
+  },
+  "juridischeCheck": {
+    "titel": "Juridische controle",
+    "beschrijving": "Controleer uw testamentaire keuzes op juridische inconsistenties en ontvang suggesties voor verbetering.",
+    "controleUitvoeren": "Controle uitvoeren",
+    "controleMislukt": "Controle mislukt",
+    "foutmelding": "Kon de juridische controle niet uitvoeren.",
+    "geenWaarschuwingen": "Geen waarschuwingen gevonden",
+    "geenWaarschuwingenTekst": "Uw testamentaire keuzes bevatten geen bekende inconsistenties. Raadpleeg altijd een notaris voor juridisch advies.",
+    "aantalWaarschuwingen": "{aantal, plural, one {# waarschuwing} other {# waarschuwingen}} gevonden:",
+    "ernstHoog": "Hoog",
+    "ernstMiddel": "Middel",
+    "ernstInfo": "Informatief",
+    "disclaimer": "Deze controle is informatief en vervangt geen juridisch advies. Raadpleeg altijd een notaris voor uw specifieke situatie."
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,6 +45,16 @@ const ROLLEN = [
   "Overig",
 ];
 
+const ROL_KEYS: Record<string, string> = {
+  "Vertrouwenspersoon": "vertrouwenspersoon",
+  "Huisarts": "huisarts",
+  "Notaris": "notaris",
+  "Uitvaartondernemer": "uitvaartondernemer",
+  "Advocaat": "advocaat",
+  "Financieel adviseur": "financieelAdviseur",
+  "Overig": "overig",
+};
+
 const emptyForm = {
   naam: "",
   relatie: "",
@@ -58,6 +69,8 @@ const emptyForm = {
 };
 
 export default function NoodcontactenPage() {
+  const t = useTranslations("noodcontacten");
+  const tEnum = useTranslations("enums");
   const [contacten, setContacten] = useState<Noodcontact[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -125,7 +138,7 @@ export default function NoodcontactenPage() {
       setDialogOpen(false);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
@@ -136,14 +149,14 @@ export default function NoodcontactenPage() {
       await api.delete(`/api/noodcontacten/${id}`);
       loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
   const exportGedeeld = async () => {
     try {
       const response = await fetch("http://127.0.0.1:5123/api/noodcontacten/gedeeld/export");
-      if (!response.ok) throw new Error("Export mislukt.");
+      if (!response.ok) throw new Error(t("exportMislukt"));
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -152,7 +165,7 @@ export default function NoodcontactenPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     }
   };
 
@@ -171,9 +184,9 @@ export default function NoodcontactenPage() {
           contacten
         );
         loadData();
-        alert(`${result?.toegevoegd ?? 0} contact(en) geïmporteerd, ${result?.overgeslagen ?? 0} overgeslagen (duplicaat).`);
+        alert(t("importResultaat", { toegevoegd: result?.toegevoegd ?? 0, overgeslagen: result?.overgeslagen ?? 0 }));
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Import mislukt.");
+        setError(err instanceof Error ? err.message : t("importMislukt"));
       }
     };
     input.click();
@@ -184,26 +197,23 @@ export default function NoodcontactenPage() {
   if (loading)
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">Laden...</p>
+        <p className="text-muted-foreground">{t("laden")}</p>
       </div>
     );
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Noodcontacten</h1>
+        <h1 className="text-3xl font-bold">{t("titel")}</h1>
         <p className="text-muted-foreground mt-1">
-          Personen die in een noodsituatie moeten worden gecontacteerd
+          {t("beschrijving")}
         </p>
         <VoorbeeldDialog domein="noodcontacten" />
         <SectieNotitie sectie="noodcontacten" />
       </div>
 
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <p className="text-sm text-blue-800">
-          <strong>Tip:</strong> Voeg hier uw huisarts, notaris, uitvaartondernemer en
-          vertrouwenspersonen toe. Deze contacten worden opgenomen in uw noodkaart PDF.
-        </p>
+        <p className="text-sm text-blue-800" dangerouslySetInnerHTML={{ __html: t.raw("tip") }} />
       </div>
 
       {/* Gedeelde noodcontacten */}
@@ -212,19 +222,18 @@ export default function NoodcontactenPage() {
           <div>
             <p className="text-sm font-medium text-purple-900">
               <Share2 className="h-4 w-4 inline mr-1" />
-              Gedeelde contacten ({gedeeldCount})
+              {t("gedeeldeContacten", { aantal: gedeeldCount })}
             </p>
             <p className="text-xs text-purple-700 mt-1">
-              Partners delen vaak dezelfde huisarts, notaris en uitvaartondernemer.
-              Markeer contacten als &apos;gedeeld&apos; en exporteer/importeer ze tussen profielen.
+              {t("gedeeldeBeschrijving")}
             </p>
           </div>
           <div className="flex gap-2 ml-4">
             <Button size="sm" variant="outline" onClick={exportGedeeld} disabled={gedeeldCount === 0}>
-              <Download className="h-3 w-3 mr-1" /> Exporteer
+              <Download className="h-3 w-3 mr-1" /> {t("exporteer")}
             </Button>
             <Button size="sm" variant="outline" onClick={importGedeeld}>
-              <Upload className="h-3 w-3 mr-1" /> Importeer
+              <Upload className="h-3 w-3 mr-1" /> {t("importeer")}
             </Button>
           </div>
         </div>
@@ -232,18 +241,18 @@ export default function NoodcontactenPage() {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Contacten ({contacten.length})</CardTitle>
+          <CardTitle>{t("contactenTitel", { aantal: contacten.length })}</CardTitle>
           <div className="flex gap-2">
             <NoodkaartQR contacten={contacten} />
             <Button size="sm" onClick={() => openDialog()}>
-              <Plus className="h-4 w-4 mr-1" /> Toevoegen
+              <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           {contacten.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">
-              Nog geen noodcontacten. Klik op Toevoegen.
+              {t("geenContacten")}
             </p>
           ) : (
             <div className="space-y-2">
@@ -255,10 +264,10 @@ export default function NoodcontactenPage() {
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
                       <p className="font-medium text-sm">{c.naam}</p>
-                      <Badge variant="outline">{c.rol}</Badge>
+                      <Badge variant="outline">{tEnum(`noodcontactRol.${ROL_KEYS[c.rol] ?? "overig"}`)}</Badge>
                       {c.isGedeeld && (
                         <Badge variant="secondary" className="text-xs">
-                          <Share2 className="h-3 w-3 mr-0.5" /> Gedeeld
+                          <Share2 className="h-3 w-3 mr-0.5" /> {t("gedeeld")}
                         </Badge>
                       )}
                     </div>
@@ -310,78 +319,78 @@ export default function NoodcontactenPage() {
       <Dialog open={dialogOpen} onOpenChange={() => setDialogOpen(false)}>
         <DialogHeader>
           <DialogTitle>
-            {editId ? "Noodcontact bewerken" : "Noodcontact toevoegen"}
+            {editId ? t("dialog.bewerken") : t("dialog.toevoegen")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Naam *</Label>
+              <Label>{t("dialog.naam")}</Label>
               <Input
                 value={form.naam}
                 onChange={(e) => setForm((f) => ({ ...f, naam: e.target.value }))}
-                placeholder="Volledige naam"
+                placeholder={t("dialog.naamPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Relatie *</Label>
+              <Label>{t("dialog.relatie")}</Label>
               <Input
                 value={form.relatie}
                 onChange={(e) => setForm((f) => ({ ...f, relatie: e.target.value }))}
-                placeholder="bijv. Partner, Ouder, Vriend"
+                placeholder={t("dialog.relatiePlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Rol *</Label>
+            <Label>{t("dialog.rol")}</Label>
             <Select
               value={form.rol}
               onChange={(e) => setForm((f) => ({ ...f, rol: e.target.value }))}
             >
-              <option value="">Selecteer rol...</option>
+              <option value="">{t("dialog.rolSelecteer")}</option>
               {ROLLEN.map((rol) => (
-                <option key={rol} value={rol}>{rol}</option>
+                <option key={rol} value={rol}>{tEnum(`noodcontactRol.${ROL_KEYS[rol] ?? "overig"}`)}</option>
               ))}
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Telefoon</Label>
+              <Label>{t("dialog.telefoon")}</Label>
               <Input
                 value={form.telefoon}
                 onChange={(e) => setForm((f) => ({ ...f, telefoon: e.target.value }))}
-                placeholder="06-12345678"
+                placeholder={t("dialog.telefoonPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>E-mail</Label>
+              <Label>{t("dialog.email")}</Label>
               <Input
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                placeholder="email@voorbeeld.nl"
+                placeholder={t("dialog.emailPlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Adres</Label>
+            <Label>{t("dialog.adres")}</Label>
             <Input
               value={form.adres}
               onChange={(e) => setForm((f) => ({ ...f, adres: e.target.value }))}
-              placeholder="Straat en huisnummer"
+              placeholder={t("dialog.adresPlaceholder")}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("dialog.postcode")}</Label>
               <Input
                 value={form.postcode}
                 onChange={(e) => setForm((f) => ({ ...f, postcode: e.target.value }))}
-                placeholder="1234 AB"
+                placeholder={t("dialog.postcodePlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Woonplaats</Label>
+              <Label>{t("dialog.woonplaats")}</Label>
               <Input
                 value={form.woonplaats}
                 onChange={(e) => setForm((f) => ({ ...f, woonplaats: e.target.value }))}
@@ -389,12 +398,12 @@ export default function NoodcontactenPage() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Instructies</Label>
+            <Label>{t("dialog.instructies")}</Label>
             <Textarea
               value={form.instructies}
               onChange={(e) => setForm((f) => ({ ...f, instructies: e.target.value }))}
               rows={3}
-              placeholder="Speciale instructies voor nabestaanden bij contact met deze persoon..."
+              placeholder={t("dialog.instructiesPlaceholder")}
             />
           </div>
           <div className="flex items-center gap-2">
@@ -406,16 +415,16 @@ export default function NoodcontactenPage() {
               className="h-4 w-4 rounded border-gray-300"
             />
             <Label htmlFor="isGedeeld" className="text-sm font-normal cursor-pointer">
-              Gedeeld contact — ook relevant voor partner/andere profielen
+              {t("dialog.isGedeeld")}
             </Label>
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setDialogOpen(false)}>
-            Annuleren
+            {t("dialog.annuleren")}
           </Button>
           <Button onClick={save} disabled={saving}>
-            {saving ? "Opslaan..." : "Opslaan"}
+            {saving ? t("dialog.opslaanBezig") : t("dialog.opslaan")}
           </Button>
         </DialogFooter>
       </Dialog>

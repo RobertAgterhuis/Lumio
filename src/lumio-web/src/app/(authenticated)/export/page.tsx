@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -33,85 +34,71 @@ import {
 const exportOptions = [
   {
     key: "testament",
-    label: "Testament",
     icon: ScrollText,
     endpoint: "/api/export/testament",
   },
   {
     key: "euthanasie",
-    label: "Wilsverklaring Euthanasie",
     icon: Stethoscope,
     endpoint: "/api/export/euthanasie",
   },
   {
     key: "donor",
-    label: "Donorregistratie",
     icon: Heart,
     endpoint: "/api/export/donor",
   },
   {
     key: "digitaal-bezit",
-    label: "Digitaal Bezit",
     icon: Globe,
     endpoint: "/api/export/digitaal-bezit",
   },
   {
     key: "boedel",
-    label: "Boedel",
     icon: Wallet,
     endpoint: "/api/export/boedel",
   },
   {
     key: "uitvaart",
-    label: "Uitvaartwensen",
     icon: Church,
     endpoint: "/api/export/uitvaart",
   },
   {
     key: "documenten",
-    label: "Documenten",
     icon: FileText,
     endpoint: "/api/export/documenten",
   },
   {
     key: "noodkaart",
-    label: "Noodkaart",
     icon: Phone,
     endpoint: "/api/export/noodkaart",
   },
   {
     key: "testament-concept",
-    label: "Testament Concept (wettelijk)",
     icon: ScrollText,
     endpoint: "/api/export/testament-concept",
   },
   {
     key: "wilsverklaring",
-    label: "Wilsverklaring Euthanasie (wettelijk)",
     icon: Stethoscope,
     endpoint: "/api/export/wilsverklaring",
   },
   {
     key: "noodprocedure",
-    label: "Noodprocedure & Instructie",
     icon: ShieldAlert,
     endpoint: "/api/export/noodprocedure",
   },
   {
     key: "boedelbeschrijving",
-    label: "Boedelbeschrijving (wettelijk)",
     icon: ClipboardList,
     endpoint: "/api/export/boedelbeschrijving",
   },
   {
     key: "executeur-rapport",
-    label: "Executeur-rapport",
     icon: ClipboardList,
     endpoint: "/api/export/executeur-rapport",
   },
   {
     key: "notaris",
-    label: "Notaris-dossier (brief)",
     icon: ScrollText,
     endpoint: "/api/export/notaris",
   },
@@ -120,6 +107,7 @@ const exportOptions = [
 export default function ExportPage() {
   const [downloading, setDownloading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("exporteren");
 
   const handleExport = async (key: string, endpoint: string) => {
     setDownloading(key);
@@ -131,7 +119,7 @@ export default function ExportPage() {
       if (response.status === 423) { window.location.href = "/"; return; }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `Export mislukt (${response.status})`);
+        throw new Error(body.error || t("exportMislukt"));
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -141,7 +129,7 @@ export default function ExportPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
       setDownloading(null);
     }
@@ -157,7 +145,7 @@ export default function ExportPage() {
       if (response.status === 423) { window.location.href = "/"; return; }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `Export mislukt (${response.status})`);
+        throw new Error(body.error || t("exportMislukt"));
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -167,7 +155,7 @@ export default function ExportPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
       setDownloading(null);
     }
@@ -183,7 +171,7 @@ export default function ExportPage() {
       if (response.status === 423) { window.location.href = "/"; return; }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `Export mislukt (${response.status})`);
+        throw new Error(body.error || t("exportMislukt"));
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -194,7 +182,7 @@ export default function ExportPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
       setDownloading(null);
     }
@@ -210,7 +198,7 @@ export default function ExportPage() {
       if (response.status === 423) { window.location.href = "/"; return; }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `Export mislukt (${response.status})`);
+        throw new Error(body.error || t("exportMislukt"));
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -221,7 +209,7 @@ export default function ExportPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
       setDownloading(null);
     }
@@ -237,7 +225,7 @@ export default function ExportPage() {
       if (response.status === 423) { window.location.href = "/"; return; }
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `Export mislukt (${response.status})`);
+        throw new Error(body.error || t("exportMislukt"));
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -248,27 +236,27 @@ export default function ExportPage() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Export mislukt.");
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
       setDownloading(null);
     }
   };
 
   const csvOptions = [
-    { naam: "erfgenamen", label: "Erfgenamen" },
-    { naam: "bezittingen", label: "Bezittingen" },
-    { naam: "bankrekeningen", label: "Bankrekeningen" },
-    { naam: "verzekeringen", label: "Verzekeringen" },
-    { naam: "schulden", label: "Schulden" },
-    { naam: "noodcontacten", label: "Noodcontacten" },
+    { naam: "erfgenamen" },
+    { naam: "bezittingen" },
+    { naam: "bankrekeningen" },
+    { naam: "verzekeringen" },
+    { naam: "schulden" },
+    { naam: "noodcontacten" },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Exporteren</h1>
+        <h1 className="text-3xl font-bold">{t("titel")}</h1>
         <p className="text-muted-foreground mt-1">
-          Download uw gegevens als PDF-documenten
+          {t("beschrijving")}
         </p>
       </div>
 
@@ -281,10 +269,10 @@ export default function ExportPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Download className="h-5 w-5" /> Compleet overzicht
+            <Download className="h-5 w-5" /> {t("compleetOverzicht")}
           </CardTitle>
           <CardDescription>
-            Exporteer alle vastgelegde informatie in één PDF-document.
+            {t("compleetBeschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-3 flex-wrap">
@@ -297,7 +285,7 @@ export default function ExportPage() {
             ) : (
               <Download className="h-4 w-4 mr-2" />
             )}
-            Alles exporteren als PDF
+            {t("allesExporteren")}
           </Button>
           <Button
             variant="outline"
@@ -309,7 +297,7 @@ export default function ExportPage() {
             ) : (
               <Archive className="h-4 w-4 mr-2" />
             )}
-            Compleet pakket (ZIP)
+            {t("compleetPakket")}
           </Button>
         </CardContent>
       </Card>
@@ -317,12 +305,10 @@ export default function ExportPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileJson className="h-5 w-5" /> Gestructureerde export
+            <FileJson className="h-5 w-5" /> {t("gestructureerdeExport")}
           </CardTitle>
           <CardDescription>
-            Exporteer alle gegevens als JSON of XML — ideaal voor overdracht aan
-            een notaris of ander systeem. Wachtwoorden en gevoelige gegevens
-            worden uitgesloten.
+            {t("gestructureerdeBeschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-3 flex-wrap">
@@ -336,7 +322,7 @@ export default function ExportPage() {
             ) : (
               <FileJson className="h-4 w-4 mr-2" />
             )}
-            Downloaden als JSON
+            {t("downloadenAlsJson")}
           </Button>
           <Button
             variant="outline"
@@ -348,7 +334,7 @@ export default function ExportPage() {
             ) : (
               <FileCode className="h-4 w-4 mr-2" />
             )}
-            Downloaden als XML
+            {t("downloadenAlsXml")}
           </Button>
         </CardContent>
       </Card>
@@ -356,12 +342,10 @@ export default function ExportPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Sheet className="h-5 w-5" /> CSV-export (Excel)
+            <Sheet className="h-5 w-5" /> {t("csvExport")}
           </CardTitle>
           <CardDescription>
-            Exporteer lijsten als CSV-bestand — geschikt voor Excel, Google
-            Sheets of andere spreadsheetprogramma&apos;s. Ideaal voor overzichten
-            van erfgenamen, bezittingen of financiën.
+            {t("csvBeschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-3 flex-wrap">
@@ -378,7 +362,7 @@ export default function ExportPage() {
               ) : (
                 <Sheet className="h-3 w-3 mr-1" />
               )}
-              {opt.label}
+              {t(`csvOpties.${opt.naam}`)}
             </Button>
           ))}
         </CardContent>
@@ -387,12 +371,10 @@ export default function ExportPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Flower2 className="h-5 w-5" /> NUV-standaard export
+            <Flower2 className="h-5 w-5" /> {t("nuvExport")}
           </CardTitle>
           <CardDescription>
-            Exporteer uitvaartgegevens in het sectorstandaard formaat van de
-            Nederlandse Uitvaart Verzorgers (NUV). Geschikt voor directe import
-            in uitvaartsoftware.
+            {t("nuvBeschrijving")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -407,7 +389,7 @@ export default function ExportPage() {
                 if (response.status === 423) { window.location.href = "/"; return; }
                 if (!response.ok) {
                   const body = await response.json().catch(() => ({}));
-                  throw new Error(body.error || "Export mislukt");
+                  throw new Error(body.error || t("exportMislukt"));
                 }
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
@@ -418,7 +400,7 @@ export default function ExportPage() {
                 a.click();
                 URL.revokeObjectURL(url);
               } catch (err) {
-                setError(err instanceof Error ? err.message : "Export mislukt.");
+                setError(err instanceof Error ? err.message : t("exportMislukt"));
               } finally {
                 setDownloading(null);
               }
@@ -430,7 +412,7 @@ export default function ExportPage() {
             ) : (
               <Flower2 className="h-4 w-4 mr-2" />
             )}
-            NUV XML downloaden
+            {t("nuvDownloaden")}
           </Button>
         </CardContent>
       </Card>
@@ -442,7 +424,7 @@ export default function ExportPage() {
             <Card key={opt.key}>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Icon className="h-4 w-4" /> {opt.label}
+                  <Icon className="h-4 w-4" /> {t(`opties.${opt.key}`)}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -457,7 +439,7 @@ export default function ExportPage() {
                   ) : (
                     <Download className="h-3 w-3 mr-1" />
                   )}
-                  PDF downloaden
+                  {t("pdfDownloaden")}
                 </Button>
               </CardContent>
             </Card>

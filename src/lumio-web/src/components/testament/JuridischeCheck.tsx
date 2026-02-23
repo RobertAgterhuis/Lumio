@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Scale, AlertTriangle, Info, CheckCircle, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Waarschuwing {
   ernst: "hoog" | "middel" | "info";
@@ -24,6 +25,7 @@ interface CheckResult {
 }
 
 export function JuridischeCheck() {
+  const t = useTranslations("juridischeCheck");
   const [result, setResult] = useState<CheckResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,11 +37,11 @@ export function JuridischeCheck() {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
       const res = await fetch(`${API_BASE}/api/testament/juridische-check`);
       if (res.status === 423) { window.location.href = "/"; return; }
-      if (!res.ok) throw new Error("Controle mislukt");
+      if (!res.ok) throw new Error(t("controleMislukt"));
       const data: CheckResult = await res.json();
       setResult(data);
     } catch {
-      setError("Kon de juridische controle niet uitvoeren.");
+      setError(t("foutmelding"));
     } finally {
       setLoading(false);
     }
@@ -65,9 +67,9 @@ export function JuridischeCheck() {
 
   const ernstLabel = (ernst: string) => {
     switch (ernst) {
-      case "hoog": return "Hoog";
-      case "middel": return "Middel";
-      case "info": return "Informatief";
+      case "hoog": return t("ernstHoog");
+      case "middel": return t("ernstMiddel");
+      case "info": return t("ernstInfo");
       default: return ernst;
     }
   };
@@ -76,11 +78,10 @@ export function JuridischeCheck() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Scale className="h-5 w-5" /> Juridische controle
+          <Scale className="h-5 w-5" /> {t("titel")}
         </CardTitle>
         <CardDescription>
-          Controleer uw testamentaire keuzes op juridische inconsistenties en
-          ontvang suggesties voor verbetering.
+          {t("beschrijving")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -90,7 +91,7 @@ export function JuridischeCheck() {
           ) : (
             <Scale className="h-4 w-4 mr-2" />
           )}
-          Controle uitvoeren
+          {t("controleUitvoeren")}
         </Button>
 
         {error && (
@@ -106,18 +107,17 @@ export function JuridischeCheck() {
                 <CheckCircle className="h-5 w-5 text-green-600" />
                 <div>
                   <p className="text-sm font-medium text-green-800">
-                    Geen waarschuwingen gevonden
+                    {t("geenWaarschuwingen")}
                   </p>
                   <p className="text-xs text-green-700 mt-1">
-                    Uw testamentaire keuzes bevatten geen bekende inconsistenties.
-                    Raadpleeg altijd een notaris voor juridisch advies.
+                    {t("geenWaarschuwingenTekst")}
                   </p>
                 </div>
               </div>
             ) : (
               <>
                 <p className="text-sm text-muted-foreground">
-                  {result.aantalWaarschuwingen} waarschuwing{result.aantalWaarschuwingen !== 1 ? "en" : ""} gevonden:
+                  {t("aantalWaarschuwingen", { aantal: result.aantalWaarschuwingen })}
                 </p>
                 {result.waarschuwingen.map((w, i) => (
                   <div
@@ -147,8 +147,7 @@ export function JuridischeCheck() {
             )}
 
             <p className="text-xs text-muted-foreground italic">
-              Deze controle is informatief en vervangt geen juridisch advies.
-              Raadpleeg altijd een notaris voor uw specifieke situatie.
+              {t("disclaimer")}
             </p>
           </div>
         )}

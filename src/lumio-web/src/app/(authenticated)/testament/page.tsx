@@ -16,6 +16,7 @@ import { ScrollText, Plus, Pencil, Trash2, AlertTriangle, History, GitCompareArr
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { JuridischeCheck } from "@/components/testament/JuridischeCheck";
+import { useTranslations, useLocale } from "next-intl";
 
 interface LegitimairePortieWaarschuwing {
   naam: string;
@@ -95,6 +96,8 @@ interface TestamentVergelijking {
 }
 
 export default function TestamentPage() {
+  const t = useTranslations("testament");
+  const locale = useLocale();
   const [testament, setTestament] = useState<TestamentInfo | null>(null);
   const [begunstigden, setBegunstigden] = useState<Begunstigde[]>([]);
   const [executeurs, setExecuteurs] = useState<Executeur[]>([]);
@@ -180,7 +183,7 @@ export default function TestamentPage() {
       setTestament(updated);
       setTestEditOpen(false);
     } catch (err) {
-      setTestEditError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setTestEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
   };
 
@@ -248,7 +251,7 @@ export default function TestamentPage() {
       const updated = await api.get<Executeur[]>("/api/testament/executeurs").catch(() => []);
       setExecuteurs(updated ?? []);
     } catch (err) {
-      setExecError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setExecError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
   };
 
@@ -257,7 +260,7 @@ export default function TestamentPage() {
       await api.delete(`/api/testament/executeurs/${id}`);
       setExecuteurs((prev) => prev.filter((e) => e.id !== id));
     } catch (err) {
-      setExecError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setExecError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
@@ -310,7 +313,7 @@ export default function TestamentPage() {
       const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
       setLegitimaireCheck(lpCheck);
     } catch (err) {
-      setBegError(err instanceof Error ? err.message : "Opslaan mislukt.");
+      setBegError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
   };
 
@@ -322,7 +325,7 @@ export default function TestamentPage() {
       const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
       setLegitimaireCheck(lpCheck);
     } catch (err) {
-      setBegError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setBegError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
@@ -336,7 +339,7 @@ export default function TestamentPage() {
       const updated = await api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch(() => []);
       setSnapshots(updated ?? []);
     } catch (err) {
-      setSnapError(err instanceof Error ? err.message : "Snapshot aanmaken mislukt.");
+      setSnapError(err instanceof Error ? err.message : t("versies.snapshotMislukt"));
     }
   };
 
@@ -345,7 +348,7 @@ export default function TestamentPage() {
       await api.delete(`/api/testament/snapshots/${id}`);
       setSnapshots((prev) => prev.filter((s) => s.id !== id));
     } catch (err) {
-      setSnapError(err instanceof Error ? err.message : "Verwijderen mislukt.");
+      setSnapError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
   };
 
@@ -358,12 +361,12 @@ export default function TestamentPage() {
       setVergelijking(result);
       setVergelijkOpen(true);
     } catch (err) {
-      setSnapError(err instanceof Error ? err.message : "Vergelijking mislukt.");
+      setSnapError(err instanceof Error ? err.message : t("versies.vergelijkingMislukt"));
     }
   };
 
   if (loading) {
-    return <div className="text-muted-foreground">Laden...</div>;
+    return <div className="text-muted-foreground">{t("laden")}</div>;
   }
 
   return (
@@ -372,10 +375,10 @@ export default function TestamentPage() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <ScrollText className="h-8 w-8 text-blue-600" />
-            Testament
+            {t("titel")}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Testamentaire informatie conform BW Boek 4
+            {t("beschrijving")}
           </p>
           <VoorbeeldDialog domein="testament" />
           <SectieNotitie sectie="testament" />
@@ -383,7 +386,7 @@ export default function TestamentPage() {
         </div>
         <Link href="/testament/wizard">
           <Button>
-            {testament ? <><Pencil className="h-4 w-4 mr-2" /> Bewerken</> : <><Plus className="h-4 w-4 mr-2" /> Wizard Starten</>}
+            {testament ? <><Pencil className="h-4 w-4 mr-2" /> {t("bewerken")}</> : <><Plus className="h-4 w-4 mr-2" /> {t("wizardStarten")}</>}
           </Button>
         </Link>
       </div>
@@ -397,26 +400,27 @@ export default function TestamentPage() {
               <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
               <div>
                 <p className="font-medium text-amber-900">
-                  Mogelijke schending legitimaire portie
+                  {t("legitimairePortie.titel")}
                 </p>
                 <p className="text-sm text-amber-800 mt-1">
-                  Op basis van {legitiemaireCheck.aantalKinderen} kind{legitiemaireCheck.aantalKinderen !== 1 ? "eren" : ""}
-                  {legitiemaireCheck.heeftPartner ? " en een partner" : ""} bedraagt de
-                  minimale legitimaire portie per kind {legitiemaireCheck.minimumPercentagePerKind}%
-                  van de nalatenschap (BW Boek 4, art. 4:63-4:69).
+                  {t("legitimairePortie.beschrijving", {
+                    aantalKinderen: legitiemaireCheck.aantalKinderen,
+                    heeftPartner: String(legitiemaireCheck.heeftPartner),
+                    percentage: legitiemaireCheck.minimumPercentagePerKind,
+                  })}
                 </p>
                 <ul className="mt-2 space-y-1">
                   {legitiemaireCheck.waarschuwingen.map((w, i) => (
                     <li key={i} className="text-sm text-amber-800">
                       <strong>{w.naam}</strong>:{" "}
                       {w.toegewezenPercentage != null
-                        ? `${w.toegewezenPercentage}% toegewezen (minimum ${w.minimumPercentage}%)`
-                        : `niet als begunstigde opgenomen (minimum ${w.minimumPercentage}%)`}
+                        ? t("legitimairePortie.toegewezen", { percentage: w.toegewezenPercentage, minimum: w.minimumPercentage })
+                        : t("legitimairePortie.nietOpgenomen", { minimum: w.minimumPercentage })}
                     </li>
                   ))}
                 </ul>
                 <p className="text-xs text-amber-700 mt-2">
-                  Dit is een indicatie, geen juridisch advies. Raadpleeg een notaris voor zekerheid.
+                  {t("legitimairePortie.disclaimer")}
                 </p>
               </div>
             </div>
@@ -427,38 +431,38 @@ export default function TestamentPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Notaris Gegevens</CardTitle>
+                <CardTitle className="text-lg">{t("notaris.titel")}</CardTitle>
                 <Button variant="ghost" size="sm" onClick={openTestEdit}>
                   <Pencil className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <div><span className="font-medium">Type:</span> {testament.testamentType || "—"}</div>
-              <div><span className="font-medium">Notaris:</span> {testament.notarisNaam || "—"}</div>
-              <div><span className="font-medium">Kantoor:</span> {testament.notarisKantoor || "—"}</div>
-              {testament.notarisTelefoon && <div><span className="font-medium">Telefoon:</span> {testament.notarisTelefoon}</div>}
-              {testament.notarisEmail && <div><span className="font-medium">E-mail:</span> {testament.notarisEmail}</div>}
-              {testament.notarisAdres && <div><span className="font-medium">Adres:</span> {testament.notarisAdres}{testament.notarisPostcode ? `, ${testament.notarisPostcode}` : ""}{testament.notarisPlaats ? ` ${testament.notarisPlaats}` : ""}</div>}
-              <div><span className="font-medium">Datum:</span> {testament.datumTestament || "—"}</div>
-              <div><span className="font-medium">CTR Nummer:</span> {testament.ctr_Nummer || "—"}</div>
-              {testament.testamentLocatie && <div><span className="font-medium">Locatie:</span> {testament.testamentLocatie}</div>}
-              <div><span className="font-medium">Uitsluitingsclausule:</span> {testament.uitsluitingsClausule ? "Ja" : "Nee"}</div>
-              {testament.legaten && <div><span className="font-medium">Legaten:</span> {testament.legaten}</div>}
-              {testament.algemeneWensen && <div><span className="font-medium">Algemene wensen:</span> {testament.algemeneWensen}</div>}
-              {testament.bijzondereBepalingen && <div><span className="font-medium">Bijzondere bepalingen:</span> {testament.bijzondereBepalingen}</div>}
+              <div><span className="font-medium">{t("notaris.type")}</span> {testament.testamentType || "—"}</div>
+              <div><span className="font-medium">{t("notaris.notaris")}</span> {testament.notarisNaam || "—"}</div>
+              <div><span className="font-medium">{t("notaris.kantoor")}</span> {testament.notarisKantoor || "—"}</div>
+              {testament.notarisTelefoon && <div><span className="font-medium">{t("notaris.telefoon")}</span> {testament.notarisTelefoon}</div>}
+              {testament.notarisEmail && <div><span className="font-medium">{t("notaris.email")}</span> {testament.notarisEmail}</div>}
+              {testament.notarisAdres && <div><span className="font-medium">{t("notaris.adres")}</span> {testament.notarisAdres}{testament.notarisPostcode ? `, ${testament.notarisPostcode}` : ""}{testament.notarisPlaats ? ` ${testament.notarisPlaats}` : ""}</div>}
+              <div><span className="font-medium">{t("notaris.datum")}</span> {testament.datumTestament || "—"}</div>
+              <div><span className="font-medium">{t("notaris.ctrNummer")}</span> {testament.ctr_Nummer || "—"}</div>
+              {testament.testamentLocatie && <div><span className="font-medium">{t("notaris.locatie")}</span> {testament.testamentLocatie}</div>}
+              <div><span className="font-medium">{t("notaris.uitsluitingsclausule")}</span> {testament.uitsluitingsClausule ? t("ja") : t("nee")}</div>
+              {testament.legaten && <div><span className="font-medium">{t("notaris.legaten")}</span> {testament.legaten}</div>}
+              {testament.algemeneWensen && <div><span className="font-medium">{t("notaris.algemeneWensen")}</span> {testament.algemeneWensen}</div>}
+              {testament.bijzondereBepalingen && <div><span className="font-medium">{t("notaris.bijzondereBepalingen")}</span> {testament.bijzondereBepalingen}</div>}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Begunstigden</CardTitle>
-                <HelpTooltip tekst="Een begunstigde is een persoon of organisatie die in uw testament iets ontvangt, zoals een geldbedrag, een goed of een percentage van uw nalatenschap." />
+                <CardTitle className="text-lg">{t("begunstigden.titel")}</CardTitle>
+                <HelpTooltip tekst={t("begunstigden.tooltip")} />
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">{begunstigden.length}</Badge>
                   <Button size="sm" onClick={() => openBegDialog()}>
-                    <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                    <Plus className="h-4 w-4 mr-1" /> {t("begunstigden.toevoegen")}
                   </Button>
                 </div>
               </div>
@@ -470,7 +474,7 @@ export default function TestamentPage() {
                 </div>
               )}
               {begunstigden.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Nog geen begunstigden toegevoegd.</p>
+                <p className="text-sm text-muted-foreground">{t("begunstigden.geenBegunstigden")}</p>
               ) : (
                 <ul className="space-y-2">
                   {begunstigden.map((b) => (
@@ -501,10 +505,10 @@ export default function TestamentPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Executeurs</CardTitle>
-                <HelpTooltip tekst="Een executeur (of executeur-testamentair) is de persoon die u aanwijst om uw nalatenschap af te wikkelen. Deze persoon beheert uw bezittingen, betaalt schulden en verdeelt de erfenis volgens uw wensen." />
+                <CardTitle className="text-lg">{t("executeurs.titel")}</CardTitle>
+                <HelpTooltip tekst={t("executeurs.tooltip")} />
                 <Button size="sm" onClick={() => openExecDialog()}>
-                  <Plus className="h-4 w-4 mr-1" /> Toevoegen
+                  <Plus className="h-4 w-4 mr-1" /> {t("executeurs.toevoegen")}
                 </Button>
               </div>
             </CardHeader>
@@ -515,7 +519,7 @@ export default function TestamentPage() {
                 </div>
               )}
               {executeurs.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Nog geen executeurs toegevoegd.</p>
+                <p className="text-sm text-muted-foreground">{t("executeurs.geenExecuteurs")}</p>
               ) : (
                 <ul className="space-y-2">
                   {executeurs.map((e) => (
@@ -545,12 +549,12 @@ export default function TestamentPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <History className="h-5 w-5" />
-                  Versiegeschiedenis
+                  {t("versies.titel")}
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">{snapshots.length}</Badge>
                   <Button size="sm" onClick={() => { setSnapNotitie(""); setSnapError(null); setSnapDialogOpen(true); }}>
-                    <Plus className="h-4 w-4 mr-1" /> Snapshot
+                    <Plus className="h-4 w-4 mr-1" /> {t("versies.snapshot")}
                   </Button>
                 </div>
               </div>
@@ -562,16 +566,16 @@ export default function TestamentPage() {
                 </div>
               )}
               {snapshots.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Nog geen versies opgeslagen. Maak een snapshot om de huidige staat vast te leggen.</p>
+                <p className="text-sm text-muted-foreground">{t("versies.geenVersies")}</p>
               ) : (
                 <>
                   <ul className="space-y-2 mb-4">
                     {snapshots.map((s) => (
                       <li key={s.id} className="flex items-center justify-between text-sm rounded-md border p-2">
                         <div>
-                          <span className="font-medium">Versie {s.versie}</span>
+                          <span className="font-medium">{t("versies.versie", { nummer: s.versie })}</span>
                           <span className="text-muted-foreground ml-2">
-                            {new Date(s.snapshotDatum).toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                            {new Date(s.snapshotDatum).toLocaleDateString(locale === "en" ? "en-NL" : "nl-NL", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                           </span>
                           {s.notitie && <span className="text-muted-foreground ml-2">— {s.notitie}</span>}
                         </div>
@@ -584,24 +588,24 @@ export default function TestamentPage() {
                   {snapshots.length >= 2 && (
                     <div className="border-t pt-3 space-y-3">
                       <p className="text-sm font-medium flex items-center gap-2">
-                        <GitCompareArrows className="h-4 w-4" /> Versies vergelijken
+                        <GitCompareArrows className="h-4 w-4" /> {t("versies.vergelijken")}
                       </p>
                       <div className="flex items-end gap-2">
                         <div className="space-y-1 flex-1">
-                          <Label className="text-xs">Versie A</Label>
+                          <Label className="text-xs">{t("versies.versieA")}</Label>
                           <Select value={vergelijkIds[0]} onChange={(e) => setVergelijkIds([e.target.value, vergelijkIds[1]])}>
-                            <option value="">Selecteer...</option>
+                            <option value="">{t("versies.selecteer")}</option>
                             {snapshots.map((s) => (
-                              <option key={s.id} value={s.id}>Versie {s.versie}</option>
+                              <option key={s.id} value={s.id}>{t("versies.versie", { nummer: s.versie })}</option>
                             ))}
                           </Select>
                         </div>
                         <div className="space-y-1 flex-1">
-                          <Label className="text-xs">Versie B</Label>
+                          <Label className="text-xs">{t("versies.versieB")}</Label>
                           <Select value={vergelijkIds[1]} onChange={(e) => setVergelijkIds([vergelijkIds[0], e.target.value])}>
-                            <option value="">Selecteer...</option>
+                            <option value="">{t("versies.selecteer")}</option>
                             {snapshots.map((s) => (
-                              <option key={s.id} value={s.id}>Versie {s.versie}</option>
+                              <option key={s.id} value={s.id}>{t("versies.versie", { nummer: s.versie })}</option>
                             ))}
                           </Select>
                         </div>
@@ -610,7 +614,7 @@ export default function TestamentPage() {
                           disabled={!vergelijkIds[0] || !vergelijkIds[1] || vergelijkIds[0] === vergelijkIds[1]}
                           onClick={loadVergelijking}
                         >
-                          Vergelijken
+                          {t("versies.vergelijkKnop")}
                         </Button>
                       </div>
                     </div>
@@ -625,11 +629,10 @@ export default function TestamentPage() {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <ScrollText className="h-12 w-12 text-muted-foreground mb-4" />
             <CardDescription className="text-center mb-4">
-              U heeft nog geen testamentaire informatie vastgelegd.
-              Start de wizard om stap voor stap uw wensen vast te leggen.
+              {t("geenTestament")}
             </CardDescription>
             <Link href="/testament/wizard">
-              <Button>Wizard Starten</Button>
+              <Button>{t("wizardStarten")}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -637,78 +640,77 @@ export default function TestamentPage() {
 
       <Dialog open={execDialogOpen} onOpenChange={setExecDialogOpen}>
         <DialogHeader>
-          <DialogTitle>{editExecId ? "Executeur bewerken" : "Executeur toevoegen"}</DialogTitle>
+          <DialogTitle>{editExecId ? t("execDialog.bewerken") : t("execDialog.toevoegen")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label>Naam</Label>
+            <Label>{t("execDialog.naam")}</Label>
             <Input
               value={execForm.naam}
               onChange={(e) => setExecForm((f) => ({ ...f, naam: e.target.value }))}
-              placeholder="Naam van de executeur"
+              placeholder={t("execDialog.naamPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Relatie</Label>
+            <Label>{t("execDialog.relatie")}</Label>
             <Input
               value={execForm.relatie}
               onChange={(e) => setExecForm((f) => ({ ...f, relatie: e.target.value }))}
-              placeholder="bijv. Advocaat, Partner"
+              placeholder={t("execDialog.relatiePlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Telefoon</Label>
+            <Label>{t("execDialog.telefoon")}</Label>
             <Input
               value={execForm.telefoon}
               onChange={(e) => setExecForm((f) => ({ ...f, telefoon: e.target.value }))}
-              placeholder="Telefoonnummer"
+              placeholder={t("execDialog.telefoonPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>E-mail</Label>
+            <Label>{t("execDialog.email")}</Label>
             <Input
               value={execForm.email}
               onChange={(e) => setExecForm((f) => ({ ...f, email: e.target.value }))}
-              placeholder="E-mailadres"
+              placeholder={t("execDialog.emailPlaceholder")}
             />
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
-              <Label>Adres</Label>
+              <Label>{t("execDialog.adres")}</Label>
               <Input
                 value={execForm.adres}
                 onChange={(e) => setExecForm((f) => ({ ...f, adres: e.target.value }))}
-                placeholder="Straat en huisnummer"
+                placeholder={t("execDialog.adresPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("execDialog.postcode")}</Label>
               <Input
                 value={execForm.postcode}
                 onChange={(e) => setExecForm((f) => ({ ...f, postcode: e.target.value }))}
-                placeholder="1234 AB"
+                placeholder={t("execDialog.postcodePlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Woonplaats</Label>
+            <Label>{t("execDialog.woonplaats")}</Label>
             <Input
               value={execForm.woonplaats}
               onChange={(e) => setExecForm((f) => ({ ...f, woonplaats: e.target.value }))}
-              placeholder="Woonplaats"
+              placeholder={t("execDialog.woonplaatsPlaceholder")}
             />
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setExecDialogOpen(false)}>Annuleren</Button>
-          <Button onClick={saveExec}>Opslaan</Button>
+          <Button variant="outline" onClick={() => setExecDialogOpen(false)}>{t("execDialog.annuleren")}</Button>
+          <Button onClick={saveExec}>{t("execDialog.opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
-      {/* P-S5: Direct-edit testament dialog */}
       <Dialog open={testEditOpen} onOpenChange={setTestEditOpen}>
         <DialogHeader>
-          <DialogTitle>Testament bewerken</DialogTitle>
+          <DialogTitle>{t("testEditDialog.titel")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
           {testEditError && (
@@ -718,159 +720,158 @@ export default function TestamentPage() {
           )}
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Type testament</Label>
-              <Input value={testEditForm.testamentType} onChange={(e) => setTestEditForm((f) => ({ ...f, testamentType: e.target.value }))} placeholder="bijv. Langstlevende" />
+              <Label>{t("testEditDialog.typeTestament")}</Label>
+              <Input value={testEditForm.testamentType} onChange={(e) => setTestEditForm((f) => ({ ...f, testamentType: e.target.value }))} placeholder={t("testEditDialog.typePlaceholder")} />
             </div>
             <div className="space-y-2">
-              <Label>Datum testament</Label>
+              <Label>{t("testEditDialog.datumTestament")}</Label>
               <Input type="date" value={testEditForm.datumTestament} onChange={(e) => setTestEditForm((f) => ({ ...f, datumTestament: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Notaris</Label>
-              <Input value={testEditForm.notarisNaam} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisNaam: e.target.value }))} placeholder="Naam notaris" />
+              <Label>{t("testEditDialog.notaris")}</Label>
+              <Input value={testEditForm.notarisNaam} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisNaam: e.target.value }))} placeholder={t("testEditDialog.notarisPlaceholder")} />
             </div>
             <div className="space-y-2">
-              <Label>Kantoor</Label>
-              <Input value={testEditForm.notarisKantoor} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisKantoor: e.target.value }))} placeholder="Notariskantoor" />
+              <Label>{t("testEditDialog.kantoor")}</Label>
+              <Input value={testEditForm.notarisKantoor} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisKantoor: e.target.value }))} placeholder={t("testEditDialog.kantoorPlaceholder")} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Telefoon</Label>
+              <Label>{t("testEditDialog.telefoon")}</Label>
               <Input value={testEditForm.notarisTelefoon} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisTelefoon: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>E-mail</Label>
+              <Label>{t("testEditDialog.email")}</Label>
               <Input value={testEditForm.notarisEmail} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisEmail: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
-              <Label>Adres</Label>
+              <Label>{t("testEditDialog.adres")}</Label>
               <Input value={testEditForm.notarisAdres} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisAdres: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("testEditDialog.postcode")}</Label>
               <Input value={testEditForm.notarisPostcode} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisPostcode: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Plaats</Label>
+              <Label>{t("testEditDialog.plaats")}</Label>
               <Input value={testEditForm.notarisPlaats} onChange={(e) => setTestEditForm((f) => ({ ...f, notarisPlaats: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>CTR Nummer</Label>
-              <Input value={testEditForm.ctr_Nummer} onChange={(e) => setTestEditForm((f) => ({ ...f, ctr_Nummer: e.target.value }))} placeholder="Centraal Testamentenregister" />
+              <Label>{t("testEditDialog.ctrNummer")}</Label>
+              <Input value={testEditForm.ctr_Nummer} onChange={(e) => setTestEditForm((f) => ({ ...f, ctr_Nummer: e.target.value }))} placeholder={t("testEditDialog.ctrPlaceholder")} />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Locatie testament</Label>
-            <Input value={testEditForm.testamentLocatie} onChange={(e) => setTestEditForm((f) => ({ ...f, testamentLocatie: e.target.value }))} placeholder="Waar wordt het testament bewaard?" />
+            <Label>{t("testEditDialog.locatie")}</Label>
+            <Input value={testEditForm.testamentLocatie} onChange={(e) => setTestEditForm((f) => ({ ...f, testamentLocatie: e.target.value }))} placeholder={t("testEditDialog.locatiePlaceholder")} />
           </div>
           <div className="flex items-center space-x-2">
             <input type="checkbox" id="uitsluitingsclausule" checked={testEditForm.uitsluitingsClausule} onChange={(e) => setTestEditForm((f) => ({ ...f, uitsluitingsClausule: e.target.checked }))} className="h-4 w-4 rounded border-border" />
-            <Label htmlFor="uitsluitingsclausule">Uitsluitingsclausule opnemen</Label>
+            <Label htmlFor="uitsluitingsclausule">{t("testEditDialog.uitsluitingsclausule")}</Label>
           </div>
           <div className="space-y-2">
-            <Label>Legaten</Label>
-            <Textarea value={testEditForm.legaten} onChange={(e) => setTestEditForm((f) => ({ ...f, legaten: e.target.value }))} placeholder="Specifieke goederen of bedragen voor bepaalde personen" rows={2} />
+            <Label>{t("testEditDialog.legaten")}</Label>
+            <Textarea value={testEditForm.legaten} onChange={(e) => setTestEditForm((f) => ({ ...f, legaten: e.target.value }))} placeholder={t("testEditDialog.legatenPlaceholder")} rows={2} />
           </div>
           <div className="space-y-2">
-            <Label>Algemene wensen</Label>
-            <Textarea value={testEditForm.algemeneWensen} onChange={(e) => setTestEditForm((f) => ({ ...f, algemeneWensen: e.target.value }))} placeholder="Uw algemene wensen voor de nalatenschap" rows={2} />
+            <Label>{t("testEditDialog.algemeneWensen")}</Label>
+            <Textarea value={testEditForm.algemeneWensen} onChange={(e) => setTestEditForm((f) => ({ ...f, algemeneWensen: e.target.value }))} placeholder={t("testEditDialog.algemeneWensenPlaceholder")} rows={2} />
           </div>
           <div className="space-y-2">
-            <Label>Bijzondere bepalingen</Label>
-            <Textarea value={testEditForm.bijzondereBepalingen} onChange={(e) => setTestEditForm((f) => ({ ...f, bijzondereBepalingen: e.target.value }))} placeholder="Eventuele bijzondere bepalingen" rows={2} />
+            <Label>{t("testEditDialog.bijzondereBepalingen")}</Label>
+            <Textarea value={testEditForm.bijzondereBepalingen} onChange={(e) => setTestEditForm((f) => ({ ...f, bijzondereBepalingen: e.target.value }))} placeholder={t("testEditDialog.bijzonderePlaceholder")} rows={2} />
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setTestEditOpen(false)}>Annuleren</Button>
-          <Button onClick={saveTestEdit}>Opslaan</Button>
+          <Button variant="outline" onClick={() => setTestEditOpen(false)}>{t("testEditDialog.annuleren")}</Button>
+          <Button onClick={saveTestEdit}>{t("testEditDialog.opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
-      {/* Begunstigde dialog */}
       <Dialog open={begDialogOpen} onOpenChange={setBegDialogOpen}>
         <DialogHeader>
-          <DialogTitle>{editBegId ? "Begunstigde bewerken" : "Begunstigde toevoegen"}</DialogTitle>
+          <DialogTitle>{editBegId ? t("begDialog.bewerken") : t("begDialog.toevoegen")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Naam</Label>
+              <Label>{t("begDialog.naam")}</Label>
               <Input
                 value={begForm.naam}
                 onChange={(e) => setBegForm((f) => ({ ...f, naam: e.target.value }))}
-                placeholder="Naam van de begunstigde"
+                placeholder={t("begDialog.naamPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Relatie</Label>
+              <Label>{t("begDialog.relatie")}</Label>
               <Input
                 value={begForm.relatie}
                 onChange={(e) => setBegForm((f) => ({ ...f, relatie: e.target.value }))}
-                placeholder="bijv. Partner, Kind"
+                placeholder={t("begDialog.relatiePlaceholder")}
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Telefoon</Label>
+              <Label>{t("begDialog.telefoon")}</Label>
               <Input
                 value={begForm.telefoon}
                 onChange={(e) => setBegForm((f) => ({ ...f, telefoon: e.target.value }))}
-                placeholder="Telefoonnummer"
+                placeholder={t("begDialog.telefoonPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>E-mail</Label>
+              <Label>{t("begDialog.email")}</Label>
               <Input
                 value={begForm.email}
                 onChange={(e) => setBegForm((f) => ({ ...f, email: e.target.value }))}
-                placeholder="E-mailadres"
+                placeholder={t("begDialog.emailPlaceholder")}
               />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
-              <Label>Adres</Label>
+              <Label>{t("begDialog.adres")}</Label>
               <Input
                 value={begForm.adres}
                 onChange={(e) => setBegForm((f) => ({ ...f, adres: e.target.value }))}
-                placeholder="Straat en huisnummer"
+                placeholder={t("begDialog.adresPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Postcode</Label>
+              <Label>{t("begDialog.postcode")}</Label>
               <Input
                 value={begForm.postcode}
                 onChange={(e) => setBegForm((f) => ({ ...f, postcode: e.target.value }))}
-                placeholder="1234 AB"
+                placeholder={t("begDialog.postcodePlaceholder")}
               />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Woonplaats</Label>
+            <Label>{t("begDialog.woonplaats")}</Label>
             <Input
               value={begForm.woonplaats}
               onChange={(e) => setBegForm((f) => ({ ...f, woonplaats: e.target.value }))}
-              placeholder="Woonplaats"
+              placeholder={t("begDialog.woonplaatsPlaceholder")}
             />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label>Percentage</Label>
+              <Label>{t("begDialog.percentage")}</Label>
               <Input
                 type="number"
                 min="0"
                 max="100"
                 value={begForm.percentage}
                 onChange={(e) => setBegForm((f) => ({ ...f, percentage: e.target.value }))}
-                placeholder="bijv. 50"
+                placeholder={t("begDialog.percentagePlaceholder")}
               />
             </div>
             <div className="flex items-end space-x-2 pb-0.5">
@@ -881,25 +882,23 @@ export default function TestamentPage() {
                 onChange={(e) => setBegForm((f) => ({ ...f, isLegitiemePortie: e.target.checked }))}
                 className="h-4 w-4 rounded border-border"
               />
-              <Label htmlFor="legitieme-portie" className="text-sm">Legitieme portie</Label>
+              <Label htmlFor="legitieme-portie" className="text-sm">{t("begDialog.legitiemePortie")}</Label>
             </div>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setBegDialogOpen(false)}>Annuleren</Button>
-          <Button onClick={saveBeg}>Opslaan</Button>
+          <Button variant="outline" onClick={() => setBegDialogOpen(false)}>{t("begDialog.annuleren")}</Button>
+          <Button onClick={saveBeg}>{t("begDialog.opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
-      {/* P-S20: Snapshot aanmaken */}
       <Dialog open={snapDialogOpen} onOpenChange={setSnapDialogOpen}>
         <DialogHeader>
-          <DialogTitle>Snapshot aanmaken</DialogTitle>
+          <DialogTitle>{t("snapDialog.titel")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Een snapshot slaat de huidige staat van uw testament, begunstigden en executeurs op.
-            U kunt later versies met elkaar vergelijken.
+            {t("snapDialog.beschrijving")}
           </p>
           {snapError && (
             <div className="rounded-lg border border-red-200 bg-red-50 p-2">
@@ -907,18 +906,18 @@ export default function TestamentPage() {
             </div>
           )}
           <div className="space-y-2">
-            <Label>Notitie (optioneel)</Label>
+            <Label>{t("snapDialog.notitie")}</Label>
             <Textarea
               value={snapNotitie}
               onChange={(e) => setSnapNotitie(e.target.value)}
-              placeholder="bijv. Versie na gesprek met notaris"
+              placeholder={t("snapDialog.notitiePlaceholder")}
               rows={2}
             />
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setSnapDialogOpen(false)}>Annuleren</Button>
-          <Button onClick={createSnapshot}>Opslaan</Button>
+          <Button variant="outline" onClick={() => setSnapDialogOpen(false)}>{t("snapDialog.annuleren")}</Button>
+          <Button onClick={createSnapshot}>{t("snapDialog.opslaan")}</Button>
         </DialogFooter>
       </Dialog>
 
@@ -926,22 +925,22 @@ export default function TestamentPage() {
       <Dialog open={vergelijkOpen} onOpenChange={setVergelijkOpen}>
         <DialogHeader>
           <DialogTitle>
-            Vergelijking: Versie {vergelijking?.versie1?.versie} vs Versie {vergelijking?.versie2?.versie}
+            {t("vergelijkDialog.titel", { versie1: vergelijking?.versie1?.versie ?? 0, versie2: vergelijking?.versie2?.versie ?? 0 })}
           </DialogTitle>
         </DialogHeader>
         <div className="py-4">
           {vergelijking && vergelijking.verschillen.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
-              Geen verschillen gevonden tussen deze versies.
+              {t("vergelijkDialog.geenVerschillen")}
             </p>
           ) : (
             <div className="border rounded-lg overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="text-left p-2 font-medium">Veld</th>
-                    <th className="text-left p-2 font-medium">Versie {vergelijking?.versie1?.versie}</th>
-                    <th className="text-left p-2 font-medium">Versie {vergelijking?.versie2?.versie}</th>
+                    <th className="text-left p-2 font-medium">{t("vergelijkDialog.kolomVeld")}</th>
+                    <th className="text-left p-2 font-medium">{t("vergelijkDialog.kolomVersie", { nummer: vergelijking?.versie1?.versie ?? 0 })}</th>
+                    <th className="text-left p-2 font-medium">{t("vergelijkDialog.kolomVersie", { nummer: vergelijking?.versie2?.versie ?? 0 })}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -958,7 +957,7 @@ export default function TestamentPage() {
           )}
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setVergelijkOpen(false)}>Sluiten</Button>
+          <Button variant="outline" onClick={() => setVergelijkOpen(false)}>{t("vergelijkDialog.sluiten")}</Button>
         </DialogFooter>
       </Dialog>
     </div>
