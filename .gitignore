@@ -50,4 +50,7 @@ desktop.ini
 *.db-shm
 *.db-wal
 
+# Analysis output
+/analyse/
+
 
