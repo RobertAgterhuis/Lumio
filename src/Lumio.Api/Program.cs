@@ -121,10 +121,18 @@ if (Directory.Exists(frontendDir))
 {
     var fileProvider = new PhysicalFileProvider(frontendDir);
 
+    // Register .md as a known content type so help markdown files are served correctly
+    var contentTypeProvider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
+    contentTypeProvider.Mappings[".md"] = "text/plain; charset=utf-8";
+
     // Rewrite Next.js RSC dot-separated paths to subdirectory paths
     app.UseMiddleware<RscRewriteMiddleware>();
     app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = fileProvider });
-    app.UseStaticFiles(new StaticFileOptions { FileProvider = fileProvider });
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = fileProvider,
+        ContentTypeProvider = contentTypeProvider
+    });
 
     // SPA fallback: serve index.html for any non-API route that doesn't match a file
     app.MapFallback(async context =>

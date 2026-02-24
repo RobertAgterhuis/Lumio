@@ -1,0 +1,65 @@
+/* ── Help prose styles ─────────────────────────────────────
+   Applied via the .help-prose class on the MarkdownRenderer.
+   Uses Tailwind utility-compatible values without requiring
+   @tailwindcss/typography.
+   ───────────────────────────────────────────────────────── */
+
+.help-prose {
+  @apply text-foreground leading-relaxed;
+}
+
+.help-prose h1 {
+  @apply mb-4 mt-8 text-2xl font-bold text-foreground first:mt-0;
+}
+
+.help-prose h2 {
+  @apply mb-3 mt-6 text-xl font-semibold text-foreground;
+}
+
+.help-prose h3 {
+  @apply mb-2 mt-5 text-lg font-semibold text-foreground;
+}
+
+.help-prose h4 {
+  @apply mb-2 mt-4 text-base font-semibold text-foreground;
+}
+
+.help-prose p {
+  @apply mb-3;
+}
+
+.help-prose strong {
+  @apply font-semibold;
+}
+
+.help-prose em {
+  @apply italic;
+}
+
+.help-prose code {
+  @apply rounded bg-muted px-1.5 py-0.5 text-sm font-mono;
+}
+
+.help-prose blockquote {
+  @apply my-4 border-l-4 border-primary/40 bg-primary/5 py-2 pl-4 pr-3 text-sm;
+}
+
+.help-prose blockquote p {
+  @apply mb-1 last:mb-0;
+}
+
+.help-prose ol {
+  @apply my-3 list-decimal space-y-1.5 pl-6;
+}
+
+.help-prose ul {
+  @apply my-3 list-disc space-y-1.5 pl-6;
+}
+
+.help-prose li {
+  @apply text-sm;
+}
+
+.help-prose hr {
+  @apply my-6 border-border;
+}
