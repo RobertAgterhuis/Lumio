@@ -3,6 +3,7 @@ import { expect, userEvent, within, waitFor } from "storybook/test";
 import { useState } from "react";
 import { FormField } from "@/components/ui/form-field";
 import { Button } from "@/components/ui/button";
+import { runA11yChecks } from "@/lib/test-utils/storybook-a11y";
 
 const meta = {
   title: "Primitives/FormField",
@@ -234,5 +235,8 @@ export const AccessibilityTest: Story = {
 
     // aria-invalid should be removed
     expect(input.getAttribute("aria-invalid")).toBeNull();
+
+    // Run axe-core accessibility checks
+    await runA11yChecks(canvasElement);
   },
 };

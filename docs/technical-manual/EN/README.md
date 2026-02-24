@@ -21,6 +21,7 @@ This manual describes the full technical architecture of Lumio: an offline-first
 | 9 | [Build & Deployment](09-build-deployment.md) | Scripts, CI, USB distribution |
 | 10 | [Development Environment](10-development-environment.md) | Setup, tooling, Storybook, testing |
 | 11 | [Business Rules](11-business-rules.md) | Rule engine, validation, configuration |
+| 12 | [Content Style Guide](12-content-style-guide.md) | Tone, terminology, i18n patterns, a11y |
 
 ## Quick Start
 

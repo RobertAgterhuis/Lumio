@@ -23,6 +23,29 @@
     "foutBijVerwijderen": "Error while deleting",
     "foutBijLaden": "Error while loading"
   },
+  "verwijderBevestiging": {
+    "titel": "Delete {type}",
+    "beschrijving": "Are you sure you want to delete \"{naam}\"? This action cannot be undone.",
+    "itemLabel": "This item will be deleted:",
+    "bevestigen": "Delete",
+    "annuleren": "Cancel",
+    "types": {
+      "erfgenaam": "Heir",
+      "bezit": "Asset",
+      "rekening": "Account",
+      "verzekering": "Insurance",
+      "schuld": "Debt",
+      "document": "Document",
+      "account": "Account",
+      "wachtwoord": "Password",
+      "wallet": "Wallet",
+      "noodcontact": "Emergency Contact",
+      "begunstigde": "Beneficiary",
+      "executeur": "Executor",
+      "genodigde": "Guest",
+      "detail": "Detail"
+    }
+  },
   "nav": {
     "dashboard": "Dashboard",
     "mijnProfiel": "My Profile",
@@ -2611,5 +2634,238 @@
     },
     "timeout": "The request took too long. Please try again.",
     "netwerk": "No connection to the server. Check your network connection."
+  },
+  "hulpteksten": {
+    "eigenaar": {
+      "voornaam": "Your first name as shown on official documents.",
+      "tussenvoegsel": "E.g., 'van', 'de'. Common in Dutch names but optional.",
+      "achternaam": "Your last name as shown on official documents.",
+      "geboortedatum": "Required for legal documents and inheritance tax calculations.",
+      "bsn": "Your Citizen Service Number is stored encrypted and required for notarial deeds.",
+      "adres": "Your residential address is used for official correspondence and documents.",
+      "postcode": "Dutch postal codes consist of 4 digits and 2 letters (e.g., 1234 AB).",
+      "woonplaats": "The municipality where you are registered.",
+      "telefoon": "Optional – can be displayed on your emergency card for next of kin.",
+      "email": "Will not be shared and serves only for your own records.",
+      "burgerlijkeStaat": "Affects statutory inheritance rights and division of joint property.",
+      "huwelijksvoorwaarden": "Determines how assets are divided upon death or divorce.",
+      "datumHuwelijk": "The date of your marriage or registered partnership.",
+      "legitimatieSoort": "The type of identification document you have.",
+      "documentnummer": "The number on your ID – required for notarial deeds.",
+      "geldigTot": "Important: an expired ID can cause problems with notarial matters."
+    },
+    "notaris": {
+      "naam": "The full name of your notary, including any title (esq.).",
+      "kantoor": "The name of the notary office where your will was drafted.",
+      "telefoon": "Direct phone number for quick accessibility by next of kin.",
+      "email": "Email address for correspondence about your file.",
+      "adres": "Useful for next of kin who need to visit the office."
+    },
+    "erfgenamen": {
+      "voornaam": "The official first name of the heir as on their ID.",
+      "achternaam": "The official last name – important for legal documents.",
+      "tussenvoegsel": "Middle name particles such as 'van', 'de' or 'van der'.",
+      "relatie": "The family relationship determines the inheritance tax bracket.",
+      "telefoon": "Phone number for contact during estate settlement.",
+      "email": "Email address for sending documents and emergency codes.",
+      "geboortedatum": "Required for determining legitimate portion and tax exemption.",
+      "bsn": "Stored encrypted – required for notarial deeds and tax returns.",
+      "adres": "The residential address is needed for official correspondence.",
+      "legitimatie": "Type of identification document of the heir.",
+      "documentnummer": "The ID document number – required for notarial deeds.",
+      "bestemming": "What specific assets or percentages this heir receives."
+    },
+    "shamir": {
+      "wachtwoord": "Your Lumio master password is split into multiple shares.",
+      "drempel": "The minimum number of heirs required to work together for access. A higher threshold is more secure but requires more coordination."
+    },
+    "boedel": {
+      "bezitCategorie": "Categorize your assets for a clear distribution overview.",
+      "omschrijving": "A clear description helps heirs with identification.",
+      "geschatteWaarde": "An estimate is sufficient – exact valuation can be done later by heirs.",
+      "locatie": "Where is this asset located? Helpful for heirs during settlement.",
+      "bestemdeErfgenaam": "Who should receive this specific asset? (Optional)",
+      "vermogensSoort": "Private property stays separate; joint property is divided.",
+      "kadastraalNummer": "The cadastral number can be found on the deed or via kadaster.nl.",
+      "kenteken": "The vehicle's license plate – found on the registration certificate.",
+      "kvkNummer": "Only fill in if this asset is linked to a business.",
+      "ibanRekening": "Your full IBAN number. Always starts with NL for Dutch accounts.",
+      "saldoRekening": "An estimate of the current balance – does not need to be exact.",
+      "verzekeraar": "The name of the insurance company.",
+      "polisnummer": "Found on your policy or in your insurer's app.",
+      "verzekerdBedrag": "The maximum amount that will be paid out.",
+      "begunstigde": "Who receives the payout? This may differ from legal heirs.",
+      "schuldeiser": "The party to whom you owe money.",
+      "schuldBedrag": "The total outstanding amount.",
+      "maandelijkseAflossing": "The amount you pay monthly.",
+      "referentie": "Your contract number or reference with the creditor."
+    },
+    "digitaalBezit": {
+      "platformNaam": "The name of the service or website (e.g., Google, Facebook, LinkedIn).",
+      "categorie": "Categorize accounts for overview: social media, email, banking, etc.",
+      "gebruikersnaam": "The username or email you use to log in.",
+      "accountEmail": "The email address linked to this account.",
+      "url": "The direct link to your account page or the login page.",
+      "gewensteActie": "What should next of kin do? Delete, memorialize, or transfer.",
+      "overdrachtAan": "If you choose transfer: to whom should the account be transferred?",
+      "wachtwoordNaam": "A descriptive name so you can find the password later.",
+      "wachtwoord": "Passwords are encrypted with AES-256-GCM – only visible after unlocking.",
+      "walletNaam": "A recognizable name for this wallet.",
+      "cryptoType": "The type of cryptocurrency: Bitcoin, Ethereum, etc.",
+      "walletAdres": "The public wallet address – can be safely shared.",
+      "exchange": "The exchange where you trade (e.g., Coinbase, Binance, Bitvavo).",
+      "seedPhrase": "WARNING: Your seed phrase gives full access to your crypto. Stored encrypted."
+    },
+    "testament": {
+      "typeTestament": "The type of will: notarial, codicil, or holographic.",
+      "datumTestament": "The date your will was drafted or last modified.",
+      "ctrNummer": "The number in the Central Will Registry – your notary can provide this.",
+      "locatieTestament": "Where is the physical will kept? (Notary, safe, home)",
+      "uitsluitingsclausule": "Protects inheritances from the (ex-)partners' assets of your heirs.",
+      "legaten": "Specific assets or amounts you want to bequeath to certain people.",
+      "begunstigdeNaam": "The name of the person or organization you want to benefit.",
+      "begunstigdePercentage": "The percentage of the estate this beneficiary receives.",
+      "executeurNaam": "The person you appoint to settle your estate.",
+      "executeurRelatie": "The relationship with the executor – e.g., lawyer, partner, child."
+    },
+    "uitvaart": {
+      "uitvaartType": "Your preference: burial, cremation, or natural burial.",
+      "budget": "A budget indication: simple, average, or extensive.",
+      "uitvaartondernemer": "If you have already chosen a director, note the details here.",
+      "kleding": "What clothing do you want to wear? Or specific wishes for the coffin.",
+      "heeftVerzekering": "Have you taken out funeral insurance?",
+      "ceremonieSoort": "The type of ceremony: religious, humanist, personal, or other.",
+      "ceremonieLocatie": "Where should the ceremony take place?",
+      "muziekwensen": "What music do you want played during the ceremony?",
+      "bloemen": "Preferences for flowers or rather donations to a charity?",
+      "sprekers": "Who do you want as speakers during the ceremony?",
+      "rouwkaarttekst": "A text or quote for the mourning card.",
+      "rouwadvertentie": "Do you want an obituary and if so, in which newspaper?",
+      "condoleance": "Where and when the condolence will take place.",
+      "begraafplaats": "The cemetery of your preference.",
+      "crematorium": "The crematorium of your preference.",
+      "aula": "The hall where the funeral should take place."
+    },
+    "euthanasie": {
+      "wilEuthanasie": "Whether you want euthanasia in case of hopeless suffering.",
+      "datumOndertekening": "The date you signed your advance directive.",
+      "situatiebeschrijving": "Describe in which situation you would want euthanasia.",
+      "aanvullendeWensen": "Any additional wishes or restrictions.",
+      "huisartsNaam": "The name of your GP who knows your medical situation.",
+      "praktijk": "The name of the GP practice.",
+      "vertegenwoordigerNaam": "The person who may decide on your behalf if you can no longer do so.",
+      "dementieclausule": "A specific clause for the case of advanced dementia.",
+      "behandelverbod": "Which treatments you explicitly refuse."
+    },
+    "donor": {
+      "donorkeuze": "Your choice: donate, not donate, or limited donation.",
+      "geregistreerd": "Whether you are officially registered with the Donor Registry.",
+      "referentie": "Your registration number with the Donor Registry (if known)."
+    },
+    "noodcontacten": {
+      "naam": "The full name of the emergency contact.",
+      "relatie": "Your relationship with this person (partner, child, friend).",
+      "rol": "The functional role: trusted person, GP, notary, etc.",
+      "telefoon": "A direct phone number for emergencies.",
+      "email": "Email address for less urgent communication.",
+      "instructies": "Specific instructions for next of kin when contacting this person.",
+      "isGedeeld": "Mark as shared if this contact is also relevant for your partner."
+    },
+    "documenten": {
+      "naam": "A descriptive name so you can find the document later.",
+      "categorie": "Categorize: will, ID, insurance policy, etc.",
+      "verloopdatum": "Set an expiration date for documents that need renewal."
+    }
+  },
+  "legeStaten": {
+    "erfgenamen": {
+      "titel": "No heirs yet",
+      "beschrijving": "Heirs are the people who will receive your estate. Add at least one heir to arrange the transfer of your assets.",
+      "cta": "Add heir"
+    },
+    "bezittingen": {
+      "titel": "No assets yet",
+      "beschrijving": "Register your assets such as real estate, vehicles, and valuables so heirs know what exists.",
+      "cta": "Add asset"
+    },
+    "rekeningen": {
+      "titel": "No accounts yet",
+      "beschrijving": "Add your bank accounts so next of kin know which accounts need to be closed or transferred.",
+      "cta": "Add account"
+    },
+    "verzekeringen": {
+      "titel": "No insurance yet",
+      "beschrijving": "Register your insurance policies so heirs know which policies need to be claimed or cancelled.",
+      "cta": "Add insurance"
+    },
+    "schulden": {
+      "titel": "No debts yet",
+      "beschrijving": "Add any debts and loans for a complete financial overview.",
+      "cta": "Add debt"
+    },
+    "digitaalBezit": {
+      "accounts": {
+        "titel": "No digital accounts yet",
+        "beschrijving": "Add your online accounts (social media, email, subscriptions) so next of kin know what to do.",
+        "cta": "Add account"
+      },
+      "wachtwoorden": {
+        "titel": "No passwords yet",
+        "beschrijving": "Store important passwords encrypted. These are only accessible after being unlocked by your heirs.",
+        "cta": "Add password"
+      },
+      "crypto": {
+        "titel": "No crypto wallets yet",
+        "beschrijving": "Register your cryptocurrency wallets. Without access to your wallets, crypto can be lost forever.",
+        "cta": "Add wallet"
+      }
+    },
+    "documenten": {
+      "titel": "No documents yet",
+      "beschrijving": "Upload important documents like your will, ID, or insurance policies in one secure place.",
+      "cta": "Upload document"
+    },
+    "testament": {
+      "begunstigden": {
+        "titel": "No beneficiaries yet",
+        "beschrijving": "Add the people or organizations you want to benefit in your will.",
+        "cta": "Add beneficiary"
+      },
+      "executeurs": {
+        "titel": "No executor yet",
+        "beschrijving": "An executor settles your estate. Appoint someone you trust.",
+        "cta": "Appoint executor"
+      },
+      "snapshots": {
+        "titel": "No will snapshots yet",
+        "beschrijving": "Create a snapshot of your current wishes to track history.",
+        "cta": "Create snapshot"
+      }
+    },
+    "uitvaart": {
+      "details": {
+        "titel": "No funeral details yet",
+        "beschrijving": "Record your funeral wishes so next of kin know what you want.",
+        "cta": "Record wishes"
+      },
+      "genodigden": {
+        "titel": "No guests yet",
+        "beschrijving": "Add the people you want at your funeral.",
+        "cta": "Add guest"
+      }
+    },
+    "noodcontacten": {
+      "titel": "No emergency contacts yet",
+      "beschrijving": "Emergency contacts are the first points of contact for next of kin. Think of your GP, notary, or a trusted person.",
+      "cta": "Add emergency contact"
+    },
+    "zoekresultaten": {
+      "titel": "No results found",
+      "beschrijving": "Try a different search term or adjust your filters."
+    },
+    "auditLog": {
+      "titel": "No activities",
+      "beschrijving": "No activities have been recorded in your account yet."
+    }
   }
 }

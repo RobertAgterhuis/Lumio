@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { ToastProvider } from "./ToastProvider";
 import { QueryProvider } from "./QueryProvider";
+import { AxeDevTools } from "./AxeDevTools";
 
 type Messages = Record<string, unknown>;
 
@@ -69,6 +70,7 @@ export function LocaleProvider({
         {children}
       </QueryProvider>
       <ToastProvider />
+      <AxeDevTools />
     </NextIntlClientProvider>
   );
 }

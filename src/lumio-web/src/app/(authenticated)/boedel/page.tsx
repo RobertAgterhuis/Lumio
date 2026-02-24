@@ -8,6 +8,7 @@ import { Wallet, Building2, Shield, CreditCard, Plus } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { EmptyState } from "@/components/ui/EmptyState";
 import {
   useBoedel,
   SamenvattingCard,
@@ -23,7 +24,8 @@ import {
 
 export default function BoedelPage() {
   const t = useTranslations("boedel");
-  
+  const tEmpty = useTranslations("legeStaten");
+
   const {
     tab,
     setTab,
@@ -114,7 +116,13 @@ export default function BoedelPage() {
             </CardHeader>
             <CardContent>
               {bezittingen.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">{t("bezittingen.geenBezittingen")}</p>
+                <EmptyState
+                  icon={Building2}
+                  title={tEmpty("bezittingen.titel")}
+                  description={tEmpty("bezittingen.beschrijving")}
+                  ctaLabel={tEmpty("bezittingen.cta")}
+                  onCtaClick={() => openBezit()}
+                />
               ) : (
                 <div className="space-y-2">
                   {bezittingen.map((b) => (
@@ -137,7 +145,13 @@ export default function BoedelPage() {
             </CardHeader>
             <CardContent>
               {rekeningen.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">{t("rekeningen.geenRekeningen")}</p>
+                <EmptyState
+                  icon={Wallet}
+                  title={tEmpty("rekeningen.titel")}
+                  description={tEmpty("rekeningen.beschrijving")}
+                  ctaLabel={tEmpty("rekeningen.cta")}
+                  onCtaClick={() => openRekening()}
+                />
               ) : (
                 <div className="space-y-2">
                   {rekeningen.map((r) => (
@@ -160,7 +174,13 @@ export default function BoedelPage() {
             </CardHeader>
             <CardContent>
               {verzekeringen.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">{t("verzekeringen.geenVerzekeringen")}</p>
+                <EmptyState
+                  icon={Shield}
+                  title={tEmpty("verzekeringen.titel")}
+                  description={tEmpty("verzekeringen.beschrijving")}
+                  ctaLabel={tEmpty("verzekeringen.cta")}
+                  onCtaClick={() => openVerzekering()}
+                />
               ) : (
                 <div className="space-y-2">
                   {verzekeringen.map((v) => (
@@ -183,7 +203,13 @@ export default function BoedelPage() {
             </CardHeader>
             <CardContent>
               {schulden.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">{t("schulden.geenSchulden")}</p>
+                <EmptyState
+                  icon={CreditCard}
+                  title={tEmpty("schulden.titel")}
+                  description={tEmpty("schulden.beschrijving")}
+                  ctaLabel={tEmpty("schulden.cta")}
+                  onCtaClick={() => openSchuld()}
+                />
               ) : (
                 <div className="space-y-2">
                   {schulden.map((s) => (
