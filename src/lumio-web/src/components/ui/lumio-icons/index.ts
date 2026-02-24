@@ -1,0 +1,13 @@
+export { DashboardIcon } from "./dashboard";
+export { ProfielIcon } from "./profiel";
+export { TestamentIcon } from "./testament";
+export { WilsverklaringIcon } from "./wilsverklaring";
+export { DonorIcon } from "./donor";
+export { UitvaartIcon } from "./uitvaart";
+export { DigitaalBezitIcon } from "./digitaal-bezit";
+export { BoedelIcon } from "./boedel";
+export { DocumentenIcon } from "./documenten";
+export { ErfgenamenIcon } from "./erfgenamen";
+export { NoodcontactenIcon } from "./noodcontacten";
+export { TijdlijnIcon } from "./tijdlijn";
+export { ShieldIcon, ShieldCheckIcon, ShieldAlertIcon, ShieldXIcon } from "./shield";

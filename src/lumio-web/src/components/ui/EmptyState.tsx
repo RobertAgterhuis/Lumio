@@ -4,10 +4,13 @@ import type { ReactNode } from "react";
 import { type LucideIcon, Package } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 
 export interface EmptyStateProps {
-  /** Icon to display (defaults to Package) */
+  /** Lucide icon to display (defaults to Package) */
   icon?: LucideIcon;
+  /** LumioIcon name — preferred for domain-specific empty states */
+  lumioIcon?: LumioIconName;
   /** Main title/message */
   title: string;
   /** Optional description providing more context */
@@ -38,6 +41,7 @@ export interface EmptyStateProps {
  */
 export function EmptyState({
   icon: Icon = Package,
+  lumioIcon,
   title,
   description,
   ctaLabel,
@@ -54,10 +58,18 @@ export function EmptyState({
       role="status"
       aria-live="polite"
     >
-      <Icon
-        className="h-12 w-12 text-muted-foreground mb-4"
-        aria-hidden="true"
-      />
+      {lumioIcon ? (
+        <LumioIcon
+          name={lumioIcon}
+          size="xl"
+          className="text-muted-foreground mb-4"
+        />
+      ) : (
+        <Icon
+          className="h-12 w-12 text-muted-foreground mb-4"
+          aria-hidden="true"
+        />
+      )}
       <p className="text-base font-medium text-foreground mb-1">{title}</p>
       {description && (
         <p className="text-sm text-muted-foreground max-w-sm mb-4">

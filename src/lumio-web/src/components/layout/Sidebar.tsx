@@ -6,22 +6,11 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useDomainQuery } from "@/hooks/useDomainQuery";
 import { LumioLogoIcon } from "./LumioLogoIcon";
+import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import {
-  ScrollText,
-  Heart,
-  Stethoscope,
-  Globe,
-  Wallet,
-  Church,
-  FileText,
-  Users,
   Settings,
   Download,
-  LayoutDashboard,
-  User,
-  Phone,
   ClipboardList,
-  ListChecks,
   BookOpen,
   CheckCircle2,
   type LucideIcon,
@@ -43,7 +32,8 @@ interface Compleetheid {
 interface NavItem {
   href: string;
   labelKey: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
+  lumioIcon?: LumioIconName;
 }
 
 interface NavGroup {
@@ -55,38 +45,38 @@ const navGroups: NavGroup[] = [
   {
     labelKey: "groep.overzicht",
     items: [
-      { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
-      { href: "/eigenaar", labelKey: "mijnProfiel", icon: User },
+      { href: "/dashboard", labelKey: "dashboard", lumioIcon: "dashboard" as LumioIconName },
+      { href: "/eigenaar", labelKey: "mijnProfiel", lumioIcon: "profiel" as LumioIconName },
     ],
   },
   {
     labelKey: "groep.wensen",
     items: [
-      { href: "/testament", labelKey: "testament", icon: ScrollText },
-      { href: "/euthanasie", labelKey: "wilsverklaring", icon: Stethoscope },
-      { href: "/donor", labelKey: "donorregistratie", icon: Heart },
-      { href: "/uitvaart", labelKey: "uitvaartwensen", icon: Church },
+      { href: "/testament", labelKey: "testament", lumioIcon: "testament" as LumioIconName },
+      { href: "/euthanasie", labelKey: "wilsverklaring", lumioIcon: "wilsverklaring" as LumioIconName },
+      { href: "/donor", labelKey: "donorregistratie", lumioIcon: "donor" as LumioIconName },
+      { href: "/uitvaart", labelKey: "uitvaartwensen", lumioIcon: "uitvaart" as LumioIconName },
     ],
   },
   {
     labelKey: "groep.bezittingen",
     items: [
-      { href: "/digitaal-bezit", labelKey: "digitaalBezit", icon: Globe },
-      { href: "/boedel", labelKey: "boedel", icon: Wallet },
-      { href: "/documenten", labelKey: "documenten", icon: FileText },
+      { href: "/digitaal-bezit", labelKey: "digitaalBezit", lumioIcon: "digitaal-bezit" as LumioIconName },
+      { href: "/boedel", labelKey: "boedel", lumioIcon: "boedel" as LumioIconName },
+      { href: "/documenten", labelKey: "documenten", lumioIcon: "documenten" as LumioIconName },
     ],
   },
   {
     labelKey: "groep.personen",
     items: [
-      { href: "/erfgenamen", labelKey: "erfgenamen", icon: Users },
-      { href: "/noodcontacten", labelKey: "noodcontacten", icon: Phone },
+      { href: "/erfgenamen", labelKey: "erfgenamen", lumioIcon: "erfgenamen" as LumioIconName },
+      { href: "/noodcontacten", labelKey: "noodcontacten", lumioIcon: "noodcontacten" as LumioIconName },
     ],
   },
   {
     labelKey: "groep.hulpmiddelen",
     items: [
-      { href: "/tijdlijn", labelKey: "tijdlijnOverlijden", icon: ListChecks },
+      { href: "/tijdlijn", labelKey: "tijdlijnOverlijden", lumioIcon: "tijdlijn" as LumioIconName },
       { href: "/export", labelKey: "exporteren", icon: Download },
       { href: "/audit-log", labelKey: "activiteitenlog", icon: ClipboardList },
       { href: "/instellingen", labelKey: "instellingen", icon: Settings },
@@ -136,7 +126,11 @@ export function Sidebar() {
                         : "text-sidebar-foreground hover:bg-muted"
                     )}
                   >
-                    <Icon className="h-4 w-4" />
+                    {item.lumioIcon ? (
+                      <LumioIcon name={item.lumioIcon} size="sm" />
+                    ) : Icon ? (
+                      <Icon className="h-4 w-4" />
+                    ) : null}
                     <span className="flex-1">{t(item.labelKey)}</span>
                     {isCompleted && (
                       <CheckCircle2 className="h-4 w-4 text-success" aria-label="Completed" />

@@ -1,0 +1,164 @@
+import { Meta, Canvas, Controls, Story } from "@storybook/blocks";
+import * as LumioIconStories from "./LumioIcon.stories";
+
+<Meta of={LumioIconStories} />
+
+# LumioIcon
+
+The `LumioIcon` component renders any of the 16 custom brand-aligned SVG icons that replace
+Lucide domain and security icons throughout the Lumio application.
+
+## Why custom icons?
+
+Lucide's icons are general-purpose. Lumio's domain subjects — wills, organ donation, estate,
+funeral wishes — are emotionally significant and deserve a visual language that is softer,
+rounder and more personal. Every custom icon:
+
+- Uses `stroke="currentColor"` — responds to Tailwind text utilities automatically.
+- Uses `strokeWidth="1.5"` — softer than Lucide's `2px`, matching `--radius-md` energy.
+- Is built on a `0 0 24 24` viewBox — optically aligned with Lucide icons at same pixel size.
+- Is `aria-hidden` by default, with explicit `label` support for non-decorative usage.
+
+---
+
+## Usage
+
+```tsx
+import { LumioIcon } from "@/components/ui/lumio-icon";
+
+// Decorative (aria-hidden, default)
+<LumioIcon name="testament" size="md" className="text-primary" />
+
+// Accessible (role="img" + aria-label)
+<LumioIcon name="shield-check" size="lg" label="Beveiligd" />
+
+// With forwarded ref
+const ref = useRef<SVGSVGElement>(null);
+<LumioIcon ref={ref} name="dashboard" />
+```
+
+---
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `LumioIconName` | — | **Required.** Icon identifier. |
+| `size` | `"sm" \| "md" \| "lg" \| "xl"` | `"md"` | Maps to 16 / 20 / 24 / 32 px via Tailwind. |
+| `label` | `string` | — | `aria-label` text. Omit for decorative icons. |
+| `className` | `string` | — | Tailwind utility classes (e.g. `text-primary`). |
+| `ref` | `Ref<SVGSVGElement>` | — | Forwarded to the underlying `<svg>` element. |
+| `...SVGProps` | — | — | All standard SVG element props are forwarded. |
+
+### Size reference
+
+| Size | Class | Pixels |
+|------|-------|--------|
+| `sm` | `h-4 w-4` | 16 px |
+| `md` | `h-5 w-5` | 20 px |
+| `lg` | `h-6 w-6` | 24 px |
+| `xl` | `h-8 w-8` | 32 px |
+
+---
+
+## All 16 icons
+
+<Canvas of={LumioIconStories.AllIcons} />
+
+---
+
+## Sizes
+
+<Canvas of={LumioIconStories.Sizes} />
+
+---
+
+## Color tokens
+
+All icons inherit color from their parent's text color. Use Tailwind text utilities:
+
+<Canvas of={LumioIconStories.Colors} />
+
+---
+
+## Security icon states
+
+The four shield variants share a common base path and differ only in their inner symbol.
+
+<Canvas of={LumioIconStories.SecurityIcons} />
+
+---
+
+## Accessibility
+
+When an icon conveys meaning (not purely decorative), pass a `label` prop:
+
+<Canvas of={LumioIconStories.Accessibility} />
+
+```tsx
+// ✅ Decorative — no label needed
+<LumioIcon name="testament" />
+
+// ✅ Semantic — label required
+<LumioIcon name="shield-alert" label="Beveiligd — beperkte toegang" />
+```
+
+---
+
+## Icon design rationale
+
+| Name | Visual concept |
+|------|---------------|
+| `dashboard` | 2×2 grid of rounded tiles; top-left tile is the accent tile. |
+| `profiel` | Person head + shoulder arc; dashed halo ring conveys personal sphere. |
+| `testament` | Vertical scroll with title rule, content lines and wax seal. |
+| `wilsverklaring` | Stethoscope Y-tube with a tiny heart at the chest piece. |
+| `donor` | Filled upright heart with a sprout rising from the cleft. |
+| `uitvaart` | Circle (continuity) above a soft arch (gateway). Universal, respectful. |
+| `digitaal-bezit` | Globe (circle + equator + meridian) with a padlock overlay. |
+| `boedel` | House silhouette (triangle roof + square body) inside a rounded portfolio rect. |
+| `documenten` | Document rectangle with a folded top-right corner and content lines. |
+| `erfgenamen` | Two person shapes; larger centred, smaller slightly behind to the right. |
+| `noodcontacten` | Phone handset with a heartbeat pulse line to the right. |
+| `tijdlijn` | Three dots on a vertical line: future (open) → present (half) → past (filled ✓). |
+| `shield` | Shield base only — neutral protected state. |
+| `shield-check` | Shield base + rounded check mark — verified/secure state. |
+| `shield-alert` | Shield base + exclamation mark — warning/caution state. |
+| `shield-x` | Shield base + diagonal X — critical/blocked/failed state. |
+
+---
+
+## Rules for developers
+
+- **Prefer `LumioIcon`** for all 16 domain and security icon names.
+- **Keep Lucide** for generic utility icons (arrows, close, settings, search, etc.).
+- **Never import** `Shield`, `ShieldCheck`, `ShieldAlert`, `ShieldX`, `LayoutDashboard`,
+  `ScrollText`, `Church`, `Heart` (as a domain icon), `Globe` or `Wallet` from `lucide-react`
+  in production page components — these are replaced.
+- **Token-safe** — use `className="text-*"` to colour icons; never inline `fill` or `stroke` styles.
+
+---
+
+## File locations
+
+```
+src/lumio-web/src/components/ui/
+  lumio-icon.tsx              ← Public API — import from here
+  lumio-icons/
+    index.ts                  ← Internal barrel
+    dashboard.tsx
+    profiel.tsx
+    testament.tsx
+    wilsverklaring.tsx
+    donor.tsx
+    uitvaart.tsx
+    digitaal-bezit.tsx
+    boedel.tsx
+    documenten.tsx
+    erfgenamen.tsx
+    noodcontacten.tsx
+    tijdlijn.tsx
+    shield.tsx                ← All four shield variants
+  LumioIcon.stories.tsx
+  LumioIcon.docs.mdx          ← This file
+```

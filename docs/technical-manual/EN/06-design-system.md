@@ -308,3 +308,95 @@ Prevents arbitrary spacing values in favor of design tokens:
 ```
 
 **Configuration:** Both rules are enabled in `eslint.config.mjs` with `error` severity.
+---
+
+## Icon System
+
+Lumio ships two parallel icon systems:
+
+| System | Component | Source | Usage |
+|--------|-----------|--------|-------|
+| Lucide | `<Icon icon={X} />` via `icon.tsx` | `lucide-react` npm package | Generic utility icons (close, search, settings, arrows, …) |
+| LumioIcon | `<LumioIcon name="testament" />` via `lumio-icon.tsx` | Custom SVG in `lumio-icons/` | 16 domain & security icons |
+
+### LumioIcon component
+
+```tsx
+import { LumioIcon } from "@/components/ui/lumio-icon";
+
+// Decorative
+<LumioIcon name="testament" size="md" className="text-primary" />
+
+// Accessible
+<LumioIcon name="shield-alert" size="lg" label="Security warning" />
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `LumioIconName` | — | Required icon identifier |
+| `size` | `"sm" \| "md" \| "lg" \| "xl"` | `"md"` | 16 / 20 / 24 / 32 px |
+| `label` | `string` | — | `aria-label` for non-decorative usage |
+| `className` | `string` | — | Tailwind text utilities |
+| `ref` | `Ref<SVGSVGElement>` | — | Forwarded to the `<svg>` element |
+
+### The 16 custom icons
+
+#### Domain icons
+
+| Name | Domain | Visual concept |
+|------|--------|----------------|
+| `dashboard` | Dashboard | 2×2 grid of rounded tiles |
+| `profiel` | Profile | Person silhouette with dashed halo ring |
+| `testament` | Will | Scroll with title rule, content lines and wax seal |
+| `wilsverklaring` | Advance directive | Stethoscope with heart at chest piece |
+| `donor` | Organ donation | Filled heart with a life-sprout |
+| `uitvaart` | Funeral wishes | Circle above a soft arch — universal, respectful |
+| `digitaal-bezit` | Digital assets | Globe with padlock overlay |
+| `boedel` | Estate | House inside a portfolio rectangle |
+| `documenten` | Documents | Document with folded corner and content lines |
+| `erfgenamen` | Heirs | Two person shapes, depth through size |
+| `noodcontacten` | Emergency contacts | Phone handset with heartbeat pulse |
+| `tijdlijn` | Timeline | Three dots on vertical line: future → present → past |
+
+#### Security icons
+
+| Name | State | Inner symbol |
+|------|-------|-------------|
+| `shield` | Neutral / protected | Shield base only |
+| `shield-check` | Verified / secure | Check mark |
+| `shield-alert` | Warning / caution | Exclamation mark |
+| `shield-x` | Critical / blocked | Diagonal X |
+
+All four shield variants share the same base path — consistent visual weight across states.
+
+### Design principles
+
+1. **`currentColor`** — All icons inherit text color. Use `className="text-primary"` etc.
+2. **Stroke weight 1.5** — Softer than Lucide (2px), matching `--radius-md` design language.
+3. **ViewBox `0 0 24 24`** — Icons align optically with Lucide at the same pixel size.
+4. **`aria-hidden` by default** — Pass `label` prop only when the icon conveys meaning.
+5. **`forwardRef` enabled** — Ref is forwarded to the underlying `<svg>` element.
+
+### Rules for developers
+
+- **Use `LumioIcon`** for all 16 domain and security icon names listed above.
+- **Use Lucide** (`<Icon icon={X} />`) for all other icons.
+- **Never import** `Shield`, `ShieldCheck`, `ShieldAlert`, `ShieldX`,
+  `LayoutDashboard`, `ScrollText`, `Church`, `Heart` (domain use), `Globe`
+  or `Wallet` from `lucide-react` in production page components.
+- The CI `icon-guard` job enforces this automatically.
+
+### Storybook documentation
+
+All 16 icons are documented in Storybook under **UI › LumioIcon**:
+
+- `AllIcons` — full grid at size `lg`
+- `Sizes` — sm / md / lg / xl comparison
+- `Colors` — token-based color states
+- `SecurityIcons` — four shield variants
+- `ShieldStates` — animated shield state transitions
+- `Accessibility` — labelled vs decorative usage
+
+A dedicated MDX page (`LumioIcon.docs.mdx`) is also available in the Storybook docs tab.

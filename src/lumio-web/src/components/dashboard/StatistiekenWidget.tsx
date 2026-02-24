@@ -4,15 +4,12 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import { useTranslations, useLocale } from "next-intl";
 import {
-  Users,
-  Globe,
-  FileText,
   Wallet,
-  Phone,
   TrendingUp,
   TrendingDown,
   BarChart3,
 } from "lucide-react";
+import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 
 interface Statistieken {
   erfgenamen: number;
@@ -68,25 +65,31 @@ export function StatistiekenWidget() {
     stats.financieel.totaalVerzekeringen > 0 ||
     stats.financieel.totaalSchulden > 0;
 
-  const items = [
+  const items: Array<{
+    label: string;
+    waarde: number;
+    lumioIcon: LumioIconName;
+    color: string;
+    bgColor: string;
+  }> = [
     {
       label: t("erfgenamen"),
       waarde: stats.erfgenamen,
-      icon: Users,
+      lumioIcon: "erfgenamen",
       color: "text-accent",
       bgColor: "bg-accent/10",
     },
     {
       label: t("digitaleAccounts"),
       waarde: stats.digitaalBezit.totaal,
-      icon: Globe,
+      lumioIcon: "digitaal-bezit",
       color: "text-success",
       bgColor: "bg-success-100",
     },
     {
       label: t("documenten"),
       waarde: stats.documenten,
-      icon: FileText,
+      lumioIcon: "documenten",
       color: "text-info",
       bgColor: "bg-info-100",
     },
@@ -97,14 +100,14 @@ export function StatistiekenWidget() {
         stats.boedel.bankrekeningen +
         stats.boedel.verzekeringen +
         stats.boedel.schulden,
-      icon: Wallet,
+      lumioIcon: "boedel",
       color: "text-warning",
       bgColor: "bg-warning-100",
     },
     {
       label: t("noodcontacten"),
       waarde: stats.noodcontacten,
-      icon: Phone,
+      lumioIcon: "noodcontacten",
       color: "text-danger",
       bgColor: "bg-danger-100",
     },
@@ -121,9 +124,7 @@ export function StatistiekenWidget() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {items.map((item) => {
-          const Icon = item.icon;
-          return (
+        {items.map((item) => (
             <div
               key={item.label}
               className="flex items-center gap-3 rounded-md border p-3"
@@ -131,7 +132,7 @@ export function StatistiekenWidget() {
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-lg ${item.bgColor} shrink-0`}
               >
-                <Icon className={`h-4 w-4 ${item.color}`} />
+                <LumioIcon name={item.lumioIcon} size="sm" className={item.color} />
               </div>
               <div className="min-w-0">
                 <p className="text-lg font-bold leading-none">{item.waarde}</p>
@@ -140,8 +141,7 @@ export function StatistiekenWidget() {
                 </p>
               </div>
             </div>
-          );
-        })}
+          ))}
       </div>
 
       {hasFinancieel && (

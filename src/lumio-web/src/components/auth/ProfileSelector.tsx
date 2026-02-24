@@ -14,7 +14,8 @@ import {
 import { api } from "@/lib/api-client";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
-import { Users, Plus, UserCircle } from "lucide-react";
+import { Users, Plus } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 
 interface ProfileSelectorProps {
@@ -110,7 +111,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                     className="h-10 w-10 rounded-full object-cover shrink-0"
                   />
                 ) : (
-                  <UserCircle className="h-10 w-10 text-primary/60 shrink-0 group-hover:text-primary-foreground" />
+                  <LumioIcon name="profiel" size="xl" className="text-primary/60 shrink-0 group-hover:text-primary-foreground" />
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate group-hover:font-bold group-hover:text-primary-foreground">{profile.naam}</p>

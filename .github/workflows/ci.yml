@@ -70,6 +70,68 @@ jobs:
   #         autoAcceptChanges: main
   #         onlyChanged: true
 
+  # ── Icon Guard ────────────────────────────────────────────────────
+  # Prevent accidental re-introduction of replaced Lucide domain icons
+  # in production source files. Only the lumio-icons barrel and icon
+  # component files are allowed to reference these names.
+  icon-guard:
+    name: Icon guard (no replaced Lucide icons)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for forbidden Lucide icon imports
+        shell: bash
+        run: |
+          # Icons replaced by LumioIcon — must not appear in src/
+          # (excluding the lumio-icons implementation folder and stories/docs)
+          FORBIDDEN=(
+            "from ['\"]lucide-react['\"].*\\bShield\\b"
+            "from ['\"]lucide-react['\"].*\\bShieldCheck\\b"
+            "from ['\"]lucide-react['\"].*\\bShieldAlert\\b"
+            "from ['\"]lucide-react['\"].*\\bShieldX\\b"
+            "from ['\"]lucide-react['\"].*\\bLayoutDashboard\\b"
+            "from ['\"]lucide-react['\"].*\\bScrollText\\b"
+            "from ['\"]lucide-react['\"].*\\bChurch\\b"
+            "from ['\"]lucide-react['\"].*\\bStethoscope\\b"
+          )
+
+          EXCLUDE_PATHS=(
+            "src/lumio-web/src/components/ui/lumio-icons"
+            "src/lumio-web/src/components/ui/lumio-icon.tsx"
+            "src/lumio-web/src/components/ui/icon.tsx"
+            "src/lumio-web/src/components/ui/LumioIcon.stories.tsx"
+            "src/lumio-web/src/components/ui/LumioIcon.docs.mdx"
+          )
+
+          FOUND=0
+          for pattern in "${FORBIDDEN[@]}"; do
+            # Build grep exclude args
+            EXCLUDES=""
+            for path in "${EXCLUDE_PATHS[@]}"; do
+              EXCLUDES="$EXCLUDES --exclude-dir=$(basename $path)"
+            done
+
+            results=$(grep -r --include="*.tsx" --include="*.ts" \
+              $EXCLUDES \
+              -l -E "$pattern" \
+              src/lumio-web/src/ 2>/dev/null || true)
+
+            if [ -n "$results" ]; then
+              echo "::error::Forbidden Lucide import pattern found: $pattern"
+              echo "$results"
+              FOUND=1
+            fi
+          done
+
+          if [ "$FOUND" -eq 1 ]; then
+            echo ""
+            echo "Use LumioIcon instead. See docs/technical-manual/EN/06-design-system.md#icon-system"
+            exit 1
+          fi
+
+          echo "✓ No forbidden Lucide icon imports found."
+
   # ── Backend ────────────────────────────────────────────────────────
   backend:
     name: Backend (build)

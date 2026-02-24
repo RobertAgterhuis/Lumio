@@ -17,7 +17,8 @@ import { toast } from "@/stores/toastStore";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { profileCreateSchema, type ProfileCreateForm } from "@/lib/schemas/instellingen";
 import { useTranslations } from "next-intl";
-import { Users, Plus, UserCircle, Trash2, Loader2 } from "lucide-react";
+import { Users, Plus, Trash2, Loader2 } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 
 const RELATION_TYPES = ["Partner", "Kind", "Ouder", "Overig"] as const;
 
@@ -102,7 +103,7 @@ export function ProfilesCard({ onDeleteRequest }: ProfilesCardProps) {
               className="flex items-center justify-between rounded-lg border border-border p-3"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <UserCircle className="h-8 w-8 text-primary/60 shrink-0" />
+                <LumioIcon name="profiel" size="xl" className="text-primary/60 shrink-0" />
                 <div className="min-w-0">
                   <p className="font-medium truncate">
                     {profile.naam}

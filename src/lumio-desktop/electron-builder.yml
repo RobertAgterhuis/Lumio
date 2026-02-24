@@ -29,7 +29,7 @@ win:
     - target: dir
       arch:
         - x64
-  icon: null  # TODO: add icon
+  icon: build/icon.ico
   signAndEditExecutable: false  # No code signing — USB-portable app
   forceCodeSigning: false
 
@@ -39,14 +39,14 @@ mac:
       arch:
         - x64
         - arm64
-  icon: null
+  icon: build/icon.icns
 
 linux:
   target:
     - target: dir
       arch:
         - x64
-  icon: null
+  icon: build/icons
 
 # No auto-update — this is a USB-portable app
 publish: null

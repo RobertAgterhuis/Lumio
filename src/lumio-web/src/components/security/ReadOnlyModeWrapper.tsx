@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ShieldAlert } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import type { ReactNode } from "react";
 
 export interface ReadOnlyModeWrapperProps {
@@ -38,7 +38,7 @@ export function ReadOnlyModeWrapper({
       {showBanner && (
         <Alert variant="warning" className="mb-4">
           <AlertDescription>
-            <ShieldAlert className="mr-2 inline h-4 w-4" />
+            <LumioIcon name="shield-alert" size="sm" className="mr-2 inline" />
             {message}
           </AlertDescription>
         </Alert>
