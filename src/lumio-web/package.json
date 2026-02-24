@@ -2,6 +2,12 @@
   "name": "lumio-web",
   "version": "1.0.0",
   "private": true,
+  "license": "SEE LICENSE IN ../../LICENSE.md",
+  "author": {
+    "name": "Robert Agterhuis",
+    "email": "ragterhuis@agterhuis.net",
+    "url": "https://blog.agterhuis.net"
+  },
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
