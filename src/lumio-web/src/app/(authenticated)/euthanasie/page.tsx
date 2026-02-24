@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
 import { Stethoscope, Pencil } from "lucide-react";
@@ -43,8 +44,9 @@ interface Wilsverklaring {
 export default function EuthanasiePage() {
   const t = useTranslations("euthanasie");
   const tf = useTranslations("feedback");
-  const [data, setData] = useState<Wilsverklaring | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  // React Query for data fetching
+  const { data, isLoading: loading, refetch } = useDomainQuery<Wilsverklaring | null>("euthanasie");
 
   // P-S5: Direct-edit dialog
   const [editOpen, setEditOpen] = useState(false);
@@ -108,21 +110,13 @@ export default function EuthanasiePage() {
         behandelVerbod: editForm.behandelVerbod || null,
       };
       const updated = await api.put<Wilsverklaring>("/api/euthanasie", payload);
-      setData(updated);
+      refetch();
       setEditOpen(false);
       toast.success(tf("opgeslagen"));
     } catch (err) {
       setEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
   };
-
-  useEffect(() => {
-    api
-      .get<Wilsverklaring>("/api/euthanasie")
-      .then(setData)
-      .catch((err) => console.error("Failed to load euthanasie data:", err))
-      .finally(() => setLoading(false));
-  }, []);
 
   if (loading)
     return (

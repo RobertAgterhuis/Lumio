@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { useDomainQuery } from "@/hooks";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -35,37 +36,35 @@ export default function TestamentWizardPage() {
     legaten: "",
   });
 
-  const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
+  // Load existing data with React Query
+  const { data: existingData, isLoading: loading } = useDomainQuery<Record<string, unknown> | null>("testament");
+
+  // Populate form when data loads
   useEffect(() => {
-    api.get<Record<string, unknown>>("/api/testament")
-      .then((data) => {
-        if (data) {
-          setForm({
-            testamentType: (data.testamentType as string) ?? "",
-            notarisNaam: (data.notarisNaam as string) ?? "",
-            notarisKantoor: (data.notarisKantoor as string) ?? "",
-            notarisTelefoon: (data.notarisTelefoon as string) ?? "",
-            notarisEmail: (data.notarisEmail as string) ?? "",
-            notarisAdres: (data.notarisAdres as string) ?? "",
-            notarisPostcode: (data.notarisPostcode as string) ?? "",
-            notarisPlaats: (data.notarisPlaats as string) ?? "",
-            datumTestament: data.datumTestament
-              ? new Date(data.datumTestament as string).toISOString().split("T")[0]
-              : "",
-            testamentLocatie: (data.testamentLocatie as string) ?? "",
-            ctr_Nummer: (data.ctr_Nummer as string) ?? "",
-            algemeneWensen: (data.algemeneWensen as string) ?? "",
-            bijzondereBepalingen: (data.bijzondereBepalingen as string) ?? "",
-            uitsluitingsClausule: data.uitsluitingsClausule != null ? String(data.uitsluitingsClausule) : "true",
-            legaten: (data.legaten as string) ?? "",
-          });
-        }
-      })
-      .catch((err) => console.error("Failed to load wizard data:", err))
-      .finally(() => setLoading(false));
-  }, []);
+    if (existingData) {
+      setForm({
+        testamentType: (existingData.testamentType as string) ?? "",
+        notarisNaam: (existingData.notarisNaam as string) ?? "",
+        notarisKantoor: (existingData.notarisKantoor as string) ?? "",
+        notarisTelefoon: (existingData.notarisTelefoon as string) ?? "",
+        notarisEmail: (existingData.notarisEmail as string) ?? "",
+        notarisAdres: (existingData.notarisAdres as string) ?? "",
+        notarisPostcode: (existingData.notarisPostcode as string) ?? "",
+        notarisPlaats: (existingData.notarisPlaats as string) ?? "",
+        datumTestament: existingData.datumTestament
+          ? new Date(existingData.datumTestament as string).toISOString().split("T")[0]
+          : "",
+        testamentLocatie: (existingData.testamentLocatie as string) ?? "",
+        ctr_Nummer: (existingData.ctr_Nummer as string) ?? "",
+        algemeneWensen: (existingData.algemeneWensen as string) ?? "",
+        bijzondereBepalingen: (existingData.bijzondereBepalingen as string) ?? "",
+        uitsluitingsClausule: existingData.uitsluitingsClausule != null ? String(existingData.uitsluitingsClausule) : "true",
+        legaten: (existingData.legaten as string) ?? "",
+      });
+    }
+  }, [existingData]);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));

@@ -12,8 +12,30 @@
     "test": "vitest run --project unit",
     "test:watch": "vitest --project unit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "size": "size-limit",
+    "size:why": "size-limit --why"
   },
+  "size-limit": [
+    {
+      "name": "Initial JS (framework)",
+      "path": "out/_next/static/chunks/turbopack-*.js",
+      "limit": "200 KB",
+      "gzip": true
+    },
+    {
+      "name": "All JS chunks",
+      "path": "out/_next/static/chunks/*.js",
+      "limit": "600 KB",
+      "gzip": true
+    },
+    {
+      "name": "CSS output",
+      "path": "out/_next/static/chunks/*.css",
+      "limit": "30 KB",
+      "gzip": true
+    }
+  ],
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.21",
@@ -37,6 +59,8 @@
     "@hey-api/client-fetch": "^0.13.1",
     "@hey-api/openapi-ts": "^0.92.4",
     "@next/bundle-analyzer": "^16.1.6",
+    "@size-limit/file": "^12.0.0",
+    "@size-limit/preset-app": "^12.0.0",
     "@storybook/addon-a11y": "^10.2.10",
     "@storybook/addon-docs": "^10.2.10",
     "@storybook/addon-vitest": "^10.2.10",
@@ -54,6 +78,7 @@
     "eslint-plugin-storybook": "^10.2.10",
     "playwright": "^1.58.2",
     "postcss": "^8.5.6",
+    "size-limit": "^12.0.0",
     "storybook": "^10.2.10",
     "tailwindcss": "^4.2.0",
     "typescript": "^5.9.3",

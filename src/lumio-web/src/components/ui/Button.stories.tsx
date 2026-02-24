@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Download, Loader2, Mail, Trash2 } from "lucide-react";
+import { ArrowRight, Download, Mail, Trash2 } from "lucide-react";
 
 const meta = {
   title: "Primitives/Button",
@@ -16,6 +16,7 @@ const meta = {
       options: ["default", "sm", "lg", "icon"],
     },
     disabled: { control: "boolean" },
+    loading: { control: "boolean" },
   },
 } satisfies Meta<typeof Button>;
 
@@ -71,13 +72,8 @@ export const WithIcon: Story = {
 
 export const Loading: Story = {
   args: {
-    disabled: true,
-    children: (
-      <>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Laden...
-      </>
-    ),
+    loading: true,
+    children: "Opslaan",
   },
 };
 

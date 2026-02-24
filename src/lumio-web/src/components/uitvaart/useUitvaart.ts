@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks/useDomainQuery";
 import { toast } from "@/stores/toastStore";
 import type {
   UitvaartWensen,
@@ -22,11 +23,19 @@ export function useUitvaart() {
   const t = useTranslations("uitvaart");
   const tf = useTranslations("feedback");
 
-  // Main data state
-  const [data, setData] = useState<UitvaartWensen | null>(null);
-  const [details, setDetails] = useState<CeremonieDetail[]>([]);
-  const [genodigden, setGenodigden] = useState<UitvaartGenodigde[]>([]);
-  const [loading, setLoading] = useState(true);
+  // React Query hooks for data fetching
+  const { data, isLoading: loadingData, refetch: refetchData } = useDomainQuery<UitvaartWensen | null>("uitvaart");
+  const { data: details = [], isLoading: loadingDetails, refetch: refetchDetails } = useDomainQuery<CeremonieDetail[]>("uitvaart/details");
+  const { data: genodigden = [], isLoading: loadingGenodigden, refetch: refetchGenodigden } = useDomainQuery<UitvaartGenodigde[]>("uitvaart/genodigden");
+
+  const loading = loadingData || loadingDetails || loadingGenodigden;
+  const sortedDetails = [...details].sort((a, b) => a.volgorde - b.volgorde);
+
+  const refetchAll = useCallback(() => {
+    refetchData();
+    refetchDetails();
+    refetchGenodigden();
+  }, [refetchData, refetchDetails, refetchGenodigden]);
 
   // Ceremonie detail dialog state
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
@@ -48,34 +57,6 @@ export function useUitvaart() {
   const [uitvaartEditError, setUitvaartEditError] = useState<string | null>(
     null
   );
-
-  // Load all data
-  const loadData = useCallback(() => {
-    Promise.all([
-      api.get<UitvaartWensen>("/api/uitvaart").catch((err) => {
-        console.error("Failed to load uitvaart:", err);
-        return null;
-      }),
-      api.get<CeremonieDetail[]>("/api/uitvaart/details").catch((err) => {
-        console.error("Failed to load details:", err);
-        return [];
-      }),
-      api.get<UitvaartGenodigde[]>("/api/uitvaart/genodigden").catch((err) => {
-        console.error("Failed to load genodigden:", err);
-        return [];
-      }),
-    ])
-      .then(([u, d, g]) => {
-        setData(u);
-        setDetails((d ?? []).sort((a, b) => a.volgorde - b.volgorde));
-        setGenodigden(g ?? []);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
 
   // Uitvaart edit dialog handlers
   const openUitvaartEdit = useCallback(() => {
@@ -147,7 +128,7 @@ export function useUitvaart() {
         budgetRichting: f.budgetRichting || null,
       };
       const updated = await api.put<UitvaartWensen>("/api/uitvaart", payload);
-      setData(updated);
+      refetchData();
       setUitvaartEditOpen(false);
       toast.success(tf("opgeslagen"));
     } catch (err) {
@@ -155,7 +136,7 @@ export function useUitvaart() {
         err instanceof Error ? err.message : t("opslaanMislukt")
       );
     }
-  }, [uitvaartEditForm, t, tf]);
+  }, [uitvaartEditForm, t, tf, refetchData]);
 
   // Ceremonie detail handlers
   const openDetailDialog = useCallback(
@@ -176,12 +157,12 @@ export function useUitvaart() {
         setEditDetailId(null);
         setDetailForm({
           ...emptyDetailForm,
-          volgorde: details.length + 1,
+          volgorde: sortedDetails.length + 1,
         });
       }
       setDetailDialogOpen(true);
     },
-    [details.length]
+    [sortedDetails.length]
   );
 
   const saveDetail = useCallback(async () => {
@@ -204,25 +185,25 @@ export function useUitvaart() {
         toast.success(tf("aangemaakt"));
       }
       setDetailDialogOpen(false);
-      loadData();
+      refetchDetails();
     } catch (err) {
       setDetailError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
-  }, [detailForm, editDetailId, t, tf, loadData]);
+  }, [detailForm, editDetailId, t, tf, refetchDetails]);
 
   const deleteDetail = useCallback(
     async (id: string) => {
       try {
         await api.delete(`/api/uitvaart/details/${id}`);
         toast.success(tf("verwijderd"));
-        setDetails((prev) => prev.filter((d) => d.id !== id));
+        refetchDetails();
       } catch (err) {
         setDetailError(
           err instanceof Error ? err.message : t("verwijderenMislukt")
         );
       }
     },
-    [t, tf]
+    [t, tf, refetchDetails]
   );
 
   // Genodigde handlers
@@ -268,31 +249,31 @@ export function useUitvaart() {
         toast.success(tf("aangemaakt"));
       }
       setGenDialogOpen(false);
-      loadData();
+      refetchGenodigden();
     } catch (err) {
       setGenError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
-  }, [genForm, editGenId, t, tf, loadData]);
+  }, [genForm, editGenId, t, tf, refetchGenodigden]);
 
   const deleteGen = useCallback(
     async (id: string) => {
       try {
         await api.delete(`/api/uitvaart/genodigden/${id}`);
         toast.success(tf("verwijderd"));
-        setGenodigden((prev) => prev.filter((g) => g.id !== id));
+        refetchGenodigden();
       } catch (err) {
         setGenError(
           err instanceof Error ? err.message : t("verwijderenMislukt")
         );
       }
     },
-    [t, tf]
+    [t, tf, refetchGenodigden]
   );
 
   return {
     // Data
     data,
-    details,
+    details: sortedDetails,
     genodigden,
     loading,
 

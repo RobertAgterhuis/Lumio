@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { useDomainQuery } from "@/hooks";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -37,40 +38,38 @@ export default function EuthanasieWizardPage() {
     behandelVerbod: "",
   });
 
-  const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
+  // Load existing data with React Query
+  const { data: existingData, isLoading: loading } = useDomainQuery<Record<string, unknown> | null>("euthanasie");
+
+  // Populate form when data loads
   useEffect(() => {
-    api.get<Record<string, unknown>>("/api/euthanasie")
-      .then((data) => {
-        if (data) {
-          setForm({
-            wilEuthanasie: data.wilEuthanasie != null ? String(data.wilEuthanasie) : "",
-            situatieBeschrijving: (data.situatieBeschrijving as string) ?? "",
-            huisarts: (data.huisarts as string) ?? "",
-            huisartsPraktijk: (data.huisartsPraktijk as string) ?? "",
-            huisartsTelefoon: (data.huisartsTelefoon as string) ?? "",
-            huisartsEmail: (data.huisartsEmail as string) ?? "",
-            vertegenwoordigerNaam: (data.vertegenwoordigerNaam as string) ?? "",
-            vertegenwoordigerRelatie: (data.vertegenwoordigerRelatie as string) ?? "",
-            vertegenwoordigerTelefoon: (data.vertegenwoordigerTelefoon as string) ?? "",
-            vertegenwoordigerEmail: (data.vertegenwoordigerEmail as string) ?? "",
-            vertegenwoordigerAdres: (data.vertegenwoordigerAdres as string) ?? "",
-            vertegenwoordigerPostcode: (data.vertegenwoordigerPostcode as string) ?? "",
-            vertegenwoordigerWoonplaats: (data.vertegenwoordigerWoonplaats as string) ?? "",
-            aanvullendeWensen: (data.aanvullendeWensen as string) ?? "",
-            datumOndertekening: data.datumOndertekening
-              ? new Date(data.datumOndertekening as string).toISOString().split("T")[0]
-              : "",
-            dementieClausule: data.dementieClausule != null ? String(data.dementieClausule) : "",
-            dementieClausuleToelichting: (data.dementieClausuleToelichting as string) ?? "",
-            behandelVerbod: (data.behandelVerbod as string) ?? "",
-          });
-        }
-      })
-      .catch((err) => console.error("Failed to load wizard data:", err))
-      .finally(() => setLoading(false));
-  }, []);
+    if (existingData) {
+      setForm({
+        wilEuthanasie: existingData.wilEuthanasie != null ? String(existingData.wilEuthanasie) : "",
+        situatieBeschrijving: (existingData.situatieBeschrijving as string) ?? "",
+        huisarts: (existingData.huisarts as string) ?? "",
+        huisartsPraktijk: (existingData.huisartsPraktijk as string) ?? "",
+        huisartsTelefoon: (existingData.huisartsTelefoon as string) ?? "",
+        huisartsEmail: (existingData.huisartsEmail as string) ?? "",
+        vertegenwoordigerNaam: (existingData.vertegenwoordigerNaam as string) ?? "",
+        vertegenwoordigerRelatie: (existingData.vertegenwoordigerRelatie as string) ?? "",
+        vertegenwoordigerTelefoon: (existingData.vertegenwoordigerTelefoon as string) ?? "",
+        vertegenwoordigerEmail: (existingData.vertegenwoordigerEmail as string) ?? "",
+        vertegenwoordigerAdres: (existingData.vertegenwoordigerAdres as string) ?? "",
+        vertegenwoordigerPostcode: (existingData.vertegenwoordigerPostcode as string) ?? "",
+        vertegenwoordigerWoonplaats: (existingData.vertegenwoordigerWoonplaats as string) ?? "",
+        aanvullendeWensen: (existingData.aanvullendeWensen as string) ?? "",
+        datumOndertekening: existingData.datumOndertekening
+          ? new Date(existingData.datumOndertekening as string).toISOString().split("T")[0]
+          : "",
+        dementieClausule: existingData.dementieClausule != null ? String(existingData.dementieClausule) : "",
+        dementieClausuleToelichting: (existingData.dementieClausuleToelichting as string) ?? "",
+        behandelVerbod: (existingData.behandelVerbod as string) ?? "",
+      });
+    }
+  }, [existingData]);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));

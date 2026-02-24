@@ -22,6 +22,25 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const previousActiveElement = React.useRef<Element | null>(null);
 
+  // Animation state: keep mounted during exit animation
+  const [mounted, setMounted] = React.useState(false);
+  const [animating, setAnimating] = React.useState(false);
+
+  // Handle mount/unmount with animation
+  React.useEffect(() => {
+    if (open) {
+      setMounted(true);
+      // Trigger enter animation on next frame
+      requestAnimationFrame(() => setAnimating(true));
+    } else if (mounted) {
+      // Trigger exit animation
+      setAnimating(false);
+      // Wait for animation to complete before unmounting
+      const timer = setTimeout(() => setMounted(false), 200);
+      return () => clearTimeout(timer);
+    }
+  }, [open, mounted]);
+
   // Save the element that had focus before the dialog opened
   React.useEffect(() => {
     if (open) {
@@ -81,23 +100,36 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
     };
   }, [open, onOpenChange]);
 
-  if (!open) return null;
+  if (!mounted) return null;
 
   return (
     <DialogContext value={{ titleId, descriptionId }}>
       <div className="fixed inset-0 z-50">
-        <div className="fixed inset-0 bg-black/50" />
+        {/* Backdrop with fade animation */}
+        <div
+          className={cn(
+            "fixed inset-0 bg-black/50 transition-opacity duration-200",
+            animating ? "opacity-100" : "opacity-0"
+          )}
+        />
         <div
           className="fixed inset-0 flex items-center justify-center p-4"
           onClick={() => onOpenChange(false)}
         >
+          {/* Dialog content with scale + fade animation */}
           <div
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
             aria-describedby={descriptionId}
-            className="relative z-50 w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg"
+            className={cn(
+              "relative z-50 w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg",
+              "transition-all duration-200 ease-out",
+              animating
+                ? "opacity-100 scale-100"
+                : "opacity-0 scale-95"
+            )}
             onClick={(e) => e.stopPropagation()}
           >
             {children}

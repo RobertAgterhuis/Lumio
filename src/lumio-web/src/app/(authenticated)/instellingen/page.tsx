@@ -11,6 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
 import {
@@ -41,25 +42,22 @@ export default function InstellingenPage() {
   const [pendingRestoreHandler, setPendingRestoreHandler] = useState<(() => void) | null>(null);
   const [pendingDeleteAccountHandler, setPendingDeleteAccountHandler] = useState<(() => void) | null>(null);
 
-  // Load profiles on mount
+  // Load profiles with React Query
+  const { data: profilesData, refetch: refetchProfiles } = useDomainQuery<Profile[]>("profielen");
+
+  // Sync profiles to auth store when data changes
   useEffect(() => {
-    const loadProfiles = async () => {
-      try {
-        const data = await api.get<Profile[]>("/api/profielen");
-        setProfiles(data);
-      } catch {
-        // Ignore
-      }
-    };
-    loadProfiles();
-  }, [setProfiles]);
+    if (profilesData) {
+      setProfiles(profilesData);
+    }
+  }, [profilesData, setProfiles]);
 
   // Profile deletion handler
   const handleDeleteProfile = async (profileId: string) => {
     setShowDeleteProfileConfirm(null);
     try {
       await api.delete(`/api/profielen/${profileId}`);
-      setProfiles(profiles.filter((p) => p.id !== profileId));
+      refetchProfiles();
     } catch {
       // Error handled in component
     }

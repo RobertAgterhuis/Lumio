@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, fn, userEvent, within, waitFor } from "storybook/test";
+import { useState } from "react";
 import {
   Dialog,
   DialogHeader,
@@ -64,5 +66,146 @@ export const WithContent: Story = {
         </DialogFooter>
       </>
     ),
+  },
+};
+
+/**
+ * Interactive dialog with play function test
+ */
+export const Interactive: Story = {
+  args: {
+    open: false,
+    onOpenChange: fn(),
+    children: null,
+  },
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [confirmed, setConfirmed] = useState(false);
+
+    return (
+      <div className="space-y-4">
+        <Button onClick={() => setOpen(true)} data-testid="open-dialog">
+          Open Dialog
+        </Button>
+        {confirmed && (
+          <p className="text-sm text-success" data-testid="confirmed-message">
+            Actie bevestigd!
+          </p>
+        )}
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogHeader>
+            <DialogTitle>Bevestiging</DialogTitle>
+            <DialogDescription>
+              Weet u zeker dat u deze actie wilt uitvoeren?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              data-testid="cancel-button"
+            >
+              Annuleren
+            </Button>
+            <Button
+              onClick={() => {
+                setConfirmed(true);
+                setOpen(false);
+              }}
+              data-testid="confirm-button"
+            >
+              Bevestigen
+            </Button>
+          </DialogFooter>
+        </Dialog>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    // Click button to open dialog
+    const openButton = canvas.getByTestId("open-dialog");
+    await userEvent.click(openButton);
+
+    // Wait for dialog to appear
+    await waitFor(() => {
+      expect(body.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    // Verify dialog title is visible
+    expect(body.getByText("Bevestiging")).toBeInTheDocument();
+
+    // Click confirm button
+    const confirmButton = body.getByTestId("confirm-button");
+    await userEvent.click(confirmButton);
+
+    // Wait for dialog to close and confirmation message to appear
+    await waitFor(() => {
+      expect(canvas.getByTestId("confirmed-message")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Test dialog can be cancelled
+ */
+export const CancelInteraction: Story = {
+  args: {
+    open: false,
+    onOpenChange: fn(),
+    children: null,
+  },
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <div className="space-y-4">
+        <Button onClick={() => setOpen(true)} data-testid="open-dialog">
+          Open Dialog
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogHeader>
+            <DialogTitle>Annuleer Test</DialogTitle>
+            <DialogDescription>
+              Test dat annuleren werkt.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              data-testid="cancel-button"
+            >
+              Annuleren
+            </Button>
+            <Button data-testid="confirm-button">
+              Bevestigen
+            </Button>
+          </DialogFooter>
+        </Dialog>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    // Open dialog
+    await userEvent.click(canvas.getByTestId("open-dialog"));
+
+    // Wait for dialog
+    await waitFor(() => {
+      expect(body.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    // Click cancel
+    await userEvent.click(body.getByTestId("cancel-button"));
+
+    // Dialog should be closed
+    await waitFor(() => {
+      expect(body.queryByRole("dialog")).not.toBeInTheDocument();
+    });
   },
 };
