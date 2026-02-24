@@ -152,3 +152,20 @@ Settings are divided into 3 sections.
 ## Theme Toggle
 
 Switch between **light mode** and **dark mode** using the sun/moon icon in the application header. The selected theme is saved per profile.
+
+---
+
+## Notifications & Feedback
+
+Lumio provides visual feedback for actions through **toast messages** — small notifications that appear briefly in the bottom-right corner of the screen.
+
+### Toast Types
+
+| Type | Example |
+|------|---------|
+| **Success** (green) | "Changes saved", "Backup created" |
+| **Error** (red) | "Could not save data", "Invalid input" |
+| **Warning** (amber) | "Please review your input" |
+| **Info** (blue) | "Update available" |
+
+Toast messages disappear automatically after a few seconds. You can also click the **×** to close them immediately.

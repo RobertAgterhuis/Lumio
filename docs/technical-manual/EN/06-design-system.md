@@ -90,6 +90,61 @@ The token system consists of 6 layers, defined in two files:
 | `--duration-med` | `250ms` |
 | `--easing-default` | `ease-in-out` |
 
+## Typography
+
+| Token | Value | Purpose |
+|-------|-------|---------|
+| `--text-xs` | `0.75rem` (12px) | Small text, captions |
+| `--text-sm` | `0.875rem` (14px) | Secondary text |
+| `--text-base` | `1rem` (16px) | Body text |
+| `--text-lg` | `1.125rem` (18px) | Large body |
+| `--text-xl` | `1.25rem` (20px) | Subheadings |
+| `--text-2xl` | `1.5rem` (24px) | Headings |
+| `--text-3xl` | `1.875rem` (30px) | Large headings |
+| `--text-4xl` | `2.25rem` (36px) | Display text |
+
+### Font Weights
+
+| Token | Value |
+|-------|-------|
+| `--font-normal` | 400 |
+| `--font-medium` | 500 |
+| `--font-semibold` | 600 |
+| `--font-bold` | 700 |
+
+### Line Heights
+
+| Token | Value |
+|-------|-------|
+| `--leading-none` | 1 |
+| `--leading-tight` | 1.25 |
+| `--leading-snug` | 1.375 |
+| `--leading-normal` | 1.5 |
+| `--leading-relaxed` | 1.625 |
+| `--leading-loose` | 2 |
+
+## Z-Index Scale
+
+| Token | Value | Purpose |
+|-------|-------|---------|
+| `--z-base` | 0 | Default |
+| `--z-dropdown` | 50 | Dropdown menus |
+| `--z-sticky` | 100 | Sticky elements (header) |
+| `--z-modal` | 200 | Modals, dialogs |
+| `--z-toast` | 300 | Toast notifications |
+| `--z-tooltip` | 400 | Tooltips |
+| `--z-max` | 9999 | Emergency overlay |
+
+## Border Width
+
+| Token | Value |
+|-------|-------|
+| `--border-0` | 0 |
+| `--border-1` | 1px |
+| `--border-2` | 2px |
+| `--border-4` | 4px |
+| `--border-8` | 8px |
+
 ## State Tokens (Triplets)
 
 Each status intent has three coordinated tokens:
@@ -131,8 +186,27 @@ Dark mode is activated via the `.dark` class on `<html>`. Both `tokens.css` and 
 |-----------|----------|
 | `Button` | default, destructive, outline, secondary, ghost, link × sm/default/lg/icon |
 | `Badge` | default, secondary, destructive, outline, success, warning, security, info, danger |
+| `StatusBadge` | complete, success, warning, attention, info, pending, error, danger, inactive, neutral |
 | `Alert` | info, success, warning, danger, security |
 | `SecurityStatusIndicator` | secure, warning, critical, unknown |
+
+### StatusBadge
+
+Semantic badge for status indicators with optional icons. Uses design system tokens for consistent styling.
+
+```tsx
+import { StatusBadge } from "@/components/ui/status-badge";
+
+<StatusBadge status="complete">Afgehandeld</StatusBadge>
+<StatusBadge status="warning" showIcon>Actie vereist</StatusBadge>
+<StatusBadge status="pending" showIcon>In behandeling</StatusBadge>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `status` | `complete | success | warning | attention | info | pending | error | danger | inactive | neutral` | `neutral` | Status variant |
+| `showIcon` | `boolean` | `false` | Show status-appropriate icon |
 
 ## Accessibility (A11Y)
 
@@ -184,3 +258,53 @@ Security/
 4. **State rendering via triplets** — `--state-{intent}-bg/border/text`
 5. **Dark mode = token overrides only** — no conditional rendering for theme
 6. **Document new tokens** — `tokens.css` is the single source of truth
+
+## Token Enforcement
+
+### Token Validation Script
+
+The `validate-tokens` script ensures `tokens.css` and `globals.css @theme` stay synchronized:
+
+```bash
+npm run validate-tokens
+```
+
+This script:
+1. Extracts CSS custom properties from `tokens.css`
+2. Extracts `@theme` entries from `globals.css`
+3. Reports any orphaned or missing mappings
+4. Runs in CI to prevent drift
+
+### ESLint Rules
+
+Custom ESLint rules enforce design system consistency:
+
+#### `no-raw-colors`
+
+Prevents raw color values in favor of design tokens:
+
+```tsx
+// ❌ Bad - ESLint error
+<div style={{ color: '#FF0000' }}>
+<div className="text-[#FF0000]">
+
+// ✅ Good - uses design tokens
+<div className="text-danger">
+<div className="bg-primary">
+```
+
+#### `no-raw-spacing`
+
+Prevents arbitrary spacing values in favor of design tokens:
+
+```tsx
+// ❌ Bad - ESLint error
+<div className="p-[17px] m-[23px]">
+<div className="gap-[15px]">
+
+// ✅ Good - uses spacing scale
+<div className="p-4 m-6">
+<div className="gap-spacing-3">
+```
+
+**Configuration:** Both rules are enabled in `eslint.config.mjs` with `error` severity.

@@ -193,7 +193,7 @@ export function registerAutoBackupHandlers(): void {
       /^C:\\Windows/i, // Windows system dirs
       /^C:\\Program Files/i,
     ];
-    if (suspiciousPatterns.some((pattern) => pattern.test(typedConfig.pad))) {
+    if (suspiciousPatterns.some((pattern) => pattern.test(typedConfig.pad as string))) {
       console.warn("[auto-backup] Suspicious path detected:", typedConfig.pad);
       return { success: false, error: "Invalid backup path" };
     }

@@ -54,6 +54,16 @@ Bij de eerste keer inloggen verschijnt ook een **onboarding-wizard** met 6 stapp
 
 De wizard toont een voortgangsbalk en controleert automatisch of elke stap is voltooid. U kunt de wizard sluiten en later hervatten.
 
+### Een wizard hervatten
+
+Als u een wizard sluit voordat deze is voltooid, onthoudt Lumio uw voortgang. Wanneer u terugkeert:
+
+1. Er verschijnt een **banner** met de vraag of u verder wilt gaan waar u gebleven was
+2. Klik op **Doorgaan** om te hervatten bij de stap waar u stopte
+3. Klik op **Opnieuw beginnen** om vanaf de eerste stap te beginnen
+
+Dit geldt voor zowel de onboarding-wizard als de interview-wizard.
+
 ## Domeinkaarten
 
 Het dashboard toont 10 kaarten, één per domein:
