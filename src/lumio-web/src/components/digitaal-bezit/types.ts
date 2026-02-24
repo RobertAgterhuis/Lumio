@@ -19,6 +19,8 @@ export interface WachtwoordEntry {
   gebruikersnaam?: string;
   url?: string;
   notities?: string;
+  accountId?: string;
+  accountNaam?: string;
 }
 
 export interface CryptoWallet {
@@ -39,6 +41,8 @@ export interface AccountFormData {
   gewensteActie: string;
   overdrachtAan: string;
   notities: string;
+  wachtwoord: string;
+  wachtwoordOpmerking: string;
 }
 
 export interface WachtwoordFormData {

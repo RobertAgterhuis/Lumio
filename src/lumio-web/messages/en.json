@@ -534,6 +534,7 @@
       "gaming": "Gaming",
       "cloud": "Cloud",
       "werk": "Work",
+      "gezondheid": "Health",
       "overheid": "Government",
       "overig": "Other"
     },
@@ -585,6 +586,7 @@
     "sleuteldelenMislukt": "Failed to generate key shares.",
     "toewijzingOpslaanMislukt": "Failed to save assignment.",
     "toewijzingVerwijderenMislukt": "Failed to delete assignment.",
+    "noodcontactAangemaakt": "Heir also added as emergency contact.",
     "bezitToewijzen": "Assign asset",
     "pdfDownloaden": "Download PDF",
     "deelOverzicht": "Share overview (HTML)",
@@ -616,7 +618,9 @@
       "geldigTot": "Valid until",
       "annuleren": "Cancel",
       "opslaanBezig": "Saving...",
-      "opslaan": "Save"
+      "opslaan": "Save",
+      "alsNoodcontact": "Also add as emergency contact",
+      "alsNoodcontactTooltip": "Adds this heir as an emergency contact so they appear in the emergency contacts list. Contact details will be copied."
     },
     "toewijzingDialog": {
       "titel": "Assign asset to heir",
@@ -886,7 +890,26 @@
       "kentekenPlaceholder": "e.g. AB-123-CD",
       "kvkNummer": "Chamber of Commerce number (KvK)",
       "kvkPlaceholder": "Chamber of Commerce number (if applicable)",
-      "notities": "Notes"
+      "notities": "Notes",
+      "schulden": {
+        "titel": "Debts / financing obligations",
+        "schuldeiser": "Creditor",
+        "schuldeiserPlaceholder": "e.g. ABN AMRO, ING",
+        "type": "Type",
+        "types": {
+          "hypotheek": "Mortgage",
+          "lening": "Loan",
+          "lease": "Lease",
+          "overig": "Other"
+        },
+        "leaseMaatschappij": "Leasing company",
+        "leaseMaatschappijPlaceholder": "e.g. Alphabet, LeasePlan",
+        "bedrag": "Amount (\u20ac)",
+        "maandelijkseAflossing": "Monthly repayment (\u20ac)",
+        "einddatum": "End date",
+        "toevoegen": "Add debt",
+        "optioneel": "optional"
+      }
     },
     "rekeningDialog": {
       "bewerken": "Edit account",
@@ -950,6 +973,7 @@
     "verwijderenMislukt": "Delete failed.",
     "ontsluitenMislukt": "Decrypt failed.",
     "importerenMislukt": "Import failed.",
+    "wachtwoordOokOpgeslagen": "Account and password saved.",
     "toevoegen": "Add",
     "annuleren": "Cancel",
     "opslaan": "Save",
@@ -973,7 +997,8 @@
       "importeren": "Import",
       "geenWachtwoorden": "No passwords yet. Click Add.",
       "verbergen": "Hide",
-      "ontsluiten": "Decrypt"
+      "ontsluiten": "Decrypt",
+      "account": "Account"
     },
     "crypto": {
       "titel": "Crypto Wallets",
@@ -993,7 +1018,14 @@
       "gewensteActie": "Desired action after death",
       "overdrachtAan": "Transfer to",
       "overdrachtPlaceholder": "Name of person (for transfer)",
-      "notities": "Notes"
+      "notities": "Notes",
+      "wachtwoordOpslaan": "Save password",
+      "wachtwoord": "Password",
+      "wachtwoordPlaceholder": "Enter the password",
+      "wachtwoordOpmerking": "Note",
+      "wachtwoordOpmerkingPlaceholder": "Hint or location note",
+      "verbergen": "Hide",
+      "tonen": "Show"
     },
     "wachtwoordDialog": {
       "bewerken": "Edit password",
@@ -2334,7 +2366,21 @@
       "jaWilsverklaring": "Yes, I want an advance directive for euthanasia",
       "neeGeenEuthanasie": "No, I do not want euthanasia",
       "situatieLabel": "In which situation?",
-      "situatiePlaceholder": "Describe the situation(s) in which you would want euthanasia, e.g. in case of hopeless and unbearable suffering, advanced dementia..."
+      "situatiePlaceholder": "Describe the situation(s) in which you would want euthanasia, e.g. in case of hopeless and unbearable suffering, advanced dementia...",
+      "situatieOngeneeslijkZiek": "Incurably ill with unbearable suffering",
+      "situatieOngeneeslijkZiekTooltip": "Terminal illness where no further recovery is possible and suffering is unbearable.",
+      "situatieErnstigLetsel": "Serious irremediable injury",
+      "situatieErnstigLetselTooltip": "E.g. serious brain injury or a condition with persistent unbearable pain.",
+      "situatiePsychiatrischLijden": "Psychiatric suffering",
+      "situatiePsychiatrischLijdenTooltip": "Long-term untreatable psychological suffering with no prospect of improvement.",
+      "situatieDementieVroegstadium": "Dementia in an early stage",
+      "situatieDementieVroegstadiumTooltip": "Request recorded while you are still mentally competent, in case dementia progresses.",
+      "situatieAndereSituatie": "Other situation",
+      "situatieAndereSituatieTooltip": "Describe your personal situation in your own words.",
+      "andereSituatieLabel": "My situation",
+      "andereSituatiePlaceholder": "Describe your specific situation in your own words...",
+      "notitiesLabel": "Additional notes (optional)",
+      "notitiesPlaceholder": "Any additional remarks about your specific situation..."
     },
     "dementie": {
       "titel": "Dementia Clause",
@@ -2372,6 +2418,9 @@
     "vertegenwoordiger": {
       "titel": "Representative",
       "beschrijving": "Who may speak on your behalf when you are no longer able to do so? (in accordance with WGBO art. 7:465 Dutch Civil Code)",
+      "primaireLabel": "Primary representative",
+      "secundaireLabel": "Secondary representative (optional)",
+      "secundairePlaceholder": "Choose an emergency contact or heir, or type a name...",
       "naamLabel": "Representative name",
       "naamPlaceholder": "e.g. Maria Jansen",
       "relatieLabel": "Relationship",
@@ -2416,6 +2465,7 @@
       "summaryTel": "Tel:",
       "summaryEmail": "Email:",
       "summaryVertegenwoordiger": "Representative:",
+      "summaryVertegenwoordiger2": "Secondary representative:",
       "summaryAdres": "Address:",
       "summaryDatum": "Date:",
       "summaryAanvullendeWensen": "Additional wishes:",

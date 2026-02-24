@@ -97,7 +97,18 @@ export default function DonorPage() {
               {data.donorregisterReferentie && (
                 <p>
                   <span className="text-muted-foreground">{t("keuzeCard.referentie")}</span>{" "}
-                  {data.donorregisterReferentie}
+                  {data.donorregisterReferentie.startsWith("http") ? (
+                    <a
+                      href={data.donorregisterReferentie}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline hover:text-primary/80"
+                    >
+                      {data.donorregisterReferentie}
+                    </a>
+                  ) : (
+                    data.donorregisterReferentie
+                  )}
                 </p>
               )}
               {data.toelichting && (

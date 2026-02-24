@@ -72,6 +72,7 @@ export function useBoedel() {
       kadastraalNummer: item.kadastraalNummer ?? "",
       kenteken: item.kenteken ?? "",
       kvKNummer: item.kvKNummer ?? "",
+      linkedSchulden: item.linkedSchulden ?? [],
     } : { ...emptyBezitForm });
     setDialogKind("bezit");
   }, []);
@@ -148,8 +149,31 @@ export function useBoedel() {
         kenteken: bezitForm.kenteken || null,
         kvKNummer: bezitForm.kvKNummer || null,
       };
-      if (editId) await api.put(`/api/boedel/bezittingen/${editId}`, payload);
-      else await api.post("/api/boedel/bezittingen", payload);
+      let bezitId: string;
+      if (editId) {
+        await api.put(`/api/boedel/bezittingen/${editId}`, payload);
+        bezitId = editId;
+      } else {
+        const created = await api.post<FysiekBezit>("/api/boedel/bezittingen", payload);
+        bezitId = created.id;
+      }
+      // Save any newly added linked schulden (non-fatal: backend endpoint may not be available yet)
+      const nieuweSchulden = bezitForm.linkedSchulden.filter((s) => s._isNew && s.schuldeiser);
+      for (const schuld of nieuweSchulden) {
+        try {
+          await api.post(`/api/boedel/bezittingen/${bezitId}/schulden`, {
+            schuldeiser: schuld.schuldeiser,
+            type: schuld.type,
+            bedrag: schuld.bedrag,
+            maandelijkseAflossing: schuld.maandelijkseAflossing ?? null,
+            leaseMaatschappij: schuld.leaseMaatschappij || null,
+            rentepercentage: schuld.rentepercentage ?? null,
+            einddatum: schuld.einddatum || null,
+          });
+        } catch (schuldErr) {
+          console.error("Could not save linked schuld (backend endpoint not yet available)", schuldErr);
+        }
+      }
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
       refetchAll();

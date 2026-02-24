@@ -21,4 +21,11 @@ public class Schuld : BaseEntity
     public decimal? MaandelijkseRente { get; set; }
     public DateTime? Einddatum { get; set; }
     public decimal? Restschuld { get; set; }
+
+    // Lease-specifieke velden
+    public string? LeaseMaatschappij { get; set; }
+
+    // Optionele koppeling aan een FysiekBezit
+    public Guid? BezitId { get; set; }
+    public FysiekBezit? Bezit { get; set; }
 }

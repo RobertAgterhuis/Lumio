@@ -34,6 +34,8 @@ export interface ErfgenaamFormData {
   legitimatieNummer: string;
   legitimatieDatumAfgifte: string;
   legitimatieGeldigTot: string;
+  /** When true, also create a noodcontact entry on save */
+  alsNoodcontact: boolean;
 }
 
 export interface ShareInfo {

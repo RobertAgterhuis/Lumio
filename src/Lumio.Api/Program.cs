@@ -8,6 +8,7 @@ using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services.Security;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.FileProviders;
 using QuestPDF.Infrastructure;
 
@@ -60,6 +61,8 @@ builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
         // The middleware will block requests before they reach controllers.
         options.UseSqlite("Data Source=:memory:");
     }
+    // Suppress the pending-model-changes warning: migrations are applied at runtime on unlock.
+    options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
 
 // CORS — allow Electron and local dev origins

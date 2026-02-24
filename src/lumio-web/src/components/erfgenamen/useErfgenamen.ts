@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { api, downloadAndSave } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, domainKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { emptyErfgenaamForm, emptyToewijzingForm } from "./constants";
 import type {
@@ -23,9 +24,12 @@ export interface UseErfgenamenTranslations {
   sleuteldelenMislukt: string;
   toewijzingOpslaanMislukt: string;
   toewijzingVerwijderenMislukt: string;
+  noodcontactAangemaakt: string;
 }
 
 export function useErfgenamen(translations: UseErfgenamenTranslations) {
+  const queryClient = useQueryClient();
+
   // React Query for data loading
   const { data: erfgenamen = [], isLoading: erfgenamenLoading, refetch: refetchErfgenamen } = useDomainQuery<Erfgenaam[]>("erfgenamen");
   const { data: toewijzingen = [], isLoading: toewijzingenLoading, refetch: refetchToewijzingen } = useDomainQuery<Toewijzing[]>("toewijzingen");
@@ -82,6 +86,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
         legitimatieNummer: existing.legitimatieNummer,
         legitimatieDatumAfgifte: existing.legitimatieDatumAfgifte,
         legitimatieGeldigTot: existing.legitimatieGeldigTot,
+        alsNoodcontact: false,
       });
     } else {
       setEditId(null);
@@ -109,6 +114,30 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
         await api.post("/api/erfgenamen", payload);
         toast.success(translations.aangemaakt);
       }
+
+      // Write-through: also create a noodcontact if the checkbox was checked
+      if (form.alsNoodcontact) {
+        try {
+          await api.post("/api/noodcontacten", {
+            naam: [form.voornaam, form.tussenvoegsel, form.achternaam].filter(Boolean).join(" "),
+            relatie: form.relatie,
+            email: form.email || null,
+            telefoon: form.telefoon || null,
+            adres: form.adres || null,
+            postcode: form.postcode || null,
+            woonplaats: form.woonplaats || null,
+            rol: "Vertrouwenspersoon",
+            instructies: null,
+            isGedeeld: false,
+          });
+          toast.success(translations.noodcontactAangemaakt);
+          queryClient.invalidateQueries({ queryKey: domainKeys.all("noodcontacten") });
+        } catch (noodcontactErr) {
+          // Non-fatal: erfgenaam was saved; log and show warning but continue
+          console.error("Could not create noodcontact write-through", noodcontactErr);
+        }
+      }
+
       setDialogOpen(false);
       refetchAll();
     } catch (err) {

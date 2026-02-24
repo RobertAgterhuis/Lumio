@@ -62,6 +62,8 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
       gewensteActie: account.gewensteActie ?? "",
       overdrachtAan: account.overdrachtAan ?? "",
       notities: "",
+      wachtwoord: "",
+      wachtwoordOpmerking: "",
     } : emptyAccountForm);
     setDialogType("account");
   }, []);
@@ -114,8 +116,20 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
         await api.put(`/api/digitaal-bezit/accounts/${editId}`, payload);
         toast.success(tf("opgeslagen"));
       } else {
-        await api.post("/api/digitaal-bezit/accounts", payload);
-        toast.success(tf("aangemaakt"));
+        const newAccount = await api.post<DigitaalAccount>("/api/digitaal-bezit/accounts", payload);
+        if (accountForm.wachtwoord) {
+          await api.post("/api/digitaal-bezit/wachtwoorden", {
+            naam: accountForm.platformNaam,
+            gebruikersnaam: accountForm.gebruikersnaam || accountForm.emailAdres || null,
+            wachtwoord: accountForm.wachtwoord,
+            url: accountForm.url || null,
+            notities: accountForm.wachtwoordOpmerking || null,
+            accountId: newAccount.id,
+          });
+          toast.success(t("wachtwoordOokOpgeslagen"));
+        } else {
+          toast.success(tf("aangemaakt"));
+        }
       }
       setDialogType(null);
       refetchAll();

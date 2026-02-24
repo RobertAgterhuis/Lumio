@@ -128,6 +128,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
             aria-describedby={descriptionId}
             className={cn(
               "relative z-50 w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg",
+              "flex flex-col max-h-[90vh] overflow-hidden",
               "transition-all duration-200 ease-out",
               animating
                 ? "opacity-100 scale-100"

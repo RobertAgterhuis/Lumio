@@ -8,8 +8,9 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { PersonSelect } from "@/components/PersonSelect";
+import { BezitSchuldRow } from "./BezitSchuldRow";
 import { useTranslations } from "next-intl";
-import type { BezitFormData } from "./types";
+import type { BezitFormData, BezitSchuld } from "./types";
 
 interface BezitDialogProps {
   open: boolean;
@@ -38,7 +39,7 @@ export function BezitDialog({
       <DialogHeader>
         <DialogTitle>{editId ? t("bezitDialog.bewerken") : t("bezitDialog.toevoegen")}</DialogTitle>
       </DialogHeader>
-      <div className="space-y-4 py-4">
+      <div className="overflow-y-auto flex-1 min-h-0 space-y-4 py-4">
         <div className="space-y-2">
           <Label>{t("bezitDialog.categorie")}</Label>
           <Select value={form.categorie} onChange={(e) => onFormChange({ ...form, categorie: e.target.value })}>
@@ -130,6 +131,51 @@ export function BezitDialog({
             rows={2}
           />
         </div>
+        {/* Linked schulden section — only for real estate and vehicles */}
+        {(form.categorie === "Onroerend goed" || form.categorie === "Voertuig") && (
+          <div className="space-y-3 rounded-md border border-dashed p-3">
+            <p className="text-sm font-medium">{t("bezitDialog.schulden.titel")}</p>
+            {form.linkedSchulden.map((schuld, idx) => (
+              <BezitSchuldRow
+                key={idx}
+                schuld={schuld}
+                bezitCategorie={form.categorie}
+                onChange={(updated) => {
+                  const next = [...form.linkedSchulden];
+                  next[idx] = updated;
+                  onFormChange({ ...form, linkedSchulden: next });
+                }}
+                onDelete={() => {
+                  onFormChange({
+                    ...form,
+                    linkedSchulden: form.linkedSchulden.filter((_, i) => i !== idx),
+                  });
+                }}
+              />
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                onFormChange({
+                  ...form,
+                  linkedSchulden: [
+                    ...form.linkedSchulden,
+                    {
+                      schuldeiser: "",
+                      type: form.categorie === "Onroerend goed" ? "Hypotheek" : "Lening",
+                      bedrag: 0,
+                      _isNew: true,
+                    } as BezitSchuld,
+                  ],
+                })
+              }
+            >
+              + {t("bezitDialog.schulden.toevoegen")}
+            </Button>
+          </div>
+        )}
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={() => onOpenChange(false)}>{t("annuleren")}</Button>
