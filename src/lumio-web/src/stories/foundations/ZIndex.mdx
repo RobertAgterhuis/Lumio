@@ -1,0 +1,79 @@
+{/* ZIndex.mdx */}
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Z-Index" />
+
+# Z-Index
+
+The z-index scale ensures predictable layering of overlapping elements. Always use token values — never arbitrary numbers.
+
+## Z-Index Scale
+
+| Token | Value | Tailwind | Use Case |
+|-------|-------|----------|----------|
+| `--z-base` | 0 | `z-0` | Default layer, page content |
+| `--z-dropdown` | 50 | `z-50` | Dropdowns, popovers, autocomplete |
+| `--z-sticky` | 100 | `z-sticky` | Sticky headers, floating toolbars |
+| `--z-modal` | 200 | `z-modal` | Modal dialogs, full-screen overlays |
+| `--z-toast` | 300 | `z-toast` | Toast notifications |
+| `--z-tooltip` | 400 | `z-tooltip` | Tooltips, help popovers |
+| `--z-max` | 9999 | `z-max` | Critical overlays (loading screens) |
+
+---
+
+## Visual Stacking
+
+<div className="relative h-64 mt-8 border rounded-lg overflow-hidden bg-muted/50">
+  <div className="absolute inset-x-4 top-4 h-12 bg-neutral-200 dark:bg-neutral-700 rounded flex items-center px-4 text-sm">
+    z-base (0) — Page content
+  </div>
+  <div className="absolute inset-x-8 top-16 h-12 bg-primary/20 border border-primary rounded flex items-center px-4 text-sm" style={{ zIndex: 50 }}>
+    z-dropdown (50) — Menus
+  </div>
+  <div className="absolute inset-x-12 top-28 h-12 bg-secondary rounded flex items-center px-4 text-sm" style={{ zIndex: 100 }}>
+    z-sticky (100) — Headers
+  </div>
+  <div className="absolute inset-x-16 top-40 h-12 bg-card border shadow-lg rounded flex items-center px-4 text-sm" style={{ zIndex: 200 }}>
+    z-modal (200) — Dialogs
+  </div>
+</div>
+
+---
+
+## Component Defaults
+
+The design system components use these z-index values by default:
+
+| Component | Z-Index | Token |
+|-----------|---------|-------|
+| `Dialog` overlay | 50 | `z-50` |
+| `Dialog` content | 50 | `z-50` |
+| Sidebar (sticky) | 100 | `z-sticky` |
+| Toast container | 300 | `z-toast` |
+| `HelpTooltip` | 400 | `z-tooltip` |
+
+---
+
+## Stacking Context Rules
+
+1. **Modal dialogs** create a new stacking context
+2. **Toasts** always appear above modals
+3. **Tooltips** appear above everything except `z-max`
+4. **Never use `z-max`** unless absolutely necessary (e.g., global loading overlay)
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use the token scale: `z-dropdown`, `z-modal`, `z-toast`, `z-tooltip`
+- Let components manage their own z-index
+- Use `z-sticky` for fixed/sticky positioned headers
+
+### Don't ✗
+
+- Don't use arbitrary z-index values like `z-[999]`
+- Don't fight z-index wars — if things overlap unexpectedly, check stacking contexts
+- Don't put page content above `z-base` unless it's truly overlapping
+- Don't use `z-max` for modals — that's what `z-modal` is for

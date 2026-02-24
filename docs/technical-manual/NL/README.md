@@ -21,6 +21,7 @@ Dit handboek beschrijft de volledige technische architectuur van Lumio: een offl
 | 9 | [Build & Deployment](09-build-deployment.md) | Scripts, CI, USB-distributie |
 | 10 | [Ontwikkelomgeving](10-ontwikkelomgeving.md) | Setup, tooling, Storybook, testen |
 | 11 | [Business Rules](11-business-rules.md) | Rule engine, validatie, configuratie |
+| 12 | [Contentstijlgids](12-contentstijlgids.md) | Toon, terminologie, i18n-patronen, a11y |
 
 ## Snelstart
 

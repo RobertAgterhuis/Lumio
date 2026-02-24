@@ -7,8 +7,39 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
+import { useDomainQuery } from "@/hooks";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
+
+interface UitvaartData {
+  voorkeurType: string;
+  begraafplaats: string;
+  uitvaartOndernemer: string;
+  uitvaartOndernemerTelefoon: string;
+  uitvaartOndernemerEmail: string;
+  uitvaartOndernemerAdres: string;
+  uitvaartOndernemerPostcode: string;
+  uitvaartOndernemerPlaats: string;
+  heeftUitvaartVerzekering: boolean;
+  uitvaartVerzekeringDetails: string;
+  ceremonieSoort: string;
+  ceremonieLocatie: string;
+  muziekwensen: string;
+  sprekers: string;
+  bloemen: string;
+  kledingwensen: string;
+  rouwkaartTekst: string;
+  rouwadvertentieTekst: string;
+  condoleance: string;
+  overigeWensen: string;
+  voorkeurBegraafplaatsNaam: string;
+  voorkeurBegraafplaatsAdres: string;
+  voorkeurCrematoriumnaam: string;
+  voorkeurCrematoriumAdres: string;
+  voorkeurAulaNaam: string;
+  voorkeurAulaAdres: string;
+  budgetRichting: string;
+}
 
 export default function UitvaartWizardPage() {
   const router = useRouter();
@@ -43,46 +74,43 @@ export default function UitvaartWizardPage() {
     budgetRichting: "",
   });
 
-  const [loading, setLoading] = useState(true);
+  // Load existing data with React Query
+  const { data: existingData, isLoading: loading } = useDomainQuery<UitvaartData | null>("uitvaart");
 
+  // Populate form when data loads
   useEffect(() => {
-    api.get<{ voorkeurType: string; begraafplaats: string; uitvaartOndernemer: string; uitvaartOndernemerTelefoon: string; uitvaartOndernemerEmail: string; uitvaartOndernemerAdres: string; uitvaartOndernemerPostcode: string; uitvaartOndernemerPlaats: string; heeftUitvaartVerzekering: boolean; uitvaartVerzekeringDetails: string; ceremonieSoort: string; ceremonieLocatie: string; muziekwensen: string; sprekers: string; bloemen: string; kledingwensen: string; rouwkaartTekst: string; rouwadvertentieTekst: string; condoleance: string; overigeWensen: string; voorkeurBegraafplaatsNaam: string; voorkeurBegraafplaatsAdres: string; voorkeurCrematoriumnaam: string; voorkeurCrematoriumAdres: string; voorkeurAulaNaam: string; voorkeurAulaAdres: string; budgetRichting: string }>("/api/uitvaart")
-      .then((data) => {
-        if (data) {
-          setForm({
-            voorkeurType: data.voorkeurType ?? "",
-            begraafplaats: data.begraafplaats ?? "",
-            uitvaartOndernemer: data.uitvaartOndernemer ?? "",
-            uitvaartOndernemerTelefoon: data.uitvaartOndernemerTelefoon ?? "",
-            uitvaartOndernemerEmail: data.uitvaartOndernemerEmail ?? "",
-            uitvaartOndernemerAdres: data.uitvaartOndernemerAdres ?? "",
-            uitvaartOndernemerPostcode: data.uitvaartOndernemerPostcode ?? "",
-            uitvaartOndernemerPlaats: data.uitvaartOndernemerPlaats ?? "",
-            heeftUitvaartVerzekering: data.heeftUitvaartVerzekering != null ? String(data.heeftUitvaartVerzekering) : "false",
-            uitvaartVerzekeringDetails: data.uitvaartVerzekeringDetails ?? "",
-            ceremonieSoort: data.ceremonieSoort ?? "",
-            ceremonieLocatie: data.ceremonieLocatie ?? "",
-            muziekwensen: data.muziekwensen ?? "",
-            sprekers: data.sprekers ?? "",
-            bloemen: data.bloemen ?? "",
-            kledingwensen: data.kledingwensen ?? "",
-            rouwkaartTekst: data.rouwkaartTekst ?? "",
-            rouwadvertentieTekst: data.rouwadvertentieTekst ?? "",
-            condoleance: data.condoleance ?? "",
-            overigeWensen: data.overigeWensen ?? "",
-            voorkeurBegraafplaatsNaam: data.voorkeurBegraafplaatsNaam ?? "",
-            voorkeurBegraafplaatsAdres: data.voorkeurBegraafplaatsAdres ?? "",
-            voorkeurCrematoriumnaam: data.voorkeurCrematoriumnaam ?? "",
-            voorkeurCrematoriumAdres: data.voorkeurCrematoriumAdres ?? "",
-            voorkeurAulaNaam: data.voorkeurAulaNaam ?? "",
-            voorkeurAulaAdres: data.voorkeurAulaAdres ?? "",
-            budgetRichting: data.budgetRichting ?? "",
-          });
-        }
-      })
-      .catch(() => {}) // 404 = no data yet
-      .finally(() => setLoading(false));
-  }, []);
+    if (existingData) {
+      setForm({
+        voorkeurType: existingData.voorkeurType ?? "",
+        begraafplaats: existingData.begraafplaats ?? "",
+        uitvaartOndernemer: existingData.uitvaartOndernemer ?? "",
+        uitvaartOndernemerTelefoon: existingData.uitvaartOndernemerTelefoon ?? "",
+        uitvaartOndernemerEmail: existingData.uitvaartOndernemerEmail ?? "",
+        uitvaartOndernemerAdres: existingData.uitvaartOndernemerAdres ?? "",
+        uitvaartOndernemerPostcode: existingData.uitvaartOndernemerPostcode ?? "",
+        uitvaartOndernemerPlaats: existingData.uitvaartOndernemerPlaats ?? "",
+        heeftUitvaartVerzekering: existingData.heeftUitvaartVerzekering != null ? String(existingData.heeftUitvaartVerzekering) : "false",
+        uitvaartVerzekeringDetails: existingData.uitvaartVerzekeringDetails ?? "",
+        ceremonieSoort: existingData.ceremonieSoort ?? "",
+        ceremonieLocatie: existingData.ceremonieLocatie ?? "",
+        muziekwensen: existingData.muziekwensen ?? "",
+        sprekers: existingData.sprekers ?? "",
+        bloemen: existingData.bloemen ?? "",
+        kledingwensen: existingData.kledingwensen ?? "",
+        rouwkaartTekst: existingData.rouwkaartTekst ?? "",
+        rouwadvertentieTekst: existingData.rouwadvertentieTekst ?? "",
+        condoleance: existingData.condoleance ?? "",
+        overigeWensen: existingData.overigeWensen ?? "",
+        voorkeurBegraafplaatsNaam: existingData.voorkeurBegraafplaatsNaam ?? "",
+        voorkeurBegraafplaatsAdres: existingData.voorkeurBegraafplaatsAdres ?? "",
+        voorkeurCrematoriumnaam: existingData.voorkeurCrematoriumnaam ?? "",
+        voorkeurCrematoriumAdres: existingData.voorkeurCrematoriumAdres ?? "",
+        voorkeurAulaNaam: existingData.voorkeurAulaNaam ?? "",
+        voorkeurAulaAdres: existingData.voorkeurAulaAdres ?? "",
+        budgetRichting: existingData.budgetRichting ?? "",
+      });
+    }
+  }, [existingData]);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));

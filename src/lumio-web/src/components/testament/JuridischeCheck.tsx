@@ -12,6 +12,7 @@ import {
 import { Scale, AlertTriangle, Info, CheckCircle, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { api } from "@/lib/api-client";
 
 interface Waarschuwing {
   ernst: "hoog" | "middel" | "info";
@@ -35,11 +36,7 @@ export function JuridischeCheck() {
     setLoading(true);
     setError(null);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const res = await fetch(`${API_BASE}/api/testament/juridische-check`);
-      if (res.status === 423) { window.location.href = "/"; return; }
-      if (!res.ok) throw new Error(t("controleMislukt"));
-      const data: CheckResult = await res.json();
+      const data = await api.get<CheckResult>("/api/testament/juridische-check");
       setResult(data);
     } catch {
       setError(t("foutmelding"));
@@ -50,18 +47,18 @@ export function JuridischeCheck() {
 
   const ernstKleur = (ernst: string) => {
     switch (ernst) {
-      case "hoog": return "border-red-300 bg-red-50";
-      case "middel": return "border-amber-300 bg-amber-50";
-      case "info": return "border-blue-300 bg-blue-50";
+      case "hoog": return "border-danger bg-danger-100";
+      case "middel": return "border-warning bg-warning-100";
+      case "info": return "border-info bg-info-100";
       default: return "border-muted bg-muted/30";
     }
   };
 
   const ernstIcon = (ernst: string) => {
     switch (ernst) {
-      case "hoog": return <AlertTriangle className="h-4 w-4 text-red-600 shrink-0" />;
-      case "middel": return <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />;
-      case "info": return <Info className="h-4 w-4 text-blue-600 shrink-0" />;
+      case "hoog": return <AlertTriangle className="h-4 w-4 text-danger shrink-0" />;
+      case "middel": return <AlertTriangle className="h-4 w-4 text-warning shrink-0" />;
+      case "info": return <Info className="h-4 w-4 text-info shrink-0" />;
       default: return <Info className="h-4 w-4 shrink-0" />;
     }
   };

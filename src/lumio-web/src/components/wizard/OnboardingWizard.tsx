@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
 import {
   User,
@@ -25,137 +25,69 @@ interface OnboardingStap {
   stapKey: string;
   icon: React.ElementType;
   href: string;
-  checkFn: () => Promise<boolean>;
 }
 
 const ONBOARDING_KEY = "lumio_onboarding_completed";
 
 const stappen: OnboardingStap[] = [
-  {
-    id: "profiel",
-    stapKey: "profiel",
-    icon: User,
-    href: "/eigenaar",
-    checkFn: async () => {
-      try {
-        const data = await api.get<{ id?: string }>("/api/eigenaar");
-        return !!data?.id;
-      } catch {
-        return false;
-      }
-    },
-  },
-  {
-    id: "noodcontacten",
-    stapKey: "noodcontacten",
-    icon: Phone,
-    href: "/noodcontacten",
-    checkFn: async () => {
-      try {
-        const data = await api.get<unknown[]>("/api/noodcontacten");
-        return Array.isArray(data) && data.length > 0;
-      } catch {
-        return false;
-      }
-    },
-  },
-  {
-    id: "testament",
-    stapKey: "testament",
-    icon: ScrollText,
-    href: "/testament",
-    checkFn: async () => {
-      try {
-        const data = await api.get<{ id?: string }>("/api/testament");
-        return !!data?.id;
-      } catch {
-        return false;
-      }
-    },
-  },
-  {
-    id: "uitvaart",
-    stapKey: "uitvaart",
-    icon: Church,
-    href: "/uitvaart",
-    checkFn: async () => {
-      try {
-        const data = await api.get<{ id?: string }>("/api/uitvaart");
-        return !!data?.id;
-      } catch {
-        return false;
-      }
-    },
-  },
-  {
-    id: "erfgenamen",
-    stapKey: "erfgenamen",
-    icon: Users,
-    href: "/erfgenamen",
-    checkFn: async () => {
-      try {
-        const data = await api.get<unknown[]>("/api/erfgenamen");
-        return Array.isArray(data) && data.length > 0;
-      } catch {
-        return false;
-      }
-    },
-  },
-  {
-    id: "backup",
-    stapKey: "backup",
-    icon: Download,
-    href: "/instellingen",
-    checkFn: async () => {
-      try {
-        const data = await api.get<{ meldingen: { categorie: string }[] }>("/api/status/meldingen");
-        return !data?.meldingen?.some((m) => m.categorie === "backup");
-      } catch {
-        return false;
-      }
-    },
-  },
+  { id: "profiel", stapKey: "profiel", icon: User, href: "/eigenaar" },
+  { id: "noodcontacten", stapKey: "noodcontacten", icon: Phone, href: "/noodcontacten" },
+  { id: "testament", stapKey: "testament", icon: ScrollText, href: "/testament" },
+  { id: "uitvaart", stapKey: "uitvaart", icon: Church, href: "/uitvaart" },
+  { id: "erfgenamen", stapKey: "erfgenamen", icon: Users, href: "/erfgenamen" },
+  { id: "backup", stapKey: "backup", icon: Download, href: "/instellingen" },
 ];
 
 export function OnboardingWizard() {
   const router = useRouter();
   const t = useTranslations("wizard");
   const [visible, setVisible] = useState(false);
-  const [stapStatus, setStapStatus] = useState<Record<string, boolean>>({});
-  const [loading, setLoading] = useState(true);
+  const [localStorageChecked, setLocalStorageChecked] = useState(false);
 
+  // Load data with React Query
+  const { data: eigenaar, isLoading: loadingEigenaar } = useDomainQuery<{ id?: string } | null>("eigenaar");
+  const { data: noodcontacten, isLoading: loadingNoodcontacten } = useDomainQuery<unknown[] | null>("noodcontacten");
+  const { data: testament, isLoading: loadingTestament } = useDomainQuery<{ id?: string } | null>("testament");
+  const { data: uitvaart, isLoading: loadingUitvaart } = useDomainQuery<{ id?: string } | null>("uitvaart");
+  const { data: erfgenamen, isLoading: loadingErfgenamen } = useDomainQuery<unknown[] | null>("erfgenamen");
+  const { data: statusMeldingen, isLoading: loadingStatus } = useDomainQuery<{ meldingen: { categorie: string }[] } | null>("status/meldingen");
+
+  const loading = loadingEigenaar || loadingNoodcontacten || loadingTestament || loadingUitvaart || loadingErfgenamen || loadingStatus;
+
+  // Derive completion status from query data
+  const stapStatus = useMemo(() => ({
+    profiel: !!eigenaar?.id,
+    noodcontacten: Array.isArray(noodcontacten) && noodcontacten.length > 0,
+    testament: !!testament?.id,
+    uitvaart: !!uitvaart?.id,
+    erfgenamen: Array.isArray(erfgenamen) && erfgenamen.length > 0,
+    backup: !statusMeldingen?.meldingen?.some((m) => m.categorie === "backup"),
+  }), [eigenaar, noodcontacten, testament, uitvaart, erfgenamen, statusMeldingen]);
+
+  // Check localStorage and determine visibility
   useEffect(() => {
-    // Check if onboarding was already completed
     const completed = localStorage.getItem(ONBOARDING_KEY);
     if (completed === "true") {
       setVisible(false);
-      setLoading(false);
-      return;
     }
+    setLocalStorageChecked(true);
+  }, []);
 
-    // Check status of each step
-    const checkStappen = async () => {
-      const results: Record<string, boolean> = {};
-      await Promise.all(
-        stappen.map(async (s) => {
-          results[s.id] = await s.checkFn();
-        })
-      );
-      setStapStatus(results);
+  // Auto-complete onboarding when all steps done
+  useEffect(() => {
+    if (!localStorageChecked || loading) return;
 
-      // If all steps are done, auto-complete onboarding
-      const allDone = stappen.every((s) => results[s.id]);
-      if (allDone) {
-        localStorage.setItem(ONBOARDING_KEY, "true");
-        setVisible(false);
-      } else {
+    const allDone = stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus]);
+    if (allDone) {
+      localStorage.setItem(ONBOARDING_KEY, "true");
+      setVisible(false);
+    } else {
+      const completed = localStorage.getItem(ONBOARDING_KEY);
+      if (completed !== "true") {
         setVisible(true);
       }
-      setLoading(false);
-    };
-
-    checkStappen();
-  }, []);
+    }
+  }, [localStorageChecked, loading, stapStatus]);
 
   const handleComplete = () => {
     localStorage.setItem(ONBOARDING_KEY, "true");
@@ -166,9 +98,9 @@ export function OnboardingWizard() {
     router.push(href);
   };
 
-  const completedCount = stappen.filter((s) => stapStatus[s.id]).length;
+  const completedCount = stappen.filter((s) => stapStatus[s.id as keyof typeof stapStatus]).length;
 
-  if (loading || !visible) return null;
+  if (loading || !localStorageChecked || !visible) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -218,14 +150,14 @@ export function OnboardingWizard() {
         {/* Steps */}
         <div className="max-h-[400px] overflow-y-auto px-6 py-4 space-y-2">
           {stappen.map((stap) => {
-            const isDone = stapStatus[stap.id];
+            const isDone = stapStatus[stap.id as keyof typeof stapStatus];
             const Icon = stap.icon;
             return (
               <Card
                 key={stap.id}
                 className={cn(
                   "cursor-pointer transition-colors hover:bg-muted/50",
-                  isDone && "bg-green-50/50 border-green-200"
+                  isDone && "bg-success-100 border-success"
                 )}
                 onClick={() => !isDone && handleNavigate(stap.href)}
               >
@@ -234,7 +166,7 @@ export function OnboardingWizard() {
                     className={cn(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
                       isDone
-                        ? "bg-green-100 text-green-600"
+                        ? "bg-success-100 text-success"
                         : "bg-muted text-muted-foreground"
                     )}
                   >
@@ -248,7 +180,7 @@ export function OnboardingWizard() {
                     <p
                       className={cn(
                         "text-sm font-medium",
-                        isDone && "text-green-700"
+                        isDone && "text-success"
                       )}
                     >
                       {t(`stappen.${stap.stapKey}.titel`)}

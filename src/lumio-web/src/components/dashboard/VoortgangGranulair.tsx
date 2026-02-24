@@ -30,7 +30,7 @@ export function VoortgangGranulair() {
     api
       .get<GranulairData>("/api/status/compleetheid/granulair")
       .then(setData)
-      .catch(() => {});
+      .catch((err) => console.error("Failed to load progress data:", err));
   }, []);
 
   if (!data) return null;

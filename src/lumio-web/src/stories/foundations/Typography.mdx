@@ -1,0 +1,109 @@
+{/* Typography.mdx */}
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Typography" />
+
+# Typography
+
+The typography system uses rem-based sizing for accessibility. All values scale with the user's browser font size settings.
+
+## Font Sizes
+
+All font sizes are defined as CSS custom properties and mapped to Tailwind utilities.
+
+| Token | Size | Pixels (at 16px base) | Tailwind Class |
+|-------|------|----------------------|----------------|
+| `--text-xs` | 0.75rem | 12px | `text-xs` |
+| `--text-sm` | 0.875rem | 14px | `text-sm` |
+| `--text-base` | 1rem | 16px | `text-base` |
+| `--text-lg` | 1.125rem | 18px | `text-lg` |
+| `--text-xl` | 1.25rem | 20px | `text-xl` |
+| `--text-2xl` | 1.5rem | 24px | `text-2xl` |
+| `--text-3xl` | 1.875rem | 30px | `text-3xl` |
+| `--text-4xl` | 2.25rem | 36px | `text-4xl` |
+
+<div className="space-y-4 mt-8">
+  <p className="text-xs">text-xs — Helper text, labels (0.75rem)</p>
+  <p className="text-sm">text-sm — Body small, form labels (0.875rem)</p>
+  <p className="text-base">text-base — Body text (1rem)</p>
+  <p className="text-lg">text-lg — Lead paragraphs (1.125rem)</p>
+  <p className="text-xl">text-xl — Section titles (1.25rem)</p>
+  <p className="text-2xl font-semibold">text-2xl — Card titles (1.5rem)</p>
+  <p className="text-3xl font-bold">text-3xl — Page headings (1.875rem)</p>
+  <p className="text-4xl font-bold">text-4xl — Hero headings (2.25rem)</p>
+</div>
+
+---
+
+## Font Weights
+
+| Token | Value | Tailwind Class | Use Case |
+|-------|-------|----------------|----------|
+| `--font-normal` | 400 | `font-normal` | Body text |
+| `--font-medium` | 500 | `font-medium` | Labels, emphasis |
+| `--font-semibold` | 600 | `font-semibold` | Subheadings, buttons |
+| `--font-bold` | 700 | `font-bold` | Headings, strong emphasis |
+
+<div className="space-y-2 mt-8">
+  <p className="font-normal">font-normal (400) — Regular body text</p>
+  <p className="font-medium">font-medium (500) — Labels and light emphasis</p>
+  <p className="font-semibold">font-semibold (600) — Subheadings and buttons</p>
+  <p className="font-bold">font-bold (700) — Headings and strong emphasis</p>
+</div>
+
+---
+
+## Line Heights
+
+| Token | Value | Tailwind Class | Use Case |
+|-------|-------|----------------|----------|
+| `--leading-none` | 1 | `leading-none` | Single-line headings |
+| `--leading-tight` | 1.25 | `leading-tight` | Compact headings |
+| `--leading-snug` | 1.375 | `leading-snug` | Subheadings |
+| `--leading-normal` | 1.5 | `leading-normal` | Body text (default) |
+| `--leading-relaxed` | 1.625 | `leading-relaxed` | Long-form prose |
+| `--leading-loose` | 2 | `leading-loose` | Spaced lists |
+
+---
+
+## Letter Spacing
+
+| Token | Value | Tailwind Class | Use Case |
+|-------|-------|----------------|----------|
+| `--tracking-tighter` | -0.05em | `tracking-tighter` | Large display text |
+| `--tracking-tight` | -0.025em | `tracking-tight` | Headlines |
+| `--tracking-normal` | 0 | `tracking-normal` | Body text (default) |
+| `--tracking-wide` | 0.025em | `tracking-wide` | Buttons, labels |
+| `--tracking-wider` | 0.05em | `tracking-wider` | All-caps text |
+
+---
+
+## Grote Tekst Mode (Accessibility)
+
+The `.grote-tekst` class scales all typography tokens larger for users who need bigger text. This is triggered via user preferences in the app settings.
+
+| Original | Grote Tekst |
+|----------|-------------|
+| 0.75rem (xs) | 0.875rem |
+| 0.875rem (sm) | 1rem |
+| 1rem (base) | 1.125rem |
+| 1.125rem (lg) | 1.25rem |
+| ... | ... |
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use `text-sm` for form labels and helper text
+- Use `text-base` for body content
+- Use `font-semibold` for interactive element labels
+- Combine size and weight: `text-2xl font-semibold` for card titles
+
+### Don't ✗
+
+- Don't use arbitrary pixel values like `text-[13px]`
+- Don't skip heading levels (h1 → h3)
+- Don't use `font-bold` for everything — reserve for true emphasis
+- Don't set line-height below 1.25 for multi-line text

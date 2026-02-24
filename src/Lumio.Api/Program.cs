@@ -72,7 +72,26 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Return RFC 9457 ProblemDetails for validation errors
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var problemDetails = new Microsoft.AspNetCore.Mvc.ValidationProblemDetails(context.ModelState)
+            {
+                Type = "https://httpstatuses.com/400",
+                Title = "Validatiefout",
+                Status = StatusCodes.Status400BadRequest,
+                Instance = context.HttpContext.Request.Path
+            };
+            return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(problemDetails)
+            {
+                ContentTypes = { "application/problem+json" }
+            };
+        };
+    });
+builder.Services.AddProblemDetails();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 

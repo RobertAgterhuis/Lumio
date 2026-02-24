@@ -1,0 +1,13 @@
+{
+  "$schema": "https://www.chromatic.com/config-file.schema.json",
+  "projectId": "PROJECT_ID_PLACEHOLDER",
+  "buildScriptName": "build-storybook",
+  "storybookBuildDir": "storybook-static",
+  "autoAcceptChanges": "main",
+  "exitZeroOnChanges": true,
+  "exitOnceUploaded": false,
+  "onlyChanged": true,
+  "externals": [
+    "public/**"
+  ]
+}

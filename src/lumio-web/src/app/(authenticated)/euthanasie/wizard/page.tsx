@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
+import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -37,40 +38,38 @@ export default function EuthanasieWizardPage() {
     behandelVerbod: "",
   });
 
-  const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
+  // Load existing data with React Query
+  const { data: existingData, isLoading: loading } = useDomainQuery<Record<string, unknown> | null>("euthanasie");
+
+  // Populate form when data loads
   useEffect(() => {
-    api.get<Record<string, unknown>>("/api/euthanasie")
-      .then((data) => {
-        if (data) {
-          setForm({
-            wilEuthanasie: data.wilEuthanasie != null ? String(data.wilEuthanasie) : "",
-            situatieBeschrijving: (data.situatieBeschrijving as string) ?? "",
-            huisarts: (data.huisarts as string) ?? "",
-            huisartsPraktijk: (data.huisartsPraktijk as string) ?? "",
-            huisartsTelefoon: (data.huisartsTelefoon as string) ?? "",
-            huisartsEmail: (data.huisartsEmail as string) ?? "",
-            vertegenwoordigerNaam: (data.vertegenwoordigerNaam as string) ?? "",
-            vertegenwoordigerRelatie: (data.vertegenwoordigerRelatie as string) ?? "",
-            vertegenwoordigerTelefoon: (data.vertegenwoordigerTelefoon as string) ?? "",
-            vertegenwoordigerEmail: (data.vertegenwoordigerEmail as string) ?? "",
-            vertegenwoordigerAdres: (data.vertegenwoordigerAdres as string) ?? "",
-            vertegenwoordigerPostcode: (data.vertegenwoordigerPostcode as string) ?? "",
-            vertegenwoordigerWoonplaats: (data.vertegenwoordigerWoonplaats as string) ?? "",
-            aanvullendeWensen: (data.aanvullendeWensen as string) ?? "",
-            datumOndertekening: data.datumOndertekening
-              ? new Date(data.datumOndertekening as string).toISOString().split("T")[0]
-              : "",
-            dementieClausule: data.dementieClausule != null ? String(data.dementieClausule) : "",
-            dementieClausuleToelichting: (data.dementieClausuleToelichting as string) ?? "",
-            behandelVerbod: (data.behandelVerbod as string) ?? "",
-          });
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+    if (existingData) {
+      setForm({
+        wilEuthanasie: existingData.wilEuthanasie != null ? String(existingData.wilEuthanasie) : "",
+        situatieBeschrijving: (existingData.situatieBeschrijving as string) ?? "",
+        huisarts: (existingData.huisarts as string) ?? "",
+        huisartsPraktijk: (existingData.huisartsPraktijk as string) ?? "",
+        huisartsTelefoon: (existingData.huisartsTelefoon as string) ?? "",
+        huisartsEmail: (existingData.huisartsEmail as string) ?? "",
+        vertegenwoordigerNaam: (existingData.vertegenwoordigerNaam as string) ?? "",
+        vertegenwoordigerRelatie: (existingData.vertegenwoordigerRelatie as string) ?? "",
+        vertegenwoordigerTelefoon: (existingData.vertegenwoordigerTelefoon as string) ?? "",
+        vertegenwoordigerEmail: (existingData.vertegenwoordigerEmail as string) ?? "",
+        vertegenwoordigerAdres: (existingData.vertegenwoordigerAdres as string) ?? "",
+        vertegenwoordigerPostcode: (existingData.vertegenwoordigerPostcode as string) ?? "",
+        vertegenwoordigerWoonplaats: (existingData.vertegenwoordigerWoonplaats as string) ?? "",
+        aanvullendeWensen: (existingData.aanvullendeWensen as string) ?? "",
+        datumOndertekening: existingData.datumOndertekening
+          ? new Date(existingData.datumOndertekening as string).toISOString().split("T")[0]
+          : "",
+        dementieClausule: existingData.dementieClausule != null ? String(existingData.dementieClausule) : "",
+        dementieClausuleToelichting: (existingData.dementieClausuleToelichting as string) ?? "",
+        behandelVerbod: (existingData.behandelVerbod as string) ?? "",
+      });
+    }
+  }, [existingData]);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -78,15 +77,7 @@ export default function EuthanasieWizardPage() {
   const downloadWilsverklaringPdf = async () => {
     setGenerating(true);
     try {
-      const res = await fetch("/api/export/wilsverklaring", { method: "POST" });
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "lumio-wilsverklaring.pdf";
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave("/api/export/wilsverklaring", "lumio-wilsverklaring.pdf", { method: "POST" });
     } catch {
       // ignore
     } finally {
@@ -101,8 +92,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("keuze.beschrijving"),
       content: (
         <div className="space-y-4">
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <p className="text-sm text-blue-800">
+          <div className="rounded-lg border border-info bg-info-100 dark:bg-info/20 p-4">
+            <p className="text-sm text-info">
               <strong>{t("keuze.wettelijkKader")}</strong> {t("keuze.wettelijkKaderTekst")}
             </p>
           </div>
@@ -139,8 +130,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("dementie.beschrijving"),
       content: (
         <div className="space-y-4">
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm text-amber-800">
+          <div className="rounded-lg border border-warning bg-warning-100 dark:bg-warning/20 p-4">
+            <p className="text-sm text-warning">
               <strong>{t("dementie.letOp")}</strong> {t("dementie.letOpTekst")}
             </p>
           </div>
@@ -176,8 +167,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("behandelverbod.beschrijving"),
       content: (
         <div className="space-y-4">
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <p className="text-sm text-blue-800">
+          <div className="rounded-lg border border-info bg-info-100 dark:bg-info/20 p-4">
+            <p className="text-sm text-info">
               <strong>{t("behandelverbod.wettelijkKader")}</strong> {t("behandelverbod.wettelijkKaderTekst")}
             </p>
           </div>
@@ -355,8 +346,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("samenvatting.beschrijving"),
       content: (
         <div className="space-y-4 text-sm">
-          <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-            <p className="text-sm text-purple-800">
+          <div className="rounded-lg border border-accent bg-accent/10 dark:bg-accent/20 p-4">
+            <p className="text-sm text-accent">
               <strong>{t("samenvatting.disclaimer")}</strong> {t("samenvatting.disclaimerTekst")}
             </p>
           </div>

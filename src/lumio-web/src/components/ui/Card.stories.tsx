@@ -6,6 +6,10 @@ const meta = {
   title: "Primitives/Card",
   component: Card,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
 } satisfies Meta<typeof Card>;
 
 export default meta;

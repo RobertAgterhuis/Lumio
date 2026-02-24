@@ -106,6 +106,10 @@ Stap 3: Electron Shell
 | `generate-api` | `openapi-ts` | API client genereren uit Swagger |
 | `storybook` | `storybook dev -p 6006` | Storybook ontwikkelserver |
 | `build-storybook` | `storybook build` | Statische Storybook build |
+| `test` | `vitest` | Unit tests uitvoeren |
+| `test:coverage` | `vitest --coverage` | Tests uitvoeren met coverage |
+| `validate-tokens` | `npx tsx scripts/validate-tokens.ts` | Token synchronisatie valideren |
+| `detect-breaking-changes` | `npx tsx scripts/detect-breaking-changes.ts` | API compatibiliteit controleren |
 
 ### lumio-desktop (Electron)
 
@@ -115,6 +119,60 @@ Stap 3: Electron Shell
 | `build` | `tsc` | Alleen TypeScript compileren |
 | `package` | `tsc && electron-builder --dir` | Volledige packaging |
 | `start` | `electron .` | Electron starten (zonder compilatie) |
+
+## Kwaliteitspoorten
+
+Kwaliteitscontroles worden afgedwongen in de CI-pipeline en kunnen lokaal worden uitgevoerd.
+
+### Token Validatie
+
+Zorgt ervoor dat `tokens.css` primitieven gesynchroniseerd zijn met `globals.css @theme` semantische mappings:
+
+```bash
+npm run validate-tokens
+```
+
+**Controleert:**
+- Alle `tokens.css` custom properties hebben corresponderende `@theme` entries
+- Geen verweesde `@theme` mappings
+- Valideert 122 primitieve + 72 semantische tokens
+
+### Breaking Change Detectie
+
+Vergelijkt de huidige OpenAPI spec met een baseline om API breaking changes te detecteren:
+
+```bash
+npm run detect-breaking-changes
+```
+
+**Detecteert:**
+- Verwijderde endpoints
+- Verwijderde verplichte request parameters
+- Gewijzigde HTTP methodes
+- Versmalde response schema wijzigingen
+
+**Gebruik in CI:** Het script eindigt met exit code 1 als breaking changes worden gevonden.
+
+### Codekwaliteitscontroles
+
+| Controle | Commando | Beschrijving |
+|----------|----------|--------------|
+| TypeScript | `npm run build` | Type checking tijdens build |
+| ESLint | `npm run lint` | Codestijl + custom regels (no-raw-colors, no-raw-spacing) |
+| Unit Tests | `npm run test` | Vitest test suite |
+| Coverage | `npm run test:coverage` | Coverage rapportage |
+
+### PR Review Checklist
+
+Het project bevat een uitgebreide PR-template (`.github/pull_request_template.md`) met checklists voor:
+
+1. Beschrijving & scope
+2. Type wijziging (feature/bugfix/breaking)
+3. Codekwaliteit (TypeScript, ESLint, tests)
+4. Beveiligingsoverwegingen
+5. Documentatie-updates
+
+Zie [CONTRIBUTING.md](../../CONTRIBUTING.md) voor de volledige reviewer checklist.
 
 ## Distributie Output
 

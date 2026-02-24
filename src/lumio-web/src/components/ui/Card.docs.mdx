@@ -1,0 +1,75 @@
+{/* Card.docs.mdx */}
+import { Meta, Canvas, Controls, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as CardStories from "./Card.stories";
+
+<Meta of={CardStories} />
+
+# Card
+
+Cards group related content and actions. They provide visual containment and hierarchy.
+
+<Canvas of={CardStories.Default} />
+
+---
+
+## Anatomy
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Optional description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    {/* Main content */}
+  </CardContent>
+</Card>
+```
+
+| Part | Purpose |
+|------|---------|
+| `Card` | Container with border and shadow |
+| `CardHeader` | Top section with padding |
+| `CardTitle` | H3-level heading |
+| `CardDescription` | Muted supporting text |
+| `CardContent` | Main content area |
+
+---
+
+## With Action
+
+Cards can contain interactive elements:
+
+<Canvas of={CardStories.WithAction} />
+
+---
+
+## Multiple Cards
+
+Use consistent card layouts in grids:
+
+```tsx
+<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+  <Card>...</Card>
+  <Card>...</Card>
+  <Card>...</Card>
+</div>
+```
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use cards to group related content
+- Include a descriptive title
+- Keep card content focused on a single topic
+- Use consistent card heights in grids when possible
+
+### Don't ✗
+
+- Don't nest cards inside cards
+- Don't use cards for single elements that don't need grouping
+- Don't put multiple unrelated actions in one card
+- Don't make cards too wide — max ~500px for readability

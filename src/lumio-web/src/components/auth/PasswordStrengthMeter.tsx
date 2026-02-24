@@ -13,11 +13,11 @@ interface StrengthResult {
 }
 
 const STRENGTH_COLORS = [
-  "bg-red-500",
-  "bg-orange-500",
-  "bg-yellow-500",
-  "bg-green-500",
-  "bg-green-600",
+  "bg-danger",
+  "bg-warning",
+  "bg-warning",
+  "bg-success",
+  "bg-success",
 ];
 
 function evaluateStrength(password: string): StrengthResult {
@@ -86,7 +86,7 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
           <li
             key={i}
             className={`text-xs flex items-center gap-1.5 ${
-              check.met ? "text-green-600" : "text-muted-foreground"
+              check.met ? "text-success" : "text-muted-foreground"
             }`}
           >
             <span>{check.met ? "\u2713" : "\u2022"}</span>

@@ -5,6 +5,10 @@ const meta = {
   title: "Security/SecureValueReveal",
   component: SecureValueReveal,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "experimental" },
+    governance: { maturity: "experimental", a11yLevel: "AA" },
+  },
   argTypes: {
     autoHideMs: { control: "number" },
     maskedText: { control: "text" },

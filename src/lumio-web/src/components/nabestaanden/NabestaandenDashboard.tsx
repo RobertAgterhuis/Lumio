@@ -159,31 +159,31 @@ const stappenplan: StappenplanItem[] = [
 const faseConfig = {
   urgent: {
     icon: AlertTriangle,
-    color: "text-red-700",
-    bgColor: "bg-red-50",
-    borderColor: "border-red-200",
-    badgeClass: "bg-red-100 text-red-800",
+    color: "text-danger",
+    bgColor: "bg-danger-100",
+    borderColor: "border-danger",
+    badgeClass: "bg-danger-100 text-danger",
   },
   week1: {
     icon: Clock,
-    color: "text-amber-700",
-    bgColor: "bg-amber-50",
-    borderColor: "border-amber-200",
-    badgeClass: "bg-amber-100 text-amber-800",
+    color: "text-warning",
+    bgColor: "bg-warning-100",
+    borderColor: "border-warning",
+    badgeClass: "bg-warning-100 text-warning",
   },
   maand1: {
     icon: Calendar,
-    color: "text-blue-700",
-    bgColor: "bg-blue-50",
-    borderColor: "border-blue-200",
-    badgeClass: "bg-blue-100 text-blue-800",
+    color: "text-info",
+    bgColor: "bg-info-100",
+    borderColor: "border-info",
+    badgeClass: "bg-info-100 text-info",
   },
   afronden: {
     icon: Flag,
-    color: "text-green-700",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-200",
-    badgeClass: "bg-green-100 text-green-800",
+    color: "text-success",
+    bgColor: "bg-success-100",
+    borderColor: "border-success",
+    badgeClass: "bg-success-100 text-success",
   },
 };
 
@@ -203,7 +203,7 @@ export function NabestaandenDashboard() {
     api
       .get<Compleetheid>("/api/status/compleetheid")
       .then(setCompleetheid)
-      .catch(() => {});
+      .catch((err) => console.error("Failed to load compleetheid:", err));
 
     // Initialize tracking items if first visit, then load them
     api
@@ -215,7 +215,7 @@ export function NabestaandenDashboard() {
         api
           .get<AfhandelingsItemDto[]>("/api/afhandeling")
           .then(setAfhandelingsItems)
-          .catch(() => {});
+          .catch((err) => console.error("Failed to load afhandeling:", err));
       });
   }, []);
 
@@ -257,9 +257,9 @@ export function NabestaandenDashboard() {
   return (
     <div className="space-y-6">
       {/* Header — empathisch ontwerp */}
-      <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-stone-50 to-white p-6 dark:border-stone-700 dark:from-stone-900 dark:to-stone-950">
+      <div className="rounded-lg border border-muted bg-gradient-to-br from-muted/50 to-background p-6 dark:from-muted/20">
         <div className="flex items-center gap-2 mb-2">
-          <ShieldAlert className="h-5 w-5 text-stone-500" />
+          <ShieldAlert className="h-5 w-5 text-muted-foreground" />
           <h1 className="text-3xl font-bold">{t("titel")}</h1>
         </div>
         <p className="text-muted-foreground mt-1 leading-relaxed">
@@ -338,17 +338,17 @@ export function NabestaandenDashboard() {
 
                 const statusBadge = afhandeling ? (
                   afhandeling.status === "Afgehandeld" ? (
-                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100 gap-1 text-xs">
+                    <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 text-xs">
                       <CheckCircle2 className="h-3 w-3" />
                       {t("statusAfgehandeld")}
                     </Badge>
                   ) : afhandeling.status === "InBehandeling" ? (
-                    <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 gap-1 text-xs">
+                    <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 text-xs">
                       <Clock className="h-3 w-3" />
                       {t("statusInBehandeling")}
                     </Badge>
                   ) : status === true ? (
-                    <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 gap-1 text-xs">
+                    <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 text-xs">
                       <Circle className="h-3 w-3" />
                       {t("statusBeschikbaar")}
                     </Badge>
@@ -359,7 +359,7 @@ export function NabestaandenDashboard() {
                     </Badge>
                   ) : null
                 ) : status === true ? (
-                  <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 gap-1 text-xs">
+                  <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 text-xs">
                     <Circle className="h-3 w-3" />
                     {t("statusBeschikbaar")}
                   </Badge>

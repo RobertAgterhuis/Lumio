@@ -5,6 +5,10 @@ const meta = {
   title: "Security/SessionTimeoutWarning",
   component: SessionTimeoutWarning,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "experimental" },
+    governance: { maturity: "experimental", a11yLevel: "AA" },
+  },
   argTypes: {
     open: { control: "boolean" },
     secondsLeft: { control: { type: "range", min: 0, max: 300, step: 1 } },

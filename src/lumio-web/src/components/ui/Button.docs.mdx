@@ -1,0 +1,101 @@
+{/* Button.docs.mdx */}
+import { Meta, Canvas, Controls, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as ButtonStories from "./Button.stories";
+
+<Meta of={ButtonStories} />
+
+# Button
+
+Buttons trigger actions and navigation. Use the appropriate variant and size for the context.
+
+<Canvas of={ButtonStories.Default} />
+<Controls of={ButtonStories.Default} />
+
+---
+
+## Variants
+
+| Variant | Use Case |
+|---------|----------|
+| `default` | Primary actions (Save, Submit, Confirm) |
+| `secondary` | Secondary actions, less prominent |
+| `destructive` | Dangerous actions (Delete, Remove) |
+| `outline` | Tertiary actions, low emphasis |
+| `ghost` | Inline actions, minimal footprint |
+| `link` | Navigation that looks like text |
+
+<Canvas of={ButtonStories.AllVariants} />
+
+---
+
+## Sizes
+
+| Size | Use Case |
+|------|----------|
+| `default` | Standard buttons |
+| `sm` | Compact contexts, tables |
+| `lg` | Hero sections, prominent CTAs |
+| `icon` | Icon-only buttons |
+
+<Canvas of={ButtonStories.AllSizes} />
+
+---
+
+## Loading State
+
+Use `loading={true}` during async operations. The button shows a spinner and becomes disabled.
+
+<Canvas of={ButtonStories.Loading} />
+
+---
+
+## asChild Pattern
+
+Use `asChild` to render the button styles on a different element (e.g., a link):
+
+```tsx
+<Button asChild>
+  <Link href="/dashboard">Go to Dashboard</Link>
+</Button>
+```
+
+<Canvas of={ButtonStories.AsChildLink} />
+
+---
+
+## With Icons
+
+Place icons before or after text using flex alignment:
+
+```tsx
+<Button>
+  <Download className="mr-2 h-4 w-4" />
+  Download
+</Button>
+```
+
+<Canvas of={ButtonStories.WithIcon} />
+
+---
+
+## Props
+
+<ArgTypes of={ButtonStories} />
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use `default` variant for the primary action in a form
+- Use `destructive` only for permanently destructive actions
+- Add `loading` state during API calls
+- Keep button labels short and action-oriented ("Save", not "Click here to save")
+
+### Don't ✗
+
+- Don't use multiple `default` buttons in the same section — choose one primary
+- Don't use `destructive` for cancel buttons — use `outline` or `ghost`
+- Don't disable buttons without explaining why
+- Don't use `link` variant inside body text — use actual links

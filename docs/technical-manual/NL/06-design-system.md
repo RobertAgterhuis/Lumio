@@ -90,6 +90,61 @@ Het tokensysteem bestaat uit 6 lagen, gedefinieerd in twee bestanden:
 | `--duration-med` | `250ms` |
 | `--easing-default` | `ease-in-out` |
 
+## Typografie
+
+| Token | Waarde | Doel |
+|-------|--------|------|
+| `--text-xs` | `0.75rem` (12px) | Kleine tekst, bijschriften |
+| `--text-sm` | `0.875rem` (14px) | Secundaire tekst |
+| `--text-base` | `1rem` (16px) | Bodytekst |
+| `--text-lg` | `1.125rem` (18px) | Grote body |
+| `--text-xl` | `1.25rem` (20px) | Subtitels |
+| `--text-2xl` | `1.5rem` (24px) | Koppen |
+| `--text-3xl` | `1.875rem` (30px) | Grote koppen |
+| `--text-4xl` | `2.25rem` (36px) | Displaytekst |
+
+### Lettergewichten
+
+| Token | Waarde |
+|-------|--------|
+| `--font-normal` | 400 |
+| `--font-medium` | 500 |
+| `--font-semibold` | 600 |
+| `--font-bold` | 700 |
+
+### Regelafstanden
+
+| Token | Waarde |
+|-------|--------|
+| `--leading-none` | 1 |
+| `--leading-tight` | 1.25 |
+| `--leading-snug` | 1.375 |
+| `--leading-normal` | 1.5 |
+| `--leading-relaxed` | 1.625 |
+| `--leading-loose` | 2 |
+
+## Z-Index Schaal
+
+| Token | Waarde | Doel |
+|-------|--------|------|
+| `--z-base` | 0 | Standaard |
+| `--z-dropdown` | 50 | Dropdown menu's |
+| `--z-sticky` | 100 | Sticky elementen (header) |
+| `--z-modal` | 200 | Modals, dialogen |
+| `--z-toast` | 300 | Toast-notificaties |
+| `--z-tooltip` | 400 | Tooltips |
+| `--z-max` | 9999 | Noodoverlay |
+
+## Randbreedte
+
+| Token | Waarde |
+|-------|--------|
+| `--border-0` | 0 |
+| `--border-1` | 1px |
+| `--border-2` | 2px |
+| `--border-4` | 4px |
+| `--border-8` | 8px |
+
 ## State Tokens (Drietallen)
 
 Elke status-intent heeft drie gecoördineerde tokens:
@@ -131,8 +186,27 @@ Donkere modus wordt geactiveerd via de `.dark` class op `<html>`. Zowel `tokens.
 |-----------|-----------|
 | `Button` | default, destructive, outline, secondary, ghost, link × sm/default/lg/icon |
 | `Badge` | default, secondary, destructive, outline, success, warning, security, info, danger |
+| `StatusBadge` | complete, success, warning, attention, info, pending, error, danger, inactive, neutral |
 | `Alert` | info, success, warning, danger, security |
 | `SecurityStatusIndicator` | secure, warning, critical, unknown |
+
+### StatusBadge
+
+Semantische badge voor statusindicatoren met optionele iconen. Gebruikt design system tokens voor consistente styling.
+
+```tsx
+import { StatusBadge } from "@/components/ui/status-badge";
+
+<StatusBadge status="complete">Afgehandeld</StatusBadge>
+<StatusBadge status="warning" showIcon>Actie vereist</StatusBadge>
+<StatusBadge status="pending" showIcon>In behandeling</StatusBadge>
+```
+
+**Props:**
+| Prop | Type | Standaard | Beschrijving |
+|------|------|-----------|--------------|
+| `status` | `complete | success | warning | attention | info | pending | error | danger | inactive | neutral` | `neutral` | Statusvariant |
+| `showIcon` | `boolean` | `false` | Toon status-afhankelijk icoon |
 
 ## Toegankelijkheid (A11Y)
 
@@ -184,3 +258,53 @@ Security/
 4. **State rendering via drietallen** — `--state-{intent}-bg/border/text`
 5. **Dark mode = alleen token overrides** — geen conditionele rendering voor thema
 6. **Nieuwe tokens documenteren** — `tokens.css` is de single source of truth
+
+## Token-handhaving
+
+### Token Validatiescript
+
+Het `validate-tokens` script zorgt ervoor dat `tokens.css` en `globals.css @theme` gesynchroniseerd blijven:
+
+```bash
+npm run validate-tokens
+```
+
+Dit script:
+1. Extraheert CSS custom properties uit `tokens.css`
+2. Extraheert `@theme` entries uit `globals.css`
+3. Rapporteert ontbrekende of verweesde mappings
+4. Draait in CI om drift te voorkomen
+
+### ESLint Regels
+
+Custom ESLint-regels handhaven design system consistentie:
+
+#### `no-raw-colors`
+
+Voorkomt ruwe kleurwaarden ten gunste van design tokens:
+
+```tsx
+// ❌ Fout - ESLint error
+<div style={{ color: '#FF0000' }}>
+<div className="text-[#FF0000]">
+
+// ✅ Goed - gebruikt design tokens
+<div className="text-danger">
+<div className="bg-primary">
+```
+
+#### `no-raw-spacing`
+
+Voorkomt willekeurige spacingwaarden ten gunste van design tokens:
+
+```tsx
+// ❌ Fout - ESLint error
+<div className="p-[17px] m-[23px]">
+<div className="gap-[15px]">
+
+// ✅ Goed - gebruikt spacing schaal
+<div className="p-4 m-6">
+<div className="gap-spacing-3">
+```
+
+**Configuratie:** Beide regels zijn ingeschakeld in `eslint.config.mjs` met `error` severity.

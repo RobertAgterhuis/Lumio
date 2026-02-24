@@ -106,6 +106,10 @@ Step 3: Electron Shell
 | `generate-api` | `openapi-ts` | Generate API client from Swagger |
 | `storybook` | `storybook dev -p 6006` | Storybook development server |
 | `build-storybook` | `storybook build` | Static Storybook build |
+| `test` | `vitest` | Run unit tests |
+| `test:coverage` | `vitest --coverage` | Run tests with coverage |
+| `validate-tokens` | `npx tsx scripts/validate-tokens.ts` | Validate token synchronization |
+| `detect-breaking-changes` | `npx tsx scripts/detect-breaking-changes.ts` | Check API compatibility |
 
 ### lumio-desktop (Electron)
 
@@ -115,6 +119,60 @@ Step 3: Electron Shell
 | `build` | `tsc` | TypeScript compile only |
 | `package` | `tsc && electron-builder --dir` | Full packaging |
 | `start` | `electron .` | Start Electron (without compilation) |
+
+## Quality Gates
+
+Quality checks are enforced in the CI pipeline and can be run locally.
+
+### Token Validation
+
+Ensures `tokens.css` primitives are synchronized with `globals.css @theme` semantic mappings:
+
+```bash
+npm run validate-tokens
+```
+
+**Checks:**
+- All `tokens.css` custom properties have corresponding `@theme` entries
+- No orphaned `@theme` mappings
+- Validates 122 primitive + 72 semantic tokens
+
+### Breaking Change Detection
+
+Compares the current OpenAPI spec against a baseline to detect API breaking changes:
+
+```bash
+npm run detect-breaking-changes
+```
+
+**Detects:**
+- Removed endpoints
+- Removed required request parameters
+- Changed HTTP methods
+- Narrowed response schema changes
+
+**Usage in CI:** The script exits with code 1 if breaking changes are found.
+
+### Code Quality Checks
+
+| Check | Command | Description |
+|-------|---------|-------------|
+| TypeScript | `npm run build` | Type checking during build |
+| ESLint | `npm run lint` | Code style + custom rules (no-raw-colors, no-raw-spacing) |
+| Unit Tests | `npm run test` | Vitest test suite |
+| Coverage | `npm run test:coverage` | Coverage reporting |
+
+### PR Review Checklist
+
+The project includes a comprehensive PR template (`.github/pull_request_template.md`) with checklists for:
+
+1. Description & scope
+2. Type of change (feature/bugfix/breaking)
+3. Code quality (TypeScript, ESLint, tests)
+4. Security considerations
+5. Documentation updates
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for the full reviewer checklist.
 
 ## Distribution Output
 

@@ -32,7 +32,7 @@ export function NotificationsDropdown() {
     api
       .get<MeldingenResponse>("/api/status/meldingen")
       .then((data) => setMeldingen(data.meldingen))
-      .catch(() => {});
+      .catch((err) => console.error("Failed to load notifications:", err));
   }, []);
 
   // Close on click outside
@@ -75,7 +75,7 @@ export function NotificationsDropdown() {
       >
         <Bell className="h-4 w-4" />
         {count > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] font-bold text-white">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-xs font-bold text-white">
             {count > 9 ? "9+" : count}
           </span>
         )}
@@ -133,7 +133,7 @@ export function NotificationsDropdown() {
                                 ? "warning"
                                 : "info"
                             }
-                            className="mt-1 text-[10px]"
+                            className="mt-1 text-xs"
                           >
                             {melding.categorie}
                           </Badge>
@@ -145,7 +145,7 @@ export function NotificationsDropdown() {
                           setDismissed((prev) => new Set(prev).add(idx));
                         }}
                         className="absolute right-2 top-2 hidden h-5 w-5 items-center justify-center rounded text-muted-foreground hover:text-foreground group-hover:flex"
-                        aria-label="Verwijder melding"
+                        aria-label={t("verwijder")}
                       >
                         <X className="h-3 w-3" />
                       </button>

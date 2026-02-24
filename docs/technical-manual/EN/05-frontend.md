@@ -65,9 +65,11 @@ Reusable building blocks, each with a Storybook story:
 |-----------|----------|
 | `Button` | default, destructive, outline, secondary, ghost, link × sm/default/lg/icon |
 | `Badge` | default, secondary, destructive, outline, success, warning, security, info, danger |
+| `StatusBadge` | CVA-based status indicator: actief, inactief, concept, voltooid, waarschuwing, fout |
 | `Alert` | info, success, warning, danger, security |
 | `Card` | CardHeader, CardTitle, CardDescription, CardContent, CardFooter |
 | `Dialog` | DialogHeader, DialogTitle, DialogDescription, DialogFooter |
+| `FormField` | Form field wrapper with label, error, help text |
 | `Input` | Standard text field |
 | `Textarea` | Multi-line |
 | `Select` | Native select with styling |
@@ -75,6 +77,11 @@ Reusable building blocks, each with a Storybook story:
 | `Label` | Form label |
 | `Tabs` | TabsList, TabsTrigger, TabsContent |
 | `Progress` | Progress bar |
+| `Skeleton` | Loading placeholder (pulse/shimmer variants, shape presets: line/circle/card/button) |
+| `SkeletonText` | Multi-line text loading state |
+| `SkeletonAvatar` | Avatar + text loading state |
+| `SkeletonCard` | Card content loading state |
+| `Toast` | Toast notification display (success/error/warning/info) |
 | `HelpTooltip` | Information tooltip |
 
 ### Layout (`components/layout/`)
@@ -125,6 +132,15 @@ See chapter 4 (Security) for the full list.
 | `OnboardingWizard` | Introduction wizard for new users |
 | `InterviewWizard` | Guided entry mode |
 
+**WizardShell Props (localStorage persistence):**
+
+| Prop | Type | Purpose |
+|------|------|---------|
+| `initialStep` | number | Starting step index (from persisted state) |
+| `onStepChange` | (step: number, data: FormData) => void | Callback when step changes (for persistence) |
+| `wasRestored` | boolean | Show "resume from where you left off" banner |
+| `onClearProgress` | () => void | Callback to clear saved progress |
+
 ### Other Component Groups
 
 | Group | Components |
@@ -164,13 +180,138 @@ Manages user preferences (localStorage-persisted):
 | `showDomeinKaarten` | boolean | Show domain cards |
 | `finishedDomains` | Record<string, string> | Domain → ISO date when completed |
 
+### `toastStore`
+
+Manages toast notifications:
+
+| State | Type | Purpose |
+|-------|------|---------|
+| `toasts` | Toast[] | Active toast messages |
+| `addToast` | Function | Add a new toast |
+| `removeToast` | Function | Remove toast by ID |
+| `clearToasts` | Function | Remove all toasts |
+
+**Convenience API:** `toast.success()`, `toast.error()`, `toast.warning()`, `toast.info()`
+
+## Data Fetching (React Query)
+
+The application uses [TanStack Query](https://tanstack.com/query) (React Query) for server state management, with custom domain-specific hooks.
+
+### Query Hooks
+
+| Hook | Purpose |
+|------|---------|
+| `useDomainQuery<T>(endpoint)` | Fetch domain entity list with caching |
+| `useDomainDetailQuery<T>(endpoint, id)` | Fetch single entity by ID |
+
+```tsx
+// Example: Fetch bezittingen list
+const { data: bezittingen, isLoading } = useDomainQuery<FysiekBezit[]>("boedel/bezittingen");
+
+// Example: Fetch single item
+const { data: bezit } = useDomainDetailQuery<FysiekBezit>("boedel/bezittingen", id);
+```
+
+### Mutation Hooks
+
+| Hook | Purpose |
+|------|---------|
+| `useDomainCreate<T, V>(endpoint)` | Create new entity |
+| `useDomainUpdate<T, V>(endpoint)` | Update existing entity |
+| `useDomainDelete(endpoint)` | Delete entity by ID |
+| `useDomainMutations<T, V>(endpoint)` | Combined create/update/delete |
+
+```tsx
+// Convenience hook returning all three mutations
+const { create, update, remove } = useDomainMutations<FysiekBezit, BezitFormData>(
+  "boedel/bezittingen"
+);
+
+await create.mutateAsync(formData);
+await update.mutateAsync({ id, data: formData });
+await remove.mutateAsync(id);
+```
+
+### Query Key Factory
+
+```ts
+domainKeys.all(domain)           // ['domain', 'boedel/bezittingen']
+domainKeys.detail(domain, id)    // ['domain', 'boedel/bezittingen', '123']
+domainKeys.list(domain, params)  // ['domain', 'boedel/bezittingen', 'list', {...}]
+```
+
+## Toast Notifications
+
+Global toast notification system using Zustand.
+
+### Toast Store (`stores/toastStore.ts`)
+
+```tsx
+import { toast } from "@/stores/toastStore";
+
+// Show notifications
+toast.success("Saved successfully");
+toast.error("Something went wrong");
+toast.warning("Please review your input");
+toast.info("New update available");
+
+// With custom duration (ms)
+toast.success("Saved!", 5000);
+```
+
+### Toast Variants
+
+| Variant | Purpose |
+|---------|---------|
+| `success` | Confirmation of successful action |
+| `error` | Error messages |
+| `warning` | Warning/caution messages |
+| `info` | Informational messages |
+
+### ToastProvider Component
+
+Renders active toasts in bottom-right corner. Wrapped in app layout.
+
 ## Hooks
 
 | Hook | Purpose |
 |------|---------|
+| `useDomainQuery` | React Query wrapper for domain data fetching |
+| `useDomainDetailQuery` | Fetch single entity by ID |
+| `useDomainCreate` | Create mutation with cache invalidation |
+| `useDomainUpdate` | Update mutation with cache invalidation |
+| `useDomainDelete` | Delete mutation with cache invalidation |
+| `useDomainMutations` | Combined CRUD mutations |
 | `useIdleTimer` | Detects inactivity, auto-lock after timeout |
 | `useKeyboardShortcuts` | Global keyboard shortcuts (Ctrl+K search, etc.) |
 | `useTheme` | Theme toggle (light/dark), localStorage-persistent |
+| `useWizardProgress` | Wizard step/form persistence in localStorage |
+
+### useWizardProgress
+
+Persists wizard progress (current step, form data) to localStorage for resume capability.
+
+```tsx
+const {
+  currentStep,
+  setCurrentStep,
+  formData,
+  updateFormData,
+  wasRestored,
+  clearProgress,
+  markComplete,
+  hasSavedProgress,
+} = useWizardProgress({
+  wizardId: "testament",
+  totalSteps: 5,
+  initialFormData: {},
+  clearOnComplete: true,
+});
+```
+
+**Utility functions:**
+- `getWizardsWithProgress()` — Returns array of wizard IDs with saved progress
+- `clearAllWizardProgress()` — Clears all wizard progress from localStorage
 
 ## API Client (`lib/api-client.ts`)
 

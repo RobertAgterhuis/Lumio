@@ -54,6 +54,16 @@ On the first login, an **onboarding wizard** also appears with 6 steps:
 
 The wizard shows a progress bar and automatically checks whether each step has been completed. You can close the wizard and resume later.
 
+### Resuming a Wizard
+
+If you close a wizard before completing it, Lumio remembers your progress. When you return:
+
+1. A **banner appears** asking if you want to continue where you left off
+2. Click **Continue** to resume at the step where you stopped
+3. Click **Start over** to begin from the first step
+
+This applies to both the onboarding wizard and the interview wizard.
+
 ## Domain Cards
 
 The dashboard shows 10 cards, one per domain:

@@ -46,6 +46,30 @@ export interface AlertProps
   hideIcon?: boolean;
 }
 
+/**
+ * Alert component for displaying contextual messages with semantic variants.
+ * Automatically includes an appropriate icon based on the variant.
+ *
+ * @example
+ * // Info alert (default)
+ * <Alert>
+ *   <AlertTitle>Information</AlertTitle>
+ *   <AlertDescription>This is an informational message.</AlertDescription>
+ * </Alert>
+ *
+ * @example
+ * // Success alert
+ * <Alert variant="success">
+ *   <AlertTitle>Success</AlertTitle>
+ *   <AlertDescription>Your changes have been saved.</AlertDescription>
+ * </Alert>
+ *
+ * @example
+ * // Warning alert without icon
+ * <Alert variant="warning" hideIcon>
+ *   <AlertDescription>Please review before continuing.</AlertDescription>
+ * </Alert>
+ */
 const Alert = forwardRef<HTMLDivElement, AlertProps>(
   ({ className, variant = "info", icon, hideIcon, children, ...props }, ref) => {
     const IconComponent = alertIcons[variant ?? "info"];
@@ -66,6 +90,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
 );
 Alert.displayName = "Alert";
 
+/** Bold title text for an Alert. */
 const AlertTitle = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
@@ -78,6 +103,7 @@ const AlertTitle = forwardRef<
 ));
 AlertTitle.displayName = "AlertTitle";
 
+/** Description text for an Alert with relaxed line height. */
 const AlertDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>

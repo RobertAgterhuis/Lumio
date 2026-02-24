@@ -22,8 +22,25 @@ const badgeVariants = cva(
   }
 );
 
-interface BadgeProps extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
+export interface BadgeProps extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
 
+/**
+ * Small status indicator badge with semantic color variants.
+ *
+ * @example
+ * // Default badge
+ * <Badge>New</Badge>
+ *
+ * @example
+ * // Semantic variants
+ * <Badge variant="success">Completed</Badge>
+ * <Badge variant="warning">Pending</Badge>
+ * <Badge variant="danger">Failed</Badge>
+ *
+ * @example
+ * // Outline variant
+ * <Badge variant="outline">Draft</Badge>
+ */
 function Badge({ className, variant, ...props }: BadgeProps) {
   return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
 }

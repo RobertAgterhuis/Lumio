@@ -147,3 +147,20 @@ Onderaan de instellingen kunt u uw account permanent verwijderen. Dit vereist wa
 ## Thema
 
 Klik op het **maan/zon-icoon** in de header om te wisselen tussen het lichte en donkere thema.
+
+---
+
+## Meldingen & Feedback
+
+Lumio geeft visuele feedback voor acties via **toast-berichten** — kleine notificaties die kort in de rechtsbenedenhoek van het scherm verschijnen.
+
+### Toast-typen
+
+| Type | Voorbeeld |
+|------|-----------|
+| **Succes** (groen) | "Wijzigingen opgeslagen", "Backup gemaakt" |
+| **Fout** (rood) | "Gegevens konden niet worden opgeslagen", "Ongeldige invoer" |
+| **Waarschuwing** (amber) | "Controleer uw invoer" |
+| **Info** (blauw) | "Update beschikbaar" |
+
+Toast-berichten verdwijnen automatisch na enkele seconden. U kunt ook op de **×** klikken om ze onmiddellijk te sluiten.

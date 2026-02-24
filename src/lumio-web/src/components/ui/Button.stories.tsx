@@ -1,11 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Download, Loader2, Mail, Trash2 } from "lucide-react";
+import { ArrowRight, Download, Mail, Trash2 } from "lucide-react";
 
 const meta = {
   title: "Primitives/Button",
   component: Button,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
   argTypes: {
     variant: {
       control: "select",
@@ -16,6 +20,7 @@ const meta = {
       options: ["default", "sm", "lg", "icon"],
     },
     disabled: { control: "boolean" },
+    loading: { control: "boolean" },
   },
 } satisfies Meta<typeof Button>;
 
@@ -71,13 +76,8 @@ export const WithIcon: Story = {
 
 export const Loading: Story = {
   args: {
-    disabled: true,
-    children: (
-      <>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Laden...
-      </>
-    ),
+    loading: true,
+    children: "Opslaan",
   },
 };
 
@@ -107,4 +107,37 @@ export const AllSizes: Story = {
       <Button size="icon"><ArrowRight className="h-4 w-4" /></Button>
     </div>
   ),
+};
+
+export const AsChildLink: Story = {
+  render: function Render() {
+    return (
+      <Button asChild>
+        <a href="https://example.com">Link styled as button</a>
+      </Button>
+    );
+  },
+  args: { asChild: true },
+};
+
+export const AsChildVariants: Story = {
+  render: function Render() {
+    return (
+      <div className="flex flex-wrap items-center gap-4">
+        <Button asChild>
+          <a href="#">Default Link</a>
+        </Button>
+        <Button asChild variant="outline">
+          <a href="#">Outline Link</a>
+        </Button>
+        <Button asChild variant="secondary">
+          <a href="#">Secondary Link</a>
+        </Button>
+        <Button asChild variant="ghost">
+          <a href="#">Ghost Link</a>
+        </Button>
+      </div>
+    );
+  },
+  args: { asChild: true },
 };

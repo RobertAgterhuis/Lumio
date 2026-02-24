@@ -48,10 +48,10 @@ const tijdlijn: TijdlijnFase[] = [
   {
     fase: "24uur",
     icon: AlertTriangle,
-    color: "text-red-700 dark:text-red-400",
-    bgColor: "bg-red-50 dark:bg-red-950/30",
-    borderColor: "border-red-200 dark:border-red-800",
-    dotColor: "bg-red-500",
+    color: "text-danger",
+    bgColor: "bg-danger-100 dark:bg-danger/20",
+    borderColor: "border-danger",
+    dotColor: "bg-danger",
     stappen: [
       { key: "huisarts", icon: Stethoscope },
       { key: "uitvaart", icon: Church },
@@ -63,10 +63,10 @@ const tijdlijn: TijdlijnFase[] = [
   {
     fase: "week1",
     icon: Clock,
-    color: "text-amber-700 dark:text-amber-400",
-    bgColor: "bg-amber-50 dark:bg-amber-950/30",
-    borderColor: "border-amber-200 dark:border-amber-800",
-    dotColor: "bg-amber-500",
+    color: "text-warning",
+    bgColor: "bg-warning-100 dark:bg-warning/20",
+    borderColor: "border-warning",
+    dotColor: "bg-warning",
     stappen: [
       { key: "notaris", icon: ScrollText },
       { key: "werkgever", icon: Building2 },
@@ -77,10 +77,10 @@ const tijdlijn: TijdlijnFase[] = [
   {
     fase: "maand1",
     icon: Calendar,
-    color: "text-blue-700 dark:text-blue-400",
-    bgColor: "bg-blue-50 dark:bg-blue-950/30",
-    borderColor: "border-blue-200 dark:border-blue-800",
-    dotColor: "bg-blue-500",
+    color: "text-info",
+    bgColor: "bg-info-100 dark:bg-info/20",
+    borderColor: "border-info",
+    dotColor: "bg-info",
     stappen: [
       { key: "verzekeringen", icon: ShieldCheck },
       { key: "bank", icon: Landmark },
@@ -92,10 +92,10 @@ const tijdlijn: TijdlijnFase[] = [
   {
     fase: "3maanden",
     icon: CalendarDays,
-    color: "text-violet-700 dark:text-violet-400",
-    bgColor: "bg-violet-50 dark:bg-violet-950/30",
-    borderColor: "border-violet-200 dark:border-violet-800",
-    dotColor: "bg-violet-500",
+    color: "text-accent",
+    bgColor: "bg-accent/10 dark:bg-accent/20",
+    borderColor: "border-accent",
+    dotColor: "bg-accent",
     stappen: [
       { key: "erfbelasting", icon: Scale },
       { key: "aanvaarding", icon: ScrollText },
@@ -184,7 +184,7 @@ export default function TijdlijnPage() {
       {/* Disclaimer */}
       <Card className="border-muted bg-muted/30">
         <CardContent className="py-4">
-          <p className="text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: t.raw("disclaimer") }} />
+          <p className="text-sm text-muted-foreground">{t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
         </CardContent>
       </Card>
     </div>

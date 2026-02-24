@@ -1,0 +1,82 @@
+{/* Input.docs.mdx */}
+import { Meta, Canvas, Controls, ArgTypes } from "@storybook/addon-docs/blocks";
+import * as InputStories from "./Input.stories";
+
+<Meta of={InputStories} />
+
+# Input
+
+Standard text input for forms. Use within `FormField` for full accessibility.
+
+<Canvas of={InputStories.Default} />
+<Controls of={InputStories.Default} />
+
+---
+
+## Types
+
+Standard HTML input types are supported:
+
+| Type | Use Case |
+|------|----------|
+| `text` | General text input |
+| `email` | Email addresses |
+| `password` | Passwords |
+| `number` | Numeric values |
+| `tel` | Phone numbers |
+| `url` | URLs |
+
+<Canvas of={InputStories.WithPlaceholder} />
+
+---
+
+## States
+
+### Disabled
+
+<Canvas of={InputStories.Disabled} />
+
+---
+
+## With FormField
+
+For proper accessibility, wrap inputs in `FormField`:
+
+```tsx
+<FormField.Root error={errors.email?.message} required>
+  <FormField.Label>Email</FormField.Label>
+  <FormField.Input type="email" {...register("email")} />
+  <FormField.Helper>We'll never share your email.</FormField.Helper>
+  <FormField.Error />
+</FormField.Root>
+```
+
+This provides:
+- Label association (`htmlFor` → `id`)
+- `aria-invalid` on error
+- `aria-describedby` for helper/error text
+- Required indicator (*)
+
+---
+
+## Props
+
+<ArgTypes of={InputStories} />
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Always use a label (via `FormField.Label` or separate `<label>`)
+- Use appropriate input types for validation
+- Provide placeholder text as a hint, not a replacement for labels
+- Show validation errors below the input
+
+### Don't ✗
+
+- Don't use placeholder as the only label
+- Don't disable inputs without explaining why
+- Don't use `type="number"` for things like phone numbers (use `tel`)
+- Don't create custom inputs when standard types work

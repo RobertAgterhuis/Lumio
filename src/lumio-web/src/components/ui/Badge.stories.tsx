@@ -5,6 +5,10 @@ const meta = {
   title: "Primitives/Badge",
   component: Badge,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
   argTypes: {
     variant: {
       control: "select",

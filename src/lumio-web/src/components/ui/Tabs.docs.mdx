@@ -1,0 +1,103 @@
+{/* Tabs.docs.mdx */}
+import { Meta, Canvas, Controls } from "@storybook/addon-docs/blocks";
+import * as TabsStories from "./Tabs.stories";
+
+<Meta of={TabsStories} />
+
+# Tabs
+
+Tabs organize content into separate views where only one view is visible at a time.
+
+<Canvas of={TabsStories.Default} />
+
+---
+
+## Anatomy
+
+```tsx
+const [tab, setTab] = useState("account");
+
+<Tabs value={tab} onValueChange={setTab}>
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="settings">Settings</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">
+    Account content...
+  </TabsContent>
+  <TabsContent value="settings">
+    Settings content...
+  </TabsContent>
+</Tabs>
+```
+
+| Part | Purpose |
+|------|---------|
+| `Tabs` | Root container, manages state |
+| `TabsList` | Container for tab buttons |
+| `TabsTrigger` | Individual tab button |
+| `TabsContent` | Panel content for each tab |
+
+---
+
+## Accessibility
+
+The Tabs component provides full keyboard navigation:
+
+| Key | Action |
+|-----|--------|
+| `→` / `←` | Navigate between tabs |
+| `Home` | Go to first tab |
+| `End` | Go to last tab |
+| `Tab` | Move focus to tab panel |
+
+ARIA attributes are handled automatically:
+- `role="tablist"` on TabsList
+- `role="tab"` on TabsTrigger
+- `role="tabpanel"` on TabsContent
+- `aria-selected` and `aria-controls` linkage
+
+<Canvas of={TabsStories.WithKeyboardNav} />
+
+---
+
+## Common Patterns
+
+### Settings Page
+
+```tsx
+<Tabs value={section} onValueChange={setSection}>
+  <TabsList>
+    <TabsTrigger value="profile">Profiel</TabsTrigger>
+    <TabsTrigger value="security">Beveiliging</TabsTrigger>
+    <TabsTrigger value="notifications">Notificaties</TabsTrigger>
+  </TabsList>
+  {/* Tab contents */}
+</Tabs>
+```
+
+### Disabled Tab
+
+```tsx
+<TabsTrigger value="premium" disabled>
+  Premium
+</TabsTrigger>
+```
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use tabs for related content at the same hierarchy level
+- Keep tab labels short (1-2 words)
+- Maintain tab state in URL for deep linking when appropriate
+- Show the most important/common tab first
+
+### Don't ✗
+
+- Don't use tabs for sequential workflows (use stepper/wizard)
+- Don't put more than 5-6 tabs in one TabsList
+- Don't use tabs for navigation between different pages
+- Don't nest tabs inside tabs

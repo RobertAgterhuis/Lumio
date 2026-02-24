@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { WizardShell, type WizardStep } from "@/components/wizard/WizardShell";
 import { Input } from "@/components/ui/input";
@@ -9,14 +9,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { api } from "@/lib/api-client";
+import { useDomainQuery, useWizardProgress } from "@/hooks";
+import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 
+const WIZARD_ID = "testament";
+const TOTAL_STEPS = 6;
+
 export default function TestamentWizardPage() {
   const router = useRouter();
   const t = useTranslations("testamentWizard");
+
+  // Wizard progress persistence
+  const {
+    currentStep,
+    setCurrentStep,
+    formData: savedFormData,
+    updateFormData,
+    wasRestored,
+    clearProgress,
+    markComplete,
+  } = useWizardProgress({
+    wizardId: WIZARD_ID,
+    totalSteps: TOTAL_STEPS,
+    initialFormData: {
+      testamentType: "",
+      notarisNaam: "",
+      notarisKantoor: "",
+      notarisTelefoon: "",
+      notarisEmail: "",
+      notarisAdres: "",
+      notarisPostcode: "",
+      notarisPlaats: "",
+      datumTestament: "",
+      testamentLocatie: "",
+      ctr_Nummer: "",
+      algemeneWensen: "",
+      bijzondereBepalingen: "",
+      uitsluitingsClausule: "true",
+      legaten: "",
+    },
+  });
+
   const [form, setForm] = useState({
     testamentType: "",
     notarisNaam: "",
@@ -35,53 +71,60 @@ export default function TestamentWizardPage() {
     legaten: "",
   });
 
-  const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
-  useEffect(() => {
-    api.get<Record<string, unknown>>("/api/testament")
-      .then((data) => {
-        if (data) {
-          setForm({
-            testamentType: (data.testamentType as string) ?? "",
-            notarisNaam: (data.notarisNaam as string) ?? "",
-            notarisKantoor: (data.notarisKantoor as string) ?? "",
-            notarisTelefoon: (data.notarisTelefoon as string) ?? "",
-            notarisEmail: (data.notarisEmail as string) ?? "",
-            notarisAdres: (data.notarisAdres as string) ?? "",
-            notarisPostcode: (data.notarisPostcode as string) ?? "",
-            notarisPlaats: (data.notarisPlaats as string) ?? "",
-            datumTestament: data.datumTestament
-              ? new Date(data.datumTestament as string).toISOString().split("T")[0]
-              : "",
-            testamentLocatie: (data.testamentLocatie as string) ?? "",
-            ctr_Nummer: (data.ctr_Nummer as string) ?? "",
-            algemeneWensen: (data.algemeneWensen as string) ?? "",
-            bijzondereBepalingen: (data.bijzondereBepalingen as string) ?? "",
-            uitsluitingsClausule: data.uitsluitingsClausule != null ? String(data.uitsluitingsClausule) : "true",
-            legaten: (data.legaten as string) ?? "",
-          });
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  // Load existing data with React Query
+  const { data: existingData, isLoading: loading } = useDomainQuery<Record<string, unknown> | null>("testament");
 
-  const update = (field: string, value: string) =>
-    setForm((prev) => ({ ...prev, [field]: value }));
+  // Populate form when data loads or when restoring progress
+  useEffect(() => {
+    if (existingData) {
+      const loadedForm = {
+        testamentType: (existingData.testamentType as string) ?? "",
+        notarisNaam: (existingData.notarisNaam as string) ?? "",
+        notarisKantoor: (existingData.notarisKantoor as string) ?? "",
+        notarisTelefoon: (existingData.notarisTelefoon as string) ?? "",
+        notarisEmail: (existingData.notarisEmail as string) ?? "",
+        notarisAdres: (existingData.notarisAdres as string) ?? "",
+        notarisPostcode: (existingData.notarisPostcode as string) ?? "",
+        notarisPlaats: (existingData.notarisPlaats as string) ?? "",
+        datumTestament: existingData.datumTestament
+          ? new Date(existingData.datumTestament as string).toISOString().split("T")[0]
+          : "",
+        testamentLocatie: (existingData.testamentLocatie as string) ?? "",
+        ctr_Nummer: (existingData.ctr_Nummer as string) ?? "",
+        algemeneWensen: (existingData.algemeneWensen as string) ?? "",
+        bijzondereBepalingen: (existingData.bijzondereBepalingen as string) ?? "",
+        uitsluitingsClausule: existingData.uitsluitingsClausule != null ? String(existingData.uitsluitingsClausule) : "true",
+        legaten: (existingData.legaten as string) ?? "",
+      };
+      // Merge with any saved progress
+      setForm({
+        ...loadedForm,
+        ...(savedFormData as typeof form),
+      });
+    } else if (savedFormData && Object.keys(savedFormData).length > 0) {
+      // No existing data but we have saved progress
+      setForm({
+        ...form,
+        ...(savedFormData as typeof form),
+      });
+    }
+  }, [existingData, savedFormData]);
+
+  const update = useCallback((field: string, value: string) => {
+    setForm((prev) => {
+      const updated = { ...prev, [field]: value };
+      // Persist to localStorage
+      updateFormData({ [field]: value });
+      return updated;
+    });
+  }, [updateFormData]);
 
   const downloadConceptPdf = async () => {
     setGenerating(true);
     try {
-      const res = await fetch("/api/export/testament-concept", { method: "POST" });
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "lumio-testament-concept.pdf";
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave("/api/export/testament-concept", "lumio-testament-concept.pdf", { method: "POST" });
     } catch {
       // ignore
     } finally {
@@ -264,8 +307,8 @@ export default function TestamentWizardPage() {
       beschrijving: t("samenvatting.beschrijving"),
       content: (
         <div className="space-y-4 text-sm">
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm text-amber-800">
+          <div className="rounded-lg border border-warning bg-warning-100 dark:bg-warning/20 p-4">
+            <p className="text-sm text-warning">
               <strong>{t("samenvatting.disclaimer")}</strong> {t("samenvatting.disclaimerTekst")}
             </p>
           </div>
@@ -322,6 +365,8 @@ export default function TestamentWizardPage() {
       uitsluitingsClausule: form.uitsluitingsClausule === "true",
       legaten: form.legaten || null,
     });
+    // Clear wizard progress on successful save
+    markComplete();
     router.push("/testament");
   };
 
@@ -333,6 +378,10 @@ export default function TestamentWizardPage() {
       stappen={stappen}
       onComplete={handleComplete}
       onCancel={() => router.push("/testament")}
+      initialStep={currentStep}
+      onStepChange={setCurrentStep}
+      wasRestored={wasRestored}
+      onClearProgress={clearProgress}
     />
   );
 }

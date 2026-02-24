@@ -5,6 +5,10 @@ const meta = {
   title: "Security/SecurityStatusIndicator",
   component: SecurityStatusIndicator,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "experimental" },
+    governance: { maturity: "experimental", a11yLevel: "AA" },
+  },
   argTypes: {
     status: {
       control: "select",

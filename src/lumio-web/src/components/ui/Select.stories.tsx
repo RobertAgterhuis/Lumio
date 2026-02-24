@@ -6,6 +6,10 @@ const meta = {
   title: "Primitives/Select",
   component: Select,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "stable" },
+    governance: { maturity: "stable", a11yLevel: "AA" },
+  },
   argTypes: {
     disabled: { control: "boolean" },
   },

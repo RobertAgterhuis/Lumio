@@ -12,12 +12,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { User, Save, Loader2, Camera, Trash2 } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { toast } from "@/stores/toastStore";
 
 interface Eigenaar {
   id: string;
@@ -78,8 +80,8 @@ const emptyForm = {
 export default function EigenaarPage() {
   const t = useTranslations("eigenaar");
   const te = useTranslations("enums");
+  const tf = useTranslations("feedback");
   const [exists, setExists] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState<string | null>(null);
@@ -87,49 +89,45 @@ export default function EigenaarPage() {
   const [fotoUrl, setFotoUrl] = useState<string | null>(null);
   const [fotoUploading, setFotoUploading] = useState(false);
 
+  // React Query for loading eigenaar data
+  const { data: eigenaarData, isLoading: loading } = useDomainQuery<Eigenaar | null>("eigenaar");
+
+  // Populate form when data loads
   useEffect(() => {
     const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-    api
-      .get<Eigenaar>("/api/eigenaar")
-      .then((data) => {
-        if (data) {
-          setExists(true);
-          setForm({
-            voornaam: data.voornaam,
-            achternaam: data.achternaam,
-            tussenvoegsel: data.tussenvoegsel ?? "",
-            geboortedatum: data.geboortedatum ?? "",
-            bsn: data.bsn ?? "",
-            adres: data.adres ?? "",
-            postcode: data.postcode ?? "",
-            woonplaats: data.woonplaats ?? "",
-            telefoon: data.telefoon ?? "",
-            email: data.email ?? "",
-            notaris: data.notaris ?? "",
-            notarisKantoor: data.notarisKantoor ?? "",
-            notarisTelefoon: data.notarisTelefoon ?? "",
-            notarisEmail: data.notarisEmail ?? "",
-            notarisAdres: data.notarisAdres ?? "",
-            notarisPostcode: data.notarisPostcode ?? "",
-            notarisPlaats: data.notarisPlaats ?? "",
-            burgerlijkeStaat: String(data.burgerlijkeStaat ?? 0),
-            huwelijksVoorwaarden: String(data.huwelijksVoorwaarden ?? 0),
-            datumHuwelijk: data.datumHuwelijk ?? "",
-            legitimatieSoort: String(data.legitimatieSoort ?? 0),
-            legitimatieNummer: data.legitimatieNummer ?? "",
-            legitimatieDatumAfgifte: data.legitimatieDatumAfgifte ?? "",
-            legitimatieGeldigTot: data.legitimatieGeldigTot ?? "",
-          });
-          if (data.heeftProfielFoto) {
-            setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
-          }
-        }
-      })
-      .catch(() => {
-        // 404 = no profile yet
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    if (eigenaarData) {
+      setExists(true);
+      setForm({
+        voornaam: eigenaarData.voornaam,
+        achternaam: eigenaarData.achternaam,
+        tussenvoegsel: eigenaarData.tussenvoegsel ?? "",
+        geboortedatum: eigenaarData.geboortedatum ?? "",
+        bsn: eigenaarData.bsn ?? "",
+        adres: eigenaarData.adres ?? "",
+        postcode: eigenaarData.postcode ?? "",
+        woonplaats: eigenaarData.woonplaats ?? "",
+        telefoon: eigenaarData.telefoon ?? "",
+        email: eigenaarData.email ?? "",
+        notaris: eigenaarData.notaris ?? "",
+        notarisKantoor: eigenaarData.notarisKantoor ?? "",
+        notarisTelefoon: eigenaarData.notarisTelefoon ?? "",
+        notarisEmail: eigenaarData.notarisEmail ?? "",
+        notarisAdres: eigenaarData.notarisAdres ?? "",
+        notarisPostcode: eigenaarData.notarisPostcode ?? "",
+        notarisPlaats: eigenaarData.notarisPlaats ?? "",
+        burgerlijkeStaat: String(eigenaarData.burgerlijkeStaat ?? 0),
+        huwelijksVoorwaarden: String(eigenaarData.huwelijksVoorwaarden ?? 0),
+        datumHuwelijk: eigenaarData.datumHuwelijk ?? "",
+        legitimatieSoort: String(eigenaarData.legitimatieSoort ?? 0),
+        legitimatieNummer: eigenaarData.legitimatieNummer ?? "",
+        legitimatieDatumAfgifte: eigenaarData.legitimatieDatumAfgifte ?? "",
+        legitimatieGeldigTot: eigenaarData.legitimatieGeldigTot ?? "",
+      });
+      if (eigenaarData.heeftProfielFoto) {
+        setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+      }
+    }
+  }, [eigenaarData]);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -172,6 +170,7 @@ export default function EigenaarPage() {
         setExists(true);
       }
       setSuccess(t("profielOpgeslagen"));
+      toast.success(tf("opgeslagen"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
@@ -233,8 +232,8 @@ export default function EigenaarPage() {
       <DomainStatusBanner domein="eigenaar" />
 
       {!exists && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <p className="text-sm text-amber-800">
+        <div className="rounded-lg border border-warning bg-warning-100 p-4">
+          <p className="text-sm text-warning">
             <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
           </p>
         </div>

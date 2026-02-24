@@ -1,10 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, fn, userEvent, within, waitFor } from "storybook/test";
+import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const meta = {
   title: "Primitives/Tabs",
   component: Tabs,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
 } satisfies Meta<typeof Tabs>;
 
 export default meta;
@@ -62,4 +68,166 @@ export const TwoTabs: Story = {
       </TabsContent>
     </Tabs>
   ),
+};
+
+/**
+ * Interactive tabs with play function test
+ */
+export const Interactive: Story = {
+  args: {
+    value: "tab1",
+    onValueChange: fn(),
+    children: null,
+  },
+  render: function Render() {
+    const [value, setValue] = useState("tab1");
+    return (
+      <Tabs value={value} onValueChange={setValue}>
+        <TabsList>
+          <TabsTrigger value="tab1" data-testid="tab1-trigger">
+            Overzicht
+          </TabsTrigger>
+          <TabsTrigger value="tab2" data-testid="tab2-trigger">
+            Details
+          </TabsTrigger>
+          <TabsTrigger value="tab3" data-testid="tab3-trigger">
+            Instellingen
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1" data-testid="tab1-content">
+          <p className="p-4 text-sm">Overzicht inhoud is zichtbaar.</p>
+        </TabsContent>
+        <TabsContent value="tab2" data-testid="tab2-content">
+          <p className="p-4 text-sm">Details inhoud is zichtbaar.</p>
+        </TabsContent>
+        <TabsContent value="tab3" data-testid="tab3-content">
+          <p className="p-4 text-sm">Instellingen inhoud is zichtbaar.</p>
+        </TabsContent>
+      </Tabs>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Initially tab1 should be active
+    expect(canvas.getByTestId("tab1-content")).toBeInTheDocument();
+
+    // Click on tab2
+    await userEvent.click(canvas.getByTestId("tab2-trigger"));
+
+    // tab2 content should be visible
+    await waitFor(() => {
+      expect(canvas.getByTestId("tab2-content")).toBeInTheDocument();
+    });
+
+    // tab1 content should be hidden
+    expect(canvas.queryByTestId("tab1-content")).not.toBeInTheDocument();
+
+    // Click on tab3
+    await userEvent.click(canvas.getByTestId("tab3-trigger"));
+
+    // tab3 content should be visible
+    await waitFor(() => {
+      expect(canvas.getByTestId("tab3-content")).toBeInTheDocument();
+    });
+
+    // Previous tabs content should be hidden
+    expect(canvas.queryByTestId("tab2-content")).not.toBeInTheDocument();
+
+    // Click back to tab1
+    await userEvent.click(canvas.getByTestId("tab1-trigger"));
+
+    await waitFor(() => {
+      expect(canvas.getByTestId("tab1-content")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Keyboard navigation test - Arrow keys should navigate between tabs
+ */
+export const WithKeyboardNav: Story = {
+  args: {
+    value: "tab1",
+    onValueChange: fn(),
+    children: null,
+  },
+  render: function Render() {
+    const [value, setValue] = useState("tab1");
+    return (
+      <Tabs value={value} onValueChange={setValue}>
+        <TabsList>
+          <TabsTrigger value="tab1" data-testid="tab1-trigger">
+            Eerste
+          </TabsTrigger>
+          <TabsTrigger value="tab2" data-testid="tab2-trigger">
+            Tweede
+          </TabsTrigger>
+          <TabsTrigger value="tab3" data-testid="tab3-trigger">
+            Derde
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1" data-testid="tab1-content">
+          <p className="p-4 text-sm">Eerste tab content.</p>
+        </TabsContent>
+        <TabsContent value="tab2" data-testid="tab2-content">
+          <p className="p-4 text-sm">Tweede tab content.</p>
+        </TabsContent>
+        <TabsContent value="tab3" data-testid="tab3-content">
+          <p className="p-4 text-sm">Derde tab content.</p>
+        </TabsContent>
+      </Tabs>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Focus the first tab
+    const tab1 = canvas.getByTestId("tab1-trigger");
+    tab1.focus();
+    expect(document.activeElement).toBe(tab1);
+
+    // Press ArrowRight to move to tab2
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => {
+      const tab2 = canvas.getByTestId("tab2-trigger");
+      expect(document.activeElement).toBe(tab2);
+      expect(canvas.getByTestId("tab2-content")).toBeInTheDocument();
+    });
+
+    // Press ArrowRight again to move to tab3
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => {
+      const tab3 = canvas.getByTestId("tab3-trigger");
+      expect(document.activeElement).toBe(tab3);
+      expect(canvas.getByTestId("tab3-content")).toBeInTheDocument();
+    });
+
+    // Press ArrowRight again - should wrap to tab1
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => {
+      expect(document.activeElement).toBe(tab1);
+      expect(canvas.getByTestId("tab1-content")).toBeInTheDocument();
+    });
+
+    // Press ArrowLeft - should go to tab3
+    await userEvent.keyboard("{ArrowLeft}");
+    await waitFor(() => {
+      const tab3 = canvas.getByTestId("tab3-trigger");
+      expect(document.activeElement).toBe(tab3);
+    });
+
+    // Press Home - should go to tab1
+    await userEvent.keyboard("{Home}");
+    await waitFor(() => {
+      expect(document.activeElement).toBe(tab1);
+    });
+
+    // Press End - should go to tab3
+    await userEvent.keyboard("{End}");
+    await waitFor(() => {
+      const tab3 = canvas.getByTestId("tab3-trigger");
+      expect(document.activeElement).toBe(tab3);
+    });
+  },
 };

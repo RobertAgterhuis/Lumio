@@ -1,0 +1,105 @@
+{/* Borders.mdx */}
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Borders" />
+
+# Borders
+
+Border tokens ensure consistent stroke widths across the design system.
+
+## Border Width Scale
+
+| Token | Value | Tailwind | Use Case |
+|-------|-------|----------|----------|
+| `--border-0` | 0 | `border-0` | Remove borders |
+| `--border-1` | 1px | `border` | Default borders (inputs, cards) |
+| `--border-2` | 2px | `border-2` | Emphasis borders, active states |
+| `--border-4` | 4px | `border-4` | Strong separators, focus rings |
+| `--border-8` | 8px | `border-8` | Decorative, section dividers |
+
+---
+
+## Visual Reference
+
+<div className="space-y-4 mt-8">
+  <div className="flex items-center gap-4">
+    <div className="w-24 h-12 border border-primary rounded flex items-center justify-center text-xs">
+      border (1px)
+    </div>
+    <span className="text-sm text-muted-foreground">Default — inputs, cards</span>
+  </div>
+  <div className="flex items-center gap-4">
+    <div className="w-24 h-12 border-2 border-primary rounded flex items-center justify-center text-xs">
+      border-2
+    </div>
+    <span className="text-sm text-muted-foreground">Emphasis — active, selected</span>
+  </div>
+  <div className="flex items-center gap-4">
+    <div className="w-24 h-12 border-4 border-primary rounded flex items-center justify-center text-xs">
+      border-4
+    </div>
+    <span className="text-sm text-muted-foreground">Strong — focus indicators</span>
+  </div>
+  <div className="flex items-center gap-4">
+    <div className="w-24 h-12 border-8 border-primary rounded flex items-center justify-center text-xs">
+      border-8
+    </div>
+    <span className="text-sm text-muted-foreground">Decorative — section dividers</span>
+  </div>
+</div>
+
+---
+
+## Border Colors
+
+Borders use semantic color tokens:
+
+| Tailwind Class | Use Case |
+|----------------|----------|
+| `border-border` | Default neutral border |
+| `border-input` | Form input borders |
+| `border-primary` | Primary accent borders |
+| `border-destructive` | Error state borders |
+| `border-ring` | Focus ring color |
+
+---
+
+## Common Patterns
+
+### Card Border
+
+```tsx
+<Card className="border border-border">
+  {/* default 1px neutral border */}
+</Card>
+```
+
+### Input Error State
+
+```tsx
+<Input className={error ? "border-destructive" : "border-input"} />
+```
+
+### Active Tab Indicator
+
+```tsx
+<div className={isActive ? "border-b-2 border-primary" : "border-b border-transparent"}>
+  Tab
+</div>
+```
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use `border` (1px) for most UI elements
+- Use `border-2` to indicate active/selected states
+- Combine with semantic colors: `border-destructive`
+
+### Don't ✗
+
+- Don't use arbitrary border widths like `border-[3px]`
+- Don't use `border-8` for functional UI — it's decorative only
+- Don't mix border-width tokens inconsistently within a component

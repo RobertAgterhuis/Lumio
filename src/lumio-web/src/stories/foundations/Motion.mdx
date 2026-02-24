@@ -1,0 +1,131 @@
+{/* Motion.mdx */}
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Motion" />
+
+# Motion
+
+Motion tokens create consistent, purposeful animations. All animations respect the user's `prefers-reduced-motion` preference.
+
+## Duration Tokens
+
+| Token | Value | Tailwind | Use Case |
+|-------|-------|----------|----------|
+| `--duration-fast` | 150ms | `duration-150` | Micro-interactions (hover, focus) |
+| `--duration-med` | 250ms | `duration-250` | UI state changes (expand, collapse) |
+
+## Easing
+
+| Token | Value | Tailwind |
+|-------|-------|----------|
+| `--easing-default` | ease-in-out | `ease-in-out` |
+
+---
+
+## Animation Examples
+
+<div className="space-y-8 mt-8">
+  <div>
+    <h3 className="text-lg font-semibold mb-4">Hover Transition (150ms)</h3>
+    <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-all duration-150 hover:bg-primary/90 hover:scale-105">
+      Hover me
+    </button>
+  </div>
+
+  <div>
+    <h3 className="text-lg font-semibold mb-4">Focus Ring</h3>
+    <input
+      type="text"
+      placeholder="Focus me"
+      className="px-3 py-2 border rounded-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-ring"
+    />
+  </div>
+</div>
+
+---
+
+## Transition Primitives
+
+The design system includes pre-built transition components:
+
+### FadeIn
+
+```tsx
+import { FadeIn } from "@/components/ui/transitions";
+
+<FadeIn>
+  <p>This content fades in on mount</p>
+</FadeIn>
+```
+
+### SlideIn
+
+```tsx
+import { SlideIn } from "@/components/ui/transitions";
+
+<SlideIn direction="up">
+  <Card>Content slides up from below</Card>
+</SlideIn>
+```
+
+### ScaleIn
+
+```tsx
+import { ScaleIn } from "@/components/ui/transitions";
+
+<ScaleIn>
+  <Dialog>Dialog scales in from center</Dialog>
+</ScaleIn>
+```
+
+---
+
+## Keyframe Animations
+
+| Animation | Duration | Use Case |
+|-----------|----------|----------|
+| `animate-pulse` | 2s | Loading skeletons |
+| `animate-spin` | 1s | Loading spinners |
+| `animate-shimmer` | 2s | Gradient loading effect |
+
+---
+
+## Reduced Motion
+
+All animations should gracefully degrade when `prefers-reduced-motion: reduce` is set:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+The transition components automatically handle this:
+
+```tsx
+// Transitions component respects reduced motion
+<FadeIn>
+  {/* Instant appear when reduced motion is preferred */}
+</FadeIn>
+```
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use `duration-fast` (150ms) for hover/focus states
+- Use `duration-med` (250ms) for content reveals
+- Apply `ease-in-out` for natural-feeling motion
+- Test with `prefers-reduced-motion: reduce`
+
+### Don't ✗
+
+- Don't animate everything — motion should be purposeful
+- Don't use durations longer than 500ms for UI transitions
+- Don't use jarring linear easing for UI elements
+- Don't skip reduced motion support

@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { IdleWarningDialog } from "@/components/layout/IdleWarningDialog";
 import { ShortcutsDialog } from "@/components/layout/ShortcutsDialog";
 import { OnboardingWizard } from "@/components/wizard/OnboardingWizard";
-import { HelpPanel } from "@/components/help/HelpPanel";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -16,6 +16,12 @@ import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
 import { ShieldAlert } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
+// Lazy-load HelpPanel to reduce initial bundle size (loaded when user opens help)
+const HelpPanel = dynamic(() => import("@/components/help/HelpPanel").then(m => m.HelpPanel), {
+  ssr: false,
+  loading: () => null,
+});
 
 export default function AuthenticatedLayout({
   children,
@@ -78,7 +84,7 @@ export default function AuthenticatedLayout({
           router.replace("/");
         }
       })
-      .catch(() => router.replace("/"))
+      .catch((err) => { console.error("Auth check failed:", err); router.replace("/"); })
       .finally(() => setChecking(false));
   }, []);
 
@@ -100,6 +106,12 @@ export default function AuthenticatedLayout({
 
   return (
     <div className="flex h-screen">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg"
+      >
+        {t("skipNaarInhoud")}
+      </a>
       <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header />
@@ -111,7 +123,7 @@ export default function AuthenticatedLayout({
           </Alert>
         )}
         <ErrorBoundary>
-          <main className="flex-1 overflow-y-auto p-6">
+          <main id="main-content" className="flex-1 overflow-y-auto p-6">
             {children}
           </main>
         </ErrorBoundary>

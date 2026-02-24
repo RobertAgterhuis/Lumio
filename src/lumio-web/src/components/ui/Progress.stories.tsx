@@ -5,6 +5,10 @@ const meta = {
   title: "Primitives/Progress",
   component: Progress,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "stable" },
+    governance: { maturity: "stable", a11yLevel: "AA" },
+  },
   argTypes: {
     value: { control: { type: "range", min: 0, max: 100, step: 1 } },
     max: { control: "number" },

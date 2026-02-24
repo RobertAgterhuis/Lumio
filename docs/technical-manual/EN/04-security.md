@@ -132,3 +132,104 @@ The audit log is read-only — entries are never deleted or modified.
 | `POST api/backup/restore` | Restore database from backup file |
 
 Electron supports automatic backups at a configurable interval.
+
+## Electron Security
+
+The desktop shell implements multiple security hardening measures.
+
+### Content Security Policy (CSP)
+
+CSP is enforced via Electron's `webRequest` API:
+
+```typescript
+session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+  callback({
+    responseHeaders: {
+      ...details.responseHeaders,
+      "Content-Security-Policy": [
+        "default-src 'self';",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval';",
+        "style-src 'self' 'unsafe-inline';",
+        "img-src 'self' data: blob:;",
+        "font-src 'self' data:;",
+        "connect-src 'self' http://127.0.0.1:* ws://127.0.0.1:*;",
+      ].join(" "),
+    },
+  });
+});
+```
+
+### External URL Handling
+
+External URLs opened via the renderer are validated:
+
+```typescript
+// ✅ Only https:// URLs are allowed
+ipcMain.handle("open-external-url", async (_, url: string) => {
+  if (typeof url !== "string" || !url.startsWith("https://")) {
+    return false;
+  }
+  await shell.openExternal(url);
+  return true;
+});
+```
+
+**Security benefits:**
+- Prevents arbitrary protocol handlers (`file://`, `javascript:`)
+- Prevents navigation to local files
+- All external navigation is explicit (not automatic link clicking)
+
+### IPC Input Validation
+
+All IPC handlers validate incoming data:
+
+```typescript
+// Example: auto-backup configuration
+ipcMain.handle("set-auto-backup-config", async (_, config: unknown) => {
+  // Validate config structure and types
+  if (!config || typeof config !== "object") {
+    throw new Error("Invalid config");
+  }
+  const { enabled, intervalMinutes, backupPath } = config as Record<string, unknown>;
+  
+  if (typeof enabled !== "boolean") throw new Error("Invalid enabled value");
+  if (typeof intervalMinutes !== "number" || intervalMinutes < 0) {
+    throw new Error("Invalid intervalMinutes");
+  }
+  if (typeof backupPath !== "string") throw new Error("Invalid backupPath");
+  
+  // ... proceed with validated data
+});
+```
+
+### Security Configuration
+
+| Setting | Value | Purpose |
+|---------|-------|---------|
+| `webSecurity` | `true` | Enable same-origin policy |
+| `contextIsolation` | `true` | Isolate preload scripts from web content |
+| `nodeIntegration` | `false` | Prevent renderer access to Node.js |
+| `sandbox` | `true` | Enable Chromium sandbox |
+
+### API Exposure via contextBridge
+
+Only whitelisted APIs are exposed to the renderer:
+
+```typescript
+contextBridge.exposeInMainWorld("electronAPI", {
+  // File operations
+  openFileDialog: () => ipcRenderer.invoke("dialog:openFile"),
+  saveFileDialog: (defaultPath: string) => 
+    ipcRenderer.invoke("dialog:saveFile", defaultPath),
+  
+  // Backup
+  getAutoBackupConfig: () => ipcRenderer.invoke("get-auto-backup-config"),
+  setAutoBackupConfig: (config) => ipcRenderer.invoke("set-auto-backup-config", config),
+  
+  // External URL (https-only)
+  openExternalUrl: (url: string) => ipcRenderer.invoke("open-external-url", url),
+  
+  // Application
+  getAppVersion: () => ipcRenderer.invoke("get-app-version"),
+});
+```

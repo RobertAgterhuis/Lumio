@@ -46,12 +46,18 @@ export const useAuthStore = create<AuthState>((set) => ({
   setActiveProfile: (profile) => set({ activeProfile: profile }),
   setProfileSelected: (selected) => set({ profileSelected: selected }),
   setProfileNeedsSetup: (needsSetup) => set({ profileNeedsSetup: needsSetup }),
-  lock: () =>
+  lock: () => {
+    try {
+      localStorage.removeItem("lumio-recent-searches");
+    } catch {
+      // localStorage not available
+    }
     set({
       isUnlocked: false,
       isReadOnly: false,
       activeProfile: null,
       profileSelected: false,
       profileNeedsSetup: false,
-    }),
+    });
+  },
 }));

@@ -5,6 +5,10 @@ const meta = {
   title: "Security/ConfirmDestructiveAction",
   component: ConfirmDestructiveAction,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "experimental" },
+    governance: { maturity: "experimental", a11yLevel: "AA" },
+  },
   argTypes: {
     open: { control: "boolean" },
     requirePassword: { control: "boolean" },

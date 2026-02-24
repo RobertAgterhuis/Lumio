@@ -57,7 +57,7 @@ export function StatistiekenWidget() {
     api
       .get<Statistieken>("/api/status/statistieken")
       .then(setStats)
-      .catch(() => {});
+      .catch((err) => console.error("Failed to load statistics:", err));
   }, []);
 
   if (!stats) return null;
@@ -73,22 +73,22 @@ export function StatistiekenWidget() {
       label: t("erfgenamen"),
       waarde: stats.erfgenamen,
       icon: Users,
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-50",
+      color: "text-accent",
+      bgColor: "bg-accent/10",
     },
     {
       label: t("digitaleAccounts"),
       waarde: stats.digitaalBezit.totaal,
       icon: Globe,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-success",
+      bgColor: "bg-success-100",
     },
     {
       label: t("documenten"),
       waarde: stats.documenten,
       icon: FileText,
-      color: "text-cyan-600",
-      bgColor: "bg-cyan-50",
+      color: "text-info",
+      bgColor: "bg-info-100",
     },
     {
       label: t("boedelitems"),
@@ -98,15 +98,15 @@ export function StatistiekenWidget() {
         stats.boedel.verzekeringen +
         stats.boedel.schulden,
       icon: Wallet,
-      color: "text-amber-600",
-      bgColor: "bg-amber-50",
+      color: "text-warning",
+      bgColor: "bg-warning-100",
     },
     {
       label: t("noodcontacten"),
       waarde: stats.noodcontacten,
       icon: Phone,
-      color: "text-pink-600",
-      bgColor: "bg-pink-50",
+      color: "text-danger",
+      bgColor: "bg-danger-100",
     },
   ];
 
@@ -146,26 +146,26 @@ export function StatistiekenWidget() {
 
       {hasFinancieel && (
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="flex items-center gap-3 rounded-md border border-green-200 bg-green-50/50 p-3">
-            <TrendingUp className="h-4 w-4 text-green-600 shrink-0" />
+          <div className="flex items-center gap-3 rounded-md border border-success bg-success-100/50 p-3">
+            <TrendingUp className="h-4 w-4 text-success shrink-0" />
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-green-800 truncate">
+              <p className="text-sm font-semibold text-success truncate">
                 {formatBedrag(
                   stats.financieel.totaalBezittingen +
                     stats.financieel.totaalSaldi +
                     stats.financieel.totaalVerzekeringen
                 )}
               </p>
-              <p className="text-xs text-green-700">{t("totaleWaarde")}</p>
+              <p className="text-xs text-success">{t("totaleWaarde")}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-md border border-red-200 bg-red-50/50 p-3">
-            <TrendingDown className="h-4 w-4 text-red-600 shrink-0" />
+          <div className="flex items-center gap-3 rounded-md border border-danger bg-danger-100/50 p-3">
+            <TrendingDown className="h-4 w-4 text-danger shrink-0" />
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-red-800 truncate">
+              <p className="text-sm font-semibold text-danger truncate">
                 {formatBedrag(stats.financieel.totaalSchulden)}
               </p>
-              <p className="text-xs text-red-700">{t("schulden")}</p>
+              <p className="text-xs text-danger">{t("schulden")}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-md border border-primary/20 bg-primary/5 p-3">

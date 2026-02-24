@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { api } from "@/lib/api-client";
+import { api, downloadAndSave } from "@/lib/api-client";
 import {
   Download,
   ScrollText,
@@ -113,21 +113,7 @@ export default function ExportPage() {
     setDownloading(key);
     setError(null);
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-      });
-      if (response.status === 423) { window.location.href = "/"; return; }
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || t("exportMislukt"));
-      }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `lumio-${key}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave(endpoint, `lumio-${key}.pdf`, { method: "POST" });
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -139,21 +125,7 @@ export default function ExportPage() {
     setDownloading("compleet");
     setError(null);
     try {
-      const response = await fetch("/api/export/compleet", {
-        method: "POST",
-      });
-      if (response.status === 423) { window.location.href = "/"; return; }
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || t("exportMislukt"));
-      }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "lumio-compleet.pdf";
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave("/api/export/compleet", "lumio-compleet.pdf", { method: "POST" });
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -165,22 +137,8 @@ export default function ExportPage() {
     setDownloading("zip");
     setError(null);
     try {
-      const response = await fetch("/api/export/alles", {
-        method: "POST",
-      });
-      if (response.status === 423) { window.location.href = "/"; return; }
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || t("exportMislukt"));
-      }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
       const today = new Date().toISOString().slice(0, 10);
-      a.download = `lumio-export-${today}.zip`;
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave("/api/export/alles", `lumio-export-${today}.zip`, { method: "POST" });
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -193,21 +151,8 @@ export default function ExportPage() {
     setDownloading(key);
     setError(null);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const response = await fetch(`${API_BASE}/api/export/${format}`);
-      if (response.status === 423) { window.location.href = "/"; return; }
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || t("exportMislukt"));
-      }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
       const today = new Date().toISOString().slice(0, 10);
-      a.download = `lumio-export-${today}.${format}`;
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave(`/api/export/${format}`, `lumio-export-${today}.${format}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -220,21 +165,8 @@ export default function ExportPage() {
     setDownloading(key);
     setError(null);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const response = await fetch(`${API_BASE}/api/export/csv/${naam}`);
-      if (response.status === 423) { window.location.href = "/"; return; }
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || t("exportMislukt"));
-      }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
       const today = new Date().toISOString().slice(0, 10);
-      a.download = `lumio-${naam}-${today}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave(`/api/export/csv/${naam}`, `lumio-${naam}-${today}.csv`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -261,8 +193,8 @@ export default function ExportPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="rounded-lg border border-danger bg-danger-100 p-3">
+          <p className="text-sm text-danger">{error}</p>
         </div>
       )}
 
@@ -384,21 +316,8 @@ export default function ExportPage() {
               setDownloading("nuv");
               setError(null);
               try {
-                const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-                const response = await fetch(`${API_BASE}/api/export/nuv`);
-                if (response.status === 423) { window.location.href = "/"; return; }
-                if (!response.ok) {
-                  const body = await response.json().catch(() => ({}));
-                  throw new Error(body.error || t("exportMislukt"));
-                }
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
                 const today = new Date().toISOString().slice(0, 10);
-                a.download = `lumio-nuv-export-${today}.xml`;
-                a.click();
-                URL.revokeObjectURL(url);
+                await downloadAndSave("/api/export/nuv", `lumio-nuv-export-${today}.xml`);
               } catch (err) {
                 setError(err instanceof Error ? err.message : t("exportMislukt"));
               } finally {

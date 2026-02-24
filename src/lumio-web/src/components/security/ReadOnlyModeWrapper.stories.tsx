@@ -8,6 +8,10 @@ const meta = {
   title: "Security/ReadOnlyModeWrapper",
   component: ReadOnlyModeWrapper,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "experimental" },
+    governance: { maturity: "experimental", a11yLevel: "AA" },
+  },
   argTypes: {
     isReadOnly: { control: "boolean" },
     showBanner: { control: "boolean" },

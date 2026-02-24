@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 import Link from "next/link";
@@ -29,21 +28,11 @@ interface OrgaanKeuze {
 
 export default function DonorPage() {
   const t = useTranslations("donor");
-  const [data, setData] = useState<DonorRegistratie | null>(null);
-  const [orgaanKeuzes, setOrgaanKeuzes] = useState<OrgaanKeuze[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    Promise.all([
-      api.get<DonorRegistratie>("/api/donor").catch(() => null),
-      api.get<OrgaanKeuze[]>("/api/donor/orgaankeuzes").catch(() => []),
-    ])
-      .then(([d, o]) => {
-        setData(d);
-        setOrgaanKeuzes(o ?? []);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const { data, isLoading: donorLoading } = useDomainQuery<DonorRegistratie | null>("donor");
+  const { data: orgaanKeuzes = [], isLoading: orgaanLoading } = useDomainQuery<OrgaanKeuze[]>("donor/orgaankeuzes");
+
+  const loading = donorLoading || orgaanLoading;
 
   if (loading)
     return (
@@ -73,10 +62,10 @@ export default function DonorPage() {
 
       <DomainStatusBanner domein="donor" />
 
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-        <p className="text-sm text-red-800"
-          dangerouslySetInnerHTML={{ __html: t.raw("tip") }}
-        />
+      <div className="rounded-lg border border-danger bg-danger-100 p-4">
+        <p className="text-sm text-danger">
+          {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </p>
       </div>
 
       {!data ? (
