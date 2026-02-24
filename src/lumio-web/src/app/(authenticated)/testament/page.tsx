@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
+import { toast } from "@/stores/toastStore";
 import { ScrollText, Plus, Pencil, Trash2, AlertTriangle, History, GitCompareArrows } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -101,6 +102,7 @@ interface TestamentVergelijking {
 
 export default function TestamentPage() {
   const t = useTranslations("testament");
+  const tf = useTranslations("feedback");
   const locale = useLocale();
   const [testament, setTestament] = useState<TestamentInfo | null>(null);
   const [begunstigden, setBegunstigden] = useState<Begunstigde[]>([]);
@@ -186,6 +188,7 @@ export default function TestamentPage() {
       const updated = await api.put<TestamentInfo>("/api/testament", payload);
       setTestament(updated);
       setTestEditOpen(false);
+      toast.success(tf("opgeslagen"));
     } catch (err) {
       setTestEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
@@ -195,11 +198,11 @@ export default function TestamentPage() {
     const load = async () => {
       try {
         const [t, b, e, lp, snaps] = await Promise.all([
-          api.get<TestamentInfo>("/api/testament").catch(() => null),
-          api.get<Begunstigde[]>("/api/testament/begunstigden").catch(() => []),
-          api.get<Executeur[]>("/api/testament/executeurs").catch(() => []),
-          api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null),
-          api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch(() => []),
+          api.get<TestamentInfo>("/api/testament").catch((err) => { console.error("Failed to load testament:", err); return null; }),
+          api.get<Begunstigde[]>("/api/testament/begunstigden").catch((err) => { console.error("Failed to load begunstigden:", err); return []; }),
+          api.get<Executeur[]>("/api/testament/executeurs").catch((err) => { console.error("Failed to load executeurs:", err); return []; }),
+          api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch((err) => { console.error("Failed to load LP check:", err); return null; }),
+          api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch((err) => { console.error("Failed to load snapshots:", err); return []; }),
         ]);
         setTestament(t);
         setBegunstigden(b);
@@ -247,12 +250,14 @@ export default function TestamentPage() {
       };
       if (editExecId) {
         await api.put(`/api/testament/executeurs/${editExecId}`, payload);
+        toast.success(tf("opgeslagen"));
       } else {
         await api.post("/api/testament/executeurs", payload);
+        toast.success(tf("aangemaakt"));
       }
       setExecDialogOpen(false);
       // Reload executeurs
-      const updated = await api.get<Executeur[]>("/api/testament/executeurs").catch(() => []);
+      const updated = await api.get<Executeur[]>("/api/testament/executeurs").catch((err) => { console.error("Failed to reload executeurs:", err); return []; });
       setExecuteurs(updated ?? []);
     } catch (err) {
       setExecError(err instanceof Error ? err.message : t("opslaanMislukt"));
@@ -262,6 +267,7 @@ export default function TestamentPage() {
   const deleteExec = async (id: string) => {
     try {
       await api.delete(`/api/testament/executeurs/${id}`);
+      toast.success(tf("verwijderd"));
       setExecuteurs((prev) => prev.filter((e) => e.id !== id));
     } catch (err) {
       setExecError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -307,14 +313,16 @@ export default function TestamentPage() {
       };
       if (editBegId) {
         await api.put(`/api/testament/begunstigden/${editBegId}`, payload);
+        toast.success(tf("opgeslagen"));
       } else {
         await api.post("/api/testament/begunstigden", payload);
+        toast.success(tf("aangemaakt"));
       }
       setBegDialogOpen(false);
-      const updated = await api.get<Begunstigde[]>("/api/testament/begunstigden").catch(() => []);
+      const updated = await api.get<Begunstigde[]>("/api/testament/begunstigden").catch((err) => { console.error("Failed to reload begunstigden:", err); return []; });
       setBegunstigden(updated ?? []);
       // Herlaad legitimaire portie check na wijziging begunstigden
-      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
+      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch((err) => { console.error("Failed to reload LP check:", err); return null; });
       setLegitimaireCheck(lpCheck);
     } catch (err) {
       setBegError(err instanceof Error ? err.message : t("opslaanMislukt"));
@@ -324,9 +332,10 @@ export default function TestamentPage() {
   const deleteBeg = async (id: string) => {
     try {
       await api.delete(`/api/testament/begunstigden/${id}`);
+      toast.success(tf("verwijderd"));
       setBegunstigden((prev) => prev.filter((b) => b.id !== id));
       // Herlaad legitimaire portie check na verwijdering
-      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
+      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch((err) => { console.error("Failed to reload LP check:", err); return null; });
       setLegitimaireCheck(lpCheck);
     } catch (err) {
       setBegError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -338,9 +347,10 @@ export default function TestamentPage() {
     setSnapError(null);
     try {
       await api.post("/api/testament/snapshots", { notitie: snapNotitie || null });
+      toast.success(tf("aangemaakt"));
       setSnapDialogOpen(false);
       setSnapNotitie("");
-      const updated = await api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch(() => []);
+      const updated = await api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch((err) => { console.error("Failed to reload snapshots:", err); return []; });
       setSnapshots(updated ?? []);
     } catch (err) {
       setSnapError(err instanceof Error ? err.message : t("versies.snapshotMislukt"));
@@ -350,6 +360,7 @@ export default function TestamentPage() {
   const deleteSnapshot = async (id: string) => {
     try {
       await api.delete(`/api/testament/snapshots/${id}`);
+      toast.success(tf("verwijderd"));
       setSnapshots((prev) => prev.filter((s) => s.id !== id));
     } catch (err) {
       setSnapError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -378,7 +389,7 @@ export default function TestamentPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <ScrollText className="h-8 w-8 text-blue-600" />
+            <ScrollText className="h-8 w-8 text-info" />
             {t("titel")}
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -492,7 +503,7 @@ export default function TestamentPage() {
                           <Pencil className="h-3 w-3" />
                         </Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteBeg(b.id)}>
-                          <Trash2 className="h-3 w-3 text-red-500" />
+                          <Trash2 className="h-3 w-3 text-danger" />
                         </Button>
                       </div>
                     </li>
@@ -515,8 +526,8 @@ export default function TestamentPage() {
             </CardHeader>
             <CardContent>
               {execError && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-2 mb-3">
-                  <p className="text-sm text-red-800">{execError}</p>
+                <div className="rounded-lg border border-danger bg-danger-100 p-2 mb-3">
+                  <p className="text-sm text-danger">{execError}</p>
                 </div>
               )}
               {executeurs.length === 0 ? (
@@ -534,7 +545,7 @@ export default function TestamentPage() {
                           <Pencil className="h-3 w-3" />
                         </Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteExec(e.id)}>
-                          <Trash2 className="h-3 w-3 text-red-500" />
+                          <Trash2 className="h-3 w-3 text-danger" />
                         </Button>
                       </div>
                     </li>
@@ -562,8 +573,8 @@ export default function TestamentPage() {
             </CardHeader>
             <CardContent>
               {snapError && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-2 mb-3">
-                  <p className="text-sm text-red-800">{snapError}</p>
+                <div className="rounded-lg border border-danger bg-danger-100 p-2 mb-3">
+                  <p className="text-sm text-danger">{snapError}</p>
                 </div>
               )}
               {snapshots.length === 0 ? (
@@ -581,7 +592,7 @@ export default function TestamentPage() {
                           {s.notitie && <span className="text-muted-foreground ml-2">— {s.notitie}</span>}
                         </div>
                         <Button variant="ghost" size="sm" onClick={() => deleteSnapshot(s.id)}>
-                          <Trash2 className="h-3 w-3 text-red-500" />
+                          <Trash2 className="h-3 w-3 text-danger" />
                         </Button>
                       </li>
                     ))}
@@ -717,8 +728,8 @@ export default function TestamentPage() {
         </DialogHeader>
         <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
           {testEditError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-2">
-              <p className="text-sm text-red-800">{testEditError}</p>
+            <div className="rounded-lg border border-danger bg-danger-100 dark:bg-danger/20 p-2">
+              <p className="text-sm text-danger">{testEditError}</p>
             </div>
           )}
           <div className="grid grid-cols-2 gap-2">
@@ -903,8 +914,8 @@ export default function TestamentPage() {
             {t("snapDialog.beschrijving")}
           </p>
           {snapError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-2">
-              <p className="text-sm text-red-800">{snapError}</p>
+            <div className="rounded-lg border border-danger bg-danger-100 dark:bg-danger/20 p-2">
+              <p className="text-sm text-danger">{snapError}</p>
             </div>
           )}
           <div className="space-y-2">
@@ -949,8 +960,8 @@ export default function TestamentPage() {
                   {vergelijking?.verschillen.map((v, i) => (
                     <tr key={i} className="border-t">
                       <td className="p-2 font-medium">{v.veld}</td>
-                      <td className="p-2 text-red-700 bg-red-50">{v.waardeVersie1 || "—"}</td>
-                      <td className="p-2 text-green-700 bg-green-50">{v.waardeVersie2 || "—"}</td>
+                      <td className="p-2 text-danger bg-danger-100 dark:bg-danger/20">{v.waardeVersie1 || "—"}</td>
+                      <td className="p-2 text-success bg-success-100 dark:bg-success/20">{v.waardeVersie2 || "—"}</td>
                     </tr>
                   ))}
                 </tbody>

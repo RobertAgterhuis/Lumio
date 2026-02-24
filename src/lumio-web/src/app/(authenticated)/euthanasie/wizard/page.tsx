@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { api } from "@/lib/api-client";
+import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -68,7 +68,7 @@ export default function EuthanasieWizardPage() {
           });
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("Failed to load wizard data:", err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -78,15 +78,7 @@ export default function EuthanasieWizardPage() {
   const downloadWilsverklaringPdf = async () => {
     setGenerating(true);
     try {
-      const res = await fetch("/api/export/wilsverklaring", { method: "POST" });
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "lumio-wilsverklaring.pdf";
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave("/api/export/wilsverklaring", "lumio-wilsverklaring.pdf", { method: "POST" });
     } catch {
       // ignore
     } finally {
@@ -101,8 +93,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("keuze.beschrijving"),
       content: (
         <div className="space-y-4">
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <p className="text-sm text-blue-800">
+          <div className="rounded-lg border border-info bg-info-100 dark:bg-info/20 p-4">
+            <p className="text-sm text-info">
               <strong>{t("keuze.wettelijkKader")}</strong> {t("keuze.wettelijkKaderTekst")}
             </p>
           </div>
@@ -139,8 +131,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("dementie.beschrijving"),
       content: (
         <div className="space-y-4">
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm text-amber-800">
+          <div className="rounded-lg border border-warning bg-warning-100 dark:bg-warning/20 p-4">
+            <p className="text-sm text-warning">
               <strong>{t("dementie.letOp")}</strong> {t("dementie.letOpTekst")}
             </p>
           </div>
@@ -176,8 +168,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("behandelverbod.beschrijving"),
       content: (
         <div className="space-y-4">
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <p className="text-sm text-blue-800">
+          <div className="rounded-lg border border-info bg-info-100 dark:bg-info/20 p-4">
+            <p className="text-sm text-info">
               <strong>{t("behandelverbod.wettelijkKader")}</strong> {t("behandelverbod.wettelijkKaderTekst")}
             </p>
           </div>
@@ -355,8 +347,8 @@ export default function EuthanasieWizardPage() {
       beschrijving: t("samenvatting.beschrijving"),
       content: (
         <div className="space-y-4 text-sm">
-          <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-            <p className="text-sm text-purple-800">
+          <div className="rounded-lg border border-accent bg-accent/10 dark:bg-accent/20 p-4">
+            <p className="text-sm text-accent">
               <strong>{t("samenvatting.disclaimer")}</strong> {t("samenvatting.disclaimerTekst")}
             </p>
           </div>

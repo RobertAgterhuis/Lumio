@@ -23,13 +23,13 @@ interface AuditLogEntry {
 }
 
 const actieKleuren: Record<string, string> = {
-  Aangemaakt: "bg-green-100 text-green-800",
-  Gewijzigd: "bg-blue-100 text-blue-800",
-  Verwijderd: "bg-red-100 text-red-800",
-  Ontgrendeld: "bg-emerald-100 text-emerald-800",
-  Vergrendeld: "bg-amber-100 text-amber-800",
-  Export: "bg-purple-100 text-purple-800",
-  "Wachtwoord gewijzigd": "bg-orange-100 text-orange-800",
+  Aangemaakt: "bg-success-100 text-success",
+  Gewijzigd: "bg-info-100 text-info",
+  Verwijderd: "bg-danger-100 text-danger",
+  Ontgrendeld: "bg-success-100 text-success",
+  Vergrendeld: "bg-warning-100 text-warning",
+  Export: "bg-accent/10 text-accent",
+  "Wachtwoord gewijzigd": "bg-warning-100 text-warning",
 };
 
 const ACTIE_KEYS: Record<string, string> = {
@@ -147,7 +147,7 @@ export default function AuditLogPage() {
                     <span
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         actieKleuren[entry.actie] ??
-                        "bg-gray-100 text-gray-800"
+                        "bg-muted text-muted-foreground"
                       }`}
                     >
                       {tEnum(`auditActie.${ACTIE_KEYS[entry.actie] ?? entry.actie}`)}

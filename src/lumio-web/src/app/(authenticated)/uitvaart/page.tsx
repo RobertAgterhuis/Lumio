@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
+import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
 import { Church, Plus, Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
@@ -80,6 +81,7 @@ interface UitvaartGenodigde {
 
 export default function UitvaartPage() {
   const t = useTranslations("uitvaart");
+  const tf = useTranslations("feedback");
   const [data, setData] = useState<UitvaartWensen | null>(null);
   const [details, setDetails] = useState<CeremonieDetail[]>([]);
   const [loading, setLoading] = useState(true);
@@ -192,6 +194,7 @@ export default function UitvaartPage() {
       const updated = await api.put<UitvaartWensen>("/api/uitvaart", payload);
       setData(updated);
       setUitvaartEditOpen(false);
+      toast.success(tf("opgeslagen"));
     } catch (err) {
       setUitvaartEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
@@ -199,9 +202,9 @@ export default function UitvaartPage() {
 
   const loadData = () => {
     Promise.all([
-      api.get<UitvaartWensen>("/api/uitvaart").catch(() => null),
-      api.get<CeremonieDetail[]>("/api/uitvaart/details").catch(() => []),
-      api.get<UitvaartGenodigde[]>("/api/uitvaart/genodigden").catch(() => []),
+      api.get<UitvaartWensen>("/api/uitvaart").catch((err) => { console.error("Failed to load uitvaart:", err); return null; }),
+      api.get<CeremonieDetail[]>("/api/uitvaart/details").catch((err) => { console.error("Failed to load details:", err); return []; }),
+      api.get<UitvaartGenodigde[]>("/api/uitvaart/genodigden").catch((err) => { console.error("Failed to load genodigden:", err); return []; }),
     ])
       .then(([u, d, g]) => {
         setData(u);
@@ -259,8 +262,10 @@ export default function UitvaartPage() {
       };
       if (editDetailId) {
         await api.put(`/api/uitvaart/details/${editDetailId}`, payload);
+        toast.success(tf("opgeslagen"));
       } else {
         await api.post("/api/uitvaart/details", payload);
+        toast.success(tf("aangemaakt"));
       }
       setDetailDialogOpen(false);
       loadData();
@@ -274,6 +279,7 @@ export default function UitvaartPage() {
   const deleteDetail = async (id: string) => {
     try {
       await api.delete(`/api/uitvaart/details/${id}`);
+      toast.success(tf("verwijderd"));
       setDetails((prev) => prev.filter((d) => d.id !== id));
     } catch (err) {
       setDetailError(
@@ -319,8 +325,10 @@ export default function UitvaartPage() {
       };
       if (editGenId) {
         await api.put(`/api/uitvaart/genodigden/${editGenId}`, payload);
+        toast.success(tf("opgeslagen"));
       } else {
         await api.post("/api/uitvaart/genodigden", payload);
+        toast.success(tf("aangemaakt"));
       }
       setGenDialogOpen(false);
       loadData();
@@ -332,6 +340,7 @@ export default function UitvaartPage() {
   const deleteGen = async (id: string) => {
     try {
       await api.delete(`/api/uitvaart/genodigden/${id}`);
+      toast.success(tf("verwijderd"));
       setGenodigden((prev) => prev.filter((g) => g.id !== id));
     } catch (err) {
       setGenError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -598,7 +607,7 @@ export default function UitvaartPage() {
                           size="sm"
                           onClick={() => deleteDetail(d.id)}
                         >
-                          <Trash2 className="h-3 w-3 text-red-500" />
+                          <Trash2 className="h-3 w-3 text-danger" />
                         </Button>
                       </div>
                     </div>
@@ -646,7 +655,7 @@ export default function UitvaartPage() {
                           <Pencil className="h-3 w-3" />
                         </Button>
                         <Button variant="ghost" size="sm" onClick={() => deleteGen(g.id)}>
-                          <Trash2 className="h-3 w-3 text-red-500" />
+                          <Trash2 className="h-3 w-3 text-danger" />
                         </Button>
                       </div>
                     </div>
@@ -850,7 +859,7 @@ export default function UitvaartPage() {
               placeholder={t("genodigdeDialog.notitiesPlaceholder")}
             />
           </div>
-          {genError && <p className="text-sm text-red-500">{genError}</p>}
+          {genError && <p className="text-sm text-danger">{genError}</p>}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setGenDialogOpen(false)}>

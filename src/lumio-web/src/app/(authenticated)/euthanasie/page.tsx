@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api-client";
+import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
 import { Stethoscope, Pencil } from "lucide-react";
 import Link from "next/link";
@@ -41,6 +42,7 @@ interface Wilsverklaring {
 
 export default function EuthanasiePage() {
   const t = useTranslations("euthanasie");
+  const tf = useTranslations("feedback");
   const [data, setData] = useState<Wilsverklaring | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -108,6 +110,7 @@ export default function EuthanasiePage() {
       const updated = await api.put<Wilsverklaring>("/api/euthanasie", payload);
       setData(updated);
       setEditOpen(false);
+      toast.success(tf("opgeslagen"));
     } catch (err) {
       setEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
@@ -117,7 +120,7 @@ export default function EuthanasiePage() {
     api
       .get<Wilsverklaring>("/api/euthanasie")
       .then(setData)
-      .catch(() => {})
+      .catch((err) => console.error("Failed to load euthanasie data:", err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -149,10 +152,10 @@ export default function EuthanasiePage() {
 
       <DomainStatusBanner domein="euthanasie" />
 
-      <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-        <p className="text-sm text-purple-800"
-          dangerouslySetInnerHTML={{ __html: t.raw("disclaimer") }}
-        />
+      <div className="rounded-lg border border-secure bg-secure-100 p-4">
+        <p className="text-sm text-secure">
+          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </p>
       </div>
 
       {!data ? (
@@ -299,8 +302,8 @@ export default function EuthanasiePage() {
         </DialogHeader>
         <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
           {editError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-2">
-              <p className="text-sm text-red-800">{editError}</p>
+            <div className="rounded-lg border border-danger bg-danger-100 dark:bg-danger/20 p-2">
+              <p className="text-sm text-danger">{editError}</p>
             </div>
           )}
           <Checkbox id="wil-euthanasie" checked={editForm.wilEuthanasie} onChange={(e) => setEditForm((f) => ({ ...f, wilEuthanasie: e.target.checked }))} label={t("editDialog.wilEuthanasie")} />

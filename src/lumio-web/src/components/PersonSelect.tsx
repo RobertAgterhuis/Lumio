@@ -112,7 +112,7 @@ export function PersonSelect({
         if (loadErfgenamen) {
           const erfgenamen = await api
             .get<Erfgenaam[]>("/api/erfgenamen")
-            .catch(() => []);
+            .catch((err) => { console.error("Failed to load erfgenamen:", err); return []; });
           for (const e of erfgenamen ?? []) {
             result.push({
               id: `erf-${e.id}`,
@@ -131,7 +131,7 @@ export function PersonSelect({
         if (loadNoodcontacten) {
           const noodcontacten = await api
             .get<Noodcontact[]>("/api/noodcontacten")
-            .catch(() => []);
+            .catch((err) => { console.error("Failed to load noodcontacten:", err); return []; });
           for (const n of noodcontacten ?? []) {
             if (noodcontactRol && n.rol !== noodcontactRol) continue;
             result.push({
@@ -217,7 +217,7 @@ export function PersonSelect({
         <button
           type="button"
           onClick={handleBackToSelect}
-          className="text-xs text-blue-600 hover:underline"
+          className="text-xs text-info hover:underline"
         >
           {t("kiesUitLijst")}
         </button>

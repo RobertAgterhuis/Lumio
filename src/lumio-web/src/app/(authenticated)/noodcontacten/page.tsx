@@ -16,6 +16,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
+import { toast } from "@/stores/toastStore";
 import { Phone, Plus, Pencil, Trash2, Share2, Download, Upload } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -72,6 +73,7 @@ const emptyForm = {
 export default function NoodcontactenPage() {
   const t = useTranslations("noodcontacten");
   const tEnum = useTranslations("enums");
+  const tf = useTranslations("feedback");
   const [contacten, setContacten] = useState<Noodcontact[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -84,7 +86,7 @@ export default function NoodcontactenPage() {
     api
       .get<Noodcontact[]>("/api/noodcontacten")
       .then((data) => setContacten(data ?? []))
-      .catch(() => setContacten([]))
+      .catch((err) => { console.error("Failed to load noodcontacten:", err); setContacten([]); })
       .finally(() => setLoading(false));
   };
 
@@ -133,8 +135,10 @@ export default function NoodcontactenPage() {
       };
       if (editId) {
         await api.put(`/api/noodcontacten/${editId}`, payload);
+        toast.success(tf("opgeslagen"));
       } else {
         await api.post("/api/noodcontacten", payload);
+        toast.success(tf("aangemaakt"));
       }
       setDialogOpen(false);
       loadData();
@@ -148,6 +152,7 @@ export default function NoodcontactenPage() {
   const deleteContact = async (id: string) => {
     try {
       await api.delete(`/api/noodcontacten/${id}`);
+      toast.success(tf("verwijderd"));
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -156,13 +161,11 @@ export default function NoodcontactenPage() {
 
   const exportGedeeld = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5123/api/noodcontacten/gedeeld/export");
-      if (!response.ok) throw new Error(t("exportMislukt"));
-      const blob = await response.blob();
+      const { blob, filename } = await api.download("/api/noodcontacten/gedeeld/export");
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "gedeelde-noodcontacten.json";
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -215,19 +218,19 @@ export default function NoodcontactenPage() {
 
       <DomainStatusBanner domein="noodcontacten" />
 
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <p className="text-sm text-blue-800" dangerouslySetInnerHTML={{ __html: t.raw("tip") }} />
+      <div className="rounded-lg border border-info bg-info-100 p-4">
+        <p className="text-sm text-info">{t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
       </div>
 
       {/* Gedeelde noodcontacten */}
-      <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
+      <div className="rounded-lg border border-accent bg-accent/10 p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-purple-900">
+            <p className="text-sm font-medium text-accent">
               <Share2 className="h-4 w-4 inline mr-1" />
               {t("gedeeldeContacten", { aantal: gedeeldCount })}
             </p>
-            <p className="text-xs text-purple-700 mt-1">
+            <p className="text-xs text-accent mt-1">
               {t("gedeeldeBeschrijving")}
             </p>
           </div>
@@ -303,7 +306,7 @@ export default function NoodcontactenPage() {
                       size="sm"
                       onClick={() => deleteContact(c.id)}
                     >
-                      <Trash2 className="h-3 w-3 text-red-500" />
+                      <Trash2 className="h-3 w-3 text-danger" />
                     </Button>
                   </div>
                 </div>
@@ -314,8 +317,8 @@ export default function NoodcontactenPage() {
       </Card>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="rounded-lg border border-danger bg-danger-100 p-3">
+          <p className="text-sm text-danger">{error}</p>
         </div>
       )}
 
@@ -415,7 +418,7 @@ export default function NoodcontactenPage() {
               id="isGedeeld"
               checked={form.isGedeeld}
               onChange={(e) => setForm((f) => ({ ...f, isGedeeld: e.target.checked }))}
-              className="h-4 w-4 rounded border-gray-300"
+              className="h-4 w-4 rounded border-muted"
             />
             <Label htmlFor="isGedeeld" className="text-sm font-normal cursor-pointer">
               {t("dialog.isGedeeld")}

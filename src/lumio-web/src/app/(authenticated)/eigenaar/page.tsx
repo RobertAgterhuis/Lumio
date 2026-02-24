@@ -18,6 +18,7 @@ import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { toast } from "@/stores/toastStore";
 
 interface Eigenaar {
   id: string;
@@ -78,6 +79,7 @@ const emptyForm = {
 export default function EigenaarPage() {
   const t = useTranslations("eigenaar");
   const te = useTranslations("enums");
+  const tf = useTranslations("feedback");
   const [exists, setExists] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -125,8 +127,8 @@ export default function EigenaarPage() {
           }
         }
       })
-      .catch(() => {
-        // 404 = no profile yet
+      .catch((err) => {
+        console.error("Failed to load profile:", err);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -172,6 +174,7 @@ export default function EigenaarPage() {
         setExists(true);
       }
       setSuccess(t("profielOpgeslagen"));
+      toast.success(tf("opgeslagen"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
@@ -233,8 +236,8 @@ export default function EigenaarPage() {
       <DomainStatusBanner domein="eigenaar" />
 
       {!exists && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <p className="text-sm text-amber-800">
+        <div className="rounded-lg border border-warning bg-warning-100 p-4">
+          <p className="text-sm text-warning">
             <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
           </p>
         </div>

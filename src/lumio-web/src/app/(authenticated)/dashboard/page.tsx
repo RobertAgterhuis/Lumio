@@ -52,80 +52,80 @@ const domainCards = [
     domein: "eigenaar",
     icon: User,
     domeinKey: "eigenaar",
-    color: "text-gray-600",
-    bgColor: "bg-gray-50",
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
   },
   {
     href: "/testament",
     domein: "testament",
     icon: ScrollText,
     domeinKey: "testament",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
+    color: "text-info",
+    bgColor: "bg-info-100",
   },
   {
     href: "/euthanasie",
     domein: "euthanasie",
     icon: Stethoscope,
     domeinKey: "euthanasie",
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
+    color: "text-accent",
+    bgColor: "bg-accent/10",
   },
   {
     href: "/donor",
     domein: "donor",
     icon: Heart,
     domeinKey: "donor",
-    color: "text-red-600",
-    bgColor: "bg-red-50",
+    color: "text-danger",
+    bgColor: "bg-danger-100",
   },
   {
     href: "/digitaal-bezit",
     domein: "digitaal-bezit",
     icon: Globe,
     domeinKey: "digitaalBezit",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
+    color: "text-success",
+    bgColor: "bg-success-100",
   },
   {
     href: "/boedel",
     domein: "boedel",
     icon: Wallet,
     domeinKey: "boedel",
-    color: "text-amber-600",
-    bgColor: "bg-amber-50",
+    color: "text-warning",
+    bgColor: "bg-warning-100",
   },
   {
     href: "/uitvaart",
     domein: "uitvaart",
     icon: Church,
     domeinKey: "uitvaart",
-    color: "text-stone-600",
-    bgColor: "bg-stone-50",
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
   },
   {
     href: "/documenten",
     domein: "documenten",
     icon: FileText,
     domeinKey: "documenten",
-    color: "text-cyan-600",
-    bgColor: "bg-cyan-50",
+    color: "text-info",
+    bgColor: "bg-info-100",
   },
   {
     href: "/erfgenamen",
     domein: "erfgenamen",
     icon: Users,
     domeinKey: "erfgenamen",
-    color: "text-indigo-600",
-    bgColor: "bg-indigo-50",
+    color: "text-accent",
+    bgColor: "bg-accent/10",
   },
   {
     href: "/noodcontacten",
     domein: "noodcontacten",
     icon: Phone,
     domeinKey: "noodcontacten",
-    color: "text-pink-600",
-    bgColor: "bg-pink-50",
+    color: "text-danger",
+    bgColor: "bg-danger-100",
   },
 ];
 
@@ -182,12 +182,12 @@ export default function DashboardPage() {
     api
       .get<Compleetheid>("/api/status/compleetheid")
       .then(setCompleetheid)
-      .catch(() => {});
+      .catch((err) => console.error("Failed to load compleetheid:", err));
 
     api
       .get<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("/api/status/actualisatie")
       .then((data) => setActualisatie(data.domeinen))
-      .catch(() => {});
+      .catch((err) => console.error("Failed to load actualisatie:", err));
   }, []);
 
   const getDomeinStatus = (domein: string): boolean | null => {
@@ -210,8 +210,8 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
-        <p className="text-sm text-blue-800 dark:text-blue-300">
+      <div className="rounded-lg border border-info bg-info-100 p-4 dark:bg-info/20">
+        <p className="text-sm text-info">
           <strong>{t("letOp")}</strong> {t("juridisch")}
         </p>
       </div>
@@ -289,14 +289,14 @@ export default function DashboardPage() {
       )}
 
       {hasProfile === false && !showInterview && (
-        <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-5 dark:border-amber-700 dark:bg-amber-950">
+        <div className="rounded-lg border-2 border-warning bg-warning-100 p-5 dark:bg-warning/20">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+            <AlertTriangle className="h-6 w-6 text-warning mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
+              <p className="text-sm font-semibold text-warning">
                 {t("geenProfiel.titel")}
               </p>
-              <p className="text-sm text-amber-800 dark:text-amber-300 mt-1">
+              <p className="text-sm text-warning mt-1">
                 {t("geenProfiel.beschrijving")}
               </p>
               <div className="flex gap-2 mt-3">
@@ -332,17 +332,17 @@ export default function DashboardPage() {
                       <Icon className={`h-5 w-5 ${card.color}`} />
                     </div>
                     {cardStatus === "afgerond" ? (
-                      <Badge className="bg-green-100 text-green-800 hover:bg-green-100 gap-1 dark:bg-green-900 dark:text-green-200">
+                      <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
                         <CheckCircle2 className="h-3 w-3" />
                         {t("status.afgerond")}
                       </Badge>
                     ) : cardStatus === "reviewNodig" ? (
-                      <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 gap-1 dark:bg-amber-900 dark:text-amber-200">
+                      <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
                         <AlertTriangle className="h-3 w-3" />
                         {t("status.reviewNodig")}
                       </Badge>
                     ) : cardStatus === "bezig" ? (
-                      <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 gap-1 dark:bg-blue-900 dark:text-blue-200">
+                      <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
                         <Clock className="h-3 w-3" />
                         {t("status.bezig")}
                       </Badge>

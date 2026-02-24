@@ -225,7 +225,7 @@ export function OnboardingWizard() {
                 key={stap.id}
                 className={cn(
                   "cursor-pointer transition-colors hover:bg-muted/50",
-                  isDone && "bg-green-50/50 border-green-200"
+                  isDone && "bg-success-100 border-success"
                 )}
                 onClick={() => !isDone && handleNavigate(stap.href)}
               >
@@ -234,7 +234,7 @@ export function OnboardingWizard() {
                     className={cn(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
                       isDone
-                        ? "bg-green-100 text-green-600"
+                        ? "bg-success-100 text-success"
                         : "bg-muted text-muted-foreground"
                     )}
                   >
@@ -248,7 +248,7 @@ export function OnboardingWizard() {
                     <p
                       className={cn(
                         "text-sm font-medium",
-                        isDone && "text-green-700"
+                        isDone && "text-success"
                       )}
                     >
                       {t(`stappen.${stap.stapKey}.titel`)}

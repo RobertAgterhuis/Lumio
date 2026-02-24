@@ -12,6 +12,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Lightbulb, Loader2, CheckCircle, Link2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { api } from "@/lib/api-client";
 
 interface Suggestie {
   categorie: string;
@@ -34,14 +35,7 @@ export function ProfielSuggesties() {
     setLoading(true);
     setError(null);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const res = await fetch(`${API_BASE}/api/status/suggesties`);
-      if (res.status === 423) {
-        window.location.href = "/";
-        return;
-      }
-      if (!res.ok) throw new Error(t("analyseMislukt"));
-      const data: SuggestieResult = await res.json();
+      const data = await api.get<SuggestieResult>("/api/status/suggesties");
       setResult(data);
     } catch {
       setError(t("fout"));

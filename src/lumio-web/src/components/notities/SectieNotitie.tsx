@@ -25,7 +25,8 @@ export function SectieNotitie({ sectie }: SectieNotitieProps) {
         setInhoud(n.inhoud);
         setOrigineel(n.inhoud);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error(`Failed to load note for ${sectie}:`, err);
         setInhoud("");
         setOrigineel("");
       });
@@ -65,21 +66,21 @@ export function SectieNotitie({ sectie }: SectieNotitieProps) {
   if (!editing) {
     return (
       <div
-        className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm cursor-pointer hover:border-amber-300 transition-colors"
+        className="rounded-md border border-warning bg-warning-100 p-3 text-sm cursor-pointer hover:border-warning/80 transition-colors"
         onClick={() => setEditing(true)}
       >
         <div className="flex items-start gap-2">
-          <StickyNote className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-          <p className="text-amber-900 whitespace-pre-wrap">{inhoud}</p>
+          <StickyNote className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+          <p className="text-warning whitespace-pre-wrap">{inhoud}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-md border border-amber-200 bg-amber-50 p-3 space-y-2">
-      <div className="flex items-center gap-2 text-sm font-medium text-amber-900">
-        <StickyNote className="h-4 w-4 text-amber-600" />
+    <div className="rounded-md border border-warning bg-warning-100 p-3 space-y-2">
+      <div className="flex items-center gap-2 text-sm font-medium text-warning">
+        <StickyNote className="h-4 w-4 text-warning" />
         {t("titel")}
       </div>
       <Textarea

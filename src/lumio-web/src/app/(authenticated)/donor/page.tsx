@@ -35,8 +35,8 @@ export default function DonorPage() {
 
   useEffect(() => {
     Promise.all([
-      api.get<DonorRegistratie>("/api/donor").catch(() => null),
-      api.get<OrgaanKeuze[]>("/api/donor/orgaankeuzes").catch(() => []),
+      api.get<DonorRegistratie>("/api/donor").catch((err) => { console.error("Failed to load donor:", err); return null; }),
+      api.get<OrgaanKeuze[]>("/api/donor/orgaankeuzes").catch((err) => { console.error("Failed to load orgaankeuzes:", err); return []; }),
     ])
       .then(([d, o]) => {
         setData(d);
@@ -73,10 +73,10 @@ export default function DonorPage() {
 
       <DomainStatusBanner domein="donor" />
 
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-        <p className="text-sm text-red-800"
-          dangerouslySetInnerHTML={{ __html: t.raw("tip") }}
-        />
+      <div className="rounded-lg border border-danger bg-danger-100 p-4">
+        <p className="text-sm text-danger">
+          {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </p>
       </div>
 
       {!data ? (

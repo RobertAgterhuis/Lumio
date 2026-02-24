@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, useId } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
@@ -179,6 +179,9 @@ export function SearchDialog({
   const router = useRouter();
   const t = useTranslations("search");
   const tn = useTranslations("nav");
+  const idPrefix = useId();
+  const listboxId = `${idPrefix}-listbox`;
+  const optionId = (idx: number) => `${idPrefix}-option-${idx}`;
 
   // Build flat list for keyboard nav
   const flatList = useMemo<FlatEntry[]>(() => {
@@ -317,6 +320,9 @@ export function SearchDialog({
       {/* Dialog */}
       <div className="fixed inset-x-0 top-[12%] mx-auto w-full max-w-2xl px-4">
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("placeholder")}
           className="overflow-hidden rounded-xl border border-border bg-card shadow-2xl ring-1 ring-black/5"
           onClick={(e) => e.stopPropagation()}
         >
@@ -333,6 +339,11 @@ export function SearchDialog({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t("placeholder")}
+              role="combobox"
+              aria-expanded={flatList.length > 0}
+              aria-controls={listboxId}
+              aria-activedescendant={flatList.length > 0 ? optionId(activeIndex) : undefined}
+              aria-autocomplete="list"
               className="flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground/60"
               autoComplete="off"
               spellCheck={false}
@@ -356,6 +367,8 @@ export function SearchDialog({
           {/* ── Results area ── */}
           <div
             ref={listRef}
+            id={listboxId}
+            role="listbox"
             className="max-h-[60vh] overflow-y-auto overscroll-contain scroll-smooth"
           >
             {/* Empty state: quick actions + recent */}
@@ -375,6 +388,9 @@ export function SearchDialog({
                       return (
                         <button
                           key={`recent-${q}`}
+                          id={optionId(idx)}
+                          role="option"
+                          aria-selected={idx === activeIndex}
                           data-active={idx === activeIndex}
                           onClick={() => setQuery(q)}
                           onMouseEnter={() => setActiveIndex(idx)}
@@ -407,6 +423,9 @@ export function SearchDialog({
                     return (
                       <button
                         key={action.id}
+                        id={optionId(idx)}
+                        role="option"
+                        aria-selected={idx === activeIndex}
                         data-active={idx === activeIndex}
                         onClick={() => handleNavigate(action.href)}
                         onMouseEnter={() => setActiveIndex(idx)}
@@ -491,6 +510,9 @@ export function SearchDialog({
                         return (
                           <button
                             key={item.id}
+                            id={optionId(idx)}
+                            role="option"
+                            aria-selected={idx === activeIndex}
                             data-active={idx === activeIndex}
                             onClick={() => handleNavigate(item.link)}
                             onMouseEnter={() => setActiveIndex(idx)}
@@ -547,22 +569,22 @@ export function SearchDialog({
             </span>
             <div className="hidden items-center gap-3 text-xs text-muted-foreground sm:flex">
               <span className="flex items-center gap-1">
-                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-[10px]">
+                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-xs">
                   <ArrowUp className="h-2.5 w-2.5" />
                 </kbd>
-                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-[10px]">
+                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-xs">
                   <ArrowDown className="h-2.5 w-2.5" />
                 </kbd>
                 {t("navigeer")}
               </span>
               <span className="flex items-center gap-1">
-                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-[10px]">
+                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-xs">
                   <CornerDownLeft className="h-2.5 w-2.5" />
                 </kbd>
                 {t("openen")}
               </span>
               <span className="flex items-center gap-1">
-                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-[10px]">
+                <kbd className="inline-flex h-5 items-center rounded border border-border bg-card px-1.5 font-mono text-xs">
                   Esc
                 </kbd>
                 {t("sluiten")}

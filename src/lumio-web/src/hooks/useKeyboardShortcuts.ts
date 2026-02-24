@@ -47,7 +47,7 @@ export function useKeyboardShortcuts() {
       // Ctrl+L — Lock
       if ((e.ctrlKey || e.metaKey) && e.key === "l") {
         e.preventDefault();
-        api.post("/api/auth/vergrendel").catch(() => {});
+        api.post("/api/auth/vergrendel").catch((err) => console.error("Failed to lock via API:", err));
         lock();
         return;
       }

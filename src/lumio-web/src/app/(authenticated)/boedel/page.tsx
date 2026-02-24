@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api } from "@/lib/api-client";
+import { toast } from "@/stores/toastStore";
 import {
   Wallet,
   Building2,
@@ -103,6 +104,7 @@ type DialogKind = "bezit" | "rekening" | "verzekering" | "schuld" | null;
 export default function BoedelPage() {
   const t = useTranslations("boedel");
   const tEnum = useTranslations("enums");
+  const tf = useTranslations("feedback");
   const locale = useLocale();
   const currencyLocale = locale === "en" ? "en-NL" : "nl-NL";
   const [tab, setTab] = useState("bezittingen");
@@ -125,11 +127,11 @@ export default function BoedelPage() {
 
   const loadData = () => {
     Promise.all([
-      api.get<FysiekBezit[]>("/api/boedel/bezittingen").catch(() => []),
-      api.get<Bankrekening[]>("/api/boedel/bankrekeningen").catch(() => []),
-      api.get<Verzekering[]>("/api/boedel/verzekeringen").catch(() => []),
-      api.get<Schuld[]>("/api/boedel/schulden").catch(() => []),
-      api.get<Samenvatting>("/api/boedel/samenvatting").catch(() => null),
+      api.get<FysiekBezit[]>("/api/boedel/bezittingen").catch((err) => { console.error("Failed to load bezittingen:", err); return []; }),
+      api.get<Bankrekening[]>("/api/boedel/bankrekeningen").catch((err) => { console.error("Failed to load bankrekeningen:", err); return []; }),
+      api.get<Verzekering[]>("/api/boedel/verzekeringen").catch((err) => { console.error("Failed to load verzekeringen:", err); return []; }),
+      api.get<Schuld[]>("/api/boedel/schulden").catch((err) => { console.error("Failed to load schulden:", err); return []; }),
+      api.get<Samenvatting>("/api/boedel/samenvatting").catch((err) => { console.error("Failed to load samenvatting:", err); return null; }),
     ])
       .then(([b, r, v, s, sam]) => {
         setBezittingen(b ?? []);
@@ -229,6 +231,7 @@ export default function BoedelPage() {
       };
       if (editId) await api.put(`/api/boedel/bezittingen/${editId}`, payload);
       else await api.post("/api/boedel/bezittingen", payload);
+      toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null); loadData();
     } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
@@ -247,6 +250,7 @@ export default function BoedelPage() {
       };
       if (editId) await api.put(`/api/boedel/bankrekeningen/${editId}`, payload);
       else await api.post("/api/boedel/bankrekeningen", payload);
+      toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null); loadData();
     } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
@@ -268,6 +272,7 @@ export default function BoedelPage() {
       };
       if (editId) await api.put(`/api/boedel/verzekeringen/${editId}`, payload);
       else await api.post("/api/boedel/verzekeringen", payload);
+      toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null); loadData();
     } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
@@ -294,6 +299,7 @@ export default function BoedelPage() {
       };
       if (editId) await api.put(`/api/boedel/schulden/${editId}`, payload);
       else await api.post("/api/boedel/schulden", payload);
+      toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null); loadData();
     } catch (err) { setError(err instanceof Error ? err.message : t("opslaanMislukt")); }
     finally { setSaving(false); }
@@ -302,6 +308,7 @@ export default function BoedelPage() {
   const deleteItem = async (type: string, id: string) => {
     try {
       await api.delete(`/api/boedel/${type}/${id}`);
+      toast.success(tf("verwijderd"));
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -326,8 +333,8 @@ export default function BoedelPage() {
 
       <DomainStatusBanner domein="boedel" />
 
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-        <p className="text-sm text-amber-800">
+      <div className="rounded-lg border border-warning bg-warning-100 dark:bg-warning/20 p-4">
+        <p className="text-sm text-warning">
           <strong>{t("tipLabel")}</strong> {t("tip")}
         </p>
       </div>
@@ -353,7 +360,7 @@ export default function BoedelPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{t("overzicht.schulden", { aantal: samenvatting.aantalSchulden })}</p>
-                <p className="text-lg font-semibold text-red-600">&euro; {samenvatting.totaalSchulden.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
+                <p className="text-lg font-semibold text-danger">&euro; {samenvatting.totaalSchulden.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{t("overzicht.brutoNalatenschap")}</p>
@@ -361,7 +368,7 @@ export default function BoedelPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{t("overzicht.nettoNalatenschap")}</p>
-                <p className={`text-lg font-bold ${samenvatting.nettoNalatenschap >= 0 ? "text-green-600" : "text-red-600"}`}>&euro; {samenvatting.nettoNalatenschap.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
+                <p className={`text-lg font-bold ${samenvatting.nettoNalatenschap >= 0 ? "text-success" : "text-danger"}`}>&euro; {samenvatting.nettoNalatenschap.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</p>
               </div>
             </div>
           </CardContent>
@@ -390,7 +397,7 @@ export default function BoedelPage() {
                   {bezittingen.map((b) => (
                     <div key={b.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={b.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{b.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
+                        <Badge variant={b.vermogensSoort === 1 ? "secondary" : "outline"} className="text-xs px-1.5 py-0">{b.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{b.omschrijving}</p>
                           <p className="text-xs text-muted-foreground">{b.categorie}{b.locatie ? ` \u2014 ${b.locatie}` : ""}{b.kadastraalNummer ? ` \u2014 ${t("bezittingen.kadLabel")} ${b.kadastraalNummer}` : ""}{b.kenteken ? ` \u2014 ${b.kenteken}` : ""}{b.kvKNummer ? ` \u2014 ${t("bezittingen.kvkLabel")} ${b.kvKNummer}` : ""}</p>
@@ -399,7 +406,7 @@ export default function BoedelPage() {
                       <div className="flex items-center gap-2">
                         {b.geschatteWaarde != null && <span className="text-sm font-medium">&euro; {b.geschatteWaarde.toLocaleString(currencyLocale)}</span>}
                         <Button variant="ghost" size="sm" onClick={() => openBezit(b)}><Pencil className="h-3 w-3" /></Button>
-                        <Button variant="ghost" size="sm" onClick={() => deleteItem("bezittingen", b.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
+                        <Button variant="ghost" size="sm" onClick={() => deleteItem("bezittingen", b.id)}><Trash2 className="h-3 w-3 text-danger" /></Button>
                       </div>
                     </div>
                   ))}
@@ -423,7 +430,7 @@ export default function BoedelPage() {
                   {rekeningen.map((r) => (
                     <div key={r.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={r.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{r.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
+                        <Badge variant={r.vermogensSoort === 1 ? "secondary" : "outline"} className="text-xs px-1.5 py-0">{r.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{r.bankNaam}</p>
                           <p className="text-xs text-muted-foreground">{r.rekeningType} &mdash; {r.iban}</p>
@@ -432,7 +439,7 @@ export default function BoedelPage() {
                       <div className="flex items-center gap-2">
                         {r.saldo != null && <span className="text-sm font-medium">&euro; {r.saldo.toLocaleString(currencyLocale, { minimumFractionDigits: 2 })}</span>}
                         <Button variant="ghost" size="sm" onClick={() => openRekening(r)}><Pencil className="h-3 w-3" /></Button>
-                        <Button variant="ghost" size="sm" onClick={() => deleteItem("bankrekeningen", r.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
+                        <Button variant="ghost" size="sm" onClick={() => deleteItem("bankrekeningen", r.id)}><Trash2 className="h-3 w-3 text-danger" /></Button>
                       </div>
                     </div>
                   ))}
@@ -456,7 +463,7 @@ export default function BoedelPage() {
                   {verzekeringen.map((v) => (
                     <div key={v.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={v.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{v.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
+                        <Badge variant={v.vermogensSoort === 1 ? "secondary" : "outline"} className="text-xs px-1.5 py-0">{v.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{v.verzekeraar}</p>
                           <p className="text-xs text-muted-foreground">{v.type} &mdash; {t("verzekeringen.polisLabel")} {v.polisNummer}</p>
@@ -465,7 +472,7 @@ export default function BoedelPage() {
                       <div className="flex items-center gap-2">
                         {v.verzekerdBedrag != null && <span className="text-sm font-medium">&euro; {v.verzekerdBedrag.toLocaleString(currencyLocale)}</span>}
                         <Button variant="ghost" size="sm" onClick={() => openVerzekering(v)}><Pencil className="h-3 w-3" /></Button>
-                        <Button variant="ghost" size="sm" onClick={() => deleteItem("verzekeringen", v.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
+                        <Button variant="ghost" size="sm" onClick={() => deleteItem("verzekeringen", v.id)}><Trash2 className="h-3 w-3 text-danger" /></Button>
                       </div>
                     </div>
                   ))}
@@ -489,16 +496,16 @@ export default function BoedelPage() {
                   {schulden.map((s) => (
                     <div key={s.id} className="flex items-center justify-between rounded-md border p-3">
                       <div className="flex items-center gap-2">
-                        <Badge variant={s.vermogensSoort === 1 ? "secondary" : "outline"} className="text-[10px] px-1.5 py-0">{s.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
+                        <Badge variant={s.vermogensSoort === 1 ? "secondary" : "outline"} className="text-xs px-1.5 py-0">{s.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}</Badge>
                         <div>
                           <p className="text-sm font-medium">{s.schuldeiser}</p>
                           <p className="text-xs text-muted-foreground">{s.type}{s.referentie ? ` \u2014 ${s.referentie}` : ""}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-red-600">&euro; {s.bedrag.toLocaleString(currencyLocale)}</span>
+                        <span className="text-sm font-medium text-danger">&euro; {s.bedrag.toLocaleString(currencyLocale)}</span>
                         <Button variant="ghost" size="sm" onClick={() => openSchuld(s)}><Pencil className="h-3 w-3" /></Button>
-                        <Button variant="ghost" size="sm" onClick={() => deleteItem("schulden", s.id)}><Trash2 className="h-3 w-3 text-red-500" /></Button>
+                        <Button variant="ghost" size="sm" onClick={() => deleteItem("schulden", s.id)}><Trash2 className="h-3 w-3 text-danger" /></Button>
                       </div>
                     </div>
                   ))}
@@ -510,8 +517,8 @@ export default function BoedelPage() {
       </Tabs>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="rounded-lg border border-danger bg-danger-100 dark:bg-danger/20 p-3">
+          <p className="text-sm text-danger">{error}</p>
         </div>
       )}
 
@@ -648,8 +655,8 @@ export default function BoedelPage() {
           </div>
           {schuldForm.type === "Hypotheek" && (
             <>
-              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 space-y-4">
-                <p className="text-xs font-medium text-blue-800">{t("schuldDialog.hypotheekDetails")}</p>
+              <div className="rounded-lg border border-info bg-info-100 dark:bg-info/20 p-3 space-y-4">
+                <p className="text-xs font-medium text-info">{t("schuldDialog.hypotheekDetails")}</p>
                 <div className="space-y-2">
                   <Label>{t("schuldDialog.hypotheekVorm")}</Label>
                   <Select value={schuldForm.hypotheekVorm} onChange={(e) => setSchuldForm((f) => ({ ...f, hypotheekVorm: e.target.value }))}>

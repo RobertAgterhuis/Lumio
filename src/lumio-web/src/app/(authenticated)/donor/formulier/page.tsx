@@ -56,8 +56,8 @@ export default function DonorFormulierPage() {
 
   useEffect(() => {
     Promise.all([
-      api.get<{ keuze: string; isGeregistreerdBijDonorregister: boolean; donorregisterReferentie: string; toelichting: string }>("/api/donor").catch(() => null),
-      api.get<{ id: string; orgaan: string; welDoneren: boolean }[]>("/api/donor/orgaankeuzes").catch(() => null),
+      api.get<{ keuze: string; isGeregistreerdBijDonorregister: boolean; donorregisterReferentie: string; toelichting: string }>("/api/donor").catch((err) => { console.error("Failed to load donor:", err); return null; }),
+      api.get<{ id: string; orgaan: string; welDoneren: boolean }[]>("/api/donor/orgaankeuzes").catch((err) => { console.error("Failed to load orgaankeuzes:", err); return null; }),
     ])
       .then(([donorData, orgaanData]) => {
         if (donorData) {
@@ -154,7 +154,7 @@ export default function DonorFormulierPage() {
                   onClick={() => toggleOrgaan(orgaan, true)}
                   className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
                     orgaanKeuzes[orgaan] === true
-                      ? "bg-green-100 text-green-800 ring-1 ring-green-300"
+                      ? "bg-success-100 dark:bg-success/20 text-success ring-1 ring-success"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
@@ -165,7 +165,7 @@ export default function DonorFormulierPage() {
                   onClick={() => toggleOrgaan(orgaan, false)}
                   className={`rounded px-3 py-1 text-xs font-medium transition-colors ${
                     orgaanKeuzes[orgaan] === false
-                      ? "bg-red-100 text-red-800 ring-1 ring-red-300"
+                      ? "bg-danger-100 dark:bg-danger/20 text-danger ring-1 ring-danger"
                       : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
@@ -229,7 +229,7 @@ export default function DonorFormulierPage() {
                     <span>{t(`organen.${organenKeys[orgaan]}`)}</span>
                     <span
                       className={
-                        keuze ? "text-green-600" : "text-red-600"
+                        keuze ? "text-success" : "text-danger"
                       }
                     >
                       {keuze ? t("samenvatting.summaryJa") : t("samenvatting.summaryNee")}

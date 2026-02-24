@@ -65,8 +65,8 @@ export function HeirUnlockForm() {
   return (
     <Card className="w-full max-w-lg">
       <CardHeader className="text-center">
-        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50">
-          <KeyRound className="h-6 w-6 text-indigo-600" />
+        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
+          <KeyRound className="h-6 w-6 text-accent" />
         </div>
         <CardTitle>{t("titel")}</CardTitle>
         <CardDescription>
@@ -94,7 +94,7 @@ export function HeirUnlockForm() {
                     className="mt-6"
                     onClick={() => removeShare(i)}
                   >
-                    <Trash2 className="h-4 w-4 text-red-500" />
+                    <Trash2 className="h-4 w-4 text-danger" />
                   </Button>
                 )}
               </div>
@@ -111,7 +111,7 @@ export function HeirUnlockForm() {
           </Button>
 
           {error && (
-            <p className="text-sm text-red-600 text-center">{error}</p>
+            <p className="text-sm text-danger text-center">{error}</p>
           )}
 
           <Button

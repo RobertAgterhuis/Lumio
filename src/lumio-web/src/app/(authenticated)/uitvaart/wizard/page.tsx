@@ -80,7 +80,7 @@ export default function UitvaartWizardPage() {
           });
         }
       })
-      .catch(() => {}) // 404 = no data yet
+      .catch((err) => console.error("Failed to load wizard data:", err)) // 404 = no data yet
       .finally(() => setLoading(false));
   }, []);
 

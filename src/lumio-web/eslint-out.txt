@@ -1,0 +1,4 @@
+[BABEL] Note: The code generator has deoptimised the styling of D:\repositories\Lumio\src\lumio-web\storybook-static\assets\axe-BIxYBYQ0.js as it exceeds the max of 500KB.
+[BABEL] Note: The code generator has deoptimised the styling of D:\repositories\Lumio\src\lumio-web\storybook-static\assets\DocsRenderer-LL677BLK-PyeZENts.js as it exceeds the max of 500KB.
+[BABEL] Note: The code generator has deoptimised the styling of D:\repositories\Lumio\src\lumio-web\storybook-static\sb-addons\chromatic-com-storybook-1\manager-bundle.js as it exceeds the max of 500KB.
+[BABEL] Note: The code generator has deoptimised the styling of D:\repositories\Lumio\src\lumio-web\storybook-static\sb-manager\runtime.js as it exceeds the max of 500KB.

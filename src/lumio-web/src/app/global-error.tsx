@@ -1,6 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+const messages = {
+  nl: {
+    titel: "Er is een kritieke fout opgetreden",
+    beschrijving: "De applicatie kon niet worden geladen. Probeer het opnieuw.",
+    opnieuw: "Opnieuw proberen",
+  },
+  en: {
+    titel: "A critical error occurred",
+    beschrijving: "The application could not be loaded. Please try again.",
+    opnieuw: "Try again",
+  },
+} as const;
+
+function getLocale(): "nl" | "en" {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("lumio-locale");
+    if (stored === "en") return "en";
+  }
+  return "nl";
+}
 
 export default function GlobalError({
   error,
@@ -9,17 +30,20 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [locale] = useState(getLocale);
+  const t = messages[locale];
+
   useEffect(() => {
     console.error("Global error:", error);
   }, [error]);
 
   return (
-    <html lang="nl">
-      <body className="flex min-h-screen items-center justify-center bg-gray-50">
+    <html lang={locale}>
+      <body className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center space-y-4 max-w-md p-6">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-danger-100">
             <svg
-              className="h-8 w-8 text-red-600"
+              className="h-8 w-8 text-danger"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
@@ -32,17 +56,17 @@ export default function GlobalError({
               />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">
-            Er is een kritieke fout opgetreden
+          <h2 className="text-xl font-semibold text-foreground">
+            {t.titel}
           </h2>
-          <p className="text-sm text-gray-600">
-            De applicatie kon niet worden geladen. Probeer het opnieuw.
+          <p className="text-sm text-muted-foreground">
+            {t.beschrijving}
           </p>
           <button
             onClick={reset}
-            className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            Opnieuw proberen
+            {t.opnieuw}
           </button>
         </div>
       </body>

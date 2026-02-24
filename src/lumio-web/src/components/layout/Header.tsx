@@ -2,16 +2,22 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTheme } from "@/hooks/useTheme";
 import { useTranslations } from "next-intl";
 import { Lock, Search, UserCircle, Moon, Sun, HelpCircle } from "lucide-react";
-import { SearchDialog } from "./SearchDialog";
 import { NotificationsDropdown } from "./NotificationsDropdown";
 import { useHelpStore } from "@/stores/helpStore";
 import { getChapterForRoute, helpChapters } from "@/content/help-chapters";
+
+// Lazy-load SearchDialog to reduce initial bundle size
+const SearchDialog = dynamic(() => import("./SearchDialog").then(m => m.SearchDialog), {
+  ssr: false,
+  loading: () => null,
+});
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -33,7 +39,7 @@ export function Header() {
           setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
         }
       })
-      .catch(() => { /* no eigenaar yet */ });
+      .catch((err) => console.error("Failed to load profile:", err));
   }, [activeProfile]);
 
   const handleLock = async () => {

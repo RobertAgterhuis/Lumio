@@ -8,7 +8,20 @@
     "opnieuwProberen": "Opnieuw proberen",
     "naarDashboard": "Naar dashboard",
     "actiefBlijven": "Actief blijven",
-    "omTeOpenen": "om te openen"
+    "omTeOpenen": "om te openen",
+    "meerInformatie": "Meer informatie",
+    "meldingen": "Meldingen",
+    "sluiten": "Sluiten"
+  },
+  "feedback": {
+    "opgeslagen": "Wijzigingen opgeslagen",
+    "verwijderd": "Item verwijderd",
+    "aangemaakt": "Item aangemaakt",
+    "bijgewerkt": "Item bijgewerkt",
+    "fout": "Er is iets misgegaan",
+    "foutBijOpslaan": "Fout bij het opslaan",
+    "foutBijVerwijderen": "Fout bij het verwijderen",
+    "foutBijLaden": "Fout bij het laden"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -26,7 +39,8 @@
     "exporteren": "Exporteren",
     "activiteitenlog": "Activiteitenlog",
     "instellingen": "Instellingen",
-    "handleiding": "Handleiding"
+    "handleiding": "Handleiding",
+    "navigatie": "Hoofdnavigatie"
   },
   "search": {
     "placeholder": "Zoeken in alle gegevens...",
@@ -53,10 +67,6 @@
       "schulden": "Schulden",
       "documenten": "Documenten"
     }
-  },
-  "errors": {
-    "ietsMisgegaan": "Er is iets misgegaan",
-    "onverwachteFout": "Er is een onverwachte fout opgetreden bij het laden van deze pagina. Probeer het opnieuw of ga terug naar het dashboard."
   },
   "idle": {
     "sessieVerloopt": "Sessie verloopt",
@@ -156,7 +166,8 @@
     "sessie": {
       "controleren": "Sessie controleren...",
       "alleenLezen": "Alleen-lezen modus",
-      "alleenLezenBeschrijving": "U bent ingelogd als erfgenaam. Gegevens kunnen alleen worden bekeken en ge\u00ebxporteerd, niet gewijzigd."
+      "alleenLezenBeschrijving": "U bent ingelogd als erfgenaam. Gegevens kunnen alleen worden bekeken en ge\u00ebxporteerd, niet gewijzigd.",
+      "skipNaarInhoud": "Ga naar inhoud"
     }
   },
   "dashboard": {
@@ -169,7 +180,8 @@
     },
     "meldingen": {
       "titel": "Meldingen ({aantal})",
-      "verbergen": "Verbergen"
+      "verbergen": "Verbergen",
+      "verwijder": "Verwijder melding"
     },
     "geenProfiel": {
       "titel": "Vul eerst uw profiel in om te beginnen",
@@ -2577,5 +2589,22 @@
       "overigeFuncties": "Overige Functies",
       "nabestaanden": "Nabestaanden-modus"
     }
+  },
+  "errors": {
+    "ietsMisgegaan": "Er is iets misgegaan",
+    "onverwachteFout": "Er is een onverwachte fout opgetreden bij het laden van deze pagina. Probeer het opnieuw of ga terug naar het dashboard.",
+    "global": {
+      "titel": "Er is een kritieke fout opgetreden",
+      "beschrijving": "De applicatie kon niet worden geladen. Probeer het opnieuw.",
+      "opnieuw": "Opnieuw proberen"
+    },
+    "page": {
+      "titel": "Er is iets misgegaan",
+      "beschrijving": "Er is een onverwachte fout opgetreden bij het laden van deze pagina. Probeer het opnieuw of ga terug naar het dashboard.",
+      "naarDashboard": "Naar dashboard",
+      "opnieuw": "Opnieuw proberen"
+    },
+    "timeout": "Het verzoek duurde te lang. Probeer het opnieuw.",
+    "netwerk": "Geen verbinding met de server. Controleer uw netwerkverbinding."
   }
 }

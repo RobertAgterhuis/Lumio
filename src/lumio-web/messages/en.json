@@ -8,7 +8,20 @@
     "opnieuwProberen": "Try again",
     "naarDashboard": "Go to dashboard",
     "actiefBlijven": "Stay active",
-    "omTeOpenen": "to open"
+    "omTeOpenen": "to open",
+    "meerInformatie": "More information",
+    "meldingen": "Notifications",
+    "sluiten": "Close"
+  },
+  "feedback": {
+    "opgeslagen": "Changes saved",
+    "verwijderd": "Item deleted",
+    "aangemaakt": "Item created",
+    "bijgewerkt": "Item updated",
+    "fout": "Something went wrong",
+    "foutBijOpslaan": "Error while saving",
+    "foutBijVerwijderen": "Error while deleting",
+    "foutBijLaden": "Error while loading"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -26,7 +39,8 @@
     "exporteren": "Export",
     "activiteitenlog": "Activity Log",
     "instellingen": "Settings",
-    "handleiding": "User Guide"
+    "handleiding": "User Guide",
+    "navigatie": "Main navigation"
   },
   "search": {
     "placeholder": "Search all records...",
@@ -53,10 +67,6 @@
       "schulden": "Debts",
       "documenten": "Documents"
     }
-  },
-  "errors": {
-    "ietsMisgegaan": "Something went wrong",
-    "onverwachteFout": "An unexpected error occurred while loading this page. Please try again or go back to the dashboard."
   },
   "idle": {
     "sessieVerloopt": "Session expiring",
@@ -156,7 +166,8 @@
     "sessie": {
       "controleren": "Checking session...",
       "alleenLezen": "Read-only mode",
-      "alleenLezenBeschrijving": "You are logged in as an heir. Data can only be viewed and exported, not modified."
+      "alleenLezenBeschrijving": "You are logged in as an heir. Data can only be viewed and exported, not modified.",
+      "skipNaarInhoud": "Skip to content"
     }
   },
   "dashboard": {
@@ -169,7 +180,8 @@
     },
     "meldingen": {
       "titel": "Notifications ({aantal})",
-      "verbergen": "Hide"
+      "verbergen": "Hide",
+      "verwijder": "Dismiss notification"
     },
     "geenProfiel": {
       "titel": "Complete your profile to get started",
@@ -2577,5 +2589,22 @@
       "overigeFuncties": "Other Features",
       "nabestaanden": "Heir Mode"
     }
+  },
+  "errors": {
+    "ietsMisgegaan": "Something went wrong",
+    "onverwachteFout": "An unexpected error occurred while loading this page. Please try again or go back to the dashboard.",
+    "global": {
+      "titel": "A critical error occurred",
+      "beschrijving": "The application could not be loaded. Please try again.",
+      "opnieuw": "Try again"
+    },
+    "page": {
+      "titel": "Something went wrong",
+      "beschrijving": "An unexpected error occurred while loading this page. Please try again or return to the dashboard.",
+      "naarDashboard": "Go to dashboard",
+      "opnieuw": "Try again"
+    },
+    "timeout": "The request took too long. Please try again.",
+    "netwerk": "No connection to the server. Check your network connection."
   }
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { NextIntlClientProvider } from "next-intl";
+import { ToastProvider } from "./ToastProvider";
 
 type Messages = Record<string, unknown>;
 
@@ -64,6 +65,7 @@ export function LocaleProvider({
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       {children}
+      <ToastProvider />
     </NextIntlClientProvider>
   );
 }

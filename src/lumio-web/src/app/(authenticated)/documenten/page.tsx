@@ -14,11 +14,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { api } from "@/lib/api-client";
+import { api, downloadAndSave } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock } from "lucide-react";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { toast } from "@/stores/toastStore";
 
 const CATEGORIE_KEYS: Record<string, string> = {
   "Testament": "testament",
@@ -55,6 +56,7 @@ interface DocumentVersie {
 export default function DocumentenPage() {
   const t = useTranslations("documenten");
   const tEnum = useTranslations("enums");
+  const tf = useTranslations("feedback");
   const locale = useLocale();
   const [documenten, setDocumenten] = useState<PersoonlijkDocument[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +81,7 @@ export default function DocumentenPage() {
     api
       .get<PersoonlijkDocument[]>("/api/documenten")
       .then((d) => setDocumenten(d ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("Failed to load documenten:", err))
       .finally(() => setLoading(false));
   };
 
@@ -182,6 +184,7 @@ export default function DocumentenPage() {
       setCategorie("");
       setVerlooptOp("");
       if (fileRef.current) fileRef.current.value = "";
+      toast.success(tf("aangemaakt"));
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("uploadenMislukt"));
@@ -193,15 +196,7 @@ export default function DocumentenPage() {
   const handleDownload = async (id: string, bestandsNaam: string) => {
     setError(null);
     try {
-      const response = await fetch(`/api/documenten/${id}/download`);
-      if (!response.ok) throw new Error(`${t("downloadMislukt")} (${response.status})`);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = bestandsNaam;
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave(`/api/documenten/${id}/download`, bestandsNaam);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("downloadMislukt"));
     }
@@ -212,6 +207,7 @@ export default function DocumentenPage() {
     try {
       await api.delete(`/api/documenten/${id}`);
       if (expandedVersions === id) setExpandedVersions(null);
+      toast.success(tf("verwijderd"));
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -223,6 +219,7 @@ export default function DocumentenPage() {
     try {
       await api.delete(`/api/documenten/${id}/alle-versies`);
       setExpandedVersions(null);
+      toast.success(tf("verwijderd"));
       loadData();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
@@ -309,13 +306,13 @@ export default function DocumentenPage() {
 
       <DomainStatusBanner domein="documenten" />
 
-      <div className="rounded-lg border border-cyan-200 bg-cyan-50 p-4">
-        <p className="text-sm text-cyan-800" dangerouslySetInnerHTML={{ __html: t.raw("letOp") }} />
+      <div className="rounded-lg border border-info bg-info-100 p-4">
+        <p className="text-sm text-info">{t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="rounded-lg border border-danger bg-danger-100 p-3">
+          <p className="text-sm text-danger">{error}</p>
         </div>
       )}
 
@@ -361,7 +358,7 @@ export default function DocumentenPage() {
                         if (!expiry) return null;
                         const Icon = expiry.icon;
                         return (
-                          <Badge variant={expiry.variant === "destructive" ? "destructive" : "secondary"} className={expiry.variant === "warning" ? "bg-amber-100 text-amber-800 border-amber-200" : ""}>
+                          <Badge variant={expiry.variant === "destructive" ? "destructive" : "secondary"} className={expiry.variant === "warning" ? "bg-warning-100 text-warning border-warning" : ""}>
                             <Icon className="h-3 w-3 mr-1" />
                             {expiry.label}
                           </Badge>
@@ -400,7 +397,7 @@ export default function DocumentenPage() {
                             : handleDelete(doc.id)
                         }
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="h-4 w-4 text-danger" />
                       </Button>
                     </div>
                   </div>
@@ -452,7 +449,7 @@ export default function DocumentenPage() {
                                 onClick={() => handleDelete(v.id)}
                                 title={`Verwijder versie ${v.versie}`}
                               >
-                                <Trash2 className="h-3 w-3 text-red-500" />
+                                <Trash2 className="h-3 w-3 text-danger" />
                               </Button>
                             )}
                           </div>
@@ -543,8 +540,8 @@ export default function DocumentenPage() {
               key={idx}
               className={cn(
                 "rounded-md border p-3 space-y-2",
-                item.status === "done" && "border-green-200 bg-green-50",
-                item.status === "error" && "border-red-200 bg-red-50"
+                item.status === "done" && "border-success bg-success-100 dark:bg-success/20",
+                item.status === "error" && "border-danger bg-danger-100 dark:bg-danger/20"
               )}
             >
               <div className="flex items-center justify-between">
@@ -584,10 +581,10 @@ export default function DocumentenPage() {
                 </div>
               )}
               {item.status === "done" && (
-                <p className="text-xs text-green-700">{t("dropDialog.geupload")}</p>
+                <p className="text-xs text-success">{t("dropDialog.geupload")}</p>
               )}
               {item.status === "error" && (
-                <p className="text-xs text-red-700">{item.error}</p>
+                <p className="text-xs text-danger">{item.error}</p>
               )}
             </div>
           ))}

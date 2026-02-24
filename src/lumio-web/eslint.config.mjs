@@ -16,7 +16,7 @@ const eslintConfig = [
       },
     },
     rules: {
-      "design-system/no-raw-colors": "warn",
+      "design-system/no-raw-colors": "error",
     },
   },
 ];

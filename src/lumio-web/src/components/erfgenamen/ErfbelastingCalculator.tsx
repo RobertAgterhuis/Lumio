@@ -123,13 +123,13 @@ export function ErfbelastingCalculator() {
                           <td className="py-2 pr-4 text-right">
                             {formatBedrag(r.brutoDeel)}
                           </td>
-                          <td className="py-2 pr-4 text-right text-green-700">
+                          <td className="py-2 pr-4 text-right text-success">
                             {formatBedrag(r.vrijstelling)}
                           </td>
                           <td className="py-2 pr-4 text-right">
                             {formatBedrag(r.belastbaar)}
                           </td>
-                          <td className="py-2 pr-4 text-right text-red-700 font-medium">
+                          <td className="py-2 pr-4 text-right text-danger font-medium">
                             {formatBedrag(r.erfbelasting)}
                           </td>
                           <td className="py-2 text-right font-bold">
@@ -143,7 +143,7 @@ export function ErfbelastingCalculator() {
                         <td className="pt-2 pr-4" colSpan={5}>
                           {t("totaalErfbelasting")}
                         </td>
-                        <td className="pt-2 pr-4 text-right text-red-700">
+                        <td className="pt-2 pr-4 text-right text-danger">
                           <TrendingDown className="inline h-3 w-3 mr-1" />
                           {formatBedrag(
                             data.resultaten.reduce(

@@ -51,7 +51,7 @@ export function Sidebar() {
       <div className="flex h-16 items-center border-b border-border px-6">
         <h1 className="text-xl font-bold text-primary">Lumio</h1>
       </div>
-      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+      <nav aria-label={t("navigatie")} className="flex-1 space-y-1 overflow-y-auto p-3">
         {navItems.map((item) => {
           const isActive = pathname?.startsWith(item.href);
           const Icon = item.icon;
@@ -59,6 +59,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 isActive

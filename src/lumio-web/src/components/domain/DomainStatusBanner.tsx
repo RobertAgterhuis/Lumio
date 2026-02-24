@@ -43,7 +43,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
         const match = data.domeinen.find((d) => d.domein === domein);
         setNeedsReview(match?.actualisatieNodig ?? false);
       })
-      .catch(() => {});
+      .catch((err) => console.error(`Failed to load actualisatie for ${domein}:`, err));
   }, [domein]);
 
   const handleBevestigActualisatie = async () => {
@@ -65,7 +65,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
       <div className="flex items-center gap-3">
         {showReview ? (
           <>
-            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 gap-1 dark:bg-amber-900 dark:text-amber-200">
+            <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
               <AlertTriangle className="h-3 w-3" />
               {t("reviewNodig")}
             </Badge>
@@ -75,7 +75,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
           </>
         ) : isFinished ? (
           <>
-            <Badge className="bg-green-100 text-green-800 hover:bg-green-100 gap-1 dark:bg-green-900 dark:text-green-200">
+            <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
               <CheckCircle2 className="h-3 w-3" />
               {t("afgerond")}
             </Badge>

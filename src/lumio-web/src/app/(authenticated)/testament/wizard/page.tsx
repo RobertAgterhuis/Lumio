@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { api } from "@/lib/api-client";
+import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
@@ -63,7 +63,7 @@ export default function TestamentWizardPage() {
           });
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("Failed to load wizard data:", err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -73,15 +73,7 @@ export default function TestamentWizardPage() {
   const downloadConceptPdf = async () => {
     setGenerating(true);
     try {
-      const res = await fetch("/api/export/testament-concept", { method: "POST" });
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "lumio-testament-concept.pdf";
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadAndSave("/api/export/testament-concept", "lumio-testament-concept.pdf", { method: "POST" });
     } catch {
       // ignore
     } finally {
@@ -264,8 +256,8 @@ export default function TestamentWizardPage() {
       beschrijving: t("samenvatting.beschrijving"),
       content: (
         <div className="space-y-4 text-sm">
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm text-amber-800">
+          <div className="rounded-lg border border-warning bg-warning-100 dark:bg-warning/20 p-4">
+            <p className="text-sm text-warning">
               <strong>{t("samenvatting.disclaimer")}</strong> {t("samenvatting.disclaimerTekst")}
             </p>
           </div>
