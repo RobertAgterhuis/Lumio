@@ -21,6 +21,9 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   const descriptionId = React.useId();
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const previousActiveElement = React.useRef<Element | null>(null);
+  // Store onOpenChange in a ref to avoid re-running focus effect when callback changes
+  const onOpenChangeRef = React.useRef(onOpenChange);
+  onOpenChangeRef.current = onOpenChange;
 
   // Animation state: keep mounted during exit animation
   const [mounted, setMounted] = React.useState(false);
@@ -64,7 +67,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onOpenChange(false);
+        onOpenChangeRef.current(false);
         return;
       }
 
@@ -98,7 +101,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
         previousActiveElement.current.focus();
       }
     };
-  }, [open, onOpenChange]);
+  }, [open]);
 
   if (!mounted) return null;
 

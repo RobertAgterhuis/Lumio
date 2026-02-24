@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -20,13 +20,43 @@ interface WizardShellProps {
   stappen: WizardStep[];
   onComplete: () => void | Promise<void>;
   onCancel?: () => void;
+  /** Controlled step (for external progress management) */
+  initialStep?: number;
+  /** Callback when step changes (for external progress tracking) */
+  onStepChange?: (step: number) => void;
+  /** Show restored progress alert */
+  wasRestored?: boolean;
+  /** Callback to clear progress */
+  onClearProgress?: () => void;
 }
 
-export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShellProps) {
+export function WizardShell({
+  titel,
+  stappen,
+  onComplete,
+  onCancel,
+  initialStep = 0,
+  onStepChange,
+  wasRestored = false,
+  onClearProgress,
+}: WizardShellProps) {
   const t = useTranslations("wizard.shell");
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStepInternal] = useState(initialStep);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showRestoredAlert, setShowRestoredAlert] = useState(wasRestored);
+
+  // Sync with initialStep when it changes
+  useEffect(() => {
+    if (initialStep !== currentStep) {
+      setCurrentStepInternal(initialStep);
+    }
+  }, [initialStep]);
+
+  const setCurrentStep = (step: number) => {
+    setCurrentStepInternal(step);
+    onStepChange?.(step);
+  };
 
   const isLastStep = currentStep === stappen.length - 1;
   const step = stappen[currentStep];
@@ -43,8 +73,14 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
         setCompleting(false);
       }
     } else {
-      setCurrentStep((s) => s + 1);
+      setCurrentStep(currentStep + 1);
     }
+  };
+
+  const handleClearProgress = () => {
+    onClearProgress?.();
+    setCurrentStepInternal(0);
+    setShowRestoredAlert(false);
   };
 
   return (
@@ -55,6 +91,24 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
           {t("stap", { huidig: currentStep + 1, totaal: stappen.length, titel: step.titel })}
         </p>
       </div>
+
+      {/* Restored progress alert */}
+      {showRestoredAlert && initialStep > 0 && (
+        <Alert variant="info" className="flex items-center justify-between">
+          <AlertDescription>
+            {t("voortgangHersteld", { stap: initialStep + 1 })}
+          </AlertDescription>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClearProgress}
+            className="ml-4 gap-1"
+          >
+            <RotateCcw className="h-3 w-3" />
+            {t("opnieuwBeginnen")}
+          </Button>
+        </Alert>
+      )}
 
       {/* Progress bar */}
       <div className="flex gap-1">
@@ -91,7 +145,7 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
       </div>
 
       {/* Step content */}
-      <div className="min-h-[300px]">
+      <div className="min-h-75">
         {step.beschrijving && (
           <p className="text-sm text-muted-foreground mb-4">{step.beschrijving}</p>
         )}
@@ -117,7 +171,7 @@ export function WizardShell({ titel, stappen, onComplete, onCancel }: WizardShel
         <div className="flex gap-2">
           <Button
             variant="outline"
-            onClick={() => setCurrentStep((s) => s - 1)}
+            onClick={() => setCurrentStep(currentStep - 1)}
             disabled={currentStep === 0}
           >
             <ChevronLeft className="h-4 w-4 mr-1" />

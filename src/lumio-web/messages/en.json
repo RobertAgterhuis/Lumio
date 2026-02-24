@@ -337,7 +337,9 @@
       "vorige": "Previous",
       "opslaanBezig": "Saving...",
       "opslaan": "Save",
-      "volgende": "Next"
+      "volgende": "Next",
+      "voortgangHersteld": "Your progress has been restored. You are at step {stap}.",
+      "opnieuwBeginnen": "Start over"
     }
   },
   "eigenaar": {

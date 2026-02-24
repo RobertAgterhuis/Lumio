@@ -15,7 +15,9 @@
     "build-storybook": "storybook build",
     "chromatic": "chromatic --exit-zero-on-changes",
     "size": "size-limit",
-    "size:why": "size-limit --why"
+    "size:why": "size-limit --why",
+    "validate-tokens": "npx tsx scripts/validate-tokens.ts",
+    "detect-breaking-changes": "npx tsx scripts/detect-breaking-changes.ts"
   },
   "size-limit": [
     {

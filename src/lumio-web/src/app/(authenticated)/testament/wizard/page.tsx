@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { WizardShell, type WizardStep } from "@/components/wizard/WizardShell";
 import { Input } from "@/components/ui/input";
@@ -9,15 +9,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useWizardProgress } from "@/hooks";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 
+const WIZARD_ID = "testament";
+const TOTAL_STEPS = 6;
+
 export default function TestamentWizardPage() {
   const router = useRouter();
   const t = useTranslations("testamentWizard");
+
+  // Wizard progress persistence
+  const {
+    currentStep,
+    setCurrentStep,
+    formData: savedFormData,
+    updateFormData,
+    wasRestored,
+    clearProgress,
+    markComplete,
+  } = useWizardProgress({
+    wizardId: WIZARD_ID,
+    totalSteps: TOTAL_STEPS,
+    initialFormData: {
+      testamentType: "",
+      notarisNaam: "",
+      notarisKantoor: "",
+      notarisTelefoon: "",
+      notarisEmail: "",
+      notarisAdres: "",
+      notarisPostcode: "",
+      notarisPlaats: "",
+      datumTestament: "",
+      testamentLocatie: "",
+      ctr_Nummer: "",
+      algemeneWensen: "",
+      bijzondereBepalingen: "",
+      uitsluitingsClausule: "true",
+      legaten: "",
+    },
+  });
+
   const [form, setForm] = useState({
     testamentType: "",
     notarisNaam: "",
@@ -41,10 +76,10 @@ export default function TestamentWizardPage() {
   // Load existing data with React Query
   const { data: existingData, isLoading: loading } = useDomainQuery<Record<string, unknown> | null>("testament");
 
-  // Populate form when data loads
+  // Populate form when data loads or when restoring progress
   useEffect(() => {
     if (existingData) {
-      setForm({
+      const loadedForm = {
         testamentType: (existingData.testamentType as string) ?? "",
         notarisNaam: (existingData.notarisNaam as string) ?? "",
         notarisKantoor: (existingData.notarisKantoor as string) ?? "",
@@ -62,12 +97,29 @@ export default function TestamentWizardPage() {
         bijzondereBepalingen: (existingData.bijzondereBepalingen as string) ?? "",
         uitsluitingsClausule: existingData.uitsluitingsClausule != null ? String(existingData.uitsluitingsClausule) : "true",
         legaten: (existingData.legaten as string) ?? "",
+      };
+      // Merge with any saved progress
+      setForm({
+        ...loadedForm,
+        ...(savedFormData as typeof form),
+      });
+    } else if (savedFormData && Object.keys(savedFormData).length > 0) {
+      // No existing data but we have saved progress
+      setForm({
+        ...form,
+        ...(savedFormData as typeof form),
       });
     }
-  }, [existingData]);
+  }, [existingData, savedFormData]);
 
-  const update = (field: string, value: string) =>
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const update = useCallback((field: string, value: string) => {
+    setForm((prev) => {
+      const updated = { ...prev, [field]: value };
+      // Persist to localStorage
+      updateFormData({ [field]: value });
+      return updated;
+    });
+  }, [updateFormData]);
 
   const downloadConceptPdf = async () => {
     setGenerating(true);
@@ -313,6 +365,8 @@ export default function TestamentWizardPage() {
       uitsluitingsClausule: form.uitsluitingsClausule === "true",
       legaten: form.legaten || null,
     });
+    // Clear wizard progress on successful save
+    markComplete();
     router.push("/testament");
   };
 
@@ -324,6 +378,10 @@ export default function TestamentWizardPage() {
       stappen={stappen}
       onComplete={handleComplete}
       onCancel={() => router.push("/testament")}
+      initialStep={currentStep}
+      onStepChange={setCurrentStep}
+      wasRestored={wasRestored}
+      onClearProgress={clearProgress}
     />
   );
 }

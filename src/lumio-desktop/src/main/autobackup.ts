@@ -154,9 +154,64 @@ export function registerAutoBackupHandlers(): void {
     return loadConfig();
   });
 
-  ipcMain.handle("set-auto-backup-config", (_event, config: AutoBackupConfig | null) => {
-    saveConfig(config);
+  ipcMain.handle("set-auto-backup-config", (_event, config: unknown) => {
+    // === INPUT VALIDATION ===
+    // Allow null to clear config
+    if (config === null) {
+      saveConfig(null);
+      startAutoBackupScheduler();
+      return { success: true };
+    }
+
+    // Validate config is an object
+    if (typeof config !== "object" || config === null) {
+      console.warn("[auto-backup] Invalid config type:", typeof config);
+      return { success: false, error: "Invalid config format" };
+    }
+
+    const typedConfig = config as Record<string, unknown>;
+
+    // Validate required fields
+    if (typeof typedConfig.pad !== "string" || typedConfig.pad.trim() === "") {
+      console.warn("[auto-backup] Invalid or missing 'pad' field");
+      return { success: false, error: "Invalid backup path" };
+    }
+
+    // Validate frequentie is one of the allowed values
+    const allowedFrequencies = ["dagelijks", "wekelijks", "maandelijks"];
+    if (typeof typedConfig.frequentie !== "string" || !allowedFrequencies.includes(typedConfig.frequentie)) {
+      console.warn("[auto-backup] Invalid frequentie:", typedConfig.frequentie);
+      return { success: false, error: "Invalid backup frequency" };
+    }
+
+    // Validate path doesn't contain suspicious patterns
+    const suspiciousPatterns = [
+      /\.\./,       // Path traversal
+      /^\/etc\//,   // Unix system dirs
+      /^\/usr\//,
+      /^\/bin\//,
+      /^C:\\Windows/i, // Windows system dirs
+      /^C:\\Program Files/i,
+    ];
+    if (suspiciousPatterns.some((pattern) => pattern.test(typedConfig.pad))) {
+      console.warn("[auto-backup] Suspicious path detected:", typedConfig.pad);
+      return { success: false, error: "Invalid backup path" };
+    }
+
+    // Validate the path exists and is a directory
+    if (!fs.existsSync(typedConfig.pad) || !fs.statSync(typedConfig.pad).isDirectory()) {
+      console.warn("[auto-backup] Path does not exist or is not a directory:", typedConfig.pad);
+      return { success: false, error: "Backup directory does not exist" };
+    }
+
+    const validatedConfig: AutoBackupConfig = {
+      pad: typedConfig.pad,
+      frequentie: typedConfig.frequentie,
+    };
+
+    saveConfig(validatedConfig);
     startAutoBackupScheduler();
+    return { success: true };
   });
 
   ipcMain.handle("trigger-auto-backup", async () => {

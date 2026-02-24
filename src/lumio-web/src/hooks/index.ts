@@ -13,3 +13,8 @@ export {
 export { useIdleTimer } from "./useIdleTimer";
 export { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 export { useTheme } from "./useTheme";
+export {
+  useWizardProgress,
+  getWizardsWithProgress,
+  clearAllWizardProgress,
+} from "./useWizardProgress";
