@@ -1,21 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 import { X, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { useHelpStore } from "@/stores/helpStore";
-import {
-  helpChapters,
-  getChapterUrl,
-  type HelpChapter,
-} from "@/content/help-chapters";
+import { helpChapters, type HelpChapter } from "@/content/help-chapters";
+import { getHelpContent } from "@/content/help-content";
 
 /**
  * Slide-over panel that shows contextual help content.
  * Opens from the right side of the screen.
+ * Content is embedded at build time — no network requests needed.
  */
 export function HelpPanel() {
   const t = useTranslations("help");
@@ -25,12 +23,8 @@ export function HelpPanel() {
   const {
     panelOpen,
     activeChapterSlug,
-    contentCache,
-    loading,
     closePanel,
     setActiveChapter,
-    cacheContent,
-    setLoading,
   } = useHelpStore();
 
   const activeChapter = helpChapters.find(
@@ -40,39 +34,12 @@ export function HelpPanel() {
     ? helpChapters.indexOf(activeChapter)
     : -1;
 
-  const cachedContent = activeChapterSlug
-    ? contentCache[`${activeChapterSlug}-${locale}`]
-    : undefined;
-
-  // Fetch markdown content when chapter changes
-  useEffect(() => {
-    if (!panelOpen || !activeChapter) return;
-
-    const cacheKey = `${activeChapter.slug}-${locale}`;
-    if (useHelpStore.getState().contentCache[cacheKey]) return;
-
-    setLoading(true);
-    const url = getChapterUrl(activeChapter, locale);
-
-    let cancelled = false;
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.text();
-      })
-      .then((text) => {
-        if (!cancelled) cacheContent(cacheKey, text);
-      })
-      .catch((err) => {
-        console.error("Failed to load help content:", err);
-        if (!cancelled) cacheContent(cacheKey, `# ${t("laadFout")}\n\n${t("laadFoutBeschrijving")}`);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => { cancelled = true; };
-  }, [panelOpen, activeChapter, locale, cacheContent, setLoading, t]);
+  // Look up content synchronously from embedded module
+  const content = useMemo(() => {
+    if (!activeChapter) return undefined;
+    const file = locale === "en" ? activeChapter.fileEn : activeChapter.fileNl;
+    return getHelpContent(file, locale === "en" ? "en" : "nl");
+  }, [activeChapter, locale]);
 
   // Close on Escape
   useEffect(() => {
@@ -150,12 +117,8 @@ export function HelpPanel() {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <p className="text-sm text-muted-foreground">{t("laden")}</p>
-            </div>
-          ) : cachedContent ? (
-            <MarkdownRenderer content={cachedContent} />
+          {content ? (
+            <MarkdownRenderer content={content} />
           ) : (
             <div className="flex items-center justify-center py-12">
               <p className="text-sm text-muted-foreground">

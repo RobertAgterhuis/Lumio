@@ -1,120 +1,55 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { BookOpen, Search } from "lucide-react";
 import { MarkdownRenderer } from "@/components/help/MarkdownRenderer";
-import { helpChapters, getChapterUrl } from "@/content/help-chapters";
+import { helpChapters } from "@/content/help-chapters";
+import { getHelpContent } from "@/content/help-content";
 
 export default function HelpPage() {
   const t = useTranslations("help");
   const locale = useLocale();
 
   const [activeSlug, setActiveSlug] = useState(helpChapters[0].slug);
-  const [content, setContent] = useState<string>("");
-  const [loading, setLoading] = useState(false);
-  const [contentCache, setContentCache] = useState<Record<string, string>>({});
-  const contentCacheRef = useRef<Record<string, string>>({});
-  contentCacheRef.current = contentCache;
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<
-    { slug: string; snippet: string }[]
-  >([]);
-  const [searching, setSearching] = useState(false);
 
   const activeChapter = helpChapters.find((ch) => ch.slug === activeSlug);
 
-  // Fetch chapter content when active chapter changes
-  useEffect(() => {
-    const chapter = helpChapters.find((ch) => ch.slug === activeSlug);
-    if (!chapter) return;
+  // Content is looked up synchronously from embedded module
+  const content = useMemo(() => {
+    if (!activeChapter) return "";
+    const file = locale === "en" ? activeChapter.fileEn : activeChapter.fileNl;
+    return getHelpContent(file, locale === "en" ? "en" : "nl") ?? "";
+  }, [activeChapter, locale]);
 
-    const cacheKey = `${activeSlug}-${locale}`;
-    const cached = contentCacheRef.current[cacheKey];
-    if (cached) {
-      setContent(cached);
-      return;
+  // Full-text search across all embedded chapters (synchronous, no fetch)
+  const searchResults = useMemo(() => {
+    if (searchQuery.length < 2) return [];
+    const results: { slug: string; snippet: string }[] = [];
+    const lowerQuery = searchQuery.toLowerCase();
+
+    for (const chapter of helpChapters) {
+      const file = locale === "en" ? chapter.fileEn : chapter.fileNl;
+      const text = getHelpContent(file, locale === "en" ? "en" : "nl");
+      if (!text) continue;
+
+      const lowerText = text.toLowerCase();
+      const idx = lowerText.indexOf(lowerQuery);
+      if (idx !== -1) {
+        const start = Math.max(0, idx - 40);
+        const end = Math.min(text.length, idx + searchQuery.length + 40);
+        const snippet =
+          (start > 0 ? "..." : "") +
+          text.slice(start, end).replace(/\n/g, " ") +
+          (end < text.length ? "..." : "");
+        results.push({ slug: chapter.slug, snippet });
+      }
     }
 
-    let cancelled = false;
-    setLoading(true);
-
-    fetch(getChapterUrl(chapter, locale))
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.text();
-      })
-      .then((text) => {
-        if (!cancelled) {
-          setContentCache((prev) => ({ ...prev, [cacheKey]: text }));
-          setContent(text);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setContent(`# ${t("laadFout")}\n\n${t("laadFoutBeschrijving")}`);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => { cancelled = true; };
-  }, [activeSlug, locale, t]);
-
-  // Full-text search across all chapters
-  const handleSearch = useCallback(
-    async (query: string) => {
-      setSearchQuery(query);
-      if (query.length < 2) {
-        setSearchResults([]);
-        setSearching(false);
-        return;
-      }
-      setSearching(true);
-
-      const results: { slug: string; snippet: string }[] = [];
-
-      for (const chapter of helpChapters) {
-        const cacheKey = `${chapter.slug}-${locale}`;
-        let text = contentCacheRef.current[cacheKey];
-
-        if (!text) {
-          try {
-            const url = getChapterUrl(chapter, locale);
-            const res = await fetch(url);
-            if (res.ok) {
-              text = await res.text();
-              setContentCache((prev) => ({ ...prev, [cacheKey]: text! }));
-              contentCacheRef.current = { ...contentCacheRef.current, [cacheKey]: text };
-            }
-          } catch {
-            continue;
-          }
-        }
-
-        if (text) {
-          const lowerText = text.toLowerCase();
-          const lowerQuery = query.toLowerCase();
-          const idx = lowerText.indexOf(lowerQuery);
-          if (idx !== -1) {
-            const start = Math.max(0, idx - 40);
-            const end = Math.min(text.length, idx + query.length + 40);
-            const snippet =
-              (start > 0 ? "..." : "") +
-              text.slice(start, end).replace(/\n/g, " ") +
-              (end < text.length ? "..." : "");
-            results.push({ slug: chapter.slug, snippet });
-          }
-        }
-      }
-
-      setSearchResults(results);
-      setSearching(false);
-    },
-    [locale]
-  );
+    return results;
+  }, [searchQuery, locale]);
 
   return (
     <div className="flex h-full gap-0 -m-6">
@@ -132,7 +67,7 @@ export default function HelpPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               placeholder={t("zoeken")}
               className="w-full rounded-md border border-input bg-background py-2 pl-8 pr-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
@@ -142,11 +77,7 @@ export default function HelpPage() {
         {/* Search results or chapter list */}
         <nav className="flex-1 overflow-y-auto p-2">
           {searchQuery.length >= 2 ? (
-            searching ? (
-              <p className="px-3 py-4 text-xs text-muted-foreground">
-                {t("laden")}
-              </p>
-            ) : searchResults.length === 0 ? (
+            searchResults.length === 0 ? (
               <p className="px-3 py-4 text-xs text-muted-foreground">
                 {t("geenResultaten")}
               </p>
@@ -163,7 +94,6 @@ export default function HelpPage() {
                       onClick={() => {
                         setActiveSlug(result.slug);
                         setSearchQuery("");
-                        setSearchResults([]);
                       }}
                       className="w-full rounded-md px-3 py-2 text-left hover:bg-muted"
                     >
@@ -209,13 +139,7 @@ export default function HelpPage() {
       {/* Main content */}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-3xl px-8 py-6">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <p className="text-muted-foreground">{t("laden")}</p>
-            </div>
-          ) : (
-            <MarkdownRenderer content={content} />
-          )}
+          <MarkdownRenderer content={content} />
         </div>
       </div>
     </div>

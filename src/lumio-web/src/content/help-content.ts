@@ -1,0 +1,2234 @@
+/**
+ * Auto-generated help content embedded at build time.
+ * Source: public/help/{locale}/*.md
+ *
+ * Regenerate: node scripts/generate-help-content.js
+ */
+
+export type HelpLocale = "nl" | "en";
+
+const helpContent: Record<HelpLocale, Record<string, string>> = {
+  nl: {
+    "01-aan-de-slag.md": `# 1 — Aan de Slag
+
+## Lumio Starten
+
+Lumio is een draagbare applicatie — er is geen installatie nodig.
+
+1. Open de map waar Lumio staat (bijvoorbeeld op een USB-stick)
+2. Dubbelklik op **Lumio.exe**
+3. De applicatie opent in een venster
+
+## Eerste Keer: Profiel Aanmaken
+
+Bij de eerste keer openen ziet u het **profielkeuze-scherm**:
+
+1. Klik op **Nieuw profiel aanmaken**
+2. Vul uw naam in en kies uw relatie (Primair, Partner, Kind, Ouder, Overig)
+3. Klik op **Aanmaken**
+
+> Het eerste profiel wordt automatisch gemarkeerd als "Primair". U kunt maximaal 5 profielen aanmaken.
+
+## Wachtwoord Instellen
+
+Na het aanmaken van een profiel stelt u een **hoofdwachtwoord** in:
+
+1. Voer een wachtwoord in (minimaal 8 tekens)
+2. De **sterkte-indicator** toont hoe sterk uw wachtwoord is
+3. Bevestig het wachtwoord door het nogmaals in te voeren
+4. Klik op **Instellen**
+
+> **Belangrijk**: Onthoud dit wachtwoord goed. Als u het kwijtraakt, kunt u alleen nog toegang krijgen via Shamir-noodcodes (zie hoofdstuk 11).
+
+## Inloggen
+
+Bij een volgend bezoek:
+
+1. Selecteer uw profiel in de profielkiezer
+2. Voer uw hoofdwachtwoord in
+3. Klik op **Ontgrendelen**
+
+Gebruik het oogicoon om het wachtwoord zichtbaar te maken.
+
+## Taal Kiezen
+
+Op het inlogscherm staat onderaan een **taalkeuze**. Lumio ondersteunt:
+- **Nederlands** (standaard)
+- **Engels**
+
+U kunt de taal ook later wijzigen via Instellingen.
+
+## Profiel Wisselen
+
+Klik op **Wissel profiel** op het inlogscherm om terug te gaan naar de profielkiezer.
+
+## Automatisch Vergrendelen
+
+Lumio vergrendelt automatisch na een periode van inactiviteit. Vlak voor het vergrendelen verschijnt een waarschuwing met een afteltimer. Klik op **Actief blijven** om het vergrendelen te voorkomen.
+
+De vergrendelingstijd is instelbaar via Instellingen (standaard: 5 minuten).
+
+## Sneltoetsen
+
+| Toets | Actie |
+|-------|-------|
+| \`Ctrl+K\` | Zoeken openen |
+| \`Ctrl+L\` | App vergrendelen |
+| \`Ctrl+N\` | Nieuw item toevoegen |
+| \`?\` | Sneltoetsen tonen |
+| \`G\` dan \`D\` | Ga naar Dashboard |
+| \`G\` dan \`T\` | Ga naar Testament |
+| \`G\` dan \`N\` | Ga naar Noodcontacten |
+`,
+    "02-dashboard.md": `# 2 — Dashboard
+
+Het dashboard is het startscherm na het inloggen. Het geeft een overzicht van uw voortgang en snelle toegang tot alle onderdelen.
+
+## Voortgangsbalk
+
+Bovenaan ziet u een **voortgangsbalk** die toont hoeveel procent van uw profiel is ingevuld. Daarnaast staat hoeveel secties zijn voltooid (bijv. "4 van 10 secties").
+
+## Statistieken
+
+Een compacte samenvatting toont het aantal:
+- Erfgenamen
+- Digitale accounts
+- Documenten
+- Boedelitems
+- Noodcontacten
+
+Plus een financieel overzicht: totale bezittingen, totale schulden en netto nalatenschap.
+
+## Gedetailleerde Voortgang
+
+Klik op de voortgangssectie om per domein te zien welke velden zijn ingevuld. Elk domein toont een eigen voortgangsbalk (bijv. "5 van 8 velden voor Testament").
+
+## Slimme Suggesties
+
+Klik op **Analyseer profiel** om contextuele suggesties te krijgen. Lumio analyseert uw gegevens en geeft tips over ontbrekende of onvolledige informatie, zoals:
+- "Uw notaris is niet als noodcontact opgegeven"
+- "U heeft nog geen huisarts ingevuld"
+
+## Interview Wizard
+
+Als u nog geen profielgegevens heeft ingevuld, verschijnt een balk met twee opties:
+- **Begeleid interview** — Een stapsgewijze wizard die u door de belangrijkste vragen leidt
+- **Direct invullen** — Ga meteen naar de profielpagina
+
+De interview-wizard stelt in 5 stappen vragen over:
+1. Persoonlijke gegevens
+2. Noodcontact
+3. Testament
+4. Uitvaart
+5. Digitaal bezit
+
+Na afloop worden alle antwoorden automatisch opgeslagen in de juiste secties.
+
+## Onboarding Wizard
+
+Bij de eerste keer inloggen verschijnt ook een **onboarding-wizard** met 6 stappen:
+1. Profiel aanmaken
+2. Noodcontacten toevoegen
+3. Testament opzetten
+4. Uitvaartwensen invullen
+5. Erfgenamen toevoegen
+6. Eerste backup maken
+
+De wizard toont een voortgangsbalk en controleert automatisch of elke stap is voltooid. U kunt de wizard sluiten en later hervatten.
+
+## Domeinkaarten
+
+Het dashboard toont 10 kaarten, één per domein:
+
+| Domein | Beschrijving |
+|--------|--------------|
+| Mijn Profiel | Uw persoonsgegevens |
+| Testament | Testamentgegevens en begunstigden |
+| Wilsverklaring | Euthanasiewens en vertegenwoordiger |
+| Donorregistratie | Orgaandonatiekeuzes |
+| Digitaal Bezit | Online accounts en wachtwoorden |
+| Boedel | Bezittingen, rekeningen, schulden |
+| Uitvaartwensen | Begraven, cremeren, ceremonie |
+| Documenten | Persoonlijke documenten |
+| Erfgenamen | Erfgenamen en toewijzingen |
+| Noodcontacten | Noodcontactpersonen |
+
+### Statusbadges
+
+Elke kaart toont een statusbadge:
+- **Begin** — Nog niet gestart
+- **Bezig** — Er zijn gegevens ingevuld maar het domein is nog niet compleet
+- **Afgerond** — U heeft het domein als afgerond gemarkeerd
+- **Review nodig** — Het is tijd om de gegevens te controleren (periodieke actualisatie)
+
+### Domein Markeren als Afgerond
+
+Op elke domeinkaart kunt u klikken op **Markeer afgerond** om het domein als voltooid te markeren. Om dit ongedaan te maken, klik op **Heropenen**.
+
+## Dashboard Aanpassen
+
+U kunt onderdelen van het dashboard verbergen met het oogicoon. Via Instellingen kunt u de zichtbaarheid van de volgende onderdelen beheren:
+- Voortgangsbalk
+- Gedetailleerde voortgang
+- Slimme suggesties
+- Domeinkaarten
+
+## Meldingen
+
+In de header ziet u een **bel-icoon** met meldingen. Dit zijn waarschuwingen en herinneringen, zoals:
+- "U heeft nog nooit een backup gemaakt"
+- "Uw backup is ouder dan 30 dagen"
+- "Er zijn documenten verlopen"
+- "Shamir-noodcodes zijn nog niet verdeeld"
+`,
+    "03-mijn-profiel.md": `# 3 — Mijn Profiel
+
+Op de profielpagina legt u uw persoonlijke gegevens vast. De pagina is opgedeeld in vijf secties.
+
+## Profielfoto
+
+Upload een profielfoto door op het fotovak te klikken. U kunt de foto later wijzigen of verwijderen. De foto wordt getoond in de header en op het profielkeuze-scherm.
+
+## Persoonsgegevens
+
+| Veld | Verplicht | Beschrijving |
+|------|-----------|--------------|
+| Voornaam | Ja | Uw officiële voornaam |
+| Tussenvoegsel | Nee | Bijv. "van", "de" |
+| Achternaam | Ja | Uw achternaam |
+| Geboortedatum | Ja | Uw geboortedatum |
+| BSN | Nee | Burgerservicenummer |
+| Adres | Nee | Straat en huisnummer |
+| Postcode | Nee | Nederlandse postcode (1234 AB) |
+| Woonplaats | Nee | Uw woonplaats |
+| Telefoon | Nee | Telefoonnummer |
+| E-mail | Nee | E-mailadres |
+
+## Burgerlijke Staat
+
+| Veld | Opties |
+|------|--------|
+| Burgerlijke staat | Ongehuwd, Gehuwd, Geregistreerd partnerschap, Gescheiden, Weduwe/Weduwnaar |
+| Huwelijksvoorwaarden | Gemeenschap van goederen, Beperkte gemeenschap, Koude uitsluiting |
+| Datum huwelijk | Datum van het huwelijk of partnerschap |
+
+> De burgerlijke staat is relevant voor de erfbelastingberekening en de legitieme portie.
+
+## Identificatie
+
+| Veld | Beschrijving |
+|------|--------------|
+| Type document | Geen, Paspoort, ID-kaart, Rijbewijs |
+| Documentnummer | Het nummer op uw identiteitsbewijs |
+| Afgiftedatum | Datum van afgifte |
+| Geldig tot | Verloopdatum — Lumio waarschuwt wanneer het bijna verloopt |
+
+## Notaris
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van uw notaris |
+| Kantoor | Naam van het notariskantoor |
+| Telefoon | Telefoonnummer |
+| E-mail | E-mailadres |
+| Adres | Straat en huisnummer |
+| Postcode | Postcode |
+| Woonplaats | Plaats |
+
+> **Tip**: Als u een notaris invult, wordt deze automatisch voorgesteld als noodcontact (via slimme suggesties op het dashboard).
+
+## Voorbeeldgegevens
+
+Klik op de **voorbeeld-knop** om te zien hoe een ingevuld profiel eruitziet. Dit helpt bij het begrijpen van welke informatie gevraagd wordt.
+
+## Notities per Sectie
+
+Bij elke sectie kunt u een vrije notitie toevoegen via het notitie-icoon. Dit is handig voor persoonlijke opmerkingen of verwijzingen.
+
+## Periodieke Actualisatie
+
+Lumio herinnert u periodiek om uw gegevens te controleren. Wanneer een domein toe is aan een review, verschijnt een banner bovenaan de pagina. Klik op **Bevestig actualisatie** om aan te geven dat de gegevens nog actueel zijn.
+`,
+    "04-testament.md": `# 4 — Testament
+
+Op deze pagina legt u de gegevens van uw testament vast. Dit is geen vervanging van een officieel testament bij de notaris, maar een persoonlijk overzicht.
+
+## Testamentgegevens
+
+| Veld | Beschrijving |
+|------|--------------|
+| Type testament | Het soort testament dat u heeft |
+| Notaris | Naam van de notaris die het testament heeft opgesteld |
+| Datum | Datum van het testament |
+| Locatie | Waar het testament is opgeslagen |
+| CTR-nummer | Centraal Testamentenregister nummer |
+
+## Algemene Wensen
+
+Hier kunt u uw algemene wensen vastleggen:
+- Algemene wensen en instructies
+- Bijzondere bepalingen
+- Uitsluitingsclausule (ja/nee + toelichting)
+- Legaten (specifieke schenkingen)
+
+## Begunstigden
+
+Voeg de personen toe die in uw testament zijn opgenomen:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van de begunstigde |
+| Relatie | Verwantschap (partner, kind, etc.) |
+| Contact | Contactgegevens |
+| Percentage | Percentage van de nalatenschap |
+| Legitieme portie | Of deze persoon recht heeft op een wettelijk minimumdeel |
+
+### Legitieme Portie
+
+Lumio controleert automatisch of kinderen hun **legitieme portie** ontvangen (het wettelijk minimumdeel volgens BW 4:63-4:69). Als een kind minder ontvangt dan het wettelijk minimum, verschijnt een waarschuwing.
+
+## Executeurs
+
+Voeg de personen toe die het testament uitvoeren na uw overlijden:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van de executeur |
+| Relatie | Verwantschap |
+| Contact | Contactgegevens |
+
+## Juridische Controle
+
+Het **juridische controle**-component analyseert uw testamentgegevens en signaleert mogelijke problemen, zoals:
+- Onvolledige verdelingspercentages
+- Ontbrekende executeur
+- Kinderen zonder legitieme portie
+
+## Concept-snapshots
+
+Lumio bewaart automatisch **snapshots** van uw testamentgegevens. Hiermee kunt u:
+- Eerdere versies bekijken
+- Veld-voor-veld vergelijken wat er is gewijzigd
+- Teruggaan naar een eerdere versie
+
+## Testament Wizard
+
+Via het dashboard kunt u ook de **Testament Wizard** starten — een stapsgewijze begeleiding die u door alle testamentvelden leidt.
+`,
+    "05-wilsverklaring.md": `# 5 — Wilsverklaring & Euthanasie
+
+Op deze pagina legt u uw wensen vast rond euthanasie, wilsverklaring en medische beslissingen.
+
+## Euthanasiewens
+
+Geef aan of u een euthanasiewens heeft (ja/nee) en beschrijf de situatie(s) waarin u euthanasie zou willen.
+
+## Huisarts
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van uw huisarts |
+| Praktijk | Naam van de huisartsenpraktijk |
+| Telefoon | Telefoonnummer |
+| E-mail | E-mailadres |
+
+> **Tip**: Uw huisarts speelt een belangrijke rol bij euthanasie. Lumio suggereert om uw huisarts ook als noodcontact toe te voegen.
+
+## Vertegenwoordiger
+
+De persoon die uw wensen vertegenwoordigt als u dat zelf niet meer kunt:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van de vertegenwoordiger |
+| Relatie | Verwantschap |
+| Telefoon | Telefoonnummer |
+| E-mail | E-mailadres |
+| Adres | Adresgegevens |
+
+## Dementie-clausule
+
+Geef aan of u een **dementie-clausule** heeft opgenomen in uw wilsverklaring. Dit bepaalt uw wensen voor het geval u door dementie niet meer in staat bent zelf te beslissen. U kunt een toelichting toevoegen.
+
+## Behandelverbod
+
+Geef aan of u een **behandelverbod** wilt. Dit bepaalt welke medische behandelingen u wel of niet wilt ontvangen.
+
+## Aanvullende Wensen
+
+Ruimte voor overige wensen of opmerkingen rond het levenseinde.
+
+## Ondertekeningsdatum
+
+Leg de datum vast waarop u de wilsverklaring heeft ondertekend.
+
+## Euthanasie Wizard
+
+Via het dashboard kunt u ook de **Euthanasie Wizard** starten — een stapsgewijze begeleiding die u door alle velden leidt met duidelijke uitleg bij elke stap.
+`,
+    "06-donorregistratie.md": `# 6 — Donorregistratie
+
+Op deze pagina legt u uw keuzes rond orgaandonatie vast.
+
+## Donorkeuze
+
+Geef aan wat uw donorkeuze is. De opties komen overeen met het officiële Donorregister.
+
+## Registratie bij het Donorregister
+
+| Veld | Beschrijving |
+|------|--------------|
+| Geregistreerd | Of u bent geregistreerd bij het Donorregister (ja/nee) |
+| Referentienummer | Uw registratienummer bij het Donorregister |
+
+## Toelichting
+
+Ruimte om uw keuze toe te lichten — bijvoorbeeld waarom u wel of niet wilt doneren, of bijzondere omstandigheden.
+
+## Orgaanspecifieke Keuzes
+
+U kunt per orgaan aangeven of u het wilt doneren:
+- Per orgaan: **ja** of **nee**
+- Per orgaan kunt u een toelichting toevoegen
+
+Dit biedt meer controle dan een algemene ja/nee-keuze.
+
+## Link naar het Donorregister
+
+Lumio toont een tip met een verwijzing naar het officiële Donorregister, waar u uw keuze ook formeel kunt vastleggen.
+
+## Donor Wizard
+
+Via het dashboard kunt u de **Donor Wizard** starten voor een begeleide invulervaring.
+`,
+    "07-digitaal-bezit.md": `# 7 — Digitaal Bezit
+
+Op deze pagina beheert u uw digitale leven: online accounts, wachtwoorden en crypto wallets. De pagina heeft drie tabs.
+
+## Tab 1: Digitale Accounts
+
+Leg al uw online accounts vast:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Platform | Naam van de dienst (bijv. Facebook, Gmail) |
+| Categorie | Social Media, E-mail, Bankieren, Winkelen, Streaming, Gaming, Cloud, Werk, Overheid, Overig |
+| Gebruikersnaam | Uw gebruikersnaam of login |
+| E-mail | Het e-mailadres dat u gebruikt voor dit account |
+| URL | Webadres van de dienst |
+| Actie na overlijden | Wat er met het account moet gebeuren (verwijderen, overdragen, etc.) |
+| Overdragen aan | Aan wie het account moet worden overgedragen (kies uit erfgenamen) |
+| Notities | Aanvullende opmerkingen |
+
+### Afsluitinstructies
+
+Bij elk account kunt u **afsluitinstructies** toevoegen — stap-voor-stap uitleg hoe het account moet worden afgesloten of overgedragen na uw overlijden.
+
+### Filteren
+
+Gebruik het categorie-filter om snel accounts in een bepaalde categorie te vinden.
+
+### CSV Import
+
+U kunt accounts importeren vanuit een CSV-bestand. Dit is handig als u al een overzicht heeft in een spreadsheet.
+
+## Tab 2: Wachtwoorden
+
+Bewaar wachtwoorden veilig en versleuteld:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Waarvoor het wachtwoord is |
+| Gebruikersnaam | Bijbehorende gebruikersnaam |
+| URL | Webadres |
+| Notities | Aanvullende opmerkingen |
+
+### Wachtwoordzichtbaarheid
+
+Wachtwoorden zijn standaard verborgen. Klik op het **oogicoon** om een wachtwoord tijdelijk zichtbaar te maken.
+
+### Wachtwoordgenerator
+
+Gebruik de ingebouwde **wachtwoordgenerator** om sterke, willekeurige wachtwoorden te maken. U kunt de lengte en het type tekens instellen.
+
+> **Veiligheid**: Alle wachtwoorden worden versleuteld opgeslagen met AES-256-GCM. Zonder uw hoofdwachtwoord zijn ze niet leesbaar.
+
+## Tab 3: Crypto Wallets
+
+Leg uw cryptocurrency-bezittingen vast:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Wallet naam | Naam ter herkenning |
+| Crypto type | Soort cryptocurrency (Bitcoin, Ethereum, etc.) |
+| Wallet-adres | Het publieke adres van de wallet |
+| Exchange | De exchange waar de wallet is aangemaakt |
+| Notities | Aanvullende opmerkingen, bijv. locatie van seed phrase |
+
+> **Belangrijk**: Bewaar de locatie van uw seed phrase of recovery key in de notities, zodat uw nabestaanden toegang kunnen krijgen.
+`,
+    "08-boedel.md": `# 8 — Boedel
+
+Op deze pagina legt u uw financiële bezittingen en verplichtingen vast. De pagina heeft vier tabs.
+
+## Tab 1: Bezittingen
+
+Leg uw fysieke bezittingen vast:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Categorie | Type bezitting |
+| Beschrijving | Omschrijving van het item |
+| Geschatte waarde | Waarde in euro's |
+| Locatie | Waar het item zich bevindt |
+| Beoogde erfgenaam | Aan wie u het wilt nalaten |
+| Vermogenssoort | Type vermogen |
+| Kadastraal nummer | Voor onroerend goed |
+| Kenteken | Voor voertuigen |
+| KvK-nummer | Voor bedrijfsbezittingen |
+| Notities | Aanvullende opmerkingen |
+
+## Tab 2: Bankrekeningen
+
+| Veld | Beschrijving |
+|------|--------------|
+| Bank | Naam van de bank |
+| IBAN | Internationaal rekeningnummer (wordt gevalideerd) |
+| Type rekening | Soort rekening |
+| Saldo | Huidig saldo |
+| Vermogenssoort | Type vermogen |
+| Notities | Aanvullende opmerkingen |
+
+> Het IBAN-nummer wordt automatisch gecontroleerd op het juiste formaat.
+
+## Tab 3: Verzekeringen
+
+| Veld | Beschrijving |
+|------|--------------|
+| Verzekeraar | Naam + contactgegevens |
+| Polisnummer | Het polisnummer |
+| Type | Soort verzekering |
+| Verzekerd bedrag | Het verzekerde bedrag |
+| Begunstigde | Wie het bedrag ontvangt |
+| Vermogenssoort | Type vermogen |
+| Notities | Aanvullende opmerkingen |
+
+## Tab 4: Schulden
+
+| Veld | Beschrijving |
+|------|--------------|
+| Schuldeiser | Naam + contactgegevens |
+| Type | Soort schuld |
+| Bedrag | Totaalbedrag van de schuld |
+| Maandlast | Maandelijkse betaling |
+| Referentie | Referentienummer |
+| Hypotheekvorm | Alleen voor hypotheken |
+| Rentepercentage | Percentage |
+| Einddatum | Wanneer de schuld is afgelost |
+| Restschuld | Resterend bedrag |
+| Notities | Aanvullende opmerkingen |
+
+## Financieel Overzicht
+
+Onderaan de pagina ziet u een samenvatting:
+
+| Onderdeel | Beschrijving |
+|-----------|--------------|
+| Totaal bezittingen | Som van alle fysieke bezittingen |
+| Totaal saldi | Som van alle banksaldi |
+| Totaal verzekerd | Som van alle verzekerde bedragen |
+| Totaal schulden | Som van alle schulden |
+| **Bruto nalatenschap** | Bezittingen + saldi + verzekerd |
+| **Netto nalatenschap** | Bruto minus schulden |
+
+Dit overzicht helpt bij de erfbelastingberekening en geeft erfgenamen een helder financieel beeld.
+`,
+    "09-uitvaartwensen.md": `# 9 — Uitvaartwensen
+
+Op deze pagina legt u al uw wensen rond de uitvaart vast.
+
+## Voorkeur
+
+Kies uw voorkeur:
+- **Begraven** — inclusief begraafplaats, locatie, graftype
+- **Cremeren** — inclusief crematorium, locatie, asbestemming
+
+## Uitvaartondernemer
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van de uitvaartondernemer |
+| Bedrijf | Naam van het uitvaartbedrijf |
+| Telefoon | Telefoonnummer |
+| E-mail | E-mailadres |
+
+> **Tip**: Lumio suggereert om uw uitvaartondernemer ook als noodcontact toe te voegen.
+
+## Uitvaartverzekering
+
+Geef aan of u een uitvaartverzekering heeft. Zo ja, vul de verzekeringsgegevens in zodat nabestaanden dit snel kunnen vinden.
+
+## Ceremonie
+
+| Veld | Beschrijving |
+|------|--------------|
+| Type ceremonie | Kerkelijk, niet-kerkelijk, gemengd, etc. |
+| Locatie | Waar de ceremonie plaatsvindt |
+| Muziekwensen | Welke muziek u wilt laten spelen |
+| Sprekers | Wie er mag of moet spreken |
+| Bloemen | Wensen rond bloemen |
+| Dresscode | Kledingvoorschrift voor gasten |
+
+### Ceremonie-onderdelen
+
+U kunt een **gedetailleerde volgorde** van de ceremonie vastleggen:
+- Elk element bevat: onderdeel, beschrijving, muziek, spreker, lezing, dresscode
+- De volgorde is aanpasbaar door elementen te verslepen
+
+## In-memoriam en Overlijdensbericht
+
+| Veld | Beschrijving |
+|------|--------------|
+| In-memoriamkaart | Tekst voor de rouwkaart |
+| Overlijdensbericht | Tekst voor de overlijdensadvertentie |
+| Condoleance | Voorkeuren rond condoleance |
+
+## Voorkeurslocaties
+
+Leg specifieke voorkeurs vast voor:
+- Begraafplaats of crematorium
+- Aula of kerk
+- Ontvangstlocatie
+
+## Budget
+
+Geef een indicatie van het gewenste budget voor de uitvaart.
+
+## Uitvaartgasten
+
+Voeg personen toe die u bij de uitvaart wilt:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van de gast |
+| Relatie | Verwantschap |
+| Telefoon | Contactgegevens |
+| Notities | Bijzondere opmerkingen |
+
+## Uitvaart Wizard
+
+Via het dashboard kunt u de **Uitvaart Wizard** starten voor een begeleide invulervaring die u stap voor stap door alle wensen leidt.
+`,
+    "10-documenten.md": `# 10 — Documenten
+
+Op deze pagina beheert u uw persoonlijke documenten.
+
+## Documenten Uploaden
+
+Sleep een bestand naar het uploadvak of klik om een bestand te selecteren. Ondersteunde bestandstypen worden aangegeven; de maximale bestandsgrootte is 50 MB.
+
+## Documentgegevens
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van het document |
+| Categorie | Testament, Identiteitsbewijs, Akte, Verzekeringspolis, Medisch, Financieel, Overig |
+| Bestand | Het geüploade bestand |
+| Notities | Aanvullende opmerkingen |
+| Verloopdatum | Optioneel — wanneer het document verloopt |
+
+## Categorieën
+
+Organiseer uw documenten in categorieën:
+- **Testament** — Kopie van uw testament of codicil
+- **Identiteitsbewijs** — Paspoort, ID-kaart, rijbewijs
+- **Akte** — Geboorteakte, huwelijksakte, eigendomsakte
+- **Verzekeringspolis** — Polisdocumenten
+- **Medisch** — Medische verklaringen, wilsverklaring
+- **Financieel** — Bankafschriften, belastingaangiftes
+- **Overig** — Alle overige documenten
+
+## Versiegeschiedenis
+
+Lumio bewaart **meerdere versies** van elk document. Wanneer u een document bijwerkt:
+- De vorige versie blijft bewaard
+- U kunt eerdere versies bekijken en downloaden
+- De versiegeschiedenis is zichtbaar per document
+
+## Verloopdatums
+
+Als u een verloopdatum invult, waarschuwt Lumio u:
+- **30 dagen van tevoren** — "Document verloopt binnenkort"
+- **Na de verloopdatum** — "Document is verlopen"
+
+Deze waarschuwingen verschijnen ook als meldingen op het dashboard.
+
+## Veiligheid
+
+Alle documenten worden **versleuteld opgeslagen** in de lokale database. Ze zijn alleen toegankelijk na het invoeren van uw hoofdwachtwoord.
+`,
+    "11-erfgenamen.md": `# 11 — Erfgenamen & Noodcodes
+
+Op deze pagina beheert u uw erfgenamen, wijst bezittingen toe en maakt Shamir-noodcodes aan.
+
+## Erfgenamen Toevoegen
+
+Voeg de personen toe die uw nalatenschap ontvangen:
+
+| Veld | Beschrijving |
+|------|--------------|
+| Voornaam | Voornaam van de erfgenaam |
+| Tussenvoegsel | Optioneel tussenvoegsel |
+| Achternaam | Achternaam |
+| Relatie | Verwantschap (partner, kind, ouder, etc.) |
+| E-mail | E-mailadres |
+| Telefoon | Telefoonnummer |
+| Adres, Postcode, Woonplaats | Woonadres |
+| Geboortedatum | Geboortedatum |
+| BSN | Burgerservicenummer |
+| ID-document | Type, nummer, afgifte- en verloopdatum |
+
+## Toewijzingen
+
+Wijs specifieke bezittingen toe aan erfgenamen. Lumio toont een **overzicht van al uw bezittingen** uit alle categorieën:
+- Fysieke bezittingen
+- Bankrekeningen
+- Verzekeringen
+- Digitale accounts
+- Crypto wallets
+
+Per toewijzing kunt u vastleggen:
+- Welk item wordt toegewezen
+- Aan welke erfgenaam
+- Specifieke instructies
+
+## Erfbelasting Calculator
+
+De ingebouwde **erfbelastingcalculator** berekent een indicatie van de erfbelasting per erfgenaam, op basis van:
+- De relatie met de overledene
+- Het bedrag dat wordt geërfd
+- De geldende vrijstellingen en tarieven (2025)
+
+> Dit is een indicatieve berekening. Raadpleeg altijd een notaris of belastingadviseur voor de definitieve berekening.
+
+## Shamir Noodcodes
+
+Shamir's Secret Sharing is een techniek waarmee u uw hoofdwachtwoord verdeelt over meerdere delen ("shares"). Alleen als genoeg delen worden gecombineerd, kan het wachtwoord worden gereconstrueerd.
+
+### Noodcodes Aanmaken
+
+1. Voer uw hoofdwachtwoord in ter verificatie
+2. Stel de **drempel** in — het minimum aantal delen dat nodig is (minimaal 2)
+3. Klik op **Genereer noodcodes**
+4. Er wordt één noodcode aangemaakt per erfgenaam
+
+### Noodcodes Verdelen
+
+- Kopieer elke noodcode naar het klembord
+- Geef elke erfgenaam **alleen zijn of haar eigen code**
+- Markeer wanneer een code is uitgereikt
+
+### Hoe het Werkt
+
+Stel u heeft 3 erfgenamen en een drempel van 2:
+- Elk erfgenaam krijgt 1 noodcode
+- Om het wachtwoord te reconstrueren zijn minimaal 2 van de 3 codes nodig
+- Eén enkele code is niet genoeg
+
+> **Belangrijk**: Bewaar zelf geen kopie van de noodcodes. Het hele punt is dat uw erfgenamen samen toegang krijgen, maar niet alleen.
+
+## Per-erfgenaam Export
+
+U kunt per erfgenaam een **PDF-rapport** genereren met alle informatie die voor die erfgenaam relevant is:
+- Toegewezen bezittingen
+- Contactgegevens
+- Instructies
+
+Ook kunt u de informatie als **HTML-bestand** delen.
+`,
+    "12-noodcontacten.md": `# 12 — Noodcontacten & Noodkaart
+
+## Noodcontacten
+
+Leg de personen vast die in geval van nood gecontacteerd moeten worden.
+
+### Contactgegevens
+
+| Veld | Beschrijving |
+|------|--------------|
+| Naam | Naam van het contact |
+| Relatie | Verwantschap |
+| Telefoon | Telefoonnummer |
+| E-mail | E-mailadres |
+| Adres, Postcode, Woonplaats | Woonadres |
+
+### Rollen
+
+Geef elk contact een rol:
+- **Vertrouwenspersoon** — Eerste aanspreekpunt
+- **Huisarts** — Medisch contact
+- **Notaris** — Juridisch contact
+- **Uitvaartondernemer** — Uitvaart regelen
+- **Advocaat** — Juridische bijstand
+- **Financieel adviseur** — Financieel advies
+- **Overig** — Andere rollen
+
+### Instructies
+
+Per contact kunt u **instructies** vastleggen — wat dit contact moet doen of weten in geval van nood.
+
+### Gedeeld Contact
+
+Markeer een contact als **gedeeld** als het een contact is dat ook door anderen kan worden gezien (bijv. een gezamenlijke huisarts).
+
+### Exporteren en Importeren
+
+- **Exporteer** noodcontacten als JSON-bestand om te delen
+- **Importeer** noodcontacten vanuit een JSON-bestand
+
+## QR-Noodkaart
+
+Lumio kan een **QR-code** genereren met uw noodcontactgegevens.
+
+### Wat staat op de noodkaart?
+
+De QR-code bevat:
+- Namen en rollen van uw noodcontacten
+- Telefoonnummers en e-mailadressen
+- Een verwijzing naar Shamir-noodcodes
+
+### Noodkaart Maken
+
+1. Ga naar de noodcontactenpagina
+2. Klik op **Noodkaart QR**
+3. De QR-code wordt gegenereerd
+4. Download de QR-code als **PNG-afbeelding**
+
+### Gebruik
+
+Print de QR-code en bewaar deze bij uw identiteitsbewijs, in uw portemonnee, of op een andere plek waar hulpverleners het kunnen vinden. Iedereen met een smartphone kan de QR-code scannen om uw noodcontacten te zien.
+`,
+    "13-overige-functies.md": `# 13 — Overige Functies
+
+## Zoeken
+
+Druk op **Ctrl+K** of klik op de zoekknop in de header om het zoekvenster te openen.
+
+### Hoe zoeken werkt
+
+- Typ minimaal 2 tekens om te zoeken
+- Lumio doorzoekt 10 categorieën: erfgenamen, noodcontacten, digitale accounts, wachtwoorden, crypto wallets, bezittingen, bankrekeningen, verzekeringen, schulden en documenten
+- Resultaten worden gegroepeerd per categorie met bijpassende iconen
+- Zoektekst wordt **geel gemarkeerd** in de resultaten
+- Gebruik pijltjestoetsen om door de resultaten te navigeren, Enter om te openen
+
+### Snelle Acties
+
+Als u nog niets heeft getypt, toont het zoekvenster **snelle acties** naar veelgebruikte pagina's:
+- Erfgenamen, Noodcontacten, Digitaal Bezit, Boedel, Documenten, Testament
+
+### Recente Zoekopdrachten
+
+Uw laatste 5 zoekopdrachten worden onthouden en getoond wanneer u het zoekvenster opent.
+
+---
+
+## Exporteren
+
+Op de exportpagina kunt u uw gegevens exporteren in verschillende formaten:
+
+### Volledige Exports
+
+| Format | Beschrijving |
+|--------|--------------|
+| **Complete PDF** | Alle gegevens in één PDF-document |
+| **ZIP-pakket** | Alle exports gebundeld als ZIP |
+| **JSON** | Gestructureerde data in JSON-formaat |
+| **XML** | Gestructureerde data in XML-formaat |
+
+### CSV Exports
+
+Exporteer specifieke categorieën als spreadsheet:
+- Erfgenamen
+- Bezittingen
+- Bankrekeningen
+- Verzekeringen
+- Schulden
+- Noodcontacten
+
+### Specifieke PDF's
+
+14 individuele PDF-rapporten beschikbaar:
+- Testament, Euthanasie, Donor, Digitaal bezit, Boedel, Uitvaart, Documenten, Noodkaart
+- Testament-concept, Wilsverklaring, Noodprocedure, Boedelbeschrijving, Executeur-rapport, Notarispakket
+
+### NUV Export
+
+Exporteer uitvaartgegevens in het **NUV-formaat** (XML), de standaard voor de Nederlandse uitvaartbranche.
+
+---
+
+## Tijdlijn Overlijden
+
+Een visueel stappenplan voor nabestaanden, georganiseerd in vier fasen:
+
+### Fase 1: Eerste 24 uur (urgent)
+- Huisarts bellen
+- Uitvaart regelen
+- Naasten informeren
+- Donorwensen controleren
+- Wilsverklaring controleren
+
+### Fase 2: Week 1
+- Notaris contacteren
+- Werkgever informeren
+- Overlijden registreren
+- Documenten verzamelen
+
+### Fase 3: Maand 1
+- Verzekeringen afhandelen
+- Banks en rekeningen
+- Abonnementen opzeggen
+- Uitkeringen regelen
+- Digitale accounts afhandelen
+
+### Fase 4: 3+ maanden
+- Erfbelasting regelen
+- Boedel verdelen
+- Laatste administratie afhandelen
+
+Elke stap is afvinkbaar en biedt context over wat er moet gebeuren.
+
+---
+
+## Activiteitenlog
+
+De activiteitenlog toont de laatste 200 acties die in Lumio zijn uitgevoerd:
+
+| Type | Kleur | Beschrijving |
+|------|-------|--------------|
+| Aangemaakt | Groen | Nieuw item toegevoegd |
+| Gewijzigd | Blauw | Item bewerkt |
+| Verwijderd | Rood | Item verwijderd |
+| Ontgrendeld | Smaragd | App ontgrendeld |
+| Vergrendeld | Amber | App vergrendeld |
+| Export | Paars | Gegevens geëxporteerd |
+| Wachtwoord gewijzigd | Oranje | Wachtwoord veranderd |
+
+U kunt filteren op actietype en de log vernieuwen.
+
+---
+
+## Instellingen
+
+### Voorkeuren
+
+| Instelling | Beschrijving |
+|------------|--------------|
+| Auto-lock timeout | Na hoeveel minuten inactiviteit de app vergrendelt (1, 2, 5, 10, 15, 30 min of nooit) |
+| Grote tekst | Vergroot de tekst voor betere leesbaarheid |
+| Dashboard-weergave | Kies welke onderdelen op het dashboard zichtbaar zijn |
+| Taal | Kies Nederlands of Engels |
+| Periodieke actualisatie | Bevestig per domein dat uw gegevens nog actueel zijn |
+
+### Account & Data
+
+| Instelling | Beschrijving |
+|------------|--------------|
+| Profielen | Beheer uw profielen (maximaal 5). Verwijder niet-actieve profielen. |
+| Wachtwoord wijzigen | Verander uw hoofdwachtwoord (met sterkte-indicator) |
+| Backup & Herstel | Download een versleutelde backup of herstel vanuit een backup |
+| Auto-backup | (Alleen desktop) Stel automatische backups in: map, frequentie, test |
+
+### Beveiliging
+
+De beveiligingssectie toont de status van:
+- SQLCipher databaseversleuteling
+- AES-GCM veldversleuteling
+- Lokale opslag (geen internet)
+- Data-integriteitscontrole (handtekening)
+
+### Account Verwijderen
+
+Onderaan de instellingen kunt u uw account permanent verwijderen. Dit vereist wachtwoordbevestiging en een extra bevestigingsdialoog.
+
+---
+
+## Thema
+
+Klik op het **maan/zon-icoon** in de header om te wisselen tussen het lichte en donkere thema.
+`,
+    "14-nabestaanden.md": `# 14 — Nabestaanden-modus
+
+## Wat is de Nabestaanden-modus?
+
+Wanneer een familielid overlijdt, kunnen nabestaanden toegang krijgen tot het Lumio-profiel via **Shamir-noodcodes**. Dit geeft **alleen-lezen** toegang — er kan niets worden gewijzigd.
+
+## Inloggen als Nabestaande
+
+1. Open Lumio en selecteer het profiel van de overledene
+2. Klik op de link **Inloggen als nabestaande** (of vergelijkbaar)
+3. Het **noodcode-formulier** verschijnt
+4. Voer minimaal het vereiste aantal noodcodes in (meestal 2 of meer)
+5. Klik op **Ontgrendelen**
+
+### Noodcodes Invoeren
+
+- Elk invoerveld accepteert één noodcode
+- Klik op **+** om meer velden toe te voegen
+- Het benodigde aantal codes staat aangegeven (bijv. "Minimaal 2 codes vereist")
+- De codes worden gecombineerd om het hoofdwachtwoord te reconstrueren
+
+> Eén enkele noodcode is nooit voldoende. Er zijn altijd meerdere codes nodig, van verschillende erfgenamen.
+
+## Het Nabestaanden-dashboard
+
+Na het inloggen ziet u een speciaal **nabestaanden-dashboard** met een stapsgewijs plan in vier fasen:
+
+### Fase 1: Urgent (24-48 uur)
+- Noodcontacten bekijken en bellen
+- Uitvaartwensen raadplegen
+- Donorregistratie controleren
+- Wilsverklaring bekijken
+
+### Fase 2: Week 1
+- Testament raadplegen
+- Erfgenamen bekijken
+- Documenten verzamelen
+
+### Fase 3: Maand 1
+- Boedel overzien
+- Digitale bezittingen afhandelen
+
+### Fase 4: Afronding
+- Gegevens exporteren
+- Profielgegevens raadplegen
+
+Elke stap linkt naar de relevante pagina in Lumio.
+
+## Beperkingen
+
+In de nabestaanden-modus:
+- Alle gegevens zijn **alleen-lezen**
+- Er kunnen geen wijzigingen worden aangebracht
+- Er kunnen geen items worden toegevoegd of verwijderd
+- Exportfuncties zijn wel beschikbaar
+
+## Compleetheidsoverzicht
+
+Het nabestaanden-dashboard toont ook een **compleetheidsoverzicht** — welke secties de overledene had ingevuld en welke niet. Dit helpt bij het inschatten welke informatie beschikbaar is.
+
+## Afhandeling
+
+Het dashboard bevat een **afhandeling-tracker** waarmee nabestaanden kunnen bijhouden welke stappen al zijn afgehandeld.
+`,
+  },
+  en: {
+    "01-getting-started.md": `# 1 — Getting Started
+
+## Starting Lumio
+
+Lumio is a portable application — no installation is required.
+
+1. Open the folder where Lumio is located (for example, on a USB drive)
+2. Double-click **Lumio.exe**
+3. The application opens in a window
+
+## First Time: Creating a Profile
+
+On the first launch, you will see the **profile selection screen**:
+
+1. Click **Create new profile**
+2. Enter your name and choose your relationship (Primary, Partner, Child, Parent, Other)
+3. Click **Create**
+
+> The first profile is automatically marked as "Primary". You can create up to 5 profiles.
+
+## Setting a Password
+
+After creating a profile, you set a **master password**:
+
+1. Enter a password (minimum 8 characters)
+2. The **strength indicator** shows how strong your password is
+3. Confirm the password by entering it again
+4. Click **Set**
+
+> **Important**: Remember this password well. If you lose it, you can only regain access via Shamir emergency codes (see chapter 11).
+
+## Logging In
+
+On subsequent visits:
+
+1. Select your profile in the profile picker
+2. Enter your master password
+3. Click **Unlock**
+
+Use the eye icon to make the password visible.
+
+## Choosing a Language
+
+At the bottom of the login screen there is a **language selector**. Lumio supports:
+- **Dutch** (default)
+- **English**
+
+You can also change the language later via Settings.
+
+## Switching Profiles
+
+Click **Switch profile** on the login screen to return to the profile picker.
+
+## Auto-Lock
+
+Lumio automatically locks after a period of inactivity. Just before locking, a warning appears with a countdown timer. Click **Stay active** to prevent locking.
+
+The lock timeout is configurable via Settings (default: 5 minutes).
+
+## Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| \`Ctrl+K\` | Open search |
+| \`Ctrl+L\` | Lock app |
+| \`Ctrl+N\` | Add new item |
+| \`?\` | Show keyboard shortcuts |
+| \`G\` then \`D\` | Go to Dashboard |
+| \`G\` then \`T\` | Go to Will |
+| \`G\` then \`N\` | Go to Emergency Contacts |
+`,
+    "02-dashboard.md": `# 2 — Dashboard
+
+The dashboard is the home screen after logging in. It provides an overview of your progress and quick access to all sections.
+
+## Progress Bar
+
+At the top you see a **progress bar** showing what percentage of your profile has been filled in. Next to it is how many sections are completed (e.g., "4 of 10 sections").
+
+## Statistics
+
+A compact summary shows the number of:
+- Heirs
+- Digital accounts
+- Documents
+- Estate items
+- Emergency contacts
+
+Plus a financial overview: total assets, total debts, and net estate.
+
+## Detailed Progress
+
+Click on the progress section to see per domain which fields have been filled in. Each domain shows its own progress bar (e.g., "5 of 8 fields for Will").
+
+## Smart Suggestions
+
+Click **Analyze profile** to receive contextual suggestions. Lumio analyzes your data and provides tips about missing or incomplete information, such as:
+- "Your notary is not listed as an emergency contact"
+- "You have not yet filled in a GP"
+
+## Interview Wizard
+
+If you have not yet filled in profile data, a bar appears with two options:
+- **Guided interview** — A step-by-step wizard that guides you through the most important questions
+- **Fill in directly** — Go straight to the profile page
+
+The interview wizard asks questions in 5 steps about:
+1. Personal data
+2. Emergency contact
+3. Will
+4. Funeral
+5. Digital assets
+
+After completion, all answers are automatically saved in the correct sections.
+
+## Onboarding Wizard
+
+On the first login, an **onboarding wizard** also appears with 6 steps:
+1. Create profile
+2. Add emergency contacts
+3. Set up will
+4. Fill in funeral wishes
+5. Add heirs
+6. Make first backup
+
+The wizard shows a progress bar and automatically checks whether each step has been completed. You can close the wizard and resume later.
+
+## Domain Cards
+
+The dashboard shows 10 cards, one per domain:
+
+| Domain | Description |
+|--------|-------------|
+| My Profile | Your personal data |
+| Will | Will data and beneficiaries |
+| Advance Directive | Euthanasia wish and representative |
+| Organ Donation | Organ donation choices |
+| Digital Assets | Online accounts and passwords |
+| Estate | Possessions, accounts, debts |
+| Funeral Wishes | Burial, cremation, ceremony |
+| Documents | Personal documents |
+| Heirs | Heirs and assignments |
+| Emergency Contacts | Emergency contact persons |
+
+### Status Badges
+
+Each card shows a status badge:
+- **Start** — Not yet started
+- **In Progress** — Data has been entered but the domain is not yet complete
+- **Completed** — You have marked the domain as completed
+- **Review Needed** — It is time to review the data (periodic actualization)
+
+### Marking a Domain as Completed
+
+On each domain card you can click **Mark as completed** to mark the domain as finished. To undo this, click **Reopen**.
+
+## Customizing the Dashboard
+
+You can hide sections of the dashboard with the eye icon. Via Settings you can manage the visibility of the following sections:
+- Progress bar
+- Detailed progress
+- Smart suggestions
+- Domain cards
+
+## Notifications
+
+In the header you see a **bell icon** with notifications. These are warnings and reminders, such as:
+- "You have never made a backup"
+- "Your backup is older than 30 days"
+- "There are expired documents"
+- "Shamir emergency codes have not been distributed"
+`,
+    "03-my-profile.md": `# 3 — My Profile
+
+This page contains your personal data, divided into 5 sections.
+
+## 1. Profile Photo
+
+Upload a profile photo by clicking the photo icon. Options:
+- **Upload photo** — Select an image from your device
+- **Remove** — Remove the current photo
+
+The photo is displayed on the dashboard and in exports.
+
+## 2. Personal Data
+
+| Field | Description |
+|-------|-------------|
+| First name | Your first name |
+| Last name | Your surname |
+| Date of birth | Your date of birth |
+| Place of birth | City/town where you were born |
+| Nationality | Your nationality |
+| BSN | Citizen service number (Dutch: burgerservicenummer) |
+| Phone number | Your phone number |
+| Email | Your email address |
+| Address | Street, house number, postal code, city |
+| Country | Country of residence |
+
+## 3. Civil Status
+
+| Field | Description |
+|-------|-------------|
+| Marital status | Unmarried, Married, Registered partnership, Divorced, Widowed |
+| Wedding date | Date of marriage or partnership |
+| Prenuptial agreement | Whether a prenuptial (or cohabitation) agreement exists |
+
+## 4. Identification
+
+| Field | Description |
+|-------|-------------|
+| ID type | Passport, ID card, Driving license |
+| Document number | The number on the document |
+| Valid until | Expiry date |
+| Country of issue | Country that issued the document |
+
+> **Tip**: If your ID document is about to expire, you will see an automatic warning.
+
+## 5. Notary Data
+
+| Field | Description |
+|-------|-------------|
+| Notary name | Name of your notary |
+| Firm | Name of the firm |
+| Phone number | Phone number of the notary |
+| Email | Email address of the notary |
+| Address | Address of the firm |
+| Will deed | Whether the will has been notarized |
+| Deed date | Date of the notarial deed |
+
+## Saving
+
+All changes are saved automatically. You will see a brief **"Saved"** confirmation after each change.
+
+## Example Data
+
+When creating a new profile, you can choose to load **example data**. This fills all sections with fictional data so you can see how Lumio works. You can modify or delete this data at any time.
+
+## Periodic Actualization
+
+Lumio recommends periodically reviewing your profile data. If data has not been updated for more than 6 months, a **"Review needed"** status appears on the dashboard.
+`,
+    "04-will.md": `# 4 — Will
+
+This page lets you record your wishes regarding your will and assign your estate to beneficiaries.
+
+## Will Data
+
+| Field | Description |
+|-------|-------------|
+| Will present | Whether a will has been drawn up |
+| Location | Where the will is stored (e.g., at the notary) |
+| Deed date | Date of the notarial deed |
+| Notary | Which notary holds the will |
+| Notes | Additional details |
+
+## General Wishes
+
+A free text field for recording general wishes, such as:
+- Who should manage the estate
+- Special conditions
+- Instructions for heirs
+
+## Beneficiaries
+
+Add persons or organizations as beneficiaries:
+
+| Field | Description |
+|-------|-------------|
+| Name | Name of the beneficiary |
+| Relationship | E.g., Child, Partner, Organization |
+| Share | Percentage of the estate |
+| Conditions | Any conditions attached |
+
+### Legitimate Portion Check
+
+For certain relationships (children, partner), the application automatically checks whether the **legitimate portion** (Dutch: legitieme portie) is respected. If a beneficiary receives less than their legitimate portion, a warning is displayed.
+
+> **Tip**: The legitimate portion is calculated according to the rules of Dutch civil law (Book 4 BW, Dutch Civil Code).
+
+## Executors
+
+Designate one or more executors:
+
+| Field | Description |
+|-------|-------------|
+| Name | Name of the executor |
+| Phone number | Contact number |
+| Email | Email address |
+| Role description | What tasks the executor has |
+
+## Legal Check
+
+The **legal check** component automatically analyzes your will data and shows:
+- ✅ Compliant items
+- ⚠️ Points of attention
+- ❌ Issues that need to be resolved
+
+Examples of checks:
+- "Total shares exceed 100%"
+- "No executor has been designated"
+- "Legitimate portion of child X is not respected"
+
+## Concept Snapshots
+
+You can create a **concept snapshot** of the current state of your will data. This works as versioning:
+
+1. Click **Save snapshot**
+2. Enter a description (e.g., "Version after birth of second child")
+3. The snapshot is stored with a timestamp
+
+You can view snapshots to compare older versions.
+
+## Will Wizard
+
+The **will wizard** guides you through recording your will step by step:
+1. Basic will data
+2. General wishes
+3. Beneficiaries
+4. Executor
+5. Overview and check
+
+Each step contains a progress indicator and clear instructions.
+`,
+    "05-advance-directive.md": `# 5 — Advance Directive & Euthanasia
+
+This page lets you record your wishes regarding euthanasia and advance directives.
+
+## Euthanasia Wish
+
+Record your basic wish:
+- **Yes** — You want euthanasia to be a possibility under certain conditions
+- **No** — You do not want euthanasia
+- **Not yet decided** — You have not yet made a choice
+
+## GP Data
+
+| Field | Description |
+|-------|-------------|
+| GP name | Name of your general practitioner |
+| Practice | Name of the practice |
+| Phone number | Phone number of the practice |
+| Email | Email address |
+
+> **Tip**: Your GP is important because they are often involved in the euthanasia process.
+
+## Representative
+
+Designate a person who can speak on your behalf if you are no longer able to do so:
+
+| Field | Description |
+|-------|-------------|
+| Name | Name of the representative |
+| Relationship | Relationship with you |
+| Phone number | Phone number |
+| Email | Email address |
+| Address | Address of the representative |
+
+## Dementia Clause
+
+A specific section for a **dementia clause**:
+- **Active** — You want euthanasia to be possible in the case of advanced dementia
+- **Inactive** — You have not recorded a dementia clause
+
+You can add additional notes with conditions, such as:
+- "When I no longer recognize my family"
+- "When I need 24-hour nursing care"
+
+## Treatment Prohibition
+
+Record which treatments you wish to **refuse**:
+- Resuscitation
+- Artificial ventilation
+- Artificial hydration and nutrition
+- Transfer to ICU
+
+Per treatment you can indicate:
+- **Refuse** — You do not want this treatment
+- **Allow** — You do want this treatment
+- **No preference** — You leave this decision to others
+
+## Additional Wishes
+
+A free text field for additional wishes or instructions that do not fall in the categories above.
+
+## Date of Signing
+
+Record the date on which you recorded or signed these wishes. This is important for the validity of the advance directive.
+
+## Advance Directive Wizard
+
+The **advance directive wizard** guides you through all steps:
+1. Euthanasia wish (yes/no/undecided)
+2. GP data
+3. Representative
+4. Dementia clause and treatment prohibitions
+5. Additional wishes
+6. Date of signing and overview
+`,
+    "06-organ-donation.md": `# 6 — Organ Donation
+
+This page lets you record your choices regarding organ and tissue donation.
+
+## Donor Choice
+
+Choose your main preference:
+- **Yes, I am a donor** — You want to donate organs and tissues
+- **No, I am not a donor** — You do not want to donate
+- **My next of kin decides** — You leave the decision to your next of kin
+- **A specific person decides** — You name a specific person to decide
+- **Not yet decided** — You have not yet made a choice
+
+## Registration
+
+| Field | Description |
+|-------|-------------|
+| Registered in the Donor Register | Whether you are registered with the official Donor Register |
+| Registration date | When you registered |
+
+## Explanation
+
+A free text field to add additional context to your choice. For example:
+- "I only want to donate organs, not tissues"
+- "Only if the recipient is a child"
+
+## Organ-Specific Choices
+
+If you choose "Yes", you can specify **per organ or tissue** whether you want to donate it:
+
+| Organ / Tissue | Choice |
+|----------------|--------|
+| Heart | Yes / No |
+| Lungs | Yes / No |
+| Liver | Yes / No |
+| Kidneys | Yes / No |
+| Pancreas | Yes / No |
+| Small intestine | Yes / No |
+| Corneas | Yes / No |
+| Skin | Yes / No |
+| Bone tissue | Yes / No |
+| Heart valves | Yes / No |
+| Blood vessels | Yes / No |
+
+By default, all organs are selected. You can deselect individual organs.
+
+## Link to the Donor Register
+
+The page provides a link to the official **Donor Register** (donorregister.nl) where you can officially register your choice. Lumio itself does not register this with the government; it only records your personal wishes.
+
+## Organ Donation Wizard
+
+The **organ donation wizard** guides you through the choices:
+1. Main donor choice (donor yes/no/other)
+2. Organ-specific choices (if applicable)
+3. Registration data
+4. Additional explanation
+5. Overview
+`,
+    "07-digital-assets.md": `# 7 — Digital Assets
+
+This page manages your digital presence, divided into 3 tabs.
+
+---
+
+## Tab 1 — Digital Accounts
+
+Record all your online accounts so that heirs know which accounts exist and what should happen to them.
+
+### Fields per Account
+
+| Field | Description |
+|-------|-------------|
+| Service name | Name of the service (e.g., Gmail, Facebook, Netflix) |
+| Category | E.g., Email, Social media, Banking, Shopping, Cloud storage |
+| URL | Web address of the service |
+| Username | Your username or email |
+| Email | Email address linked to the account |
+| Phone number | Phone number linked to the account |
+| Two-factor auth | Whether 2FA is enabled |
+| Closure instructions | What should happen to the account: delete, memorialize, transfer, or keep |
+
+### Category Filter
+
+Use the category filter at the top to quickly find accounts. Categories include:
+- Email
+- Social media
+- Banking
+- Shopping
+- Cloud storage
+- Entertainment
+- Work
+- Other
+
+### CSV Import
+
+You can import accounts in bulk via a **CSV file**:
+1. Click **Import CSV**
+2. Select a CSV file with columns: service, category, url, username, email
+3. The imported accounts are added to the existing list
+
+---
+
+## Tab 2 — Passwords
+
+Securely store passwords linked to your accounts.
+
+### Fields per Password
+
+| Field | Description |
+|-------|-------------|
+| Service | The service this password belongs to |
+| Username | The corresponding username |
+| Password | The password itself |
+| Notes | Additional information (e.g., security questions) |
+
+### Visibility Toggle
+
+Passwords are shown as \`••••••••\` by default. Click the **eye icon** to make them visible.
+
+### Password Generator
+
+Click **Generate password** to create a strong random password. Options:
+- Length (8–64 characters)
+- Include uppercase letters
+- Include numbers
+- Include special characters
+
+### Encryption
+
+All passwords are encrypted with **AES-256-GCM** before being stored. They are only decrypted when you explicitly view them.
+
+---
+
+## Tab 3 — Crypto Wallets
+
+Record your cryptocurrency wallets.
+
+### Fields per Wallet
+
+| Field | Description |
+|-------|-------------|
+| Wallet name | Name or description (e.g., "Bitcoin hardware wallet") |
+| Currency | Cryptocurrency type (Bitcoin, Ethereum, etc.) |
+| Wallet address | Public wallet address |
+| Platform | Exchange or hardware wallet (e.g., Ledger, Coinbase) |
+| Notes | Additional information |
+
+### Seed Phrase
+
+> **Important**: Lumio stores no seed phrases or private keys in plain text. Use the **password tab** to store these securely, or record the physical location where they are kept.
+`,
+    "08-estate.md": `# 8 — Estate
+
+This page provides an overview of your total estate, divided into 4 tabs plus a financial summary.
+
+---
+
+## Tab 1 — Possessions
+
+Record valuable possessions.
+
+### Fields per Possession
+
+| Field | Description |
+|-------|-------------|
+| Description | What is it (e.g., "Oil painting grandmother") |
+| Category | E.g., Jewelry, Art, Vehicle, Electronics, Real estate, Furniture, Other |
+| Estimated value | Estimated value in euros |
+| Purchase date | When it was acquired |
+| Purchase value | Original purchase price |
+| Location | Where the item is located |
+| Insurance | Whether the item is insured |
+| Condition | Good, Reasonable, Poor |
+| Assigned to | Which heir receives this item |
+| Notes | Additional information |
+
+---
+
+## Tab 2 — Bank Accounts
+
+Record all your bank accounts.
+
+### Fields per Account
+
+| Field | Description |
+|-------|-------------|
+| Bank name | Name of the bank (e.g., ING, Rabobank, ABN AMRO) |
+| Account type | Checking account, Savings account, Investment account, Other |
+| IBAN | Account number (IBAN format) |
+| Balance | Current balance |
+| Joint account | Whether the account is held jointly with someone else |
+| Notes | Additional information |
+
+### IBAN Validation
+
+The IBAN field automatically checks whether the entered number has a **valid format**. An error message is shown for invalid IBANs.
+
+---
+
+## Tab 3 — Insurance
+
+Record your insurance policies.
+
+### Fields per Insurance Policy
+
+| Field | Description |
+|-------|-------------|
+| Insurance company | Name of the insurer |
+| Type | Life insurance, Funeral insurance, Liability, Home contents, Health, Other |
+| Policy number | The policy number |
+| Coverage amount | Amount insured |
+| Premium | Monthly or annual premium |
+| Beneficiary | Who receives the payout |
+| Notes | Additional information |
+
+---
+
+## Tab 4 — Debts
+
+Record outstanding debts and obligations.
+
+### Fields per Debt
+
+| Field | Description |
+|-------|-------------|
+| Description | What the debt concerns (e.g., "Mortgage apartment") |
+| Type | Mortgage, Personal loan, Credit card, Student loan, Tax debt, Other |
+| Creditor | The lender |
+| Original amount | Original loan amount |
+| Outstanding amount | Current remaining balance |
+| Interest rate | Interest rate percentage |
+| Monthly payment | Monthly installment |
+| End date | When the debt will be fully repaid |
+| Collateral | Whether there is collateral (e.g., a house) |
+| Notes | Additional information |
+
+---
+
+## Financial Summary
+
+At the bottom of the page you see a summary:
+
+| Category | Description |
+|----------|-------------|
+| **Total possessions** | Sum of all estimated values |
+| **Total balances** | Sum of all bank balances |
+| **Total insured** | Sum of all coverage amounts |
+| **Total debts** | Sum of all outstanding amounts |
+| **Gross estate** | Possessions + balances + insured amounts |
+| **Net estate** | Gross estate minus debts |
+
+This summary automatically updates when you modify data.
+`,
+    "09-funeral-wishes.md": `# 9 — Funeral Wishes
+
+This page lets you record your wishes for your funeral or farewell ceremony.
+
+## Burial or Cremation
+
+Choose your main preference:
+- **Burial** — You wish to be buried
+- **Cremation** — You wish to be cremated
+- **Natural burial** — An eco-friendly burial
+- **Body donation** — You donate your body to science
+- **No preference** — You leave the choice to your next of kin
+
+## Funeral Director
+
+| Field | Description |
+|-------|-------------|
+| Funeral director name | Name of the preferred funeral director |
+| Company | Name of the funeral home |
+| Phone number | Phone number |
+| Email | Email address |
+
+## Funeral Insurance
+
+Indicate whether you have **funeral insurance** and link it to the policy recorded in the Estate section.
+
+## Ceremony
+
+| Field | Description |
+|-------|-------------|
+| Ceremony type | Religious, Civil, Combination, No ceremony |
+| Location | Where the ceremony should take place |
+| Officiant | Who should lead the ceremony |
+| Music | Music wishes (songs, artists) |
+| Readings | Texts or poems to be read |
+| Special wishes | Other wishes for the ceremony |
+
+### Ceremony Elements
+
+You can add **ceremony elements** in a specific order:
+- Opening words
+- Music
+- Reading
+- Speech
+- Moment of silence
+- Closing
+
+The order can be changed by **dragging and dropping** the elements.
+
+## In Memoriam
+
+| Field | Description |
+|-------|-------------|
+| Photo | Which photo to use |
+| Text | Text for the memorial card |
+| Newspaper | In which newspaper(s) to place a notice |
+
+## Preferred Locations
+
+Record preferred locations for:
+- The funeral ceremony
+- The burial or cremation
+- The condolence gathering
+
+## Budget
+
+Indicate a **budget** for the total funeral. This helps heirs manage costs.
+
+## Funeral Guests
+
+Add people who should specifically be invited or informed:
+
+| Field | Description |
+|-------|-------------|
+| Name | Name of the guest |
+| Relationship | Relationship (family, friend, colleague, etc.) |
+| Phone number | Contact number |
+| Email | Email address |
+
+## Funeral Wizard
+
+The **funeral wizard** guides you through recording your wishes:
+1. Burial or cremation choice
+2. Ceremony preferences
+3. In memoriam
+4. Guest list
+5. Budget and overview
+`,
+    "10-documents.md": `# 10 — Documents
+
+This page lets you store and manage important documents.
+
+## Uploading Documents
+
+Upload documents via:
+- **Drag & drop** — Drag files directly into the upload area
+- **Click** — Click the upload area and select files
+
+### Limits
+- Maximum file size: **50 MB** per file
+- Supported formats: PDF, images (JPG, PNG), Word documents, text files
+
+## Document Details
+
+| Field | Description |
+|-------|-------------|
+| Name | Name of the document |
+| Category | Classification (see below) |
+| Description | Brief description of the content |
+| Issue date | When the document was issued |
+| Expiry date | When the document expires (optional) |
+
+## Categories
+
+Documents are organized into 7 categories:
+
+| Category | Examples |
+|----------|----------|
+| **Identity** | Passport, ID card, driving license |
+| **Financial** | Tax returns, annual statements, pension overviews |
+| **Legal** | Will, prenuptial agreement, power of attorney |
+| **Medical** | Advance directive, medical records, health insurance |
+| **Insurance** | Policy documents, claim forms |
+| **Property** | Land registry excerpts, deeds, appraisal reports |
+| **Other** | All other documents |
+
+## Version History
+
+Each document maintains a **version history**:
+1. Upload a new version of the same document
+2. The previous version is preserved
+3. You can view older versions and revert to them if needed
+
+The current version is shown with a version number and upload date.
+
+## Expiry Warnings
+
+If a document has an **expiry date**, Lumio shows a warning:
+- **30 days before expiry** — A yellow warning appears
+- **Expired** — A red warning appears
+
+These warnings are also visible on the dashboard under notifications.
+
+## Encryption
+
+All documents are stored encrypted. They are only decrypted when you open or download them.
+`,
+    "11-heirs.md": `# 11 — Heirs & Emergency Codes
+
+This page manages your heirs, assigns estate items, and provides tools for inheritance tax estimation and Shamir emergency codes.
+
+## Heir Details
+
+Add heirs with the following details:
+
+| Field | Description |
+|-------|-------------|
+| First name | First name of the heir |
+| Last name | Last name |
+| Date of birth | Date of birth |
+| Relationship | Child, Partner, Sibling, Parent, Grandchild, Organization, Other |
+| BSN | Citizen service number (optional) |
+| Phone number | Phone number |
+| Email | Email address |
+| Address | Street, house number, postal code, city |
+| Share | Percentage of the estate |
+| Role | Executor, Trustee, Beneficiary |
+| Notes | Additional information |
+
+## Assignments
+
+Assign specific estate items to heirs. Assignments are organized into 5 categories:
+
+| Category | What can be assigned |
+|----------|---------------------|
+| **Possessions** | Items from the Estate section |
+| **Bank accounts** | Bank accounts (after settlement) |
+| **Insurance** | Insurance policy payouts |
+| **Digital accounts** | Online accounts and their access |
+| **Special bequests** | Specific items or amounts |
+
+Per assignment you indicate:
+- Which item it concerns
+- Which heir receives it
+- Any conditions
+
+## Inheritance Tax Calculator
+
+The built-in **tax calculator** provides an estimate of the inheritance tax per heir:
+- Enter the total estate value (or use the automatically calculated value from the Estate page)
+- The calculator uses the current Dutch tax rates and exemptions
+- Results are shown per heir, based on their relationship and share
+
+> **Note**: This is an estimate only. Consult a tax advisor for exact amounts.
+
+## Shamir Emergency Codes
+
+Shamir emergency codes allow heirs to access the encrypted Lumio database in an emergency. This uses the **Shamir Secret Sharing** method.
+
+### Creating Emergency Codes
+
+1. Go to the **Shamir** section
+2. Click **Generate emergency codes**
+3. Set the **threshold** — the minimum number of codes needed to unlock (e.g., 3 out of 5)
+4. Set the **total number of codes** to generate
+5. Click **Generate**
+
+### Distributing Codes
+
+Each generated code is unique. Distribute them to trusted persons:
+- Print the codes and give them physically
+- Each person receives exactly 1 code
+- No single code is sufficient on its own
+
+### How It Works
+
+Example with a **3-of-5** threshold:
+- 5 codes are generated and distributed to 5 different people
+- If you pass away, at least 3 of these people must combine their codes
+- With 3 codes entered, the database can be unlocked
+- With only 1 or 2 codes, access remains impossible
+
+> **Security**: The Shamir method is mathematically proven. With fewer codes than the threshold, no information about the secret is revealed.
+
+## Per-Heir Export
+
+For each heir, you can generate a personal export containing:
+- Their assigned items
+- Relevant documents
+- Contact information
+- Instructions
+
+Export formats:
+- **PDF** — Formatted document
+- **HTML** — Digital version
+`,
+    "12-emergency-contacts.md": `# 12 — Emergency Contacts & Emergency Card
+
+This page manages emergency contact persons and generates a QR emergency card.
+
+## Contact Details
+
+Add emergency contacts with the following information:
+
+| Field | Description |
+|-------|-------------|
+| Name | Full name of the contact person |
+| Relationship | E.g., Partner, Child, Friend, Neighbor, Doctor, Attorney |
+| Phone number | Phone number |
+| Email | Email address |
+| Address | Full address |
+
+## Roles
+
+Each contact can be assigned one or more roles:
+
+| Role | Description |
+|------|-------------|
+| **Primary contact** | First person to be reached in an emergency |
+| **Medical** | Contact for medical decisions (e.g., GP, specialist) |
+| **Legal** | Contact for legal matters (e.g., notary, lawyer) |
+| **Financial** | Contact for financial matters (e.g., financial advisor) |
+| **Practical** | Help with practical matters (e.g., neighbor, friend) |
+| **Spiritual** | Spiritual or religious guidance |
+| **Other** | Other roles |
+
+## Instructions per Contact
+
+For each contact you can record specific **instructions**:
+- What this person should do in an emergency
+- Which information they may access
+- Priority and order of contact
+
+## Shared Contacts
+
+Contacts can be **shared across profiles**. If you have multiple profiles in Lumio (e.g., for your partner), a contact added to one profile can be linked to another.
+
+## Export / Import
+
+- **Export** — Export all contacts as a JSON file (for backup or sharing)
+- **Import** — Import contacts from a JSON file
+
+## QR Emergency Card
+
+Generate a physical **emergency card** with a QR code.
+
+### Card Content
+
+The QR emergency card contains:
+- Your name and date of birth
+- Emergency contact information (name + phone number)
+- Medical details (e.g., allergies, blood type, medications)
+- ICE (In Case of Emergency) information
+
+### Creating the Card
+
+1. Go to **Emergency Card**
+2. Select which information to include
+3. Choose the card format (PDF, credit card size)
+4. Click **Generate**
+
+### Usage
+
+- Print the card and carry it in your wallet
+- Save it on your phone
+- The QR code can be scanned with any standard QR scanner
+- Scanning shows the recorded emergency information
+`,
+    "13-other-features.md": `# 13 — Other Features
+
+This chapter describes additional features available throughout the application.
+
+## Search (Ctrl+K)
+
+Press **Ctrl+K** to open the **search dialog**. This provides a global search across all your data.
+
+### Search Categories
+
+Search results are grouped into 10 categories:
+- Profile data
+- Will & beneficiaries
+- Advance directive
+- Organ donation
+- Digital accounts
+- Estate items
+- Funeral wishes
+- Documents
+- Heirs
+- Emergency contacts
+
+### Features
+
+- **Yellow highlighting** of the search term in results
+- **Keyboard navigation** — Use ↑/↓ arrow keys to navigate, Enter to open
+- **Quick actions** — Each result has direct actions (e.g., "Open", "Edit")
+- **Recent searches** — Your last 5 searches are remembered
+- **Category filter** — Click a category to filter results
+
+---
+
+## Export
+
+Export your data in various formats.
+
+### Full Export Formats
+
+| Format | Description |
+|--------|-------------|
+| **PDF** | Complete overview of all data, formatted and print-ready |
+| **HTML** | Digital version that can be opened in a browser |
+| **JSON** | Machine-readable format (for backup or import) |
+| **Encrypted backup** | Complete database backup, encrypted |
+
+### CSV Exports
+
+Export specific data as CSV files (e.g., for spreadsheets):
+- Digital accounts
+- Possessions
+- Bank accounts
+- Insurance policies
+- Debts
+- Emergency contacts
+
+### PDF Exports per Domain
+
+Generate separate PDFs for each domain (14 options):
+- My Profile
+- Will
+- Advance Directive
+- Organ Donation
+- Digital Accounts
+- Passwords
+- Crypto Wallets
+- Possessions
+- Bank Accounts
+- Insurance Policies
+- Debts
+- Funeral Wishes
+- Heirs
+- Emergency Contacts
+
+### NUV Format
+
+Export in **NUV format** (Nabestaanden Uitvaart Voorbereiding — Survivor Funeral Preparation) for compatibility with funeral directors.
+
+---
+
+## Timeline
+
+The **timeline** shows important events organized into 4 phases:
+
+| Phase | Description |
+|-------|-------------|
+| **Immediate** | Tasks for the first 24–48 hours |
+| **Week 1** | Tasks for the first week |
+| **Month 1** | Tasks for the first month |
+| **Completion** | Long-term settlement tasks |
+
+Each phase contains concrete action items with checkboxes.
+
+---
+
+## Activity Log
+
+The **activity log** records all actions within the application.
+
+### Action Types
+
+| Type | Description |
+|------|-------------|
+| **Created** | Something new has been added |
+| **Modified** | Existing data has been changed |
+| **Deleted** | Data has been removed |
+| **Exported** | Data has been exported |
+| **Logged in** | A login has taken place |
+| **Locked** | The application has been locked |
+| **Backup** | A backup has been made |
+
+### Features
+
+- Maximum **200 entries** are displayed
+- Entries are shown with timestamp and description
+- Entries are **color-coded** by type
+- You can filter by type
+
+---
+
+## Settings
+
+Settings are divided into 3 sections.
+
+### 1. Preferences
+
+| Setting | Description |
+|---------|-------------|
+| Language | Choose between Dutch and English |
+| Dashboard sections | Show or hide sections |
+| Date format | DD-MM-YYYY or YYYY-MM-DD |
+| Currency | EUR (default) |
+
+### 2. Account & Data
+
+| Setting | Description |
+|---------|-------------|
+| Change password | Change your master password |
+| Example data | Load or remove example data |
+| Delete profile | Permanently delete the current profile |
+| Backup | Create or restore a backup |
+
+### 3. Security
+
+| Setting | Description |
+|---------|-------------|
+| Auto-lock timeout | Time before auto-lock (default: 5 minutes) |
+| Clipboard clearing | Automatically clear clipboard after copying passwords |
+| Session duration | Maximum session length |
+
+---
+
+## Theme Toggle
+
+Switch between **light mode** and **dark mode** using the sun/moon icon in the application header. The selected theme is saved per profile.
+`,
+    "14-heir-mode.md": `# 14 — Heir Mode
+
+Heir mode allows heirs to access the Lumio database of a deceased person. This mode is activated using **Shamir emergency codes** (see chapter 11).
+
+## Logging In as an Heir
+
+### Step 1 — Open Lumio
+
+Open Lumio on the device where the profile data is stored (e.g., a USB drive from the deceased).
+
+### Step 2 — Choose "Heir Login"
+
+On the login screen, click **Login as heir** instead of the normal login.
+
+### Step 3 — Enter Emergency Codes
+
+1. Enter the first emergency code
+2. Click **Add code** to add the next code
+3. Repeat until the minimum number of codes (the threshold) has been entered
+4. Click **Unlock**
+
+> **Example**: With a 3-of-5 threshold, at least 3 different codes are required.
+
+If the threshold is met, the database will be unlocked and you enter heir mode.
+
+## Heir Dashboard
+
+In heir mode you see a special **heir dashboard** with 4 phases:
+
+### Phase 1 — Urgent (first 24–48 hours)
+- Emergency contact information
+- Funeral wishes
+- Important documents
+
+### Phase 2 — Week 1
+- Notify insurance companies and banks
+- Arrange funeral matters
+- Access digital accounts
+
+### Phase 3 — Month 1
+- Estate settlement
+- Tax matters
+- Transfer or close accounts
+
+### Phase 4 — Completion
+- Divide estate
+- Close remaining accounts
+- Archiving
+
+Each task has a checkbox to track its completion.
+
+## Read-Only Limitations
+
+In heir mode, 4 restrictions apply:
+
+| Restriction | Description |
+|-------------|-------------|
+| **No editing** | Data cannot be modified |
+| **No deletion** | Nothing can be deleted |
+| **No new entries** | No new items can be added |
+| **No settings** | Settings cannot be changed |
+
+Heirs can only **view** and **export** data.
+
+## Completeness Overview
+
+The heir dashboard shows a **completeness overview**: how much of the deceased's profile has been filled in. This helps heirs understand which information is available and where gaps exist.
+
+## Settlement Tracker
+
+The **settlement tracker** is a built-in checklist for the complete estate settlement:
+- Organized by phase (see above)
+- Checkboxes for each task
+- Progress bar per phase
+- Overall progress indicator
+
+The tracker helps heirs manage the process systematically and ensure no steps are missed.
+`,
+  },
+};
+
+/**
+ * Get embedded help markdown content for a chapter file and locale.
+ * Returns undefined if not found.
+ */
+export function getHelpContent(
+  filename: string,
+  locale: string,
+): string | undefined {
+  const loc = (locale === "en" ? "en" : "nl") as HelpLocale;
+  return helpContent[loc]?.[filename];
+}

@@ -5,10 +5,6 @@ interface HelpState {
   panelOpen: boolean;
   /** Currently displayed chapter slug (in the panel) */
   activeChapterSlug: string | null;
-  /** Cached markdown content per chapter slug */
-  contentCache: Record<string, string>;
-  /** Whether content is currently loading */
-  loading: boolean;
 
   /** Open the help panel for a specific chapter */
   openPanel: (slug: string) => void;
@@ -18,17 +14,11 @@ interface HelpState {
   togglePanel: (slug?: string) => void;
   /** Set the active chapter */
   setActiveChapter: (slug: string) => void;
-  /** Cache fetched markdown content */
-  cacheContent: (slug: string, content: string) => void;
-  /** Set loading state */
-  setLoading: (loading: boolean) => void;
 }
 
 export const useHelpStore = create<HelpState>((set) => ({
   panelOpen: false,
   activeChapterSlug: null,
-  contentCache: {},
-  loading: false,
 
   openPanel: (slug) =>
     set({ panelOpen: true, activeChapterSlug: slug }),
@@ -49,12 +39,4 @@ export const useHelpStore = create<HelpState>((set) => ({
 
   setActiveChapter: (slug) =>
     set({ activeChapterSlug: slug }),
-
-  cacheContent: (slug, content) =>
-    set((state) => ({
-      contentCache: { ...state.contentCache, [slug]: content },
-    })),
-
-  setLoading: (loading) =>
-    set({ loading }),
 }));

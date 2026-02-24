@@ -170,9 +170,3 @@ export function getChapterForRoute(pathname: string): HelpChapter | undefined {
     (ch) => ch.relatedRoute && pathname.startsWith(ch.relatedRoute)
   );
 }
-
-/** Get the markdown file URL for a chapter in the given locale */
-export function getChapterUrl(chapter: HelpChapter, locale: string): string {
-  const file = locale === "en" ? chapter.fileEn : chapter.fileNl;
-  return `/help/${locale === "en" ? "en" : "nl"}/${file}`;
-}
