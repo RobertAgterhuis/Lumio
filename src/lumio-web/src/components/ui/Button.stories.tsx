@@ -104,3 +104,36 @@ export const AllSizes: Story = {
     </div>
   ),
 };
+
+export const AsChildLink: Story = {
+  render: function Render() {
+    return (
+      <Button asChild>
+        <a href="https://example.com">Link styled as button</a>
+      </Button>
+    );
+  },
+  args: { asChild: true },
+};
+
+export const AsChildVariants: Story = {
+  render: function Render() {
+    return (
+      <div className="flex flex-wrap items-center gap-4">
+        <Button asChild>
+          <a href="#">Default Link</a>
+        </Button>
+        <Button asChild variant="outline">
+          <a href="#">Outline Link</a>
+        </Button>
+        <Button asChild variant="secondary">
+          <a href="#">Secondary Link</a>
+        </Button>
+        <Button asChild variant="ghost">
+          <a href="#">Ghost Link</a>
+        </Button>
+      </div>
+    );
+  },
+  args: { asChild: true },
+};

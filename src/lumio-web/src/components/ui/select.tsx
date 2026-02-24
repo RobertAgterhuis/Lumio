@@ -1,6 +1,23 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+/**
+ * Native select dropdown component with consistent styling.
+ *
+ * @example
+ * // Basic usage
+ * <Select value={country} onChange={(e) => setCountry(e.target.value)}>
+ *   <option value="">Select a country</option>
+ *   <option value="nl">Netherlands</option>
+ *   <option value="be">Belgium</option>
+ * </Select>
+ *
+ * @example
+ * // Disabled state
+ * <Select disabled>
+ *   <option>Cannot change</option>
+ * </Select>
+ */
 const Select = React.forwardRef<
   HTMLSelectElement,
   React.SelectHTMLAttributes<HTMLSelectElement>

@@ -1,6 +1,21 @@
 import { cn } from "@/lib/utils";
 import { forwardRef, type InputHTMLAttributes } from "react";
 
+/**
+ * Styled text input component with focus ring and disabled states.
+ *
+ * @example
+ * // Basic usage
+ * <Input placeholder="Enter your name" />
+ *
+ * @example
+ * // With type and controlled value
+ * <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+ *
+ * @example
+ * // Disabled state
+ * <Input disabled placeholder="Cannot edit" />
+ */
 const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   ({ className, type, ...props }, ref) => (
     <input

@@ -4,12 +4,30 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface TabsProps {
+  /** Currently active tab value */
   value: string;
+  /** Callback when active tab changes */
   onValueChange: (value: string) => void;
   children: React.ReactNode;
   className?: string;
 }
 
+/**
+ * Accessible tabs component with keyboard navigation.
+ * Supports arrow keys, Home, and End for tab navigation.
+ *
+ * @example
+ * const [tab, setTab] = useState("account");
+ *
+ * <Tabs value={tab} onValueChange={setTab}>
+ *   <TabsList>
+ *     <TabsTrigger value="account">Account</TabsTrigger>
+ *     <TabsTrigger value="settings">Settings</TabsTrigger>
+ *   </TabsList>
+ *   <TabsContent value="account">Account content...</TabsContent>
+ *   <TabsContent value="settings">Settings content...</TabsContent>
+ * </Tabs>
+ */
 export function Tabs({ value, onValueChange, children, className }: TabsProps) {
   const idPrefix = React.useId();
   return (
