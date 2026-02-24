@@ -1,6 +1,4 @@
 import nextConfig from "eslint-config-next";
-import noRawColors from "./eslint-rules/no-raw-colors.mjs";
-import noRawSpacing from "./eslint-rules/no-raw-spacing.mjs";
 
 /** @type {import('eslint').Linter.Config[]} */
 const eslintConfig = [

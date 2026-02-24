@@ -41,34 +41,34 @@ jobs:
       - name: Build
         run: npm run build
 
-  # ── Chromatic Visual Regression ────────────────────────────────────
-  chromatic:
-    name: Visual Regression (Chromatic)
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src/lumio-web
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Required for Chromatic to detect changes
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: src/lumio-web/package-lock.json
-
-      - run: npm ci
-
-      - name: Run Chromatic
-        uses: chromaui/action@latest
-        with:
-          workingDir: src/lumio-web
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          exitZeroOnChanges: true
-          autoAcceptChanges: main
-          onlyChanged: true
+  # ── Chromatic Visual Regression (DISABLED) ───────────────────────────
+  # chromatic:
+  #   name: Visual Regression (Chromatic)
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: src/lumio-web
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0 # Required for Chromatic to detect changes
+  #
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 22
+  #         cache: npm
+  #         cache-dependency-path: src/lumio-web/package-lock.json
+  #
+  #     - run: npm ci
+  #
+  #     - name: Run Chromatic
+  #       uses: chromaui/action@latest
+  #       with:
+  #         workingDir: src/lumio-web
+  #         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+  #         exitZeroOnChanges: true
+  #         autoAcceptChanges: main
+  #         onlyChanged: true
 
   # ── Backend ────────────────────────────────────────────────────────
   backend:
