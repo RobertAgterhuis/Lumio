@@ -40,7 +40,12 @@
     "activiteitenlog": "Activiteitenlog",
     "instellingen": "Instellingen",
     "handleiding": "Handleiding",
-    "navigatie": "Hoofdnavigatie"
+    "navigatie": "Hoofdnavigatie",
+    "groep.overzicht": "Overzicht",
+    "groep.wensen": "Wensen",
+    "groep.bezittingen": "Bezittingen",
+    "groep.personen": "Personen",
+    "groep.hulpmiddelen": "Hulpmiddelen"
   },
   "search": {
     "placeholder": "Zoeken in alle gegevens...",

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useDomainQuery } from "@/hooks";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { usePreferencesStore, type DashboardPreferences } from "@/stores/preferencesStore";
@@ -142,11 +143,14 @@ export default function DashboardPage() {
     showVoortgang, showVoortgangGranulair, showSuggesties, showDomeinKaarten,
     toggleSection, finishedDomains, setDomainFinished,
   } = usePreferencesStore();
-  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
-  const [compleetheid, setCompleetheid] = useState<Compleetheid | null>(null);
-  const [actualisatie, setActualisatie] = useState<ActualisatieDomein[]>([]);
   const [showInterview, setShowInterview] = useState(false);
   const t = useTranslations("dashboard");
+
+  // React Query hooks for dashboard data
+  const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<unknown>("eigenaar");
+  const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid");
+  const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie");
+  const actualisatie = actualisatieData?.domeinen ?? [];
 
   type CardStatus = "afgerond" | "reviewNodig" | "bezig" | "beginnen";
 
@@ -172,23 +176,6 @@ export default function DashboardPage() {
       {t("verbergen")}
     </Button>
   );
-
-  useEffect(() => {
-    api
-      .get("/api/eigenaar")
-      .then(() => setHasProfile(true))
-      .catch(() => setHasProfile(false));
-
-    api
-      .get<Compleetheid>("/api/status/compleetheid")
-      .then(setCompleetheid)
-      .catch((err) => console.error("Failed to load compleetheid:", err));
-
-    api
-      .get<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("/api/status/actualisatie")
-      .then((data) => setActualisatie(data.domeinen))
-      .catch((err) => console.error("Failed to load actualisatie:", err));
-  }, []);
 
   const getDomeinStatus = (domein: string): boolean | null => {
     if (!compleetheid) return null;
@@ -280,7 +267,6 @@ export default function DashboardPage() {
           <InterviewWizard
             onComplete={() => {
               setShowInterview(false);
-              setHasProfile(true);
               window.location.reload();
             }}
             onCancel={() => setShowInterview(false)}
@@ -288,7 +274,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {hasProfile === false && !showInterview && (
+      {!hasProfile && !showInterview && (
         <div className="rounded-lg border-2 border-warning bg-warning-100 p-5 dark:bg-warning/20">
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-6 w-6 text-warning mt-0.5 shrink-0" />
@@ -373,11 +359,7 @@ export default function DashboardPage() {
                             // Confirm actualisatie on server (BR-148/BR-190)
                             try {
                               await api.post(`/api/status/actualisatie/${card.domein}`, {});
-                              setActualisatie((prev) =>
-                                prev.map((a) =>
-                                  a.domein === card.domein ? { ...a, actualisatieNodig: false } : a
-                                )
-                              );
+                              refetchActualisatie();
                               setDomainFinished(card.domein, true);
                             } catch {
                               // Ignore

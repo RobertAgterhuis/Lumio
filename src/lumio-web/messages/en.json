@@ -40,7 +40,12 @@
     "activiteitenlog": "Activity Log",
     "instellingen": "Settings",
     "handleiding": "User Guide",
-    "navigatie": "Main navigation"
+    "navigatie": "Main navigation",
+    "groep.overzicht": "Overview",
+    "groep.wensen": "Wishes",
+    "groep.bezittingen": "Assets",
+    "groep.personen": "People",
+    "groep.hulpmiddelen": "Tools"
   },
   "search": {
     "placeholder": "Search all records...",

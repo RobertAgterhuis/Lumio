@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import {
   emptyBezitForm,
@@ -28,12 +29,23 @@ export function useBoedel() {
   const t = useTranslations("boedel");
 
   const [tab, setTab] = useState("bezittingen");
-  const [bezittingen, setBezittingen] = useState<FysiekBezit[]>([]);
-  const [rekeningen, setRekeningen] = useState<Bankrekening[]>([]);
-  const [verzekeringen, setVerzekeringen] = useState<Verzekering[]>([]);
-  const [schulden, setSchulden] = useState<Schuld[]>([]);
-  const [samenvatting, setSamenvatting] = useState<Samenvatting | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  // React Query for data loading
+  const { data: bezittingen = [], isLoading: bezittingenLoading, refetch: refetchBezittingen } = useDomainQuery<FysiekBezit[]>("boedel/bezittingen");
+  const { data: rekeningen = [], isLoading: rekeningenLoading, refetch: refetchRekeningen } = useDomainQuery<Bankrekening[]>("boedel/bankrekeningen");
+  const { data: verzekeringen = [], isLoading: verzekeringenLoading, refetch: refetchVerzekeringen } = useDomainQuery<Verzekering[]>("boedel/verzekeringen");
+  const { data: schulden = [], isLoading: schuldenLoading, refetch: refetchSchulden } = useDomainQuery<Schuld[]>("boedel/schulden");
+  const { data: samenvatting = null, isLoading: samenvattingLoading, refetch: refetchSamenvatting } = useDomainQuery<Samenvatting | null>("boedel/samenvatting");
+
+  const loading = bezittingenLoading || rekeningenLoading || verzekeringenLoading || schuldenLoading || samenvattingLoading;
+
+  const refetchAll = useCallback(() => {
+    refetchBezittingen();
+    refetchRekeningen();
+    refetchVerzekeringen();
+    refetchSchulden();
+    refetchSamenvatting();
+  }, [refetchBezittingen, refetchRekeningen, refetchVerzekeringen, refetchSchulden, refetchSamenvatting]);
 
   const [dialogKind, setDialogKind] = useState<DialogKind>(null);
   const [editId, setEditId] = useState<string | null>(null);
@@ -44,26 +56,6 @@ export function useBoedel() {
   const [rekeningForm, setRekeningForm] = useState<RekeningFormData>(emptyRekeningForm);
   const [verzekerForm, setVerzekerForm] = useState<VerzekeringFormData>(emptyVerzekeringForm);
   const [schuldForm, setSchuldForm] = useState<SchuldFormData>(emptySchuldForm);
-
-  const loadData = useCallback(() => {
-    Promise.all([
-      api.get<FysiekBezit[]>("/api/boedel/bezittingen").catch((err) => { console.error("Failed to load bezittingen:", err); return []; }),
-      api.get<Bankrekening[]>("/api/boedel/bankrekeningen").catch((err) => { console.error("Failed to load bankrekeningen:", err); return []; }),
-      api.get<Verzekering[]>("/api/boedel/verzekeringen").catch((err) => { console.error("Failed to load verzekeringen:", err); return []; }),
-      api.get<Schuld[]>("/api/boedel/schulden").catch((err) => { console.error("Failed to load schulden:", err); return []; }),
-      api.get<Samenvatting>("/api/boedel/samenvatting").catch((err) => { console.error("Failed to load samenvatting:", err); return null; }),
-    ])
-      .then(([b, r, v, s, sam]) => {
-        setBezittingen(b ?? []);
-        setRekeningen(r ?? []);
-        setVerzekeringen(v ?? []);
-        setSchulden(s ?? []);
-        setSamenvatting(sam);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => { loadData(); }, [loadData]);
 
   // Open-dialogs
   const openBezit = useCallback((item?: FysiekBezit) => {
@@ -160,13 +152,13 @@ export function useBoedel() {
       else await api.post("/api/boedel/bezittingen", payload);
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
-  }, [bezitForm, editId, loadData, t, tf]);
+  }, [bezitForm, editId, refetchAll, t, tf]);
 
   const saveRekening = useCallback(async () => {
     setError(null);
@@ -184,13 +176,13 @@ export function useBoedel() {
       else await api.post("/api/boedel/bankrekeningen", payload);
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
-  }, [rekeningForm, editId, loadData, t, tf]);
+  }, [rekeningForm, editId, refetchAll, t, tf]);
 
   const saveVerzekering = useCallback(async () => {
     setError(null);
@@ -211,13 +203,13 @@ export function useBoedel() {
       else await api.post("/api/boedel/verzekeringen", payload);
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
-  }, [verzekerForm, editId, loadData, t, tf]);
+  }, [verzekerForm, editId, refetchAll, t, tf]);
 
   const saveSchuld = useCallback(async () => {
     setError(null);
@@ -243,23 +235,23 @@ export function useBoedel() {
       else await api.post("/api/boedel/schulden", payload);
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
-  }, [schuldForm, editId, loadData, t, tf]);
+  }, [schuldForm, editId, refetchAll, t, tf]);
 
   const deleteItem = useCallback(async (type: string, id: string) => {
     try {
       await api.delete(`/api/boedel/${type}/${id}`);
       toast.success(tf("verwijderd"));
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
-  }, [loadData, t, tf]);
+  }, [refetchAll, t, tf]);
 
   return {
     // Data

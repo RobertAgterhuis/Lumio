@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 import Link from "next/link";
@@ -29,21 +28,11 @@ interface OrgaanKeuze {
 
 export default function DonorPage() {
   const t = useTranslations("donor");
-  const [data, setData] = useState<DonorRegistratie | null>(null);
-  const [orgaanKeuzes, setOrgaanKeuzes] = useState<OrgaanKeuze[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    Promise.all([
-      api.get<DonorRegistratie>("/api/donor").catch((err) => { console.error("Failed to load donor:", err); return null; }),
-      api.get<OrgaanKeuze[]>("/api/donor/orgaankeuzes").catch((err) => { console.error("Failed to load orgaankeuzes:", err); return []; }),
-    ])
-      .then(([d, o]) => {
-        setData(d);
-        setOrgaanKeuzes(o ?? []);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const { data, isLoading: donorLoading } = useDomainQuery<DonorRegistratie | null>("donor");
+  const { data: orgaanKeuzes = [], isLoading: orgaanLoading } = useDomainQuery<OrgaanKeuze[]>("donor/orgaankeuzes");
+
+  const loading = donorLoading || orgaanLoading;
 
   if (loading)
     return (

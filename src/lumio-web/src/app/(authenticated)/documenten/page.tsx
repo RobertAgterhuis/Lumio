@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api, downloadAndSave } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock } from "lucide-react";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -58,8 +59,6 @@ export default function DocumentenPage() {
   const tEnum = useTranslations("enums");
   const tf = useTranslations("feedback");
   const locale = useLocale();
-  const [documenten, setDocumenten] = useState<PersoonlijkDocument[]>([]);
-  const [loading, setLoading] = useState(true);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [naam, setNaam] = useState("");
@@ -77,17 +76,8 @@ export default function DocumentenPage() {
   const [versionHistory, setVersionHistory] = useState<DocumentVersie[]>([]);
   const [loadingVersions, setLoadingVersions] = useState(false);
 
-  const loadData = () => {
-    api
-      .get<PersoonlijkDocument[]>("/api/documenten")
-      .then((d) => setDocumenten(d ?? []))
-      .catch((err) => console.error("Failed to load documenten:", err))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
+  // React Query for loading documenten
+  const { data: documenten = [], isLoading: loading, refetch } = useDomainQuery<PersoonlijkDocument[]>("documenten");
 
   // --- Drag & Drop handlers ---
   const handleDragEnter = useCallback((e: React.DragEvent) => {
@@ -163,7 +153,7 @@ export default function DocumentenPage() {
         });
       }
     }
-    loadData();
+    refetch();
   };
 
   const handleUpload = async () => {
@@ -185,7 +175,7 @@ export default function DocumentenPage() {
       setVerlooptOp("");
       if (fileRef.current) fileRef.current.value = "";
       toast.success(tf("aangemaakt"));
-      loadData();
+      refetch();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("uploadenMislukt"));
     } finally {
@@ -208,7 +198,7 @@ export default function DocumentenPage() {
       await api.delete(`/api/documenten/${id}`);
       if (expandedVersions === id) setExpandedVersions(null);
       toast.success(tf("verwijderd"));
-      loadData();
+      refetch();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
@@ -220,7 +210,7 @@ export default function DocumentenPage() {
       await api.delete(`/api/documenten/${id}/alle-versies`);
       setExpandedVersions(null);
       toast.success(tf("verwijderd"));
-      loadData();
+      refetch();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }

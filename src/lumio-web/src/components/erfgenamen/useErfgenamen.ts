@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { api, downloadAndSave } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { emptyErfgenaamForm, emptyToewijzingForm } from "./constants";
 import type {
@@ -25,12 +26,19 @@ export interface UseErfgenamenTranslations {
 }
 
 export function useErfgenamen(translations: UseErfgenamenTranslations) {
-  // Data state
-  const [loading, setLoading] = useState(true);
+  // React Query for data loading
+  const { data: erfgenamen = [], isLoading: erfgenamenLoading, refetch: refetchErfgenamen } = useDomainQuery<Erfgenaam[]>("erfgenamen");
+  const { data: toewijzingen = [], isLoading: toewijzingenLoading, refetch: refetchToewijzingen } = useDomainQuery<Toewijzing[]>("toewijzingen");
+  const { data: availableAssets = [], isLoading: assetsLoading, refetch: refetchAssets } = useDomainQuery<AssetItem[]>("toewijzingen/beschikbaar");
+
+  const loading = erfgenamenLoading || toewijzingenLoading || assetsLoading;
   const [error, setError] = useState<string | null>(null);
-  const [erfgenamen, setErfgenamen] = useState<Erfgenaam[]>([]);
-  const [toewijzingen, setToewijzingen] = useState<Toewijzing[]>([]);
-  const [availableAssets, setAvailableAssets] = useState<AssetItem[]>([]);
+
+  const refetchAll = useCallback(() => {
+    refetchErfgenamen();
+    refetchToewijzingen();
+    refetchAssets();
+  }, [refetchErfgenamen, refetchToewijzingen, refetchAssets]);
 
   // Erfgenaam dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -53,44 +61,6 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
 
   // UI state
   const [expandedErfgenaam, setExpandedErfgenaam] = useState<string | null>(null);
-
-  // Loaders
-  const loadErfgenamen = useCallback(async () => {
-    try {
-      const data = await api.get<Erfgenaam[]>("/api/erfgenamen");
-      setErfgenamen(data);
-    } catch {
-      setError("Kon erfgenamen niet laden");
-    }
-  }, []);
-
-  const loadToewijzingen = useCallback(async () => {
-    try {
-      const data = await api.get<Toewijzing[]>("/api/toewijzingen");
-      setToewijzingen(data);
-    } catch {
-      // Non-critical, silently fail
-    }
-  }, []);
-
-  const loadAssets = useCallback(async () => {
-    try {
-      const data = await api.get<AssetItem[]>("/api/toewijzingen/beschikbaar");
-      setAvailableAssets(data);
-    } catch {
-      // Non-critical, silently fail
-    }
-  }, []);
-
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    await Promise.all([loadErfgenamen(), loadToewijzingen(), loadAssets()]);
-    setLoading(false);
-  }, [loadErfgenamen, loadToewijzingen, loadAssets]);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
 
   // Erfgenaam CRUD
   const openDialog = useCallback((existing?: Erfgenaam) => {
@@ -140,7 +110,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
         toast.success(translations.aangemaakt);
       }
       setDialogOpen(false);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : translations.opslaanMislukt);
     } finally {
@@ -152,7 +122,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
     try {
       await api.delete(`/api/erfgenamen/${id}`);
       toast.success(translations.verwijderd);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : translations.verwijderenMislukt);
     }
@@ -206,7 +176,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
       });
       toast.success(translations.aangemaakt);
       setToewijzingDialogOpen(false);
-      loadToewijzingen();
+      refetchToewijzingen();
     } catch (err) {
       setError(err instanceof Error ? err.message : translations.toewijzingOpslaanMislukt);
     } finally {
@@ -218,7 +188,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
     try {
       await api.delete(`/api/toewijzingen/${id}`);
       toast.success(translations.verwijderd);
-      loadToewijzingen();
+      refetchToewijzingen();
     } catch (err) {
       setError(err instanceof Error ? err.message : translations.toewijzingVerwijderenMislukt);
     }
@@ -239,7 +209,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
         drempel: parseInt(shamirThreshold),
       });
       setGeneratedShares(result);
-      loadData();
+      refetchAll();
     } catch {
       setError(translations.sleuteldelenMislukt);
     } finally {

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
 import {
@@ -25,13 +26,22 @@ export function useTestament() {
   const t = useTranslations("testament");
   const tf = useTranslations("feedback");
 
-  // Data state
-  const [testament, setTestament] = useState<TestamentInfo | null>(null);
-  const [begunstigden, setBegunstigden] = useState<Begunstigde[]>([]);
-  const [executeurs, setExecuteurs] = useState<Executeur[]>([]);
-  const [legitiemaireCheck, setLegitimaireCheck] = useState<LegitimairePortieCheck | null>(null);
-  const [snapshots, setSnapshots] = useState<TestamentSnapshot[]>([]);
-  const [loading, setLoading] = useState(true);
+  // React Query for data loading
+  const { data: testament = null, refetch: refetchTestament } = useDomainQuery<TestamentInfo | null>("testament");
+  const { data: begunstigden = [], refetch: refetchBegunstigden } = useDomainQuery<Begunstigde[]>("testament/begunstigden");
+  const { data: executeurs = [], isLoading: execLoading, refetch: refetchExecuteurs } = useDomainQuery<Executeur[]>("testament/executeurs");
+  const { data: legitiemaireCheck = null, refetch: refetchLegitiemaire } = useDomainQuery<LegitimairePortieCheck | null>("testament/legitimaire-portie-check");
+  const { data: snapshots = [], isLoading: snapsLoading, refetch: refetchSnapshots } = useDomainQuery<TestamentSnapshot[]>("testament/snapshots");
+
+  const loading = execLoading || snapsLoading;
+
+  const refetchAll = useCallback(() => {
+    refetchTestament();
+    refetchBegunstigden();
+    refetchExecuteurs();
+    refetchLegitiemaire();
+    refetchSnapshots();
+  }, [refetchTestament, refetchBegunstigden, refetchExecuteurs, refetchLegitiemaire, refetchSnapshots]);
 
   // Executeur dialog state
   const [execDialogOpen, setExecDialogOpen] = useState(false);
@@ -57,29 +67,6 @@ export function useTestament() {
   const [vergelijking, setVergelijking] = useState<TestamentVergelijking | null>(null);
   const [vergelijkOpen, setVergelijkOpen] = useState(false);
   const [vergelijkIds, setVergelijkIds] = useState<[string, string]>(["", ""]);
-
-  // Load all data
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const [t, b, e, lp, snaps] = await Promise.all([
-          api.get<TestamentInfo>("/api/testament").catch((err) => { console.error("Failed to load testament:", err); return null; }),
-          api.get<Begunstigde[]>("/api/testament/begunstigden").catch((err) => { console.error("Failed to load begunstigden:", err); return []; }),
-          api.get<Executeur[]>("/api/testament/executeurs").catch((err) => { console.error("Failed to load executeurs:", err); return []; }),
-          api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch((err) => { console.error("Failed to load LP check:", err); return null; }),
-          api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch((err) => { console.error("Failed to load snapshots:", err); return []; }),
-        ]);
-        setTestament(t);
-        setBegunstigden(b);
-        setExecuteurs(e ?? []);
-        setLegitimaireCheck(lp);
-        setSnapshots(snaps ?? []);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
 
   // Executeur CRUD
   const openExecDialog = useCallback((exec?: Executeur) => {
@@ -120,22 +107,21 @@ export function useTestament() {
         toast.success(tf("aangemaakt"));
       }
       setExecDialogOpen(false);
-      const updated = await api.get<Executeur[]>("/api/testament/executeurs").catch(() => []);
-      setExecuteurs(updated ?? []);
+      refetchExecuteurs();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
-  }, [execForm, editExecId, t, tf]);
+  }, [execForm, editExecId, t, tf, refetchExecuteurs]);
 
   const deleteExec = useCallback(async (id: string) => {
     try {
       await api.delete(`/api/testament/executeurs/${id}`);
       toast.success(tf("verwijderd"));
-      setExecuteurs((prev) => prev.filter((e) => e.id !== id));
+      refetchExecuteurs();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
-  }, [t, tf]);
+  }, [t, tf, refetchExecuteurs]);
 
   // Begunstigde CRUD
   const openBegDialog = useCallback((beg?: Begunstigde) => {
@@ -180,28 +166,23 @@ export function useTestament() {
         toast.success(tf("aangemaakt"));
       }
       setBegDialogOpen(false);
-      const updated = await api.get<Begunstigde[]>("/api/testament/begunstigden").catch(() => []);
-      setBegunstigden(updated ?? []);
-      // Reload legitimaire portie check
-      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
-      setLegitimaireCheck(lpCheck);
+      refetchBegunstigden();
+      refetchLegitiemaire();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
-  }, [begForm, editBegId, t, tf]);
+  }, [begForm, editBegId, t, tf, refetchBegunstigden, refetchLegitiemaire]);
 
   const deleteBeg = useCallback(async (id: string) => {
     try {
       await api.delete(`/api/testament/begunstigden/${id}`);
       toast.success(tf("verwijderd"));
-      setBegunstigden((prev) => prev.filter((b) => b.id !== id));
-      // Reload legitimaire portie check
-      const lpCheck = await api.get<LegitimairePortieCheck>("/api/testament/legitimaire-portie-check").catch(() => null);
-      setLegitimaireCheck(lpCheck);
+      refetchBegunstigden();
+      refetchLegitiemaire();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
-  }, [t, tf]);
+  }, [t, tf, refetchBegunstigden, refetchLegitiemaire]);
 
   // Testament edit
   const openTestEdit = useCallback(() => {
@@ -248,13 +229,13 @@ export function useTestament() {
         legaten: testEditForm.legaten || null,
       };
       const updated = await api.put<TestamentInfo>("/api/testament", payload);
-      setTestament(updated);
+      refetchTestament();
       setTestEditOpen(false);
       toast.success(tf("opgeslagen"));
     } catch (err) {
       setTestEditError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
-  }, [testEditForm, t, tf]);
+  }, [testEditForm, t, tf, refetchTestament]);
 
   // Snapshot CRUD
   const openSnapDialog = useCallback(() => {
@@ -270,22 +251,21 @@ export function useTestament() {
       toast.success(tf("aangemaakt"));
       setSnapDialogOpen(false);
       setSnapNotitie("");
-      const updated = await api.get<TestamentSnapshot[]>("/api/testament/snapshots").catch(() => []);
-      setSnapshots(updated ?? []);
+      refetchSnapshots();
     } catch (err) {
       setSnapError(err instanceof Error ? err.message : t("versies.snapshotMislukt"));
     }
-  }, [snapNotitie, t, tf]);
+  }, [snapNotitie, t, tf, refetchSnapshots]);
 
   const deleteSnapshot = useCallback(async (id: string) => {
     try {
       await api.delete(`/api/testament/snapshots/${id}`);
       toast.success(tf("verwijderd"));
-      setSnapshots((prev) => prev.filter((s) => s.id !== id));
+      refetchSnapshots();
     } catch (err) {
       setSnapError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
-  }, [t, tf]);
+  }, [t, tf, refetchSnapshots]);
 
   // Vergelijking
   const loadVergelijking = useCallback(async () => {

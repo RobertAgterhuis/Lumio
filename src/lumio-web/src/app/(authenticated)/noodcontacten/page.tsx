@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { Phone, Plus, Pencil, Trash2, Share2, Download, Upload } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
@@ -74,25 +75,14 @@ export default function NoodcontactenPage() {
   const t = useTranslations("noodcontacten");
   const tEnum = useTranslations("enums");
   const tf = useTranslations("feedback");
-  const [contacten, setContacten] = useState<Noodcontact[]>([]);
-  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadData = () => {
-    api
-      .get<Noodcontact[]>("/api/noodcontacten")
-      .then((data) => setContacten(data ?? []))
-      .catch((err) => { console.error("Failed to load noodcontacten:", err); setContacten([]); })
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
+  // React Query for loading noodcontacten
+  const { data: contacten = [], isLoading: loading, refetch } = useDomainQuery<Noodcontact[]>("noodcontacten");
 
   const openDialog = (c?: Noodcontact) => {
     setError(null);
@@ -141,7 +131,7 @@ export default function NoodcontactenPage() {
         toast.success(tf("aangemaakt"));
       }
       setDialogOpen(false);
-      loadData();
+      refetch();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
@@ -153,7 +143,7 @@ export default function NoodcontactenPage() {
     try {
       await api.delete(`/api/noodcontacten/${id}`);
       toast.success(tf("verwijderd"));
-      loadData();
+      refetch();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
@@ -187,7 +177,7 @@ export default function NoodcontactenPage() {
           "/api/noodcontacten/gedeeld/import",
           contacten
         );
-        loadData();
+        refetch();
         alert(t("importResultaat", { toegevoegd: result?.toegevoegd ?? 0, overgeslagen: result?.overgeslagen ?? 0 }));
       } catch (err) {
         setError(err instanceof Error ? err.message : t("importMislukt"));

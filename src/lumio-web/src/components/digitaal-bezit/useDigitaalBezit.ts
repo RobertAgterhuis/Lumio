@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { toast } from "@/stores/toastStore";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import type {
   DigitaalAccount,
   WachtwoordEntry,
@@ -17,12 +18,19 @@ import { emptyAccountForm, emptyWachtwoordForm, emptyCryptoForm } from "./consta
 export type DialogType = "account" | "wachtwoord" | "crypto" | null;
 
 export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) => string) {
-  // Data state
-  const [accounts, setAccounts] = useState<DigitaalAccount[]>([]);
-  const [wachtwoorden, setWachtwoorden] = useState<WachtwoordEntry[]>([]);
-  const [wallets, setWallets] = useState<CryptoWallet[]>([]);
-  const [loading, setLoading] = useState(true);
+  // React Query for data loading
+  const { data: accounts = [], isLoading: accountsLoading, refetch: refetchAccounts } = useDomainQuery<DigitaalAccount[]>("digitaal-bezit/accounts");
+  const { data: wachtwoorden = [], isLoading: wachtwoordenLoading, refetch: refetchWachtwoorden } = useDomainQuery<WachtwoordEntry[]>("digitaal-bezit/wachtwoorden");
+  const { data: wallets = [], isLoading: walletsLoading, refetch: refetchWallets } = useDomainQuery<CryptoWallet[]>("digitaal-bezit/crypto");
+
+  const loading = accountsLoading || wachtwoordenLoading || walletsLoading;
   const [error, setError] = useState<string | null>(null);
+
+  const refetchAll = useCallback(() => {
+    refetchAccounts();
+    refetchWachtwoorden();
+    refetchWallets();
+  }, [refetchAccounts, refetchWachtwoorden, refetchWallets]);
 
   // Dialog state
   const [dialogType, setDialogType] = useState<DialogType>(null);
@@ -40,22 +48,6 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const importFileRef = useRef<HTMLInputElement>(null);
-
-  const loadData = useCallback(() => {
-    Promise.all([
-      api.get<DigitaalAccount[]>("/api/digitaal-bezit/accounts").catch(() => []),
-      api.get<WachtwoordEntry[]>("/api/digitaal-bezit/wachtwoorden").catch(() => []),
-      api.get<CryptoWallet[]>("/api/digitaal-bezit/crypto").catch(() => []),
-    ])
-      .then(([a, w, c]) => {
-        setAccounts(a ?? []);
-        setWachtwoorden(w ?? []);
-        setWallets(c ?? []);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => { loadData(); }, [loadData]);
 
   // Dialog openers
   const openAccountDialog = useCallback((account?: DigitaalAccount) => {
@@ -126,13 +118,13 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
         toast.success(tf("aangemaakt"));
       }
       setDialogType(null);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
-  }, [accountForm, editId, loadData, t, tf]);
+  }, [accountForm, editId, refetchAll, t, tf]);
 
   const saveWachtwoord = useCallback(async () => {
     setError(null);
@@ -157,13 +149,13 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
       }
       toast.success(editId ? tf("opgeslagen") : tf("aangemaakt"));
       setDialogType(null);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
-  }, [wachtwoordForm, editId, loadData, t, tf]);
+  }, [wachtwoordForm, editId, refetchAll, t, tf]);
 
   const saveCrypto = useCallback(async () => {
     setError(null);
@@ -184,23 +176,23 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
       }
       toast.success(editId ? tf("opgeslagen") : tf("aangemaakt"));
       setDialogType(null);
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
       setSaving(false);
     }
-  }, [cryptoForm, editId, loadData, t, tf]);
+  }, [cryptoForm, editId, refetchAll, t, tf]);
 
   const deleteItem = useCallback(async (type: string, id: string) => {
     try {
       await api.delete(`/api/digitaal-bezit/${type}/${id}`);
       toast.success(tf("verwijderd"));
-      loadData();
+      refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
-  }, [loadData, t, tf]);
+  }, [refetchAll, t, tf]);
 
   const handleOntsluitel = useCallback(async (id: string) => {
     if (ontsleuteld[id]) {
@@ -239,13 +231,13 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
         formData
       );
       setImportResult(result);
-      if (result.geimporteerd > 0) loadData();
+      if (result.geimporteerd > 0) refetchAll();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("importerenMislukt"));
     } finally {
       setImporting(false);
     }
-  }, [loadData, t]);
+  }, [refetchAll, t]);
 
   return {
     // Data
