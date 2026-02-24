@@ -101,7 +101,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                 key={profile.id}
                 onClick={() => handleSelect(profile)}
                 disabled={loading}
-                className="flex w-full items-center gap-3 rounded-lg border border-border p-3 text-left transition-colors hover:bg-accent hover:border-primary/50 disabled:opacity-50"
+                className="group flex w-full items-center gap-3 rounded-lg border border-border p-3 text-left transition-colors hover:bg-primary hover:border-primary disabled:opacity-50"
               >
                 {profile.fotoThumbnail ? (
                   <img
@@ -110,11 +110,11 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                     className="h-10 w-10 rounded-full object-cover shrink-0"
                   />
                 ) : (
-                  <UserCircle className="h-10 w-10 text-primary/60 shrink-0" />
+                  <UserCircle className="h-10 w-10 text-primary/60 shrink-0 group-hover:text-primary-foreground" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{profile.naam}</p>
-                  <p className="text-sm text-muted-foreground">{profile.relatie}</p>
+                  <p className="font-medium truncate group-hover:font-bold group-hover:text-primary-foreground">{profile.naam}</p>
+                  <p className="text-sm text-muted-foreground truncate group-hover:font-bold group-hover:text-primary-foreground">{profile.relatie}</p>
                 </div>
               </button>
             ))}

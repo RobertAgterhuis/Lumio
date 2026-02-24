@@ -64,11 +64,13 @@
     "instellingen": "Settings",
     "handleiding": "User Guide",
     "navigatie": "Main navigation",
-    "groep.overzicht": "Overview",
-    "groep.wensen": "Wishes",
-    "groep.bezittingen": "Assets",
-    "groep.personen": "People",
-    "groep.hulpmiddelen": "Tools"
+    "groep": {
+      "overzicht": "Overview",
+      "wensen": "Wishes",
+      "bezittingen": "Assets",
+      "personen": "People",
+      "hulpmiddelen": "Tools"
+    }
   },
   "search": {
     "placeholder": "Search all records...",

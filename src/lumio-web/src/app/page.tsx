@@ -9,6 +9,8 @@ import { ProfileSelector } from "@/components/auth/ProfileSelector";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
+import { AuthBackground } from "@/components/auth/AuthBackground";
+import { LumioLogoIcon } from "@/components/layout/LumioLogoIcon";
 
 export default function HomePage() {
   const router = useRouter();
@@ -94,14 +96,21 @@ export default function HomePage() {
   const showUnlock = profileSelected && !profileNeedsSetup;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-muted to-muted/50 p-4">
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold text-primary">Lumio</h1>
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-background p-4">
+      {/* ── Design-system SVG background — switches per auth step ── */}
+      <AuthBackground variant={showProfileSelector ? "profile" : "setup"} />
+
+      <div className="relative z-10 mb-8 flex flex-col items-center text-center">
+        <div className="flex items-center gap-3">
+          <LumioLogoIcon size={48} className="drop-shadow-sm" />
+          <h1 className="text-4xl font-bold text-primary">Lumio</h1>
+        </div>
         <p className="mt-2 text-muted-foreground">
           {t("tagline")}
         </p>
       </div>
 
+      <div className="relative z-10 flex w-full flex-col items-center">
       {showProfileSelector ? (
         <ProfileSelector onProfileSelected={() => {}} />
       ) : showSetup ? (
@@ -142,6 +151,7 @@ export default function HomePage() {
           {t("anderProfiel")}
         </button>
       )}
+      </div>
     </div>
   );
 }

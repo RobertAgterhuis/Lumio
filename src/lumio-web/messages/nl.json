@@ -64,11 +64,13 @@
     "instellingen": "Instellingen",
     "handleiding": "Handleiding",
     "navigatie": "Hoofdnavigatie",
-    "groep.overzicht": "Overzicht",
-    "groep.wensen": "Wensen",
-    "groep.bezittingen": "Bezittingen",
-    "groep.personen": "Personen",
-    "groep.hulpmiddelen": "Hulpmiddelen"
+    "groep": {
+      "overzicht": "Overzicht",
+      "wensen": "Wensen",
+      "bezittingen": "Bezittingen",
+      "personen": "Personen",
+      "hulpmiddelen": "Hulpmiddelen"
+    }
   },
   "search": {
     "placeholder": "Zoeken in alle gegevens...",

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useDomainQuery } from "@/hooks/useDomainQuery";
+import { LumioLogoIcon } from "./LumioLogoIcon";
 import {
   ScrollText,
   Heart,
@@ -106,7 +107,8 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-full w-64 flex-col border-r border-border bg-sidebar">
-      <div className="flex h-16 items-center border-b border-border px-6">
+      <div className="flex h-16 items-center gap-2.5 border-b border-border px-5">
+        <LumioLogoIcon size={28} />
         <h1 className="text-xl font-bold text-primary">Lumio</h1>
       </div>
       <nav aria-label={t("navigatie")} className="flex-1 overflow-y-auto p-3">

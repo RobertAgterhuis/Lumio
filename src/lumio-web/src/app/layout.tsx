@@ -6,6 +6,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Lumio — Digitale Nalatenschap",
   description: "Beheer uw digitale nalatenschap veilig en offline",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+  },
 };
 
 export default async function RootLayout({
