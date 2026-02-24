@@ -6,6 +6,10 @@ const meta = {
   title: "Primitives/Input",
   component: Input,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
   argTypes: {
     type: {
       control: "select",

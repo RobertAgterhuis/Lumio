@@ -1,0 +1,102 @@
+{/* Introduction.mdx */}
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Foundations/Introduction" />
+
+# Design Foundations
+
+The Lumio design system is built on a layered token architecture. These foundations ensure visual consistency, accessibility, and maintainability across the application.
+
+## Token Architecture
+
+Tokens are organized in layers, from primitive values to application-specific semantics:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Layer 9: Accessibility Tokens                          │
+│  (focus rings, disabled states, touch targets)          │
+├─────────────────────────────────────────────────────────┤
+│  Layer 8: State Tokens                                  │
+│  (success/warning/danger/info bg/border/text triplets)  │
+├─────────────────────────────────────────────────────────┤
+│  Layer 7: Border Width                                  │
+├─────────────────────────────────────────────────────────┤
+│  Layer 6: Z-Index                                       │
+├─────────────────────────────────────────────────────────┤
+│  Layer 5: Typography                                    │
+├─────────────────────────────────────────────────────────┤
+│  Layer 4: Motion                                        │
+├─────────────────────────────────────────────────────────┤
+│  Layer 3: Shadows                                       │
+├─────────────────────────────────────────────────────────┤
+│  Layer 2: Spacing                                       │
+├─────────────────────────────────────────────────────────┤
+│  Layer 1: Base Colors                                   │
+│  (primary, sage, secure, semantic, neutral)             │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Source Files
+
+| File | Purpose |
+|------|---------|
+| `src/styles/tokens.css` | CSS custom properties (source of truth) |
+| `src/app/globals.css` | Tailwind @theme mappings |
+
+## How Tokens Flow
+
+1. **Define** tokens in `tokens.css` as CSS custom properties
+2. **Map** tokens to Tailwind via `@theme` in `globals.css`
+3. **Use** Tailwind utility classes in components
+
+```tsx
+// ❌ Don't use raw values
+<div className="p-[24px] text-[#2C4A52]">
+
+// ✅ Do use token-backed utilities
+<div className="p-6 text-primary">
+```
+
+## Dark Mode
+
+Dark mode is handled automatically via the `.dark` class on `<html>`. Token overrides in `tokens.css` ensure all components adapt correctly:
+
+```css
+/* Light mode */
+:root {
+  --base-primary-700: #2C4A52;
+}
+
+/* Dark mode override */
+.dark {
+  --base-primary-700: #7AB5C0;
+}
+```
+
+## Grote Tekst (Accessibility)
+
+The `.grote-tekst` class scales typography tokens for users who need larger text. This is toggled via user preferences in the application settings.
+
+---
+
+## Foundation Sections
+
+Explore each foundation area:
+
+- **[Colors](/docs/foundations-colors--docs)** — Color palettes and semantic meanings
+- **[Typography](/docs/foundations-typography--docs)** — Font sizes, weights, line heights
+- **[Spacing](/docs/foundations-spacing--docs)** — 8-point grid spacing scale
+- **[Motion](/docs/foundations-motion--docs)** — Animation durations and easing
+- **[Z-Index](/docs/foundations-z-index--docs)** — Layering scale for overlays
+- **[Borders](/docs/foundations-borders--docs)** — Border width tokens
+
+---
+
+## Enforced in CI
+
+The design system is enforced through:
+
+- **ESLint `no-raw-colors` rule** — Prevents hardcoded hex values
+- **TypeScript** — Component prop types ensure correct usage
+- **Storybook** — Visual documentation and interaction tests
+- **Token validation** — CI script checks token consistency

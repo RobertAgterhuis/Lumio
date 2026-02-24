@@ -14,6 +14,10 @@ const meta = {
   title: "Primitives/Dialog",
   component: Dialog,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
   argTypes: {
     open: { control: "boolean" },
   },

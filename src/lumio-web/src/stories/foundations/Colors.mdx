@@ -1,0 +1,220 @@
+{/* Colors.mdx */}
+import { Meta, ColorPalette, ColorItem } from "@storybook/blocks";
+
+<Meta title="Foundations/Colors" />
+
+# Colors
+
+The Lumio design system uses a layered color token architecture. All colors are defined in `tokens.css` and mapped to Tailwind utilities via `@theme` in `globals.css`.
+
+## Color Philosophy
+
+- **Primary (Teal)**: Brand identity, primary actions, interactive elements
+- **Sage**: Nature/calm feeling, secondary accents
+- **Secure (Blue)**: Security indicators, trust signals
+- **Semantic Colors**: Success, Warning, Danger, Info for contextual feedback
+- **Neutral**: Text, backgrounds, borders
+
+---
+
+## Primary Palette
+
+The primary teal palette conveys professionalism and calm — appropriate for an estate planning application.
+
+<ColorPalette>
+  <ColorItem
+    title="primary-700"
+    subtitle="Darkest teal"
+    colors={{ "Light": "#2C4A52", "Dark": "#7AB5C0" }}
+  />
+  <ColorItem
+    title="primary-600"
+    subtitle="Dark teal"
+    colors={{ "Light": "#355E68", "Dark": "#8CC4CE" }}
+  />
+  <ColorItem
+    title="primary-500"
+    subtitle="Base primary"
+    colors={{ "Light": "#4F7A83", "Dark": "#9ED3DC" }}
+  />
+  <ColorItem
+    title="primary-400"
+    subtitle="Light teal"
+    colors={{ "Light": "#7A9EA6", "Dark": "#5C9AA5" }}
+  />
+  <ColorItem
+    title="primary-300"
+    subtitle="Lighter teal"
+    colors={{ "Light": "#A5C2C9", "Dark": "#3E7A85" }}
+  />
+  <ColorItem
+    title="primary-100"
+    subtitle="Subtle teal"
+    colors={{ "Light": "#E6EFF1", "Dark": "#1A2C30" }}
+  />
+</ColorPalette>
+
+---
+
+## Semantic Colors
+
+Used for feedback states across the application.
+
+### Success
+
+<ColorPalette>
+  <ColorItem
+    title="success-700"
+    subtitle="Success text"
+    colors={{ "Light": "#4A7A4D", "Dark": "#5EA061" }}
+  />
+  <ColorItem
+    title="success-600"
+    subtitle="Success border"
+    colors={{ "Light": "#5E8C61", "Dark": "#7DBF80" }}
+  />
+  <ColorItem
+    title="success-100"
+    subtitle="Success background"
+    colors={{ "Light": "#E8F5E9", "Dark": "#1A2E1A" }}
+  />
+</ColorPalette>
+
+### Warning
+
+<ColorPalette>
+  <ColorItem
+    title="warning-700"
+    subtitle="Warning text"
+    colors={{ "Light": "#B8890F", "Dark": "#D4A41A" }}
+  />
+  <ColorItem
+    title="warning-600"
+    subtitle="Warning border"
+    colors={{ "Light": "#D4A017", "Dark": "#F0C040" }}
+  />
+  <ColorItem
+    title="warning-100"
+    subtitle="Warning background"
+    colors={{ "Light": "#FFF8E1", "Dark": "#2E2A10" }}
+  />
+</ColorPalette>
+
+### Danger
+
+<ColorPalette>
+  <ColorItem
+    title="danger-700"
+    subtitle="Danger text"
+    colors={{ "Light": "#923C3C", "Dark": "#C04E4E" }}
+  />
+  <ColorItem
+    title="danger-600"
+    subtitle="Danger border"
+    colors={{ "Light": "#B44A4A", "Dark": "#E06060" }}
+  />
+  <ColorItem
+    title="danger-100"
+    subtitle="Danger background"
+    colors={{ "Light": "#FDE8E8", "Dark": "#2E1A1A" }}
+  />
+</ColorPalette>
+
+### Info
+
+<ColorPalette>
+  <ColorItem
+    title="info-700"
+    subtitle="Info text"
+    colors={{ "Light": "#2C3E50", "Dark": "#507090" }}
+  />
+  <ColorItem
+    title="info-600"
+    subtitle="Info border"
+    colors={{ "Light": "#3A506B", "Dark": "#6A8AA6" }}
+  />
+  <ColorItem
+    title="info-100"
+    subtitle="Info background"
+    colors={{ "Light": "#E3EDF5", "Dark": "#1A2430" }}
+  />
+</ColorPalette>
+
+---
+
+## Security Colors
+
+Blue tones signal security and trust — used for security badges, encryption indicators, and protected content.
+
+<ColorPalette>
+  <ColorItem
+    title="secure-700"
+    subtitle="Security text"
+    colors={{ "Light": "#1D4ED8", "Dark": "#3B82F6" }}
+  />
+  <ColorItem
+    title="secure-500"
+    subtitle="Security accent"
+    colors={{ "Light": "#3B82F6", "Dark": "#93C5FD" }}
+  />
+  <ColorItem
+    title="secure-100"
+    subtitle="Security background"
+    colors={{ "Light": "#DBEAFE", "Dark": "#1E2A40" }}
+  />
+</ColorPalette>
+
+---
+
+## Neutral Palette
+
+The neutral scale provides text, background, and border colors. Note that in dark mode, the scale is inverted.
+
+<ColorPalette>
+  <ColorItem
+    title="neutral-900"
+    subtitle="Primary text"
+    colors={{ "Light": "#1F2933", "Dark": "#E5E7EB" }}
+  />
+  <ColorItem
+    title="neutral-700"
+    subtitle="Secondary text"
+    colors={{ "Light": "#4B5563", "Dark": "#B8C0CC" }}
+  />
+  <ColorItem
+    title="neutral-500"
+    subtitle="Muted text"
+    colors={{ "Light": "#9CA3AF", "Dark": "#6B7280" }}
+  />
+  <ColorItem
+    title="neutral-300"
+    subtitle="Borders"
+    colors={{ "Light": "#D1D5DB", "Dark": "#374151" }}
+  />
+  <ColorItem
+    title="neutral-100"
+    subtitle="Subtle backgrounds"
+    colors={{ "Light": "#F3F4F6", "Dark": "#1E293B" }}
+  />
+  <ColorItem
+    title="neutral-50"
+    subtitle="Page background"
+    colors={{ "Light": "#F9FAFB", "Dark": "#0F172A" }}
+  />
+</ColorPalette>
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use semantic colors for their intended purpose (success for confirmations, danger for destructive actions)
+- Use primary colors for interactive elements and CTAs
+- Reference token names in code: `bg-primary`, `text-danger`
+
+### Don't ✗
+
+- Don't use raw hex values — always use design tokens
+- Don't use danger color for non-destructive actions
+- Don't mix light/dark mode values manually — the system handles this

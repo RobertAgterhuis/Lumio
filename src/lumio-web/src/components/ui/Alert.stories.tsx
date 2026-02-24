@@ -5,6 +5,10 @@ const meta = {
   title: "Primitives/Alert",
   component: Alert,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
   argTypes: {
     variant: {
       control: "select",

@@ -7,6 +7,8 @@ const meta = {
   component: Icon,
   tags: ["autodocs"],
   parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
     docs: {
       description: {
         component:

@@ -6,6 +6,10 @@ const meta = {
   title: "Primitives/Checkbox",
   component: Checkbox,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "stable" },
+    governance: { maturity: "stable", a11yLevel: "AA" },
+  },
   argTypes: {
     checked: { control: "boolean" },
     disabled: { control: "boolean" },

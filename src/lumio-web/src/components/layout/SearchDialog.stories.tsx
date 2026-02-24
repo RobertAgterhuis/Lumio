@@ -58,6 +58,8 @@ const meta = {
   component: SearchDialog,
   tags: ["autodocs"],
   parameters: {
+    status: { type: "stable" },
+    governance: { maturity: "stable", a11yLevel: "AA" },
     // SearchDialog uses translations
     nextjs: {
       appDirectory: true,

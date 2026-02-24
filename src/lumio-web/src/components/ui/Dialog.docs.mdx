@@ -1,0 +1,87 @@
+{/* Dialog.docs.mdx */}
+import { Meta, Canvas, Controls, Story } from "@storybook/blocks";
+import * as DialogStories from "./Dialog.stories";
+
+<Meta of={DialogStories} />
+
+# Dialog
+
+Dialogs are modal overlays that require user attention. They block interaction with the page until dismissed.
+
+<Canvas of={DialogStories.Default} />
+
+---
+
+## Anatomy
+
+```tsx
+<Dialog open={isOpen} onOpenChange={setIsOpen}>
+  <DialogHeader>
+    <DialogTitle>Title</DialogTitle>
+    <DialogDescription>Description</DialogDescription>
+  </DialogHeader>
+  <DialogContent>
+    {/* Form fields or content */}
+  </DialogContent>
+  <DialogFooter>
+    <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
+    <Button onClick={handleConfirm}>Confirm</Button>
+  </DialogFooter>
+</Dialog>
+```
+
+| Part | Purpose |
+|------|---------|
+| `Dialog` | Root component, controls open state |
+| `DialogHeader` | Contains title and description |
+| `DialogTitle` | Required for accessibility |
+| `DialogDescription` | Optional supporting text |
+| `DialogContent` | Main content (forms, messages) |
+| `DialogFooter` | Action buttons |
+
+---
+
+## Accessibility
+
+The Dialog component handles:
+
+- **Focus trap** — Tab cycles within the dialog
+- **Return focus** — Focus returns to trigger on close
+- **Escape key** — Closes the dialog
+- **ARIA attributes** — `role="dialog"`, `aria-modal`, `aria-labelledby`
+
+<Canvas of={DialogStories.AccessibilityTest} />
+
+---
+
+## Animation
+
+Dialogs animate on open/close with scale + fade:
+
+<Canvas of={DialogStories.WithAnimation} />
+
+---
+
+## Destructive Confirmation
+
+Use for dangerous actions like deletion:
+
+<Canvas of={DialogStories.Destructive} />
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Always include a `DialogTitle` for accessibility
+- Put the primary action on the right in `DialogFooter`
+- Use `variant="destructive"` for the confirm button in delete dialogs
+- Use concise, action-oriented button labels
+
+### Don't ✗
+
+- Don't open dialogs from within dialogs (nested modals)
+- Don't use dialogs for simple confirmations — consider inline confirmation
+- Don't put long forms in dialogs — use a dedicated page
+- Don't auto-close dialogs on success — let the user see feedback first

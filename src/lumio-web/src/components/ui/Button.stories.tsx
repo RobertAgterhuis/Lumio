@@ -6,6 +6,10 @@ const meta = {
   title: "Primitives/Button",
   component: Button,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
   argTypes: {
     variant: {
       control: "select",

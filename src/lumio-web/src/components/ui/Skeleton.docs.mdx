@@ -1,0 +1,126 @@
+{/* Skeleton.docs.mdx */}
+import { Meta, Canvas, Controls, ArgTypes } from "@storybook/blocks";
+import * as SkeletonStories from "./Skeleton.stories";
+
+<Meta of={SkeletonStories} />
+
+# Skeleton
+
+Skeleton components provide loading placeholders that maintain layout stability while content loads.
+
+<Canvas of={SkeletonStories.Default} />
+<Controls of={SkeletonStories.Default} />
+
+---
+
+## Variants
+
+| Variant | Animation | Use Case |
+|---------|-----------|----------|
+| `pulse` | Opacity fade | Default, subtle loading |
+| `shimmer` | Gradient sweep | More prominent loading |
+
+<Canvas of={SkeletonStories.Shimmer} />
+
+---
+
+## Shape Presets
+
+| Shape | Dimensions | Use Case |
+|-------|-----------|----------|
+| `line` | h-4 full width | Text placeholders |
+| `circle` | Square with rounded-full | Avatars, icons |
+| `card` | h-24 full width | Card content |
+| `button` | h-10 w-24 | Button placeholders |
+
+<Canvas of={SkeletonStories.Shapes} />
+
+---
+
+## Pre-composed Components
+
+### SkeletonText
+
+Multiple text lines with varying widths:
+
+```tsx
+<SkeletonText lines={3} />
+```
+
+<Canvas of={SkeletonStories.Text} />
+
+### SkeletonAvatar
+
+Circular avatar placeholder:
+
+```tsx
+<SkeletonAvatar size="lg" />  {/* sm, md, lg */}
+```
+
+<Canvas of={SkeletonStories.Avatar} />
+
+### SkeletonCard
+
+Card layout placeholder:
+
+```tsx
+<SkeletonCard />
+```
+
+<Canvas of={SkeletonStories.CardExample} />
+
+---
+
+## Common Patterns
+
+### List Loading
+
+```tsx
+{isLoading ? (
+  <div className="space-y-4">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="flex items-center gap-4">
+        <SkeletonAvatar />
+        <div className="flex-1 space-y-2">
+          <Skeleton shape="line" className="w-1/2" />
+          <Skeleton shape="line" className="w-3/4" />
+        </div>
+      </div>
+    ))}
+  </div>
+) : (
+  <ActualList data={data} />
+)}
+```
+
+### Card Content Loading
+
+```tsx
+<Card>
+  <CardHeader>
+    <Skeleton shape="line" className="w-1/3 h-6" />
+    <Skeleton shape="line" className="w-2/3 h-4" />
+  </CardHeader>
+  <CardContent>
+    <SkeletonText lines={4} />
+  </CardContent>
+</Card>
+```
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Match skeleton dimensions to actual content
+- Use `pulse` (default) for most cases
+- Use `shimmer` for prominent loading states
+- Show skeletons immediately, don't delay
+
+### Don't ✗
+
+- Don't use skeletons for micro-interactions (use spinners)
+- Don't animate skeleton elements in and out
+- Don't use bright or distracting skeleton colors
+- Don't show skeletons indefinitely — set reasonable timeouts

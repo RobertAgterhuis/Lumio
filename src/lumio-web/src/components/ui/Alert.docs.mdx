@@ -1,0 +1,85 @@
+{/* Alert.docs.mdx */}
+import { Meta, Canvas, Controls, ArgTypes } from "@storybook/blocks";
+import * as AlertStories from "./Alert.stories";
+
+<Meta of={AlertStories} />
+
+# Alert
+
+Alerts display contextual messages with semantic meaning. They include an icon by default based on the variant.
+
+<Canvas of={AlertStories.Info} />
+<Controls of={AlertStories.Info} />
+
+---
+
+## Variants
+
+| Variant | Use Case | Icon |
+|---------|----------|------|
+| `info` | General information, tips | ℹ️ Info |
+| `success` | Successful actions, confirmations | ✓ CheckCircle |
+| `warning` | Caution, potential issues | ⚠️ AlertTriangle |
+| `danger` | Errors, destructive alerts | ✕ XCircle |
+| `security` | Security-related messages | 🛡️ Shield |
+
+<Canvas of={AlertStories.AllVariants} />
+
+---
+
+## Anatomy
+
+```tsx
+<Alert variant="success">
+  <AlertTitle>Success</AlertTitle>
+  <AlertDescription>Your changes have been saved.</AlertDescription>
+</Alert>
+```
+
+| Part | Purpose |
+|------|---------|
+| `Alert` | Container with role="alert" |
+| `AlertTitle` | Bold heading (optional) |
+| `AlertDescription` | Body text |
+
+---
+
+## Custom Icon
+
+Override the default icon:
+
+```tsx
+<Alert variant="info" icon={<CustomIcon />}>
+  <AlertDescription>Custom icon message</AlertDescription>
+</Alert>
+```
+
+---
+
+## Without Icon
+
+Hide the icon when space is limited:
+
+```tsx
+<Alert variant="warning" hideIcon>
+  <AlertDescription>Compact warning message</AlertDescription>
+</Alert>
+```
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use semantic variants that match the message intent
+- Keep alert text concise
+- Use `AlertTitle` for multi-line alerts
+- Place alerts near the relevant content
+
+### Don't ✗
+
+- Don't use `danger` for warnings — that's what `warning` is for
+- Don't use alerts for success confirmations that should be toasts
+- Don't stack multiple alerts of the same type
+- Don't use alerts for marketing messages — they're for system feedback

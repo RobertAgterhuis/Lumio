@@ -1,0 +1,89 @@
+{/* Icon.docs.mdx */}
+import { Meta, Canvas, Controls, ArgTypes } from "@storybook/blocks";
+import * as IconStories from "./Icon.stories";
+
+<Meta of={IconStories} />
+
+# Icon
+
+The Icon component wraps Lucide icons with consistent sizing and accessibility attributes.
+
+<Canvas of={IconStories.Default} />
+<Controls of={IconStories.Default} />
+
+---
+
+## Sizes
+
+| Size | Pixels | Use Case |
+|------|--------|----------|
+| `sm` | 16px | Inline with text, compact UI |
+| `md` | 20px | Default, buttons, lists |
+| `lg` | 24px | Headers, navigation |
+| `xl` | 32px | Hero sections, empty states |
+
+<Canvas of={IconStories.AllSizes} />
+
+---
+
+## Accessibility
+
+### Decorative Icons (Default)
+
+By default, icons are decorative and hidden from screen readers:
+
+```tsx
+<Icon icon={Mail} />
+// Renders with aria-hidden="true"
+```
+
+### Accessible Icons
+
+Add a `label` prop for icons that convey meaning:
+
+```tsx
+<Icon icon={AlertCircle} label="Warning" />
+// Renders with role="img" and aria-label="Warning"
+```
+
+<Canvas of={IconStories.WithLabel} />
+
+---
+
+## With Colors
+
+Icons inherit text color. Use Tailwind color classes:
+
+```tsx
+<Icon icon={Check} className="text-success" />
+<Icon icon={X} className="text-danger" />
+<Icon icon={AlertTriangle} className="text-warning" />
+```
+
+<Canvas of={IconStories.WithColors} />
+
+---
+
+## Common Icons
+
+The design system uses [Lucide React](https://lucide.dev/icons/) for icons.
+
+<Canvas of={IconStories.CommonIcons} />
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Use `sm` (16px) for inline icons in text
+- Use `md` (20px) for button icons
+- Add `label` prop when the icon conveys meaning not present in adjacent text
+- Keep icon color consistent with surrounding text
+
+### Don't ✗
+
+- Don't use icons without accompanying text for critical actions
+- Don't use `label` for decorative icons — it adds unnecessary screen reader noise
+- Don't mix icon libraries — stick to Lucide
+- Don't apply arbitrary sizes — use the size presets

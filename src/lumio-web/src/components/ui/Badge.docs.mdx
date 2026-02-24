@@ -1,0 +1,74 @@
+{/* Badge.docs.mdx */}
+import { Meta, Canvas, Controls, ArgTypes } from "@storybook/blocks";
+import * as BadgeStories from "./Badge.stories";
+
+<Meta of={BadgeStories} />
+
+# Badge
+
+Badges display short status indicators. Use them to show counts, labels, or states.
+
+<Canvas of={BadgeStories.Default} />
+<Controls of={BadgeStories.Default} />
+
+---
+
+## Variants
+
+| Variant | Use Case |
+|---------|----------|
+| `default` | Primary badge |
+| `secondary` | Neutral, less prominent |
+| `destructive` | Error, critical |
+| `outline` | Minimal, bordered only |
+| `success` | Completed, active |
+| `warning` | Attention needed |
+| `danger` | Error state |
+| `info` | Informational |
+| `security` | Security-related |
+
+<Canvas of={BadgeStories.AllVariants} />
+
+---
+
+## Common Patterns
+
+### Status Indicators
+
+```tsx
+<Badge variant="success">Actief</Badge>
+<Badge variant="warning">In behandeling</Badge>
+<Badge variant="danger">Mislukt</Badge>
+```
+
+### Counts
+
+```tsx
+<Badge>3</Badge>
+<Badge variant="secondary">99+</Badge>
+```
+
+### Labels
+
+```tsx
+<Badge variant="outline">Concept</Badge>
+<Badge variant="secondary">Nieuw</Badge>
+```
+
+---
+
+## Usage Guidelines
+
+### Do ✓
+
+- Keep badge text short (1-2 words)
+- Use semantic colors for statuses
+- Place badges near the item they describe
+- Use `outline` for subtle, non-urgent labels
+
+### Don't ✗
+
+- Don't put long sentences in badges
+- Don't use badges for navigation
+- Don't animate badges (except subtle count updates)
+- Don't use `destructive` for neutral negative states (use `danger`)

@@ -6,6 +6,10 @@ const meta = {
   title: "Primitives/Textarea",
   component: Textarea,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "core" },
+    governance: { maturity: "core", a11yLevel: "AA" },
+  },
   argTypes: {
     disabled: { control: "boolean" },
     placeholder: { control: "text" },

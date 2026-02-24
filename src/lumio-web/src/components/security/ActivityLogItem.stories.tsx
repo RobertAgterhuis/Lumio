@@ -6,6 +6,10 @@ const meta = {
   title: "Security/ActivityLogItem",
   component: ActivityLogItem,
   tags: ["autodocs"],
+  parameters: {
+    status: { type: "experimental" },
+    governance: { maturity: "experimental", a11yLevel: "AA" },
+  },
   argTypes: {
     severity: {
       control: "select",
