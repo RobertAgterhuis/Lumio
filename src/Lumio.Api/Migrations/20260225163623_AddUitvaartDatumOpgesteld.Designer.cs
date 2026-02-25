@@ -3,6 +3,7 @@ using System;
 using Lumio.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lumio.Api.Migrations
 {
     [DbContext(typeof(LumioDbContext))]
-    partial class LumioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260225163623_AddUitvaartDatumOpgesteld")]
+    partial class AddUitvaartDatumOpgesteld
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
@@ -437,9 +440,6 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("NotarisTelefoon")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("OnboardingVoltooid")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Postcode")
                         .HasColumnType("TEXT");
 
@@ -454,9 +454,6 @@ namespace Lumio.Api.Migrations
 
                     b.Property<string>("Telefoon")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("TijdlijnBekeken")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Tussenvoegsel")
                         .HasColumnType("TEXT");
@@ -830,15 +827,6 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("AangemaaktOp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("BeslisserNaam")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("BeslisserRelatie")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("BeslisserTelefoon")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DonorregisterReferentie")

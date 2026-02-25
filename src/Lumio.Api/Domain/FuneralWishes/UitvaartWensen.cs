@@ -39,6 +39,9 @@ public class UitvaartWensen : BaseEntity
     // P-S16: Budgetrichting
     public string? BudgetRichting { get; set; }
 
+    // S4-09: Datum opgesteld
+    public DateOnly? DatumOpgesteld { get; set; }
+
     public List<CeremonieDetail> CeremonieDetails { get; set; } = [];
     public List<UitvaartGenodigde> Genodigden { get; set; } = [];
 }

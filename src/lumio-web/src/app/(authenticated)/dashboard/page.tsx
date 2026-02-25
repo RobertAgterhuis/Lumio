@@ -13,6 +13,10 @@ import { NabestaandenDashboard } from "@/components/nabestaanden/NabestaandenDas
 import { StatistiekenWidget } from "@/components/dashboard/StatistiekenWidget";
 import { VoortgangGranulair } from "@/components/dashboard/VoortgangGranulair";
 import { ProfielSuggesties } from "@/components/dashboard/ProfielSuggesties";
+import { MeldingenWidget } from "@/components/dashboard/MeldingenWidget";
+import { BackupStatusWidget } from "@/components/dashboard/BackupStatusWidget";
+import { AanbevolenStapWidget } from "@/components/dashboard/AanbevolenStapWidget";
+import { DocumentenVerloopdatumWidget } from "@/components/dashboard/DocumentenVerloopdatumWidget";
 import { InterviewWizard } from "@/components/interview/InterviewWizard";
 import { useTranslations } from "next-intl";
 import {
@@ -133,6 +137,7 @@ const domainCards: Array<{
 interface ActualisatieDomein {
   domein: string;
   label: string;
+  isAfgerond: boolean;
   laatsteBevestiging: string | null;
   actualisatieNodig: boolean;
 }
@@ -141,13 +146,13 @@ export default function DashboardPage() {
   const { isReadOnly } = useAuthStore();
   const {
     showVoortgang, showVoortgangGranulair, showSuggesties, showDomeinKaarten,
-    toggleSection, finishedDomains, setDomainFinished,
+    toggleSection,
   } = usePreferencesStore();
   const [showInterview, setShowInterview] = useState(false);
   const t = useTranslations("dashboard");
 
   // React Query hooks for dashboard data
-  const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<unknown>("eigenaar");
+  const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<{ voornaam?: string } | null>("eigenaar");
   const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid");
   const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie");
   const actualisatie = actualisatieData?.domeinen ?? [];
@@ -155,11 +160,15 @@ export default function DashboardPage() {
   type CardStatus = "afgerond" | "reviewNodig" | "bezig" | "beginnen";
 
   const getCardStatus = (domein: string): CardStatus => {
-    const isFinished = !!finishedDomains[domein];
-    const needsReview = isFinished && actualisatie.find((a) => a.domein === domein)?.actualisatieNodig === true;
+    // S4-02: server-driven isAfgerond (not localStorage)
+    const actualisatieDomein = actualisatie.find((a) => a.domein === domein);
+    const isAfgerond = actualisatieDomein?.isAfgerond ?? false;
+    const actualisatieNodig = actualisatieDomein?.actualisatieNodig ?? false;
     const hasData = getDomeinStatus(domein);
+    // S4-03: reviewNodig also when domain has data but hasnt been explicitly reviewed yet
+    const needsReview = (isAfgerond || hasData === true) && actualisatieNodig;
     if (needsReview) return "reviewNodig";
-    if (isFinished) return "afgerond";
+    if (isAfgerond) return "afgerond";
     if (hasData) return "bezig";
     return "beginnen";
   };
@@ -191,7 +200,14 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t("titel")}</h1>
+        <h1 className="text-3xl font-bold text-primary">
+          {(() => {
+            const uur = new Date().getHours();
+            const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");
+            const naam = (eigenaarData as { voornaam?: string } | null)?.voornaam;
+            return naam ? `${dagdeel}, ${naam}` : t("titel");
+          })()}
+        </h1>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
         </p>
@@ -210,7 +226,7 @@ export default function DashboardPage() {
           {compleetheid && (
             <div className="rounded-lg border bg-card p-5">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold">
+                <h2 className="text-sm font-semibold text-primary">
                   {t("voortgang.titel")}
                 </h2>
                 <div className="flex items-center gap-2">
@@ -261,6 +277,18 @@ export default function DashboardPage() {
           )}
         </div>
       )}
+
+      {/* S4-05/S4-06: Meldingen + Backup status widgets */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <MeldingenWidget />
+        <BackupStatusWidget />
+      </div>
+
+      {/* S6-14/15: Aanbevolen stap + verloopdatum documenten */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <AanbevolenStapWidget />
+        <DocumentenVerloopdatumWidget />
+      </div>
 
       {showInterview && (
         <div className="rounded-lg border bg-card p-6">
@@ -354,19 +382,19 @@ export default function DashboardPage() {
                         onClick={async (e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          if (cardStatus === "reviewNodig") {
-                            // Confirm actualisatie on server (BR-148/BR-190)
-                            try {
+                          try {
+                            if (cardStatus === "reviewNodig" || cardStatus === "bezig") {
+                              // S4-02: Mark as finished on server (BR-148/BR-190)
                               await api.post(`/api/status/actualisatie/${card.domein}`, {});
-                              refetchActualisatie();
-                              setDomainFinished(card.domein, true);
-                            } catch {
-                              // Ignore
+                            } else if (cardStatus === "afgerond") {
+                              // S4-02: Remove mark on server
+                              await api.delete(`/api/status/actualisatie/${card.domein}`);
+                            } else {
+                              await api.post(`/api/status/actualisatie/${card.domein}`, {});
                             }
-                          } else if (cardStatus === "afgerond") {
-                            setDomainFinished(card.domein, false);
-                          } else {
-                            setDomainFinished(card.domein, true);
+                            refetchActualisatie();
+                          } catch {
+                            // Ignore
                           }
                         }}
                       >

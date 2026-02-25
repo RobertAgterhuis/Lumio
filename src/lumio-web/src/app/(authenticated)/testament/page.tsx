@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { ScrollText, Plus, Pencil, History, GitCompareArrows } from "lucide-react";
+import { Plus, Pencil, History, GitCompareArrows } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
@@ -89,7 +90,7 @@ export default function TestamentPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <ScrollText className="h-8 w-8 text-info" />
+            <LumioIcon name="testament" size="lg" className="text-primary" />
             {t("titel")}
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
@@ -283,7 +284,7 @@ export default function TestamentPage() {
       ) : (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <ScrollText className="h-12 w-12 text-muted-foreground mb-4" />
+            <LumioIcon name="testament" size="xl" className="text-muted-foreground mb-4" />
             <CardDescription className="text-center mb-4">{t("geenTestament")}</CardDescription>
             <Link href="/testament/wizard">
               <Button>{t("wizardStarten")}</Button>

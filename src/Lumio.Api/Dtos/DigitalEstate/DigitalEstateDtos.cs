@@ -58,6 +58,13 @@ public record CryptoWalletResponse(
     string? Exchange,
     string? Notities);
 
+public record CryptoWalletOntsluitelResponse(
+    Guid Id,
+    string WalletNaam,
+    string CryptoType,
+    string? SeedPhrase,
+    string? WalletAdres);
+
 public record CryptoWalletUpsertRequest(
     string WalletNaam,
     string CryptoType,

@@ -11,7 +11,8 @@ import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
-import { Stethoscope, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -149,7 +150,10 @@ export default function EuthanasiePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="wilsverklaring" size="lg" className="text-primary" />
+            <span className="text-primary">{t("titel")}</span>
+          </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
@@ -158,7 +162,7 @@ export default function EuthanasiePage() {
         </div>
         <Link href="/euthanasie/wizard">
           <Button>
-            <Stethoscope className="h-4 w-4 mr-2" />
+            <LumioIcon name="wilsverklaring" size="sm" className="mr-2" />
             {data ? t("bewerken") : t("wizardStarten")}
           </Button>
         </Link>
@@ -175,7 +179,7 @@ export default function EuthanasiePage() {
       {!data ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Stethoscope className="h-12 w-12 text-muted-foreground mb-4" />
+            <LumioIcon name="wilsverklaring" size="xl" className="text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
               {t("geenWilsverklaring")}
             </p>

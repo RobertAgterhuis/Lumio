@@ -38,5 +38,13 @@
   <data name="SuggestionAddExclusionClause" xml:space="preserve"><value>Consider adding an exclusion clause.</value></data>
   <data name="SuggestionCheckPercentages" xml:space="preserve"><value>Check the distribution and ensure percentages add up to 100%.</value></data>
   <data name="SuggestionFillInNotary" xml:space="preserve"><value>Fill in your notary's details.</value></data>
+  <!-- S5-01: New juridical checks -->
+  <data name="WarningExecutorAlsoBeneficiary" xml:space="preserve"><value>The following person(s) are both executor and beneficiary, which may create a conflict of interest: {0}.</value></data>
+  <data name="SuggestionExecutorConflict" xml:space="preserve"><value>Consider appointing an independent executor who does not benefit from the estate.</value></data>
+  <data name="WarningPartnerNotBeneficiary" xml:space="preserve"><value>You are married or have a registered partnership, but your partner is not listed as a beneficiary in the will.</value></data>
+  <data name="SuggestionAddPartnerBeneficiary" xml:space="preserve"><value>Consider adding your partner as a beneficiary or verify that this omission is intentional.</value></data>
+  <data name="WarningNoBeneficiaries" xml:space="preserve"><value>No beneficiaries are specified in the will. Without beneficiaries, the distribution of the estate is unclear.</value></data>
+  <data name="SuggestionAddBeneficiaries" xml:space="preserve"><value>Add one or more beneficiaries to the will.</value></data>
+
   <data name="SuggestionFillContactDetails" xml:space="preserve"><value>Fill in contact details so heirs can be reached.</value></data>
 </root>

@@ -5,6 +5,7 @@ import { X, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { useHelpStore } from "@/stores/helpStore";
 import { helpChapters, type HelpChapter } from "@/content/help-chapters";
@@ -102,17 +103,16 @@ export function HelpPanel() {
 
         {/* Chapter selector */}
         <div className="border-b border-border px-4 py-2">
-          <select
+          <Select
             value={activeChapterSlug ?? ""}
-            onChange={(e: { target: { value: string } }) => setActiveChapter(e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+            onChange={(e) => setActiveChapter(e.target.value)}
           >
             {helpChapters.map((ch) => (
               <option key={ch.slug} value={ch.slug}>
                 {ch.number}. {t(`chapters.${ch.titleKey}`)}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         {/* Content */}

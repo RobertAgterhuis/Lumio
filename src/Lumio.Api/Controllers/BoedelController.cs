@@ -2,6 +2,7 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.AssetRegistry;
 using Lumio.Api.Dtos.AssetRegistry;
 using Lumio.Api.Rules;
+using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +14,13 @@ namespace Lumio.Api.Controllers;
 public class BoedelController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly IAuditService _audit;
 
-    public BoedelController(LumioDbContext db) => _db = db;
+    public BoedelController(LumioDbContext db, IAuditService audit)
+    {
+        _db = db;
+        _audit = audit;
+    }
 
     private async Task<Guid?> GetEigenaarId()
     {
@@ -39,8 +45,12 @@ public class BoedelController : ControllerBase
         var totaalBezittingen = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
         var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
         var totaalVerzekeringen = verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
+        var totaalVerzekeringenMetBegunstigde = verzekeringen
+            .Where(v => !string.IsNullOrEmpty(v.Begunstigde))
+            .Sum(v => v.VerzekerdBedrag ?? 0);
         var totaalSchulden = schulden.Sum(s => s.Bedrag);
-        var (brutoNalatenschap, nettoNalatenschap) = NalatenschapHelper.Bereken(totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden);
+        var (brutoNalatenschap, nettoNalatenschap) = NalatenschapHelper.Bereken(
+            totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden, totaalVerzekeringenMetBegunstigde);
 
         return Ok(new
         {
@@ -79,6 +89,7 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         _db.FysiekeBezittingen.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "FysiekBezit", item.Id);
         return Created($"/api/boedel/bezittingen/{item.Id}", ToBezitResponse(item));
     }
 
@@ -91,6 +102,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "FysiekBezit", id);
         return Ok(ToBezitResponse(item));
     }
 
@@ -101,6 +113,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         _db.FysiekeBezittingen.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "FysiekBezit", id);
         return NoContent();
     }
 
@@ -133,6 +146,7 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         _db.Bankrekeningen.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Bankrekening", item.Id);
         return Created($"/api/boedel/bankrekeningen/{item.Id}", item.Adapt<BankrekeningResponse>());
     }
 
@@ -143,6 +157,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Bankrekening", id);
         return Ok(item.Adapt<BankrekeningResponse>());
     }
 
@@ -153,6 +168,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         _db.Bankrekeningen.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Bankrekening", id);
         return NoContent();
     }
 
@@ -175,6 +191,7 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         _db.Verzekeringen.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Verzekering", item.Id);
         return Created($"/api/boedel/verzekeringen/{item.Id}", item.Adapt<VerzekeringResponse>());
     }
 
@@ -185,6 +202,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Verzekering", id);
         return Ok(item.Adapt<VerzekeringResponse>());
     }
 
@@ -195,6 +213,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         _db.Verzekeringen.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Verzekering", id);
         return NoContent();
     }
 
@@ -256,6 +275,7 @@ public class BoedelController : ControllerBase
 
         // Reload with navigation for response
         schuld.Bezit = bezit;
+        await _audit.LogAsync("Aangemaakt", "Schuld", schuld.Id);
         return Created($"/api/boedel/bezittingen/{bezitId}/schulden/{schuld.Id}", ToSchuldResponse(schuld));
     }
 
@@ -266,6 +286,7 @@ public class BoedelController : ControllerBase
         if (schuld is null) return NotFound();
         _db.Schulden.Remove(schuld);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Schuld", schuldId);
         return NoContent();
     }
 
@@ -289,6 +310,7 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         _db.Schulden.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Schuld", item.Id);
         return Created($"/api/boedel/schulden/{item.Id}", ToSchuldResponse(item));
     }
 
@@ -299,6 +321,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Schuld", id);
         return Ok(ToSchuldResponse(item));
     }
 
@@ -309,6 +332,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         _db.Schulden.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Schuld", id);
         return NoContent();
     }
 }

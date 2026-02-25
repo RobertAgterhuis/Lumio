@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Globe, Key, Bitcoin } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -103,13 +103,13 @@ export default function DigitaalBezitPage() {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="accounts">
-            <Globe className="h-4 w-4 mr-1" /> {t("tabs.accounts", { aantal: accounts.length })}
+            <LumioIcon name="digitaal-bezit" size="sm" className="mr-1" /> {t("tabs.accounts", { aantal: accounts.length })}
           </TabsTrigger>
           <TabsTrigger value="wachtwoorden">
-            <Key className="h-4 w-4 mr-1" /> {t("tabs.wachtwoorden", { aantal: wachtwoorden.length })}
+            <LumioIcon name="digitaal-bezit" size="sm" className="mr-1" /> {t("tabs.wachtwoorden", { aantal: wachtwoorden.length })}
           </TabsTrigger>
           <TabsTrigger value="crypto">
-            <Bitcoin className="h-4 w-4 mr-1" /> {t("tabs.crypto", { aantal: wallets.length })}
+            <LumioIcon name="digitaal-bezit" size="sm" className="mr-1" /> {t("tabs.crypto", { aantal: wallets.length })}
           </TabsTrigger>
         </TabsList>
 

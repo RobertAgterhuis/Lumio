@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.DigitalEstate;
 using Lumio.Api.Dtos.DigitalEstate;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +14,13 @@ namespace Lumio.Api.Controllers;
 public class DigitaalBezitController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly IAuditService _audit;
 
-    public DigitaalBezitController(LumioDbContext db) => _db = db;
+    public DigitaalBezitController(LumioDbContext db, IAuditService audit)
+    {
+        _db = db;
+        _audit = audit;
+    }
 
     // --- Accounts ---
 
@@ -35,6 +41,7 @@ public class DigitaalBezitController : ControllerBase
         item.EigenaarId = eigenaar.Id;
         _db.DigitaleAccounts.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "DigitaalAccount", item.Id);
         return Created($"/api/digitaal-bezit/accounts/{item.Id}", item.Adapt<DigitaalAccountResponse>());
     }
 
@@ -46,6 +53,7 @@ public class DigitaalBezitController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "DigitaalAccount", id);
         return Ok(item.Adapt<DigitaalAccountResponse>());
     }
 
@@ -57,6 +65,7 @@ public class DigitaalBezitController : ControllerBase
 
         _db.DigitaleAccounts.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "DigitaalAccount", id);
         return NoContent();
     }
 
@@ -89,6 +98,7 @@ public class DigitaalBezitController : ControllerBase
 
         _db.Wachtwoorden.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Wachtwoord", item.Id);
         return Created($"/api/digitaal-bezit/wachtwoorden/{item.Id}", item.Adapt<WachtwoordEntryResponse>());
     }
 
@@ -101,6 +111,7 @@ public class DigitaalBezitController : ControllerBase
         if (item is null) return NotFound();
 
         var decrypted = encryption.Decrypt(item.EncryptedWachtwoord);
+        await _audit.LogAsync("WachtwoordOntsluitel", "Wachtwoord", id);
         return Ok(new WachtwoordOntsluitelResponse(
             item.Id, item.Naam, item.Gebruikersnaam,
             decrypted, item.Url, item.Notities));
@@ -124,6 +135,7 @@ public class DigitaalBezitController : ControllerBase
             item.EncryptedWachtwoord = encryption.Encrypt(request.NieuwWachtwoord);
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Wachtwoord", id);
         return Ok(item.Adapt<WachtwoordEntryResponse>());
     }
 
@@ -135,6 +147,7 @@ public class DigitaalBezitController : ControllerBase
 
         _db.Wachtwoorden.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Wachtwoord", id);
         return NoContent();
     }
 
@@ -299,6 +312,7 @@ public class DigitaalBezitController : ControllerBase
 
         _db.CryptoWallets.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "CryptoWallet", item.Id);
         return Created($"/api/digitaal-bezit/crypto/{item.Id}", item.Adapt<CryptoWalletResponse>());
     }
 
@@ -321,7 +335,23 @@ public class DigitaalBezitController : ControllerBase
             item.EncryptedSeedPhrase = encryption.Encrypt(request.SeedPhrase);
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "CryptoWallet", id);
         return Ok(item.Adapt<CryptoWalletResponse>());
+    }
+
+    [HttpGet("crypto/{id:guid}/ontsluitel")]
+    public async Task<ActionResult<CryptoWalletOntsluitelResponse>> OntsluitelCrypto(
+        Guid id,
+        [FromServices] IEncryptionService encryption)
+    {
+        var item = await _db.CryptoWallets.FindAsync(id);
+        if (item is null) return NotFound();
+        if (item.EncryptedSeedPhrase is null)
+            return BadRequest(new { error = "Geen seed phrase opgeslagen voor deze wallet." });
+        var decrypted = encryption.Decrypt(item.EncryptedSeedPhrase);
+        await _audit.LogAsync("CryptoOntsluitel", "CryptoWallet", id);
+        return Ok(new CryptoWalletOntsluitelResponse(
+            item.Id, item.WalletNaam, item.CryptoType, decrypted, item.WalletAdres));
     }
 
     [HttpDelete("crypto/{id:guid}")]
@@ -332,6 +362,7 @@ public class DigitaalBezitController : ControllerBase
 
         _db.CryptoWallets.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "CryptoWallet", id);
         return NoContent();
     }
 }

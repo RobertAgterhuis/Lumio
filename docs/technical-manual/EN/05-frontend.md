@@ -178,7 +178,6 @@ Manages user preferences (localStorage-persisted):
 | `showVoortgangGranulair` | boolean | Show detailed progress |
 | `showSuggesties` | boolean | Show suggestions |
 | `showDomeinKaarten` | boolean | Show domain cards |
-| `finishedDomains` | Record<string, string> | Domain → ISO date when completed |
 
 ### `toastStore`
 

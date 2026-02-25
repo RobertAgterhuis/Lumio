@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,9 +9,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-import { Lightbulb, Loader2, CheckCircle, Link2 } from "lucide-react";
+import { Lightbulb, Loader2, CheckCircle, Link2, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 
 interface Suggestie {
   categorie: string;
@@ -26,23 +25,12 @@ interface SuggestieResult {
 }
 
 export function ProfielSuggesties() {
-  const [result, setResult] = useState<SuggestieResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // S4-07: Auto-load via useDomainQuery (5-min cache)
+  const { data: result, isLoading, isError, refetch, isFetching } = useDomainQuery<SuggestieResult>(
+    "status/suggesties",
+    { staleTime: 5 * 60 * 1000 }
+  );
   const t = useTranslations("dashboard.suggesties");
-
-  const handleCheck = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await api.get<SuggestieResult>("/api/status/suggesties");
-      setResult(data);
-    } catch {
-      setError(t("fout"));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Card>
@@ -55,18 +43,25 @@ export function ProfielSuggesties() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Button onClick={handleCheck} disabled={loading} variant="outline">
-          {loading ? (
+        <Button onClick={() => refetch()} disabled={isFetching} variant="outline">
+          {isFetching ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
-            <Lightbulb className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 mr-2" />
           )}
           {t("analyseren")}
         </Button>
 
-        {error && (
+        {isLoading && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {t("laden")}
+          </div>
+        )}
+
+        {isError && (
           <Alert variant="danger">
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription>{t("fout")}</AlertDescription>
           </Alert>
         )}
 
@@ -121,3 +116,4 @@ export function ProfielSuggesties() {
     </Card>
   );
 }
+

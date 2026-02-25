@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
-import { Heart } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -54,7 +54,7 @@ export default function DonorPage() {
         </div>
         <Link href="/donor/formulier">
           <Button>
-            <Heart className="h-4 w-4 mr-2" />
+            <LumioIcon name="donor" size="sm" className="mr-2" />
             {data ? t("bewerken") : t("registratieStarten")}
           </Button>
         </Link>
@@ -71,7 +71,7 @@ export default function DonorPage() {
       {!data ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Heart className="h-12 w-12 text-muted-foreground mb-4" />
+            <LumioIcon name="donor" size="xl" className="text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
               {t("geenKeuze")}
             </p>

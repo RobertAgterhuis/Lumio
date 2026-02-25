@@ -10,4 +10,5 @@ public record ErfbelastingFacts(
 public record ErfgenaamFact(
     Guid ErfgenaamId,
     string Naam,
-    string Relatie);
+    string Relatie,
+    decimal? Portie = null);

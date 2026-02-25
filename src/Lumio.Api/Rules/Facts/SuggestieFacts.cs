@@ -9,7 +9,14 @@ public record SuggestieFacts(
     List<SuggestieErfgenaamFact> Erfgenamen,
     List<SuggestieNoodcontactFact> Noodcontacten,
     SuggestieTestamentFact? Testament,
-    string? UitvaartOndernemer);
+    string? UitvaartOndernemer,
+    // S5: Boedel suggesties
+    int AantalVerzekeringenZonderBegunstigde,
+    bool HeeftHypotheekZonderBezit,
+    // S5: Digitaal bezit suggesties
+    bool HeeftAccountOverdragenZonderNaam,
+    bool HeeftCryptoZonderSeedPhrase,
+    bool HeeftAccountZonderActie);
 
 public record SuggestieErfgenaamFact(
     string VolledigeNaam,

@@ -61,6 +61,12 @@ public class Eigenaar : BaseEntity
     public string? ProfielFotoContentType { get; set; }
     public string? ProfielFotoNaam { get; set; }
 
+    // S6-20: Tijdlijn bezoek-tracking
+    public bool TijdlijnBekeken { get; set; } = false;
+
+    // S6-22: Onboarding wizard status
+    public bool OnboardingVoltooid { get; set; } = false;
+
     [System.ComponentModel.DataAnnotations.Schema.NotMapped]
     public bool HeeftProfielFoto => ProfielFoto is not null;
 }

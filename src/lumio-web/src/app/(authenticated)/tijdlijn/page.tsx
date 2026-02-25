@@ -26,6 +26,8 @@ import {
   UserX,
 } from "lucide-react";
 import { useDomainQuery } from "@/hooks";
+import { useEffect } from "react";
+import { api } from "@/lib/api-client";
 import { TijdlijnStapRow } from "@/components/tijdlijn/TijdlijnStapRow";
 import { STAP_DOMAIN_CONFIGS } from "@/components/tijdlijn/tijdlijn-data";
 
@@ -116,6 +118,15 @@ export default function TijdlijnPage() {
   const { data: testamentData, isLoading: testamentLoading } = useDomainQuery("testament");
   const { data: documentenData, isLoading: documentenLoading } = useDomainQuery<unknown[]>("documenten");
   const { data: noodcontactenData, isLoading: noodcontactenLoading } = useDomainQuery<unknown[]>("noodcontacten");
+  const { data: boedelData, isLoading: boedelLoading } = useDomainQuery("boedel");
+  const { data: erfgenamenData, isLoading: erfgenamenLoading } = useDomainQuery<unknown[]>("erfgenamen");
+  const { data: digitaalBezitData, isLoading: digitaalBezitLoading } = useDomainQuery("digitaal-bezit");
+
+  // S6-20: Mark tijdlijn as viewed on load
+  useEffect(() => {
+    void api.post("/api/status/tijdlijn-bekeken").catch(() => void 0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Maps stap key → fetched domain data
   const domainDataMap: Record<string, unknown> = {
@@ -125,6 +136,9 @@ export default function TijdlijnPage() {
     notaris: testamentData,
     documenten: documentenData,
     naasten: noodcontactenData,
+    digitaal: digitaalBezitData,
+    aanvaarding: erfgenamenData,
+    boedelverdeling: boedelData,
   };
 
   // Maps stap key → loading state
@@ -135,7 +149,17 @@ export default function TijdlijnPage() {
     notaris: testamentLoading,
     documenten: documentenLoading,
     naasten: noodcontactenLoading,
+    digitaal: digitaalBezitLoading,
+    aanvaarding: erfgenamenLoading,
+    boedelverdeling: boedelLoading,
   };
+
+  // S6-18: Count steps linked to domain configs
+  const gelinktStappen = tijdlijn.flatMap((f) => f.stappen).filter((s) => s.key in STAP_DOMAIN_CONFIGS);
+  const ingevuldStappen = gelinktStappen.filter((s) => {
+    const config = STAP_DOMAIN_CONFIGS[s.key];
+    return config?.isCompleted(domainDataMap[s.key]);
+  });
 
   return (
     <div className="space-y-8">
@@ -149,6 +173,11 @@ export default function TijdlijnPage() {
         <p className="text-muted-foreground mt-2 max-w-2xl">
           {t("beschrijving")}
         </p>
+        {gelinktStappen.length > 0 && (
+          <p className="text-sm text-muted-foreground mt-1">
+            {t("voortgang", { ingevuld: ingevuldStappen.length, totaal: gelinktStappen.length })}
+          </p>
+        )}
       </div>
 
       {tijdlijn.map((fase) => {

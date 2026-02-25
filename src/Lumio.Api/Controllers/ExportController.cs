@@ -1,6 +1,7 @@
 using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services;
 using Lumio.Api.Data;
+using Lumio.Api.Domain.AssetRegistry;
 using Lumio.Api.Dtos.Export;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ public class ExportController : ControllerBase
         _audit = audit;
     }
 
-    [HttpPost("testament")]
+    [HttpGet("testament")]
     public async Task<IActionResult> ExportTestament()
     {
         var pdf = await _pdfService.GenerateTestamentPdf();
@@ -40,7 +41,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-testament.pdf");
     }
 
-    [HttpPost("euthanasie")]
+    [HttpGet("euthanasie")]
     public async Task<IActionResult> ExportEuthanasie()
     {
         var pdf = await _pdfService.GenerateEuthanasiePdf();
@@ -48,7 +49,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-euthanasie.pdf");
     }
 
-    [HttpPost("donor")]
+    [HttpGet("donor")]
     public async Task<IActionResult> ExportDonor()
     {
         var pdf = await _pdfService.GenerateDonorPdf();
@@ -56,7 +57,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-donor.pdf");
     }
 
-    [HttpPost("digitaal-bezit")]
+    [HttpGet("digitaal-bezit")]
     public async Task<IActionResult> ExportDigitaalBezit()
     {
         var pdf = await _pdfService.GenerateDigitaalBezitPdf();
@@ -64,7 +65,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-digitaal-bezit.pdf");
     }
 
-    [HttpPost("boedel")]
+    [HttpGet("boedel")]
     public async Task<IActionResult> ExportBoedel()
     {
         var pdf = await _pdfService.GenerateBoedelPdf();
@@ -72,7 +73,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-boedel.pdf");
     }
 
-    [HttpPost("uitvaart")]
+    [HttpGet("uitvaart")]
     public async Task<IActionResult> ExportUitvaart()
     {
         var pdf = await _pdfService.GenerateUitvaartPdf();
@@ -80,7 +81,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-uitvaart.pdf");
     }
 
-    [HttpPost("documenten")]
+    [HttpGet("documenten")]
     public async Task<IActionResult> ExportDocumenten()
     {
         var pdf = await _pdfService.GenerateDocumentenOverzichtPdf();
@@ -88,7 +89,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-documenten.pdf");
     }
 
-    [HttpPost("compleet")]
+    [HttpGet("compleet")]
     public async Task<IActionResult> ExportCompleet()
     {
         var pdf = await _pdfService.GenerateCompleetPdf();
@@ -96,7 +97,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-compleet.pdf");
     }
 
-    [HttpPost("noodkaart")]
+    [HttpGet("noodkaart")]
     public async Task<IActionResult> ExportNoodkaart()
     {
         var pdf = await _pdfService.GenerateNoodkaartPdf();
@@ -104,7 +105,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-noodkaart.pdf");
     }
 
-    [HttpPost("testament-concept")]
+    [HttpGet("testament-concept")]
     public async Task<IActionResult> ExportTestamentConcept()
     {
         var pdf = await _pdfService.GenerateTestamentConceptPdf();
@@ -112,7 +113,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-testament-concept.pdf");
     }
 
-    [HttpPost("wilsverklaring")]
+    [HttpGet("wilsverklaring")]
     public async Task<IActionResult> ExportWilsverklaring()
     {
         var pdf = await _pdfService.GenerateWilsverklaringPdf();
@@ -120,7 +121,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-wilsverklaring.pdf");
     }
 
-    [HttpPost("noodprocedure")]
+    [HttpGet("noodprocedure")]
     public async Task<IActionResult> ExportNoodprocedure()
     {
         var pdf = await _pdfService.GenerateNoodprocedurePdf();
@@ -128,7 +129,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-noodprocedure.pdf");
     }
 
-    [HttpPost("boedelbeschrijving")]
+    [HttpGet("boedelbeschrijving")]
     public async Task<IActionResult> ExportBoedelbeschrijving()
     {
         var pdf = await _pdfService.GenerateBoedelbeschrijvingPdf();
@@ -136,7 +137,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-boedelbeschrijving.pdf");
     }
 
-    [HttpPost("executeur-rapport")]
+    [HttpGet("executeur-rapport")]
     public async Task<IActionResult> ExportExecuteurRapport()
     {
         var pdf = await _pdfService.GenerateExecuteurRapportPdf();
@@ -144,7 +145,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-executeur-rapport.pdf");
     }
 
-    [HttpPost("notaris")]
+    [HttpGet("notaris")]
     public async Task<IActionResult> ExportNotaris()
     {
         var pdf = await _pdfService.GenerateNotarisPdf();
@@ -152,7 +153,7 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-notaris-dossier.pdf");
     }
 
-    [HttpPost("erfgenaam/{erfgenaamId:guid}")]
+    [HttpGet("erfgenaam/{erfgenaamId:guid}")]
     public async Task<IActionResult> ExportErfgenaam(Guid erfgenaamId)
     {
         var erfgenaam = await _db.Erfgenamen.FindAsync(erfgenaamId);
@@ -325,6 +326,8 @@ public class ExportController : ControllerBase
                 ("pdf/lumio-executeur-rapport.pdf", _pdfService.GenerateExecuteurRapportPdf),
             };
 
+            var pdfFouten = new List<string>();
+
             foreach (var (naam, generator) in pdfTasks)
             {
                 try
@@ -334,10 +337,25 @@ public class ExportController : ControllerBase
                     using var entryStream = entry.Open();
                     await entryStream.WriteAsync(pdfBytes);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Skip PDFs that fail (e.g. no data)
+                    // Collect failure so we can report it in FOUTEN.txt
+                    pdfFouten.Add($"{naam}: {ex.Message}");
                 }
+            }
+
+            // Write FOUTEN.txt if any PDFs failed
+            if (pdfFouten.Count > 0)
+            {
+                var foutEntry = archive.CreateEntry("FOUTEN.txt", CompressionLevel.Optimal);
+                using var foutStream = foutEntry.Open();
+                var foutTekst = new StringBuilder();
+                foutTekst.AppendLine("De volgende PDF-bestanden konden niet worden gegenereerd:");
+                foutTekst.AppendLine(new string('-', 50));
+                foreach (var fout in pdfFouten)
+                    foutTekst.AppendLine($"- {fout}");
+                var foutBytes = Encoding.UTF8.GetBytes(foutTekst.ToString());
+                await foutStream.WriteAsync(foutBytes);
             }
 
             // Add uploaded documents
@@ -678,9 +696,7 @@ public class ExportController : ControllerBase
 
         // Verzekeringen
         var uitvaartVerzekeringen = verzekeringen
-            .Where(v => (v.Type ?? "").ToLowerInvariant().Contains("uitvaart") ||
-                        (v.Type ?? "").ToLowerInvariant().Contains("begrafenis") ||
-                        (v.Type ?? "").ToLowerInvariant().Contains("overlijden")).ToList();
+            .Where(v => NuvVerzekeringTypen.IsNuvType(v.Type)).ToList();
         if (uitvaartVerzekeringen.Count > 0)
         {
             sb.AppendLine("  <Verzekeringen>");

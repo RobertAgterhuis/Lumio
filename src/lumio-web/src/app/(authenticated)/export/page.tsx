@@ -20,9 +20,12 @@ import {
   FileCode,
   Sheet,
   Flower2,
+  Users,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import type { LucideIcon } from "lucide-react";
+import { useDomainQuery } from "@/hooks";
+import type { Erfgenaam } from "@/components/erfgenamen/types";
 
 const exportOptions: Array<{
   key: string;
@@ -51,11 +54,13 @@ export default function ExportPage() {
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations("exporteren");
 
+  const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
+
   const handleExport = async (key: string, endpoint: string) => {
     setDownloading(key);
     setError(null);
     try {
-      await downloadAndSave(endpoint, `lumio-${key}.pdf`, { method: "POST" });
+      await downloadAndSave(endpoint, `lumio-${key}.pdf`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -67,7 +72,7 @@ export default function ExportPage() {
     setDownloading("compleet");
     setError(null);
     try {
-      await downloadAndSave("/api/export/compleet", "lumio-compleet.pdf", { method: "POST" });
+      await downloadAndSave("/api/export/compleet", "lumio-compleet.pdf");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -109,6 +114,19 @@ export default function ExportPage() {
     try {
       const today = new Date().toISOString().slice(0, 10);
       await downloadAndSave(`/api/export/csv/${naam}`, `lumio-${naam}-${today}.csv`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const handleDeelErfgenaam = async (erfgenaamId: string, voornaam: string) => {
+    const key = `deel-${erfgenaamId}`;
+    setDownloading(key);
+    setError(null);
+    try {
+      await downloadAndSave(`/api/export/delen/${erfgenaamId}`, `lumio-erfgenaam-${voornaam.toLowerCase()}.pdf`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -278,6 +296,45 @@ export default function ExportPage() {
           </Button>
         </CardContent>
       </Card>
+
+      {erfgenamen.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" /> {t("deelMetErfgenaam")}
+            </CardTitle>
+            <CardDescription>
+              {t("deelMetErfgenaamBeschrijving")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-3">
+              {erfgenamen.map((e) => {
+                const volNaam = e.tussenvoegsel
+                  ? `${e.voornaam} ${e.tussenvoegsel} ${e.achternaam}`
+                  : `${e.voornaam} ${e.achternaam}`;
+                const key = `deel-${e.id}`;
+                return (
+                  <Button
+                    key={e.id}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDeelErfgenaam(e.id, e.voornaam)}
+                    disabled={downloading !== null}
+                  >
+                    {downloading === key ? (
+                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                    ) : (
+                      <Download className="h-3 w-3 mr-1" />
+                    )}
+                    {volNaam}
+                  </Button>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {exportOptions.map((opt) => {

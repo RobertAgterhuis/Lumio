@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Church, Plus, Pencil, Users } from "lucide-react";
+import { Plus, Pencil, Users } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -73,7 +74,7 @@ export default function UitvaartPage() {
         </div>
         <Link href="/uitvaart/wizard">
           <Button>
-            <Church className="h-4 w-4 mr-2" />
+            <LumioIcon name="uitvaart" size="sm" className="mr-2" />
             {data ? t("bewerken") : t("wizardStarten")}
           </Button>
         </Link>
@@ -84,7 +85,7 @@ export default function UitvaartPage() {
       {!data ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Church className="h-12 w-12 text-muted-foreground mb-4" />
+            <LumioIcon name="uitvaart" size="xl" className="text-muted-foreground mb-4" />
             <p className="text-muted-foreground">{t("geenWensen")}</p>
             <Link href="/uitvaart/wizard">
               <Button className="mt-4">{t("wizardStarten")}</Button>

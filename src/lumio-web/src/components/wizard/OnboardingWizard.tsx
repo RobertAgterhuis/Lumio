@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useDomainQuery } from "@/hooks";
 import { useAuthStore } from "@/stores/authStore";
+import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
 import {
   User,
@@ -84,6 +85,7 @@ export function OnboardingWizard() {
     const allDone = stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus]);
     if (allDone) {
       localStorage.setItem(storageKey, "true");
+      void api.post("/api/eigenaar/onboarding-voltooid").catch(() => void 0);
       setVisible(false);
     } else {
       const completed = localStorage.getItem(storageKey);
@@ -95,6 +97,7 @@ export function OnboardingWizard() {
 
   const handleComplete = () => {
     localStorage.setItem(storageKey, "true");
+    void api.post("/api/eigenaar/onboarding-voltooid").catch(() => void 0);
     setVisible(false);
   };
 

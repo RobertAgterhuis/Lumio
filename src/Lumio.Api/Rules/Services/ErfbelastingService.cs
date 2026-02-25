@@ -42,27 +42,38 @@ public class ErfbelastingService : IErfbelastingService
         }
 
         var aantalErfgenamen = facts.Erfgenamen.Count;
-        var deelPerErfgenaam = aantalErfgenamen > 0 ? nettoNalatenschap / aantalErfgenamen : 0m;
+        // S5-22: Testamentaire percentages — gebruik Portie als beschikbaar, anders gelijke verdeling
+        var totaalPortie = facts.Erfgenamen.Where(e => e.Portie.HasValue).Sum(e => e.Portie!.Value);
+        var erfgenamenZonderPortie = facts.Erfgenamen.Where(e => !e.Portie.HasValue).ToList();
+        var resterendePortie = Math.Max(0m, 100m - totaalPortie);
+        var deelZonderPortie = erfgenamenZonderPortie.Count > 0
+            ? nettoNalatenschap * resterendePortie / 100m / erfgenamenZonderPortie.Count
+            : 0m;
 
         var resultaten = facts.Erfgenamen.Select(e =>
         {
+            var deelDitErfgenaam = e.Portie.HasValue
+                ? nettoNalatenschap * e.Portie.Value / 100m
+                : deelZonderPortie;
+
             var groep = _options.BepaalTariefgroep(e.Relatie);
             var vrijstelling = groep.Vrijstelling;
-            var belastbaar = Math.Max(0, deelPerErfgenaam - vrijstelling);
+            var belastbaar = Math.Max(0, deelDitErfgenaam - vrijstelling);
             var belasting = BerekenBelasting(belastbaar, groep.Schijf1Percentage, groep.Schijf2Percentage, groep.Schijf1Grens);
 
-            toegepasteRegels.Add($"BR-046: Erfbelasting {e.Naam} ({groep.Naam})");
+            var regelLabel = e.Portie.HasValue ? $"BR-046+S5-22: Erfbelasting {e.Naam} ({e.Portie.Value}%, {groep.Naam})" : $"BR-046: Erfbelasting {e.Naam} ({groep.Naam})";
+            toegepasteRegels.Add(regelLabel);
 
             return new ErfgenaamBelasting(
                 e.ErfgenaamId,
                 e.Naam,
                 e.Relatie,
                 groep.Naam,
-                deelPerErfgenaam,
+                deelDitErfgenaam,
                 vrijstelling,
                 belastbaar,
                 belasting,
-                deelPerErfgenaam - belasting);
+                deelDitErfgenaam - belasting);
         }).ToList();
 
         return new PolicyResult<ErfbelastingResultaat>

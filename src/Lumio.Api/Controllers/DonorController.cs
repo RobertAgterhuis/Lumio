@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.DonorRegistration;
 using Lumio.Api.Dtos.DonorRegistration;
+using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,13 @@ namespace Lumio.Api.Controllers;
 public class DonorController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly IAuditService _audit;
 
-    public DonorController(LumioDbContext db) => _db = db;
+    public DonorController(LumioDbContext db, IAuditService audit)
+    {
+        _db = db;
+        _audit = audit;
+    }
 
     [HttpGet]
     public async Task<ActionResult<DonorRegistratieResponse>> Get()
@@ -43,6 +49,7 @@ public class DonorController : ControllerBase
         }
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Opgeslagen", "DonorRegistratie", item.Id);
         return Ok(item.Adapt<DonorRegistratieResponse>());
     }
 
@@ -69,6 +76,7 @@ public class DonorController : ControllerBase
         item.DonorRegistratieId = donor.Id;
         _db.OrgaanKeuzes.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "OrgaanKeuze", item.Id);
         return Created($"/api/donor/orgaankeuzes/{item.Id}", item.Adapt<OrgaanKeuzeResponse>());
     }
 
@@ -80,6 +88,7 @@ public class DonorController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "OrgaanKeuze", id);
         return Ok(item.Adapt<OrgaanKeuzeResponse>());
     }
 
@@ -91,6 +100,7 @@ public class DonorController : ControllerBase
 
         _db.OrgaanKeuzes.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "OrgaanKeuze", id);
         return NoContent();
     }
 

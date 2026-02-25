@@ -2,6 +2,7 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.Documents;
 using Lumio.Api.Dtos.Documents;
 using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ public class DocumentenController : ControllerBase
 {
     private readonly LumioDbContext _db;
     private readonly LimietenOptions _limieten;
+    private readonly IAuditService _audit;
 
-    public DocumentenController(LumioDbContext db, IOptions<LimietenOptions> limieten)
+    public DocumentenController(LumioDbContext db, IOptions<LimietenOptions> limieten, IAuditService audit)
     {
         _db = db;
         _limieten = limieten.Value;
+        _audit = audit;
     }
 
     /// <summary>
@@ -102,6 +105,9 @@ public class DocumentenController : ControllerBase
         var notities = request.Notities;
         var verlooptOp = request.VerlooptOp;
 
+        if (bestand is null)
+            return BadRequest(new { error = "Geen bestand opgegeven." });
+
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
@@ -138,6 +144,7 @@ public class DocumentenController : ControllerBase
 
         _db.Documenten.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Document", item.Id, naam);
 
         var aantalVersies = await _db.Documenten
             .CountAsync(d => d.DocumentGroepId == documentGroepId);
@@ -174,6 +181,7 @@ public class DocumentenController : ControllerBase
             item.Notities = request.Notities;
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Document", id);
 
         var aantalVersies = await _db.Documenten
             .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
@@ -196,6 +204,7 @@ public class DocumentenController : ControllerBase
 
         _db.Documenten.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Document", id);
         return NoContent();
     }
 
@@ -214,6 +223,7 @@ public class DocumentenController : ControllerBase
 
         _db.Documenten.RemoveRange(allVersions);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Document", id, "alle-versies");
         return NoContent();
     }
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,179 +15,37 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
-import { toast } from "@/stores/toastStore";
 import { Phone, Plus, Pencil, Trash2, Share2, Download, Upload } from "lucide-react";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
-
-interface Noodcontact {
-  id: string;
-  naam: string;
-  relatie: string;
-  telefoon?: string;
-  email?: string;
-  adres?: string;
-  postcode?: string;
-  woonplaats?: string;
-  rol: string;
-  instructies?: string;
-  isGedeeld: boolean;
-}
-
-const ROLLEN = [
-  "Vertrouwenspersoon",
-  "Huisarts",
-  "Notaris",
-  "Uitvaartondernemer",
-  "Advocaat",
-  "Financieel adviseur",
-  "Overig",
-];
-
-const ROL_KEYS: Record<string, string> = {
-  "Vertrouwenspersoon": "vertrouwenspersoon",
-  "Huisarts": "huisarts",
-  "Notaris": "notaris",
-  "Uitvaartondernemer": "uitvaartondernemer",
-  "Advocaat": "advocaat",
-  "Financieel adviseur": "financieelAdviseur",
-  "Overig": "overig",
-};
-
-const emptyForm = {
-  naam: "",
-  relatie: "",
-  telefoon: "",
-  email: "",
-  adres: "",
-  postcode: "",
-  woonplaats: "",
-  rol: "",
-  instructies: "",
-  isGedeeld: false,
-};
+import { useNoodcontacten, ROLLEN, ROL_KEYS } from "@/components/noodcontacten/useNoodcontacten";
+import type { Noodcontact } from "@/components/noodcontacten/useNoodcontacten";
 
 export default function NoodcontactenPage() {
   const t = useTranslations("noodcontacten");
   const tEnum = useTranslations("enums");
-  const tf = useTranslations("feedback");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState(emptyForm);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  // React Query for loading noodcontacten
-  const { data: contacten = [], isLoading: loading, refetch } = useDomainQuery<Noodcontact[]>("noodcontacten");
-
-  const openDialog = (c?: Noodcontact) => {
-    setError(null);
-    if (c) {
-      setEditId(c.id);
-      setForm({
-        naam: c.naam,
-        relatie: c.relatie,
-        telefoon: c.telefoon ?? "",
-        email: c.email ?? "",
-        adres: c.adres ?? "",
-        postcode: c.postcode ?? "",
-        woonplaats: c.woonplaats ?? "",
-        rol: c.rol,
-        instructies: c.instructies ?? "",
-        isGedeeld: c.isGedeeld,
-      });
-    } else {
-      setEditId(null);
-      setForm(emptyForm);
-    }
-    setDialogOpen(true);
-  };
-
-  const save = async () => {
-    setError(null);
-    setSaving(true);
-    try {
-      const payload = {
-        naam: form.naam,
-        relatie: form.relatie,
-        telefoon: form.telefoon || null,
-        email: form.email || null,
-        adres: form.adres || null,
-        postcode: form.postcode || null,
-        woonplaats: form.woonplaats || null,
-        rol: form.rol,
-        instructies: form.instructies || null,
-        isGedeeld: form.isGedeeld,
-      };
-      if (editId) {
-        await api.put(`/api/noodcontacten/${editId}`, payload);
-        toast.success(tf("opgeslagen"));
-      } else {
-        await api.post("/api/noodcontacten", payload);
-        toast.success(tf("aangemaakt"));
-      }
-      setDialogOpen(false);
-      refetch();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const deleteContact = async (id: string) => {
-    try {
-      await api.delete(`/api/noodcontacten/${id}`);
-      toast.success(tf("verwijderd"));
-      refetch();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
-    }
-  };
-
-  const exportGedeeld = async () => {
-    try {
-      const { blob, filename } = await api.download("/api/noodcontacten/gedeeld/export");
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("exportMislukt"));
-    }
-  };
-
-  const importGedeeld = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      try {
-        const text = await file.text();
-        const contacten = JSON.parse(text);
-        const result = await api.post<{ toegevoegd: number; overgeslagen: number }>(
-          "/api/noodcontacten/gedeeld/import",
-          contacten
-        );
-        refetch();
-        toast.success(t("importResultaat", { toegevoegd: result?.toegevoegd ?? 0, overgeslagen: result?.overgeslagen ?? 0 }));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t("importMislukt"));
-      }
-    };
-    input.click();
-  };
-
-  const gedeeldCount = contacten.filter((c) => c.isGedeeld).length;
+  const {
+    contacten,
+    loading,
+    gedeeldCount,
+    dialogOpen,
+    setDialogOpen,
+    editId,
+    form,
+    setForm,
+    saving,
+    error,
+    confirmDeleteId,
+    setConfirmDeleteId,
+    openDialog,
+    save,
+    deleteContact,
+    exportGedeeld,
+    importGedeeld,
+  } = useNoodcontacten();
 
   if (loading)
     return (

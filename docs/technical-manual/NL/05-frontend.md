@@ -178,7 +178,6 @@ Beheert gebruikersvoorkeuren (localStorage-gepersisteerd):
 | `showVoortgangGranulair` | boolean | Gedetailleerde voortgang tonen |
 | `showSuggesties` | boolean | Suggesties tonen |
 | `showDomeinKaarten` | boolean | Domeinkaarten tonen |
-| `finishedDomains` | Record<string, string> | Domein → ISO-datum wanneer afgerond |
 
 ### `toastStore`
 

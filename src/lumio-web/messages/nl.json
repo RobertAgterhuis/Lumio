@@ -122,7 +122,8 @@
     "gaNaarNoodcontacten": "Ga naar Noodcontacten",
     "gaNaarExporteren": "Ga naar Exporteren",
     "gaNaarActiviteitenlog": "Ga naar Activiteitenlog",
-    "gaNaarInstellingen": "Ga naar Instellingen"
+    "gaNaarInstellingen": "Ga naar Instellingen",
+    "gaNaarHelp": "Ga naar Help"
   },
   "auth": {
     "laden": "Lumio laden...",
@@ -161,7 +162,8 @@
       "disclaimer": "Uw gegevens worden versleuteld opgeslagen. Bewaar uw wachtwoord goed \u2014 zonder wachtwoord is de data niet toegankelijk.",
       "foutMinimaal": "Wachtwoord moet minimaal 8 tekens bevatten.",
       "foutOvereenkomst": "Wachtwoorden komen niet overeen.",
-      "foutSetup": "Setup mislukt"
+      "foutSetup": "Setup mislukt",
+      "wachtwoordWaarschuwing": "Bewaar uw wachtwoord, noodcodes en herstelcodes op een veilige plek. Verlies van uw wachtwoord betekent verlies van toegang tot al uw Lumio-gegevens."
     },
     "ontgrendel": {
       "titel": "Lumio Ontgrendelen",
@@ -205,15 +207,47 @@
   "dashboard": {
     "titel": "Dashboard",
     "beschrijving": "Beheer uw digitale nalatenschap. Klik op een onderdeel om te beginnen.",
+    "begroeting": {
+      "ochtend": "Goedemorgen",
+      "middag": "Goedemiddag",
+      "avond": "Goedenavond"
+    },
+    "aanbevolenStap": {
+      "titel": "Aanbevolen volgende stap",
+      "beschrijving": "Dit onderdeel is nog niet ingevuld",
+      "actie": "Invullen"
+    },
+    "verloopdatumWidget": {
+      "titel": "Documenten verlopen binnenkort",
+      "verlopen": "Verlopen",
+      "dagenOver": "{dagen} dagen",
+      "beherenLink": "Documenten beheren →"
+    },
     "verbergen": "Verbergen",
     "voortgang": {
       "titel": "Voortgang nalatenschap",
       "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"
     },
     "meldingen": {
-      "titel": "Meldingen ({aantal})",
+      "titel": "Meldingen",
+      "laden": "Meldingen laden...",
+      "fout": "Kan meldingen niet laden.",
+      "geenMeldingen": "Geen meldingen — alles is in orde.",
       "verbergen": "Verbergen",
       "verwijder": "Verwijder melding"
+    },
+    "backup": {
+      "titel": "Back-up status",
+      "laden": "Status ophalen...",
+      "fout": "Kan back-up status niet laden.",
+      "status": {
+        "ok": "Up-to-date",
+        "warning": "Verouderd",
+        "noBackup": "Geen back-up"
+      },
+      "laatste": "Laatste back-up",
+      "dagenGeleden": "{dagen} dag(en) geleden",
+      "nooit": "Er is nog nooit een back-up gemaakt."
     },
     "geenProfiel": {
       "titel": "Vul eerst uw profiel in om te beginnen",
@@ -280,6 +314,7 @@
       "beschrijving": "Analyseer uw profiel en ontvang suggesties voor ontbrekende koppelingen en verbeteringen.",
       "analyseren": "Profiel analyseren",
       "analyseMislukt": "Analyse mislukt",
+      "laden": "Suggesties laden...",
       "fout": "Kon de analyse niet uitvoeren.",
       "geenSuggesties": "Geen suggesties",
       "geenSuggestiesBeschrijving": "Uw profiel is goed ingevuld en alle gegevens zijn consistent.",
@@ -1405,6 +1440,7 @@
   "tijdlijn": {
     "titel": "Tijdlijn na overlijden",
     "beschrijving": "Een overzicht van wat er wanneer geregeld moet worden na een overlijden. Gebruik deze checklist als leidraad voor uw nabestaanden. De exacte volgorde kan per situatie verschillen.",
+    "voortgang": "{ingevuld} van {totaal} stappen vastgelegd",
     "disclaimer": "<strong>Let op:</strong> Dit overzicht is informatief en geen juridisch advies. De termijnen en verplichtingen kunnen per situatie verschillen. Raadpleeg altijd een notaris of juridisch adviseur voor uw specifieke situatie.",
     "fasen": {
       "24uur": {
@@ -1517,7 +1553,10 @@
       "wilsverklaring": "Leg uw medische wensen en behandelwensen vast.",
       "notaris": "Leg uw testamentgegevens en notariscontact vast.",
       "documenten": "Upload uw belangrijke documenten, zoals uw paspoort of polissen.",
-      "naasten": "Voeg noodcontacten toe zodat nabestaanden weten wie zij kunnen bereiken."
+      "naasten": "Voeg noodcontacten toe zodat nabestaanden weten wie zij kunnen bereiken.",
+      "digitaal": "Leg uw digitale accounts vast.",
+      "erfgenamen": "Voeg erfgenamen toe aan uw nalatenschap.",
+      "boedel": "Leg uw bezittingen en schulden vast."
     }
   },
   "auditLog": {
@@ -1535,6 +1574,8 @@
     "titel": "Exporteren",
     "beschrijving": "Download uw gegevens als PDF-documenten",
     "exportMislukt": "Export mislukt.",
+    "deelMetErfgenaam": "Deel met erfgenaam",
+    "deelMetErfgenaamBeschrijving": "Genereer een persoonlijk PDF-pakket specifiek voor een erfgenaam.",
     "compleetOverzicht": "Compleet overzicht",
     "compleetBeschrijving": "Exporteer alle vastgelegde informatie in één PDF-document.",
     "videosUitgesloten": "Videoboodschappen worden niet meegenomen in de export.",
@@ -3032,6 +3073,7 @@
       "maxOver": "Nog {seconden} sec.",
       "nietBeschikbaar": "Opname niet beschikbaar in deze browser.",
       "httpsVereist": "Camera-opname vereist een beveiligde verbinding (HTTPS)."
-    }
+    },
+    "aantalGebruikt": "{gebruikt} van {max} videoboodschappen gebruikt"
   }
 }

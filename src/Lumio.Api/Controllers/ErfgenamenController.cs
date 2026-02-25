@@ -4,6 +4,7 @@ using Lumio.Api.Dtos.Common;
 using Lumio.Api.Rules;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Services;
+using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,13 @@ public class ErfgenamenController : ControllerBase
 {
     private readonly LumioDbContext _db;
     private readonly IErfbelastingService _erfbelastingService;
+    private readonly IAuditService _audit;
 
-    public ErfgenamenController(LumioDbContext db, IErfbelastingService erfbelastingService)
+    public ErfgenamenController(LumioDbContext db, IErfbelastingService erfbelastingService, IAuditService audit)
     {
         _db = db;
         _erfbelastingService = erfbelastingService;
+        _audit = audit;
     }
 
     [HttpGet]
@@ -49,6 +52,7 @@ public class ErfgenamenController : ControllerBase
         item.EigenaarId = eigenaar.Id;
         _db.Erfgenamen.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Erfgenaam", item.Id);
         return CreatedAtAction(nameof(GetById), new { id = item.Id }, item.Adapt<ErfgenaamResponse>());
     }
 
@@ -60,6 +64,7 @@ public class ErfgenamenController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Erfgenaam", id);
         return Ok(item.Adapt<ErfgenaamResponse>());
     }
 
@@ -75,6 +80,7 @@ public class ErfgenamenController : ControllerBase
 
         _db.Erfgenamen.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Erfgenaam", id);
         return NoContent();
     }
 
@@ -92,22 +98,36 @@ public class ErfgenamenController : ControllerBase
             return Ok(new { resultaten = Array.Empty<object>(), nettoNalatenschap = 0m, disclaimer = leegResult.Resultaat.Disclaimer });
         }
 
-        // Bereken netto nalatenschap
+        // Bereken netto nalatenschap (S5-14: verzekeringen met begunstigde tellen niet mee)
         var totaalBezittingen = await _db.FysiekeBezittingen.SumAsync(f => f.GeschatteWaarde ?? 0m);
         var totaalSaldi = await _db.Bankrekeningen.SumAsync(b => b.Saldo ?? 0m);
         var totaalVerzekeringen = await _db.Verzekeringen.SumAsync(v => v.VerzekerdBedrag ?? 0m);
+        var totaalVerzekeringenMetBegunstigde = await _db.Verzekeringen
+            .Where(v => !string.IsNullOrEmpty(v.Begunstigde))
+            .SumAsync(v => v.VerzekerdBedrag ?? 0m);
         var totaalSchulden = await _db.Schulden.SumAsync(s => s.Bedrag);
-        var (_, nettoNalatenschap) = NalatenschapHelper.Bereken(totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden);
+        var (_, nettoNalatenschap) = NalatenschapHelper.Bereken(
+            totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden, totaalVerzekeringenMetBegunstigde);
 
         // Bouw facts
+        // S5-22: Laad testamentaire percentages (Begunstigde.Percentage)
+        var testament = await _db.Testamenten.Include(t => t.Begunstigden).FirstOrDefaultAsync();
+        var portiePerNaam = (testament?.Begunstigden ?? [])
+            .Where(b => b.Percentage.HasValue && b.Percentage.Value > 0)
+            .ToDictionary(
+                b => b.Naam.Trim().ToLowerInvariant(),
+                b => b.Percentage!.Value);
+
         var facts = new ErfbelastingFacts(
             nettoNalatenschap,
-            erfgenamen.Select(e => new ErfgenaamFact(
-                e.Id,
-                string.IsNullOrEmpty(e.Tussenvoegsel)
+            erfgenamen.Select(e =>
+            {
+                var volledigenaam = string.IsNullOrEmpty(e.Tussenvoegsel)
                     ? $"{e.Voornaam} {e.Achternaam}"
-                    : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}",
-                e.Relatie)).ToList());
+                    : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}";
+                portiePerNaam.TryGetValue(volledigenaam.Trim().ToLowerInvariant(), out var portie);
+                return new ErfgenaamFact(e.Id, volledigenaam, e.Relatie, portie > 0 ? portie : null);
+            }).ToList());
 
         // Delegeer naar service
         var result = _erfbelastingService.Bereken(facts);

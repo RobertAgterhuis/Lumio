@@ -12,5 +12,10 @@ public class DonorRegistratie : BaseEntity
     public string? DonorregisterReferentie { get; set; }
     public string? Toelichting { get; set; }
 
+    // S5-11: Beslissende persoon bij keuze "Specifiek persoon beslist"
+    public string? BeslisserNaam { get; set; }
+    public string? BeslisserRelatie { get; set; }
+    public string? BeslisserTelefoon { get; set; }
+
     public List<OrgaanKeuze> OrgaanKeuzes { get; set; } = [];
 }

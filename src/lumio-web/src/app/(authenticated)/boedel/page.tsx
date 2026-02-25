@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Wallet, Building2, Shield, CreditCard, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
@@ -92,16 +93,16 @@ export default function BoedelPage() {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="bezittingen">
-            <Wallet className="h-4 w-4 mr-1" /> {t("tabs.bezittingen", { aantal: bezittingen.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.bezittingen", { aantal: bezittingen.length })}
           </TabsTrigger>
           <TabsTrigger value="rekeningen">
-            <Building2 className="h-4 w-4 mr-1" /> {t("tabs.rekeningen", { aantal: rekeningen.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.rekeningen", { aantal: rekeningen.length })}
           </TabsTrigger>
           <TabsTrigger value="verzekeringen">
-            <Shield className="h-4 w-4 mr-1" /> {t("tabs.verzekeringen", { aantal: verzekeringen.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.verzekeringen", { aantal: verzekeringen.length })}
           </TabsTrigger>
           <TabsTrigger value="schulden">
-            <CreditCard className="h-4 w-4 mr-1" /> {t("tabs.schulden", { aantal: schulden.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.schulden", { aantal: schulden.length })}
           </TabsTrigger>
         </TabsList>
 
@@ -117,7 +118,7 @@ export default function BoedelPage() {
             <CardContent>
               {bezittingen.length === 0 ? (
                 <EmptyState
-                  icon={Building2}
+                  lumioIcon="boedel"
                   title={tEmpty("bezittingen.titel")}
                   description={tEmpty("bezittingen.beschrijving")}
                   ctaLabel={tEmpty("bezittingen.cta")}
@@ -146,7 +147,7 @@ export default function BoedelPage() {
             <CardContent>
               {rekeningen.length === 0 ? (
                 <EmptyState
-                  icon={Wallet}
+                  lumioIcon="boedel"
                   title={tEmpty("rekeningen.titel")}
                   description={tEmpty("rekeningen.beschrijving")}
                   ctaLabel={tEmpty("rekeningen.cta")}
@@ -175,7 +176,7 @@ export default function BoedelPage() {
             <CardContent>
               {verzekeringen.length === 0 ? (
                 <EmptyState
-                  icon={Shield}
+                  lumioIcon="boedel"
                   title={tEmpty("verzekeringen.titel")}
                   description={tEmpty("verzekeringen.beschrijving")}
                   ctaLabel={tEmpty("verzekeringen.cta")}
@@ -204,7 +205,7 @@ export default function BoedelPage() {
             <CardContent>
               {schulden.length === 0 ? (
                 <EmptyState
-                  icon={CreditCard}
+                  lumioIcon="boedel"
                   title={tEmpty("schulden.titel")}
                   description={tEmpty("schulden.beschrijving")}
                   ctaLabel={tEmpty("schulden.cta")}

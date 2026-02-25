@@ -181,6 +181,24 @@ public class MeldingService : IMeldingService
             }
         }
 
+        // S6-17: Legitimaire portie schending
+        if (facts.HeeftLegitimairePortieSchending)
+        {
+            meldingen.Add(new Melding("waarschuwing", "testament",
+                "De verdeling in uw testament kan de legitimaire portie van uw kinderen schenden. Controleer de percentages bij uw notaris.",
+                "/testament"));
+            toegepasteRegels.Add("BR-MELD-10: Legitimaire portie schending");
+        }
+
+        // S6-20: Tijdlijn niet bekeken
+        if (facts.HeeftEigenaar && !facts.HeeftTijdlijnGezien)
+        {
+            meldingen.Add(new Melding("herinnering", "tijdlijn",
+                "U heeft de tijdlijn nog niet bekeken. Gebruik de tijdlijn om te zien welke stappen uw nabestaanden moeten doorlopen.",
+                "/tijdlijn"));
+            toegepasteRegels.Add("BR-MELD-11: Tijdlijn nooit bekeken");
+        }
+
         return new PolicyResult<MeldingResultaat>
         {
             Resultaat = new MeldingResultaat(meldingen, meldingen.Count),

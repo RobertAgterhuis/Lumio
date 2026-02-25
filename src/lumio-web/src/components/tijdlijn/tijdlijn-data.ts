@@ -113,4 +113,57 @@ export const STAP_DOMAIN_CONFIGS: Record<string, TijdlijnStapConfig> = {
       return t("samenvatting.naasten", { aantal: count });
     },
   },
+
+  /** Eerste maand */
+  digitaal: {
+    endpoint: "digitaal-bezit",
+    href: "/digitaal-bezit",
+    hasData: (data) => {
+      if (!data || typeof data !== "object") return false;
+      const d = data as { accounts?: unknown[]; abonnementen?: unknown[] };
+      return (d.accounts?.length ?? 0) > 0 || (d.abonnementen?.length ?? 0) > 0;
+    },
+    isCompleted: (data) => {
+      if (!data || typeof data !== "object") return false;
+      const d = data as { accounts?: unknown[] };
+      return (d.accounts?.length ?? 0) > 0;
+    },
+    getSamenvatting: (data, t) => {
+      const d = data as { accounts?: unknown[] };
+      const count = d.accounts?.length ?? 0;
+      return t("samenvatting.digitaal", { aantal: count });
+    },
+  },
+
+  /** Drie maanden */
+  aanvaarding: {
+    endpoint: "erfgenamen",
+    href: "/erfgenamen",
+    hasData: (data) => Array.isArray(data) && (data as unknown[]).length > 0,
+    isCompleted: (data) => Array.isArray(data) && (data as unknown[]).length > 0,
+    getSamenvatting: (data, t) => {
+      const count = Array.isArray(data) ? (data as unknown[]).length : 0;
+      return t("samenvatting.erfgenamen", { aantal: count });
+    },
+  },
+
+  boedelverdeling: {
+    endpoint: "boedel",
+    href: "/boedel",
+    hasData: (data) => {
+      if (!data || typeof data !== "object") return false;
+      const d = data as { bezittingen?: unknown[]; bankrekeningen?: unknown[] };
+      return (d.bezittingen?.length ?? 0) > 0 || (d.bankrekeningen?.length ?? 0) > 0;
+    },
+    isCompleted: (data) => {
+      if (!data || typeof data !== "object") return false;
+      const d = data as { bezittingen?: unknown[] };
+      return (d.bezittingen?.length ?? 0) > 0;
+    },
+    getSamenvatting: (data, t) => {
+      const d = data as { bezittingen?: unknown[] };
+      const count = d.bezittingen?.length ?? 0;
+      return t("samenvatting.boedel", { aantal: count });
+    },
+  },
 };

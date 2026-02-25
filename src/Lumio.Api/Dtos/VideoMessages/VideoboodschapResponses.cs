@@ -12,4 +12,4 @@ public record VideoboodschapResponse(
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
-public record OntvangerResponse(Guid Id, Guid ErfgenaamId);
+public record OntvangerResponse(Guid Id, Guid ErfgenaamId, string? Naam);

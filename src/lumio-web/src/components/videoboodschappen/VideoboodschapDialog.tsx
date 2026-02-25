@@ -20,7 +20,6 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-import { useDomainQuery } from "@/hooks/useDomainQuery";
 import { Loader2, Upload, FileVideo, CheckCircle2, X } from "lucide-react";
 import { VideoRecorder } from "./VideoRecorder";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
@@ -37,6 +36,8 @@ interface VideoboodschapDialogProps {
   uploading: boolean;
   uploadProgress: number;
   saving: boolean;
+  /** Pre-loaded erfgenamen list (avoids duplicate fetch). */
+  erfgenamen: Erfgenaam[];
 }
 
 function formatBytes(bytes: number): string {
@@ -53,6 +54,7 @@ export function VideoboodschapDialog({
   uploading,
   uploadProgress,
   saving,
+  erfgenamen,
 }: VideoboodschapDialogProps) {
   const t = useTranslations("videoboodschappen");
   const isEditing = !!editing;
@@ -86,8 +88,6 @@ export function VideoboodschapDialog({
     );
     setError(null);
   }, [editing]);
-
-  const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
 
   // Reset form when dialog opens/closes
   const handleOpenChange = useCallback(

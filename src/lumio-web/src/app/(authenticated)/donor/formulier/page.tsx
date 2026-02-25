@@ -250,7 +250,10 @@ export default function DonorFormulierPage() {
         </div>
       ),
     },
-  ];
+  ].filter(
+    // S5-08: Verberg organen-stap tenzij de keuze 'Ja, specifiek' is
+    (stap) => !(stap.id === "organen" && form.keuze !== "Ja, specifiek")
+  );
 
   const handleComplete = async () => {
     await api.put("/api/donor", {

@@ -21,7 +21,6 @@ describe("preferencesStore", () => {
       showVoortgangGranulair: true,
       showSuggesties: true,
       showDomeinKaarten: true,
-      finishedDomains: {},
     });
   });
 
@@ -57,24 +56,4 @@ describe("preferencesStore", () => {
     expect(state.showSuggesties).toBe(true);
   });
 
-  it("setDomainFinished marks domain as finished", () => {
-    usePreferencesStore.getState().setDomainFinished("testament", true);
-    expect(usePreferencesStore.getState().isDomainFinished("testament")).toBe(true);
-  });
-
-  it("setDomainFinished(false) unmarks domain", () => {
-    usePreferencesStore.getState().setDomainFinished("testament", true);
-    usePreferencesStore.getState().setDomainFinished("testament", false);
-    expect(usePreferencesStore.getState().isDomainFinished("testament")).toBe(false);
-  });
-
-  it("isDomainFinished returns false for unknown domain", () => {
-    expect(usePreferencesStore.getState().isDomainFinished("nonexistent")).toBe(false);
-  });
-
-  it("finishedDomains persists to localStorage", () => {
-    usePreferencesStore.getState().setDomainFinished("boedel", true);
-    const persisted = JSON.parse(localStorageMock.getItem("lumio-dashboard-prefs") ?? "{}");
-    expect(persisted.finishedDomains.boedel).toBeDefined();
-  });
 });

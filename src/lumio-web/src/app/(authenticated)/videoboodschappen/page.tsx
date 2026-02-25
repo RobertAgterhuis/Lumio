@@ -66,6 +66,7 @@ export default function VideoboodschappenPage() {
   } = useVideoboodschappen();
 
   const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
+  const { data: limietData } = useDomainQuery<{ maxAantal: number }>("videoboodschappen/limiet");
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Videoboodschap | undefined>(undefined);
@@ -156,6 +157,11 @@ export default function VideoboodschappenPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t("titel")}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t("subtitel")}</p>
+          {limietData && (
+            <p className="text-xs text-muted-foreground mt-1">
+              {t("aantalGebruikt", { gebruikt: videoboodschappen.length, max: limietData.maxAantal })}
+            </p>
+          )}
         </div>
         <Button onClick={openNew} className="gap-2 shrink-0">
           <Plus className="h-4 w-4" />
@@ -303,6 +309,7 @@ export default function VideoboodschappenPage() {
         uploading={uploading}
         uploadProgress={uploadProgress}
         saving={saving}
+        erfgenamen={erfgenamen}
       />
 
       {/* Video player dialog */}

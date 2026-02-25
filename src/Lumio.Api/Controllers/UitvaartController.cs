@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.FuneralWishes;
 using Lumio.Api.Dtos.FuneralWishes;
+using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,13 @@ namespace Lumio.Api.Controllers;
 public class UitvaartController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly IAuditService _audit;
 
-    public UitvaartController(LumioDbContext db) => _db = db;
+    public UitvaartController(LumioDbContext db, IAuditService audit)
+    {
+        _db = db;
+        _audit = audit;
+    }
 
     [HttpGet]
     public async Task<ActionResult<UitvaartWensenResponse>> Get()
@@ -43,6 +49,7 @@ public class UitvaartController : ControllerBase
         }
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Opgeslagen", "UitvaartWens", item.Id);
         return Ok(item.Adapt<UitvaartWensenResponse>());
     }
 
@@ -70,6 +77,7 @@ public class UitvaartController : ControllerBase
         item.UitvaartWensenId = uitvaart.Id;
         _db.CeremonieDetails.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "CeremonieDetail", item.Id);
         return Created($"/api/uitvaart/details/{item.Id}", item.Adapt<CeremonieDetailResponse>());
     }
 
@@ -81,6 +89,7 @@ public class UitvaartController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "CeremonieDetail", id);
         return Ok(item.Adapt<CeremonieDetailResponse>());
     }
 
@@ -92,6 +101,7 @@ public class UitvaartController : ControllerBase
 
         _db.CeremonieDetails.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "CeremonieDetail", id);
         return NoContent();
     }
 
@@ -121,6 +131,7 @@ public class UitvaartController : ControllerBase
         item.UitvaartWensenId = uitvaart.Id;
         _db.UitvaartGenodigden.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "UitvaartGenodigde", item.Id);
         return Created($"/api/uitvaart/genodigden/{item.Id}", item.Adapt<UitvaartGenodigdeResponse>());
     }
 
@@ -132,6 +143,7 @@ public class UitvaartController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "UitvaartGenodigde", id);
         return Ok(item.Adapt<UitvaartGenodigdeResponse>());
     }
 
@@ -143,6 +155,7 @@ public class UitvaartController : ControllerBase
 
         _db.UitvaartGenodigden.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "UitvaartGenodigde", id);
         return NoContent();
     }
 }
