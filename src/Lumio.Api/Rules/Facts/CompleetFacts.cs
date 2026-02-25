@@ -33,10 +33,13 @@ public record TestamentCompleetInfo(
     int AantalBegunstigden,
     int AantalExecuteurs);
 
+/// <summary>S8-15 — Granulaire informatie over euthanasie/wilsverklaring compleetheid.</summary>
 public record EuthanasieCompleetInfo(
     bool HeeftDatum,
     bool HeeftHuisarts,
-    bool HeeftVertegenwoordiger);
+    bool HeeftVertegenwoordiger,
+    bool WilEuthanasieIngevuld,
+    bool DementieClausuleIngevuld);
 
 public record UitvaartCompleetInfo(
     bool HeeftVoorkeurType,

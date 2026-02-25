@@ -385,7 +385,10 @@ public class StatusController : ControllerBase
             euth is not null ? new EuthanasieCompleetInfo(
                 euth.DatumOndertekening.HasValue,
                 !string.IsNullOrEmpty(euth.Huisarts),
-                !string.IsNullOrEmpty(euth.VertegenwoordigerNaam)) : null,
+                !string.IsNullOrEmpty(euth.VertegenwoordigerNaam),
+                // S8-15: granulaire euthanasie-volledigheid
+                WilEuthanasieIngevuld: true,  // record bestaat → keuze is gemaakt
+                DementieClausuleIngevuld: !euth.WilEuthanasie || euth.DementieClausule) : null,
             donor is not null ? new DonorCompleetInfo(
                 !string.IsNullOrEmpty(donor.Keuze),
                 donor.Keuze != "Specifiek persoon beslist" || !string.IsNullOrEmpty(donor.BeslisserNaam),
@@ -419,6 +422,7 @@ public class StatusController : ControllerBase
             .FirstOrDefaultAsync();
 
         DateTime? laatsteActualisatie = null;
+        var verlopenActualisatieDomeinen = new List<string>();
         if (eigenaar is not null)
         {
             // S4-04: per-domein actualisatiedatum — gebruik de "zwakste schakel" (oudste meest-recente bevestiging)
@@ -439,6 +443,14 @@ public class StatusController : ControllerBase
             // Null als enig domein nooit bevestigd; anders de oudste (minste) datum
             if (perDomeinLatest.All(d => d is not null))
                 laatsteActualisatie = perDomeinLatest.Min();
+
+            // S8-12: per-domein actualisatie verlopen check (eigen interval per domein)
+            verlopenActualisatieDomeinen = domeinenLijst
+                .Select((d, i) => new { Domein = d, Latest = perDomeinLatest[i] })
+                .Where(x => x.Latest.HasValue &&
+                            x.Latest.Value < DateTime.UtcNow.AddDays(-_limieten.ActualisatieIntervallen.VoorDomein(x.Domein)))
+                .Select(x => x.Domein)
+                .ToList();
         }
 
         // Legitimatie
@@ -504,6 +516,38 @@ public class StatusController : ControllerBase
         // S6-20: Tijdlijn bekeken
         bool heeftTijdlijnGezien = eigenaar?.TijdlijnBekeken ?? false;
 
+        // S8-01: bezit zonder geschatte waarde (null of €0)
+        var heeftBezitMissendeWaarde = eigenaar is not null
+            && await db.FysiekeBezittingen.AnyAsync(b => b.EigenaarId == eigenaar.Id
+                && (b.GeschatteWaarde == null || b.GeschatteWaarde == 0));
+
+        // S8-02: netto nalatenschap negatief (schulden overtreffen bezit)
+        var totaalFysiekBezit = await db.FysiekeBezittingen.SumAsync(b => b.GeschatteWaarde ?? 0m);
+        var totaalSaldiBoedel = await db.Bankrekeningen.SumAsync(b => b.Saldo ?? 0m);
+        var totaalSchuldenBoedel = await db.Schulden.SumAsync(s => s.Bedrag);
+        var nettoNalatenschapNegatief = eigenaar is not null
+            && totaalSchuldenBoedel > (totaalFysiekBezit + totaalSaldiBoedel);
+
+        // S8-03: fysiek bezit zonder bestemde erfgenaam
+        var heeftBezitZonderErfgenaam = eigenaar is not null
+            && await db.FysiekeBezittingen.AnyAsync(b => b.EigenaarId == eigenaar.Id
+                && b.BestemdeErfgenaamId == null);
+
+        // S8-04: erfgenaam zonder e-mail én telefoon
+        var heeftErfgenaamZonderContactgegevens = eigenaar is not null
+            && await db.Erfgenamen.AnyAsync(e => e.EigenaarId == eigenaar.Id
+                && string.IsNullOrEmpty(e.Telefoon) && string.IsNullOrEmpty(e.Email));
+
+        // S8-08: heeft minimaal één noodcontact met rol 'Vertrouwenspersoon'
+        var heeftVertrouwenspersoon = eigenaar is not null
+            && await db.Noodcontacten.AnyAsync(n => n.EigenaarId == eigenaar.Id
+                && n.Rol == "Vertrouwenspersoon");
+
+        // S8-09: heeft minimaal één noodcontact met een telefoonnummer
+        var heeftNoodcontactMetTelefoon = eigenaar is not null
+            && await db.Noodcontacten.AnyAsync(n => n.EigenaarId == eigenaar.Id
+                && !string.IsNullOrEmpty(n.Telefoon));
+
         return new MeldingFacts(
             eigenaar is not null,
             await db.Testamenten.AnyAsync(),
@@ -558,7 +602,16 @@ public class StatusController : ControllerBase
             // S6: Legitimaire portie schending
             heeftLegitimairePortieSchending,
             // S6: Tijdlijn bekeken
-            heeftTijdlijnGezien);
+            heeftTijdlijnGezien,
+            // S8-01..09: Workflow-regels
+            heeftBezitMissendeWaarde,
+            nettoNalatenschapNegatief,
+            heeftBezitZonderErfgenaam,
+            heeftErfgenaamZonderContactgegevens,
+            heeftVertrouwenspersoon,
+            heeftNoodcontactMetTelefoon,
+            // S8-12: Verlopen actualisatie per domein (per-domein interval)
+            verlopenActualisatieDomeinen);
     }
 
     private static async Task<SuggestieFacts> BuildSuggestieFacts(LumioDbContext db)

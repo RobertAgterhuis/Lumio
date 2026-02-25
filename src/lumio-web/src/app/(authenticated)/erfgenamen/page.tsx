@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
@@ -140,6 +141,13 @@ export default function ErfgenamenPage() {
     sluiten: t("shamir.sluiten"),
   };
 
+  const pendingErfgenaam = state.pendingDeleteId
+    ? state.erfgenamen.find((e) => e.id === state.pendingDeleteId)
+    : null;
+  const pendingToewijzingenCount = state.pendingDeleteId
+    ? state.getToewijzingenVoorErfgenaam(state.pendingDeleteId).length
+    : 0;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -258,6 +266,29 @@ export default function ErfgenamenPage() {
         displayName={displayName}
         translations={shamirTranslations}
       />
+
+      {/* S8-05: Delete confirmation dialog */}
+      <Dialog open={!!state.pendingDeleteId} onOpenChange={(open) => { if (!open) state.cancelDelete(); }}>
+        <DialogHeader>
+          <DialogTitle>{t("verwijderBevestiging.titel")}</DialogTitle>
+        </DialogHeader>
+        <p className="text-sm text-muted-foreground">
+          {pendingErfgenaam && t("verwijderBevestiging.vraag", { naam: displayName(pendingErfgenaam) })}
+        </p>
+        {pendingToewijzingenCount > 0 && (
+          <p className="text-sm text-warning mt-1">
+            {t("verwijderBevestiging.bezittingenWaarschuwing", { aantal: pendingToewijzingenCount })}
+          </p>
+        )}
+        <DialogFooter>
+          <Button variant="outline" onClick={state.cancelDelete}>
+            {t("verwijderBevestiging.annuleren")}
+          </Button>
+          <Button variant="destructive" onClick={state.confirmDelete}>
+            {t("verwijderBevestiging.verwijderen")}
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }

@@ -535,9 +535,11 @@ public class TestamentController : ControllerBase
             var totPct = begunstigden.Where(b => b.Percentage.HasValue).Sum(b => b.Percentage!.Value);
             if (begunstigden.Count > 0 && totPct > 0 && totPct != 100)
             {
+                // S8-11: >100% is kritisch (bezit verdeeld over meer dan 100%), <100% is waarschuwing
+                var pctErnst = totPct > 100 ? L["SeverityHigh"].Value : L["SeverityMedium"].Value;
                 waarschuwingen.Add(new
                 {
-                    ernst = L["SeverityMedium"].Value,
+                    ernst = pctErnst,
                     categorie = L["CategoryDistribution"].Value,
                     melding = L["WarningPercentageMismatch", totPct].Value,
                     suggestie = L["SuggestionCheckPercentages"].Value

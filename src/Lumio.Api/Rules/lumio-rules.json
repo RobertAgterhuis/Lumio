@@ -63,7 +63,15 @@
     "auditLogStandaardLimiet": 200,
     "zoekenMinQueryLengte": 2,
     "fotoMaxBytes": 10485760,
-    "documentMaxBytes": 52428800
+    "documentMaxBytes": 52428800,
+    "actualisatieIntervallen": {
+      "standaard": 90,
+      "testament": 365,
+      "wilsverklaring": 730,
+      "donor": 365,
+      "uitvaartwensen": 365,
+      "eigenaar": 180
+    }
   },
   "veldLengtes": {
     "naamMax": 100,
@@ -100,7 +108,7 @@
     "noodcontactenCap": 2,
     "eigenaarVelden": 8,
     "testamentVelden": 6,
-    "euthanasieVelden": 3,
+    "euthanasieVelden": 5,
     "donorVelden": 1,
     "uitvaartVelden": 4
   }

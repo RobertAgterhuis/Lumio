@@ -51,4 +51,18 @@ public record MeldingFacts(
     // S6: Legitimaire portie schending
     bool HeeftLegitimairePortieSchending,
     // S6: Tijdlijn bezoek
-    bool HeeftTijdlijnGezien);
+    bool HeeftTijdlijnGezien,
+    // S8-01: Boedel — bezit zonder geschatte waarde
+    bool HeeftBezitMissendeWaarde,
+    // S8-02: Boedel — netto nalatenschap negatief
+    bool NettoNalatenschapNegatief,
+    // S8-03: Boedel — fysiek bezit zonder bestemde erfgenaam
+    bool HeeftBezitZonderErfgenaam,
+    // S8-04: Erfgenamen — erfgenaam zonder contactgegevens
+    bool HeeftErfgenaamZonderContactgegevens,
+    // S8-08: Noodcontacten — geen vertrouwenspersoon
+    bool HeeftVertrouwenspersoon,
+    // S8-09: Noodcontacten — geen contact met telefoonnummer
+    bool HeeftNoodcontactMetTelefoon,
+    // S8-12: Actualisatie verlopen per domein
+    List<string> VerlopenActualisatieDomeinen);

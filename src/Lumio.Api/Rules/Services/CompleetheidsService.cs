@@ -92,7 +92,9 @@ public class CompleetheidsService : ICompleetheidsService
         // Euthanasie
         if (facts.Euthanasie is { } euth)
         {
-            var velden = new[] { euth.HeeftDatum, euth.HeeftHuisarts, euth.HeeftVertegenwoordiger };
+            // S8-15: WilEuthanasieIngevuld + DementieClausuleIngevuld toegevoegd
+            var velden = new[] { euth.HeeftDatum, euth.HeeftHuisarts, euth.HeeftVertegenwoordiger,
+                                 euth.WilEuthanasieIngevuld, euth.DementieClausuleIngevuld };
             domeinen.Add(new("euthanasie", L["DomainLivingWill"].Value, velden.Count(v => v), velden.Length));
         }
         else

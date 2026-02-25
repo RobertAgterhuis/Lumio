@@ -173,11 +173,14 @@ public class MeldingService : IMeldingService
                     L["NeverActualized"].Value, "/instellingen"));
                 toegepasteRegels.Add("BR-MELD-08: Nooit geactualiseerd");
             }
-            else if (facts.LaatsteActualisatie.Value < DateTime.UtcNow.AddDays(-_limieten.ActualisatieIntervalDagen))
+            // S8-12: per-domein actualisatie check (vervangt uniforme 90-dagencheck)
+            else if (facts.VerlopenActualisatieDomeinen.Count > 0)
             {
+                var domeinen = string.Join(", ", facts.VerlopenActualisatieDomeinen);
                 meldingen.Add(new Melding("herinnering", "actualisatie",
-                    L["ActualizationExpired", facts.LaatsteActualisatie.Value.ToString("dd-MM-yyyy")].Value, "/instellingen"));
-                toegepasteRegels.Add("BR-MELD-09: Actualisatie verlopen");
+                    $"De volgende registraties zijn aan actualisatie toe: {domeinen}. Controleer of de informatie nog actueel is.",
+                    "/instellingen"));
+                toegepasteRegels.Add("BR-MELD-09: Per-domein actualisatie verlopen (S8-12)");
             }
         }
 
@@ -197,6 +200,70 @@ public class MeldingService : IMeldingService
                 "U heeft de tijdlijn nog niet bekeken. Gebruik de tijdlijn om te zien welke stappen uw nabestaanden moeten doorlopen.",
                 "/tijdlijn"));
             toegepasteRegels.Add("BR-MELD-11: Tijdlijn nooit bekeken");
+        }
+
+        // S8-01: Bezit zonder geschatte waarde
+        if (facts.HeeftBezitMissendeWaarde)
+        {
+            meldingen.Add(new Melding("waarschuwing", "boedel",
+                "Eén of meer bezittingen hebben geen geschatte waarde. Voeg een waarde toe voor een compleet nalatenschapsoverzicht.",
+                "/boedel"));
+            toegepasteRegels.Add("BR-MELD-12: Bezit zonder waarde");
+        }
+
+        // S8-02: Netto nalatenschap negatief
+        if (facts.NettoNalatenschapNegatief)
+        {
+            meldingen.Add(new Melding("waarschuwing", "boedel",
+                "Uw schulden overtreffen de totale bezitswaarde. Overweeg een uitsluitingsclausule of bespreek dit met uw notaris.",
+                "/boedel"));
+            toegepasteRegels.Add("BR-MELD-13: Netto nalatenschap negatief");
+        }
+
+        // S8-03: Bezit zonder bestemde erfgenaam
+        if (facts.HeeftBezitZonderErfgenaam)
+        {
+            meldingen.Add(new Melding("herinnering", "boedel",
+                "Eén of meer bezittingen zijn nog niet toegewezen aan een erfgenaam. Wijs een bestemde erfgenaam toe in het boedeloverzicht.",
+                "/boedel"));
+            toegepasteRegels.Add("BR-MELD-14: Bezit zonder bestemde erfgenaam");
+        }
+
+        // S8-04: Erfgenaam zonder contactgegevens
+        if (facts.HeeftErfgenaamZonderContactgegevens)
+        {
+            meldingen.Add(new Melding("herinnering", "erfgenamen",
+                "Eén of meer erfgenamen hebben geen contactgegevens (e-mail én telefoon). Voeg contactinformatie toe.",
+                "/erfgenamen"));
+            toegepasteRegels.Add("BR-MELD-15: Erfgenaam zonder contactgegevens");
+        }
+
+        // S8-06: Donor — nabestaanden als beslisser maar geen noodcontact aanwezig
+        if (facts.DonorKeuze?.Contains("nabestaanden", StringComparison.OrdinalIgnoreCase) == true
+            && !facts.HeeftNoodcontacten)
+        {
+            meldingen.Add(new Melding("waarschuwing", "donor",
+                "U heeft uw nabestaanden als beslisser aangewezen voor uw donorregistratie, maar er zijn geen noodcontacten geregistreerd. Voeg minimaal één noodcontact toe.",
+                "/noodcontacten"));
+            toegepasteRegels.Add("BR-MELD-16: Donor nabestaanden zonder noodcontact");
+        }
+
+        // S8-08: Geen vertrouwenspersoon in noodcontacten
+        if (facts.HeeftNoodcontacten && !facts.HeeftVertrouwenspersoon)
+        {
+            meldingen.Add(new Melding("herinnering", "noodcontacten",
+                "Geen van uw noodcontacten heeft de rol 'Vertrouwenspersoon'. Wijs een vertrouwenspersoon aan.",
+                "/noodcontacten"));
+            toegepasteRegels.Add("BR-MELD-17: Geen vertrouwenspersoon");
+        }
+
+        // S8-09: Noodcontacten zonder telefoonnummer
+        if (facts.HeeftNoodcontacten && !facts.HeeftNoodcontactMetTelefoon)
+        {
+            meldingen.Add(new Melding("herinnering", "noodcontacten",
+                "Geen van uw noodcontacten heeft een telefoonnummer. Voeg een telefoonnummer toe zodat ze bereikbaar zijn.",
+                "/noodcontacten"));
+            toegepasteRegels.Add("BR-MELD-18: Geen noodcontact met telefoonnummer");
         }
 
         return new PolicyResult<MeldingResultaat>

@@ -624,6 +624,13 @@
     "toewijzingOpslaanMislukt": "Failed to save assignment.",
     "toewijzingVerwijderenMislukt": "Failed to delete assignment.",
     "noodcontactAangemaakt": "Heir also added as emergency contact.",
+    "verwijderBevestiging": {
+      "titel": "Delete heir?",
+      "vraag": "Are you sure you want to delete {naam}? This action cannot be undone.",
+      "bezittingenWaarschuwing": "{aantal, plural, one {# asset is} other {# assets are}} assigned to this heir and will be unlinked.",
+      "annuleren": "Cancel",
+      "verwijderen": "Delete"
+    },
     "bezitToewijzen": "Assign asset",
     "pdfDownloaden": "Download PDF",
     "deelOverzicht": "Share overview (HTML)",
@@ -2624,7 +2631,21 @@
       "summaryNee": "No",
       "summaryReferentie": "Reference:",
       "summaryOrgaankeuzes": "Organ choices:",
-      "summaryToelichting": "Explanation:"
+      "summaryToelichting": "Explanation:",
+      "summaryBeslisser": "Decision maker:",
+      "summaryBeslisserNaam": "Name:",
+      "summaryBeslisserRelatie": "Relation:",
+      "summaryBeslisserTelefoon": "Phone:"
+    },
+    "beslisser": {
+      "titel": "Decision maker",
+      "beschrijving": "Indicate who may make the donor decision on your behalf.",
+      "naamLabel": "Name of decision maker",
+      "naamPlaceholder": "First and last name",
+      "relatieLabel": "Relation to you",
+      "relatiePlaceholder": "e.g. Partner, Son, Daughter",
+      "telefoonLabel": "Phone number",
+      "telefoonPlaceholder": "Phone number"
     }
   },
   "uitvaartWizard": {

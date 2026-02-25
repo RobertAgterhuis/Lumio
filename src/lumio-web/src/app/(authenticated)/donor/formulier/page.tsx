@@ -48,6 +48,9 @@ export default function DonorFormulierPage() {
     isGeregistreerdBijDonorregister: "",
     donorregisterReferentie: "",
     toelichting: "",
+    beslisserNaam: "",
+    beslisserRelatie: "",
+    beslisserTelefoon: "",
   });
   const [orgaanKeuzes, setOrgaanKeuzes] = useState<
     Record<string, boolean | null>
@@ -58,6 +61,9 @@ export default function DonorFormulierPage() {
     isGeregistreerdBijDonorregister: boolean;
     donorregisterReferentie: string;
     toelichting: string;
+    beslisserNaam?: string;
+    beslisserRelatie?: string;
+    beslisserTelefoon?: string;
   } | null>("donor");
   const { data: orgaanData, isLoading: orgaanLoading } = useDomainQuery<
     { id: string; orgaan: string; welDoneren: boolean }[]
@@ -74,6 +80,9 @@ export default function DonorFormulierPage() {
             : "",
         donorregisterReferentie: donorData.donorregisterReferentie ?? "",
         toelichting: donorData.toelichting ?? "",
+        beslisserNaam: donorData.beslisserNaam ?? "",
+        beslisserRelatie: donorData.beslisserRelatie ?? "",
+        beslisserTelefoon: donorData.beslisserTelefoon ?? "",
       });
     }
   }, [donorData]);
@@ -140,6 +149,39 @@ export default function DonorFormulierPage() {
               />
             </div>
           )}
+        </div>
+      ),
+    },
+    {
+      id: "beslisser",
+      titel: t("beslisser.titel"),
+      beschrijving: t("beslisser.beschrijving"),
+      content: (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>{t("beslisser.naamLabel")}</Label>
+            <Input
+              value={form.beslisserNaam}
+              onChange={(e) => update("beslisserNaam", e.target.value)}
+              placeholder={t("beslisser.naamPlaceholder")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>{t("beslisser.relatieLabel")}</Label>
+            <Input
+              value={form.beslisserRelatie}
+              onChange={(e) => update("beslisserRelatie", e.target.value)}
+              placeholder={t("beslisser.relatiePlaceholder")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>{t("beslisser.telefoonLabel")}</Label>
+            <Input
+              value={form.beslisserTelefoon}
+              onChange={(e) => update("beslisserTelefoon", e.target.value)}
+              placeholder={t("beslisser.telefoonPlaceholder")}
+            />
+          </div>
         </div>
       ),
     },
@@ -254,12 +296,38 @@ export default function DonorFormulierPage() {
               </div>
             </div>
           )}
+          {form.keuze === "Specifiek persoon beslist" && (form.beslisserNaam || form.beslisserRelatie || form.beslisserTelefoon) && (
+            <div className="rounded-lg border p-4 space-y-1">
+              <div className="font-medium mb-1">{t("samenvatting.summaryBeslisser")}</div>
+              {form.beslisserNaam && (
+                <div>
+                  <span className="font-medium">{t("samenvatting.summaryBeslisserNaam")}</span>{" "}
+                  {form.beslisserNaam}
+                </div>
+              )}
+              {form.beslisserRelatie && (
+                <div>
+                  <span className="font-medium">{t("samenvatting.summaryBeslisserRelatie")}</span>{" "}
+                  {form.beslisserRelatie}
+                </div>
+              )}
+              {form.beslisserTelefoon && (
+                <div>
+                  <span className="font-medium">{t("samenvatting.summaryBeslisserTelefoon")}</span>{" "}
+                  {form.beslisserTelefoon}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ),
     },
   ].filter(
     // S5-08: Verberg organen-stap tenzij de keuze 'Ja, specifiek' is
     (stap) => !(stap.id === "organen" && form.keuze !== "Ja, specifiek")
+  ).filter(
+    // S8-07: Verberg beslisser-stap tenzij de keuze 'Specifiek persoon beslist' is
+    (stap) => !(stap.id === "beslisser" && form.keuze !== "Specifiek persoon beslist")
   );
 
   const handleComplete = async () => {
@@ -269,6 +337,9 @@ export default function DonorFormulierPage() {
         form.isGeregistreerdBijDonorregister === "true",
       donorregisterReferentie: form.donorregisterReferentie || null,
       toelichting: form.toelichting || null,
+      beslisserNaam: form.keuze === "Specifiek persoon beslist" ? (form.beslisserNaam || null) : null,
+      beslisserRelatie: form.keuze === "Specifiek persoon beslist" ? (form.beslisserRelatie || null) : null,
+      beslisserTelefoon: form.keuze === "Specifiek persoon beslist" ? (form.beslisserTelefoon || null) : null,
     });
 
     // Atomically replace all orgaankeuzes via batch endpoint

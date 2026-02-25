@@ -624,6 +624,13 @@
     "toewijzingOpslaanMislukt": "Toewijzing opslaan mislukt.",
     "toewijzingVerwijderenMislukt": "Toewijzing verwijderen mislukt.",
     "noodcontactAangemaakt": "Erfgenaam ook als noodcontact toegevoegd.",
+    "verwijderBevestiging": {
+      "titel": "Erfgenaam verwijderen?",
+      "vraag": "Weet u zeker dat u {naam} wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "bezittingenWaarschuwing": "{aantal, plural, one {# bezitting is} other {# bezittingen zijn}} aan deze erfgenaam toegewezen en worden losgekoppeld.",
+      "annuleren": "Annuleren",
+      "verwijderen": "Verwijderen"
+    },
     "bezitToewijzen": "Bezit toewijzen",
     "pdfDownloaden": "PDF downloaden",
     "deelOverzicht": "Deel overzicht (HTML)",
@@ -2624,7 +2631,21 @@
       "summaryNee": "Nee",
       "summaryReferentie": "Referentie:",
       "summaryOrgaankeuzes": "Orgaankeuzes:",
-      "summaryToelichting": "Toelichting:"
+      "summaryToelichting": "Toelichting:",
+      "summaryBeslisser": "Beslissende persoon:",
+      "summaryBeslisserNaam": "Naam:",
+      "summaryBeslisserRelatie": "Relatie:",
+      "summaryBeslisserTelefoon": "Telefoon:"
+    },
+    "beslisser": {
+      "titel": "Beslissende persoon",
+      "beschrijving": "Geef aan wie namens u de donorkeuze mag maken.",
+      "naamLabel": "Naam beslissende persoon",
+      "naamPlaceholder": "Voor- en achternaam",
+      "relatieLabel": "Relatie tot u",
+      "relatiePlaceholder": "bijv. Partner, Zoon, Dochter",
+      "telefoonLabel": "Telefoonnummer",
+      "telefoonPlaceholder": "06-12345678"
     }
   },
   "uitvaartWizard": {
