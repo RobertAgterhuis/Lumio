@@ -9,6 +9,11 @@ public class DigitaalAccountUpsertRequestValidator : AbstractValidator<DigitaalA
     {
         RuleFor(x => x.PlatformNaam).NotEmpty();
         RuleFor(x => x.GewensteActie).NotEmpty();
+
+        // S7-09: URL format validation
+        RuleFor(x => x.Url)
+            .Matches(@"^https?://").WithMessage("URL moet beginnen met http:// of https://.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Url));
     }
 }
 

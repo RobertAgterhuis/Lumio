@@ -26,7 +26,25 @@ public class DonorController : ControllerBase
     {
         var item = await _db.DonorRegistraties.FirstOrDefaultAsync();
         if (item is null) return NotFound();
-        return Ok(item.Adapt<DonorRegistratieResponse>());
+
+        var orgaanKeuzes = await _db.OrgaanKeuzes
+            .Where(o => o.DonorRegistratieId == item.Id)
+            .ToListAsync();
+
+        var response = new DonorRegistratieResponse(
+            item.Id,
+            item.EigenaarId,
+            item.Keuze,
+            item.IsGeregistreerdBijDonorregister,
+            item.DonorregisterReferentie,
+            item.Toelichting,
+            item.BeslisserNaam,
+            item.BeslisserRelatie,
+            item.BeslisserTelefoon,
+            item.AangemaaktOp,
+            item.GewijzigdOp,
+            orgaanKeuzes.Adapt<List<OrgaanKeuzeResponse>>());
+        return Ok(response);
     }
 
     [HttpPut]
@@ -50,7 +68,21 @@ public class DonorController : ControllerBase
 
         await _db.SaveChangesAsync();
         await _audit.LogAsync("Opgeslagen", "DonorRegistratie", item.Id);
-        return Ok(item.Adapt<DonorRegistratieResponse>());
+
+        var response = new DonorRegistratieResponse(
+            item.Id,
+            item.EigenaarId,
+            item.Keuze,
+            item.IsGeregistreerdBijDonorregister,
+            item.DonorregisterReferentie,
+            item.Toelichting,
+            item.BeslisserNaam,
+            item.BeslisserRelatie,
+            item.BeslisserTelefoon,
+            item.AangemaaktOp,
+            item.GewijzigdOp,
+            []);
+        return Ok(response);
     }
 
     [HttpGet("orgaankeuzes")]

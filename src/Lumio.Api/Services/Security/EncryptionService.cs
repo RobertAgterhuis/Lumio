@@ -69,6 +69,39 @@ public class EncryptionService : IEncryptionService
         return Encoding.UTF8.GetString(plaintext);
     }
 
+    public byte[] EncryptBytes(byte[] data)
+    {
+        var nonce = new byte[_encryptie.NonceLengteBytes];
+        RandomNumberGenerator.Fill(nonce);
+
+        var ciphertext = new byte[data.Length];
+        var tag = new byte[_encryptie.TagLengteBytes];
+
+        using var aes = new AesGcm(_key, _encryptie.TagLengteBytes);
+        aes.Encrypt(nonce, data, ciphertext, tag);
+
+        // Layout: nonce (12 bytes) + tag (16 bytes) + ciphertext
+        var result = new byte[nonce.Length + tag.Length + ciphertext.Length];
+        nonce.CopyTo(result, 0);
+        tag.CopyTo(result, nonce.Length);
+        ciphertext.CopyTo(result, nonce.Length + tag.Length);
+        return result;
+    }
+
+    public byte[] DecryptBytes(byte[] encryptedData)
+    {
+        var nonceLen = _encryptie.NonceLengteBytes;
+        var tagLen = _encryptie.TagLengteBytes;
+        var nonce = encryptedData[..nonceLen];
+        var tag = encryptedData[nonceLen..(nonceLen + tagLen)];
+        var ciphertext = encryptedData[(nonceLen + tagLen)..];
+        var plaintext = new byte[ciphertext.Length];
+
+        using var aes = new AesGcm(_key, tagLen);
+        aes.Decrypt(nonce, ciphertext, tag, plaintext);
+        return plaintext;
+    }
+
     /// <summary>
     /// Gets the per-database salt from a .salt file next to the DB, or creates one on first use.
     /// Falls back to the legacy fixed salt if the .salt file doesn't exist and the DB already does

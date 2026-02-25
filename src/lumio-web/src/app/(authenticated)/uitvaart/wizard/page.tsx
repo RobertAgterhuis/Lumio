@@ -53,7 +53,7 @@ export default function UitvaartWizardPage() {
     uitvaartOndernemerAdres: "",
     uitvaartOndernemerPostcode: "",
     uitvaartOndernemerPlaats: "",
-    heeftUitvaartVerzekering: "false",
+    heeftUitvaartVerzekering: false,
     uitvaartVerzekeringDetails: "",
     ceremonieSoort: "",
     ceremonieLocatie: "",
@@ -89,7 +89,7 @@ export default function UitvaartWizardPage() {
         uitvaartOndernemerAdres: existingData.uitvaartOndernemerAdres ?? "",
         uitvaartOndernemerPostcode: existingData.uitvaartOndernemerPostcode ?? "",
         uitvaartOndernemerPlaats: existingData.uitvaartOndernemerPlaats ?? "",
-        heeftUitvaartVerzekering: existingData.heeftUitvaartVerzekering != null ? String(existingData.heeftUitvaartVerzekering) : "false",
+        heeftUitvaartVerzekering: existingData.heeftUitvaartVerzekering ?? false,
         uitvaartVerzekeringDetails: existingData.uitvaartVerzekeringDetails ?? "",
         ceremonieSoort: existingData.ceremonieSoort ?? "",
         ceremonieLocatie: existingData.ceremonieLocatie ?? "",
@@ -199,14 +199,14 @@ export default function UitvaartWizardPage() {
           <div className="space-y-2">
             <Label>{t("type.verzekeringsLabel")}</Label>
             <Select
-              value={form.heeftUitvaartVerzekering}
-              onChange={(e) => update("heeftUitvaartVerzekering", e.target.value)}
+              value={String(form.heeftUitvaartVerzekering)}
+              onChange={(e) => setForm((prev) => ({ ...prev, heeftUitvaartVerzekering: e.target.value === "true" }))}
             >
               <option value="false">{t("type.verzekeringsNee")}</option>
               <option value="true">{t("type.verzekeringsJa")}</option>
             </Select>
           </div>
-          {form.heeftUitvaartVerzekering === "true" && (
+          {form.heeftUitvaartVerzekering && (
             <div className="space-y-2">
               <Label>{t("type.verzekeringsDetailsLabel")}</Label>
               <Input
@@ -507,7 +507,7 @@ export default function UitvaartWizardPage() {
   const handleComplete = async () => {
     await api.put("/api/uitvaart", {
       ...form,
-      heeftUitvaartVerzekering: form.heeftUitvaartVerzekering === "true",
+      heeftUitvaartVerzekering: form.heeftUitvaartVerzekering,
       begraafplaats: form.begraafplaats || null,
       uitvaartOndernemer: form.uitvaartOndernemer || null,
       uitvaartOndernemerTelefoon: form.uitvaartOndernemerTelefoon || null,

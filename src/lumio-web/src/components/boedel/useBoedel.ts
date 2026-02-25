@@ -102,6 +102,7 @@ export function useBoedel() {
       polisNummer: item.polisNummer,
       verzekerdBedrag: item.verzekerdBedrag?.toString() ?? "",
       begunstigde: item.begunstigde ?? "",
+      begunstigdeErfgenaamId: item.begunstigdeErfgenaamId ?? "",
       notities: item.notities ?? "",
       vermogensSoort: String(item.vermogensSoort ?? 0),
     } : { ...emptyVerzekeringForm });
@@ -157,10 +158,10 @@ export function useBoedel() {
         const created = await api.post<FysiekBezit>("/api/boedel/bezittingen", payload);
         bezitId = created.id;
       }
-      // Save any newly added linked schulden
+      // S7-05: Atomische batch-aanmaak om sequential API-calls te vermijden
       const nieuweSchulden = bezitForm.linkedSchulden.filter((s) => s._isNew && s.schuldeiser);
-      for (const schuld of nieuweSchulden) {
-        await api.post(`/api/boedel/bezittingen/${bezitId}/schulden`, {
+      if (nieuweSchulden.length > 0) {
+        await api.post(`/api/boedel/bezittingen/${bezitId}/schulden/batch`, nieuweSchulden.map((schuld) => ({
           schuldeiser: schuld.schuldeiser,
           type: schuld.type,
           bedrag: schuld.bedrag,
@@ -168,7 +169,7 @@ export function useBoedel() {
           leaseMaatschappij: schuld.leaseMaatschappij || null,
           rentepercentage: schuld.rentepercentage ?? null,
           einddatum: schuld.einddatum || null,
-        });
+        })));
       }
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
@@ -216,6 +217,7 @@ export function useBoedel() {
         type: verzekerForm.type,
         verzekerdBedrag: verzekerForm.verzekerdBedrag ? parseFloat(verzekerForm.verzekerdBedrag) : null,
         begunstigde: verzekerForm.begunstigde || null,
+        begunstigdeErfgenaamId: verzekerForm.begunstigdeErfgenaamId || null,
         notities: verzekerForm.notities || null,
         vermogensSoort: parseInt(verzekerForm.vermogensSoort),
       };

@@ -45,7 +45,7 @@ public class CompleetheidsService : ICompleetheidsService
             new("eigenaar", L["DomainMyProfile"].Value, facts.Eigenaar is not null ? 1 : 0, 1),
             new("testament", L["DomainTestament"].Value, facts.Testament is not null ? 1 : 0, 1),
             new("euthanasie", L["DomainLivingWill"].Value, facts.Euthanasie is not null ? 1 : 0, 1),
-            new("donor", L["DomainDonor"].Value, facts.HeeftDonor ? 1 : 0, 1),
+            new("donor", L["DomainDonor"].Value, facts.Donor is not null ? 1 : 0, 1),
             new("digitaal-bezit", L["DomainDigitalAssets"].Value, facts.DigitaalBezitAantal > 0 ? 1 : 0, 1),
             new("boedel", L["DomainEstate"].Value, facts.BoedelCategorieën.Any(b => b) ? 1 : 0, 1),
             new("uitvaart", L["DomainFuneral"].Value, facts.Uitvaart is not null ? 1 : 0, 1),
@@ -99,7 +99,7 @@ public class CompleetheidsService : ICompleetheidsService
             domeinen.Add(new("euthanasie", L["DomainLivingWill"].Value, 0, _options.EuthanasieVelden));
 
         // Donor
-        domeinen.Add(new("donor", L["DomainDonor"].Value, facts.HeeftDonor ? 1 : 0, _options.DonorVelden));
+        domeinen.Add(new("donor", L["DomainDonor"].Value, facts.Donor is not null ? 1 : 0, _options.DonorVelden));
 
         // Digitaal bezit
         domeinen.Add(new("digitaal-bezit", L["DomainDigitalAssets"].Value, Math.Min(facts.DigitaalBezitAantal, _options.DigitaalBezitCap), _options.DigitaalBezitCap));

@@ -59,6 +59,7 @@ export interface Verzekering {
   type: string;
   verzekerdBedrag?: number;
   begunstigde?: string;
+  begunstigdeErfgenaamId?: string;
   notities?: string;
   vermogensSoort: number;
 }
@@ -117,6 +118,7 @@ export interface VerzekeringFormData {
   polisNummer: string;
   verzekerdBedrag: string;
   begunstigde: string;
+  begunstigdeErfgenaamId: string;
   notities: string;
   vermogensSoort: string;
 }

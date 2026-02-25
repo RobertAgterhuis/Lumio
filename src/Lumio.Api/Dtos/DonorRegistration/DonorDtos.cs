@@ -11,7 +11,8 @@ public record DonorRegistratieResponse(
     string? BeslisserRelatie,
     string? BeslisserTelefoon,
     DateTime AangemaaktOp,
-    DateTime GewijzigdOp);
+    DateTime GewijzigdOp,
+    List<OrgaanKeuzeResponse> OrgaanKeuzes);
 
 public record DonorRegistratieUpsertRequest(
     string Keuze,

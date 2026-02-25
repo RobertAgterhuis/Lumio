@@ -2,6 +2,7 @@ using System.Text.Json;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Rules.Configuration;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Lumio.Api.Services.Security;
 
@@ -205,7 +206,16 @@ public class ProfileService : IProfileService
 
             // Rename the existing database file
             var newDbPath = Path.Combine(_dataDir, profile.DbBestand);
-            File.Move(legacyDbPath, newDbPath);
+            // S7-17: guard against race conditions or permission errors
+            try
+            {
+                File.Move(legacyDbPath, newDbPath);
+            }
+            catch (IOException ex)
+            {
+                Log.Error(ex, "Fout bij migreren van bestaande database van {Oud} naar {Nieuw}", legacyDbPath, newDbPath);
+                return;
+            }
 
             // Rename the salt file if it exists
             var legacySaltPath = Path.ChangeExtension(legacyDbPath, ".salt");

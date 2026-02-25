@@ -1688,7 +1688,7 @@ public class LumioPdfService : ILumioPdfService
                             Row(t, L["Label_TelNotaris"].Value, testament.NotarisTelefoon);
                         if (!string.IsNullOrEmpty(testament.NotarisEmail))
                             Row(t, L["Label_EMailNotaris"].Value, testament.NotarisEmail);
-                        if (testament.UitsluitingsClausule)
+                        if (testament.UitsluitingsClausule == true)
                             Row(t, L["Label_Uitsluitingsclausule"].Value, L["Value_Ja"].Value);
                         if (!string.IsNullOrEmpty(testament.Legaten))
                             Row(t, L["Label_Legaten"].Value, testament.Legaten);
@@ -2021,7 +2021,7 @@ public class LumioPdfService : ILumioPdfService
                             Row(section, L["Label_LocatieColon"].Value, testament.TestamentLocatie ?? "—");
                             Row(section, L["Label_Notaris"].Value, testament.NotarisNaam ?? "—");
                             Row(section, L["Label_Kantoor"].Value, testament.NotarisKantoor ?? "—");
-                            Row(section, L["Label_Uitsluitingsclausule"].Value, testament.UitsluitingsClausule ? L["Value_Ja"].Value : L["Value_Nee"].Value);
+                            Row(section, L["Label_Uitsluitingsclausule"].Value, testament.UitsluitingsClausule == true ? L["Value_Ja"].Value : testament.UitsluitingsClausule == false ? L["Value_Nee"].Value : "—");
                             if (!string.IsNullOrWhiteSpace(testament.AlgemeneWensen))
                                 Row(section, L["Label_AlgemeneWensen"].Value, testament.AlgemeneWensen);
                             if (!string.IsNullOrWhiteSpace(testament.BijzondereBepalingen))

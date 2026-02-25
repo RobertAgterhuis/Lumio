@@ -296,6 +296,44 @@ public class BoedelController : ControllerBase
         return NoContent();
     }
 
+    // S7-05: Atomische batch-aanmaak om sequential API-calls te vermijden
+    [HttpPost("bezittingen/{bezitId:guid}/schulden/batch")]
+    public async Task<ActionResult<List<SchuldResponse>>> CreateBezitSchuldenBatch(
+        Guid bezitId,
+        [FromBody] List<BezitSchuldUpsertRequest> requests)
+    {
+        var eigenaarId = await GetEigenaarId();
+        if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+
+        var bezit = await _db.FysiekeBezittingen.FindAsync(bezitId);
+        if (bezit is null) return NotFound(new { error = "Bezitting niet gevonden." });
+
+        if (requests.Count == 0) return Ok(new List<SchuldResponse>());
+
+        var schulden = requests.Select(r => new Schuld
+        {
+            EigenaarId = eigenaarId.Value,
+            BezitId = bezitId,
+            Schuldeiser = r.Schuldeiser,
+            Type = r.Type,
+            Bedrag = r.Bedrag,
+            MaandelijkseAflossing = r.MaandelijkseAflossing,
+            LeaseMaatschappij = r.LeaseMaatschappij,
+            Rentepercentage = r.Rentepercentage,
+            Einddatum = r.Einddatum,
+        }).ToList();
+
+        using var tx = await _db.Database.BeginTransactionAsync();
+        _db.Schulden.AddRange(schulden);
+        await _db.SaveChangesAsync();
+        await tx.CommitAsync();
+
+        foreach (var s in schulden) { s.Bezit = bezit; }
+        await _audit.LogAsync("Aangemaakt", "Schuld (batch)", schulden[0].Id);
+
+        return Ok(schulden.Select(s => ToSchuldResponse(s)).ToList());
+    }
+
     private static SchuldResponse ToSchuldResponse(Schuld s) => new(
         s.Id, s.Schuldeiser,
         s.SchuldeiserTelefoon, s.SchuldeiserEmail,

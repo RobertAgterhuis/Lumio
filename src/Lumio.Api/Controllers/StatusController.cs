@@ -386,7 +386,10 @@ public class StatusController : ControllerBase
                 euth.DatumOndertekening.HasValue,
                 !string.IsNullOrEmpty(euth.Huisarts),
                 !string.IsNullOrEmpty(euth.VertegenwoordigerNaam)) : null,
-            donor is not null,
+            donor is not null ? new DonorCompleetInfo(
+                !string.IsNullOrEmpty(donor.Keuze),
+                donor.Keuze != "Specifiek persoon beslist" || !string.IsNullOrEmpty(donor.BeslisserNaam),
+                await db.OrgaanKeuzes.AnyAsync(o => o.DonorRegistratieId == donor.Id)) : null,
             await db.DigitaleAccounts.CountAsync() + await db.Wachtwoorden.CountAsync() + await db.CryptoWallets.CountAsync(),
             new[] { await db.FysiekeBezittingen.AnyAsync(), await db.Bankrekeningen.AnyAsync(), await db.Verzekeringen.AnyAsync(), await db.Schulden.AnyAsync() },
             uitvaart is not null ? new UitvaartCompleetInfo(

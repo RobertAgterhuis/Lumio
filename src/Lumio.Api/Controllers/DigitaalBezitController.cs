@@ -75,7 +75,15 @@ public class DigitaalBezitController : ControllerBase
     public async Task<ActionResult<List<WachtwoordEntryResponse>>> GetWachtwoorden()
     {
         var items = await _db.Wachtwoorden.OrderBy(w => w.Naam).ToListAsync();
-        return Ok(items.Adapt<List<WachtwoordEntryResponse>>());
+        var result = items.Select(item => new WachtwoordEntryResponse(
+            item.Id,
+            item.Naam,
+            item.Gebruikersnaam,
+            item.Url,
+            item.Notities,
+            HasPassword: !string.IsNullOrEmpty(item.EncryptedWachtwoord)
+        )).ToList();
+        return Ok(result);
     }
 
     [HttpPost("wachtwoorden")]
@@ -151,6 +159,7 @@ public class DigitaalBezitController : ControllerBase
         return NoContent();
     }
 
+    [RequestSizeLimit(5_242_880)] // S7-08: max 5 MB
     [HttpPost("wachtwoorden/importeren")]
     public async Task<IActionResult> ImporterenWachtwoorden(
         IFormFile bestand,

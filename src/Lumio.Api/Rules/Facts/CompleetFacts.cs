@@ -7,7 +7,7 @@ public record CompleetFacts(
     EigenaarCompleetInfo? Eigenaar,
     TestamentCompleetInfo? Testament,
     EuthanasieCompleetInfo? Euthanasie,
-    bool HeeftDonor,
+    DonorCompleetInfo? Donor,
     int DigitaalBezitAantal,
     bool[] BoedelCategorieën,
     UitvaartCompleetInfo? Uitvaart,
@@ -43,3 +43,9 @@ public record UitvaartCompleetInfo(
     bool HeeftOndernemer,
     bool HeeftCeremonie,
     bool HeeftRouwkaart);
+
+/// <summary>S7-12 — Granulaire informatie over donor-registratie compleetheid.</summary>
+public record DonorCompleetInfo(
+    bool HeeftDecisie,
+    bool BeslisserVolledig,
+    bool OrgaanKeuzeGemaakt);

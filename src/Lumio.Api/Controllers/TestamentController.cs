@@ -55,6 +55,10 @@ public class TestamentController : ControllerBase
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
+        // S7-04: cross-field check — datum testament mag niet vóór geboortedatum eigenaar liggen
+        if (request.DatumTestament.HasValue && request.DatumTestament.Value < eigenaar.Geboortedatum)
+            return BadRequest(new { error = "Datum testament mag niet vóór de geboortedatum van de eigenaar liggen." });
+
         var item = await _db.Testamenten.FirstOrDefaultAsync();
         bool isNieuw = item is null;
 
@@ -516,7 +520,7 @@ public class TestamentController : ControllerBase
                 (e.Relatie ?? "").ToLowerInvariant().Contains("kind") ||
                 (e.Relatie ?? "").ToLowerInvariant().Contains("zoon") ||
                 (e.Relatie ?? "").ToLowerInvariant().Contains("dochter"));
-            if (!testament.UitsluitingsClausule && heeftKinderen)
+            if (testament.UitsluitingsClausule != true && heeftKinderen)
             {
                 waarschuwingen.Add(new
                 {

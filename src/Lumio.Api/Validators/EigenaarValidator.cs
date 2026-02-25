@@ -1,4 +1,5 @@
 using FluentValidation;
+using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
 using Lumio.Api.Rules.Configuration;
 using Microsoft.Extensions.Options;
@@ -42,6 +43,22 @@ public class EigenaarUpsertRequestValidator : AbstractValidator<EigenaarUpsertRe
             .When(x => !string.IsNullOrEmpty(x.Email));
 
         RuleFor(x => x.Postcode).MaximumLength(vl.PostcodeMax);
+
+        // S7-13 — Huwelijksdatum verplicht bij gehuwd/geregistreerd partnerschap
+        RuleFor(x => x.DatumHuwelijk)
+            .NotNull().WithMessage("Huwelijksdatum is verplicht als burgerlijke staat 'Gehuwd' of 'Geregistreerd partnerschap' is.")
+            .When(x => x.BurgerlijkeStaat == BurgerlijkeStaat.Gehuwd || x.BurgerlijkeStaat == BurgerlijkeStaat.GeregistreerdPartnerschap);
+
+        // S7-14 — Legitimatiedatums logisch
+        RuleFor(x => x.LegitimatieDatumAfgifte)
+            .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today))
+            .WithMessage("Datum van afgifte mag niet in de toekomst liggen.")
+            .When(x => x.LegitimatieDatumAfgifte.HasValue);
+
+        RuleFor(x => x.LegitimatieGeldigTot)
+            .GreaterThan(x => x.LegitimatieDatumAfgifte!.Value)
+            .WithMessage("Geldig-tot datum moet na de datum van afgifte liggen.")
+            .When(x => x.LegitimatieGeldigTot.HasValue && x.LegitimatieDatumAfgifte.HasValue);
     }
 
     /// <summary>Dutch BSN elf-proef (mod-11 with positional weights 9..1, last digit subtracted).</summary>

@@ -19,6 +19,13 @@ public class TestamentInfoUpsertRequestValidator : AbstractValidator<TestamentIn
             .Must(d => d == null || d.Value <= DateOnly.FromDateTime(DateTime.Today))
             .WithMessage("Datum testament mag niet in de toekomst liggen.");
 
+        RuleFor(x => x.CTR_Nummer)
+            .Matches(@"^\d{1,20}$").WithMessage("CTR-nummer mag alleen cijfers bevatten (max. 20 tekens).")
+            .When(x => !string.IsNullOrWhiteSpace(x.CTR_Nummer));
+
+        RuleFor(x => x.UitsluitingsClausule)
+            .NotNull().WithMessage("Keuze voor uitsluitingsclausule is verplicht.");
+
         RuleFor(x => x.NotarisNaam).MaximumLength(vl.NaamMax).When(x => x.NotarisNaam != null);
 
         RuleFor(x => x.NotarisTelefoon)

@@ -7,9 +7,12 @@ namespace Lumio.Api.Validators;
 
 public class ErfgenaamUpsertRequestValidator : AbstractValidator<ErfgenaamUpsertRequest>
 {
-    public ErfgenaamUpsertRequestValidator(IOptions<VeldLengtesOptions> veldLengtes)
+    public ErfgenaamUpsertRequestValidator(
+        IOptions<VeldLengtesOptions> veldLengtes,
+        IOptions<ValidatieOptions> validatie)
     {
         var vl = veldLengtes.Value;
+        var va = validatie.Value;
 
         RuleFor(x => x.Voornaam).NotEmpty().MaximumLength(vl.NaamMax);
         RuleFor(x => x.Achternaam).NotEmpty().MaximumLength(vl.NaamMax);
@@ -21,6 +24,21 @@ public class ErfgenaamUpsertRequestValidator : AbstractValidator<ErfgenaamUpsert
             .Must(BsnElf11Proef)
             .WithMessage("BSN heeft een ongeldig formaat (elf-proef mislukt).")
             .When(x => !string.IsNullOrWhiteSpace(x.BSN));
+
+        // S7-15 — Geboortedatum, telefoon, postcode
+        RuleFor(x => x.Geboortedatum)
+            .LessThan(DateOnly.FromDateTime(DateTime.Today))
+            .WithMessage("Geboortedatum moet in het verleden liggen.")
+            .When(x => x.Geboortedatum.HasValue);
+
+        RuleFor(x => x.Telefoon)
+            .Matches(va.TelefoonRegex).WithMessage("Ongeldig telefoonnummer.")
+            .MaximumLength(vl.TelefoonMax)
+            .When(x => !string.IsNullOrWhiteSpace(x.Telefoon));
+
+        RuleFor(x => x.Postcode)
+            .Matches(va.PostcodeRegex).WithMessage("Ongeldige postcode (bijv. 1234AB).")
+            .When(x => !string.IsNullOrWhiteSpace(x.Postcode));
     }
 
     /// <summary>Dutch BSN elf-proef (mod-11 with positional weights 9..1, last digit subtracted).</summary>

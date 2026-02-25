@@ -26,7 +26,8 @@ public record WachtwoordEntryResponse(
     string Naam,
     string? Gebruikersnaam,
     string? Url,
-    string? Notities);
+    string? Notities,
+    bool HasPassword);
 
 public record WachtwoordEntryCreateRequest(
     string Naam,

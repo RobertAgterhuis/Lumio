@@ -116,7 +116,8 @@ public class DocumentenController : ControllerBase
 
         using var ms = new MemoryStream();
         await bestand.CopyToAsync(ms);
-        var content = ms.ToArray();
+        var rawContent = ms.ToArray();
+        var content = encryption.EncryptBytes(rawContent);
 
         // Check if a document with the same name already exists → create new version
         var existing = await _db.Documenten
@@ -159,12 +160,25 @@ public class DocumentenController : ControllerBase
     }
 
     [HttpGet("{id:guid}/download")]
-    public async Task<IActionResult> Download(Guid id)
+    public async Task<IActionResult> Download(
+        Guid id,
+        [FromServices] IEncryptionService encryption)
     {
         var item = await _db.Documenten.FindAsync(id);
         if (item is null) return NotFound();
 
-        return File(item.BestandsInhoud, item.ContentType, item.BestandsNaam);
+        byte[] content;
+        try
+        {
+            content = encryption.DecryptBytes(item.BestandsInhoud);
+        }
+        catch
+        {
+            // Fallback: document was stored before encryption was enabled
+            content = item.BestandsInhoud;
+        }
+
+        return File(content, item.ContentType, item.BestandsNaam);
     }
 
     /// <summary>

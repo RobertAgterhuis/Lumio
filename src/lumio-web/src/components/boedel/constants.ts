@@ -31,6 +31,7 @@ export const emptyVerzekeringForm: VerzekeringFormData = {
   polisNummer: "",
   verzekerdBedrag: "",
   begunstigde: "",
+  begunstigdeErfgenaamId: "",
   notities: "",
   vermogensSoort: "0",
 };

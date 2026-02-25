@@ -16,7 +16,7 @@ public record TestamentInfoResponse(
     string? CTR_Nummer,
     string? AlgemeneWensen,
     string? BijzondereBepalingen,
-    bool UitsluitingsClausule,
+    bool? UitsluitingsClausule,
     string? Legaten,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
@@ -35,7 +35,7 @@ public record TestamentInfoUpsertRequest(
     string? CTR_Nummer,
     string? AlgemeneWensen,
     string? BijzondereBepalingen,
-    bool UitsluitingsClausule,
+    bool? UitsluitingsClausule,
     string? Legaten);
 
 public record BegunstigdeResponse(

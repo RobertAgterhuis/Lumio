@@ -12,6 +12,8 @@ public class Verzekering : BaseEntity
     public string Type { get; set; } = string.Empty;
     public decimal? VerzekerdBedrag { get; set; }
     public string? Begunstigde { get; set; }
+    /// <summary>S7-06 — FK naar erfgenaam (optioneel, ter vervanging van vrije-tekst begunstigde).</summary>
+    public Guid? BegunstigdeErfgenaamId { get; set; }
     public VermogensSoort VermogensSoort { get; set; } = VermogensSoort.Prive;
     public string? Notities { get; set; }
 }

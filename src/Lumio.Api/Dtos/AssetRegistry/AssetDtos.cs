@@ -38,7 +38,7 @@ public record VerzekeringResponse(
     string? VerzekeraarTelefoon, string? VerzekeraarEmail,
     string PolisNummer,
     string Type, decimal? VerzekerdBedrag,
-    string? Begunstigde, VermogensSoort VermogensSoort,
+    string? Begunstigde, Guid? BegunstigdeErfgenaamId, VermogensSoort VermogensSoort,
     string? Notities);
 
 public record VerzekeringUpsertRequest(
@@ -46,7 +46,7 @@ public record VerzekeringUpsertRequest(
     string? VerzekeraarTelefoon, string? VerzekeraarEmail,
     string PolisNummer,
     string Type, decimal? VerzekerdBedrag,
-    string? Begunstigde, VermogensSoort VermogensSoort,
+    string? Begunstigde, Guid? BegunstigdeErfgenaamId, VermogensSoort VermogensSoort,
     string? Notities);
 
 public record SchuldResponse(
