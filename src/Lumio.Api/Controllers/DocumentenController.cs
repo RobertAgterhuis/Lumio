@@ -93,13 +93,15 @@ public class DocumentenController : ControllerBase
     [HttpPost("uploaden")]
     [RequestSizeLimit(52_428_800)] // 50 MB (compile-time upper bound)
     public async Task<ActionResult<DocumentResponse>> Upload(
-        [FromForm] IFormFile bestand,
-        [FromForm] string naam,
-        [FromForm] string categorie,
-        [FromForm] string? notities,
-        [FromForm] string? verlooptOp,
+        [FromForm] DocumentUploadRequest request,
         [FromServices] IEncryptionService encryption)
     {
+        var bestand = request.Bestand;
+        var naam = request.Naam;
+        var categorie = request.Categorie;
+        var notities = request.Notities;
+        var verlooptOp = request.VerlooptOp;
+
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 

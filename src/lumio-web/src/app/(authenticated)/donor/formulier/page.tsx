@@ -261,22 +261,15 @@ export default function DonorFormulierPage() {
       toelichting: form.toelichting || null,
     });
 
-    // Delete existing orgaankeuzes to prevent duplicates
-    const bestaande = await api.get<{ id: string }[]>("/api/donor/orgaankeuzes");
-    for (const item of bestaande ?? []) {
-      await api.delete(`/api/donor/orgaankeuzes/${item.id}`);
-    }
-
-    // Create new orgaankeuzes
+    // Atomically replace all orgaankeuzes via batch endpoint
     const orgaanEntries = Object.entries(orgaanKeuzes).filter(
       ([, v]) => v !== null
     );
-    for (const [orgaan, welDoneren] of orgaanEntries) {
-      await api.post("/api/donor/orgaankeuzes", {
-        orgaan,
-        welDoneren,
-      });
-    }
+    const batchKeuzes = orgaanEntries.map(([orgaan, welDoneren]) => ({
+      orgaan,
+      welDoneren,
+    }));
+    await api.put("/api/donor/orgaankeuzes/batch", batchKeuzes);
 
     router.push("/donor");
   };

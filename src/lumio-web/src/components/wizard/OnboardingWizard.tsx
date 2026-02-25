@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useDomainQuery } from "@/hooks";
+import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
 import {
   User,
@@ -41,6 +42,9 @@ const stappen: OnboardingStap[] = [
 export function OnboardingWizard() {
   const router = useRouter();
   const t = useTranslations("wizard");
+  const { activeProfile } = useAuthStore();
+  // S2-05: Profile-bound localStorage key to prevent cross-profile state leakage
+  const storageKey = activeProfile?.id ? `lumio_onboarding_${activeProfile.id}_completed` : ONBOARDING_KEY;
   const [visible, setVisible] = useState(false);
   const [localStorageChecked, setLocalStorageChecked] = useState(false);
 
@@ -66,12 +70,12 @@ export function OnboardingWizard() {
 
   // Check localStorage and determine visibility
   useEffect(() => {
-    const completed = localStorage.getItem(ONBOARDING_KEY);
+    const completed = localStorage.getItem(storageKey);
     if (completed === "true") {
       setVisible(false);
     }
     setLocalStorageChecked(true);
-  }, []);
+  }, [storageKey]);
 
   // Auto-complete onboarding when all steps done
   useEffect(() => {
@@ -79,18 +83,18 @@ export function OnboardingWizard() {
 
     const allDone = stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus]);
     if (allDone) {
-      localStorage.setItem(ONBOARDING_KEY, "true");
+      localStorage.setItem(storageKey, "true");
       setVisible(false);
     } else {
-      const completed = localStorage.getItem(ONBOARDING_KEY);
+      const completed = localStorage.getItem(storageKey);
       if (completed !== "true") {
         setVisible(true);
       }
     }
-  }, [localStorageChecked, loading, stapStatus]);
+  }, [localStorageChecked, loading, stapStatus, storageKey]);
 
   const handleComplete = () => {
-    localStorage.setItem(ONBOARDING_KEY, "true");
+    localStorage.setItem(storageKey, "true");
     setVisible(false);
   };
 

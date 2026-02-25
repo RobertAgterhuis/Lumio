@@ -1,4 +1,5 @@
 using Lumio.Api.Services.Pdf;
+using Lumio.Api.Services;
 using Lumio.Api.Data;
 using Lumio.Api.Dtos.Export;
 using Microsoft.AspNetCore.Mvc;
@@ -21,18 +22,21 @@ public class ExportController : ControllerBase
     private readonly ILumioPdfService _pdfService;
     private readonly LumioDbContext _db;
     private readonly IStringLocalizer<ExportController> L;
+    private readonly IAuditService _audit;
 
-    public ExportController(ILumioPdfService pdfService, LumioDbContext db, IStringLocalizer<ExportController> localizer)
+    public ExportController(ILumioPdfService pdfService, LumioDbContext db, IStringLocalizer<ExportController> localizer, IAuditService audit)
     {
         _pdfService = pdfService;
         _db = db;
         L = localizer;
+        _audit = audit;
     }
 
     [HttpPost("testament")]
     public async Task<IActionResult> ExportTestament()
     {
         var pdf = await _pdfService.GenerateTestamentPdf();
+        await _audit.LogAsync("Export", "export", null, "testament");
         return File(pdf, "application/pdf", "lumio-testament.pdf");
     }
 
@@ -40,6 +44,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportEuthanasie()
     {
         var pdf = await _pdfService.GenerateEuthanasiePdf();
+        await _audit.LogAsync("Export", "export", null, "euthanasie");
         return File(pdf, "application/pdf", "lumio-euthanasie.pdf");
     }
 
@@ -47,6 +52,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportDonor()
     {
         var pdf = await _pdfService.GenerateDonorPdf();
+        await _audit.LogAsync("Export", "export", null, "donor");
         return File(pdf, "application/pdf", "lumio-donor.pdf");
     }
 
@@ -54,6 +60,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportDigitaalBezit()
     {
         var pdf = await _pdfService.GenerateDigitaalBezitPdf();
+        await _audit.LogAsync("Export", "export", null, "digitaal-bezit");
         return File(pdf, "application/pdf", "lumio-digitaal-bezit.pdf");
     }
 
@@ -61,6 +68,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportBoedel()
     {
         var pdf = await _pdfService.GenerateBoedelPdf();
+        await _audit.LogAsync("Export", "export", null, "boedel");
         return File(pdf, "application/pdf", "lumio-boedel.pdf");
     }
 
@@ -68,6 +76,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportUitvaart()
     {
         var pdf = await _pdfService.GenerateUitvaartPdf();
+        await _audit.LogAsync("Export", "export", null, "uitvaart");
         return File(pdf, "application/pdf", "lumio-uitvaart.pdf");
     }
 
@@ -75,6 +84,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportDocumenten()
     {
         var pdf = await _pdfService.GenerateDocumentenOverzichtPdf();
+        await _audit.LogAsync("Export", "export", null, "documenten");
         return File(pdf, "application/pdf", "lumio-documenten.pdf");
     }
 
@@ -82,6 +92,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportCompleet()
     {
         var pdf = await _pdfService.GenerateCompleetPdf();
+        await _audit.LogAsync("Export", "export", null, "compleet");
         return File(pdf, "application/pdf", "lumio-compleet.pdf");
     }
 
@@ -89,6 +100,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportNoodkaart()
     {
         var pdf = await _pdfService.GenerateNoodkaartPdf();
+        await _audit.LogAsync("Export", "export", null, "noodkaart");
         return File(pdf, "application/pdf", "lumio-noodkaart.pdf");
     }
 
@@ -96,6 +108,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportTestamentConcept()
     {
         var pdf = await _pdfService.GenerateTestamentConceptPdf();
+        await _audit.LogAsync("Export", "export", null, "testament-concept");
         return File(pdf, "application/pdf", "lumio-testament-concept.pdf");
     }
 
@@ -103,6 +116,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportWilsverklaring()
     {
         var pdf = await _pdfService.GenerateWilsverklaringPdf();
+        await _audit.LogAsync("Export", "export", null, "wilsverklaring");
         return File(pdf, "application/pdf", "lumio-wilsverklaring.pdf");
     }
 
@@ -110,6 +124,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportNoodprocedure()
     {
         var pdf = await _pdfService.GenerateNoodprocedurePdf();
+        await _audit.LogAsync("Export", "export", null, "noodprocedure");
         return File(pdf, "application/pdf", "lumio-noodprocedure.pdf");
     }
 
@@ -117,6 +132,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportBoedelbeschrijving()
     {
         var pdf = await _pdfService.GenerateBoedelbeschrijvingPdf();
+        await _audit.LogAsync("Export", "export", null, "boedelbeschrijving");
         return File(pdf, "application/pdf", "lumio-boedelbeschrijving.pdf");
     }
 
@@ -124,6 +140,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportExecuteurRapport()
     {
         var pdf = await _pdfService.GenerateExecuteurRapportPdf();
+        await _audit.LogAsync("Export", "export", null, "executeur-rapport");
         return File(pdf, "application/pdf", "lumio-executeur-rapport.pdf");
     }
 
@@ -131,6 +148,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportNotaris()
     {
         var pdf = await _pdfService.GenerateNotarisPdf();
+        await _audit.LogAsync("Export", "export", null, "notaris");
         return File(pdf, "application/pdf", "lumio-notaris-dossier.pdf");
     }
 
@@ -143,6 +161,7 @@ public class ExportController : ControllerBase
 
         var pdf = await _pdfService.GenerateErfgenaamPdf(erfgenaamId);
         var veiligNaam = erfgenaam.Voornaam.ToLowerInvariant().Replace(" ", "-");
+        await _audit.LogAsync("Export", "export", erfgenaamId, "erfgenaam");
         return File(pdf, "application/pdf", $"lumio-erfgenaam-{veiligNaam}.pdf");
     }
 
@@ -376,6 +395,7 @@ public class ExportController : ControllerBase
         }
 
         memoryStream.Position = 0;
+        await _audit.LogAsync("Export", "export", null, "alles");
         return File(memoryStream.ToArray(), "application/zip", $"lumio-export-{DateTime.Now:yyyy-MM-dd}.zip");
     }
 

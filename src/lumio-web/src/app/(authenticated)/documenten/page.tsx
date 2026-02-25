@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,7 +18,7 @@ import {
 import { api, downloadAndSave } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock } from "lucide-react";
+import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock, Pencil } from "lucide-react";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { toast } from "@/stores/toastStore";
@@ -76,6 +77,38 @@ export default function DocumentenPage() {
   const [versionHistory, setVersionHistory] = useState<DocumentVersie[]>([]);
   const [loadingVersions, setLoadingVersions] = useState(false);
   const [confirmDeleteAllId, setConfirmDeleteAllId] = useState<string | null>(null);
+
+  // S3-33: Edit dialog for verlooptOp and notities
+  const [editDocOpen, setEditDocOpen] = useState(false);
+  const [editDocId, setEditDocId] = useState<string | null>(null);
+  const [editDocForm, setEditDocForm] = useState({ verlooptOp: "", notities: "" });
+  const [editDocError, setEditDocError] = useState<string | null>(null);
+
+  const openEditDoc = (doc: PersoonlijkDocument) => {
+    setEditDocId(doc.id);
+    setEditDocForm({
+      verlooptOp: doc.verlooptOp ?? "",
+      notities: doc.notities ?? "",
+    });
+    setEditDocError(null);
+    setEditDocOpen(true);
+  };
+
+  const saveEditDoc = async () => {
+    if (!editDocId) return;
+    setEditDocError(null);
+    try {
+      await api.patch(`/api/documenten/${editDocId}`, {
+        verlooptOp: editDocForm.verlooptOp || null,
+        notities: editDocForm.notities || null,
+      });
+      setEditDocOpen(false);
+      toast.success(tf("opgeslagen"));
+      refetch();
+    } catch (err) {
+      setEditDocError(err instanceof Error ? err.message : t("editDialog.opslaanMislukt"));
+    }
+  };
 
   // React Query for loading documenten
   const { data: documenten = [], isLoading: loading, refetch } = useDomainQuery<PersoonlijkDocument[]>("documenten");
@@ -382,6 +415,14 @@ export default function DocumentenPage() {
                       <Button
                         variant="ghost"
                         size="sm"
+                        onClick={() => openEditDoc(doc)}
+                        title={t("editDialog.bewerken")}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() =>
                           doc.aantalVersies > 1
                             ? setConfirmDeleteAllId(doc.id)
@@ -630,6 +671,41 @@ export default function DocumentenPage() {
           </Button>
         </DialogFooter>
       </Dialog>
+      {/* S3-33: Edit document dialog (verlooptOp + notities) */}
+      <Dialog open={editDocOpen} onOpenChange={setEditDocOpen}>
+        <DialogHeader>
+          <DialogTitle>{t("editDialog.titel")}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          {editDocError && (
+            <div className="rounded-lg border border-danger bg-danger-100 dark:bg-danger/20 p-2">
+              <p className="text-sm text-danger">{editDocError}</p>
+            </div>
+          )}
+          <div className="space-y-2">
+            <Label>{t("uploadDialog.verloopdatum")} <span className="text-muted-foreground text-xs font-normal">{t("uploadDialog.optioneel")}</span></Label>
+            <Input
+              type="date"
+              value={editDocForm.verlooptOp}
+              onChange={(e) => setEditDocForm((f) => ({ ...f, verlooptOp: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>{t("editDialog.notities")} <span className="text-muted-foreground text-xs font-normal">{t("uploadDialog.optioneel")}</span></Label>
+            <Textarea
+              value={editDocForm.notities}
+              onChange={(e) => setEditDocForm((f) => ({ ...f, notities: e.target.value }))}
+              rows={3}
+              placeholder={t("editDialog.notitiesPlaceholder")}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setEditDocOpen(false)}>{t("uploadDialog.annuleren")}</Button>
+          <Button onClick={saveEditDoc}>{t("editDialog.opslaan")}</Button>
+        </DialogFooter>
+      </Dialog>
+
     </div>
   );
 }

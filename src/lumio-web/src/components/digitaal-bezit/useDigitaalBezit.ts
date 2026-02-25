@@ -61,7 +61,7 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
       url: account.url ?? "",
       gewensteActie: account.gewensteActie ?? "",
       overdrachtAan: account.overdrachtAan ?? "",
-      notities: "",
+      notities: account.notities ?? "",  // S3-29: was "" (lost existing notes on edit)
       wachtwoord: "",
       wachtwoordOpmerking: "",
     } : emptyAccountForm);

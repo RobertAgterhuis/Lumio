@@ -69,6 +69,10 @@ public class ErfgenamenController : ControllerBase
         var item = await _db.Erfgenamen.FindAsync(id);
         if (item is null) return NotFound();
 
+        // S3-34: cascade-delete gekoppelde toewijzingen
+        var toewijzingen = _db.ErfgenaamToewijzingen.Where(t => t.ErfgenaamId == id);
+        _db.ErfgenaamToewijzingen.RemoveRange(toewijzingen);
+
         _db.Erfgenamen.Remove(item);
         await _db.SaveChangesAsync();
         return NoContent();

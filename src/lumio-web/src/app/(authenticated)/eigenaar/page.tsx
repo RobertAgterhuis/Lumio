@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { api } from "@/lib/api-client";
+import { api, ApiError } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { User, Save, Loader2, Camera, Trash2 } from "lucide-react";
 import { Select } from "@/components/ui/select";
@@ -172,7 +172,15 @@ export default function EigenaarPage() {
       setSuccess(t("profielOpgeslagen"));
       toast.success(tf("opgeslagen"));
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
+      // S3-31 — parse ValidationProblemDetails for per-field messages
+      if (err instanceof ApiError && err.errors && Object.keys(err.errors).length > 0) {
+        const fieldMessages = Object.entries(err.errors)
+          .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+          .join("\n");
+        setError(fieldMessages);
+      } else {
+        setError(err instanceof Error ? err.message : t("opslaanMislukt"));
+      }
     } finally {
       setSaving(false);
     }

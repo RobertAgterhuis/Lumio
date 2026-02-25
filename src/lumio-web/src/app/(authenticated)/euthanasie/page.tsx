@@ -39,6 +39,12 @@ interface Wilsverklaring {
   dementieClausule: boolean;
   dementieClausuleToelichting?: string;
   behandelVerbod?: string;
+  vertegenwoordiger2Naam?: string;
+  vertegenwoordiger2Relatie?: string;
+  vertegenwoordiger2Telefoon?: string;
+  vertegenwoordiger2Email?: string;
+  situatieOpties?: string;
+  situatieNotitie?: string;
 }
 
 export default function EuthanasiePage() {
@@ -57,6 +63,8 @@ export default function EuthanasiePage() {
     vertegenwoordigerTelefoon: "", vertegenwoordigerEmail: "", vertegenwoordigerAdres: "",
     vertegenwoordigerPostcode: "", vertegenwoordigerWoonplaats: "",
     dementieClausule: false, dementieClausuleToelichting: "", behandelVerbod: "",
+    vertegenwoordiger2Naam: "", vertegenwoordiger2Relatie: "", vertegenwoordiger2Telefoon: "",
+    vertegenwoordiger2Email: "", situatieOpties: "", situatieNotitie: "",
   });
   const [editError, setEditError] = useState<string | null>(null);
 
@@ -82,6 +90,12 @@ export default function EuthanasiePage() {
       dementieClausule: data.dementieClausule ?? false,
       dementieClausuleToelichting: data.dementieClausuleToelichting ?? "",
       behandelVerbod: data.behandelVerbod ?? "",
+      vertegenwoordiger2Naam: data.vertegenwoordiger2Naam ?? "",
+      vertegenwoordiger2Relatie: data.vertegenwoordiger2Relatie ?? "",
+      vertegenwoordiger2Telefoon: data.vertegenwoordiger2Telefoon ?? "",
+      vertegenwoordiger2Email: data.vertegenwoordiger2Email ?? "",
+      situatieOpties: data.situatieOpties ?? "",
+      situatieNotitie: data.situatieNotitie ?? "",
     });
     setEditOpen(true);
   };
@@ -108,6 +122,12 @@ export default function EuthanasiePage() {
         dementieClausule: editForm.dementieClausule,
         dementieClausuleToelichting: editForm.dementieClausuleToelichting || null,
         behandelVerbod: editForm.behandelVerbod || null,
+        vertegenwoordiger2Naam: editForm.vertegenwoordiger2Naam || null,
+        vertegenwoordiger2Relatie: editForm.vertegenwoordiger2Relatie || null,
+        vertegenwoordiger2Telefoon: editForm.vertegenwoordiger2Telefoon || null,
+        vertegenwoordiger2Email: editForm.vertegenwoordiger2Email || null,
+        situatieOpties: editForm.situatieOpties || null,
+        situatieNotitie: editForm.situatieNotitie || null,
       };
       const updated = await api.put<Wilsverklaring>("/api/euthanasie", payload);
       refetch();
@@ -303,12 +323,15 @@ export default function EuthanasiePage() {
           <Checkbox id="wil-euthanasie" checked={editForm.wilEuthanasie} onChange={(e) => setEditForm((f) => ({ ...f, wilEuthanasie: e.target.checked }))} label={t("editDialog.wilEuthanasie")} />
           <div className="space-y-2">
             <Label>{t("editDialog.datumOndertekening")}</Label>
+            <Input type="date" value={editForm.datumOndertekening} onChange={(e) => setEditForm((f) => ({ ...f, datumOndertekening: e.target.value }))} />
           </div>
           <div className="space-y-2">
             <Label>{t("editDialog.situatiebeschrijving")}</Label>
+            <Textarea value={editForm.situatieBeschrijving} onChange={(e) => setEditForm((f) => ({ ...f, situatieBeschrijving: e.target.value }))} rows={3} />
           </div>
           <div className="space-y-2">
             <Label>{t("editDialog.aanvullendeWensen")}</Label>
+            <Textarea value={editForm.aanvullendeWensen} onChange={(e) => setEditForm((f) => ({ ...f, aanvullendeWensen: e.target.value }))} rows={2} />
           </div>
           <hr />
           <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieHuisarts")}</p>
@@ -324,6 +347,7 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.praktijk")}</Label>
+              <Input value={editForm.huisartsPraktijk} onChange={(e) => setEditForm((f) => ({ ...f, huisartsPraktijk: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -333,6 +357,7 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.email")}</Label>
+              <Input type="email" value={editForm.huisartsEmail} onChange={(e) => setEditForm((f) => ({ ...f, huisartsEmail: e.target.value }))} />
             </div>
           </div>
           <hr />
@@ -349,6 +374,7 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.relatie")}</Label>
+              <Input value={editForm.vertegenwoordigerRelatie} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerRelatie: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -358,18 +384,57 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.email")}</Label>
+              <Input type="email" value={editForm.vertegenwoordigerEmail} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerEmail: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
               <Label>{t("editDialog.adres")}</Label>
+              <Input value={editForm.vertegenwoordigerAdres} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerAdres: e.target.value }))} />
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.postcode")}</Label>
+              <Input value={editForm.vertegenwoordigerPostcode} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerPostcode: e.target.value }))} />
             </div>
           </div>
           <div className="space-y-2">
             <Label>{t("editDialog.woonplaats")}</Label>
+            <Input value={editForm.vertegenwoordigerWoonplaats} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerWoonplaats: e.target.value }))} />
+          </div>
+          <hr />
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieVertegenwoordiger2")}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>{t("editDialog.naam")}</Label>
+              <PersonSelect
+                value={editForm.vertegenwoordiger2Naam}
+                onChange={(v) => setEditForm((f) => ({ ...f, vertegenwoordiger2Naam: v }))}
+                onPersonSelect={(p) => setEditForm((f) => ({ ...f, vertegenwoordiger2Naam: p.naam, vertegenwoordiger2Relatie: p.relatie ?? f.vertegenwoordiger2Relatie, vertegenwoordiger2Telefoon: p.telefoon ?? f.vertegenwoordiger2Telefoon, vertegenwoordiger2Email: p.email ?? f.vertegenwoordiger2Email }))}
+                source="both"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("editDialog.relatie")}</Label>
+              <Input value={editForm.vertegenwoordiger2Relatie} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordiger2Relatie: e.target.value }))} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>{t("editDialog.telefoon")}</Label>
+              <Input value={editForm.vertegenwoordiger2Telefoon} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordiger2Telefoon: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("editDialog.email")}</Label>
+              <Input type="email" value={editForm.vertegenwoordiger2Email} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordiger2Email: e.target.value }))} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>{t("editDialog.situatieOpties")}</Label>
+            <Textarea value={editForm.situatieOpties} onChange={(e) => setEditForm((f) => ({ ...f, situatieOpties: e.target.value }))} rows={2} />
+          </div>
+          <div className="space-y-2">
+            <Label>{t("editDialog.situatieNotitie")}</Label>
+            <Textarea value={editForm.situatieNotitie} onChange={(e) => setEditForm((f) => ({ ...f, situatieNotitie: e.target.value }))} rows={3} />
           </div>
           <hr />
           <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieClausules")}</p>
@@ -377,6 +442,7 @@ export default function EuthanasiePage() {
           {editForm.dementieClausule && (
             <div className="space-y-2">
               <Label>{t("editDialog.toelichtingDementie")}</Label>
+              <Textarea value={editForm.dementieClausuleToelichting} onChange={(e) => setEditForm((f) => ({ ...f, dementieClausuleToelichting: e.target.value }))} rows={2} />
             </div>
           )}
           <div className="space-y-2">

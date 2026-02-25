@@ -23,6 +23,15 @@ public class WilsverklaringEuthanasie : BaseEntity
     public string? VertegenwoordigerWoonplaats { get; set; }
     public string? AanvullendeWensen { get; set; }
 
+    // S3-01 — Tweede vertegenwoordiger + situatie-opties
+    public string? Vertegenwoordiger2Naam { get; set; }
+    public string? Vertegenwoordiger2Relatie { get; set; }
+    public string? Vertegenwoordiger2Telefoon { get; set; }
+    public string? Vertegenwoordiger2Email { get; set; }
+    /// <summary>JSON-array van geselecteerde situatie-opties (bijv. ["Dementie","Coma"]).</summary>
+    public string? SituatieOpties { get; set; }
+    public string? SituatieNotitie { get; set; }
+
     // S8 — Wettelijk conforme document-generatie
     public bool DementieClausule { get; set; }
     public string? DementieClausuleToelichting { get; set; }

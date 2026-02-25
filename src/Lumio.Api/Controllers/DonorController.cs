@@ -93,4 +93,40 @@ public class DonorController : ControllerBase
         await _db.SaveChangesAsync();
         return NoContent();
     }
+
+    [HttpPut("orgaankeuzes/batch")]
+    public async Task<ActionResult<List<OrgaanKeuzeResponse>>> BatchUpdateOrgaanKeuzes(
+        [FromBody] List<OrgaanKeuzeUpsertRequest> keuzes)
+    {
+        var donor = await _db.DonorRegistraties.FirstOrDefaultAsync();
+        if (donor is null)
+            return BadRequest(new { error = "Maak eerst een donor registratie aan." });
+
+        using var transaction = await _db.Database.BeginTransactionAsync();
+        try
+        {
+            var bestaande = _db.OrgaanKeuzes.Where(o => o.DonorRegistratieId == donor.Id);
+            _db.OrgaanKeuzes.RemoveRange(bestaande);
+
+            foreach (var k in keuzes)
+            {
+                var item = k.Adapt<OrgaanKeuze>();
+                item.DonorRegistratieId = donor.Id;
+                _db.OrgaanKeuzes.Add(item);
+            }
+
+            await _db.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            var result = await _db.OrgaanKeuzes
+                .Where(o => o.DonorRegistratieId == donor.Id)
+                .ToListAsync();
+            return Ok(result.Adapt<List<OrgaanKeuzeResponse>>());
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 }

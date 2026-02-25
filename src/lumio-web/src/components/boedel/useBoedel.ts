@@ -233,6 +233,12 @@ export function useBoedel() {
 
   const saveSchuld = useCallback(async () => {
     setError(null);
+    // S3-30: guard against empty / non-numeric bedrag instead of silently sending 0
+    const bedragValue = parseFloat(schuldForm.bedrag);
+    if (!schuldForm.bedrag || isNaN(bedragValue) || bedragValue <= 0) {
+      setError(t("bedragVerplicht"));
+      return;
+    }
     setSaving(true);
     try {
       const payload = {
@@ -240,7 +246,7 @@ export function useBoedel() {
         schuldeiserTelefoon: schuldForm.schuldeiserTelefoon || null,
         schuldeiserEmail: schuldForm.schuldeiserEmail || null,
         type: schuldForm.type,
-        bedrag: parseFloat(schuldForm.bedrag) || 0,
+        bedrag: bedragValue,
         maandelijkseAflossing: schuldForm.maandelijkseAflossing ? parseFloat(schuldForm.maandelijkseAflossing) : null,
         referentie: schuldForm.referentie || null,
         notities: schuldForm.notities || null,

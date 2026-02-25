@@ -41,16 +41,11 @@ export function HeirUnlockForm() {
 
     setReconstructing(true);
     try {
-      // Step 1: Reconstruct the password from shares
-      const result = await api.post<{ wachtwoord: string }>(
-        "/api/shamir/reconstrueer",
+      // Single-step: reconstruct + unlock server-side (S2-01 security fix)
+      await api.post(
+        "/api/shamir/reconstrueer-en-ontgrendel",
         { delen: validShares }
       );
-
-      // Step 2: Use the reconstructed password to unlock
-      await api.post("/api/auth/ontgrendel", {
-        wachtwoord: result.wachtwoord,
-      });
 
       // Erfgenaam-toegang is altijd read-only
       setReadOnly(true);

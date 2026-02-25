@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,6 +64,21 @@ export function BackupRestoreCard({ onRestoreRequest, onPostRestore }: BackupRes
     type: "success" | "error";
     text: string;
   } | null>(null);
+
+  // S2-09: Load auto-backup config on mount (Electron only)
+  useEffect(() => {
+    if (!isElectron) return;
+    (async () => {
+      try {
+        const config = await (window as any).lumio.getAutoBackupConfig();
+        if (config) {
+          setAutoBackupEnabled(config.ingeschakeld ?? false);
+          setAutoBackupPad(config.pad ?? "");
+          setAutoBackupFrequentie(config.frequentie ?? "dagelijks");
+        }
+      } catch { /* ignore — desktop API not available in dev/browser */ }
+    })();
+  }, [isElectron]);
 
   const handleDownloadBackup = async () => {
     setDownloading(true);

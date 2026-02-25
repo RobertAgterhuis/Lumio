@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -136,8 +137,12 @@ public class AfhandelingController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, [FromServices] IMasterPasswordService passwordService)
     {
+        // S2-03: Block deletion in read-only (erfgenaam) mode
+        if (passwordService.IsReadOnly)
+            return StatusCode(403, new { error = "Verwijderen is niet toegestaan in alleen-lezen modus (erfgenaam-toegang)." });
+
         var item = await _db.AfhandelingsItems.FindAsync(id);
         if (item is null)
             return NotFound(new { error = "Afhandelingsitem niet gevonden." });

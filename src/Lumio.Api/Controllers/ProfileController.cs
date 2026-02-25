@@ -50,7 +50,7 @@ public class ProfileController : ControllerBase
         }
     }
 
-    /// <summary>Delete a profile and all its data. Requires the profile to be the active one and unlocked.</summary>
+    /// <summary>Delete a profile and all its data. Requires the active database to be unlocked.</summary>
     [HttpDelete("{id:guid}")]
     public IActionResult Delete(
         Guid id,
@@ -60,16 +60,16 @@ public class ProfileController : ControllerBase
         if (profile == null)
             return NotFound(new { error = "Profiel niet gevonden." });
 
-        // Must be the active profile and unlocked to delete
-        if (_profileService.ActiveProfile?.Id != id)
-            return BadRequest(new { error = "Selecteer en ontgrendel dit profiel eerst." });
-
+        // S2-04: Allow deleting any non-primary profile when the active DB is unlocked
         if (!passwordService.IsUnlocked)
-            return StatusCode(423, new { error = "Database is vergrendeld." });
+            return StatusCode(423, new { error = "Database is vergrendeld. Ontgrendel uw profiel eerst." });
 
         try
         {
-            passwordService.Lock();
+            // Lock the session only when deleting the currently active profile
+            if (_profileService.ActiveProfile?.Id == id)
+                passwordService.Lock();
+
             _profileService.DeleteProfile(id);
             return Ok(new { bericht = "Profiel en alle bijbehorende gegevens zijn permanent verwijderd." });
         }
