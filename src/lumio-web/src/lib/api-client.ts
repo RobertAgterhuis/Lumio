@@ -3,6 +3,11 @@
 // For standalone dev, set NEXT_PUBLIC_API_URL=http://127.0.0.1:5123
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
+/** Returns the full URL for an API path, respecting NEXT_PUBLIC_API_URL. */
+export function getApiUrl(path: string): string {
+  return `${API_BASE}${path}`;
+}
+
 import { ApiError } from "./api-error";
 
 // Re-export ApiError for convenience
@@ -67,6 +72,12 @@ export const api = {
   put: <T>(path: string, body?: unknown) =>
     request<T>(path, {
       method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: body ? JSON.stringify(body) : undefined,
+    }),
+  patch: <T>(path: string, body?: unknown) =>
+    request<T>(path, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: body ? JSON.stringify(body) : undefined,
     }),

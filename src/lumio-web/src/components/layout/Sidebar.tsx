@@ -13,6 +13,7 @@ import {
   ClipboardList,
   BookOpen,
   CheckCircle2,
+  Video,
   type LucideIcon,
 } from "lucide-react";
 
@@ -77,6 +78,7 @@ const navGroups: NavGroup[] = [
     labelKey: "groep.hulpmiddelen",
     items: [
       { href: "/tijdlijn", labelKey: "tijdlijnOverlijden", lumioIcon: "tijdlijn" as LumioIconName },
+      { href: "/videoboodschappen", labelKey: "videoboodschappen", icon: Video },
       { href: "/export", labelKey: "exporteren", icon: Download },
       { href: "/audit-log", labelKey: "activiteitenlog", icon: ClipboardList },
       { href: "/instellingen", labelKey: "instellingen", icon: Settings },

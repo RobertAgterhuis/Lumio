@@ -6,6 +6,7 @@ using Lumio.Api.Domain.DonorRegistration;
 using Lumio.Api.Domain.EuthanasiaDirective;
 using Lumio.Api.Domain.FuneralWishes;
 using Lumio.Api.Domain.Testament;
+using Lumio.Api.Domain.VideoMessages;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lumio.Api.Data;
@@ -56,6 +57,11 @@ public class LumioDbContext : DbContext
     public DbSet<Begunstigde> Begunstigden => Set<Begunstigde>();
     public DbSet<Executeur> Executeurs => Set<Executeur>();
     public DbSet<TestamentSnapshot> TestamentSnapshots => Set<TestamentSnapshot>();
+
+    // ── Video Messages ──
+    public DbSet<Videoboodschap> Videoboodschappen => Set<Videoboodschap>();
+    public DbSet<VideoboodschapBlob> VideoboodschapBlobs => Set<VideoboodschapBlob>();
+    public DbSet<VideoboodschapOntvanger> VideoboodschapOntvangers => Set<VideoboodschapOntvanger>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -264,6 +270,32 @@ public class LumioDbContext : DbContext
             .HasOne(s => s.TestamentInfo)
             .WithMany(t => t.Snapshots)
             .HasForeignKey(s => s.TestamentInfoId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // ── Video Messages ──
+
+        // Videoboodschap → Eigenaar
+        modelBuilder.Entity<Videoboodschap>()
+            .HasOne<Eigenaar>()
+            .WithMany()
+            .HasForeignKey(v => v.EigenaarId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // VideoboodschapBlob → Videoboodschap (1-to-1, blob in separate table)
+        modelBuilder.Entity<VideoboodschapBlob>()
+            .HasKey(b => b.VideoboodschapId);
+
+        modelBuilder.Entity<Videoboodschap>()
+            .HasOne(v => v.Blob)
+            .WithOne()
+            .HasForeignKey<VideoboodschapBlob>(b => b.VideoboodschapId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // VideoboodschapOntvanger → Videoboodschap
+        modelBuilder.Entity<VideoboodschapOntvanger>()
+            .HasOne(o => o.Videoboodschap)
+            .WithMany(v => v.Ontvangers)
+            .HasForeignKey(o => o.VideoboodschapId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

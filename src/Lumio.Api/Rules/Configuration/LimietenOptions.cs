@@ -13,6 +13,8 @@ public class LimietenOptions
     public int ActualisatieIntervalDagen { get; set; } = 90;
     public int AuditLogStandaardLimiet { get; set; } = 200;
     public int ZoekenMinQueryLengte { get; set; } = 2;
-    public long FotoMaxBytes { get; set; } = 10_485_760;   // 10 MB
+    public long FotoMaxBytes { get; set; } = 10_485_760;    // 10 MB
     public long DocumentMaxBytes { get; set; } = 52_428_800; // 50 MB
+    public long VideoMaxBytes { get; set; } = 104_857_600;   // 100 MB
+    public int VideoMaxAantal { get; set; } = 10;
 }

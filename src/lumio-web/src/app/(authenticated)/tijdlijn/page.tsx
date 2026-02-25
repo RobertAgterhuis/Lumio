@@ -3,9 +3,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 import {
@@ -28,6 +25,9 @@ import {
   HeartHandshake,
   UserX,
 } from "lucide-react";
+import { useDomainQuery } from "@/hooks";
+import { TijdlijnStapRow } from "@/components/tijdlijn/TijdlijnStapRow";
+import { STAP_DOMAIN_CONFIGS } from "@/components/tijdlijn/tijdlijn-data";
 
 interface TijdlijnStap {
   key: string;
@@ -109,6 +109,34 @@ const tijdlijn: TijdlijnFase[] = [
 export default function TijdlijnPage() {
   const t = useTranslations("tijdlijn");
 
+  // Domain queries for steps that are linked to Lumio domains
+  const { data: uitvaartData, isLoading: uitvaartLoading } = useDomainQuery("uitvaart");
+  const { data: donorData, isLoading: donorLoading } = useDomainQuery("donor");
+  const { data: euthanasieData, isLoading: euthanasieLoading } = useDomainQuery("euthanasie");
+  const { data: testamentData, isLoading: testamentLoading } = useDomainQuery("testament");
+  const { data: documentenData, isLoading: documentenLoading } = useDomainQuery<unknown[]>("documenten");
+  const { data: noodcontactenData, isLoading: noodcontactenLoading } = useDomainQuery<unknown[]>("noodcontacten");
+
+  // Maps stap key → fetched domain data
+  const domainDataMap: Record<string, unknown> = {
+    uitvaart: uitvaartData,
+    donor: donorData,
+    wilsverklaring: euthanasieData,
+    notaris: testamentData,
+    documenten: documentenData,
+    naasten: noodcontactenData,
+  };
+
+  // Maps stap key → loading state
+  const domainLoadingMap: Record<string, boolean> = {
+    uitvaart: uitvaartLoading,
+    donor: donorLoading,
+    wilsverklaring: euthanasieLoading,
+    notaris: testamentLoading,
+    documenten: documentenLoading,
+    naasten: noodcontactenLoading,
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -136,46 +164,27 @@ export default function TijdlijnPage() {
                 <FaseIcon className={`h-5 w-5 ${fase.color}`} />
               </div>
               <h2 className={`text-xl font-semibold ${fase.color}`}>
-                {t(`fasen.${fase.fase}.label`)}
+                {t(`fasen.${fase.fase}.label` as never)}
               </h2>
             </div>
 
             {/* Stappen met verticale lijn */}
             <div className="relative ml-5 border-l-2 border-border pl-8 space-y-4">
-              {fase.stappen.map((stap, idx) => {
-                const StapIcon = stap.icon;
-                return (
-                  <div key={idx} className="relative">
-                    {/* Dot op de lijn */}
-                    <div
-                      className={`absolute -left-[calc(2rem+5px)] top-4 h-3 w-3 rounded-full ${fase.dotColor} ring-4 ring-background`}
-                    />
-                    <Card
-                      className={`border ${fase.borderColor} transition-colors hover:shadow-sm`}
-                    >
-                      <CardHeader className="pb-2">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${fase.bgColor}`}
-                          >
-                            <StapIcon
-                              className={`h-4 w-4 ${fase.color}`}
-                            />
-                          </div>
-                          <CardTitle className="text-base">
-                            {t(`fasen.${fase.fase}.${stap.key}.titel`)}
-                          </CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <CardDescription className="text-sm leading-relaxed">
-                          {t(`fasen.${fase.fase}.${stap.key}.beschrijving`)}
-                        </CardDescription>
-                      </CardContent>
-                    </Card>
-                  </div>
-                );
-              })}
+              {fase.stappen.map((stap, idx) => (
+                <TijdlijnStapRow
+                  key={idx}
+                  faseKey={fase.fase}
+                  stapKey={stap.key}
+                  stapIcon={stap.icon}
+                  color={fase.color}
+                  bgColor={fase.bgColor}
+                  borderColor={fase.borderColor}
+                  dotColor={fase.dotColor}
+                  domainConfig={STAP_DOMAIN_CONFIGS[stap.key]}
+                  domainData={domainDataMap[stap.key]}
+                  isLoading={domainLoadingMap[stap.key]}
+                />
+              ))}
             </div>
           </div>
         );
