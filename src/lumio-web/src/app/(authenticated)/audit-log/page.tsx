@@ -10,6 +10,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { api } from "@/lib/api-client";
 import { ClipboardList, RefreshCw, Filter } from "lucide-react";
 
@@ -46,12 +47,14 @@ export default function AuditLogPage() {
   const [entries, setEntries] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("");
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const t = useTranslations("auditLog");
   const tEnum = useTranslations("enums");
   const locale = useLocale();
 
   const loadEntries = async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const params = new URLSearchParams();
       params.set("limit", "200");
@@ -62,6 +65,7 @@ export default function AuditLogPage() {
       setEntries(data);
     } catch {
       setEntries([]);
+      setFetchError(t("laadFout"));
     } finally {
       setLoading(false);
     }
@@ -70,10 +74,6 @@ export default function AuditLogPage() {
   useEffect(() => {
     loadEntries();
   }, [filter]);
-
-  const uniqueActies = [
-    ...new Set(entries.map((e) => e.actie)),
-  ].sort();
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
@@ -100,10 +100,9 @@ export default function AuditLogPage() {
               {/* Filter */}
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-muted-foreground" />
-                <select
+                <Select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
-                  className="rounded-md border bg-background px-3 py-1.5 text-sm"
                 >
                   <option value="">{t("alleActies")}</option>
                   <option value="Aangemaakt">{tEnum("auditActie.aangemaakt")}</option>
@@ -113,7 +112,7 @@ export default function AuditLogPage() {
                   <option value="Vergrendeld">{tEnum("auditActie.vergrendeld")}</option>
                   <option value="Wachtwoord gewijzigd">{tEnum("auditActie.wachtwoordGewijzigd")}</option>
                   <option value="Export">{tEnum("auditActie.export")}</option>
-                </select>
+                </Select>
               </div>
               <Button
                 variant="outline"
@@ -132,6 +131,10 @@ export default function AuditLogPage() {
             <p className="py-8 text-center text-sm text-muted-foreground">
               {t("laden")}
             </p>
+          ) : fetchError ? (
+            <div className="rounded-lg border border-danger bg-danger-100 p-4 my-4">
+              <p className="text-sm text-danger">{fetchError}</p>
+            </div>
           ) : entries.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">
               {t("geenActiviteiten")}

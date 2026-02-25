@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {
   Dialog,
@@ -71,6 +71,21 @@ export function VideoboodschapDialog({
   const [error, setError] = useState<string | null>(null);
   const [videoTab, setVideoTab] = useState("opnemen");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Q-21: Reset form when editing prop changes (prevents stale formdata)
+  useEffect(() => {
+    setForm(
+      editing
+        ? {
+            titel: editing.titel,
+            beschrijving: editing.beschrijving ?? "",
+            ontvangerIds: editing.ontvangers.map((o) => o.erfgenaamId),
+            file: null,
+          }
+        : { ...emptyVideoboodschapForm }
+    );
+    setError(null);
+  }, [editing]);
 
   const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
 

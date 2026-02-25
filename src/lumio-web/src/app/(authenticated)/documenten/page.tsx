@@ -75,6 +75,7 @@ export default function DocumentenPage() {
   const [expandedVersions, setExpandedVersions] = useState<string | null>(null);
   const [versionHistory, setVersionHistory] = useState<DocumentVersie[]>([]);
   const [loadingVersions, setLoadingVersions] = useState(false);
+  const [confirmDeleteAllId, setConfirmDeleteAllId] = useState<string | null>(null);
 
   // React Query for loading documenten
   const { data: documenten = [], isLoading: loading, refetch } = useDomainQuery<PersoonlijkDocument[]>("documenten");
@@ -383,7 +384,7 @@ export default function DocumentenPage() {
                         size="sm"
                         onClick={() =>
                           doc.aantalVersies > 1
-                            ? handleDeleteAllVersions(doc.id)
+                            ? setConfirmDeleteAllId(doc.id)
                             : handleDelete(doc.id)
                         }
                       >
@@ -494,6 +495,12 @@ export default function DocumentenPage() {
             <p className="text-xs text-muted-foreground">
               {t("uploadDialog.verloopdatumHint")}
             </p>
+            {verlooptOp && new Date(verlooptOp) < new Date(new Date().toDateString()) && (
+              <p className="text-sm text-warning flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                {t("uploadDialog.verloopdatumVerleden")}
+              </p>
+            )}
           </div>
         </div>
         <DialogFooter>
@@ -591,6 +598,35 @@ export default function DocumentenPage() {
             {dropUploads.every((u) => u.status === "done")
               ? t("dropDialog.klaar")
               : t("dropDialog.allesUploaden", { aantal: dropUploads.filter((u) => u.status !== "done").length })}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Confirm delete all versions dialog */}
+      <Dialog
+        open={confirmDeleteAllId !== null}
+        onOpenChange={(open) => { if (!open) setConfirmDeleteAllId(null); }}
+      >
+        <DialogHeader>
+          <DialogTitle>{t("verwijderenAlleVersiesTitel")}</DialogTitle>
+        </DialogHeader>
+        <p className="py-4 text-sm text-muted-foreground">
+          {t("verwijderenAlleVersiesBevestig")}
+        </p>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setConfirmDeleteAllId(null)}>
+            {t("uploadDialog.annuleren")}
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={async () => {
+              if (confirmDeleteAllId) {
+                await handleDeleteAllVersions(confirmDeleteAllId);
+                setConfirmDeleteAllId(null);
+              }
+            }}
+          >
+            {t("verwijderenAlleVersies")}
           </Button>
         </DialogFooter>
       </Dialog>

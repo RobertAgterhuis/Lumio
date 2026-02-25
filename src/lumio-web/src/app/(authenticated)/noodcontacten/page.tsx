@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -80,6 +81,7 @@ export default function NoodcontactenPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   // React Query for loading noodcontacten
   const { data: contacten = [], isLoading: loading, refetch } = useDomainQuery<Noodcontact[]>("noodcontacten");
@@ -178,7 +180,7 @@ export default function NoodcontactenPage() {
           contacten
         );
         refetch();
-        alert(t("importResultaat", { toegevoegd: result?.toegevoegd ?? 0, overgeslagen: result?.overgeslagen ?? 0 }));
+        toast.success(t("importResultaat", { toegevoegd: result?.toegevoegd ?? 0, overgeslagen: result?.overgeslagen ?? 0 }));
       } catch (err) {
         setError(err instanceof Error ? err.message : t("importMislukt"));
       }
@@ -294,7 +296,7 @@ export default function NoodcontactenPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => deleteContact(c.id)}
+                      onClick={() => setConfirmDeleteId(c.id)}
                     >
                       <Trash2 className="h-3 w-3 text-danger" />
                     </Button>
@@ -403,12 +405,10 @@ export default function NoodcontactenPage() {
             />
           </div>
           <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
+            <Checkbox
               id="isGedeeld"
               checked={form.isGedeeld}
               onChange={(e) => setForm((f) => ({ ...f, isGedeeld: e.target.checked }))}
-              className="h-4 w-4 rounded border-muted"
             />
             <Label htmlFor="isGedeeld" className="text-sm font-normal cursor-pointer">
               {t("dialog.isGedeeld")}
@@ -421,6 +421,35 @@ export default function NoodcontactenPage() {
           </Button>
           <Button onClick={save} disabled={saving}>
             {saving ? t("dialog.opslaanBezig") : t("dialog.opslaan")}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={confirmDeleteId !== null}
+        onOpenChange={(open) => { if (!open) setConfirmDeleteId(null); }}
+      >
+        <DialogHeader>
+          <DialogTitle>{t("verwijderenBevestigTitel")}</DialogTitle>
+        </DialogHeader>
+        <p className="py-4 text-sm text-muted-foreground">
+          {t("verwijderenBevestig")}
+        </p>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setConfirmDeleteId(null)}>
+            {t("dialog.annuleren")}
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={async () => {
+              if (confirmDeleteId) {
+                await deleteContact(confirmDeleteId);
+                setConfirmDeleteId(null);
+              }
+            }}
+          >
+            {t("verwijderen")}
           </Button>
         </DialogFooter>
       </Dialog>

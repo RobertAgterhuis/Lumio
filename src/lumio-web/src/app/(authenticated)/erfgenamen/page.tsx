@@ -16,6 +16,7 @@ import {
   useErfgenamen,
   type Erfgenaam,
 } from "@/components/erfgenamen";
+import { useAuthStore } from "@/stores/authStore";
 
 function displayName(e: Erfgenaam): string {
   return e.tussenvoegsel
@@ -27,6 +28,7 @@ export default function ErfgenamenPage() {
   const t = useTranslations("erfgenamen");
   const te = useTranslations("enums");
   const tf = useTranslations("feedback");
+  const { isReadOnly } = useAuthStore();
 
   const hookTranslations = {
     aangemaakt: tf("aangemaakt"),
@@ -148,7 +150,7 @@ export default function ErfgenamenPage() {
           <SectieNotitie sectie="erfgenamen" />
         </div>
         <div className="flex gap-2">
-          {state.erfgenamen.length >= 2 && (
+          {state.erfgenamen.length >= 2 && !isReadOnly && (
             <Button variant="outline" onClick={() => state.setShamirDialogOpen(true)}>
               <KeyRound className="h-4 w-4 mr-2" /> {t("noodcodesVerdelen")}
             </Button>

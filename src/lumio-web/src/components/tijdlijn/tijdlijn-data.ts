@@ -62,8 +62,8 @@ export const STAP_DOMAIN_CONFIGS: Record<string, TijdlijnStapConfig> = {
     hasData: (data) => data !== null && data !== undefined,
     isCompleted: (data) => {
       if (!data || typeof data !== "object") return false;
-      const d = data as { wilEuthanasie?: boolean };
-      return d.wilEuthanasie === true;
+      const d = data as { wilEuthanasie?: boolean; datumOndertekening?: string };
+      return d.wilEuthanasie === true || d.wilEuthanasie === false || !!d.datumOndertekening;
     },
     getSamenvatting: (data, t) => {
       const d = data as { datumOndertekening?: string };

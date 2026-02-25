@@ -62,8 +62,8 @@ export default function DonorPage() {
 
       <DomainStatusBanner domein="donor" />
 
-      <div className="rounded-lg border border-danger bg-danger-100 p-4">
-        <p className="text-sm text-danger">
+      <div className="rounded-lg border border-info bg-info-100 p-4">
+        <p className="text-sm text-info">
           {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
         </p>
       </div>
@@ -132,7 +132,7 @@ export default function DonorPage() {
                       className="flex items-center justify-between rounded-md border p-2"
                     >
                       <span className="text-sm">{o.orgaan}</span>
-                      <Badge variant={o.welDoneren ? "secondary" : "destructive"}>
+                      <Badge variant={o.welDoneren ? "secondary" : "outline"} className={!o.welDoneren ? "text-muted-foreground" : undefined}>
                         {o.welDoneren ? t("ja") : t("nee")}
                       </Badge>
                     </div>

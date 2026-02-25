@@ -238,21 +238,6 @@ export function ActualisatieCard() {
     text: string;
   } | null>(null);
 
-  useEffect(() => {
-    const loadActualisatie = async () => {
-      try {
-        const data = await api.get<{
-          domeinen: ActualisatieDomein[];
-          herinneringNodig: boolean;
-        }>("/api/status/actualisatie");
-        setActualisatieDomeinen(data.domeinen);
-      } catch {
-        // Ignore
-      }
-    };
-    loadActualisatie();
-  }, []);
-
   const reloadActualisatie = async () => {
     try {
       const data = await api.get<{
@@ -264,6 +249,10 @@ export function ActualisatieCard() {
       // Ignore
     }
   };
+
+  useEffect(() => {
+    reloadActualisatie();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBevestigAlles = async () => {
     setActualisatieConfirming("alles");

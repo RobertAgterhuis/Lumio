@@ -15,10 +15,10 @@ describe("helpStore", () => {
   });
 
   it("openPanel opens panel with slug", () => {
-    useHelpStore.getState().openPanel("getting-started");
+    useHelpStore.getState().openPanel("aan-de-slag");
     const state = useHelpStore.getState();
     expect(state.panelOpen).toBe(true);
-    expect(state.activeChapterSlug).toBe("getting-started");
+    expect(state.activeChapterSlug).toBe("aan-de-slag");
   });
 
   it("closePanel closes panel", () => {

@@ -148,6 +148,7 @@ export default function ExportPage() {
           <CardDescription>
             {t("compleetBeschrijving")}
           </CardDescription>
+          <p className="text-xs text-muted-foreground">{t("videosUitgesloten")}</p>
         </CardHeader>
         <CardContent className="flex gap-3 flex-wrap">
           <Button

@@ -11,18 +11,6 @@ namespace Lumio.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<Guid>(
-                name: "BezitId",
-                table: "Schulden",
-                type: "TEXT",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "LeaseMaatschappij",
-                table: "Schulden",
-                type: "TEXT",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Videoboodschappen",
                 columns: table => new
@@ -89,11 +77,6 @@ namespace Lumio.Api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schulden_BezitId",
-                table: "Schulden",
-                column: "BezitId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_VideoboodschapOntvangers_VideoboodschapId",
                 table: "VideoboodschapOntvangers",
                 column: "VideoboodschapId");
@@ -102,23 +85,11 @@ namespace Lumio.Api.Migrations
                 name: "IX_Videoboodschappen_EigenaarId",
                 table: "Videoboodschappen",
                 column: "EigenaarId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Schulden_FysiekeBezittingen_BezitId",
-                table: "Schulden",
-                column: "BezitId",
-                principalTable: "FysiekeBezittingen",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Schulden_FysiekeBezittingen_BezitId",
-                table: "Schulden");
-
             migrationBuilder.DropTable(
                 name: "VideoboodschapBlobs");
 
@@ -127,18 +98,6 @@ namespace Lumio.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Videoboodschappen");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Schulden_BezitId",
-                table: "Schulden");
-
-            migrationBuilder.DropColumn(
-                name: "BezitId",
-                table: "Schulden");
-
-            migrationBuilder.DropColumn(
-                name: "LeaseMaatschappij",
-                table: "Schulden");
         }
     }
 }

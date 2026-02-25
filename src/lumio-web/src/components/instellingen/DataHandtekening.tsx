@@ -53,7 +53,7 @@ export function DataHandtekening() {
         ) : (
           <Fingerprint className="h-4 w-4" />
         )}
-        Digitale handtekening genereren
+        {t("genereren")}
       </Button>
 
       {snapshot && (
