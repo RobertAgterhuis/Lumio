@@ -34,12 +34,7 @@ public class BoedelController : ControllerBase
         var bezittingen = await _db.FysiekeBezittingen.Where(f => f.EigenaarId == eid).ToListAsync();
         var rekeningen = await _db.Bankrekeningen.Where(b => b.EigenaarId == eid).ToListAsync();
         var verzekeringen = await _db.Verzekeringen.Where(v => v.EigenaarId == eid).ToListAsync();
-        List<Domain.AssetRegistry.Schuld> schulden = new();
-        try
-        {
-            schulden = await _db.Schulden.Where(s => s.EigenaarId == eid).ToListAsync();
-        }
-        catch { /* Fallback: AddSchuldBezitLink migration not yet applied */ }
+        var schulden = await _db.Schulden.Where(s => s.EigenaarId == eid).ToListAsync();
 
         var totaalBezittingen = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
         var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
@@ -67,23 +62,11 @@ public class BoedelController : ControllerBase
     [HttpGet("bezittingen")]
     public async Task<ActionResult<List<FysiekBezitResponse>>> GetBezittingen()
     {
-        try
-        {
-            var items = await _db.FysiekeBezittingen
-                .Include(f => f.LinkedSchulden)
-                .OrderBy(f => f.Categorie)
-                .ToListAsync();
-            return Ok(items.Select(ToBezitResponse).ToList());
-        }
-        catch
-        {
-            // Fallback if AddSchuldBezitLink migration hasn't been applied yet (BezitId column missing).
-            // LinkedSchulden will be empty; will auto-resolve on next lock/unlock.
-            var items = await _db.FysiekeBezittingen
-                .OrderBy(f => f.Categorie)
-                .ToListAsync();
-            return Ok(items.Select(ToBezitResponse).ToList());
-        }
+        var items = await _db.FysiekeBezittingen
+            .Include(f => f.LinkedSchulden)
+            .OrderBy(f => f.Categorie)
+            .ToListAsync();
+        return Ok(items.Select(ToBezitResponse).ToList());
     }
 
     [HttpPost("bezittingen")]
@@ -102,18 +85,9 @@ public class BoedelController : ControllerBase
     [HttpPut("bezittingen/{id:guid}")]
     public async Task<ActionResult<FysiekBezitResponse>> UpdateBezit(Guid id, [FromBody] FysiekBezitUpsertRequest request)
     {
-        FysiekBezit? item;
-        try
-        {
-            item = await _db.FysiekeBezittingen
-                .Include(f => f.LinkedSchulden)
-                .FirstOrDefaultAsync(f => f.Id == id);
-        }
-        catch
-        {
-            // Fallback if AddSchuldBezitLink migration hasn't been applied yet.
-            item = await _db.FysiekeBezittingen.FirstOrDefaultAsync(f => f.Id == id);
-        }
+        var item = await _db.FysiekeBezittingen
+            .Include(f => f.LinkedSchulden)
+            .FirstOrDefaultAsync(f => f.Id == id);
         if (item is null) return NotFound();
         request.Adapt(item);
         await _db.SaveChangesAsync();
@@ -229,19 +203,15 @@ public class BoedelController : ControllerBase
     [HttpGet("schulden")]
     public async Task<ActionResult<List<SchuldResponse>>> GetSchulden()
     {
-        try
-        {
-            var items = await _db.Schulden
-                .Include(s => s.Bezit)
-                .OrderBy(s => s.Schuldeiser)
-                .ToListAsync();
-            return Ok(items.Select(s => ToSchuldResponse(s)).ToList());
-        }
-        catch
-        {
-            // Fallback if AddSchuldBezitLink migration hasn't been applied yet.
-            return Ok(new List<SchuldResponse>());
-        }
+        var eigenaarId = await GetEigenaarId();
+        if (eigenaarId is null) return NotFound(new { error = "Geen eigenaar profiel gevonden." });
+
+        var items = await _db.Schulden
+            .Include(s => s.Bezit)
+            .Where(s => s.EigenaarId == eigenaarId.Value)
+            .OrderBy(s => s.Schuldeiser)
+            .ToListAsync();
+        return Ok(items.Select(s => ToSchuldResponse(s)).ToList());
     }
 
     // --- Bezittingen / gekoppelde schulden ---

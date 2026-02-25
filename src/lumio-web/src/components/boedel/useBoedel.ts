@@ -157,22 +157,18 @@ export function useBoedel() {
         const created = await api.post<FysiekBezit>("/api/boedel/bezittingen", payload);
         bezitId = created.id;
       }
-      // Save any newly added linked schulden (non-fatal: backend endpoint may not be available yet)
+      // Save any newly added linked schulden
       const nieuweSchulden = bezitForm.linkedSchulden.filter((s) => s._isNew && s.schuldeiser);
       for (const schuld of nieuweSchulden) {
-        try {
-          await api.post(`/api/boedel/bezittingen/${bezitId}/schulden`, {
-            schuldeiser: schuld.schuldeiser,
-            type: schuld.type,
-            bedrag: schuld.bedrag,
-            maandelijkseAflossing: schuld.maandelijkseAflossing ?? null,
-            leaseMaatschappij: schuld.leaseMaatschappij || null,
-            rentepercentage: schuld.rentepercentage ?? null,
-            einddatum: schuld.einddatum || null,
-          });
-        } catch (schuldErr) {
-          console.error("Could not save linked schuld (backend endpoint not yet available)", schuldErr);
-        }
+        await api.post(`/api/boedel/bezittingen/${bezitId}/schulden`, {
+          schuldeiser: schuld.schuldeiser,
+          type: schuld.type,
+          bedrag: schuld.bedrag,
+          maandelijkseAflossing: schuld.maandelijkseAflossing ?? null,
+          leaseMaatschappij: schuld.leaseMaatschappij || null,
+          rentepercentage: schuld.rentepercentage ?? null,
+          einddatum: schuld.einddatum || null,
+        });
       }
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
