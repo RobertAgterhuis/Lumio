@@ -59,6 +59,7 @@
     "erfgenamen": "Heirs",
     "noodcontacten": "Emergency Contacts",
     "tijdlijnOverlijden": "Death Timeline",
+    "videoboodschappen": "Video Messages",
     "exporteren": "Export",
     "activiteitenlog": "Activity Log",
     "instellingen": "Settings",
@@ -1464,6 +1465,29 @@
           "beschrijving": "Delete or set memorial mode for Facebook, Instagram, LinkedIn and other social media accounts."
         }
       }
+    },
+    "bekijken": "View",
+    "invullen": "Fill in now",
+    "laden": "Loading...",
+    "volledigIngevuld": "Filled in",
+    "gedeeltelijkIngevuld": "Partial",
+    "nogNietIngevuld": "Not yet filled in",
+    "samenvatting": {
+      "vastgelegd": "Data recorded",
+      "uitvaart": "Preference: {type}",
+      "donor": "Choice: {keuze}",
+      "wilsverklaring": "Signed on: {datum}",
+      "notaris": "Notary: {naam}",
+      "documenten": "{aantal, plural, one {# document} other {# documents}} recorded",
+      "naasten": "{aantal, plural, one {# contact} other {# contacts}} recorded"
+    },
+    "legeStaat": {
+      "uitvaart": "Record your funeral wishes so next of kin know what you want.",
+      "donor": "Record your donor choice.",
+      "wilsverklaring": "Record your medical wishes and treatment directives.",
+      "notaris": "Record your will details and notary contact.",
+      "documenten": "Upload your important documents, such as your passport or policies.",
+      "naasten": "Add emergency contacts so next of kin know who to reach."
     }
   },
   "auditLog": {
@@ -2920,6 +2944,62 @@
     "auditLog": {
       "titel": "No activities",
       "beschrijving": "No activities have been recorded in your account yet."
+    }
+  },
+  "videoboodschappen": {
+    "titel": "Video Messages",
+    "subtitel": "Personal videos for your heirs, to be watched after your passing.",
+    "nieuw": "New video message",
+    "opgeslagen": "Video message saved",
+    "toegevoegd": "Video message added",
+    "afspelen": "Play",
+    "bewerken": "Edit",
+    "verwijderen": "Delete",
+    "onbekendeOntvanger": "Unknown",
+    "verwijderenBevestig": "Are you sure you want to delete \"{{titel}}\"?",
+    "legeStaat": {
+      "titel": "No video messages yet",
+      "beschrijving": "Record a personal message for your heirs. You can record via webcam or upload a video file.",
+      "actie": "Add first video"
+    },
+    "dialog": {
+      "nieuw": "New video message",
+      "bewerken": "Edit video message",
+      "video": "Video",
+      "tabOpnemen": "Record",
+      "tabUploaden": "Upload",
+      "titel": "Title",
+      "titelPlaceholder": "E.g. Message for my children",
+      "beschrijving": "Description (optional)",
+      "beschrijvingPlaceholder": "Brief description of the content",
+      "ontvangers": "Who is this video for?",
+      "aantalOntvangers": "{aantal, plural, one {# recipient selected} other {# recipients selected}}",
+      "annuleren": "Cancel",
+      "opslaan": "Save",
+      "uploading": "Uploading...",
+      "titelVerplicht": "Please enter a title.",
+      "videoVerplicht": "Please choose or record a video.",
+      "alleenVideo": "Only video files are allowed.",
+      "bestandTeGroot": "File is too large. Maximum is 100 MB.",
+      "fout": "Something went wrong. Please try again.",
+      "uploadKlik": "Click to choose a file",
+      "uploadTip": "MP4, WebM — maximum 100 MB",
+      "standaardTitel": "Recording {{datum}}",
+      "bestaandeVideo": "Existing video"
+    },
+    "recorder": {
+      "start": "Start recording",
+      "stop": "Stop recording",
+      "gebruik": "Use this recording",
+      "opnieuw": "Record again",
+      "toestemming": "Requesting camera and microphone permission...",
+      "permissieGeweigerd": "Access to camera or microphone denied.",
+      "fout": "Recording not possible. Check your camera.",
+      "klaarVoorOpname": "Ready to record",
+      "maxDuur": "Maximum {minuten} minutes",
+      "maxOver": "{seconden} sec remaining",
+      "nietBeschikbaar": "Recording not available in this browser.",
+      "httpsVereist": "Camera recording requires a secure connection (HTTPS)."
     }
   }
 }

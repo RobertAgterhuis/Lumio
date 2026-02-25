@@ -59,6 +59,7 @@
     "erfgenamen": "Erfgenamen",
     "noodcontacten": "Noodcontacten",
     "tijdlijnOverlijden": "Tijdlijn Overlijden",
+    "videoboodschappen": "Videoboodschappen",
     "exporteren": "Exporteren",
     "activiteitenlog": "Activiteitenlog",
     "instellingen": "Instellingen",
@@ -1464,6 +1465,29 @@
           "beschrijving": "Verwijder of memorial-modus instellen voor Facebook, Instagram, LinkedIn en andere social media-accounts."
         }
       }
+    },
+    "bekijken": "Bekijken",
+    "invullen": "Nu invullen",
+    "laden": "Laden...",
+    "volledigIngevuld": "Ingevuld",
+    "gedeeltelijkIngevuld": "Gedeeltelijk",
+    "nogNietIngevuld": "Nog niet ingevuld",
+    "samenvatting": {
+      "vastgelegd": "Gegevens vastgelegd",
+      "uitvaart": "Voorkeur: {type}",
+      "donor": "Keuze: {keuze}",
+      "wilsverklaring": "Ondertekend op: {datum}",
+      "notaris": "Notaris: {naam}",
+      "documenten": "{aantal, plural, one {# document} other {# documenten}} vastgelegd",
+      "naasten": "{aantal, plural, one {# contact} other {# contacten}} vastgelegd"
+    },
+    "legeStaat": {
+      "uitvaart": "Leg uw uitvaartwensen vast zodat nabestaanden weten wat u wilt.",
+      "donor": "Leg uw donorkeuze vast.",
+      "wilsverklaring": "Leg uw medische wensen en behandelwensen vast.",
+      "notaris": "Leg uw testamentgegevens en notariscontact vast.",
+      "documenten": "Upload uw belangrijke documenten, zoals uw paspoort of polissen.",
+      "naasten": "Voeg noodcontacten toe zodat nabestaanden weten wie zij kunnen bereiken."
     }
   },
   "auditLog": {
@@ -2920,6 +2944,62 @@
     "auditLog": {
       "titel": "Geen activiteiten",
       "beschrijving": "Er zijn nog geen activiteiten geregistreerd in uw account."
+    }
+  },
+  "videoboodschappen": {
+    "titel": "Videoboodschappen",
+    "subtitel": "Persoonlijke video's voor uw erfgenamen, te bekijken na uw overlijden.",
+    "nieuw": "Nieuwe videoboodschap",
+    "opgeslagen": "Videoboodschap opgeslagen",
+    "toegevoegd": "Videoboodschap toegevoegd",
+    "afspelen": "Afspelen",
+    "bewerken": "Bewerken",
+    "verwijderen": "Verwijderen",
+    "onbekendeOntvanger": "Onbekend",
+    "verwijderenBevestig": "Weet u zeker dat u \"{{titel}}\" wilt verwijderen?",
+    "legeStaat": {
+      "titel": "Nog geen videoboodschappen",
+      "beschrijving": "Leg een persoonlijke boodschap vast voor uw erfgenamen. U kunt opnemen via uw webcam of een videobestand uploaden.",
+      "actie": "Eerste video toevoegen"
+    },
+    "dialog": {
+      "nieuw": "Nieuwe videoboodschap",
+      "bewerken": "Videoboodschap bewerken",
+      "video": "Video",
+      "tabOpnemen": "Opnemen",
+      "tabUploaden": "Uploaden",
+      "titel": "Titel",
+      "titelPlaceholder": "Bijv. Boodschap voor mijn kinderen",
+      "beschrijving": "Beschrijving (optioneel)",
+      "beschrijvingPlaceholder": "Korte omschrijving van de inhoud",
+      "ontvangers": "Voor wie is deze video?",
+      "aantalOntvangers": "{aantal, plural, one {# ontvanger geselecteerd} other {# ontvangers geselecteerd}}",
+      "annuleren": "Annuleren",
+      "opslaan": "Opslaan",
+      "uploading": "Uploaden...",
+      "titelVerplicht": "Vul een titel in.",
+      "videoVerplicht": "Kies of neem een video op.",
+      "alleenVideo": "Alleen videobestanden zijn toegestaan.",
+      "bestandTeGroot": "Bestand is te groot. Maximum is 100 MB.",
+      "fout": "Er ging iets mis. Probeer het opnieuw.",
+      "uploadKlik": "Klik om een bestand te kiezen",
+      "uploadTip": "MP4, WebM — maximaal 100 MB",
+      "standaardTitel": "Opname {{datum}}",
+      "bestaandeVideo": "Bestaande video"
+    },
+    "recorder": {
+      "start": "Start opname",
+      "stop": "Stop opname",
+      "gebruik": "Gebruik deze opname",
+      "opnieuw": "Opnieuw opnemen",
+      "toestemming": "Toestemming vragen voor camera en microfoon...",
+      "permissieGeweigerd": "Toegang tot camera of microfoon geweigerd.",
+      "fout": "Opname niet mogelijk. Controleer uw camera.",
+      "klaarVoorOpname": "Klaar om op te nemen",
+      "maxDuur": "Maximaal {minuten} minuten",
+      "maxOver": "Nog {seconden} sec.",
+      "nietBeschikbaar": "Opname niet beschikbaar in deze browser.",
+      "httpsVereist": "Camera-opname vereist een beveiligde verbinding (HTTPS)."
     }
   }
 }
