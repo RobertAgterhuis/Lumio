@@ -6,7 +6,7 @@ public class PersoonlijkDocument : BaseEntity
 {
     public Guid EigenaarId { get; set; }
     public string Naam { get; set; } = string.Empty;
-    public string Categorie { get; set; } = string.Empty;
+    public DocumentCategorie Categorie { get; set; } = DocumentCategorie.Overig;
     public string BestandsNaam { get; set; } = string.Empty;
     public string ContentType { get; set; } = string.Empty;
     public long BestandsGrootte { get; set; }

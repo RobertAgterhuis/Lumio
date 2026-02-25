@@ -48,7 +48,7 @@ public class DocumentenController : ControllerBase
             .ToList();
 
         var result = latest.Select(d => new DocumentResponse(
-            d.Id, d.Naam, d.Categorie, d.BestandsNaam, d.ContentType,
+            d.Id, d.Naam, d.Categorie.ToString(), d.BestandsNaam, d.ContentType,
             d.BestandsGrootte, d.Notities, d.VerlooptOp, d.AangemaaktOp, d.GewijzigdOp,
             d.DocumentGroepId, d.Versie,
             versionCounts.GetValueOrDefault(d.DocumentGroepId, 1)
@@ -67,7 +67,7 @@ public class DocumentenController : ControllerBase
             .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
 
         return Ok(new DocumentResponse(
-            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.Id, item.Naam, item.Categorie.ToString(), item.BestandsNaam, item.ContentType,
             item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));
@@ -131,7 +131,9 @@ public class DocumentenController : ControllerBase
         {
             EigenaarId = eigenaar.Id,
             Naam = naam,
-            Categorie = categorie,
+            Categorie = Enum.TryParse<DocumentCategorie>(categorie, ignoreCase: true, out var parsedCat)
+                ? parsedCat
+                : DocumentCategorie.Overig,
             BestandsNaam = bestand.FileName,
             ContentType = bestand.ContentType,
             BestandsGrootte = bestand.Length,
@@ -150,7 +152,7 @@ public class DocumentenController : ControllerBase
             .CountAsync(d => d.DocumentGroepId == documentGroepId);
 
         return Created($"/api/documenten/{item.Id}", new DocumentResponse(
-            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.Id, item.Naam, item.Categorie.ToString(), item.BestandsNaam, item.ContentType,
             item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));
@@ -187,7 +189,7 @@ public class DocumentenController : ControllerBase
             .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
 
         return Ok(new DocumentResponse(
-            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.Id, item.Naam, item.Categorie.ToString(), item.BestandsNaam, item.ContentType,
             item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));

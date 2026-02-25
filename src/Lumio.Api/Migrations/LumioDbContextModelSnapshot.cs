@@ -106,7 +106,7 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("AangemaaktOp")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("BestemdeErfgenaam")
+                    b.Property<Guid?>("BestemdeErfgenaamId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Categorie")
@@ -145,6 +145,8 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BestemdeErfgenaamId");
 
                     b.HasIndex("EigenaarId");
 
@@ -1538,6 +1540,13 @@ namespace Lumio.Api.Migrations
                         .HasForeignKey("EigenaarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Lumio.Api.Domain.Common.Erfgenaam", "BestemdeErfgenaam")
+                        .WithMany()
+                        .HasForeignKey("BestemdeErfgenaamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("BestemdeErfgenaam");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.Schuld", b =>

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
 
 const organen = [
@@ -52,32 +53,38 @@ export default function DonorFormulierPage() {
     Record<string, boolean | null>
   >({});
 
-  const [loading, setLoading] = useState(true);
+  const { data: donorData, isLoading: donorLoading } = useDomainQuery<{
+    keuze: string;
+    isGeregistreerdBijDonorregister: boolean;
+    donorregisterReferentie: string;
+    toelichting: string;
+  } | null>("donor");
+  const { data: orgaanData, isLoading: orgaanLoading } = useDomainQuery<
+    { id: string; orgaan: string; welDoneren: boolean }[]
+  >("donor/orgaankeuzes");
+  const loading = donorLoading || orgaanLoading;
 
   useEffect(() => {
-    Promise.all([
-      api.get<{ keuze: string; isGeregistreerdBijDonorregister: boolean; donorregisterReferentie: string; toelichting: string }>("/api/donor").catch((err) => { console.error("Failed to load donor:", err); return null; }),
-      api.get<{ id: string; orgaan: string; welDoneren: boolean }[]>("/api/donor/orgaankeuzes").catch((err) => { console.error("Failed to load orgaankeuzes:", err); return null; }),
-    ])
-      .then(([donorData, orgaanData]) => {
-        if (donorData) {
-          setForm({
-            keuze: donorData.keuze ?? "",
-            isGeregistreerdBijDonorregister: donorData.isGeregistreerdBijDonorregister != null ? String(donorData.isGeregistreerdBijDonorregister) : "",
-            donorregisterReferentie: donorData.donorregisterReferentie ?? "",
-            toelichting: donorData.toelichting ?? "",
-          });
-        }
-        if (Array.isArray(orgaanData)) {
-          const mapped: Record<string, boolean> = {};
-          for (const item of orgaanData) {
-            mapped[item.orgaan] = item.welDoneren;
-          }
-          setOrgaanKeuzes(mapped);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    if (donorData) {
+      setForm({
+        keuze: donorData.keuze ?? "",
+        isGeregistreerdBijDonorregister:
+          donorData.isGeregistreerdBijDonorregister != null
+            ? String(donorData.isGeregistreerdBijDonorregister)
+            : "",
+        donorregisterReferentie: donorData.donorregisterReferentie ?? "",
+        toelichting: donorData.toelichting ?? "",
+      });
+    }
+  }, [donorData]);
+
+  useEffect(() => {
+    if (Array.isArray(orgaanData) && orgaanData.length > 0) {
+      const mapped: Record<string, boolean> = {};
+      for (const item of orgaanData) mapped[item.orgaan] = item.welDoneren;
+      setOrgaanKeuzes(mapped);
+    }
+  }, [orgaanData]);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));

@@ -1584,7 +1584,9 @@ public class LumioPdfService : ILumioPdfService
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
         var eid = eigenaar?.Id ?? Guid.Empty;
         var erfgenamen = await _db.Erfgenamen.Where(e => e.EigenaarId == eid).ToListAsync();
-        var bezittingen = await _db.FysiekeBezittingen.Where(f => f.EigenaarId == eid).ToListAsync();
+        var bezittingen = await _db.FysiekeBezittingen
+            .Include(b => b.BestemdeErfgenaam)
+            .Where(f => f.EigenaarId == eid).ToListAsync();
         var rekeningen = await _db.Bankrekeningen.Where(b => b.EigenaarId == eid).ToListAsync();
         var verzekeringen = await _db.Verzekeringen.Where(v => v.EigenaarId == eid).ToListAsync();
         var schulden = await _db.Schulden.Where(s => s.EigenaarId == eid).ToListAsync();
@@ -1768,8 +1770,11 @@ public class LumioPdfService : ILumioPdfService
                             if (!string.IsNullOrEmpty(b.KvKNummer)) extra.Add($"KvK {b.KvKNummer}");
                             var extraStr = extra.Count > 0 ? $" ({string.Join(", ", extra)})" : "";
                             Row(t, $"  {b.Omschrijving}{extraStr}", b.GeschatteWaarde.HasValue ? $"€ {b.GeschatteWaarde:N2}" : "—");
-                            if (!string.IsNullOrEmpty(b.BestemdeErfgenaam))
-                                t.Item().PaddingLeft(12).Text(string.Format(L["Text_BestemdeVoorPrefix"].Value, b.BestemdeErfgenaam)).FontSize(8).FontColor(Colors.Grey.Darken1);
+                            if (b.BestemdeErfgenaam != null)
+                            {
+                                var naam = $"{b.BestemdeErfgenaam.Voornaam} {b.BestemdeErfgenaam.Tussenvoegsel} {b.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim();
+                                t.Item().PaddingLeft(12).Text(string.Format(L["Text_BestemdeVoorPrefix"].Value, naam)).FontSize(8).FontColor(Colors.Grey.Darken1);
+                            }
                         }
                     }
                     else

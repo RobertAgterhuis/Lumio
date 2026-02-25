@@ -74,6 +74,7 @@ public class BoedelController : ControllerBase
     {
         var items = await _db.FysiekeBezittingen
             .Include(f => f.LinkedSchulden)
+            .Include(f => f.BestemdeErfgenaam)
             .OrderBy(f => f.Categorie)
             .ToListAsync();
         return Ok(items.Select(ToBezitResponse).ToList());
@@ -98,6 +99,7 @@ public class BoedelController : ControllerBase
     {
         var item = await _db.FysiekeBezittingen
             .Include(f => f.LinkedSchulden)
+            .Include(f => f.BestemdeErfgenaam)
             .FirstOrDefaultAsync(f => f.Id == id);
         if (item is null) return NotFound();
         request.Adapt(item);
@@ -120,7 +122,11 @@ public class BoedelController : ControllerBase
     private static FysiekBezitResponse ToBezitResponse(FysiekBezit f) => new(
         f.Id, f.Categorie, f.Omschrijving,
         f.GeschatteWaarde, f.Locatie,
-        f.BestemdeErfgenaam, f.VermogensSoort,
+        f.BestemdeErfgenaamId,
+        f.BestemdeErfgenaam != null
+            ? $"{f.BestemdeErfgenaam.Voornaam} {f.BestemdeErfgenaam.Tussenvoegsel} {f.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
+            : null,
+        f.VermogensSoort,
         f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
         f.LinkedSchulden.Select(s => new BezitSchuldSummary(
             s.Id, s.Schuldeiser, s.Type, s.Bedrag,

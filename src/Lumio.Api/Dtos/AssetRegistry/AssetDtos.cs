@@ -11,7 +11,7 @@ public record BezitSchuldSummary(
 public record FysiekBezitResponse(
     Guid Id, string Categorie, string Omschrijving,
     decimal? GeschatteWaarde, string? Locatie,
-    string? BestemdeErfgenaam, VermogensSoort VermogensSoort,
+    Guid? BestemdeErfgenaamId, string? BestemdeErfgenaamNaam, VermogensSoort VermogensSoort,
     string? Notities,
     string? KadastraalNummer, string? Kenteken, string? KvKNummer,
     List<BezitSchuldSummary> LinkedSchulden);
@@ -19,7 +19,7 @@ public record FysiekBezitResponse(
 public record FysiekBezitUpsertRequest(
     string Categorie, string Omschrijving,
     decimal? GeschatteWaarde, string? Locatie,
-    string? BestemdeErfgenaam, VermogensSoort VermogensSoort,
+    Guid? BestemdeErfgenaamId, VermogensSoort VermogensSoort,
     string? Notities,
     string? KadastraalNummer, string? Kenteken, string? KvKNummer);
 

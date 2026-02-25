@@ -115,10 +115,10 @@ public class ZoekenController : ControllerBase
         // Documenten
         var documenten = await _db.Documenten.ToListAsync();
         resultaat.Documenten = documenten
-            .Where(d => Contains(d.Naam, query) || Contains(d.Categorie, query) ||
+            .Where(d => Contains(d.Naam, query) || Contains(d.Categorie.ToString(), query) ||
                         Contains(d.BestandsNaam, query) || Contains(d.Notities, query))
             .Select(d => new ZoekItem(d.Id, d.Naam, "Document",
-                d.Categorie, "/documenten"))
+                d.Categorie.ToString(), "/documenten"))
             .ToList();
 
         return Ok(resultaat);

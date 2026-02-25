@@ -30,7 +30,8 @@ export interface FysiekBezit {
   omschrijving: string;
   geschatteWaarde?: number;
   locatie?: string;
-  bestemdeErfgenaam?: string;
+  bestemdeErfgenaamId?: string;
+  bestemdeErfgenaamNaam?: string;
   notities?: string;
   vermogensSoort: number;
   kadastraalNummer?: string;
@@ -90,7 +91,7 @@ export interface BezitFormData {
   omschrijving: string;
   geschatteWaarde: string;
   locatie: string;
-  bestemdeErfgenaam: string;
+  bestemdeErfgenaamId: string;
   notities: string;
   vermogensSoort: string;
   kadastraalNummer: string;

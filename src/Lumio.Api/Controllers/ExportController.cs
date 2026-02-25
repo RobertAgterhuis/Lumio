@@ -739,11 +739,18 @@ public class ExportController : ControllerBase
     [HttpGet("csv/bezittingen")]
     public async Task<IActionResult> ExportBezittingenCsv()
     {
-        var items = await _db.FysiekeBezittingen.ToListAsync();
+        var items = await _db.FysiekeBezittingen
+            .Include(b => b.BestemdeErfgenaam)
+            .ToListAsync();
         var csv = new StringBuilder();
         csv.AppendLine("Categorie;Omschrijving;Geschatte Waarde;Locatie;Bestemde Erfgenaam;Vermogenssoort;Notities;Kadastraal Nummer;Kenteken;KvK Nummer");
         foreach (var b in items)
-            csv.AppendLine($"{Esc(b.Categorie)};{Esc(b.Omschrijving)};{b.GeschatteWaarde};{Esc(b.Locatie)};{Esc(b.BestemdeErfgenaam)};{b.VermogensSoort};{Esc(b.Notities)};{Esc(b.KadastraalNummer)};{Esc(b.Kenteken)};{Esc(b.KvKNummer)}");
+        {
+            var bestemdeNaam = b.BestemdeErfgenaam != null
+                ? $"{b.BestemdeErfgenaam.Voornaam} {b.BestemdeErfgenaam.Tussenvoegsel} {b.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
+                : null;
+            csv.AppendLine($"{Esc(b.Categorie)};{Esc(b.Omschrijving)};{b.GeschatteWaarde};{Esc(b.Locatie)};{Esc(bestemdeNaam)};{b.VermogensSoort};{Esc(b.Notities)};{Esc(b.KadastraalNummer)};{Esc(b.Kenteken)};{Esc(b.KvKNummer)}");
+        }
         return CsvResult(csv, "bezittingen");
     }
 
@@ -842,6 +849,7 @@ public class ExportController : ControllerBase
 
         // Boedel
         var bezittingen = await _db.FysiekeBezittingen
+            .Include(b => b.BestemdeErfgenaam)
             .Where(b => b.EigenaarId == eigenaar.Id).ToListAsync();
         var bankrekeningen = await _db.Bankrekeningen
             .Where(b => b.EigenaarId == eigenaar.Id).ToListAsync();
@@ -937,10 +945,15 @@ public class ExportController : ControllerBase
 
             Boedel = new BoedelExport
             {
-                FysiekeBezittingen = bezittingen.Select(b => new FysiekBezitExport(
+                FysiekeBezittingen = bezittingen.Select(b => {
+                var bestemdeNaam = b.BestemdeErfgenaam != null
+                    ? $"{b.BestemdeErfgenaam.Voornaam} {b.BestemdeErfgenaam.Tussenvoegsel} {b.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
+                    : null;
+                return new FysiekBezitExport(
                     b.Categorie, b.Omschrijving, b.GeschatteWaarde,
-                    b.Locatie, b.BestemdeErfgenaam, b.VermogensSoort.ToString(), b.Notities,
-                    b.KadastraalNummer, b.Kenteken, b.KvKNummer)).ToList(),
+                    b.Locatie, bestemdeNaam, b.VermogensSoort.ToString(), b.Notities,
+                    b.KadastraalNummer, b.Kenteken, b.KvKNummer);
+            }).ToList(),
                 Bankrekeningen = bankrekeningen.Select(b => new BankrekeningExport(
                     b.BankNaam, b.IBAN, b.RekeningType,
                     b.Saldo, b.VermogensSoort.ToString(), b.Notities)).ToList(),
@@ -963,7 +976,7 @@ public class ExportController : ControllerBase
                 d.OverdrachtAan, d.Notities)).ToList(),
 
             Documenten = documenten.Select(d => new DocumentExport(
-                d.Naam, d.Categorie, d.BestandsNaam, d.ContentType,
+                d.Naam, d.Categorie.ToString(), d.BestandsNaam, d.ContentType,
                 d.BestandsGrootte, d.Notities,
                 d.VerlooptOp?.ToString("yyyy-MM-dd"),
                 d.Versie, d.AangemaaktOp.ToString("yyyy-MM-dd HH:mm"))).ToList(),

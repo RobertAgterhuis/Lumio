@@ -15,10 +15,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { api, downloadAndSave } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { api } from "@/lib/api-client";
+import { useDocumenten, type PersoonlijkDocument } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Clock, Pencil } from "lucide-react";
+import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Pencil } from "lucide-react";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { toast } from "@/stores/toastStore";
@@ -33,28 +33,6 @@ const CATEGORIE_KEYS: Record<string, string> = {
   "Overig": "overig",
 };
 
-interface PersoonlijkDocument {
-  id: string;
-  naam: string;
-  categorie: string;
-  bestandsNaam: string;
-  bestandsGrootte: number;
-  notities?: string;
-  verlooptOp?: string;
-  aangemaaktOp: string;
-  documentGroepId: string;
-  versie: number;
-  aantalVersies: number;
-}
-
-interface DocumentVersie {
-  id: string;
-  versie: number;
-  bestandsNaam: string;
-  bestandsGrootte: number;
-  aangemaaktOp: string;
-}
-
 export default function DocumentenPage() {
   const t = useTranslations("documenten");
   const tEnum = useTranslations("enums");
@@ -65,7 +43,7 @@ export default function DocumentenPage() {
   const [naam, setNaam] = useState("");
   const [categorie, setCategorie] = useState("");
   const [verlooptOp, setVerlooptOp] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dropUploads, setDropUploads] = useState<
@@ -73,9 +51,6 @@ export default function DocumentenPage() {
   >([]);
   const [dropDialogOpen, setDropDialogOpen] = useState(false);
   const dragCounter = useRef(0);
-  const [expandedVersions, setExpandedVersions] = useState<string | null>(null);
-  const [versionHistory, setVersionHistory] = useState<DocumentVersie[]>([]);
-  const [loadingVersions, setLoadingVersions] = useState(false);
   const [confirmDeleteAllId, setConfirmDeleteAllId] = useState<string | null>(null);
 
   // S3-33: Edit dialog for verlooptOp and notities
@@ -83,6 +58,23 @@ export default function DocumentenPage() {
   const [editDocId, setEditDocId] = useState<string | null>(null);
   const [editDocForm, setEditDocForm] = useState({ verlooptOp: "", notities: "" });
   const [editDocError, setEditDocError] = useState<string | null>(null);
+
+  const {
+    documenten,
+    loading,
+    refetch,
+    error,
+    handleDownload,
+    handleDelete,
+    handleDeleteAllVersions,
+    updateDocument,
+    expandedVersions,
+    versionHistory,
+    loadingVersions,
+    toggleVersionHistory: toggleVersions,
+    formatSize,
+    getExpiryStatus,
+  } = useDocumenten();
 
   const openEditDoc = (doc: PersoonlijkDocument) => {
     setEditDocId(doc.id);
@@ -98,20 +90,15 @@ export default function DocumentenPage() {
     if (!editDocId) return;
     setEditDocError(null);
     try {
-      await api.patch(`/api/documenten/${editDocId}`, {
+      await updateDocument(editDocId, {
         verlooptOp: editDocForm.verlooptOp || null,
         notities: editDocForm.notities || null,
       });
       setEditDocOpen(false);
-      toast.success(tf("opgeslagen"));
-      refetch();
     } catch (err) {
       setEditDocError(err instanceof Error ? err.message : t("editDialog.opslaanMislukt"));
     }
   };
-
-  // React Query for loading documenten
-  const { data: documenten = [], isLoading: loading, refetch } = useDomainQuery<PersoonlijkDocument[]>("documenten");
 
   // --- Drag & Drop handlers ---
   const handleDragEnter = useCallback((e: React.DragEvent) => {
@@ -195,7 +182,7 @@ export default function DocumentenPage() {
     if (!file || !naam || !categorie) return;
 
     setUploading(true);
-    setError(null);
+    setUploadError(null);
     try {
       const formData = new FormData();
       formData.append("bestand", file);
@@ -211,78 +198,10 @@ export default function DocumentenPage() {
       toast.success(tf("aangemaakt"));
       refetch();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("uploadenMislukt"));
+      setUploadError(err instanceof Error ? err.message : t("uploadenMislukt"));
     } finally {
       setUploading(false);
     }
-  };
-
-  const handleDownload = async (id: string, bestandsNaam: string) => {
-    setError(null);
-    try {
-      await downloadAndSave(`/api/documenten/${id}/download`, bestandsNaam);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("downloadMislukt"));
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    setError(null);
-    try {
-      await api.delete(`/api/documenten/${id}`);
-      if (expandedVersions === id) setExpandedVersions(null);
-      toast.success(tf("verwijderd"));
-      refetch();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
-    }
-  };
-
-  const handleDeleteAllVersions = async (id: string) => {
-    setError(null);
-    try {
-      await api.delete(`/api/documenten/${id}/alle-versies`);
-      setExpandedVersions(null);
-      toast.success(tf("verwijderd"));
-      refetch();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
-    }
-  };
-
-  const toggleVersions = async (docId: string) => {
-    if (expandedVersions === docId) {
-      setExpandedVersions(null);
-      setVersionHistory([]);
-      return;
-    }
-    setLoadingVersions(true);
-    try {
-      const versies = await api.get<DocumentVersie[]>(`/api/documenten/${docId}/versies`);
-      setVersionHistory(versies ?? []);
-      setExpandedVersions(docId);
-    } catch {
-      setError(t("versieLadenMislukt"));
-    } finally {
-      setLoadingVersions(false);
-    }
-  };
-
-  const formatSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  };
-
-  const getExpiryStatus = (verlooptOp?: string) => {
-    if (!verlooptOp) return null;
-    const expiry = new Date(verlooptOp);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const diffDays = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays < 0) return { label: t("verlopen"), variant: "destructive" as const, icon: AlertTriangle };
-    if (diffDays <= 30) return { label: t("verlooptOver", { dagen: diffDays }), variant: "warning" as const, icon: Clock };
-    return null;
   };
 
   if (loading)
@@ -334,9 +253,9 @@ export default function DocumentenPage() {
         <p className="text-sm text-info">{t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
       </div>
 
-      {error && (
+      {(error || uploadError) && (
         <div className="rounded-lg border border-danger bg-danger-100 p-3">
-          <p className="text-sm text-danger">{error}</p>
+          <p className="text-sm text-danger">{error ?? uploadError}</p>
         </div>
       )}
 
