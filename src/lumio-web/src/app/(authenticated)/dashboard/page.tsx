@@ -17,22 +17,15 @@ import { InterviewWizard } from "@/components/interview/InterviewWizard";
 import { useTranslations } from "next-intl";
 import {
   ScrollText,
-  Heart,
-  Stethoscope,
-  Globe,
-  Wallet,
-  Church,
-  FileText,
-  Users,
   ArrowRight,
   User,
   AlertTriangle,
-  Phone,
   CheckCircle2,
   Circle,
   Clock,
   EyeOff,
 } from "lucide-react";
+import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 
 interface DomeinStatus {
   domein: string;
@@ -47,11 +40,18 @@ interface Compleetheid {
   domeinen: DomeinStatus[];
 }
 
-const domainCards = [
+const domainCards: Array<{
+  href: string;
+  domein: string;
+  lumioIcon: LumioIconName;
+  domeinKey: string;
+  color: string;
+  bgColor: string;
+}> = [
   {
     href: "/eigenaar",
     domein: "eigenaar",
-    icon: User,
+    lumioIcon: "profiel",
     domeinKey: "eigenaar",
     color: "text-muted-foreground",
     bgColor: "bg-muted",
@@ -59,7 +59,7 @@ const domainCards = [
   {
     href: "/testament",
     domein: "testament",
-    icon: ScrollText,
+    lumioIcon: "testament",
     domeinKey: "testament",
     color: "text-info",
     bgColor: "bg-info-100",
@@ -67,7 +67,7 @@ const domainCards = [
   {
     href: "/euthanasie",
     domein: "euthanasie",
-    icon: Stethoscope,
+    lumioIcon: "wilsverklaring",
     domeinKey: "euthanasie",
     color: "text-accent",
     bgColor: "bg-accent/10",
@@ -75,7 +75,7 @@ const domainCards = [
   {
     href: "/donor",
     domein: "donor",
-    icon: Heart,
+    lumioIcon: "donor",
     domeinKey: "donor",
     color: "text-danger",
     bgColor: "bg-danger-100",
@@ -83,7 +83,7 @@ const domainCards = [
   {
     href: "/digitaal-bezit",
     domein: "digitaal-bezit",
-    icon: Globe,
+    lumioIcon: "digitaal-bezit",
     domeinKey: "digitaalBezit",
     color: "text-success",
     bgColor: "bg-success-100",
@@ -91,7 +91,7 @@ const domainCards = [
   {
     href: "/boedel",
     domein: "boedel",
-    icon: Wallet,
+    lumioIcon: "boedel",
     domeinKey: "boedel",
     color: "text-warning",
     bgColor: "bg-warning-100",
@@ -99,7 +99,7 @@ const domainCards = [
   {
     href: "/uitvaart",
     domein: "uitvaart",
-    icon: Church,
+    lumioIcon: "uitvaart",
     domeinKey: "uitvaart",
     color: "text-muted-foreground",
     bgColor: "bg-muted",
@@ -107,7 +107,7 @@ const domainCards = [
   {
     href: "/documenten",
     domein: "documenten",
-    icon: FileText,
+    lumioIcon: "documenten",
     domeinKey: "documenten",
     color: "text-info",
     bgColor: "bg-info-100",
@@ -115,7 +115,7 @@ const domainCards = [
   {
     href: "/erfgenamen",
     domein: "erfgenamen",
-    icon: Users,
+    lumioIcon: "erfgenamen",
     domeinKey: "erfgenamen",
     color: "text-accent",
     bgColor: "bg-accent/10",
@@ -123,7 +123,7 @@ const domainCards = [
   {
     href: "/noodcontacten",
     domein: "noodcontacten",
-    icon: Phone,
+    lumioIcon: "noodcontacten",
     domeinKey: "noodcontacten",
     color: "text-danger",
     bgColor: "bg-danger-100",
@@ -307,7 +307,6 @@ export default function DashboardPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {domainCards.map((card) => {
-          const Icon = card.icon;
           const cardStatus = getCardStatus(card.domein);
           return (
             <Link key={card.href} href={card.href}>
@@ -315,7 +314,7 @@ export default function DashboardPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.bgColor}`}>
-                      <Icon className={`h-5 w-5 ${card.color}`} />
+                      <LumioIcon name={card.lumioIcon} size="md" className={card.color} />
                     </div>
                     {cardStatus === "afgerond" ? (
                       <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">

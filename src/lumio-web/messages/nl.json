@@ -64,11 +64,13 @@
     "instellingen": "Instellingen",
     "handleiding": "Handleiding",
     "navigatie": "Hoofdnavigatie",
-    "groep.overzicht": "Overzicht",
-    "groep.wensen": "Wensen",
-    "groep.bezittingen": "Bezittingen",
-    "groep.personen": "Personen",
-    "groep.hulpmiddelen": "Hulpmiddelen"
+    "groep": {
+      "overzicht": "Overzicht",
+      "wensen": "Wensen",
+      "bezittingen": "Bezittingen",
+      "personen": "Personen",
+      "hulpmiddelen": "Hulpmiddelen"
+    }
   },
   "search": {
     "placeholder": "Zoeken in alle gegevens...",
@@ -532,6 +534,7 @@
       "gaming": "Gaming",
       "cloud": "Cloud",
       "werk": "Werk",
+      "gezondheid": "Gezondheid",
       "overheid": "Overheid",
       "overig": "Overig"
     },
@@ -583,6 +586,7 @@
     "sleuteldelenMislukt": "Sleuteldelen genereren mislukt.",
     "toewijzingOpslaanMislukt": "Toewijzing opslaan mislukt.",
     "toewijzingVerwijderenMislukt": "Toewijzing verwijderen mislukt.",
+    "noodcontactAangemaakt": "Erfgenaam ook als noodcontact toegevoegd.",
     "bezitToewijzen": "Bezit toewijzen",
     "pdfDownloaden": "PDF downloaden",
     "deelOverzicht": "Deel overzicht (HTML)",
@@ -614,7 +618,9 @@
       "geldigTot": "Geldig tot",
       "annuleren": "Annuleren",
       "opslaanBezig": "Opslaan...",
-      "opslaan": "Opslaan"
+      "opslaan": "Opslaan",
+      "alsNoodcontact": "Tevens toevoegen als noodcontact",
+      "alsNoodcontactTooltip": "Voegt deze erfgenaam ook toe als noodcontact zodat hij of zij zichtbaar is in de noodcontactenlijst. Contactgegevens worden overgenomen."
     },
     "toewijzingDialog": {
       "titel": "Bezit toewijzen aan erfgenaam",
@@ -884,7 +890,26 @@
       "kentekenPlaceholder": "bijv. AB-123-CD",
       "kvkNummer": "KvK-nummer",
       "kvkPlaceholder": "Kamer van Koophandel nummer (indien van toepassing)",
-      "notities": "Notities"
+      "notities": "Notities",
+      "schulden": {
+        "titel": "Schulden / financieringsverplichtingen",
+        "schuldeiser": "Schuldeiser",
+        "schuldeiserPlaceholder": "bijv. ABN AMRO, ING",
+        "type": "Type",
+        "types": {
+          "hypotheek": "Hypotheek",
+          "lening": "Lening",
+          "lease": "Lease",
+          "overig": "Overig"
+        },
+        "leaseMaatschappij": "Leasemaatschappij",
+        "leaseMaatschappijPlaceholder": "bijv. Alphabet, LeasePlan",
+        "bedrag": "Bedrag (\u20ac)",
+        "maandelijkseAflossing": "Maandelijkse aflossing (\u20ac)",
+        "einddatum": "Einddatum",
+        "toevoegen": "Schuld toevoegen",
+        "optioneel": "optioneel"
+      }
     },
     "rekeningDialog": {
       "bewerken": "Rekening bewerken",
@@ -948,6 +973,7 @@
     "verwijderenMislukt": "Verwijderen mislukt.",
     "ontsluitenMislukt": "Ontsluiten mislukt.",
     "importerenMislukt": "Importeren mislukt.",
+    "wachtwoordOokOpgeslagen": "Account en wachtwoord opgeslagen.",
     "toevoegen": "Toevoegen",
     "annuleren": "Annuleren",
     "opslaan": "Opslaan",
@@ -971,7 +997,8 @@
       "importeren": "Importeren",
       "geenWachtwoorden": "Nog geen wachtwoorden. Klik op Toevoegen.",
       "verbergen": "Verbergen",
-      "ontsluiten": "Ontsluiten"
+      "ontsluiten": "Ontsluiten",
+      "account": "Account"
     },
     "crypto": {
       "titel": "Crypto Wallets",
@@ -991,7 +1018,14 @@
       "gewensteActie": "Gewenste actie na overlijden",
       "overdrachtAan": "Overdracht aan",
       "overdrachtPlaceholder": "Naam van de persoon (bij overdracht)",
-      "notities": "Notities"
+      "notities": "Notities",
+      "wachtwoordOpslaan": "Wachtwoord opslaan",
+      "wachtwoord": "Wachtwoord",
+      "wachtwoordPlaceholder": "Voer het wachtwoord in",
+      "wachtwoordOpmerking": "Opmerking",
+      "wachtwoordOpmerkingPlaceholder": "Hint of locatienotitie",
+      "verbergen": "Verbergen",
+      "tonen": "Tonen"
     },
     "wachtwoordDialog": {
       "bewerken": "Wachtwoord bewerken",
@@ -2332,7 +2366,21 @@
       "jaWilsverklaring": "Ja, ik wil een wilsverklaring euthanasie",
       "neeGeenEuthanasie": "Nee, ik wil geen euthanasie",
       "situatieLabel": "In welke situatie?",
-      "situatiePlaceholder": "Beschrijf de situatie(s) waarin u euthanasie zou willen, bijv. bij uitzichtloos en ondraaglijk lijden, vergevorderde dementie..."
+      "situatiePlaceholder": "Beschrijf de situatie(s) waarin u euthanasie zou willen, bijv. bij uitzichtloos en ondraaglijk lijden, vergevorderde dementie...",
+      "situatieOngeneeslijkZiek": "Ongeneeslijk ziek met ondraaglijk lijden",
+      "situatieOngeneeslijkZiekTooltip": "Terminale ziekte waarbij geen verdere genezing mogelijk is en het lijden ondraaglijk is.",
+      "situatieErnstigLetsel": "Ernstig niet te verhelpen letsel",
+      "situatieErnstigLetselTooltip": "Bijv. ernstig hersenletsel of een aandoening met aanhoudende ondraaglijke pijn.",
+      "situatiePsychiatrischLijden": "Psychiatrisch lijden",
+      "situatiePsychiatrischLijdenTooltip": "Langdurig en onbehandelbaar psychisch lijden zonder enig vooruitzicht op verbetering.",
+      "situatieDementieVroegstadium": "Dementie in een vroeg stadium",
+      "situatieDementieVroegstadiumTooltip": "Verzoek vastgelegd terwijl u nog wilsbekwaam bent, voor het geval dementie doorzet.",
+      "situatieAndereSituatie": "Andere situatie",
+      "situatieAndereSituatieTooltip": "Beschrijf uw persoonlijke situatie in uw eigen woorden.",
+      "andereSituatieLabel": "Mijn situatie",
+      "andereSituatiePlaceholder": "Beschrijf uw specifieke situatie in eigen woorden...",
+      "notitiesLabel": "Aanvullende notities (optioneel)",
+      "notitiesPlaceholder": "Eventuele aanvullende opmerkingen over uw specifieke situatie..."
     },
     "dementie": {
       "titel": "Dementie-clausule",
@@ -2372,6 +2420,9 @@
       "beschrijving": "Wie mag namens u spreken als u dat zelf niet meer kunt? (conform WGBO art. 7:465 BW)",
       "naamLabel": "Naam vertegenwoordiger",
       "naamPlaceholder": "bijv. Maria Jansen",
+      "primaireLabel": "Primaire vertegenwoordiger",
+      "secundaireLabel": "Secundaire vertegenwoordiger (optioneel)",
+      "secundairePlaceholder": "Kies een noodcontact of erfgenaam, of typ een naam...",
       "relatieLabel": "Relatie",
       "selecteer": "Selecteer...",
       "partner": "Partner",
@@ -2414,6 +2465,7 @@
       "summaryTel": "Tel:",
       "summaryEmail": "E-mail:",
       "summaryVertegenwoordiger": "Vertegenwoordiger:",
+      "summaryVertegenwoordiger2": "Secundaire vertegenwoordiger:",
       "summaryAdres": "Adres:",
       "summaryDatum": "Datum:",
       "summaryAanvullendeWensen": "Aanvullende wensen:",

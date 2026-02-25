@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Eye, EyeOff, Pencil, Trash2, Link2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { WachtwoordEntry } from "./types";
 
@@ -30,6 +31,12 @@ export function WachtwoordItem({
           <p className="text-xs text-muted-foreground">
             {wachtwoord.gebruikersnaam}
           </p>
+        )}
+        {wachtwoord.accountNaam && (
+          <Badge variant="outline" className="mt-1 gap-1 text-xs">
+            <Link2 className="h-3 w-3" />
+            {t("account")}: {wachtwoord.accountNaam}
+          </Badge>
         )}
         {ontsleuteldWachtwoord && (
           <p className="text-xs font-mono bg-warning-100 dark:bg-warning/20 text-warning px-2 py-0.5 rounded">

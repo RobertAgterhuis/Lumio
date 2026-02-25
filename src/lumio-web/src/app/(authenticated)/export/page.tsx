@@ -13,16 +13,7 @@ import {
 import { api, downloadAndSave } from "@/lib/api-client";
 import {
   Download,
-  ScrollText,
-  Stethoscope,
-  Heart,
-  Globe,
-  Wallet,
-  Church,
-  FileText,
   Loader2,
-  Phone,
-  ShieldAlert,
   Archive,
   ClipboardList,
   FileJson,
@@ -30,78 +21,29 @@ import {
   Sheet,
   Flower2,
 } from "lucide-react";
+import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
+import type { LucideIcon } from "lucide-react";
 
-const exportOptions = [
-  {
-    key: "testament",
-    icon: ScrollText,
-    endpoint: "/api/export/testament",
-  },
-  {
-    key: "euthanasie",
-    icon: Stethoscope,
-    endpoint: "/api/export/euthanasie",
-  },
-  {
-    key: "donor",
-    icon: Heart,
-    endpoint: "/api/export/donor",
-  },
-  {
-    key: "digitaal-bezit",
-    icon: Globe,
-    endpoint: "/api/export/digitaal-bezit",
-  },
-  {
-    key: "boedel",
-    icon: Wallet,
-    endpoint: "/api/export/boedel",
-  },
-  {
-    key: "uitvaart",
-    icon: Church,
-    endpoint: "/api/export/uitvaart",
-  },
-  {
-    key: "documenten",
-    icon: FileText,
-    endpoint: "/api/export/documenten",
-  },
-  {
-    key: "noodkaart",
-    icon: Phone,
-    endpoint: "/api/export/noodkaart",
-  },
-  {
-    key: "testament-concept",
-    icon: ScrollText,
-    endpoint: "/api/export/testament-concept",
-  },
-  {
-    key: "wilsverklaring",
-    icon: Stethoscope,
-    endpoint: "/api/export/wilsverklaring",
-  },
-  {
-    key: "noodprocedure",
-    icon: ShieldAlert,
-    endpoint: "/api/export/noodprocedure",
-  },
-  {
-    key: "boedelbeschrijving",
-    icon: ClipboardList,
-    endpoint: "/api/export/boedelbeschrijving",
-  },
-  {
-    key: "executeur-rapport",
-    icon: ClipboardList,
-    endpoint: "/api/export/executeur-rapport",
-  },
-  {
-    key: "notaris",
-    icon: ScrollText,
-    endpoint: "/api/export/notaris",
-  },
+const exportOptions: Array<{
+  key: string;
+  endpoint: string;
+  lumioIcon?: LumioIconName;
+  icon?: LucideIcon;
+}> = [
+  { key: "testament",             lumioIcon: "testament",       endpoint: "/api/export/testament" },
+  { key: "euthanasie",            lumioIcon: "wilsverklaring",  endpoint: "/api/export/euthanasie" },
+  { key: "donor",                 lumioIcon: "donor",           endpoint: "/api/export/donor" },
+  { key: "digitaal-bezit",        lumioIcon: "digitaal-bezit",  endpoint: "/api/export/digitaal-bezit" },
+  { key: "boedel",                lumioIcon: "boedel",          endpoint: "/api/export/boedel" },
+  { key: "uitvaart",              lumioIcon: "uitvaart",         endpoint: "/api/export/uitvaart" },
+  { key: "documenten",            lumioIcon: "documenten",       endpoint: "/api/export/documenten" },
+  { key: "noodkaart",             lumioIcon: "noodcontacten",   endpoint: "/api/export/noodkaart" },
+  { key: "testament-concept",     lumioIcon: "testament",       endpoint: "/api/export/testament-concept" },
+  { key: "wilsverklaring",        lumioIcon: "wilsverklaring",  endpoint: "/api/export/wilsverklaring" },
+  { key: "noodprocedure",         lumioIcon: "shield-alert",    endpoint: "/api/export/noodprocedure" },
+  { key: "boedelbeschrijving",    icon: ClipboardList,          endpoint: "/api/export/boedelbeschrijving" },
+  { key: "executeur-rapport",     icon: ClipboardList,          endpoint: "/api/export/executeur-rapport" },
+  { key: "notaris",               lumioIcon: "testament",       endpoint: "/api/export/notaris" },
 ];
 
 export default function ExportPage() {
@@ -338,12 +280,17 @@ export default function ExportPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {exportOptions.map((opt) => {
-          const Icon = opt.icon;
+          const LucideOptIcon = opt.icon;
           return (
             <Card key={opt.key}>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Icon className="h-4 w-4" /> {t(`opties.${opt.key}`)}
+                  {opt.lumioIcon ? (
+                    <LumioIcon name={opt.lumioIcon} size="sm" />
+                  ) : LucideOptIcon ? (
+                    <LucideOptIcon className="h-4 w-4" />
+                  ) : null}
+                  {t(`opties.${opt.key}`)}
                 </CardTitle>
               </CardHeader>
               <CardContent>

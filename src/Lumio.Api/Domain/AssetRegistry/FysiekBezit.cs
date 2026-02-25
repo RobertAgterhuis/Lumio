@@ -17,4 +17,7 @@ public class FysiekBezit : BaseEntity
     public string? KadastraalNummer { get; set; }
     public string? Kenteken { get; set; }
     public string? KvKNummer { get; set; }
+
+    // Gekoppelde schulden / financieringsverplichtingen
+    public ICollection<Schuld> LinkedSchulden { get; set; } = new List<Schuld>();
 }

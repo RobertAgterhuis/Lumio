@@ -11,6 +11,7 @@ export const emptyBezitForm: BezitFormData = {
   kadastraalNummer: "",
   kenteken: "",
   kvKNummer: "",
+  linkedSchulden: [],
 };
 
 export const emptyRekeningForm: RekeningFormData = {

@@ -13,7 +13,8 @@ import {
 import { DataHandtekening } from "@/components/instellingen/DataHandtekening";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
-import { Shield, Trash2, Loader2, Settings } from "lucide-react";
+import { Trash2, Loader2, Settings } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 
 interface AccountDeletionCardProps {
   /** Callback when delete confirmation is requested (passes actual delete handler) */
@@ -119,7 +120,7 @@ export function SecurityInfoCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" /> {t("beveiliging.titel")}
+          <LumioIcon name="shield" size="md" /> {t("beveiliging.titel")}
         </CardTitle>
         <CardDescription>{t("beveiliging.beschrijving")}</CardDescription>
       </CardHeader>

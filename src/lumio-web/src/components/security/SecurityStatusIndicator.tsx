@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { Shield, ShieldCheck, ShieldAlert, ShieldX } from "lucide-react";
+import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 
 const statusVariants = cva(
   "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold",
@@ -17,11 +17,11 @@ const statusVariants = cva(
   }
 );
 
-const statusIcons = {
-  secure: ShieldCheck,
-  warning: ShieldAlert,
-  critical: ShieldX,
-  unknown: Shield,
+const statusIcons: Record<NonNullable<VariantProps<typeof statusVariants>["status"]>, LumioIconName> = {
+  secure: "shield-check",
+  warning: "shield-alert",
+  critical: "shield-x",
+  unknown: "shield",
 } as const;
 
 export interface SecurityStatusIndicatorProps
@@ -37,11 +37,11 @@ export function SecurityStatusIndicator({
   label,
   className,
 }: SecurityStatusIndicatorProps) {
-  const Icon = statusIcons[status ?? "unknown"];
+  const iconName = statusIcons[status ?? "unknown"];
 
   return (
     <span className={cn(statusVariants({ status }), className)}>
-      <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+      <LumioIcon name={iconName} size="sm" aria-hidden={true} />
       {label}
     </span>
   );

@@ -1,0 +1,87 @@
+<!--
+  Lumio application icon — source SVG
+
+  Derived from LumioLogoIcon (src/lumio-web/src/components/layout/LumioLogoIcon.tsx).
+  Design concept: "Lumen" — a stylised flame/leaf rising from a circular base,
+  evoking continuity, warmth and legacy.
+
+  Dimensions: 512 × 512 px (electron-builder expects square icons)
+
+  Color values (Lumio design tokens hardcoded for standalone SVG):
+    --base-primary-700  #2C4A52
+    --base-primary-500  #4F7A83   (inner flame top)
+    --base-primary-400  #7A9EA6   (outer ring stroke)
+    --base-primary-300  #A5C2C9   (outer flame highlight)
+    --base-primary-200  #C8DDE1   (base circle fill light)
+    --base-primary-100  #E6EFF1   (base circle fill edge)
+    --base-sage-500     #84A793   (right-leaf accent)
+
+  To generate platform icon files from this SVG:
+    See build/README.md for instructions.
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 512 512"
+  width="512"
+  height="512"
+>
+  <defs>
+    <!-- Flame fill: primary-500 → primary-300 (bottom → top) -->
+    <linearGradient id="app-flame" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%"   stop-color="#4F7A83" />
+      <stop offset="100%" stop-color="#A5C2C9" />
+    </linearGradient>
+
+    <!-- Circle base: primary-200 → primary-100 -->
+    <radialGradient id="app-base" cx="50%" cy="55%" r="50%">
+      <stop offset="0%"   stop-color="#C8DDE1" stop-opacity="1" />
+      <stop offset="100%" stop-color="#E6EFF1" stop-opacity="1" />
+    </radialGradient>
+
+    <!-- Soft inner glow on flame -->
+    <filter id="app-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle (white/transparent for compositing) -->
+  <rect width="512" height="512" rx="112" fill="#F3F7F8" />
+
+  <!-- Base circle — scaled from 32px to 512px (×16) -->
+  <circle
+    cx="256"
+    cy="304"
+    r="160"
+    fill="url(#app-base)"
+    stroke="#7A9EA6"
+    stroke-width="16"
+    stroke-opacity="0.45"
+  />
+
+  <!-- Main flame -->
+  <path
+    d="M256 64
+       C256 64 152 176 152 264
+       C152 322 200 360 256 360
+       C312 360 360 322 360 264
+       C360 176 256 64 256 64Z"
+    fill="url(#app-flame)"
+    filter="url(#app-glow)"
+  />
+
+  <!-- Right leaf accent (sage-500) -->
+  <path
+    d="M256 200
+       C256 200 290 230 298 258
+       C306 284 290 310 268 316"
+    fill="none"
+    stroke="#84A793"
+    stroke-width="12"
+    stroke-linecap="round"
+    stroke-opacity="0.6"
+  />
+</svg>

@@ -2,12 +2,19 @@ using Lumio.Api.Domain.AssetRegistry;
 
 namespace Lumio.Api.Dtos.AssetRegistry;
 
+// Samenvatting van een schuld zoals ingebed in een bezit-responsel
+public record BezitSchuldSummary(
+    Guid Id, string Schuldeiser, string Type,
+    decimal Bedrag, decimal? MaandelijkseAflossing,
+    string? LeaseMaatschappij, decimal? Rentepercentage, DateTime? Einddatum);
+
 public record FysiekBezitResponse(
     Guid Id, string Categorie, string Omschrijving,
     decimal? GeschatteWaarde, string? Locatie,
     string? BestemdeErfgenaam, VermogensSoort VermogensSoort,
     string? Notities,
-    string? KadastraalNummer, string? Kenteken, string? KvKNummer);
+    string? KadastraalNummer, string? Kenteken, string? KvKNummer,
+    List<BezitSchuldSummary> LinkedSchulden);
 
 public record FysiekBezitUpsertRequest(
     string Categorie, string Omschrijving,
@@ -51,7 +58,10 @@ public record SchuldResponse(
     string? Notities,
     string? HypotheekVorm, decimal? Rentepercentage,
     decimal? MaandelijkseRente, DateTime? Einddatum,
-    decimal? Restschuld);
+    decimal? Restschuld,
+    // Bezit-koppeling
+    string? LeaseMaatschappij,
+    Guid? BezitId, string? BezitNaam);
 
 public record SchuldUpsertRequest(
     string Schuldeiser,
@@ -63,3 +73,13 @@ public record SchuldUpsertRequest(
     string? HypotheekVorm, decimal? Rentepercentage,
     decimal? MaandelijkseRente, DateTime? Einddatum,
     decimal? Restschuld);
+
+// Vereenvoudigd request voor schulden gekoppeld aan een bezitting
+public record BezitSchuldUpsertRequest(
+    string Schuldeiser,
+    string Type,
+    decimal Bedrag,
+    decimal? MaandelijkseAflossing,
+    string? LeaseMaatschappij,
+    decimal? Rentepercentage,
+    DateTime? Einddatum);

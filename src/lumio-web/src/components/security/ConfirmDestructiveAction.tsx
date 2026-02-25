@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { ShieldAlert } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 
 export interface ConfirmDestructiveActionProps {
   /** Whether the dialog is open */
@@ -85,7 +85,7 @@ export function ConfirmDestructiveAction({
       <form onSubmit={handleSubmit}>
         <DialogHeader>
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-danger-100 text-danger">
-            <ShieldAlert className="h-6 w-6" />
+            <LumioIcon name="shield-alert" size="lg" />
           </div>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

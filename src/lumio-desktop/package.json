@@ -4,6 +4,12 @@
   "description": "Lumio — Digitale Nalatenschap (Electron shell)",
   "main": "dist/main/index.js",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": {
+    "name": "Robert Agterhuis",
+    "email": "ragterhuis@agterhuis.net",
+    "url": "https://blog.agterhuis.net"
+  },
   "scripts": {
     "dev": "tsc && electron .",
     "build": "tsc",

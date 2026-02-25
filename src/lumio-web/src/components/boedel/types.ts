@@ -1,5 +1,16 @@
 // Boedel domain types
 
+export interface BezitSchuld {
+  id?: string;
+  schuldeiser: string;
+  type: "Hypotheek" | "Lening" | "Lease" | "Overig";
+  bedrag: number;
+  maandelijkseAflossing?: number;
+  leaseMaatschappij?: string;
+  rentepercentage?: number;
+  einddatum?: string;
+  _isNew?: boolean;
+}
 export interface Samenvatting {
   totaalBezittingen: number;
   totaalSaldi: number;
@@ -25,6 +36,7 @@ export interface FysiekBezit {
   kadastraalNummer?: string;
   kenteken?: string;
   kvKNummer?: string;
+  linkedSchulden?: BezitSchuld[];
 }
 
 export interface Bankrekening {
@@ -66,6 +78,8 @@ export interface Schuld {
   maandelijkseRente?: number;
   einddatum?: string;
   restschuld?: number;
+  bezitId?: string;
+  bezitNaam?: string;
 }
 
 export type DialogKind = "bezit" | "rekening" | "verzekering" | "schuld" | null;
@@ -82,6 +96,7 @@ export interface BezitFormData {
   kadastraalNummer: string;
   kenteken: string;
   kvKNummer: string;
+  linkedSchulden: BezitSchuld[];
 }
 
 export interface RekeningFormData {

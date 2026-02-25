@@ -8,7 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { PersonSelect } from "@/components/PersonSelect";
+import type { PersonDetails } from "@/components/PersonSelect";
 import { useDomainQuery } from "@/hooks";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
@@ -19,11 +22,16 @@ export default function EuthanasieWizardPage() {
   const t = useTranslations("euthanasieWizard");
   const [form, setForm] = useState({
     wilEuthanasie: "",
+    // S2.2: Structured situatie fields (replace free-text situatieBeschrijving)
+    situatieOpties: [] as string[],
+    situatieNotitie: "",
+    // Legacy field kept for backward-compat load
     situatieBeschrijving: "",
     huisarts: "",
     huisartsPraktijk: "",
     huisartsTelefoon: "",
     huisartsEmail: "",
+    // Primary vertegenwoordiger (existing fields — auto-filled by PersonSelect)
     vertegenwoordigerNaam: "",
     vertegenwoordigerRelatie: "",
     vertegenwoordigerTelefoon: "",
@@ -31,6 +39,11 @@ export default function EuthanasieWizardPage() {
     vertegenwoordigerAdres: "",
     vertegenwoordigerPostcode: "",
     vertegenwoordigerWoonplaats: "",
+    // S2.3: Secondary vertegenwoordiger
+    vertegenwoordiger2Naam: "",
+    vertegenwoordiger2Relatie: "",
+    vertegenwoordiger2Telefoon: "",
+    vertegenwoordiger2Email: "",
     aanvullendeWensen: "",
     datumOndertekening: "",
     dementieClausule: "",
@@ -46,9 +59,22 @@ export default function EuthanasieWizardPage() {
   // Populate form when data loads
   useEffect(() => {
     if (existingData) {
+      // S2.2: load situatieOpties from JSON string, or fall through to legacy field
+      let situatieOpties: string[] = [];
+      let situatieNotitie = "";
+      const rawOpties = existingData.situatieOpties;
+      if (typeof rawOpties === "string" && rawOpties.length > 0) {
+        try { situatieOpties = JSON.parse(rawOpties) as string[]; } catch { /* ignore */ }
+      }
+      const legacyBeschrijving = (existingData.situatieBeschrijving as string) ?? "";
+      // Migrate legacy free-text into the notes field if no structured data yet
+      situatieNotitie = (existingData.situatieNotitie as string) ?? (situatieOpties.length === 0 ? legacyBeschrijving : "");
+
       setForm({
         wilEuthanasie: existingData.wilEuthanasie != null ? String(existingData.wilEuthanasie) : "",
-        situatieBeschrijving: (existingData.situatieBeschrijving as string) ?? "",
+        situatieOpties,
+        situatieNotitie,
+        situatieBeschrijving: legacyBeschrijving,
         huisarts: (existingData.huisarts as string) ?? "",
         huisartsPraktijk: (existingData.huisartsPraktijk as string) ?? "",
         huisartsTelefoon: (existingData.huisartsTelefoon as string) ?? "",
@@ -60,6 +86,10 @@ export default function EuthanasieWizardPage() {
         vertegenwoordigerAdres: (existingData.vertegenwoordigerAdres as string) ?? "",
         vertegenwoordigerPostcode: (existingData.vertegenwoordigerPostcode as string) ?? "",
         vertegenwoordigerWoonplaats: (existingData.vertegenwoordigerWoonplaats as string) ?? "",
+        vertegenwoordiger2Naam: (existingData.vertegenwoordiger2Naam as string) ?? "",
+        vertegenwoordiger2Relatie: (existingData.vertegenwoordiger2Relatie as string) ?? "",
+        vertegenwoordiger2Telefoon: (existingData.vertegenwoordiger2Telefoon as string) ?? "",
+        vertegenwoordiger2Email: (existingData.vertegenwoordiger2Email as string) ?? "",
         aanvullendeWensen: (existingData.aanvullendeWensen as string) ?? "",
         datumOndertekening: existingData.datumOndertekening
           ? new Date(existingData.datumOndertekening as string).toISOString().split("T")[0]
@@ -73,6 +103,50 @@ export default function EuthanasieWizardPage() {
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
+
+  // S2.2: Toggle a situatie option in/out of the array
+  const toggleSituatie = (key: string) => {
+    setForm((prev) => {
+      const current = prev.situatieOpties;
+      const next = current.includes(key)
+        ? current.filter((k) => k !== key)
+        : [...current, key];
+      return { ...prev, situatieOpties: next };
+    });
+  };
+
+  const SITUATIE_OPTIES = [
+    { key: "ongeneeslijkZiek", labelKey: "keuze.situatieOngeneeslijkZiek", tooltipKey: "keuze.situatieOngeneeslijkZiekTooltip" },
+    { key: "ernstigLetsel", labelKey: "keuze.situatieErnstigLetsel", tooltipKey: "keuze.situatieErnstigLetselTooltip" },
+    { key: "psychiatrischLijden", labelKey: "keuze.situatiePsychiatrischLijden", tooltipKey: "keuze.situatiePsychiatrischLijdenTooltip" },
+    { key: "dementieVroegstadium", labelKey: "keuze.situatieDementieVroegstadium", tooltipKey: "keuze.situatieDementieVroegstadiumTooltip" },
+    { key: "andereSituatie", labelKey: "keuze.situatieAndereSituatie", tooltipKey: "keuze.situatieAndereSituatieTooltip" },
+  ] as const;
+
+  // S2.3: Autofill primary vertegenwoordiger from PersonSelect
+  const handleVertegenwoordigerSelect = (person: PersonDetails) => {
+    setForm((prev) => ({
+      ...prev,
+      vertegenwoordigerNaam: person.naam,
+      vertegenwoordigerRelatie: person.relatie ?? prev.vertegenwoordigerRelatie,
+      vertegenwoordigerTelefoon: person.telefoon ?? prev.vertegenwoordigerTelefoon,
+      vertegenwoordigerEmail: person.email ?? prev.vertegenwoordigerEmail,
+      vertegenwoordigerAdres: person.adres ?? prev.vertegenwoordigerAdres,
+      vertegenwoordigerPostcode: person.postcode ?? prev.vertegenwoordigerPostcode,
+      vertegenwoordigerWoonplaats: person.woonplaats ?? prev.vertegenwoordigerWoonplaats,
+    }));
+  };
+
+  // S2.3: Autofill secondary vertegenwoordiger from PersonSelect
+  const handleVertegenwoordiger2Select = (person: PersonDetails) => {
+    setForm((prev) => ({
+      ...prev,
+      vertegenwoordiger2Naam: person.naam,
+      vertegenwoordiger2Relatie: person.relatie ?? prev.vertegenwoordiger2Relatie,
+      vertegenwoordiger2Telefoon: person.telefoon ?? prev.vertegenwoordiger2Telefoon,
+      vertegenwoordiger2Email: person.email ?? prev.vertegenwoordiger2Email,
+    }));
+  };
 
   const downloadWilsverklaringPdf = async () => {
     setGenerating(true);
@@ -112,13 +186,41 @@ export default function EuthanasieWizardPage() {
               </option>
             </Select>
           </div>
-          <div className="space-y-2">
+          {/* S2.2: Structured situation checkboxes */}
+          <div className="space-y-3">
             <Label>{t("keuze.situatieLabel")}</Label>
+            <div className="space-y-2 rounded-md border p-3">
+              {SITUATIE_OPTIES.map(({ key, labelKey, tooltipKey }) => (
+                <div key={key} className="flex items-center gap-3">
+                  <Checkbox
+                    id={`situatie-${key}`}
+                    checked={form.situatieOpties.includes(key)}
+                    onChange={() => toggleSituatie(key)}
+                  />
+                  <Label
+                    htmlFor={`situatie-${key}`}
+                    className="font-normal cursor-pointer flex-1"
+                  >
+                    {t(labelKey)}
+                  </Label>
+                  <HelpTooltip tekst={t(tooltipKey)} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label className={form.situatieOpties.includes("andereSituatie") ? undefined : "text-muted-foreground text-sm"}>
+              {form.situatieOpties.includes("andereSituatie")
+                ? <>{t("keuze.andereSituatieLabel")} <span className="text-danger">*</span></>
+                : t("keuze.notitiesLabel")}
+            </Label>
             <Textarea
-              value={form.situatieBeschrijving}
-              onChange={(e) => update("situatieBeschrijving", e.target.value)}
-              placeholder={t("keuze.situatiePlaceholder")}
-              rows={4}
+              value={form.situatieNotitie}
+              onChange={(e) => update("situatieNotitie", e.target.value)}
+              placeholder={form.situatieOpties.includes("andereSituatie")
+                ? t("keuze.andereSituatiePlaceholder")
+                : t("keuze.notitiesPlaceholder")}
+              rows={3}
             />
           </div>
         </div>
@@ -233,83 +335,103 @@ export default function EuthanasieWizardPage() {
       titel: t("vertegenwoordiger.titel"),
       beschrijving: t("vertegenwoordiger.beschrijving"),
       content: (
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>{t("vertegenwoordiger.naamLabel")}</Label>
-            <Input
-              value={form.vertegenwoordigerNaam}
-              onChange={(e) => update("vertegenwoordigerNaam", e.target.value)}
-              placeholder={t("vertegenwoordiger.naamPlaceholder")}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>{t("vertegenwoordiger.relatieLabel")}</Label>
-            <Select
-              value={form.vertegenwoordigerRelatie}
-              onChange={(e) =>
-                update("vertegenwoordigerRelatie", e.target.value)
-              }
-            >
-              <option value="">{t("vertegenwoordiger.selecteer")}</option>
-              <option value="Partner">{t("vertegenwoordiger.partner")}</option>
-              <option value="Kind">{t("vertegenwoordiger.kind")}</option>
-              <option value="Ouder">{t("vertegenwoordiger.ouder")}</option>
-              <option value="Broer/Zus">{t("vertegenwoordiger.broerZus")}</option>
-              <option value="Vriend">{t("vertegenwoordiger.vriend")}</option>
-              <option value="Anders">{t("vertegenwoordiger.anders")}</option>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>{t("vertegenwoordiger.telefoonLabel")}</Label>
-            <Input
-              value={form.vertegenwoordigerTelefoon}
-              onChange={(e) =>
-                update("vertegenwoordigerTelefoon", e.target.value)
-              }
-              placeholder={t("vertegenwoordiger.telefoonPlaceholder")}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>{t("vertegenwoordiger.emailLabel")}</Label>
-            <Input
-              value={form.vertegenwoordigerEmail}
-              onChange={(e) =>
-                update("vertegenwoordigerEmail", e.target.value)
-              }
-              placeholder={t("vertegenwoordiger.emailPlaceholder")}
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="space-y-2 col-span-2">
-              <Label>{t("vertegenwoordiger.adresLabel")}</Label>
-              <Input
-                value={form.vertegenwoordigerAdres}
-                onChange={(e) =>
-                  update("vertegenwoordigerAdres", e.target.value)
-                }
-                placeholder={t("vertegenwoordiger.adresPlaceholder")}
-              />
-            </div>
+        <div className="space-y-6">
+          {/* S2.3: Primary vertegenwoordiger via PersonSelect */}
+          <div className="space-y-3">
             <div className="space-y-2">
-              <Label>{t("vertegenwoordiger.postcodeLabel")}</Label>
-              <Input
-                value={form.vertegenwoordigerPostcode}
-                onChange={(e) =>
-                  update("vertegenwoordigerPostcode", e.target.value)
-                }
-                placeholder={t("vertegenwoordiger.postcodePlaceholder")}
+              <Label>{t("vertegenwoordiger.primaireLabel")} <span className="text-danger">*</span></Label>
+              <PersonSelect
+                source="both"
+                value={form.vertegenwoordigerNaam}
+                onChange={(v) => update("vertegenwoordigerNaam", v)}
+                onPersonSelect={handleVertegenwoordigerSelect}
+                placeholder={t("vertegenwoordiger.naamPlaceholder")}
               />
             </div>
+            {form.vertegenwoordigerNaam && (
+              <div className="space-y-3 rounded-md border p-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">{t("vertegenwoordiger.telefoonLabel")}</Label>
+                    <Input
+                      value={form.vertegenwoordigerTelefoon}
+                      onChange={(e) => update("vertegenwoordigerTelefoon", e.target.value)}
+                      placeholder={t("vertegenwoordiger.telefoonPlaceholder")}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">{t("vertegenwoordiger.emailLabel")}</Label>
+                    <Input
+                      value={form.vertegenwoordigerEmail}
+                      onChange={(e) => update("vertegenwoordigerEmail", e.target.value)}
+                      placeholder={t("vertegenwoordiger.emailPlaceholder")}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1 col-span-2">
+                    <Label className="text-xs text-muted-foreground">{t("vertegenwoordiger.adresLabel")}</Label>
+                    <Input
+                      value={form.vertegenwoordigerAdres}
+                      onChange={(e) => update("vertegenwoordigerAdres", e.target.value)}
+                      placeholder={t("vertegenwoordiger.adresPlaceholder")}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">{t("vertegenwoordiger.postcodeLabel")}</Label>
+                    <Input
+                      value={form.vertegenwoordigerPostcode}
+                      onChange={(e) => update("vertegenwoordigerPostcode", e.target.value)}
+                      placeholder={t("vertegenwoordiger.postcodePlaceholder")}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">{t("vertegenwoordiger.woonplaatsLabel")}</Label>
+                  <Input
+                    value={form.vertegenwoordigerWoonplaats}
+                    onChange={(e) => update("vertegenwoordigerWoonplaats", e.target.value)}
+                    placeholder={t("vertegenwoordiger.woonplaatsPlaceholder")}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-          <div className="space-y-2">
-            <Label>{t("vertegenwoordiger.woonplaatsLabel")}</Label>
-            <Input
-              value={form.vertegenwoordigerWoonplaats}
-              onChange={(e) =>
-                update("vertegenwoordigerWoonplaats", e.target.value)
-              }
-              placeholder={t("vertegenwoordiger.woonplaatsPlaceholder")}
-            />
+
+          {/* S2.3: Secondary vertegenwoordiger */}
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label className="text-muted-foreground text-sm">{t("vertegenwoordiger.secundaireLabel")}</Label>
+              <PersonSelect
+                source="both"
+                value={form.vertegenwoordiger2Naam}
+                onChange={(v) => update("vertegenwoordiger2Naam", v)}
+                onPersonSelect={handleVertegenwoordiger2Select}
+                placeholder={t("vertegenwoordiger.secundairePlaceholder")}
+              />
+            </div>
+            {form.vertegenwoordiger2Naam && (
+              <div className="space-y-3 rounded-md border border-dashed p-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">{t("vertegenwoordiger.telefoonLabel")}</Label>
+                    <Input
+                      value={form.vertegenwoordiger2Telefoon}
+                      onChange={(e) => update("vertegenwoordiger2Telefoon", e.target.value)}
+                      placeholder={t("vertegenwoordiger.telefoonPlaceholder")}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">{t("vertegenwoordiger.emailLabel")}</Label>
+                    <Input
+                      value={form.vertegenwoordiger2Email}
+                      onChange={(e) => update("vertegenwoordiger2Email", e.target.value)}
+                      placeholder={t("vertegenwoordiger.emailPlaceholder")}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       ),
@@ -360,10 +482,19 @@ export default function EuthanasieWizardPage() {
                 ? t("samenvatting.summaryNee")
                 : "—"}
             </div>
-            {form.situatieBeschrijving && (
+            {(form.situatieOpties.length > 0 || form.situatieNotitie) && (
               <div>
                 <span className="font-medium">{t("samenvatting.summarySituatie")}</span>{" "}
-                {form.situatieBeschrijving}
+                {form.situatieOpties.length > 0 && (
+                  <ul className="list-disc list-inside text-muted-foreground mt-1 space-y-0.5">
+                    {form.situatieOpties.map((key) => (
+                      <li key={key}>{t(`keuze.situatie${key.charAt(0).toUpperCase()}${key.slice(1)}` as Parameters<typeof t>[0])}</li>
+                    ))}
+                  </ul>
+                )}
+                {form.situatieNotitie && (
+                  <p className="text-muted-foreground mt-1">{form.situatieNotitie}</p>
+                )}
               </div>
             )}
             <div>
@@ -401,6 +532,13 @@ export default function EuthanasieWizardPage() {
               {form.vertegenwoordigerNaam || "—"} (
               {form.vertegenwoordigerRelatie || "—"})
             </div>
+            {form.vertegenwoordiger2Naam && (
+              <div>
+                <span className="font-medium">{t("samenvatting.summaryVertegenwoordiger2")}</span>{" "}
+                {form.vertegenwoordiger2Naam}
+                {form.vertegenwoordiger2Relatie && ` (${form.vertegenwoordiger2Relatie})`}
+              </div>
+            )}
             {form.vertegenwoordigerAdres && (
               <div>
                 <span className="font-medium">{t("samenvatting.summaryAdres")}</span>{" "}
@@ -442,10 +580,19 @@ export default function EuthanasieWizardPage() {
     await api.put("/api/euthanasie", {
       ...form,
       wilEuthanasie: form.wilEuthanasie === "true",
+      // S2.2: send serialized situatie options alongside legacy field for compat
+      situatieOpties: JSON.stringify(form.situatieOpties),
+      situatieNotitie: form.situatieNotitie || null,
+      situatieBeschrijving: form.situatieNotitie || form.situatieBeschrijving || null,
       datumOndertekening: form.datumOndertekening || null,
       dementieClausule: form.dementieClausule === "true",
       dementieClausuleToelichting: form.dementieClausuleToelichting || null,
       behandelVerbod: form.behandelVerbod || null,
+      // S2.3: secondary vertegenwoordiger
+      vertegenwoordiger2Naam: form.vertegenwoordiger2Naam || null,
+      vertegenwoordiger2Relatie: form.vertegenwoordiger2Relatie || null,
+      vertegenwoordiger2Telefoon: form.vertegenwoordiger2Telefoon || null,
+      vertegenwoordiger2Email: form.vertegenwoordiger2Email || null,
     });
     router.push("/euthanasie");
   };

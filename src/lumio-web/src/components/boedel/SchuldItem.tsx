@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2 } from "lucide-react";
+import { Home, Pencil, Trash2 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import type { Schuld } from "./types";
 
@@ -26,6 +26,12 @@ export function SchuldItem({ schuld, onEdit, onDelete }: SchuldItemProps) {
         <div>
           <p className="text-sm font-medium">{schuld.schuldeiser}</p>
           <p className="text-xs text-muted-foreground">{schuld.type}{schuld.referentie ? ` — ${schuld.referentie}` : ""}</p>
+          {schuld.bezitNaam && (
+            <Badge variant="outline" className="mt-1 gap-1 text-xs">
+              <Home className="h-3 w-3" />
+              {schuld.bezitNaam}
+            </Badge>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-2">

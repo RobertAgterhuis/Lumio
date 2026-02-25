@@ -6,6 +6,7 @@ import { Info, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { DigitaalAccount } from "./types";
 import type { AfsluitInstructie } from "@/lib/afsluit-instructies";
+import { CATEGORIE_KEYS, GEWENSTE_ACTIE_KEYS } from "./constants";
 
 interface AccountItemProps {
   account: DigitaalAccount;
@@ -26,6 +27,7 @@ export function AccountItem({
 }: AccountItemProps) {
   const t = useTranslations("digitaalBezit");
   const tAfsluit = useTranslations("afsluitInstructies");
+  const tEnum = useTranslations("enums");
 
   return (
     <div className="rounded-md border">
@@ -40,9 +42,15 @@ export function AccountItem({
         </div>
         <div className="flex items-center gap-2">
           {account.categorie && (
-            <Badge variant="outline">{account.categorie}</Badge>
+            <Badge variant="outline">
+              {tEnum(`accountCategorie.${CATEGORIE_KEYS[account.categorie] ?? account.categorie}`)}
+            </Badge>
           )}
-          <Badge variant="secondary">{account.gewensteActie}</Badge>
+          {account.gewensteActie && (
+            <Badge variant="secondary">
+              {tEnum(`gewensteActie.${GEWENSTE_ACTIE_KEYS[account.gewensteActie] ?? account.gewensteActie}`)}
+            </Badge>
+          )}
           {instructie && (
             <Button
               variant="ghost"

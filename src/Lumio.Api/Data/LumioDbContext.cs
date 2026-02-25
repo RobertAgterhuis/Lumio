@@ -114,6 +114,14 @@ public class LumioDbContext : DbContext
             .HasForeignKey(s => s.EigenaarId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // Schuld → FysiekBezit (optionele koppeling, cascade delete)
+        modelBuilder.Entity<Schuld>()
+            .HasOne(s => s.Bezit)
+            .WithMany(b => b.LinkedSchulden)
+            .HasForeignKey(s => s.BezitId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
         modelBuilder.Entity<Verzekering>()
             .HasOne<Eigenaar>()
             .WithMany()

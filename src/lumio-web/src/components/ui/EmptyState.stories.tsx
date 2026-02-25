@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { EmptyState } from "./EmptyState";
-import { Users, FileText, Wallet, Shield, Heart, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
+import type { LumioIconName } from "@/components/ui/lumio-icon";
 
 const meta: Meta<typeof EmptyState> = {
   title: "UI/EmptyState",
@@ -17,7 +18,30 @@ const meta: Meta<typeof EmptyState> = {
   argTypes: {
     icon: {
       control: false,
-      description: "Lucide icon component to display",
+      description: "Lucide icon component (fallback; prefer lumioIcon for domain items)",
+    },
+    lumioIcon: {
+      control: "select",
+      options: [
+        undefined,
+        "dashboard",
+        "profiel",
+        "testament",
+        "wilsverklaring",
+        "donor",
+        "uitvaart",
+        "digitaal-bezit",
+        "boedel",
+        "documenten",
+        "erfgenamen",
+        "noodcontacten",
+        "tijdlijn",
+        "shield",
+        "shield-check",
+        "shield-alert",
+        "shield-x",
+      ] satisfies (LumioIconName | undefined)[],
+      description: "Custom Lumio icon name (domain icons)",
     },
     title: {
       control: "text",
@@ -51,7 +75,7 @@ export const Default: Story = {
 
 export const Erfgenamen: Story = {
   args: {
-    icon: Users,
+    lumioIcon: "erfgenamen",
     title: "Nog geen erfgenamen",
     description:
       "Erfgenamen zijn de personen die uw nalatenschap ontvangen. Voeg minimaal één erfgenaam toe.",
@@ -61,7 +85,7 @@ export const Erfgenamen: Story = {
 
 export const Documenten: Story = {
   args: {
-    icon: FileText,
+    lumioIcon: "documenten",
     title: "Nog geen documenten",
     description:
       "Upload belangrijke documenten zoals uw testament, legitimatiebewijs of verzekeringspolissen.",
@@ -71,7 +95,7 @@ export const Documenten: Story = {
 
 export const Boedel: Story = {
   args: {
-    icon: Wallet,
+    lumioIcon: "boedel",
     title: "Nog geen bezittingen",
     description:
       "Registreer uw bezittingen, rekeningen, verzekeringen en schulden voor een compleet overzicht.",
@@ -81,7 +105,7 @@ export const Boedel: Story = {
 
 export const DigitaalBezit: Story = {
   args: {
-    icon: Shield,
+    lumioIcon: "digitaal-bezit",
     title: "Nog geen digitale accounts",
     description:
       "Voeg uw online accounts toe zodat nabestaanden weten wat er moet gebeuren.",
@@ -91,11 +115,51 @@ export const DigitaalBezit: Story = {
 
 export const Uitvaart: Story = {
   args: {
-    icon: Heart,
+    lumioIcon: "uitvaart",
     title: "Nog geen uitvaartwensen",
     description:
       "Leg uw wensen vast voor uw uitvaart zodat uw nabestaanden weten wat u wilt.",
     ctaLabel: "Wensen vastleggen",
+  },
+};
+
+export const Testament: Story = {
+  args: {
+    lumioIcon: "testament",
+    title: "Nog geen testament",
+    description:
+      "Leg uw laatste wil vast en bepaal zelf wie uw nalatenschap ontvangt.",
+    ctaLabel: "Testament opstellen",
+  },
+};
+
+export const Wilsverklaring: Story = {
+  args: {
+    lumioIcon: "wilsverklaring",
+    title: "Nog geen wilsverklaring",
+    description:
+      "Leg uw medische wensen vast voor situaties waarin u zelf geen beslissingen meer kunt nemen.",
+    ctaLabel: "Wilsverklaring toevoegen",
+  },
+};
+
+export const Donor: Story = {
+  args: {
+    lumioIcon: "donor",
+    title: "Donorregistratie niet ingesteld",
+    description:
+      "Geef aan of u organen, weefsels of cellen beschikbaar wilt stellen na uw overlijden.",
+    ctaLabel: "Registratie bekijken",
+  },
+};
+
+export const Noodcontacten: Story = {
+  args: {
+    lumioIcon: "noodcontacten",
+    title: "Nog geen noodcontacten",
+    description:
+      "Voeg noodcontacten toe zodat nabestaanden weten wie zij kunnen bereiken in geval van nood.",
+    ctaLabel: "Noodcontact toevoegen",
   },
 };
 
@@ -117,7 +181,7 @@ export const MinimalWithCTA: Story = {
 export const WithCustomContent: Story = {
   render: () => (
     <EmptyState
-      icon={FileText}
+      lumioIcon="documenten"
       title="Documenten verlopen binnenkort"
       description="De volgende documenten hebben aandacht nodig"
     >

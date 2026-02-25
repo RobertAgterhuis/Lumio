@@ -22,14 +22,21 @@ export type AccountCategorie = (typeof ACCOUNT_CATEGORIEEN)[number];
 export const CATEGORIE_KEYS: Record<string, string> = {
   "E-mail": "email",
   "Sociale media": "socialMedia",
-  Financieel: "financieel",
-  Winkelen: "winkelen",
+  Financieel: "banking",
+  Winkelen: "shopping",
   Streaming: "streaming",
   Werk: "werk",
   Gaming: "gaming",
-  "Cloud opslag": "cloudOpslag",
+  "Cloud opslag": "cloud",
   Gezondheid: "gezondheid",
   Overig: "overig",
+};
+
+export const GEWENSTE_ACTIE_KEYS: Record<string, string> = {
+  Verwijderen: "verwijderen",
+  Herdenkingsstatus: "herdenkingsstatus",
+  Overdragen: "overdragen",
+  "Geen actie": "geenActie",
 };
 
 export const CRYPTO_TYPES = [
@@ -60,6 +67,8 @@ export const emptyAccountForm: AccountFormData = {
   gewensteActie: "",
   overdrachtAan: "",
   notities: "",
+  wachtwoord: "",
+  wachtwoordOpmerking: "",
 };
 
 export const emptyWachtwoordForm: WachtwoordFormData = {

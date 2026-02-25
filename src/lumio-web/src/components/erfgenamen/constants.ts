@@ -45,6 +45,7 @@ export const emptyErfgenaamForm: ErfgenaamFormData = {
   legitimatieNummer: "",
   legitimatieDatumAfgifte: "",
   legitimatieGeldigTot: "",
+  alsNoodcontact: false,
 };
 
 export const emptyToewijzingForm: ToewijzingFormData = {

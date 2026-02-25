@@ -25,7 +25,7 @@ function displayName(e: Erfgenaam): string {
 
 export default function ErfgenamenPage() {
   const t = useTranslations("erfgenamen");
-  const te = useTranslations("enum");
+  const te = useTranslations("enums");
   const tf = useTranslations("feedback");
 
   const hookTranslations = {
@@ -37,6 +37,7 @@ export default function ErfgenamenPage() {
     sleuteldelenMislukt: t("sleuteldelenMislukt"),
     toewijzingOpslaanMislukt: t("toewijzingOpslaanMislukt"),
     toewijzingVerwijderenMislukt: t("toewijzingVerwijderenMislukt"),
+    noodcontactAangemaakt: t("noodcontactAangemaakt"),
   };
 
   const state = useErfgenamen(hookTranslations);
@@ -88,6 +89,8 @@ export default function ErfgenamenPage() {
     opslaanBezig: t("dialog.opslaanBezig"),
     legitimatieLabel: (key: string) => te(`legitimatie.${key}`),
     relatieLabel: (key: string) => te(`relatie.${key}`),
+    alsNoodcontact: t("dialog.alsNoodcontact"),
+    alsNoodcontactTooltip: t("dialog.alsNoodcontactTooltip"),
   };
 
   const toewijzingTranslations = {

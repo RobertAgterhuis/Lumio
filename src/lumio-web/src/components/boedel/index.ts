@@ -5,6 +5,7 @@ export type {
   Bankrekening,
   Verzekering,
   Schuld,
+  BezitSchuld,
   DialogKind,
   BezitFormData,
   RekeningFormData,

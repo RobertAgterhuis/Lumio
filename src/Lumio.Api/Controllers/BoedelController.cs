@@ -62,8 +62,11 @@ public class BoedelController : ControllerBase
     [HttpGet("bezittingen")]
     public async Task<ActionResult<List<FysiekBezitResponse>>> GetBezittingen()
     {
-        var items = await _db.FysiekeBezittingen.OrderBy(f => f.Categorie).ToListAsync();
-        return Ok(items.Adapt<List<FysiekBezitResponse>>());
+        var items = await _db.FysiekeBezittingen
+            .Include(f => f.LinkedSchulden)
+            .OrderBy(f => f.Categorie)
+            .ToListAsync();
+        return Ok(items.Select(ToBezitResponse).ToList());
     }
 
     [HttpPost("bezittingen")]
@@ -76,17 +79,19 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         _db.FysiekeBezittingen.Add(item);
         await _db.SaveChangesAsync();
-        return Created($"/api/boedel/bezittingen/{item.Id}", item.Adapt<FysiekBezitResponse>());
+        return Created($"/api/boedel/bezittingen/{item.Id}", ToBezitResponse(item));
     }
 
     [HttpPut("bezittingen/{id:guid}")]
     public async Task<ActionResult<FysiekBezitResponse>> UpdateBezit(Guid id, [FromBody] FysiekBezitUpsertRequest request)
     {
-        var item = await _db.FysiekeBezittingen.FindAsync(id);
+        var item = await _db.FysiekeBezittingen
+            .Include(f => f.LinkedSchulden)
+            .FirstOrDefaultAsync(f => f.Id == id);
         if (item is null) return NotFound();
         request.Adapt(item);
         await _db.SaveChangesAsync();
-        return Ok(item.Adapt<FysiekBezitResponse>());
+        return Ok(ToBezitResponse(item));
     }
 
     [HttpDelete("bezittingen/{id:guid}")]
@@ -98,6 +103,16 @@ public class BoedelController : ControllerBase
         await _db.SaveChangesAsync();
         return NoContent();
     }
+
+    private static FysiekBezitResponse ToBezitResponse(FysiekBezit f) => new(
+        f.Id, f.Categorie, f.Omschrijving,
+        f.GeschatteWaarde, f.Locatie,
+        f.BestemdeErfgenaam, f.VermogensSoort,
+        f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
+        f.LinkedSchulden.Select(s => new BezitSchuldSummary(
+            s.Id, s.Schuldeiser, s.Type, s.Bedrag,
+            s.MaandelijkseAflossing, s.LeaseMaatschappij,
+            s.Rentepercentage, s.Einddatum)).ToList());
 
     // --- Bankrekeningen ---
 
@@ -188,9 +203,81 @@ public class BoedelController : ControllerBase
     [HttpGet("schulden")]
     public async Task<ActionResult<List<SchuldResponse>>> GetSchulden()
     {
-        var items = await _db.Schulden.OrderBy(s => s.Schuldeiser).ToListAsync();
-        return Ok(items.Adapt<List<SchuldResponse>>());
+        var eigenaarId = await GetEigenaarId();
+        if (eigenaarId is null) return NotFound(new { error = "Geen eigenaar profiel gevonden." });
+
+        var items = await _db.Schulden
+            .Include(s => s.Bezit)
+            .Where(s => s.EigenaarId == eigenaarId.Value)
+            .OrderBy(s => s.Schuldeiser)
+            .ToListAsync();
+        return Ok(items.Select(s => ToSchuldResponse(s)).ToList());
     }
+
+    // --- Bezittingen / gekoppelde schulden ---
+
+    [HttpGet("bezittingen/{bezitId:guid}/schulden")]
+    public async Task<ActionResult<List<SchuldResponse>>> GetBezitSchulden(Guid bezitId)
+    {
+        var bezit = await _db.FysiekeBezittingen.FindAsync(bezitId);
+        if (bezit is null) return NotFound();
+
+        var items = await _db.Schulden
+            .Include(s => s.Bezit)
+            .Where(s => s.BezitId == bezitId)
+            .OrderBy(s => s.Schuldeiser)
+            .ToListAsync();
+        return Ok(items.Select(s => ToSchuldResponse(s)).ToList());
+    }
+
+    [HttpPost("bezittingen/{bezitId:guid}/schulden")]
+    public async Task<ActionResult<SchuldResponse>> CreateBezitSchuld(Guid bezitId, [FromBody] BezitSchuldUpsertRequest request)
+    {
+        var eigenaarId = await GetEigenaarId();
+        if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+
+        var bezit = await _db.FysiekeBezittingen.FindAsync(bezitId);
+        if (bezit is null) return NotFound(new { error = "Bezitting niet gevonden." });
+
+        var schuld = new Schuld
+        {
+            EigenaarId = eigenaarId.Value,
+            BezitId = bezitId,
+            Schuldeiser = request.Schuldeiser,
+            Type = request.Type,
+            Bedrag = request.Bedrag,
+            MaandelijkseAflossing = request.MaandelijkseAflossing,
+            LeaseMaatschappij = request.LeaseMaatschappij,
+            Rentepercentage = request.Rentepercentage,
+            Einddatum = request.Einddatum,
+        };
+        _db.Schulden.Add(schuld);
+        await _db.SaveChangesAsync();
+
+        // Reload with navigation for response
+        schuld.Bezit = bezit;
+        return Created($"/api/boedel/bezittingen/{bezitId}/schulden/{schuld.Id}", ToSchuldResponse(schuld));
+    }
+
+    [HttpDelete("bezittingen/{bezitId:guid}/schulden/{schuldId:guid}")]
+    public async Task<IActionResult> DeleteBezitSchuld(Guid bezitId, Guid schuldId)
+    {
+        var schuld = await _db.Schulden.FirstOrDefaultAsync(s => s.Id == schuldId && s.BezitId == bezitId);
+        if (schuld is null) return NotFound();
+        _db.Schulden.Remove(schuld);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
+    private static SchuldResponse ToSchuldResponse(Schuld s) => new(
+        s.Id, s.Schuldeiser,
+        s.SchuldeiserTelefoon, s.SchuldeiserEmail,
+        s.Type, s.Bedrag, s.MaandelijkseAflossing,
+        s.Referentie, s.VermogensSoort, s.Notities,
+        s.HypotheekVorm, s.Rentepercentage,
+        s.MaandelijkseRente, s.Einddatum, s.Restschuld,
+        s.LeaseMaatschappij,
+        s.BezitId, s.Bezit?.Omschrijving);
 
     [HttpPost("schulden")]
     public async Task<ActionResult<SchuldResponse>> CreateSchuld([FromBody] SchuldUpsertRequest request)
@@ -202,7 +289,7 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         _db.Schulden.Add(item);
         await _db.SaveChangesAsync();
-        return Created($"/api/boedel/schulden/{item.Id}", item.Adapt<SchuldResponse>());
+        return Created($"/api/boedel/schulden/{item.Id}", ToSchuldResponse(item));
     }
 
     [HttpPut("schulden/{id:guid}")]
@@ -212,7 +299,7 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _db.SaveChangesAsync();
-        return Ok(item.Adapt<SchuldResponse>());
+        return Ok(ToSchuldResponse(item));
     }
 
     [HttpDelete("schulden/{id:guid}")]

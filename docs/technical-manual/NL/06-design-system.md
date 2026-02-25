@@ -308,3 +308,95 @@ Voorkomt willekeurige spacingwaarden ten gunste van design tokens:
 ```
 
 **Configuratie:** Beide regels zijn ingeschakeld in `eslint.config.mjs` met `error` severity.
+---
+
+## Icoonssysteem
+
+Lumio heeft twee parallelle icoonssystemen:
+
+| Systeem | Component | Bron | Gebruik |
+|---------|-----------|------|---------|
+| Lucide | `<Icon icon={X} />` via `icon.tsx` | `lucide-react` npm-pakket | Generieke utility-iconen (sluiten, zoeken, instellingen, pijlen, …) |
+| LumioIcon | `<LumioIcon name="testament" />` via `lumio-icon.tsx` | Eigen SVG in `lumio-icons/` | 16 domein- en beveiligingsiconen |
+
+### LumioIcon component
+
+```tsx
+import { LumioIcon } from "@/components/ui/lumio-icon";
+
+// Decoratief
+<LumioIcon name="testament" size="md" className="text-primary" />
+
+// Toegankelijk
+<LumioIcon name="shield-alert" size="lg" label="Beveiligingswaarschuwing" />
+```
+
+**Props:**
+
+| Prop | Type | Standaard | Beschrijving |
+|------|------|-----------|--------------|
+| `name` | `LumioIconName` | — | Verplichte icoonidentifier |
+| `size` | `"sm" \| "md" \| "lg" \| "xl"` | `"md"` | 16 / 20 / 24 / 32 px |
+| `label` | `string` | — | `aria-label` voor niet-decoratief gebruik |
+| `className` | `string` | — | Tailwind text-utilities |
+| `ref` | `Ref<SVGSVGElement>` | — | Doorgegeven aan het `<svg>`-element |
+
+### De 16 eigen iconen
+
+#### Domeiniconen
+
+| Naam | Domein | Visueel concept |
+|------|--------|-----------------|
+| `dashboard` | Dashboard | 2×2 raster van afgeronde tegels |
+| `profiel` | Profiel | Persoon silhouet met gestippelde halooring |
+| `testament` | Testament | Perkamentrol met titelregel, inhoudsregels en lakzegel |
+| `wilsverklaring` | Wilsverklaring | Stethoscoop met hart bij borststuk |
+| `donor` | Donorregistratie | Gevuld hart met spriet |
+| `uitvaart` | Uitvaartwensen | Cirkel boven een zachte boog — universeel, respectvol |
+| `digitaal-bezit` | Digitaal bezit | Wereldbol met hangslot overlay |
+| `boedel` | Boedel | Huis in een portfolio-rechthoek |
+| `documenten` | Documenten | Document met gevouwen hoek en inhoudsregels |
+| `erfgenamen` | Erfgenamen | Twee persoonsvormige iconen, diepte via grootte |
+| `noodcontacten` | Noodcontacten | Telefoonhoorn met hartslag-pulslijn |
+| `tijdlijn` | Tijdlijn | Drie punten op verticale lijn: toekomst → heden → verleden |
+
+#### Beveiligingsiconen
+
+| Naam | Status | Binnenste symbool |
+|------|--------|-------------------|
+| `shield` | Neutraal / beschermd | Alleen schildbasis |
+| `shield-check` | Geverifieerd / veilig | Vinkje |
+| `shield-alert` | Waarschuwing | Uitroepteken |
+| `shield-x` | Kritiek / geblokkeerd | Diagonale X |
+
+Alle vier schildvarianten delen hetzelfde basispad — consistente visuele zwaarte over alle statussen.
+
+### Ontwerpuitgangspunten
+
+1. **`currentColor`** — Alle iconen erven tekstkleur. Gebruik `className="text-primary"` e.d.
+2. **Lijndikte 1.5** — Zachter dan Lucide (2px), passend bij `--radius-md` design language.
+3. **ViewBox `0 0 24 24`** — Iconen lijnen optisch uit met Lucide op dezelfde pixelgrootte.
+4. **`aria-hidden` standaard** — Geef `label`-prop alleen mee als het icoon betekenis heeft.
+5. **`forwardRef` ingeschakeld** — Ref wordt doorgegeven aan het onderliggende `<svg>`-element.
+
+### Regels voor ontwikkelaars
+
+- **Gebruik `LumioIcon`** voor alle 16 domein- en beveiligingsicoonnamen hierboven.
+- **Gebruik Lucide** (`<Icon icon={X} />`) voor alle overige iconen.
+- **Importeer nooit** `Shield`, `ShieldCheck`, `ShieldAlert`, `ShieldX`,
+  `LayoutDashboard`, `ScrollText`, `Church`, `Heart` (domeingebruik), `Globe`
+  of `Wallet` uit `lucide-react` in productie-paginacomponenten.
+- De CI `icon-guard`-job handhaaft dit automatisch.
+
+### Storybook documentatie
+
+Alle 16 iconen zijn gedocumenteerd in Storybook onder **UI › LumioIcon**:
+
+- `AllIcons` — volledig raster op grootte `lg`
+- `Sizes` — sm / md / lg / xl vergelijking
+- `Colors` — op tokens gebaseerde kleurstatussen
+- `SecurityIcons` — vier schildvarianten
+- `ShieldStates` — schildstatusovergangen
+- `Accessibility` — gelabeld vs. decoratief gebruik
+
+Een speciale MDX-pagina (`LumioIcon.docs.mdx`) is ook beschikbaar op het Storybook docs-tabblad.

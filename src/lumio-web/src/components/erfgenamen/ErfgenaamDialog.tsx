@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,8 @@ interface ErfgenaamDialogProps {
     opslaanBezig: string;
     legitimatieLabel: (key: string) => string;
     relatieLabel: (key: string) => string;
+    alsNoodcontact: string;
+    alsNoodcontactTooltip: string;
   };
 }
 
@@ -215,6 +218,17 @@ export function ErfgenaamDialog({
             </div>
           </div>
         )}
+        <div className="flex items-center gap-3 rounded-md border border-dashed p-3">
+          <Checkbox
+            id="alsNoodcontact"
+            checked={form.alsNoodcontact}
+              onChange={(e) => updateField("alsNoodcontact", e.target.checked)}
+          />
+          <Label htmlFor="alsNoodcontact" className="font-normal cursor-pointer flex-1">
+            {t.alsNoodcontact}
+          </Label>
+          <HelpTooltip tekst={t.alsNoodcontactTooltip} />
+        </div>
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={() => onOpenChange(false)}>
