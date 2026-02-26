@@ -5,9 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { usePreferencesStore, type BooleanPreferenceKey } from "@/stores/preferencesStore";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
@@ -102,14 +99,15 @@ export function AutoLockCard() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Timer className="h-5 w-5" /> {t("autoLock.titel")}
-        </CardTitle>
-        <CardDescription>{t("autoLock.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Timer className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("autoLock.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("autoLock.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5">
         <div className="flex flex-wrap gap-2">
           {TIMEOUT_VALUES.map((value) => (
             <Button
@@ -154,14 +152,15 @@ export function GroteTekstCard() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Type className="h-5 w-5" /> {t("groteTekst.titel")}
-        </CardTitle>
-        <CardDescription>{t("groteTekst.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Type className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("groteTekst.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("groteTekst.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5">
         <div className="flex items-center gap-4">
           <Button
             variant={!groteTekst ? "default" : "outline"}
@@ -191,14 +190,15 @@ export function DashboardWeergaveCard() {
   const tDash = useTranslations("dashboard");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <LayoutDashboard className="h-5 w-5" /> {t("dashboardWeergave.titel")}
-        </CardTitle>
-        <CardDescription>{t("dashboardWeergave.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <LayoutDashboard className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("dashboardWeergave.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("dashboardWeergave.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5 space-y-3">
         <DashboardToggle
           sectionKey="showVoortgang"
           label={t("dashboardWeergave.voortgang")}
@@ -266,14 +266,15 @@ export function TaalkeuzeCard() {
   const t = useTranslations("instellingen");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Globe className="h-5 w-5" /> {t("taal.titel")}
-        </CardTitle>
-        <CardDescription>{t("taal.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Globe className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("taal.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("taal.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5">
         <LanguageSelector />
       </CardContent>
     </Card>
@@ -345,14 +346,15 @@ export function ActualisatieCard() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <RefreshCw className="h-5 w-5" /> {t("actualisatie.titel")}
-        </CardTitle>
-        <CardDescription>{t("actualisatie.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <RefreshCw className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("actualisatie.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("actualisatie.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5 space-y-4">
         {actualisatieDomeinen.length > 0 ? (
           <>
             <div className="grid gap-2 sm:grid-cols-2">

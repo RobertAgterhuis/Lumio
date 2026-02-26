@@ -14,6 +14,7 @@ import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
+import { Settings } from "lucide-react";
 import {
   PasswordChangeCard,
   ProfilesCard,
@@ -101,7 +102,10 @@ export default function InstellingenPage() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <h1 className="text-3xl font-bold">{t("titel")}</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <Settings className="h-8 w-8 text-primary" />
+          {t("titel")}
+        </h1>
         <p className="text-muted-foreground mt-1">{t("ondertitel")}</p>
       </div>
 

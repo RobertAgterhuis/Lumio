@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { Plus, Pencil, History, GitCompareArrows } from "lucide-react";
+import { Plus, Pencil, History, GitCompareArrows, Scale, Users, UserCheck } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -117,16 +117,17 @@ export default function TestamentPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             {/* Notaris card */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{t("notaris.titel")}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={openTestEdit}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
+            <Card className="overflow-hidden">
+              <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+                <Scale className="h-5 w-5 text-sage shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-sage leading-tight">{t("notaris.titel")}</h3>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
+                <Button variant="ghost" size="sm" onClick={openTestEdit}>
+                  <Pencil className="h-4 w-4 text-sage" />
+                </Button>
+              </div>
+              <CardContent className="pt-5 space-y-2 text-sm">
                 <div><span className="font-medium">{t("notaris.type")}</span> {testament.testamentType || "—"}</div>
                 <div><span className="font-medium">{t("notaris.notaris")}</span> {testament.notarisNaam || "—"}</div>
                 <div><span className="font-medium">{t("notaris.kantoor")}</span> {testament.notarisKantoor || "—"}</div>
@@ -150,20 +151,19 @@ export default function TestamentPage() {
             </Card>
 
             {/* Begunstigden card */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{t("begunstigden.titel")}</CardTitle>
-                  <HelpTooltip tekst={t("begunstigden.tooltip")} />
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">{begunstigden.length}</Badge>
-                    <Button size="sm" onClick={() => openBegDialog()}>
-                      <Plus className="h-4 w-4 mr-1" /> {t("begunstigden.toevoegen")}
-                    </Button>
-                  </div>
+            <Card className="overflow-hidden">
+              <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+                <Users className="h-5 w-5 text-sage shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-sage leading-tight">{t("begunstigden.titel")}</h3>
                 </div>
-              </CardHeader>
-              <CardContent>
+                <HelpTooltip tekst={t("begunstigden.tooltip")} />
+                <Badge variant="secondary">{begunstigden.length}</Badge>
+                <Button size="sm" onClick={() => openBegDialog()}>
+                  <Plus className="h-4 w-4 mr-1" /> {t("begunstigden.toevoegen")}
+                </Button>
+              </div>
+              <CardContent className="pt-5">
                 {begunstigden.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t("begunstigden.geenBegunstigden")}</p>
                 ) : (
@@ -183,17 +183,18 @@ export default function TestamentPage() {
           </div>
 
           {/* Executeurs card */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{t("executeurs.titel")}</CardTitle>
-                <HelpTooltip tekst={t("executeurs.tooltip")} />
-                <Button size="sm" onClick={() => openExecDialog()}>
-                  <Plus className="h-4 w-4 mr-1" /> {t("executeurs.toevoegen")}
-                </Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <UserCheck className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("executeurs.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent>
+              <HelpTooltip tekst={t("executeurs.tooltip")} />
+              <Button size="sm" onClick={() => openExecDialog()}>
+                <Plus className="h-4 w-4 mr-1" /> {t("executeurs.toevoegen")}
+              </Button>
+            </div>
+            <CardContent className="pt-5">
               {executeurs.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t("executeurs.geenExecuteurs")}</p>
               ) : (
@@ -212,22 +213,18 @@ export default function TestamentPage() {
           </Card>
 
           {/* Versiegeschiedenis card */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <History className="h-5 w-5" />
-                  {t("versies.titel")}
-                </CardTitle>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{snapshots.length}</Badge>
-                  <Button size="sm" onClick={openSnapDialog}>
-                    <Plus className="h-4 w-4 mr-1" /> {t("versies.snapshot")}
-                  </Button>
-                </div>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <History className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("versies.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent>
+              <Badge variant="secondary">{snapshots.length}</Badge>
+              <Button size="sm" onClick={openSnapDialog}>
+                <Plus className="h-4 w-4 mr-1" /> {t("versies.snapshot")}
+              </Button>
+            </div>
+            <CardContent className="pt-5">
               {snapError && (
                 <div className="rounded-lg border border-danger bg-danger-100 p-2 mb-3">
                   <p className="text-sm text-danger">{snapError}</p>

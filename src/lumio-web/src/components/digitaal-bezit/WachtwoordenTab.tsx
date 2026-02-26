@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Upload } from "lucide-react";
+import { Plus, Upload, KeyRound } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { WachtwoordItem } from "./WachtwoordItem";
 import type { WachtwoordEntry } from "./types";
@@ -29,9 +29,12 @@ export function WachtwoordenTab({
   const t = useTranslations("digitaalBezit");
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>{t("wachtwoorden.titel")}</CardTitle>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <KeyRound className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("wachtwoorden.titel")}</h3>
+        </div>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" onClick={onImport}>
             <Upload className="h-4 w-4 mr-1" /> {t("wachtwoorden.importeren")}
@@ -40,8 +43,8 @@ export function WachtwoordenTab({
             <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
           </Button>
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <CardContent className="pt-5">
         {wachtwoorden.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
             {t("wachtwoorden.geenWachtwoorden")}

@@ -1,8 +1,8 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Coins } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CryptoItem } from "./CryptoItem";
 import type { CryptoWallet } from "./types";
@@ -23,14 +23,17 @@ export function CryptoTab({
   const t = useTranslations("digitaalBezit");
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>{t("crypto.titel")}</CardTitle>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Coins className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("crypto.titel")}</h3>
+        </div>
         <Button size="sm" onClick={onAdd}>
           <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
         </Button>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <CardContent className="pt-5">
         {wallets.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
             {t("crypto.geenWallets")}

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -19,6 +19,7 @@ import { api } from "@/lib/api-client";
 import { useDocumenten, type PersoonlijkDocument } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Pencil } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { toast } from "@/stores/toastStore";
@@ -237,7 +238,10 @@ export default function DocumentenPage() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="documenten" size="lg" className="text-primary" />
+            {t("titel")}
+          </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
@@ -273,13 +277,16 @@ export default function DocumentenPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {t("opgeslagenDocumenten", { aantal: documenten.length })}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="overflow-hidden">
+          <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <FileText className="h-5 w-5 text-sage shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-sage leading-tight">
+                {t("opgeslagenDocumenten", { aantal: documenten.length })}
+              </h3>
+            </div>
+          </div>
+          <CardContent className="pt-5">
             <div className="space-y-2">
               {documenten.map((doc) => (
                 <div key={doc.id}>

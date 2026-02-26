@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
-import { Pencil } from "lucide-react";
+import { Pencil, ScrollText, Stethoscope, ShieldCheck } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
@@ -191,14 +191,15 @@ export default function EuthanasiePage() {
       ) : (
         <>
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("wilsverklaringCard.titel")}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <ScrollText className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("wilsverklaringCard.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+              <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               <p>
                 <span className="text-muted-foreground">{t("wilsverklaringCard.wilEuthanasie")}</span>{" "}
                 {data.wilEuthanasie ? t("ja") : t("nee")}
@@ -227,14 +228,15 @@ export default function EuthanasiePage() {
               )}
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("contactCard.titel")}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <Stethoscope className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("contactCard.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+              <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               {data.huisarts && (
                 <p>
                   <span className="text-muted-foreground">{t("contactCard.huisarts")}</span>{" "}
@@ -292,14 +294,15 @@ export default function EuthanasiePage() {
         </div>
 
         {(data.dementieClausule || data.behandelVerbod) && (
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("clausulesCard.titel")}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <ShieldCheck className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("clausulesCard.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+              <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               <p><span className="text-muted-foreground">{t("clausulesCard.dementieclausule")}</span> {data.dementieClausule ? t("ja") : t("nee")}</p>
               {data.dementieClausuleToelichting && (
                 <p><span className="text-muted-foreground">{t("clausulesCard.toelichting")}</span> {data.dementieClausuleToelichting}</p>

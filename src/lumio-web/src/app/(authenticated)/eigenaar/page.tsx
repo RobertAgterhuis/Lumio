@@ -4,22 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { api, ApiError } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
-import { User, Save, Loader2, Camera, Trash2, AlertTriangle, UserPlus } from "lucide-react";
+import { User, Save, Loader2, Camera, Trash2, AlertTriangle, UserPlus, Heart, CreditCard, Scale } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { toast } from "@/stores/toastStore";
+import { useAuthStore } from "@/stores/authStore";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { cn } from "@/lib/utils";
 
 interface Eigenaar {
@@ -79,6 +75,7 @@ const emptyForm = {
 };
 
 export default function EigenaarPage() {
+  const bumpProfileFoto = useAuthStore((s) => s.bumpProfileFoto);
   const t = useTranslations("eigenaar");
   const te = useTranslations("enums");
   const tf = useTranslations("feedback");
@@ -231,6 +228,7 @@ export default function EigenaarPage() {
       await api.upload("/api/eigenaar/foto", fd);
       const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
       setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+      bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.uploadMislukt"));
     } finally {
@@ -244,6 +242,7 @@ export default function EigenaarPage() {
     try {
       await api.delete("/api/eigenaar/foto");
       setFotoUrl(null);
+      bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.verwijderenMislukt"));
     } finally {
@@ -285,14 +284,16 @@ export default function EigenaarPage() {
       )}
 
       {exists && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("foto.titel")}</CardTitle>
-            <CardDescription>
-              {t("foto.beschrijving")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <Card className="overflow-hidden">
+          {/* Coloured header — matches domain card style, primary palette */}
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:bg-primary-100 dark:border-white/10">
+            <LumioIcon name="profiel" size="md" className="text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("foto.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("foto.beschrijving")}</p>
+            </div>
+          </div>
+          <CardContent className="pt-5">
             <div className="flex items-center gap-6">
               <div className="h-28 w-28 rounded-full bg-muted border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden shrink-0">
                 {/* S9-08: show placeholder until the image has loaded */}
@@ -353,14 +354,15 @@ export default function EigenaarPage() {
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("persoon.titel")}</CardTitle>
-          <CardDescription>
-            {t("persoon.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <User className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("persoon.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("persoon.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
@@ -458,14 +460,15 @@ export default function EigenaarPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("burgerlijkeStaat.titel")}</CardTitle>
-          <CardDescription>
-            {t("burgerlijkeStaat.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <Heart className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("burgerlijkeStaat.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("burgerlijkeStaat.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -512,14 +515,15 @@ export default function EigenaarPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("identificatie.titel")}</CardTitle>
-          <CardDescription>
-            {t("identificatie.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <CreditCard className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("identificatie.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("identificatie.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -569,14 +573,15 @@ export default function EigenaarPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("notaris.titel")}</CardTitle>
-          <CardDescription>
-            {t("notaris.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <Scale className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("notaris.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("notaris.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t("notaris.naam")}</Label>

@@ -24,7 +24,11 @@ interface SuggestieResult {
   suggesties: Suggestie[];
 }
 
-export function ProfielSuggesties() {
+interface ProfielSuggestiesProps {
+  profileIsEmpty?: boolean;
+}
+
+export function ProfielSuggesties({ profileIsEmpty }: ProfielSuggestiesProps) {
   // S4-07: Auto-load via useDomainQuery (5-min cache)
   const { data: result, isLoading, isError, refetch, isFetching } = useDomainQuery<SuggestieResult>(
     "status/suggesties",
@@ -68,21 +72,39 @@ export function ProfielSuggesties() {
         {result && (
           <div className="space-y-3">
             {result.aantalSuggesties === 0 ? (
-              <Alert variant="success">
-                <AlertDescription>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="h-5 w-5 shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">
-                        {t("geenSuggesties")}
-                      </p>
-                      <p className="text-xs mt-1">
-                        {t("geenSuggestiesBeschrijving")}
-                      </p>
+              profileIsEmpty ? (
+                <Alert>
+                  <AlertDescription>
+                    <div className="flex items-center gap-3">
+                      <Lightbulb className="h-5 w-5 shrink-0 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium">
+                          {t("profielLeeg")}
+                        </p>
+                        <p className="text-xs mt-1 text-muted-foreground">
+                          {t("profielLeegBeschrijving")}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </AlertDescription>
-              </Alert>
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <Alert variant="success">
+                  <AlertDescription>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="h-5 w-5 shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium">
+                          {t("geenSuggesties")}
+                        </p>
+                        <p className="text-xs mt-1">
+                          {t("geenSuggestiesBeschrijving")}
+                        </p>
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )
             ) : (
               <>
                 <p className="text-sm text-muted-foreground">

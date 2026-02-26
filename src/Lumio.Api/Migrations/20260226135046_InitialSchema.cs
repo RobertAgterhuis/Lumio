@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Lumio.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddHypotheekFields : Migration
+    public partial class InitialSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -94,6 +94,8 @@ namespace Lumio.Api.Migrations
                     ProfielFoto = table.Column<byte[]>(type: "BLOB", nullable: true),
                     ProfielFotoContentType = table.Column<string>(type: "TEXT", nullable: true),
                     ProfielFotoNaam = table.Column<string>(type: "TEXT", nullable: true),
+                    TijdlijnBekeken = table.Column<bool>(type: "INTEGER", nullable: false),
+                    OnboardingVoltooid = table.Column<bool>(type: "INTEGER", nullable: false),
                     AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
                     GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -222,6 +224,9 @@ namespace Lumio.Api.Migrations
                     IsGeregistreerdBijDonorregister = table.Column<bool>(type: "INTEGER", nullable: false),
                     DonorregisterReferentie = table.Column<string>(type: "TEXT", nullable: true),
                     Toelichting = table.Column<string>(type: "TEXT", nullable: true),
+                    BeslisserNaam = table.Column<string>(type: "TEXT", nullable: true),
+                    BeslisserRelatie = table.Column<string>(type: "TEXT", nullable: true),
+                    BeslisserTelefoon = table.Column<string>(type: "TEXT", nullable: true),
                     AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
                     GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -275,36 +280,6 @@ namespace Lumio.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FysiekeBezittingen",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    EigenaarId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Categorie = table.Column<string>(type: "TEXT", nullable: false),
-                    Omschrijving = table.Column<string>(type: "TEXT", nullable: false),
-                    GeschatteWaarde = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Locatie = table.Column<string>(type: "TEXT", nullable: true),
-                    BestemdeErfgenaam = table.Column<string>(type: "TEXT", nullable: true),
-                    VermogensSoort = table.Column<int>(type: "INTEGER", nullable: false),
-                    Notities = table.Column<string>(type: "TEXT", nullable: true),
-                    KadastraalNummer = table.Column<string>(type: "TEXT", nullable: true),
-                    Kenteken = table.Column<string>(type: "TEXT", nullable: true),
-                    KvKNummer = table.Column<string>(type: "TEXT", nullable: true),
-                    AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FysiekeBezittingen", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FysiekeBezittingen_Eigenaren_EigenaarId",
-                        column: x => x.EigenaarId,
-                        principalTable: "Eigenaren",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Noodcontacten",
                 columns: table => new
                 {
@@ -328,40 +303,6 @@ namespace Lumio.Api.Migrations
                     table.PrimaryKey("PK_Noodcontacten", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Noodcontacten_Eigenaren_EigenaarId",
-                        column: x => x.EigenaarId,
-                        principalTable: "Eigenaren",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Schulden",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    EigenaarId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Schuldeiser = table.Column<string>(type: "TEXT", nullable: false),
-                    SchuldeiserTelefoon = table.Column<string>(type: "TEXT", nullable: true),
-                    SchuldeiserEmail = table.Column<string>(type: "TEXT", nullable: true),
-                    Type = table.Column<string>(type: "TEXT", nullable: false),
-                    Bedrag = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MaandelijkseAflossing = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Referentie = table.Column<string>(type: "TEXT", nullable: true),
-                    VermogensSoort = table.Column<int>(type: "INTEGER", nullable: false),
-                    Notities = table.Column<string>(type: "TEXT", nullable: true),
-                    HypotheekVorm = table.Column<string>(type: "TEXT", nullable: true),
-                    Rentepercentage = table.Column<decimal>(type: "decimal(5,2)", nullable: true),
-                    MaandelijkseRente = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Einddatum = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Restschuld = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Schulden", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Schulden_Eigenaren_EigenaarId",
                         column: x => x.EigenaarId,
                         principalTable: "Eigenaren",
                         principalColumn: "Id",
@@ -409,7 +350,7 @@ namespace Lumio.Api.Migrations
                     CTR_Nummer = table.Column<string>(type: "TEXT", nullable: true),
                     AlgemeneWensen = table.Column<string>(type: "TEXT", nullable: true),
                     BijzondereBepalingen = table.Column<string>(type: "TEXT", nullable: true),
-                    UitsluitingsClausule = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UitsluitingsClausule = table.Column<bool>(type: "INTEGER", nullable: true),
                     Legaten = table.Column<string>(type: "TEXT", nullable: true),
                     AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
                     GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -458,6 +399,7 @@ namespace Lumio.Api.Migrations
                     VoorkeurAulaNaam = table.Column<string>(type: "TEXT", nullable: true),
                     VoorkeurAulaAdres = table.Column<string>(type: "TEXT", nullable: true),
                     BudgetRichting = table.Column<string>(type: "TEXT", nullable: true),
+                    DatumOpgesteld = table.Column<DateOnly>(type: "TEXT", nullable: true),
                     AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
                     GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -485,6 +427,7 @@ namespace Lumio.Api.Migrations
                     Type = table.Column<string>(type: "TEXT", nullable: false),
                     VerzekerdBedrag = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Begunstigde = table.Column<string>(type: "TEXT", nullable: true),
+                    BegunstigdeErfgenaamId = table.Column<Guid>(type: "TEXT", nullable: true),
                     VermogensSoort = table.Column<int>(type: "INTEGER", nullable: false),
                     Notities = table.Column<string>(type: "TEXT", nullable: true),
                     AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -495,6 +438,32 @@ namespace Lumio.Api.Migrations
                     table.PrimaryKey("PK_Verzekeringen", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Verzekeringen_Eigenaren_EigenaarId",
+                        column: x => x.EigenaarId,
+                        principalTable: "Eigenaren",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Videoboodschappen",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EigenaarId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Titel = table.Column<string>(type: "TEXT", nullable: false),
+                    Beschrijving = table.Column<string>(type: "TEXT", nullable: true),
+                    BestandsNaam = table.Column<string>(type: "TEXT", nullable: false),
+                    ContentType = table.Column<string>(type: "TEXT", nullable: false),
+                    BestandsGrootte = table.Column<long>(type: "INTEGER", nullable: false),
+                    DuurSeconden = table.Column<int>(type: "INTEGER", nullable: true),
+                    AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Videoboodschappen", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Videoboodschappen_Eigenaren_EigenaarId",
                         column: x => x.EigenaarId,
                         principalTable: "Eigenaren",
                         principalColumn: "Id",
@@ -547,6 +516,12 @@ namespace Lumio.Api.Migrations
                     VertegenwoordigerPostcode = table.Column<string>(type: "TEXT", nullable: true),
                     VertegenwoordigerWoonplaats = table.Column<string>(type: "TEXT", nullable: true),
                     AanvullendeWensen = table.Column<string>(type: "TEXT", nullable: true),
+                    Vertegenwoordiger2Naam = table.Column<string>(type: "TEXT", nullable: true),
+                    Vertegenwoordiger2Relatie = table.Column<string>(type: "TEXT", nullable: true),
+                    Vertegenwoordiger2Telefoon = table.Column<string>(type: "TEXT", nullable: true),
+                    Vertegenwoordiger2Email = table.Column<string>(type: "TEXT", nullable: true),
+                    SituatieOpties = table.Column<string>(type: "TEXT", nullable: true),
+                    SituatieNotitie = table.Column<string>(type: "TEXT", nullable: true),
                     DementieClausule = table.Column<bool>(type: "INTEGER", nullable: false),
                     DementieClausuleToelichting = table.Column<string>(type: "TEXT", nullable: true),
                     BehandelVerbod = table.Column<string>(type: "TEXT", nullable: true),
@@ -615,6 +590,42 @@ namespace Lumio.Api.Migrations
                         principalTable: "Erfgenamen",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FysiekeBezittingen",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EigenaarId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Categorie = table.Column<string>(type: "TEXT", nullable: false),
+                    Omschrijving = table.Column<string>(type: "TEXT", nullable: false),
+                    GeschatteWaarde = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Locatie = table.Column<string>(type: "TEXT", nullable: true),
+                    BestemdeErfgenaamId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    VermogensSoort = table.Column<int>(type: "INTEGER", nullable: false),
+                    Notities = table.Column<string>(type: "TEXT", nullable: true),
+                    KadastraalNummer = table.Column<string>(type: "TEXT", nullable: true),
+                    Kenteken = table.Column<string>(type: "TEXT", nullable: true),
+                    KvKNummer = table.Column<string>(type: "TEXT", nullable: true),
+                    AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FysiekeBezittingen", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FysiekeBezittingen_Eigenaren_EigenaarId",
+                        column: x => x.EigenaarId,
+                        principalTable: "Eigenaren",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FysiekeBezittingen_Erfgenamen_BestemdeErfgenaamId",
+                        column: x => x.BestemdeErfgenaamId,
+                        principalTable: "Erfgenamen",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -755,6 +766,45 @@ namespace Lumio.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VideoboodschapBlobs",
+                columns: table => new
+                {
+                    VideoboodschapId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Inhoud = table.Column<byte[]>(type: "BLOB", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VideoboodschapBlobs", x => x.VideoboodschapId);
+                    table.ForeignKey(
+                        name: "FK_VideoboodschapBlobs_Videoboodschappen_VideoboodschapId",
+                        column: x => x.VideoboodschapId,
+                        principalTable: "Videoboodschappen",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VideoboodschapOntvangers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    VideoboodschapId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ErfgenaamId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VideoboodschapOntvangers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VideoboodschapOntvangers_Videoboodschappen_VideoboodschapId",
+                        column: x => x.VideoboodschapId,
+                        principalTable: "Videoboodschappen",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EuthanasieVoorwaarden",
                 columns: table => new
                 {
@@ -774,6 +824,48 @@ namespace Lumio.Api.Migrations
                         principalTable: "Wilsverklaringen",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Schulden",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EigenaarId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Schuldeiser = table.Column<string>(type: "TEXT", nullable: false),
+                    SchuldeiserTelefoon = table.Column<string>(type: "TEXT", nullable: true),
+                    SchuldeiserEmail = table.Column<string>(type: "TEXT", nullable: true),
+                    Type = table.Column<string>(type: "TEXT", nullable: false),
+                    Bedrag = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MaandelijkseAflossing = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Referentie = table.Column<string>(type: "TEXT", nullable: true),
+                    VermogensSoort = table.Column<int>(type: "INTEGER", nullable: false),
+                    Notities = table.Column<string>(type: "TEXT", nullable: true),
+                    HypotheekVorm = table.Column<string>(type: "TEXT", nullable: true),
+                    Rentepercentage = table.Column<decimal>(type: "decimal(5,2)", nullable: true),
+                    MaandelijkseRente = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Einddatum = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Restschuld = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    LeaseMaatschappij = table.Column<string>(type: "TEXT", nullable: true),
+                    BezitId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    AangemaaktOp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    GewijzigdOp = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schulden", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Schulden_Eigenaren_EigenaarId",
+                        column: x => x.EigenaarId,
+                        principalTable: "Eigenaren",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Schulden_FysiekeBezittingen_BezitId",
+                        column: x => x.BezitId,
+                        principalTable: "FysiekeBezittingen",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -837,6 +929,11 @@ namespace Lumio.Api.Migrations
                 column: "TestamentInfoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FysiekeBezittingen_BestemdeErfgenaamId",
+                table: "FysiekeBezittingen",
+                column: "BestemdeErfgenaamId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FysiekeBezittingen_EigenaarId",
                 table: "FysiekeBezittingen",
                 column: "EigenaarId");
@@ -850,6 +947,11 @@ namespace Lumio.Api.Migrations
                 name: "IX_OrgaanKeuzes_DonorRegistratieId",
                 table: "OrgaanKeuzes",
                 column: "DonorRegistratieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schulden_BezitId",
+                table: "Schulden",
+                column: "BezitId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schulden_EigenaarId",
@@ -884,6 +986,16 @@ namespace Lumio.Api.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Verzekeringen_EigenaarId",
                 table: "Verzekeringen",
+                column: "EigenaarId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VideoboodschapOntvangers_VideoboodschapId",
+                table: "VideoboodschapOntvangers",
+                column: "VideoboodschapId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Videoboodschappen_EigenaarId",
+                table: "Videoboodschappen",
                 column: "EigenaarId");
 
             migrationBuilder.CreateIndex(
@@ -937,9 +1049,6 @@ namespace Lumio.Api.Migrations
                 name: "Executeurs");
 
             migrationBuilder.DropTable(
-                name: "FysiekeBezittingen");
-
-            migrationBuilder.DropTable(
                 name: "Noodcontacten");
 
             migrationBuilder.DropTable(
@@ -961,10 +1070,13 @@ namespace Lumio.Api.Migrations
                 name: "Verzekeringen");
 
             migrationBuilder.DropTable(
-                name: "Wachtwoorden");
+                name: "VideoboodschapBlobs");
 
             migrationBuilder.DropTable(
-                name: "Erfgenamen");
+                name: "VideoboodschapOntvangers");
+
+            migrationBuilder.DropTable(
+                name: "Wachtwoorden");
 
             migrationBuilder.DropTable(
                 name: "Wilsverklaringen");
@@ -973,10 +1085,19 @@ namespace Lumio.Api.Migrations
                 name: "DonorRegistraties");
 
             migrationBuilder.DropTable(
+                name: "FysiekeBezittingen");
+
+            migrationBuilder.DropTable(
                 name: "Testamenten");
 
             migrationBuilder.DropTable(
                 name: "UitvaartWensen");
+
+            migrationBuilder.DropTable(
+                name: "Videoboodschappen");
+
+            migrationBuilder.DropTable(
+                name: "Erfgenamen");
 
             migrationBuilder.DropTable(
                 name: "Eigenaren");

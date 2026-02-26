@@ -1,10 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
+import { HeartHandshake, Activity } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
@@ -45,7 +46,10 @@ export default function DonorPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="donor" size="lg" className="text-primary" />
+            {t("titel")}
+          </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
@@ -79,11 +83,14 @@ export default function DonorPage() {
         </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("keuzeCard.titel")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+          <Card className="overflow-hidden">
+            <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <HeartHandshake className="h-5 w-5 text-success shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-success leading-tight">{t("keuzeCard.titel")}</h3>
+              </div>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               <p>
                 <span className="text-muted-foreground">{t("keuzeCard.keuze")}</span>{" "}
                 <strong>{data.keuze}</strong>
@@ -120,11 +127,14 @@ export default function DonorPage() {
             </CardContent>
           </Card>
           {orgaanKeuzes.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("orgaanCard.titel")}</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <Card className="overflow-hidden">
+              <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+                <Activity className="h-5 w-5 text-success shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-success leading-tight">{t("orgaanCard.titel")}</h3>
+                </div>
+              </div>
+              <CardContent className="pt-5">
                 <div className="space-y-2">
                   {orgaanKeuzes.map((o) => (
                     <div

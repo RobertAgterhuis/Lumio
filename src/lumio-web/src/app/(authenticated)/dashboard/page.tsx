@@ -37,15 +37,8 @@ import { SortableSection } from "@/components/dashboard/SortableSection";
 import { InterviewWizard } from "@/components/interview/InterviewWizard";
 import { useTranslations } from "next-intl";
 import {
-  ScrollText,
-  ArrowRight,
-  User,
-  AlertTriangle,
-  CheckCircle2,
-  Circle,
-  Clock,
   EyeOff,
-  Sparkles,
+  Loader2,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 
@@ -75,32 +68,32 @@ const domainCards: Array<{
     domein: "eigenaar",
     lumioIcon: "profiel",
     domeinKey: "eigenaar",
-    color: "text-muted-foreground",
-    bgColor: "bg-muted",
+    color: "text-primary",
+    bgColor: "bg-primary-100",
   },
   {
     href: "/noodcontacten",
     domein: "noodcontacten",
     lumioIcon: "noodcontacten",
     domeinKey: "noodcontacten",
-    color: "text-danger",
-    bgColor: "bg-danger-100",
+    color: "text-primary",
+    bgColor: "bg-primary-100",
   },
   {
     href: "/testament",
     domein: "testament",
     lumioIcon: "testament",
     domeinKey: "testament",
-    color: "text-info",
-    bgColor: "bg-info-100",
+    color: "text-sage",
+    bgColor: "bg-sage-100",
   },
   {
     href: "/euthanasie",
     domein: "euthanasie",
     lumioIcon: "wilsverklaring",
     domeinKey: "euthanasie",
-    color: "text-accent",
-    bgColor: "bg-accent/10",
+    color: "text-sage",
+    bgColor: "bg-sage-100",
   },
   {
     href: "/donor",
@@ -115,40 +108,40 @@ const domainCards: Array<{
     domein: "uitvaart",
     lumioIcon: "uitvaart",
     domeinKey: "uitvaart",
-    color: "text-warning",
-    bgColor: "bg-warning-100",
+    color: "text-sage",
+    bgColor: "bg-sage-100",
   },
   {
     href: "/erfgenamen",
     domein: "erfgenamen",
     lumioIcon: "erfgenamen",
     domeinKey: "erfgenamen",
-    color: "text-accent",
-    bgColor: "bg-accent/10",
+    color: "text-primary",
+    bgColor: "bg-primary-100",
   },
   {
     href: "/boedel",
     domein: "boedel",
     lumioIcon: "boedel",
     domeinKey: "boedel",
-    color: "text-warning",
-    bgColor: "bg-warning-100",
+    color: "text-success",
+    bgColor: "bg-success-100",
   },
   {
     href: "/digitaal-bezit",
     domein: "digitaal-bezit",
     lumioIcon: "digitaal-bezit",
     domeinKey: "digitaalBezit",
-    color: "text-success",
-    bgColor: "bg-success-100",
+    color: "text-primary",
+    bgColor: "bg-primary-100",
   },
   {
     href: "/documenten",
     domein: "documenten",
     lumioIcon: "documenten",
     domeinKey: "documenten",
-    color: "text-info",
-    bgColor: "bg-info-100",
+    color: "text-sage",
+    bgColor: "bg-sage-100",
   },
 ];
 
@@ -170,6 +163,7 @@ export default function DashboardPage() {
   } = usePreferencesStore();
   const [showInterview, setShowInterview] = useState(false);
   const [showJuridisch, setShowJuridisch] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
   const [widgetHasContent, setWidgetHasContent] = useState<Record<string, boolean>>({});
   const reportContent = (id: string) => (v: boolean) => setWidgetHasContent((prev) => ({ ...prev, [id]: v }));
   const t = useTranslations("dashboard");
@@ -204,16 +198,20 @@ export default function DashboardPage() {
 
   // Section ordering
   // React Query hooks needed by sectionVisibility — must be above that block
-  const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<{ voornaam?: string } | null>("eigenaar");
-  const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid", { staleTime: 0 });
+  const { data: eigenaarData, isSuccess: hasProfile, isFetched: profileFetched } = useDomainQuery<{ voornaam?: string } | null>("eigenaar");
+  const { data: compleetheid, isFetched: compleetheitFetched } = useDomainQuery<Compleetheid>("status/compleetheid", { staleTime: 0 });
   const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie", { staleTime: 0 });
+
+  useEffect(() => {
+    if (profileFetched && compleetheitFetched) setIsInitializing(false);
+  }, [profileFetched, compleetheitFetched]);
   const actualisatie = actualisatieData?.domeinen ?? [];
   const aanbevolenDomein = compleetheid?.domeinen.find((d) => !d.ingevuld)?.domein ?? null;
 
   const DEFAULT_SECTIONS = ["suggesties", "statistieken", "meldingen", "aanbevolen", "voortgang", "granulair", "backup", "verloopdatum"];
   const sectionVisibility: Record<string, boolean> = {
     voortgang: showVoortgang,
-    statistieken: showStatistieken,
+    statistieken: showStatistieken && (widgetHasContent.statistieken !== false),
     granulair: showVoortgangGranulair,
     suggesties: showSuggesties,
     meldingen: showMeldingen,
@@ -298,6 +296,18 @@ export default function DashboardPage() {
     return <NabestaandenDashboard />;
   }
 
+  if (isInitializing) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <div>
+          <p className="text-lg font-semibold text-primary">{t("laden.titel")}</p>
+          <p className="text-sm text-muted-foreground mt-1">{t("laden.beschrijving")}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -349,7 +359,7 @@ export default function DashboardPage() {
                     <div className="absolute top-3 right-3 z-10">
                       <HideButton section="showStatistieken" label={t("statistieken.titel")} />
                     </div>
-                    <StatistiekenWidget />
+                    <StatistiekenWidget onHasContent={reportContent("statistieken")} />
                   </div>
                 </SortableSection>
               );
@@ -369,7 +379,7 @@ export default function DashboardPage() {
                     <div className="absolute top-3 right-3 z-10">
                       <HideButton section="showSuggesties" label="Slimme suggesties" />
                     </div>
-                    <ProfielSuggesties />
+                    <ProfielSuggesties profileIsEmpty={!compleetheid || compleetheid.aantalIngevuld === 0} />
                   </div>
                 </SortableSection>
               );
@@ -380,7 +390,7 @@ export default function DashboardPage() {
                 <SortableSection key="backup" id="backup"><BackupStatusWidget onHasContent={reportContent("backup")} /></SortableSection>
               );
               if (widgetId === "aanbevolen") return (
-                <SortableSection key="aanbevolen" id="aanbevolen"><AanbevolenStapWidget /></SortableSection>
+                <SortableSection key="aanbevolen" id="aanbevolen"><AanbevolenStapWidget onStartInterview={() => setShowInterview(true)} /></SortableSection>
               );
               if (widgetId === "verloopdatum") return (
                 <SortableSection key="verloopdatum" id="verloopdatum"><DocumentenVerloopdatumWidget onHasContent={reportContent("verloopdatum")} /></SortableSection>
@@ -437,32 +447,6 @@ export default function DashboardPage() {
             }}
             onCancel={() => setShowInterview(false)}
           />
-        </div>
-      )}
-
-      {!hasProfile && !showInterview && (
-        <div className="rounded-lg border-2 border-warning bg-warning-100 p-5 dark:bg-warning/20">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="h-6 w-6 text-warning mt-0.5 shrink-0" />
-            <div>
-              <p className="text-sm font-semibold text-warning">
-                {t("geenProfiel.titel")}
-              </p>
-              <p className="text-sm text-warning mt-1">
-                {t("geenProfiel.beschrijving")}
-              </p>
-              <div className="flex gap-2 mt-3">
-                <Button size="sm" variant="outline" onClick={() => setShowInterview(true)}>
-                  <ScrollText className="h-4 w-4 mr-2" /> {t("geenProfiel.interview")}
-                </Button>
-                <Link href="/eigenaar">
-                  <Button size="sm">
-                    <User className="h-4 w-4 mr-2" /> {t("geenProfiel.direct")}
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
       )}
 

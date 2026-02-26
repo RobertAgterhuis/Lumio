@@ -8,9 +8,6 @@ import { FormField } from "@/components/ui/form-field";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
 import { toast } from "@/stores/toastStore";
@@ -87,14 +84,15 @@ export function ProfilesCard({ onDeleteRequest }: ProfilesCardProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5" /> {t("profielen.titel")}
-        </CardTitle>
-        <CardDescription>{t("profielen.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Users className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("profielen.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("profielen.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5 space-y-4">
         {/* Existing profiles list */}
         <div className="space-y-2">
           {profiles.map((profile) => (

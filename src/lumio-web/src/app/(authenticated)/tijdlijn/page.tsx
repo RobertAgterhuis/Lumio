@@ -10,7 +10,6 @@ import {
   Clock,
   Calendar,
   CalendarDays,
-  ListChecks,
   Stethoscope,
   Church,
   Phone,
@@ -28,6 +27,7 @@ import {
 import { useDomainQuery } from "@/hooks";
 import { useEffect } from "react";
 import { api } from "@/lib/api-client";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { TijdlijnStapRow } from "@/components/tijdlijn/TijdlijnStapRow";
 import { STAP_DOMAIN_CONFIGS } from "@/components/tijdlijn/tijdlijn-data";
 
@@ -164,12 +164,10 @@ export default function TijdlijnPage() {
   return (
     <div className="space-y-8">
       <div>
-        <div className="flex items-center gap-2">
-          <ListChecks className="h-6 w-6 text-primary" />
-          <h1 className="text-3xl font-bold">
-            {t("titel")}
-          </h1>
-        </div>
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <LumioIcon name="tijdlijn" size="lg" className="text-primary" />
+          {t("titel")}
+        </h1>
         <p className="text-muted-foreground mt-2 max-w-2xl">
           {t("beschrijving")}
         </p>

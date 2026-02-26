@@ -2,13 +2,14 @@
 
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { ErfbelastingCalculator } from "@/components/erfgenamen/ErfbelastingCalculator";
 import { KeyRound, Plus, Users } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import {
   ErfgenaamDialog,
   ErfgenaamItem,
@@ -152,7 +153,10 @@ export default function ErfgenamenPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="erfgenamen" size="lg" className="text-primary" />
+            {t("titel")}
+          </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="erfgenamen" />
           <SectieNotitie sectie="erfgenamen" />
@@ -196,11 +200,14 @@ export default function ErfgenamenPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("aantal", { aantal: state.erfgenamen.length })}</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <Users className="h-5 w-5 text-primary shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("aantal", { aantal: state.erfgenamen.length })}</h3>
+            </div>
+          </div>
+          <CardContent className="pt-5">
             <div className="space-y-3">
               {state.erfgenamen.map((e) => (
                 <ErfgenaamItem

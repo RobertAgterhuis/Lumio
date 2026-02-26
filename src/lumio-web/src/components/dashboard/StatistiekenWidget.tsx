@@ -36,7 +36,11 @@ interface Statistieken {
   };
 }
 
-export function StatistiekenWidget() {
+interface StatistiekenWidgetProps {
+  onHasContent?: (v: boolean) => void;
+}
+
+export function StatistiekenWidget({ onHasContent }: StatistiekenWidgetProps) {
   const [stats, setStats] = useState<Statistieken | null>(null);
   const t = useTranslations("dashboard.statistieken");
   const locale = useLocale();
@@ -56,6 +60,29 @@ export function StatistiekenWidget() {
       .then(setStats)
       .catch((err) => console.error("Failed to load statistics:", err));
   }, []);
+
+  // Report content availability once stats are loaded
+  useEffect(() => {
+    if (!stats) return;
+    const hasFinancieelLocal =
+      stats.financieel.totaalBezittingen > 0 ||
+      stats.financieel.totaalSaldi > 0 ||
+      stats.financieel.totaalVerzekeringen > 0 ||
+      stats.financieel.totaalSchulden > 0;
+    const totaalBoedel =
+      stats.boedel.bezittingen +
+      stats.boedel.bankrekeningen +
+      stats.boedel.verzekeringen +
+      stats.boedel.schulden;
+    const hasAny =
+      stats.erfgenamen > 0 ||
+      stats.digitaalBezit.totaal > 0 ||
+      stats.documenten > 0 ||
+      totaalBoedel > 0 ||
+      stats.noodcontacten > 0 ||
+      hasFinancieelLocal;
+    onHasContent?.(hasAny);
+  }, [stats]);
 
   if (!stats) return null;
 

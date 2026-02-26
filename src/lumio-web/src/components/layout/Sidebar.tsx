@@ -7,6 +7,13 @@ import { cn } from "@/lib/utils";
 import { useDomainQuery } from "@/hooks/useDomainQuery";
 import { LumioLogoIcon } from "./LumioLogoIcon";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
+import { usePreferencesStore } from "@/stores/preferencesStore";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Settings,
   Download,
@@ -14,6 +21,8 @@ import {
   BookOpen,
   CheckCircle2,
   Video,
+  PanelLeftClose,
+  PanelLeftOpen,
   type LucideIcon,
 } from "lucide-react";
 
@@ -91,6 +100,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations("nav");
   const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid");
+  const { sidebarCollapsed, toggleSidebar } = usePreferencesStore();
 
   // Create a map of domain -> completed status for O(1) lookup
   const completedDomains = new Map<string, boolean>(
@@ -98,52 +108,140 @@ export function Sidebar() {
   );
 
   return (
-    <aside className="flex h-full w-64 flex-col border-r border-border bg-sidebar">
-      <div className="flex h-16 items-center gap-2.5 border-b border-border px-5">
-        <LumioLogoIcon size={28} />
-        <h1 className="text-xl font-bold text-primary">Lumio</h1>
-      </div>
-      <nav aria-label={t("navigatie")} className="flex-1 overflow-y-auto p-3">
-        {navGroups.map((group, groupIndex) => (
-          <div key={group.labelKey} className={cn(groupIndex > 0 && "mt-4")}>
-            <h2 className="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t(group.labelKey)}
-            </h2>
-            <div className="space-y-1">
-              {group.items.map((item) => {
-                const isActive = pathname?.startsWith(item.href);
-                const Icon = item.icon;
-                // Domain name is the href without the leading slash
-                const domainName = item.href.slice(1);
-                const isCompleted = completedDomains.get(domainName) === true;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    aria-current={isActive ? "page" : undefined}
-                    className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-sidebar-active text-sidebar-active-foreground"
-                        : "text-sidebar-foreground hover:bg-muted"
-                    )}
-                  >
-                    {item.lumioIcon ? (
-                      <LumioIcon name={item.lumioIcon} size="sm" />
-                    ) : Icon ? (
-                      <Icon className="h-4 w-4" />
-                    ) : null}
-                    <span className="flex-1">{t(item.labelKey)}</span>
-                    {isCompleted && (
-                      <CheckCircle2 className="h-4 w-4 text-success" aria-label="Completed" />
-                    )}
-                  </Link>
-                );
-              })}
+    <TooltipProvider delayDuration={300}>
+      <aside
+        className={cn(
+          "flex h-full flex-col border-r border-border bg-sidebar overflow-hidden transition-[width] duration-200 ease-in-out",
+          sidebarCollapsed ? "w-14" : "w-64"
+        )}
+      >
+        {/* Header / Logo area */}
+        <div
+          className={cn(
+            "flex h-16 shrink-0 items-center border-b border-border",
+            sidebarCollapsed ? "justify-center" : "gap-2.5 px-5"
+          )}
+        >
+          <LumioLogoIcon size={28} />
+          {!sidebarCollapsed && (
+            <>
+              <h1 className="flex-1 text-xl font-bold text-primary">Lumio</h1>
+              <button
+                onClick={toggleSidebar}
+                aria-label="Navigatiemenu verbergen"
+                className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <PanelLeftClose className="h-4 w-4" />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <nav aria-label={t("navigatie")} className="flex-1 overflow-y-auto p-2">
+          {navGroups.map((group, groupIndex) => (
+            <div key={group.labelKey} className={cn(groupIndex > 0 && "mt-4")}>
+              {!sidebarCollapsed ? (
+                <h2 className="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t(group.labelKey)}
+                </h2>
+              ) : groupIndex > 0 ? (
+                <div className="my-2 mx-2 border-t border-border" />
+              ) : null}
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const isActive = pathname?.startsWith(item.href);
+                  const Icon = item.icon;
+                  const domainName = item.href.slice(1);
+                  const isCompleted = completedDomains.get(domainName) === true;
+                  const label = t(item.labelKey);
+
+                  if (sidebarCollapsed) {
+                    return (
+                      <Tooltip key={item.href}>
+                        <TooltipTrigger asChild>
+                          <Link
+                            href={item.href}
+                            aria-current={isActive ? "page" : undefined}
+                            aria-label={label}
+                            className={cn(
+                              "flex h-9 w-9 items-center justify-center rounded-md mx-auto transition-colors",
+                              isActive
+                                ? "bg-sidebar-active text-sidebar-active-foreground"
+                                : "text-sidebar-foreground hover:bg-muted"
+                            )}
+                          >
+                            {item.lumioIcon ? (
+                              <LumioIcon name={item.lumioIcon} size="sm" />
+                            ) : Icon ? (
+                              <Icon className="h-4 w-4" />
+                            ) : null}
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                          <div className="flex items-center gap-2">
+                            {label}
+                            {isCompleted && (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                            )}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-current={isActive ? "page" : undefined}
+                      className={cn(
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                        isActive
+                          ? "bg-sidebar-active text-sidebar-active-foreground"
+                          : "text-sidebar-foreground hover:bg-muted"
+                      )}
+                    >
+                      {item.lumioIcon ? (
+                        <LumioIcon name={item.lumioIcon} size="sm" />
+                      ) : Icon ? (
+                        <Icon className="h-4 w-4" />
+                      ) : null}
+                      <span className="flex-1">{label}</span>
+                      {isCompleted && (
+                        <CheckCircle2 className="h-4 w-4 text-success" aria-label="Completed" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
-      </nav>
-    </aside>
+          ))}
+        </nav>
+
+        {/* Footer toggle */}
+        <div className="shrink-0 border-t border-border p-2">
+          <button
+            onClick={toggleSidebar}
+            aria-label={sidebarCollapsed ? "Navigatiemenu tonen" : "Navigatiemenu verbergen"}
+            className={cn(
+              "flex w-full items-center gap-2 rounded-md py-2 text-sm font-medium hover:bg-muted transition-colors",
+              sidebarCollapsed
+                ? "justify-center px-0 text-primary hover:text-primary"
+                : "px-3 text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {sidebarCollapsed ? (
+              <PanelLeftOpen className="h-4 w-4" />
+            ) : (
+              <>
+                <PanelLeftClose className="h-4 w-4" />
+                <span>Verberg menu</span>
+              </>
+            )}
+          </button>
+        </div>
+      </aside>
+    </TooltipProvider>
   );
 }

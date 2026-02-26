@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles, EyeOff } from "lucide-react";
+import { ArrowRight, Sparkles, EyeOff, ScrollText, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
@@ -48,7 +48,7 @@ const DOMEIN_HREF_MAP: Record<string, string> = {
   documenten: "/documenten",
 };
 
-export function AanbevolenStapWidget() {
+export function AanbevolenStapWidget({ onStartInterview }: { onStartInterview?: () => void }) {
   const t = useTranslations("dashboard");
   const toggleSection = usePreferencesStore((s) => s.toggleSection);
   const { data: compleetheid, isLoading } = useDomainQuery<Compleetheid>("status/compleetheid");
@@ -90,12 +90,27 @@ export function AanbevolenStapWidget() {
             </p>
           </div>
         </div>
-        <Link href={href}>
-          <Button size="sm" variant="outline" className="shrink-0 gap-1">
-            {t("aanbevolenStap.actie")}
-            <ArrowRight className="h-3 w-3" />
-          </Button>
-        </Link>
+        {aanbevolen.domein === "eigenaar" && onStartInterview ? (
+          <div className="flex gap-2 shrink-0">
+            <Button size="sm" variant="outline" onClick={onStartInterview} className="gap-1">
+              <ScrollText className="h-3.5 w-3.5" />
+              {t("geenProfiel.interview")}
+            </Button>
+            <Link href={href}>
+              <Button size="sm" className="gap-1">
+                <User className="h-3.5 w-3.5" />
+                {t("geenProfiel.direct")}
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <Link href={href}>
+            <Button size="sm" variant="outline" className="shrink-0 gap-1">
+              {t("aanbevolenStap.actie")}
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        )}
       </CardContent>
     </Card>
   );

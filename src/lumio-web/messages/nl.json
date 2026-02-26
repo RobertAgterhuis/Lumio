@@ -207,6 +207,10 @@
   "dashboard": {
     "titel": "Dashboard",
     "beschrijving": "Beheer uw nalatenschap. Klik op een onderdeel om te beginnen.",
+    "laden": {
+      "titel": "Even geduld",
+      "beschrijving": "We laden uw nalatenschap..."
+    },
     "begroeting": {
       "ochtend": "Goedemorgen",
       "middag": "Goedemiddag",
@@ -320,6 +324,8 @@
       "fout": "Kon de analyse niet uitvoeren.",
       "geenSuggesties": "Geen suggesties",
       "geenSuggestiesBeschrijving": "Uw profiel is goed ingevuld en alle gegevens zijn consistent.",
+      "profielLeeg": "Nog geen gegevens om te analyseren",
+      "profielLeegBeschrijving": "Vul eerst uw profiel in om suggesties te ontvangen.",
       "aantalGevonden": "{aantal, plural, one {# suggestie} other {# suggesties}} gevonden:"
     },
     "statistieken": {

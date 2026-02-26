@@ -27,6 +27,8 @@ interface AuthState {
   setProfileSelected: (selected: boolean) => void;
   setProfileNeedsSetup: (needsSetup: boolean) => void;
   lock: () => void;
+  profileFotoVersion: number;
+  bumpProfileFoto: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -38,6 +40,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   activeProfile: null,
   profileSelected: false,
   profileNeedsSetup: false,
+  profileFotoVersion: 0,
+  bumpProfileFoto: () => set((s) => ({ profileFotoVersion: s.profileFotoVersion + 1 })),
   setUnlocked: (unlocked) => set({ isUnlocked: unlocked }),
   setFirstRun: (firstRun) => set({ isFirstRun: firstRun }),
   setReadOnly: (readOnly) => set({ isReadOnly: readOnly }),

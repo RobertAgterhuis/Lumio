@@ -2,10 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Plus, Pencil, Users } from "lucide-react";
+import { Plus, Pencil, Users, Flower2, Music, MapPin, ListOrdered } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
@@ -82,7 +82,10 @@ export default function UitvaartPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="uitvaart" size="lg" className="text-primary" />
+            {t("titel")}
+          </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="uitvaart" />
           <SectieNotitie sectie="uitvaart" />
@@ -111,16 +114,17 @@ export default function UitvaartPage() {
         <>
           {/* Info Cards */}
           <div className="grid gap-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>{t("uitvaartCard.titel")}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={openUitvaartEdit}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
+            <Card className="overflow-hidden">
+              <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+                <LumioIcon name="uitvaart" className="h-5 w-5 text-sage shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-sage leading-tight">{t("uitvaartCard.titel")}</h3>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
+                <Button variant="ghost" size="sm" onClick={openUitvaartEdit}>
+                  <Pencil className="h-4 w-4 text-sage" />
+                </Button>
+              </div>
+              <CardContent className="pt-5 space-y-2 text-sm">
                 <p>
                   <span className="text-muted-foreground">{t("uitvaartCard.type")}</span>{" "}
                   <strong>{data.voorkeurType}</strong>
@@ -172,16 +176,17 @@ export default function UitvaartPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>{t("ceremonieCard.titel")}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={openUitvaartEdit}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
+            <Card className="overflow-hidden">
+              <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+                <Music className="h-5 w-5 text-sage shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-sage leading-tight">{t("ceremonieCard.titel")}</h3>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
+                <Button variant="ghost" size="sm" onClick={openUitvaartEdit}>
+                  <Pencil className="h-4 w-4 text-sage" />
+                </Button>
+              </div>
+              <CardContent className="pt-5 space-y-2 text-sm">
                 {data.ceremonieSoort && (
                   <p>
                     <span className="text-muted-foreground">{t("ceremonieCard.soort")}</span>{" "}
@@ -230,16 +235,17 @@ export default function UitvaartPage() {
           </div>
 
           {/* Location Card */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("locatieCard.titel")}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={openLocatieEdit}>
-                  <Pencil className="h-4 w-4" />
-                </Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <MapPin className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("locatieCard.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+              <Button variant="ghost" size="sm" onClick={openLocatieEdit}>
+                <Pencil className="h-4 w-4 text-sage" />
+              </Button>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               {!data.voorkeurBegraafplaatsNaam && !data.voorkeurCrematoriumnaam && !data.voorkeurAulaNaam ? (
                 <p className="text-muted-foreground">{t("locatieCard.locatieNietIngevuld")}</p>
               ) : (
@@ -271,16 +277,17 @@ export default function UitvaartPage() {
           </Card>
 
           {/* Ceremony Details */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("verloop.titel")}</CardTitle>
-                <Button size="sm" onClick={() => openDetailDialog()}>
-                  <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
-                </Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <ListOrdered className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("verloop.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent>
+              <Button size="sm" onClick={() => openDetailDialog()}>
+                <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
+              </Button>
+            </div>
+            <CardContent className="pt-5">
               {detailError && (
                 <Alert variant="danger" className="mb-3">
                   <AlertDescription>{detailError}</AlertDescription>
@@ -304,18 +311,18 @@ export default function UitvaartPage() {
           </Card>
 
           {/* Guests */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                {t("genodigden.titel")}
-                <Badge variant="secondary">{genodigden.length}</Badge>
-              </CardTitle>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <Users className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("genodigden.titel")}</h3>
+              </div>
+              <Badge variant="secondary">{genodigden.length}</Badge>
               <Button size="sm" onClick={() => openGenDialog()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
               </Button>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <CardContent className="pt-5">
               {genodigden.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">
                   {t("genodigden.geenGenodigden")}

@@ -19,6 +19,14 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+// Maps bgColor utility class → a header background colour via an explicit
+// Tailwind class (so the compiler never purges it).
+const HEADER_BG: Record<string, string> = {
+  "bg-primary-100":  "bg-primary-100",
+  "bg-sage-100":     "bg-sage-100",
+  "bg-success-100":  "bg-success-100",
+};
+
 export type CardStatus = "afgerond" | "reviewNodig" | "bezig" | "beginnen";
 
 export interface DomeinCardData {
@@ -50,6 +58,8 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
     isDragging,
   } = useSortable({ id: card.domein });
 
+  const headerBg = HEADER_BG[card.bgColor] ?? card.bgColor;
+
   return (
     <div
       ref={setNodeRef}
@@ -65,57 +75,61 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
       }}
     >
       <Link href={card.href} draggable={false}>
-          <Card className={`h-full transition-shadow hover:shadow-md cursor-[inherit] select-none ${
+        <Card className={`h-full overflow-hidden transition-shadow hover:shadow-md cursor-[inherit] select-none ${
           isAanbevolen ? "border-primary/60 ring-2 ring-primary/20 shadow-sm" : ""
         }`}>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {/* Drag hint icon */}
-                <span
-                  className="p-0.5 -ml-0.5 text-muted-foreground/40 pointer-events-none"
-                  aria-hidden="true"
-                >
-                  <GripVertical className="h-4 w-4" />
-                </span>
-                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.bgColor}`}>
-                  <LumioIcon name={card.lumioIcon} size="md" className={card.color} />
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                {cardStatus === "afgerond" ? (
-                  <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
-                    <CheckCircle2 className="h-3 w-3" />
-                    {t("status.afgerond")}
-                  </Badge>
-                ) : cardStatus === "reviewNodig" ? (
-                  <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
-                    <AlertTriangle className="h-3 w-3" />
-                    {t("status.reviewNodig")}
-                  </Badge>
-                ) : cardStatus === "bezig" ? (
-                  <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
-                    <Clock className="h-3 w-3" />
-                    {t("status.bezig")}
-                  </Badge>
-                ) : (
-                  <Badge variant="secondary" className="gap-1">
-                    <Circle className="h-3 w-3" />
-                    {t("status.beginnen")}
-                  </Badge>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 text-xs px-2 text-muted-foreground gap-1"
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); onHide(); }}
-                >
-                  <EyeOff className="h-3.5 w-3.5" />
-                  {t("verbergen")}
-                </Button>
-              </div>
+
+          {/* ── Coloured header row ────────────────────────────────────── */}
+          <div className={`${headerBg} px-3 py-2.5 flex items-center justify-between border-b border-black/5 dark:border-white/10`}>
+            {/* Left: drag grip + domain icon */}
+            <div className="flex items-center gap-2">
+              <span
+                className={`p-0.5 -ml-0.5 pointer-events-none ${card.color} opacity-40`}
+                aria-hidden="true"
+              >
+                <GripVertical className="h-4 w-4" />
+              </span>
+              <LumioIcon name={card.lumioIcon} size="md" className={card.color} />
             </div>
-            <CardTitle className="text-lg mt-3 flex items-center gap-2">
+
+            {/* Right: status badge + hide button */}
+            <div className="flex items-center gap-1">
+              {cardStatus === "afgerond" ? (
+                <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
+                  <CheckCircle2 className="h-3 w-3" />
+                  {t("status.afgerond")}
+                </Badge>
+              ) : cardStatus === "reviewNodig" ? (
+                <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
+                  <AlertTriangle className="h-3 w-3" />
+                  {t("status.reviewNodig")}
+                </Badge>
+              ) : cardStatus === "bezig" ? (
+                <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
+                  <Clock className="h-3 w-3" />
+                  {t("status.bezig")}
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="gap-1">
+                  <Circle className="h-3 w-3" />
+                  {t("status.beginnen")}
+                </Badge>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`h-7 text-xs px-2 gap-1 ${card.color} opacity-70 hover:opacity-100 hover:bg-black/10 hover:text-primary-700 dark:hover:bg-white/10 dark:hover:text-primary-300`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onHide(); }}
+              >
+                <EyeOff className="h-3.5 w-3.5" />
+                {t("verbergen")}
+              </Button>
+            </div>
+          </div>
+
+          {/* ── Card body ──────────────────────────────────────────────── */}
+          <CardHeader className="pb-2 pt-3">
+            <CardTitle className="text-lg flex items-center gap-2">
               {t(`domein.${card.domeinKey}.titel`)}
               {isAanbevolen && <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />}
             </CardTitle>

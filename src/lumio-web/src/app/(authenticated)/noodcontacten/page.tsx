@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -16,6 +16,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Phone, Plus, Pencil, Trash2, Share2, Download, Upload } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
@@ -57,7 +58,10 @@ export default function NoodcontactenPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t("titel")}</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <LumioIcon name="noodcontacten" size="lg" className="text-primary" />
+          {t("titel")}
+        </h1>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
         </p>
@@ -94,17 +98,20 @@ export default function NoodcontactenPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{t("contactenTitel", { aantal: contacten.length })}</CardTitle>
+      <Card className="overflow-hidden">
+        <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+          <Phone className="h-5 w-5 text-primary shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-primary leading-tight">{t("contactenTitel", { aantal: contacten.length })}</h3>
+          </div>
           <div className="flex gap-2">
             <NoodkaartQR contacten={contacten} />
             <Button size="sm" onClick={() => openDialog()}>
               <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
             </Button>
           </div>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <CardContent className="pt-5">
           {contacten.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">
               {t("geenContacten")}

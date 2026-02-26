@@ -20,6 +20,7 @@ export interface DashboardPreferences {
   showBackup: boolean;
   showAanbevolen: boolean;
   showVerloopdatum: boolean;
+  sidebarCollapsed: boolean;
 }
 
 export type BooleanPreferenceKey = {
@@ -37,6 +38,7 @@ interface PreferencesState extends DashboardPreferences {
   setDomeinKaartenVolgorde: (order: string[]) => void;
   setSectieVolgorde: (order: string[]) => void;
   resetDashboard: () => void;
+  toggleSidebar: () => void;
 }
 
 /* ── Defaults ─────────────────────────────────────────────── */
@@ -53,6 +55,7 @@ const dashboardDefaults: DashboardPreferences = {
   showBackup: true,
   showAanbevolen: true,
   showVerloopdatum: true,
+  sidebarCollapsed: false,
 };
 
 /* ── Persistence helpers ──────────────────────────────────── */
@@ -81,6 +84,7 @@ function save(state: PreferencesState) {
       showBackup: state.showBackup,
       showAanbevolen: state.showAanbevolen,
       showVerloopdatum: state.showVerloopdatum,
+      sidebarCollapsed: state.sidebarCollapsed,
     };
     localStorage.setItem(storageKey(state._profileId), JSON.stringify(persisted));
   } catch {
@@ -127,6 +131,11 @@ export const usePreferencesStore = create<PreferencesState>((set, get) => ({
 
   resetDashboard: () => {
     set({ ...dashboardDefaults, _profileId: get()._profileId });
+    save(get());
+  },
+
+  toggleSidebar: () => {
+    set({ sidebarCollapsed: !get().sidebarCollapsed });
     save(get());
   },
 }));

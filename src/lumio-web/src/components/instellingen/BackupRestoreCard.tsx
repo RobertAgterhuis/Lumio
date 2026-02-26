@@ -7,9 +7,6 @@ import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
@@ -185,14 +182,15 @@ export function BackupRestoreCard({ onRestoreRequest, onPostRestore }: BackupRes
   return (
     <>
       {/* Backup & Restore Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Download className="h-5 w-5" /> {t("backup.titel")}
-          </CardTitle>
-          <CardDescription>{t("backup.beschrijving")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      <Card className="overflow-hidden">
+        <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+          <Download className="h-5 w-5 text-primary shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-primary leading-tight">{t("backup.titel")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("backup.beschrijving")}</p>
+          </div>
+        </div>
+        <CardContent className="pt-5 space-y-6">
           {/* Download backup section */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium">{t("backup.downloadTitel")}</h3>
@@ -261,14 +259,15 @@ export function BackupRestoreCard({ onRestoreRequest, onPostRestore }: BackupRes
 
       {/* Auto-backup Card (Electron only) */}
       {isElectron && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <HardDrive className="h-5 w-5" /> {t("autoBackup.titel")}
-            </CardTitle>
-            <CardDescription>{t("autoBackup.beschrijving")}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <HardDrive className="h-5 w-5 text-primary shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("autoBackup.titel")}</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">{t("autoBackup.beschrijving")}</p>
+            </div>
+          </div>
+          <CardContent className="pt-5 space-y-4">
             <div className="flex items-center gap-3">
               <Label htmlFor="auto-backup-toggle" className="flex-1">
                 {t("autoBackup.inschakelen")}
