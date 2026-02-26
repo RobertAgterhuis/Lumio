@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { api } from "@/lib/api-client";
 import { ClipboardList, RefreshCw, Filter, ChevronDown, Loader2 } from "lucide-react";
+import { HelpButton } from "@/components/help/HelpButton";
 
 interface AuditLogEntry {
   id: string;
@@ -131,6 +132,7 @@ export default function AuditLogPage() {
           <h1 className="text-2xl font-bold">{t("titel")}</h1>
           <p className="text-sm text-muted-foreground">{t("beschrijving")}</p>
         </div>
+        <HelpButton />
       </div>
 
       <Card>

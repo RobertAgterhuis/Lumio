@@ -23,6 +23,8 @@ import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { useNoodcontacten, ROLLEN, ROL_KEYS } from "@/components/noodcontacten/useNoodcontacten";
 import type { Noodcontact } from "@/components/noodcontacten/useNoodcontacten";
+import { HelpButton } from "@/components/help/HelpButton";
+import { HelpEmptyState } from "@/components/help/HelpEmptyState";
 
 export default function NoodcontactenPage() {
   const t = useTranslations("noodcontacten");
@@ -61,6 +63,7 @@ export default function NoodcontactenPage() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <LumioIcon name="noodcontacten" size="lg" className="text-primary" />
           {t("titel")}
+          <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
@@ -98,6 +101,14 @@ export default function NoodcontactenPage() {
         </div>
       </div>
 
+      {contacten.length === 0 ? (
+        <HelpEmptyState
+          chapterSlug="noodcontacten"
+          domeinLabel={t("domeinLabel")}
+          addLabel={t("toevoegen")}
+          onAdd={() => openDialog()}
+        />
+      ) : (
       <Card className="overflow-hidden">
         <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
           <Phone className="h-5 w-5 text-primary shrink-0" />
@@ -112,12 +123,7 @@ export default function NoodcontactenPage() {
           </div>
         </div>
         <CardContent className="pt-5">
-          {contacten.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              {t("geenContacten")}
-            </p>
-          ) : (
-            <div className="space-y-2">
+          <div className="space-y-2">
               {contacten.map((c) => (
                 <div
                   key={c.id}
@@ -168,9 +174,9 @@ export default function NoodcontactenPage() {
                 </div>
               ))}
             </div>
-          )}
         </CardContent>
       </Card>
+      )}
 
       {error && (
         <div className="rounded-lg border border-danger bg-danger-100 p-3">

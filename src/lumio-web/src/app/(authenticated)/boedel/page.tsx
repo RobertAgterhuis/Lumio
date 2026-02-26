@@ -22,6 +22,7 @@ import {
   VerzekeringDialog,
   SchuldDialog,
 } from "@/components/boedel";
+import { HelpButton } from "@/components/help/HelpButton";
 
 export default function BoedelPage() {
   const t = useTranslations("boedel");
@@ -74,6 +75,7 @@ export default function BoedelPage() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <LumioIcon name="boedel" size="lg" className="text-primary" />
           {t("titel")}
+          <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
         <VoorbeeldDialog domein="boedel" />

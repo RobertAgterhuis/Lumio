@@ -228,7 +228,7 @@
       "beherenLink": "Manage documents →"
     },
     "verbergen": "Hide",
-    "sectieVerplaatsen": "Move section",
+    "helpHint": "More info",
     "voortgang": {
       "titel": "Legacy progress",
       "onderdelen": "{aantalIngevuld} of {totaal} sections completed"
@@ -2812,6 +2812,7 @@
     "selecteerHoofdstuk": "Select a chapter to get started",
     "vorige": "Previous",
     "volgende": "Next",
+    "inhoudsopgave": "Table of Contents",
     "chapters": {
       "aanDeSlag": "Getting Started",
       "dashboard": "Dashboard",
@@ -2826,7 +2827,8 @@
       "erfgenamen": "Heirs & Emergency Codes",
       "noodcontacten": "Emergency Contacts & Emergency Card",
       "overigeFuncties": "Other Features",
-      "nabestaanden": "Heir Mode"
+      "nabestaanden": "Heir Mode",
+      "videoboodschappen": "Video Messages"
     }
   },
   "errors": {

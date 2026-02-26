@@ -19,6 +19,7 @@ import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { PersonSelect } from "@/components/PersonSelect";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { HelpButton } from "@/components/help/HelpButton";
 
 interface Wilsverklaring {
   id: string;
@@ -153,6 +154,7 @@ export default function EuthanasiePage() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <LumioIcon name="wilsverklaring" size="lg" className="text-primary" />
             <span className="text-primary">{t("titel")}</span>
+            <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}

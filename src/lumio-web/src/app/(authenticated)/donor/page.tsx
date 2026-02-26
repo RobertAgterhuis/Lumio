@@ -11,6 +11,7 @@ import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { HelpButton } from "@/components/help/HelpButton";
 
 interface DonorRegistratie {
   id: string;
@@ -49,6 +50,7 @@ export default function DonorPage() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <LumioIcon name="donor" size="lg" className="text-primary" />
             {t("titel")}
+            <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}

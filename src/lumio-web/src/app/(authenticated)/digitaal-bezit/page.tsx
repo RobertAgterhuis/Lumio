@@ -23,6 +23,7 @@ import {
   CryptoDialog,
   ImportDialog,
 } from "@/components/digitaal-bezit";
+import { HelpButton } from "@/components/help/HelpButton";
 
 export default function DigitaalBezitPage() {
   const t = useTranslations("digitaalBezit");
@@ -89,6 +90,7 @@ export default function DigitaalBezitPage() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <LumioIcon name="digitaal-bezit" size="lg" className="text-primary" />
           {t("titel")}
+          <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
         <VoorbeeldDialog domein="digitaal-bezit" />

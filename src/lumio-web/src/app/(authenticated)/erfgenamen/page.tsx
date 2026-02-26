@@ -19,6 +19,8 @@ import {
   type Erfgenaam,
 } from "@/components/erfgenamen";
 import { useAuthStore } from "@/stores/authStore";
+import { HelpButton } from "@/components/help/HelpButton";
+import { HelpEmptyState } from "@/components/help/HelpEmptyState";
 
 function displayName(e: Erfgenaam): string {
   return e.tussenvoegsel
@@ -156,6 +158,7 @@ export default function ErfgenamenPage() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <LumioIcon name="erfgenamen" size="lg" className="text-primary" />
             {t("titel")}
+            <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="erfgenamen" />
@@ -190,15 +193,12 @@ export default function ErfgenamenPage() {
       )}
 
       {state.erfgenamen.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Users className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">{t("geenErfgenamen")}</p>
-            <Button className="mt-4" onClick={() => state.openDialog()}>
-              {t("toevoegen")}
-            </Button>
-          </CardContent>
-        </Card>
+        <HelpEmptyState
+          chapterSlug="erfgenamen"
+          domeinLabel="erfgenamen"
+          addLabel={t("toevoegen")}
+          onAdd={() => state.openDialog()}
+        />
       ) : (
         <Card className="overflow-hidden">
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">

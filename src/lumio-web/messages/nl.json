@@ -228,7 +228,7 @@
       "beherenLink": "Documenten beheren →"
     },
     "verbergen": "Verbergen",
-    "sectieVerplaatsen": "Sectie verplaatsen",
+    "helpHint": "Meer info",
     "voortgang": {
       "titel": "Voortgang nalatenschap",
       "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"
@@ -2812,6 +2812,7 @@
     "selecteerHoofdstuk": "Selecteer een hoofdstuk om te beginnen",
     "vorige": "Vorige",
     "volgende": "Volgende",
+    "inhoudsopgave": "Inhoudsopgave",
     "chapters": {
       "aanDeSlag": "Aan de Slag",
       "dashboard": "Dashboard",
@@ -2826,7 +2827,8 @@
       "erfgenamen": "Erfgenamen & Noodcodes",
       "noodcontacten": "Noodcontacten & Noodkaart",
       "overigeFuncties": "Overige Functies",
-      "nabestaanden": "Nabestaanden-modus"
+      "nabestaanden": "Nabestaanden-modus",
+      "videoboodschappen": "Videoboodschappen"
     }
   },
   "errors": {

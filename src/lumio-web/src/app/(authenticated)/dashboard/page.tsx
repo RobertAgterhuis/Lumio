@@ -41,6 +41,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
+import { HelpButton } from "@/components/help/HelpButton";
 
 interface DomeinStatus {
   domein: string;
@@ -311,14 +312,17 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-primary">
-          {(() => {
-            const uur = new Date().getHours();
-            const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");
-            const naam = (eigenaarData as { voornaam?: string } | null)?.voornaam;
-            return naam ? `${dagdeel}, ${naam}` : t("titel");
-          })()}
-        </h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl font-bold text-primary">
+            {(() => {
+              const uur = new Date().getHours();
+              const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");
+              const naam = (eigenaarData as { voornaam?: string } | null)?.voornaam;
+              return naam ? `${dagdeel}, ${naam}` : t("titel");
+            })()}
+          </h1>
+          <HelpButton />
+        </div>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
         </p>

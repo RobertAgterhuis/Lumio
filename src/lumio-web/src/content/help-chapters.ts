@@ -14,12 +14,13 @@ import {
   Phone,
   Settings,
   Eye,
+  Video,
 } from "lucide-react";
 
 export interface HelpChapter {
   /** Unique slug used in navigation */
   slug: string;
-  /** Chapter number (1-14) */
+  /** Chapter number (1-15) */
   number: number;
   /** i18n key for the chapter title (under "help.chapters") */
   titleKey: string;
@@ -155,7 +156,7 @@ export const helpChapters: HelpChapter[] = [
     fileNl: "13-overige-functies.md",
     fileEn: "13-other-features.md",
     relatedRoute: "/instellingen",
-    relatedRoutes: ["/audit-log", "/tijdlijn", "/export", "/videoboodschappen"],
+    relatedRoutes: ["/audit-log", "/tijdlijn", "/export"],
   },
   {
     slug: "nabestaanden",
@@ -164,6 +165,15 @@ export const helpChapters: HelpChapter[] = [
     icon: Eye,
     fileNl: "14-nabestaanden.md",
     fileEn: "14-heir-mode.md",
+  },
+  {
+    slug: "videoboodschappen",
+    number: 15,
+    titleKey: "videoboodschappen",
+    icon: Video,
+    fileNl: "15-videoboodschappen.md",
+    fileEn: "15-video-messages.md",
+    relatedRoute: "/videoboodschappen",
   },
 ];
 

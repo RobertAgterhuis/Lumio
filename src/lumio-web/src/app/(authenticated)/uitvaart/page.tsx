@@ -27,6 +27,7 @@ import {
   GenodigdeDialog,
   UitvaartEditDialog,
 } from "@/components/uitvaart";
+import { HelpButton } from "@/components/help/HelpButton";
 
 export default function UitvaartPage() {
   const t = useTranslations("uitvaart");
@@ -85,6 +86,7 @@ export default function UitvaartPage() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <LumioIcon name="uitvaart" size="lg" className="text-primary" />
             {t("titel")}
+            <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="uitvaart" />

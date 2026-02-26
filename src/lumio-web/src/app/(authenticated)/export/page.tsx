@@ -23,6 +23,7 @@ import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import type { LucideIcon } from "lucide-react";
 import { useDomainQuery } from "@/hooks";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
+import { HelpButton } from "@/components/help/HelpButton";
 
 const exportOptions: Array<{
   key: string;
@@ -146,6 +147,7 @@ export default function ExportPage() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Archive className="h-8 w-8 text-primary" />
           {t("titel")}
+          <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}

@@ -1,19 +1,41 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { BookOpen, Search } from "lucide-react";
 import { MarkdownRenderer } from "@/components/help/MarkdownRenderer";
 import { helpChapters } from "@/content/help-chapters";
 import { getHelpContent } from "@/content/help-content";
+import { useHelpSearch } from "@/hooks/useHelpSearch";
 
-export default function HelpPage() {
+/** Inner component — separated so useSearchParams is inside a Suspense boundary */
+function HelpPageContent() {
   const t = useTranslations("help");
   const locale = useLocale();
+  const params = useSearchParams();
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  const [activeSlug, setActiveSlug] = useState(helpChapters[0].slug);
+  const [activeSlug, setActiveSlug] = useState(() => {
+    const chapterParam = params.get("chapter");
+    if (chapterParam && helpChapters.some((ch) => ch.slug === chapterParam))
+      return chapterParam;
+    return helpChapters[0].slug;
+  });
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Scroll to a deep-linked section after content renders
+  useEffect(() => {
+    const section = params.get("section");
+    if (!section) return;
+    const timer = setTimeout(() => {
+      const el = contentRef.current?.querySelector(`#${section}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSlug]); // re-run when chapter changes so section scroll works after nav
 
   const activeChapter = helpChapters.find((ch) => ch.slug === activeSlug);
 
@@ -24,37 +46,13 @@ export default function HelpPage() {
     return getHelpContent(file, locale === "en" ? "en" : "nl") ?? "";
   }, [activeChapter, locale]);
 
-  // Full-text search across all embedded chapters (synchronous, no fetch)
-  const searchResults = useMemo(() => {
-    if (searchQuery.length < 2) return [];
-    const results: { slug: string; snippet: string }[] = [];
-    const lowerQuery = searchQuery.toLowerCase();
-
-    for (const chapter of helpChapters) {
-      const file = locale === "en" ? chapter.fileEn : chapter.fileNl;
-      const text = getHelpContent(file, locale === "en" ? "en" : "nl");
-      if (!text) continue;
-
-      const lowerText = text.toLowerCase();
-      const idx = lowerText.indexOf(lowerQuery);
-      if (idx !== -1) {
-        const start = Math.max(0, idx - 40);
-        const end = Math.min(text.length, idx + searchQuery.length + 40);
-        const snippet =
-          (start > 0 ? "..." : "") +
-          text.slice(start, end).replace(/\n/g, " ") +
-          (end < text.length ? "..." : "");
-        results.push({ slug: chapter.slug, snippet });
-      }
-    }
-
-    return results;
-  }, [searchQuery, locale]);
+  // Full-text search via shared hook
+  const searchResults = useHelpSearch(searchQuery, locale === "en" ? "en" : "nl");
 
   return (
     <div className="flex h-full gap-0 -m-6">
       {/* Sidebar */}
-      <aside className="flex w-72 flex-col border-r border-border bg-muted/30">
+      <aside className="help-sidebar flex w-72 flex-col border-r border-border bg-muted/30">
         <div className="flex items-center gap-2 border-b border-border px-4 py-4">
           <BookOpen className="h-5 w-5 text-primary" />
           <h1 className="text-lg font-bold">{t("titel")}</h1>
@@ -137,11 +135,19 @@ export default function HelpPage() {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 overflow-y-auto">
+      <div ref={contentRef} className="help-main flex-1 overflow-y-auto">
         <div className="mx-auto max-w-3xl px-8 py-6">
           <MarkdownRenderer content={content} />
         </div>
       </div>
     </div>
+  );
+}
+
+export default function HelpPage() {
+  return (
+    <Suspense>
+      <HelpPageContent />
+    </Suspense>
   );
 }

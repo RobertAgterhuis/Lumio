@@ -36,6 +36,8 @@ import { toast } from "@/stores/toastStore";
 import { getApiUrl } from "@/lib/api-client";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
 import type { Videoboodschap, VideoboodschapFormData } from "@/components/videoboodschappen/types";
+import { HelpButton } from "@/components/help/HelpButton";
+import { HelpEmptyState } from "@/components/help/HelpEmptyState";
 
 function formatBytes(bytes: number): string {
   if (bytes >= 1_048_576) return `${(bytes / 1_048_576).toFixed(1)} MB`;
@@ -167,6 +169,7 @@ export default function VideoboodschappenPage() {
           <Plus className="h-4 w-4" />
           {t("nieuw")}
         </Button>
+        <HelpButton className="shrink-0" />
       </div>
 
       <SectieNotitie sectie="videoboodschappen" />
@@ -180,23 +183,12 @@ export default function VideoboodschappenPage() {
 
       {/* Empty state */}
       {!isLoading && videoboodschappen.length === 0 && (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-              <Video className="h-6 w-6 text-muted-foreground" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold">{t("legeStaat.titel")}</h3>
-              <p className="text-sm text-muted-foreground max-w-xs">
-                {t("legeStaat.beschrijving")}
-              </p>
-            </div>
-            <Button onClick={openNew} className="gap-2" variant="outline">
-              <Plus className="h-4 w-4" />
-              {t("legeStaat.actie")}
-            </Button>
-          </CardContent>
-        </Card>
+        <HelpEmptyState
+          chapterSlug="videoboodschappen"
+          domeinLabel="videoboodschappen"
+          addLabel={t("legeStaat.actie")}
+          onAdd={openNew}
+        />
       )}
 
       {/* Video list */}
