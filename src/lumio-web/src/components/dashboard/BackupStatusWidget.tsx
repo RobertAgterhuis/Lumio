@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDomainQuery } from "@/hooks";
 import { useAuthStore } from "@/stores/authStore";
+import { usePreferencesStore } from "@/stores/preferencesStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import { HardDrive, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { HardDrive, CheckCircle2, AlertTriangle, XCircle, EyeOff } from "lucide-react";
 
 interface BackupStatus {
   lastBackup: string | null;
@@ -37,7 +39,9 @@ const statusConfig = {
  */
 export function BackupStatusWidget() {
   const t = useTranslations("dashboard.backup");
+  const tDash = useTranslations("dashboard");
   const { activeProfile } = useAuthStore();
+  const toggleSection = usePreferencesStore((s) => s.toggleSection);
   const [isFirstRun, setIsFirstRun] = useState<boolean | null>(null);
   const { data, isLoading, isError } = useDomainQuery<BackupStatus>("status/backup", {
     staleTime: 5 * 60 * 1000,
@@ -74,12 +78,23 @@ export function BackupStatusWidget() {
               <HardDrive className="h-4 w-4" />
               {t("titel")}
             </div>
-            {data && (
-              <Badge className={badgeClass}>
-                <Icon className="h-3 w-3 mr-1" />
-                {t(`status.${status}`)}
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {data && (
+                <Badge className={badgeClass}>
+                  <Icon className="h-3 w-3 mr-1" />
+                  {t(`status.${status}`)}
+                </Badge>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSection("showBackup"); }}
+                className="text-xs text-muted-foreground gap-1 h-7 px-2"
+              >
+                <EyeOff className="h-3.5 w-3.5" />
+                {tDash("verbergen")}
+              </Button>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>

@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { usePreferencesStore, type DashboardPreferences } from "@/stores/preferencesStore";
+import { usePreferencesStore, type BooleanPreferenceKey } from "@/stores/preferencesStore";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { api } from "@/lib/api-client";
 import {
@@ -34,12 +34,12 @@ import {
 const TIMEOUT_VALUES = [1, 2, 5, 10, 15, 30, 0];
 
 interface DashboardToggleProps {
-  sectionKey: keyof DashboardPreferences;
+  sectionKey: BooleanPreferenceKey;
   label: string;
 }
 
 function DashboardToggle({ sectionKey, label }: DashboardToggleProps) {
-  const value = usePreferencesStore((s) => s[sectionKey]);
+  const value = usePreferencesStore((s) => s[sectionKey] as boolean);
   const toggle = usePreferencesStore((s) => s.toggleSection);
   return (
     <button
@@ -49,6 +49,38 @@ function DashboardToggle({ sectionKey, label }: DashboardToggleProps) {
     >
       <span className="text-sm font-medium">{label}</span>
       {value ? (
+        <Eye className="h-4 w-4 text-primary" />
+      ) : (
+        <EyeOff className="h-4 w-4 text-muted-foreground" />
+      )}
+    </button>
+  );
+}
+
+const DOMEIN_KAARTEN = [
+  { domein: "eigenaar", domeinKey: "eigenaar" },
+  { domein: "noodcontacten", domeinKey: "noodcontacten" },
+  { domein: "testament", domeinKey: "testament" },
+  { domein: "euthanasie", domeinKey: "euthanasie" },
+  { domein: "donor", domeinKey: "donor" },
+  { domein: "uitvaart", domeinKey: "uitvaart" },
+  { domein: "erfgenamen", domeinKey: "erfgenamen" },
+  { domein: "boedel", domeinKey: "boedel" },
+  { domein: "digitaal-bezit", domeinKey: "digitaalBezit" },
+  { domein: "documenten", domeinKey: "documenten" },
+] as const;
+
+function DomeinKaartToggle({ domein, label }: { domein: string; label: string }) {
+  const isHidden = usePreferencesStore((s) => s.hiddenDomeinKaarten.includes(domein));
+  const toggle = usePreferencesStore((s) => s.toggleDomeinKaart);
+  return (
+    <button
+      type="button"
+      onClick={() => toggle(domein)}
+      className="flex items-center justify-between w-full rounded-lg border p-3 hover:bg-muted/50 transition-colors"
+    >
+      <span className="text-sm font-medium">{label}</span>
+      {!isHidden ? (
         <Eye className="h-4 w-4 text-primary" />
       ) : (
         <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -156,6 +188,7 @@ export function GroteTekstCard() {
  */
 export function DashboardWeergaveCard() {
   const t = useTranslations("instellingen");
+  const tDash = useTranslations("dashboard");
 
   return (
     <Card>
@@ -171,6 +204,10 @@ export function DashboardWeergaveCard() {
           label={t("dashboardWeergave.voortgang")}
         />
         <DashboardToggle
+          sectionKey="showStatistieken"
+          label={t("dashboardWeergave.statistieken")}
+        />
+        <DashboardToggle
           sectionKey="showVoortgangGranulair"
           label={t("dashboardWeergave.voortgangGranulair")}
         />
@@ -179,9 +216,35 @@ export function DashboardWeergaveCard() {
           label={t("dashboardWeergave.suggesties")}
         />
         <DashboardToggle
-          sectionKey="showDomeinKaarten"
-          label={t("dashboardWeergave.domeinKaarten")}
+          sectionKey="showMeldingen"
+          label={t("dashboardWeergave.meldingen")}
         />
+        <DashboardToggle
+          sectionKey="showBackup"
+          label={t("dashboardWeergave.backup")}
+        />
+        <DashboardToggle
+          sectionKey="showAanbevolen"
+          label={t("dashboardWeergave.aanbevolen")}
+        />
+        <DashboardToggle
+          sectionKey="showVerloopdatum"
+          label={t("dashboardWeergave.verloopdatum")}
+        />
+        <div className="pt-3 border-t">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+            {t("dashboardWeergave.domeinKaarten")}
+          </p>
+          <div className="space-y-2">
+            {DOMEIN_KAARTEN.map(({ domein, domeinKey }) => (
+              <DomeinKaartToggle
+                key={domein}
+                domein={domein}
+                label={tDash(`domein.${domeinKey}.titel`)}
+              />
+            ))}
+          </div>
+        </div>
         <div className="pt-2">
           <Button
             variant="outline"

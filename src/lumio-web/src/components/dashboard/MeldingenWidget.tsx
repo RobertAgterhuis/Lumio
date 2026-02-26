@@ -3,8 +3,10 @@
 import { useDomainQuery } from "@/hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useTranslations } from "next-intl";
-import { Bell, AlertTriangle, Info } from "lucide-react";
+import { Bell, AlertTriangle, Info, EyeOff } from "lucide-react";
 
 interface Melding {
   type: "waarschuwing" | "herinnering";
@@ -24,6 +26,8 @@ interface MeldingenResponse {
  */
 export function MeldingenWidget() {
   const t = useTranslations("dashboard.meldingen");
+  const tDash = useTranslations("dashboard");
+  const toggleSection = usePreferencesStore((s) => s.toggleSection);
   const { data, isLoading, isError } = useDomainQuery<MeldingenResponse>("status/meldingen", {
     staleTime: 2 * 60 * 1000,
   });
@@ -38,11 +42,22 @@ export function MeldingenWidget() {
             <Bell className="h-4 w-4" />
             {t("titel")}
           </div>
-          {meldingen.length > 0 && (
-            <Badge className="bg-warning-100 text-warning hover:bg-warning-100 dark:bg-warning/20 dark:text-warning">
-              {meldingen.length}
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {meldingen.length > 0 && (
+              <Badge className="bg-warning-100 text-warning hover:bg-warning-100 dark:bg-warning/20 dark:text-warning">
+                {meldingen.length}
+              </Badge>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleSection("showMeldingen")}
+              className="text-xs text-muted-foreground gap-1 h-7 px-2"
+            >
+              <EyeOff className="h-3.5 w-3.5" />
+              {tDash("verbergen")}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent>

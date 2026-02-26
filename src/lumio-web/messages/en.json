@@ -257,6 +257,7 @@
     },
     "letOp": "Note:",
     "juridisch": "Lumio is a tool for recording your wishes. A notarial will remains required for legal validity under the Dutch Civil Code (BW Book 4).",
+    "juridischBegrepen": "Got it, do not show again",
     "status": {
       "ingevuld": "Completed",
       "beginnen": "Start",
@@ -1740,9 +1741,14 @@
       "titel": "Dashboard display",
       "beschrijving": "Choose which sections are visible on your dashboard.",
       "voortgang": "Legacy progress",
+      "statistieken": "Statistics",
       "voortgangGranulair": "Detailed progress",
       "suggesties": "Smart suggestions",
       "domeinKaarten": "Domain cards",
+      "meldingen": "Notifications",
+      "backup": "Backup status",
+      "aanbevolen": "Recommended next step",
+      "verloopdatum": "Document expiry dates",
       "allesHerstellen": "Show all"
     },
     "taal": {

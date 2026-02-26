@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import { useDomainQuery } from "@/hooks";
+import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useTranslations } from "next-intl";
 
 interface DomeinStatus {
@@ -49,6 +50,7 @@ const DOMEIN_HREF_MAP: Record<string, string> = {
 
 export function AanbevolenStapWidget() {
   const t = useTranslations("dashboard");
+  const toggleSection = usePreferencesStore((s) => s.toggleSection);
   const { data: compleetheid, isLoading } = useDomainQuery<Compleetheid>("status/compleetheid");
 
   if (isLoading || !compleetheid) return null;
@@ -62,9 +64,20 @@ export function AanbevolenStapWidget() {
   return (
     <Card className="border-primary/30 bg-primary/5">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <Sparkles className="h-4 w-4" />
-          {t("aanbevolenStap.titel")}
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+            <Sparkles className="h-4 w-4" />
+            {t("aanbevolenStap.titel")}
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => toggleSection("showAanbevolen")}
+            className="text-xs text-muted-foreground gap-1 h-7 px-2"
+          >
+            <EyeOff className="h-3.5 w-3.5" />
+            {t("verbergen")}
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex items-center justify-between gap-4">

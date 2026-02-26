@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, AlertTriangle } from "lucide-react";
+import { FileText, AlertTriangle, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useDomainQuery } from "@/hooks";
+import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useTranslations } from "next-intl";
 
 interface Document {
@@ -25,6 +27,7 @@ function dagenTot(verlooptOp: string): number {
 
 export function DocumentenVerloopdatumWidget() {
   const t = useTranslations("dashboard");
+  const toggleSection = usePreferencesStore((s) => s.toggleSection);
   const { data: documenten = [], isLoading } = useDomainQuery<Document[]>("documenten");
 
   if (isLoading) return null;
@@ -41,9 +44,20 @@ export function DocumentenVerloopdatumWidget() {
   return (
     <Card className="border-warning/40">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-sm font-semibold text-warning">
-          <AlertTriangle className="h-4 w-4" />
-          {t("verloopdatumWidget.titel")}
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-semibold text-warning">
+            <AlertTriangle className="h-4 w-4" />
+            {t("verloopdatumWidget.titel")}
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => toggleSection("showVerloopdatum")}
+            className="text-xs text-muted-foreground gap-1 h-7 px-2"
+          >
+            <EyeOff className="h-3.5 w-3.5" />
+            {t("verbergen")}
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">

@@ -18,18 +18,28 @@ describe("preferencesStore", () => {
     localStorageMock.clear();
     usePreferencesStore.setState({
       showVoortgang: true,
+      showStatistieken: true,
       showVoortgangGranulair: true,
       showSuggesties: true,
-      showDomeinKaarten: true,
+      hiddenDomeinKaarten: [],
+      showMeldingen: true,
+      showBackup: true,
+      showAanbevolen: true,
+      showVerloopdatum: true,
     });
   });
 
   it("starts with all sections visible", () => {
     const state = usePreferencesStore.getState();
     expect(state.showVoortgang).toBe(true);
+    expect(state.showStatistieken).toBe(true);
     expect(state.showVoortgangGranulair).toBe(true);
     expect(state.showSuggesties).toBe(true);
-    expect(state.showDomeinKaarten).toBe(true);
+    expect(state.hiddenDomeinKaarten).toEqual([]);
+    expect(state.showMeldingen).toBe(true);
+    expect(state.showBackup).toBe(true);
+    expect(state.showAanbevolen).toBe(true);
+    expect(state.showVerloopdatum).toBe(true);
   });
 
   it("toggleSection flips boolean", () => {

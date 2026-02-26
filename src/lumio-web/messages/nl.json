@@ -257,6 +257,7 @@
     },
     "letOp": "Let op:",
     "juridisch": "Lumio is een hulpmiddel voor het vastleggen van uw wensen. Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4).",
+    "juridischBegrepen": "Begrepen, niet meer tonen",
     "status": {
       "ingevuld": "Ingevuld",
       "beginnen": "Beginnen",
@@ -1740,9 +1741,14 @@
       "titel": "Dashboard weergave",
       "beschrijving": "Kies welke secties zichtbaar zijn op uw dashboard.",
       "voortgang": "Voortgang nalatenschap",
+      "statistieken": "Statistieken",
       "voortgangGranulair": "Gedetailleerde voortgang",
       "suggesties": "Slimme suggesties",
       "domeinKaarten": "Domeinkaarten",
+      "meldingen": "Meldingen",
+      "backup": "Back-up status",
+      "aanbevolen": "Aanbevolen volgende stap",
+      "verloopdatum": "Verloopdatum documenten",
       "allesHerstellen": "Alles weer tonen"
     },
     "taal": {

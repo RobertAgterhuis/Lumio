@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useDomainQuery } from "@/hooks";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
-import { usePreferencesStore, type DashboardPreferences } from "@/stores/preferencesStore";
+import { usePreferencesStore, type DashboardPreferences, type BooleanPreferenceKey } from "@/stores/preferencesStore";
 import { NabestaandenDashboard } from "@/components/nabestaanden/NabestaandenDashboard";
 import { StatistiekenWidget } from "@/components/dashboard/StatistiekenWidget";
 import { VoortgangGranulair } from "@/components/dashboard/VoortgangGranulair";
@@ -146,11 +146,27 @@ interface ActualisatieDomein {
 export default function DashboardPage() {
   const { isReadOnly } = useAuthStore();
   const {
-    showVoortgang, showVoortgangGranulair, showSuggesties, showDomeinKaarten,
-    toggleSection,
+    showVoortgang, showStatistieken, showVoortgangGranulair, showSuggesties,
+    hiddenDomeinKaarten,
+    showMeldingen, showBackup, showAanbevolen, showVerloopdatum,
+    toggleSection, toggleDomeinKaart,
   } = usePreferencesStore();
   const [showInterview, setShowInterview] = useState(false);
+  const [showJuridisch, setShowJuridisch] = useState(false);
   const t = useTranslations("dashboard");
+
+  // Load persistent dismiss state for the legal notice
+  useEffect(() => {
+    const key = `lumio_juridisch_begrepen`;
+    if (!localStorage.getItem(key)) {
+      setShowJuridisch(true);
+    }
+  }, []);
+
+  const handleJuridischDismiss = () => {
+    localStorage.setItem(`lumio_juridisch_begrepen`, "1");
+    setShowJuridisch(false);
+  };
 
   // React Query hooks for dashboard data
   const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<{ voornaam?: string } | null>("eigenaar");
@@ -177,7 +193,7 @@ export default function DashboardPage() {
     return "beginnen";
   };
 
-  const HideButton = ({ section, label }: { section: keyof DashboardPreferences; label: string }) => (
+  const HideButton = ({ section, label }: { section: BooleanPreferenceKey; label: string }) => (
     <Button
       variant="ghost"
       size="sm"
@@ -217,17 +233,11 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="rounded-lg border border-info bg-info-100 p-4 dark:bg-info/20">
-        <p className="text-sm text-info">
-          <strong>{t("letOp")}</strong> {t("juridisch")}
-        </p>
-      </div>
-
       {/* Top widgets — responsive 2-column grid */}
-      {showVoortgang && (
+      {(showVoortgang || showStatistieken) && (
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Compleetheid-indicator */}
-          {compleetheid && (
+          {showVoortgang && compleetheid && (
             <div className="rounded-lg border bg-card p-5">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-semibold text-primary">
@@ -253,7 +263,14 @@ export default function DashboardPage() {
           )}
 
           {/* Statistieken-widget */}
-          <StatistiekenWidget />
+          {showStatistieken && (
+            <div className="relative">
+              <div className="absolute top-3 right-3 z-10">
+                <HideButton section="showStatistieken" label={t("statistieken.titel")} />
+              </div>
+              <StatistiekenWidget />
+            </div>
+          )}
         </div>
       )}
 
@@ -282,16 +299,12 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* S4-05/S4-06: Meldingen + Backup status widgets */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <MeldingenWidget />
-        <BackupStatusWidget />
-      </div>
-
-      {/* S6-14/15: Aanbevolen stap + verloopdatum documenten */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <AanbevolenStapWidget />
-        <DocumentenVerloopdatumWidget />
+      {/* Widgets: auto-fit grid — columns adapt to however many widgets actually render */}
+      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))]">
+        {showMeldingen && <MeldingenWidget />}
+        {showBackup && <BackupStatusWidget />}
+        {showAanbevolen && <AanbevolenStapWidget />}
+        {showVerloopdatum && <DocumentenVerloopdatumWidget />}
       </div>
 
       {showInterview && (
@@ -332,13 +345,8 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {showDomeinKaarten && (
-      <div>
-        <div className="flex items-center justify-end mb-2">
-          <HideButton section="showDomeinKaarten" label="Domeinkaarten" />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {domainCards.map((card) => {
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {domainCards.filter((card) => !hiddenDomeinKaarten.includes(card.domein)).map((card) => {
           const cardStatus = getCardStatus(card.domein);
           const isAanbevolen = card.domein === aanbevolenDomein;
           return (
@@ -353,27 +361,38 @@ export default function DashboardPage() {
                     <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.bgColor}`}>
                       <LumioIcon name={card.lumioIcon} size="md" className={card.color} />
                     </div>
-                    {cardStatus === "afgerond" ? (
-                      <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
-                        <CheckCircle2 className="h-3 w-3" />
-                        {t("status.afgerond")}
-                      </Badge>
-                    ) : cardStatus === "reviewNodig" ? (
-                      <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
-                        <AlertTriangle className="h-3 w-3" />
-                        {t("status.reviewNodig")}
-                      </Badge>
-                    ) : cardStatus === "bezig" ? (
-                      <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
-                        <Clock className="h-3 w-3" />
-                        {t("status.bezig")}
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="gap-1">
-                        <Circle className="h-3 w-3" />
-                        {t("status.beginnen")}
-                      </Badge>
-                    )}
+                    <div className="flex items-center gap-1">
+                      {cardStatus === "afgerond" ? (
+                        <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
+                          <CheckCircle2 className="h-3 w-3" />
+                          {t("status.afgerond")}
+                        </Badge>
+                      ) : cardStatus === "reviewNodig" ? (
+                        <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
+                          <AlertTriangle className="h-3 w-3" />
+                          {t("status.reviewNodig")}
+                        </Badge>
+                      ) : cardStatus === "bezig" ? (
+                        <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
+                          <Clock className="h-3 w-3" />
+                          {t("status.bezig")}
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="gap-1">
+                          <Circle className="h-3 w-3" />
+                          {t("status.beginnen")}
+                        </Badge>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs px-2 text-muted-foreground gap-1"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleDomeinKaart(card.domein); }}
+                      >
+                        <EyeOff className="h-3.5 w-3.5" />
+                        {t("verbergen")}
+                      </Button>
+                    </div>
                   </div>
                   <CardTitle className="text-lg mt-3 flex items-center gap-2">
                     {t(`domein.${card.domeinKey}.titel`)}
@@ -423,8 +442,21 @@ export default function DashboardPage() {
             </Link>
           );
         })}
-        </div>
       </div>
+
+      {/* Legal notice — shown until permanently dismissed */}
+      {showJuridisch && (
+        <div className="rounded-lg border border-info bg-info-100 p-4 dark:bg-info/20 flex items-start justify-between gap-4">
+          <p className="text-sm text-info">
+            <strong>{t("letOp")}</strong> {t("juridisch")}
+          </p>
+          <button
+            onClick={handleJuridischDismiss}
+            className="shrink-0 text-xs text-info font-semibold underline underline-offset-2 hover:no-underline whitespace-nowrap"
+          >
+            {t("juridischBegrepen")}
+          </button>
+        </div>
       )}
     </div>
   );
