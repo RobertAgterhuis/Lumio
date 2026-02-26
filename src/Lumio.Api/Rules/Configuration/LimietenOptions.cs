@@ -17,6 +17,7 @@ public class LimietenOptions
     public long DocumentMaxBytes { get; set; } = 52_428_800; // 50 MB
     public long VideoMaxBytes { get; set; } = 104_857_600;   // 100 MB
     public int VideoMaxAantal { get; set; } = 10;
+    public int VideoMaxDuurSeconden { get; set; } = 300;     // 5 min
 
     /// <summary>S8-12: Per-domein actualisatie-intervallen (overschrijven de globale waarde).</summary>
     public ActualisatieIntervallen ActualisatieIntervallen { get; set; } = new();

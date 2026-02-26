@@ -10,7 +10,6 @@ public class DatabaseUnlockMiddleware
     [
         "/api/auth/",
         "/api/profielen",
-        "/api/status",
         "/api/backup/restore",
         "/swagger"
     ];

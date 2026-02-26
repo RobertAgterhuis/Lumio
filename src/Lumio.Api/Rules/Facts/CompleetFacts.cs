@@ -45,7 +45,10 @@ public record UitvaartCompleetInfo(
     bool HeeftVoorkeurType,
     bool HeeftOndernemer,
     bool HeeftCeremonie,
-    bool HeeftRouwkaart);
+    bool HeeftRouwkaart,
+    bool HeeftLocatie,
+    bool CeremonieTypeIngevuld,
+    bool MuziekIngevuld);
 
 /// <summary>S7-12 — Granulaire informatie over donor-registratie compleetheid.</summary>
 public record DonorCompleetInfo(

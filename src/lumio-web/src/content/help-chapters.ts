@@ -31,6 +31,8 @@ export interface HelpChapter {
   fileEn: string;
   /** Route path this chapter is related to (for contextual help) */
   relatedRoute?: string;
+  /** Additional route paths this chapter covers (for contextual help) */
+  relatedRoutes?: string[];
 }
 
 /**
@@ -153,6 +155,7 @@ export const helpChapters: HelpChapter[] = [
     fileNl: "13-overige-functies.md",
     fileEn: "13-other-features.md",
     relatedRoute: "/instellingen",
+    relatedRoutes: ["/audit-log", "/tijdlijn", "/export", "/videoboodschappen"],
   },
   {
     slug: "nabestaanden",
@@ -167,6 +170,8 @@ export const helpChapters: HelpChapter[] = [
 /** Find the help chapter that corresponds to a given app route */
 export function getChapterForRoute(pathname: string): HelpChapter | undefined {
   return helpChapters.find(
-    (ch) => ch.relatedRoute && pathname.startsWith(ch.relatedRoute)
+    (ch) =>
+      (ch.relatedRoute && pathname.startsWith(ch.relatedRoute)) ||
+      ch.relatedRoutes?.some((r) => pathname.startsWith(r))
   );
 }

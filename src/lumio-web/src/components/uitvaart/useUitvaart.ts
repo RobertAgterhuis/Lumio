@@ -12,11 +12,13 @@ import type {
   CeremonieDetailFormData,
   GenodigdeFormData,
   UitvaartEditFormData,
+  LocatieEditFormData,
 } from "./types";
 import {
   emptyDetailForm,
   emptyGenodigdeForm,
   emptyUitvaartEditForm,
+  emptyLocatieEditForm,
 } from "./constants";
 
 export function useUitvaart() {
@@ -57,6 +59,12 @@ export function useUitvaart() {
   const [uitvaartEditError, setUitvaartEditError] = useState<string | null>(
     null
   );
+
+  // Locatie edit dialog state
+  const [locatieEditOpen, setLocatieEditOpen] = useState(false);
+  const [locatieEditForm, setLocatieEditForm] =
+    useState<LocatieEditFormData>(emptyLocatieEditForm);
+  const [locatieEditError, setLocatieEditError] = useState<string | null>(null);
 
   // Uitvaart edit dialog handlers
   const openUitvaartEdit = useCallback(() => {
@@ -137,6 +145,67 @@ export function useUitvaart() {
       );
     }
   }, [uitvaartEditForm, t, tf, refetchData]);
+
+  // Locatie edit handlers
+  const openLocatieEdit = useCallback(() => {
+    if (!data) return;
+    setLocatieEditError(null);
+    setLocatieEditForm({
+      voorkeurBegraafplaatsNaam: data.voorkeurBegraafplaatsNaam ?? "",
+      voorkeurBegraafplaatsAdres: data.voorkeurBegraafplaatsAdres ?? "",
+      voorkeurCrematoriumnaam: data.voorkeurCrematoriumnaam ?? "",
+      voorkeurCrematoriumAdres: data.voorkeurCrematoriumAdres ?? "",
+      voorkeurAulaNaam: data.voorkeurAulaNaam ?? "",
+      voorkeurAulaAdres: data.voorkeurAulaAdres ?? "",
+    });
+    setLocatieEditOpen(true);
+  }, [data]);
+
+  const saveLocatieEdit = useCallback(async () => {
+    if (!data) return;
+    setLocatieEditError(null);
+    try {
+      const d = data;
+      const f = locatieEditForm;
+      const payload = {
+        voorkeurType: d.voorkeurType,
+        begraafplaats: d.begraafplaats || null,
+        uitvaartOndernemer: d.uitvaartOndernemer || null,
+        uitvaartOndernemerTelefoon: d.uitvaartOndernemerTelefoon || null,
+        uitvaartOndernemerEmail: d.uitvaartOndernemerEmail || null,
+        uitvaartOndernemerAdres: d.uitvaartOndernemerAdres || null,
+        uitvaartOndernemerPostcode: d.uitvaartOndernemerPostcode || null,
+        uitvaartOndernemerPlaats: d.uitvaartOndernemerPlaats || null,
+        heeftUitvaartVerzekering: d.heeftUitvaartVerzekering ?? false,
+        uitvaartVerzekeringDetails: d.uitvaartVerzekeringDetails || null,
+        ceremonieSoort: d.ceremonieSoort || null,
+        ceremonieLocatie: d.ceremonieLocatie || null,
+        muziekwensen: d.muziekwensen || null,
+        sprekers: d.sprekers || null,
+        bloemen: d.bloemen || null,
+        kledingwensen: d.kledingwensen || null,
+        rouwkaartTekst: d.rouwkaartTekst || null,
+        rouwadvertentieTekst: d.rouwadvertentieTekst || null,
+        condoleance: d.condoleance || null,
+        overigeWensen: d.overigeWensen || null,
+        voorkeurBegraafplaatsNaam: f.voorkeurBegraafplaatsNaam || null,
+        voorkeurBegraafplaatsAdres: f.voorkeurBegraafplaatsAdres || null,
+        voorkeurCrematoriumnaam: f.voorkeurCrematoriumnaam || null,
+        voorkeurCrematoriumAdres: f.voorkeurCrematoriumAdres || null,
+        voorkeurAulaNaam: f.voorkeurAulaNaam || null,
+        voorkeurAulaAdres: f.voorkeurAulaAdres || null,
+        budgetRichting: d.budgetRichting || null,
+      };
+      await api.put<UitvaartWensen>("/api/uitvaart", payload);
+      refetchData();
+      setLocatieEditOpen(false);
+      toast.success(tf("opgeslagen"));
+    } catch (err) {
+      setLocatieEditError(
+        err instanceof Error ? err.message : t("opslaanMislukt")
+      );
+    }
+  }, [data, locatieEditForm, t, tf, refetchData]);
 
   // Ceremonie detail handlers
   const openDetailDialog = useCallback(
@@ -285,6 +354,15 @@ export function useUitvaart() {
     uitvaartEditError,
     openUitvaartEdit,
     saveUitvaartEdit,
+
+    // Locatie edit dialog
+    locatieEditOpen,
+    setLocatieEditOpen,
+    locatieEditForm,
+    setLocatieEditForm,
+    locatieEditError,
+    openLocatieEdit,
+    saveLocatieEdit,
 
     // Detail dialog
     detailDialogOpen,

@@ -342,6 +342,7 @@
     "sluiten": "Wizard sluiten",
     "voltooid": "{voltooid} van {totaal} voltooid",
     "laterInvullen": "Later invullen",
+    "nietMeerTonen": "Niet meer tonen",
     "afronden": "Afronden",
     "stappen": {
       "profiel": {
@@ -454,8 +455,12 @@
       "adresPlaceholder": "Straat en huisnummer",
       "postcode": "Postcode",
       "postcodePlaceholder": "1234 AB",
-      "plaats": "Plaats"
-    }
+      "plaats": "Plaats",
+      "voegToeAlsNoodcontact": "Voeg notaris toe als noodcontact",
+      "noodcontactToegevoegd": "Notaris toegevoegd als noodcontact",
+      "noodcontactToevoegenMislukt": "Noodcontact toevoegen mislukt"
+    },
+    "ongeslagenWijzigingen": "Niet-opgeslagen wijzigingen"
   },
   "enums": {
     "burgerlijkeStaat": {
@@ -1153,7 +1158,20 @@
       "titel": "Locatie-voorkeuren",
       "begraafplaats": "Begraafplaats:",
       "crematorium": "Crematorium:",
-      "aula": "Aula:"
+      "aula": "Aula:",
+      "bewerkenKnop": "Locatie bewerken",
+      "locatieNietIngevuld": "Nog geen locatie-voorkeuren vastgelegd.",
+      "dialog": {
+        "titel": "Locatie-voorkeuren bewerken",
+        "begraafplaatsNaam": "Naam begraafplaats",
+        "begraafplaatsAdres": "Adres begraafplaats",
+        "crematoriumNaam": "Naam crematorium",
+        "crematoriumAdres": "Adres crematorium",
+        "aulaNaam": "Naam aula",
+        "aulaAdres": "Adres aula",
+        "annuleren": "Annuleren",
+        "opslaan": "Opslaan"
+      }
     },
     "verloop": {
       "titel": "Ceremonieverloop",
@@ -1339,6 +1357,10 @@
     "verwijderenAlleVersiesTitel": "Alle versies verwijderen",
     "verwijderenAlleVersiesBevestig": "Weet u zeker dat u alle versies van dit document wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
     "verwijderenAlleVersies": "Alle versies verwijderen",
+    "verwijderenTitel": "Document verwijderen",
+    "verwijderenBevestig": "Weet u zeker dat u dit document wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "verwijderen": "Verwijderen",
+    "nieuweVersieUploaden": "Nieuwe versie uploaden",
     "dropzone": {
       "titel": "Bestanden hier loslaten",
       "beschrijving": "Sleep bestanden hierheen om te uploaden"
@@ -1570,12 +1592,18 @@
     "titel": "Activiteitenlogboek",
     "beschrijving": "Overzicht van alle acties die in uw nalatenschap zijn uitgevoerd",
     "recenteActiviteiten": "Recente activiteiten",
-    "activiteitenGevonden": "{aantal} activiteiten gevonden",
+    "activiteitenGevonden": "{aantal} activiteiten geladen",
     "laden": "Laden...",
     "geenActiviteiten": "Nog geen activiteiten geregistreerd.",
     "vernieuwen": "Vernieuwen",
     "alleActies": "Alle acties",
-    "laadFout": "Activiteiten konden niet worden geladen. Probeer het later opnieuw."
+    "laadFout": "Activiteiten konden niet worden geladen. Probeer het later opnieuw.",
+    "vandaag": "Vandaag",
+    "dezeWeek": "Deze week",
+    "dezeMaand": "Deze maand",
+    "alles": "Alles",
+    "laadMeer": "Meer laden",
+    "geenMeerActiviteiten": "Geen verdere activiteiten"
   },
   "exporteren": {
     "titel": "Exporteren",

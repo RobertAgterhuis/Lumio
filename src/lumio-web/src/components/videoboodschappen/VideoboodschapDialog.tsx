@@ -25,6 +25,7 @@ import { VideoRecorder } from "./VideoRecorder";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
 import type { Videoboodschap, VideoboodschapFormData } from "./types";
 import { emptyVideoboodschapForm } from "./types";
+import { api } from "@/lib/api-client";
 
 interface VideoboodschapDialogProps {
   open: boolean;
@@ -72,7 +73,15 @@ export function VideoboodschapDialog({
   );
   const [error, setError] = useState<string | null>(null);
   const [videoTab, setVideoTab] = useState("opnemen");
+  const [maxDuurSeconden, setMaxDuurSeconden] = useState<number>(300);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch duration limit from backend on mount
+  useEffect(() => {
+    api.get<{ maxAantal: number; maxDuurSeconden: number }>("/api/videoboodschappen/limiet")
+      .then((res) => setMaxDuurSeconden(res.maxDuurSeconden))
+      .catch(() => { /* keep default 300 */ });
+  }, []);
 
   // Q-21: Reset form when editing prop changes (prevents stale formdata)
   useEffect(() => {
@@ -227,7 +236,7 @@ export function VideoboodschapDialog({
                 </TabsList>
 
                 <TabsContent value="opnemen" className="mt-3">
-                  <VideoRecorder onVideoSelected={handleRecorded} />
+                  <VideoRecorder onVideoSelected={handleRecorded} maxDurationSeconds={maxDuurSeconden} />
                 </TabsContent>
 
                 <TabsContent value="uploaden" className="mt-3">

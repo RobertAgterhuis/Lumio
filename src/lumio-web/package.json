@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "next dev --port 3000",
+    "prebuild": "node scripts/generate-help-content.js",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",

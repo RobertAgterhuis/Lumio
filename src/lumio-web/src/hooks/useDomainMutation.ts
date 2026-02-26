@@ -3,6 +3,17 @@ import { api, ApiError } from "@/lib/api-client";
 import { toast } from "@/stores/toastStore";
 import { domainKeys } from "./useDomainQuery";
 
+// Status query keys that must be refreshed after any domain data change
+const STATUS_KEYS = [
+  domainKeys.all("status/compleetheid"),
+  domainKeys.all("status/meldingen"),
+  domainKeys.all("status/actualisatie"),
+];
+
+function invalidateStatusKeys(queryClient: ReturnType<typeof useQueryClient>) {
+  STATUS_KEYS.forEach((key) => queryClient.invalidateQueries({ queryKey: key }));
+}
+
 type MutationMethod = "create" | "update" | "delete";
 
 interface UseDomainMutationOptions<TData, TVariables> {
@@ -40,6 +51,8 @@ export function useDomainCreate<TData, TVariables>(
     onSuccess: () => {
       // Invalidate list queries for this domain
       queryClient.invalidateQueries({ queryKey: domainKeys.all(endpoint) });
+      // Refresh dashboard status data
+      invalidateStatusKeys(queryClient);
 
       // Invalidate any additional specified keys
       if (invalidateKeys) {
@@ -82,6 +95,8 @@ export function useDomainUpdate<TData, TVariables>(
       queryClient.invalidateQueries({ queryKey: domainKeys.all(endpoint) });
       // Invalidate the specific item
       queryClient.invalidateQueries({ queryKey: domainKeys.detail(endpoint, variables.id) });
+      // Refresh dashboard status data
+      invalidateStatusKeys(queryClient);
 
       // Invalidate any additional specified keys
       if (invalidateKeys) {
@@ -122,6 +137,8 @@ export function useDomainDelete(
       queryClient.invalidateQueries({ queryKey: domainKeys.all(endpoint) });
       // Remove the specific item from cache
       queryClient.removeQueries({ queryKey: domainKeys.detail(endpoint, id) });
+      // Refresh dashboard status data
+      invalidateStatusKeys(queryClient);
 
       // Invalidate any additional specified keys
       if (invalidateKeys) {

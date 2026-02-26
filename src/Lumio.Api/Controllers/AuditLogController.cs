@@ -21,10 +21,13 @@ public class AuditLogController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<AuditLogDto>>> GetAll(
+    public async Task<ActionResult<AuditLogPagedResult>> GetAll(
         [FromQuery] int? limit,
         [FromQuery] string? actie,
-        [FromQuery] string? entityType)
+        [FromQuery] string? entityType,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to,
+        [FromQuery] DateTime? before)
     {
         var query = _db.AuditLog.AsQueryable();
 
@@ -34,14 +37,24 @@ public class AuditLogController : ControllerBase
         if (!string.IsNullOrWhiteSpace(entityType))
             query = query.Where(a => a.EntityType == entityType);
 
+        if (from.HasValue)
+            query = query.Where(a => a.Tijdstip >= from.Value.ToUniversalTime());
+
+        if (to.HasValue)
+            query = query.Where(a => a.Tijdstip <= to.Value.ToUniversalTime());
+
+        // Cursor-based pagination: load entries before this timestamp
+        if (before.HasValue)
+            query = query.Where(a => a.Tijdstip < before.Value.ToUniversalTime());
+
         query = query.OrderByDescending(a => a.Tijdstip);
 
-        if (limit.HasValue && limit.Value > 0)
-            query = query.Take(limit.Value);
-        else
-            query = query.Take(_limieten.AuditLogStandaardLimiet);
+        var effectiveLimit = (limit.HasValue && limit.Value > 0)
+            ? Math.Min(limit.Value, 200)
+            : 50;
 
-        var items = await query.Select(a => new AuditLogDto
+        // Fetch one extra to detect whether more entries exist
+        var raw = await query.Take(effectiveLimit + 1).Select(a => new AuditLogDto
         {
             Id = a.Id,
             Tijdstip = a.Tijdstip,
@@ -51,7 +64,10 @@ public class AuditLogController : ControllerBase
             Details = a.Details
         }).ToListAsync();
 
-        return Ok(items);
+        var heeftMeer = raw.Count > effectiveLimit;
+        var items = heeftMeer ? raw.Take(effectiveLimit).ToList() : raw;
+
+        return Ok(new AuditLogPagedResult { Items = items, HeeftMeer = heeftMeer });
     }
 
     /// <summary>
@@ -70,6 +86,12 @@ public class AuditLogController : ControllerBase
         await _db.SaveChangesAsync();
         return NoContent();
     }
+}
+
+public class AuditLogPagedResult
+{
+    public List<AuditLogDto> Items { get; set; } = new();
+    public bool HeeftMeer { get; set; }
 }
 
 public class AuditLogDto

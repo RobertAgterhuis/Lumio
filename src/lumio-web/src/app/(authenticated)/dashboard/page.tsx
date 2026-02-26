@@ -28,6 +28,7 @@ import {
   Circle,
   Clock,
   EyeOff,
+  Sparkles,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 
@@ -153,9 +154,12 @@ export default function DashboardPage() {
 
   // React Query hooks for dashboard data
   const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<{ voornaam?: string } | null>("eigenaar");
-  const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid");
-  const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie");
+  const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid", { staleTime: 0 });
+  const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie", { staleTime: 0 });
   const actualisatie = actualisatieData?.domeinen ?? [];
+
+  // Derive the first unfilled domain — same logic as AanbevolenStapWidget
+  const aanbevolenDomein = compleetheid?.domeinen.find((d) => !d.ingevuld)?.domein ?? null;
 
   type CardStatus = "afgerond" | "reviewNodig" | "bezig" | "beginnen";
 
@@ -336,9 +340,14 @@ export default function DashboardPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {domainCards.map((card) => {
           const cardStatus = getCardStatus(card.domein);
+          const isAanbevolen = card.domein === aanbevolenDomein;
           return (
             <Link key={card.href} href={card.href}>
-              <Card className="h-full transition-shadow hover:shadow-md cursor-pointer">
+              <Card className={`h-full transition-shadow hover:shadow-md cursor-pointer ${
+                isAanbevolen
+                  ? "border-primary/60 ring-2 ring-primary/20 shadow-sm"
+                  : ""
+              }`}>
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.bgColor}`}>
@@ -366,7 +375,10 @@ export default function DashboardPage() {
                       </Badge>
                     )}
                   </div>
-                  <CardTitle className="text-lg mt-3">{t(`domein.${card.domeinKey}.titel`)}</CardTitle>
+                  <CardTitle className="text-lg mt-3 flex items-center gap-2">
+                    {t(`domein.${card.domeinKey}.titel`)}
+                    {isAanbevolen && <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription>{t(`domein.${card.domeinKey}.beschrijving`)}</CardDescription>

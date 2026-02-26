@@ -8,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
@@ -34,6 +42,13 @@ export default function UitvaartPage() {
     uitvaartEditError,
     openUitvaartEdit,
     saveUitvaartEdit,
+    locatieEditOpen,
+    setLocatieEditOpen,
+    locatieEditForm,
+    setLocatieEditForm,
+    locatieEditError,
+    openLocatieEdit,
+    saveLocatieEdit,
     detailDialogOpen,
     setDetailDialogOpen,
     editDetailId,
@@ -215,36 +230,45 @@ export default function UitvaartPage() {
           </div>
 
           {/* Location Card */}
-          {(data.voorkeurBegraafplaatsNaam || data.voorkeurCrematoriumnaam || data.voorkeurAulaNaam) && (
-            <Card>
-              <CardHeader>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
                 <CardTitle>{t("locatieCard.titel")}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                {data.voorkeurBegraafplaatsNaam && (
-                  <p>
-                    <span className="text-muted-foreground">{t("locatieCard.begraafplaats")}</span>{" "}
-                    {data.voorkeurBegraafplaatsNaam}
-                    {data.voorkeurBegraafplaatsAdres && ` \u2014 ${data.voorkeurBegraafplaatsAdres}`}
-                  </p>
-                )}
-                {data.voorkeurCrematoriumnaam && (
-                  <p>
-                    <span className="text-muted-foreground">{t("locatieCard.crematorium")}</span>{" "}
-                    {data.voorkeurCrematoriumnaam}
-                    {data.voorkeurCrematoriumAdres && ` \u2014 ${data.voorkeurCrematoriumAdres}`}
-                  </p>
-                )}
-                {data.voorkeurAulaNaam && (
-                  <p>
-                    <span className="text-muted-foreground">{t("locatieCard.aula")}</span>{" "}
-                    {data.voorkeurAulaNaam}
-                    {data.voorkeurAulaAdres && ` \u2014 ${data.voorkeurAulaAdres}`}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          )}
+                <Button variant="ghost" size="sm" onClick={openLocatieEdit}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2 text-sm">
+              {!data.voorkeurBegraafplaatsNaam && !data.voorkeurCrematoriumnaam && !data.voorkeurAulaNaam ? (
+                <p className="text-muted-foreground">{t("locatieCard.locatieNietIngevuld")}</p>
+              ) : (
+                <>
+                  {data.voorkeurBegraafplaatsNaam && (
+                    <p>
+                      <span className="text-muted-foreground">{t("locatieCard.begraafplaats")}</span>{" "}
+                      {data.voorkeurBegraafplaatsNaam}
+                      {data.voorkeurBegraafplaatsAdres && ` \u2014 ${data.voorkeurBegraafplaatsAdres}`}
+                    </p>
+                  )}
+                  {data.voorkeurCrematoriumnaam && (
+                    <p>
+                      <span className="text-muted-foreground">{t("locatieCard.crematorium")}</span>{" "}
+                      {data.voorkeurCrematoriumnaam}
+                      {data.voorkeurCrematoriumAdres && ` \u2014 ${data.voorkeurCrematoriumAdres}`}
+                    </p>
+                  )}
+                  {data.voorkeurAulaNaam && (
+                    <p>
+                      <span className="text-muted-foreground">{t("locatieCard.aula")}</span>{" "}
+                      {data.voorkeurAulaNaam}
+                      {data.voorkeurAulaAdres && ` \u2014 ${data.voorkeurAulaAdres}`}
+                    </p>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Ceremony Details */}
           <Card>
@@ -341,6 +365,70 @@ export default function UitvaartPage() {
         onSave={saveUitvaartEdit}
         error={uitvaartEditError}
       />
+
+      {/* Locatie Edit Dialog */}
+      <Dialog open={locatieEditOpen} onOpenChange={setLocatieEditOpen}>
+          <DialogHeader>
+            <DialogTitle>{t("locatieCard.dialog.titel")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            {locatieEditError && (
+              <Alert variant="danger">
+                <AlertDescription>{locatieEditError}</AlertDescription>
+              </Alert>
+            )}
+            <div className="space-y-2">
+              <Label>{t("locatieCard.dialog.begraafplaatsNaam")}</Label>
+              <Input
+                value={locatieEditForm.voorkeurBegraafplaatsNaam}
+                onChange={(e) => setLocatieEditForm((f) => ({ ...f, voorkeurBegraafplaatsNaam: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("locatieCard.dialog.begraafplaatsAdres")}</Label>
+              <Input
+                value={locatieEditForm.voorkeurBegraafplaatsAdres}
+                onChange={(e) => setLocatieEditForm((f) => ({ ...f, voorkeurBegraafplaatsAdres: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("locatieCard.dialog.crematoriumNaam")}</Label>
+              <Input
+                value={locatieEditForm.voorkeurCrematoriumnaam}
+                onChange={(e) => setLocatieEditForm((f) => ({ ...f, voorkeurCrematoriumnaam: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("locatieCard.dialog.crematoriumAdres")}</Label>
+              <Input
+                value={locatieEditForm.voorkeurCrematoriumAdres}
+                onChange={(e) => setLocatieEditForm((f) => ({ ...f, voorkeurCrematoriumAdres: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("locatieCard.dialog.aulaNaam")}</Label>
+              <Input
+                value={locatieEditForm.voorkeurAulaNaam}
+                onChange={(e) => setLocatieEditForm((f) => ({ ...f, voorkeurAulaNaam: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("locatieCard.dialog.aulaAdres")}</Label>
+              <Input
+                value={locatieEditForm.voorkeurAulaAdres}
+                onChange={(e) => setLocatieEditForm((f) => ({ ...f, voorkeurAulaAdres: e.target.value }))}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setLocatieEditOpen(false)}>
+              {t("locatieCard.dialog.annuleren")}
+            </Button>
+            <Button onClick={saveLocatieEdit}>
+              {t("locatieCard.dialog.opslaan")}
+            </Button>
+          </DialogFooter>
+      </Dialog>
     </div>
   );
 }

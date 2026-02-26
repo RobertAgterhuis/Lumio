@@ -134,7 +134,7 @@ public class EigenaarController : ControllerBase
     {
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null)
-            return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+            return Ok(new { onboardingVoltooid = false });
 
         if (!eigenaar.OnboardingVoltooid)
         {

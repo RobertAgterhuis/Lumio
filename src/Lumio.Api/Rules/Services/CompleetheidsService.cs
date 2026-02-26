@@ -112,7 +112,7 @@ public class CompleetheidsService : ICompleetheidsService
         // Uitvaart
         if (facts.Uitvaart is { } uitv)
         {
-            var velden = new[] { uitv.HeeftVoorkeurType, uitv.HeeftOndernemer, uitv.HeeftCeremonie, uitv.HeeftRouwkaart };
+            var velden = new[] { uitv.HeeftVoorkeurType, uitv.HeeftOndernemer, uitv.HeeftCeremonie, uitv.HeeftRouwkaart, uitv.HeeftLocatie, uitv.CeremonieTypeIngevuld, uitv.MuziekIngevuld };
             domeinen.Add(new("uitvaart", L["DomainFuneral"].Value, velden.Count(v => v), velden.Length));
         }
         else

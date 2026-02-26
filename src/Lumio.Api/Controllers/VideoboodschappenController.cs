@@ -67,7 +67,7 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
     [HttpGet("limiet")]
     public IActionResult GetLimiet()
     {
-        return Ok(new { maxAantal = _limieten.VideoMaxAantal });
+        return Ok(new { maxAantal = _limieten.VideoMaxAantal, maxDuurSeconden = _limieten.VideoMaxDuurSeconden });
     }
 
     // ── POST /api/videoboodschappen/uploaden ────────────────────────────────
@@ -102,6 +102,13 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
             return BadRequest(new
             {
                 error = $"Bestand is te groot. Maximum is {_limieten.VideoMaxBytes / 1_048_576} MB."
+            });
+
+        // Enforce duration limit
+        if (duurSeconden.HasValue && duurSeconden.Value > _limieten.VideoMaxDuurSeconden)
+            return BadRequest(new
+            {
+                error = $"Video mag maximaal {_limieten.VideoMaxDuurSeconden} seconden duren."
             });
 
         // Allow only video MIME types
@@ -139,13 +146,16 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         };
 
         // Validate and link recipients
-        foreach (var eid in ontvIds.Distinct())
+        var distinctIds = ontvIds.Distinct().ToList();
+        foreach (var eid in distinctIds)
         {
             var bestaat = await db.Erfgenamen
                 .AnyAsync(e => e.Id == eid && e.EigenaarId == eigenaar.Id);
-            if (bestaat)
-                item.Ontvangers.Add(new VideoboodschapOntvanger { ErfgenaamId = eid });
+            if (!bestaat)
+                return BadRequest(new { error = $"Erfgenaam {eid} bestaat niet of behoort niet tot dit profiel." });
         }
+        foreach (var eid in distinctIds)
+            item.Ontvangers.Add(new VideoboodschapOntvanger { ErfgenaamId = eid });
 
         db.Videoboodschappen.Add(item);
         await db.SaveChangesAsync();

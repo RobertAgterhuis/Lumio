@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -48,6 +48,8 @@ export function OnboardingWizard() {
   const storageKey = activeProfile?.id ? `lumio_onboarding_${activeProfile.id}_completed` : ONBOARDING_KEY;
   const [visible, setVisible] = useState(false);
   const [localStorageChecked, setLocalStorageChecked] = useState(false);
+  // Session-level ref: prevents wizard re-showing after user navigates via it
+  const sessionDismissedRef = useRef(false);
 
   // Load data with React Query
   const { data: eigenaar, isLoading: loadingEigenaar } = useDomainQuery<{ id?: string } | null>("eigenaar");
@@ -71,6 +73,10 @@ export function OnboardingWizard() {
 
   // Check localStorage and determine visibility
   useEffect(() => {
+    const sessionKey = `${storageKey}_session`;
+    if (sessionStorage.getItem(sessionKey) === "true") {
+      sessionDismissedRef.current = true;
+    }
     const completed = localStorage.getItem(storageKey);
     if (completed === "true") {
       setVisible(false);
@@ -89,19 +95,38 @@ export function OnboardingWizard() {
       setVisible(false);
     } else {
       const completed = localStorage.getItem(storageKey);
-      if (completed !== "true") {
+      if (completed !== "true" && !sessionDismissedRef.current) {
         setVisible(true);
       }
     }
   }, [localStorageChecked, loading, stapStatus, storageKey]);
 
+  const dismissForSession = () => {
+    const sessionKey = `${storageKey}_session`;
+    sessionStorage.setItem(sessionKey, "true");
+    sessionDismissedRef.current = true;
+  };
+
   const handleComplete = () => {
+    dismissForSession();
+    // Permanently complete only when all steps are truly done
+    if (stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus])) {
+      localStorage.setItem(storageKey, "true");
+      void api.post("/api/eigenaar/onboarding-voltooid").catch(() => void 0);
+    }
+    setVisible(false);
+  };
+
+  const handleDontShowAgain = () => {
+    // Permanently suppress the wizard (survives app restarts)
     localStorage.setItem(storageKey, "true");
-    void api.post("/api/eigenaar/onboarding-voltooid").catch(() => void 0);
+    sessionDismissedRef.current = true;
     setVisible(false);
   };
 
   const handleNavigate = (href: string) => {
+    dismissForSession();
+    setVisible(false);
     router.push(href);
   };
 
@@ -111,7 +136,7 @@ export function OnboardingWizard() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="mx-4 w-full max-w-lg rounded-xl border border-border bg-background shadow-2xl">
+      <div className="mx-4 w-full max-w-2xl rounded-xl border border-border bg-background shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div className="flex items-center gap-3">
@@ -155,7 +180,7 @@ export function OnboardingWizard() {
         </div>
 
         {/* Steps */}
-        <div className="max-h-[400px] overflow-y-auto px-6 py-4 space-y-2">
+        <div className="px-6 py-4 space-y-2">
           {stappen.map((stap) => {
             const isDone = stapStatus[stap.id as keyof typeof stapStatus];
             const Icon = stap.icon;
@@ -207,9 +232,20 @@ export function OnboardingWizard() {
 
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-border px-6 py-4">
-          <Button variant="ghost" onClick={handleComplete}>
-            {t("laterInvullen")}
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" onClick={handleComplete}>
+              {t("laterInvullen")}
+            </Button>
+            {completedCount < stappen.length && (
+              <button
+                type="button"
+                onClick={handleDontShowAgain}
+                className="text-sm font-bold text-muted-foreground underline-offset-2 hover:underline hover:text-foreground transition-colors"
+              >
+                {t("nietMeerTonen")}
+              </button>
+            )}
+          </div>
           {completedCount === stappen.length && (
             <Button onClick={handleComplete}>
               <Check className="h-4 w-4 mr-2" />

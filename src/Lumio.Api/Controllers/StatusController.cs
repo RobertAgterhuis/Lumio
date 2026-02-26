@@ -399,7 +399,10 @@ public class StatusController : ControllerBase
                 !string.IsNullOrEmpty(uitvaart.VoorkeurType),
                 !string.IsNullOrEmpty(uitvaart.UitvaartOndernemer),
                 !string.IsNullOrEmpty(uitvaart.CeremonieSoort),
-                !string.IsNullOrEmpty(uitvaart.RouwkaartTekst)) : null,
+                !string.IsNullOrEmpty(uitvaart.RouwkaartTekst),
+                !string.IsNullOrEmpty(uitvaart.VoorkeurBegraafplaatsNaam) || !string.IsNullOrEmpty(uitvaart.VoorkeurCrematoriumnaam) || !string.IsNullOrEmpty(uitvaart.VoorkeurAulaNaam),
+                !string.IsNullOrEmpty(uitvaart.CeremonieSoort),
+                !string.IsNullOrEmpty(uitvaart.Muziekwensen)) : null,
             await db.Documenten.CountAsync(),
             await db.Erfgenamen.CountAsync(),
             await db.Noodcontacten.CountAsync());

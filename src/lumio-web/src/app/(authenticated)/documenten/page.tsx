@@ -52,6 +52,7 @@ export default function DocumentenPage() {
   const [dropDialogOpen, setDropDialogOpen] = useState(false);
   const dragCounter = useRef(0);
   const [confirmDeleteAllId, setConfirmDeleteAllId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   // S3-33: Edit dialog for verlooptOp and notities
   const [editDocOpen, setEditDocOpen] = useState(false);
@@ -345,7 +346,7 @@ export default function DocumentenPage() {
                         onClick={() =>
                           doc.aantalVersies > 1
                             ? setConfirmDeleteAllId(doc.id)
-                            : handleDelete(doc.id)
+                            : setConfirmDeleteId(doc.id)
                         }
                       >
                         <Trash2 className="h-4 w-4 text-danger" />
@@ -406,6 +407,23 @@ export default function DocumentenPage() {
                           </div>
                         </div>
                       ))}
+                      {/* S9-05: Upload nieuwe versie */}
+                      <div className="pt-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs gap-1"
+                          onClick={() => {
+                            setNaam(doc.naam);
+                            setCategorie(doc.categorie);
+                            setVerlooptOp("");
+                            setUploadOpen(true);
+                          }}
+                        >
+                          <Upload className="h-3 w-3" />
+                          {t("nieuweVersieUploaden")}
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -558,6 +576,35 @@ export default function DocumentenPage() {
             {dropUploads.every((u) => u.status === "done")
               ? t("dropDialog.klaar")
               : t("dropDialog.allesUploaden", { aantal: dropUploads.filter((u) => u.status !== "done").length })}
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Confirm delete single version dialog */}
+      <Dialog
+        open={confirmDeleteId !== null}
+        onOpenChange={(open) => { if (!open) setConfirmDeleteId(null); }}
+      >
+        <DialogHeader>
+          <DialogTitle>{t("verwijderenTitel")}</DialogTitle>
+        </DialogHeader>
+        <p className="py-4 text-sm text-muted-foreground">
+          {t("verwijderenBevestig")}
+        </p>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setConfirmDeleteId(null)}>
+            {t("uploadDialog.annuleren")}
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={async () => {
+              if (confirmDeleteId) {
+                await handleDelete(confirmDeleteId);
+                setConfirmDeleteId(null);
+              }
+            }}
+          >
+            {t("verwijderen")}
           </Button>
         </DialogFooter>
       </Dialog>

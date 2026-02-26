@@ -102,3 +102,12 @@ export interface UitvaartEditFormData {
   voorkeurAulaAdres: string;
   budgetRichting: string;
 }
+
+export interface LocatieEditFormData {
+  voorkeurBegraafplaatsNaam: string;
+  voorkeurBegraafplaatsAdres: string;
+  voorkeurCrematoriumnaam: string;
+  voorkeurCrematoriumAdres: string;
+  voorkeurAulaNaam: string;
+  voorkeurAulaAdres: string;
+}

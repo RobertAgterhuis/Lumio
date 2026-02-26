@@ -167,6 +167,8 @@ public class DocumentenController : ControllerBase
         var item = await _db.Documenten.FindAsync(id);
         if (item is null) return NotFound();
 
+        await _audit.LogAsync("DocumentGedownload", "Document", id, item.BestandsNaam);
+
         byte[] content;
         try
         {

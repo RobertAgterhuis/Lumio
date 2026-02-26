@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 interface VideoRecorderProps {
   /** Called when the user accepts a recording. */
   onVideoSelected: (file: File, durationSeconds: number) => void;
-  /** Maximum allowed recording duration in seconds (default: 300 = 5 min). */
-  maxDurationSeconds?: number;
+  /** Maximum allowed recording duration in seconds. */
+  maxDurationSeconds: number;
 }
 
 type RecordState =
@@ -31,7 +31,7 @@ function formatTime(seconds: number): string {
 /** In-browser video recorder using the MediaRecorder API. */
 export function VideoRecorder({
   onVideoSelected,
-  maxDurationSeconds = 300,
+  maxDurationSeconds,
 }: VideoRecorderProps) {
   const t = useTranslations("videoboodschappen.recorder");
 

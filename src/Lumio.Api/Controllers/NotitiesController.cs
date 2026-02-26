@@ -31,12 +31,12 @@ public class NotitiesController(LumioDbContext db) : ControllerBase
     public async Task<ActionResult<SectieNotitieResponse>> GetBySectie(string sectie)
     {
         var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return NotFound("Geen eigenaar gevonden.");
+        if (eigenaar is null) return Ok(new SectieNotitieResponse(Guid.Empty, sectie, "", DateTime.MinValue));
 
         var notitie = await db.SectieNotities
             .FirstOrDefaultAsync(n => n.EigenaarId == eigenaar.Id && n.Sectie == sectie);
 
-        if (notitie is null) return NotFound();
+        if (notitie is null) return Ok(new SectieNotitieResponse(Guid.Empty, sectie, "", DateTime.MinValue));
         return notitie.Adapt<SectieNotitieResponse>();
     }
 

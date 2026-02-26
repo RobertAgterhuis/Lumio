@@ -16,5 +16,5 @@ public class CompleetheidsOptions
     public int TestamentVelden { get; set; } = 6;
     public int EuthanasieVelden { get; set; } = 5;
     public int DonorVelden { get; set; } = 1;
-    public int UitvaartVelden { get; set; } = 4;
+    public int UitvaartVelden { get; set; } = 7;
 }

@@ -342,6 +342,7 @@
     "sluiten": "Close wizard",
     "voltooid": "{voltooid} of {totaal} completed",
     "laterInvullen": "Fill in later",
+    "nietMeerTonen": "Do not show again",
     "afronden": "Finish",
     "stappen": {
       "profiel": {
@@ -454,8 +455,12 @@
       "adresPlaceholder": "Street and house number",
       "postcode": "Postal code",
       "postcodePlaceholder": "1234 AB",
-      "plaats": "City"
-    }
+      "plaats": "City",
+      "voegToeAlsNoodcontact": "Add notary as emergency contact",
+      "noodcontactToegevoegd": "Notary added as emergency contact",
+      "noodcontactToevoegenMislukt": "Failed to add emergency contact"
+    },
+    "ongeslagenWijzigingen": "Unsaved changes"
   },
   "enums": {
     "burgerlijkeStaat": {
@@ -1153,7 +1158,20 @@
       "titel": "Location preferences",
       "begraafplaats": "Cemetery:",
       "crematorium": "Crematorium:",
-      "aula": "Chapel:"
+      "aula": "Chapel:",
+      "bewerkenKnop": "Edit location",
+      "locatieNietIngevuld": "No location preferences recorded yet.",
+      "dialog": {
+        "titel": "Edit location preferences",
+        "begraafplaatsNaam": "Cemetery name",
+        "begraafplaatsAdres": "Cemetery address",
+        "crematoriumNaam": "Crematorium name",
+        "crematoriumAdres": "Crematorium address",
+        "aulaNaam": "Chapel name",
+        "aulaAdres": "Chapel address",
+        "annuleren": "Cancel",
+        "opslaan": "Save"
+      }
     },
     "verloop": {
       "titel": "Ceremony program",
@@ -1339,6 +1357,10 @@
     "verwijderenAlleVersiesTitel": "Delete all versions",
     "verwijderenAlleVersiesBevestig": "Are you sure you want to delete all versions of this document? This cannot be undone.",
     "verwijderenAlleVersies": "Delete all versions",
+    "verwijderenTitel": "Delete document",
+    "verwijderenBevestig": "Are you sure you want to delete this document? This cannot be undone.",
+    "verwijderen": "Delete",
+    "nieuweVersieUploaden": "Upload new version",
     "dropzone": {
       "titel": "Drop files here",
       "beschrijving": "Drag files here to upload"
@@ -1570,12 +1592,18 @@
     "titel": "Activity log",
     "beschrijving": "Overview of all actions performed in your estate",
     "recenteActiviteiten": "Recent activities",
-    "activiteitenGevonden": "{aantal} activities found",
+    "activiteitenGevonden": "{aantal} activities loaded",
     "laden": "Loading...",
     "geenActiviteiten": "No activities recorded yet.",
     "vernieuwen": "Refresh",
     "alleActies": "All actions",
-    "laadFout": "Activities could not be loaded. Please try again later."
+    "laadFout": "Activities could not be loaded. Please try again later.",
+    "vandaag": "Today",
+    "dezeWeek": "This week",
+    "dezeMaand": "This month",
+    "alles": "All time",
+    "laadMeer": "Load more",
+    "geenMeerActiviteiten": "No more activities"
   },
   "exporteren": {
     "titel": "Export",

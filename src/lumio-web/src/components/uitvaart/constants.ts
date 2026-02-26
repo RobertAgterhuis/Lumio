@@ -2,6 +2,7 @@ import type {
   CeremonieDetailFormData,
   GenodigdeFormData,
   UitvaartEditFormData,
+  LocatieEditFormData,
 } from "./types";
 
 export const emptyDetailForm: CeremonieDetailFormData = {
@@ -53,4 +54,13 @@ export const emptyUitvaartEditForm: UitvaartEditFormData = {
   voorkeurAulaNaam: "",
   voorkeurAulaAdres: "",
   budgetRichting: "",
+};
+
+export const emptyLocatieEditForm: LocatieEditFormData = {
+  voorkeurBegraafplaatsNaam: "",
+  voorkeurBegraafplaatsAdres: "",
+  voorkeurCrematoriumnaam: "",
+  voorkeurCrematoriumAdres: "",
+  voorkeurAulaNaam: "",
+  voorkeurAulaAdres: "",
 };

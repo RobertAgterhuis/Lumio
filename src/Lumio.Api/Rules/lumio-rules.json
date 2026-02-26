@@ -64,6 +64,7 @@
     "zoekenMinQueryLengte": 2,
     "fotoMaxBytes": 10485760,
     "documentMaxBytes": 52428800,
+    "videoMaxDuurSeconden": 300,
     "actualisatieIntervallen": {
       "standaard": 90,
       "testament": 365,
@@ -110,6 +111,6 @@
     "testamentVelden": 6,
     "euthanasieVelden": 5,
     "donorVelden": 1,
-    "uitvaartVelden": 4
+    "uitvaartVelden": 7
   }
 }
