@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { FileText, AlertTriangle, EyeOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,20 +26,28 @@ function dagenTot(verlooptOp: string): number {
   return Math.ceil((verloop.getTime() - nu.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export function DocumentenVerloopdatumWidget() {
+export function DocumentenVerloopdatumWidget({ onHasContent }: { onHasContent?: (v: boolean) => void }) {
   const t = useTranslations("dashboard");
   const toggleSection = usePreferencesStore((s) => s.toggleSection);
   const { data: documenten = [], isLoading } = useDomainQuery<Document[]>("documenten");
 
+  const verlopen = !isLoading
+    ? documenten
+        .filter((d) => d.verlooptOp != null)
+        .map((d) => ({ ...d, dagenResterend: dagenTot(d.verlooptOp!) }))
+        .filter((d) => d.dagenResterend <= DAGEN_WAARSCHUWING)
+        .sort((a, b) => a.dagenResterend - b.dagenResterend)
+        .slice(0, 5)
+    : [];
+
+  // Report to parent whether this widget has visible content
+  useEffect(() => {
+    if (!isLoading) {
+      onHasContent?.(verlopen.length > 0);
+    }
+  }, [isLoading, verlopen.length, onHasContent]);
+
   if (isLoading) return null;
-
-  const verlopen = documenten
-    .filter((d) => d.verlooptOp != null)
-    .map((d) => ({ ...d, dagenResterend: dagenTot(d.verlooptOp!) }))
-    .filter((d) => d.dagenResterend <= DAGEN_WAARSCHUWING)
-    .sort((a, b) => a.dagenResterend - b.dagenResterend)
-    .slice(0, 5);
-
   if (verlopen.length === 0) return null;
 
   return (

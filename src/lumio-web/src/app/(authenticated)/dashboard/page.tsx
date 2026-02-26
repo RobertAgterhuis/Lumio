@@ -2,6 +2,21 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +32,8 @@ import { MeldingenWidget } from "@/components/dashboard/MeldingenWidget";
 import { BackupStatusWidget } from "@/components/dashboard/BackupStatusWidget";
 import { AanbevolenStapWidget } from "@/components/dashboard/AanbevolenStapWidget";
 import { DocumentenVerloopdatumWidget } from "@/components/dashboard/DocumentenVerloopdatumWidget";
+import { SortableDomeinKaart } from "@/components/dashboard/SortableDomeinKaart";
+import { SortableSection } from "@/components/dashboard/SortableSection";
 import { InterviewWizard } from "@/components/interview/InterviewWizard";
 import { useTranslations } from "next-intl";
 import {
@@ -147,13 +164,83 @@ export default function DashboardPage() {
   const { isReadOnly } = useAuthStore();
   const {
     showVoortgang, showStatistieken, showVoortgangGranulair, showSuggesties,
-    hiddenDomeinKaarten,
+    hiddenDomeinKaarten, domeinKaartenVolgorde, sectieVolgorde,
     showMeldingen, showBackup, showAanbevolen, showVerloopdatum,
-    toggleSection, toggleDomeinKaart,
+    toggleSection, toggleDomeinKaart, setDomeinKaartenVolgorde, setSectieVolgorde,
   } = usePreferencesStore();
   const [showInterview, setShowInterview] = useState(false);
   const [showJuridisch, setShowJuridisch] = useState(false);
+  const [widgetHasContent, setWidgetHasContent] = useState<Record<string, boolean>>({});
+  const reportContent = (id: string) => (v: boolean) => setWidgetHasContent((prev) => ({ ...prev, [id]: v }));
   const t = useTranslations("dashboard");
+
+  // dnd-kit sensors: require 8px movement to distinguish drag from click
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  // Build ordered + filtered card list for the grid
+  const defaultOrder = domainCards.map((c) => c.domein);
+  const orderedDomeinKeys =
+    domeinKaartenVolgorde.length > 0
+      ? [
+          ...domeinKaartenVolgorde.filter((k) => defaultOrder.includes(k)),
+          ...defaultOrder.filter((k) => !domeinKaartenVolgorde.includes(k)),
+        ]
+      : defaultOrder;
+  const orderedVisibleCards = orderedDomeinKeys
+    .map((key) => domainCards.find((c) => c.domein === key))
+    .filter((c): c is typeof domainCards[number] => c !== undefined)
+    .filter((c) => !hiddenDomeinKaarten.includes(c.domein));
+
+  function handleDomainDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = orderedDomeinKeys.indexOf(active.id as string);
+    const newIndex = orderedDomeinKeys.indexOf(over.id as string);
+    setDomeinKaartenVolgorde(arrayMove(orderedDomeinKeys, oldIndex, newIndex));
+  }
+
+  // Section ordering
+  // React Query hooks needed by sectionVisibility — must be above that block
+  const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<{ voornaam?: string } | null>("eigenaar");
+  const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid", { staleTime: 0 });
+  const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie", { staleTime: 0 });
+  const actualisatie = actualisatieData?.domeinen ?? [];
+  const aanbevolenDomein = compleetheid?.domeinen.find((d) => !d.ingevuld)?.domein ?? null;
+
+  const DEFAULT_SECTIONS = ["suggesties", "statistieken", "meldingen", "aanbevolen", "voortgang", "granulair", "backup", "verloopdatum"];
+  const sectionVisibility: Record<string, boolean> = {
+    voortgang: showVoortgang,
+    statistieken: showStatistieken,
+    granulair: showVoortgangGranulair,
+    suggesties: showSuggesties,
+    meldingen: showMeldingen,
+    backup: showBackup && (widgetHasContent.backup !== false),
+    aanbevolen: showAanbevolen && aanbevolenDomein !== null,
+    verloopdatum: showVerloopdatum && (widgetHasContent.verloopdatum !== false),
+  };
+  const orderedSectieIds = (
+    sectieVolgorde.length > 0
+      ? [
+          ...sectieVolgorde.filter((k) => DEFAULT_SECTIONS.includes(k)),
+          ...DEFAULT_SECTIONS.filter((k) => !sectieVolgorde.includes(k)),
+        ]
+      : DEFAULT_SECTIONS
+  ).filter((k) => sectionVisibility[k]);
+
+  function handleSectionDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const fullOrder =
+      sectieVolgorde.length > 0
+        ? [...sectieVolgorde.filter((k) => DEFAULT_SECTIONS.includes(k)), ...DEFAULT_SECTIONS.filter((k) => !sectieVolgorde.includes(k))]
+        : [...DEFAULT_SECTIONS];
+    const oldIndex = fullOrder.indexOf(active.id as string);
+    const newIndex = fullOrder.indexOf(over.id as string);
+    setSectieVolgorde(arrayMove(fullOrder, oldIndex, newIndex));
+  }
 
   // Load persistent dismiss state for the legal notice
   useEffect(() => {
@@ -169,13 +256,7 @@ export default function DashboardPage() {
   };
 
   // React Query hooks for dashboard data
-  const { data: eigenaarData, isSuccess: hasProfile } = useDomainQuery<{ voornaam?: string } | null>("eigenaar");
-  const { data: compleetheid } = useDomainQuery<Compleetheid>("status/compleetheid", { staleTime: 0 });
-  const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie", { staleTime: 0 });
-  const actualisatie = actualisatieData?.domeinen ?? [];
-
-  // Derive the first unfilled domain — same logic as AanbevolenStapWidget
-  const aanbevolenDomein = compleetheid?.domeinen.find((d) => !d.ingevuld)?.domein ?? null;
+  // (eigenaarData, compleetheid, actualisatieData already declared above for sectionVisibility)
 
   type CardStatus = "afgerond" | "reviewNodig" | "bezig" | "beginnen";
 
@@ -233,79 +314,119 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Top widgets — responsive 2-column grid */}
-      {(showVoortgang || showStatistieken) && (
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Compleetheid-indicator */}
-          {showVoortgang && compleetheid && (
-            <div className="rounded-lg border bg-card p-5">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold text-primary">
-                  {t("voortgang.titel")}
-                </h2>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-primary">
-                    {compleetheid.percentage}%
-                  </span>
-                  <HideButton section="showVoortgang" label={t("voortgang.titel")} />
-                </div>
-              </div>
-              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-500"
-                  style={{ width: `${compleetheid.percentage}%` }}
-                />
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                {t("voortgang.onderdelen", { aantalIngevuld: compleetheid.aantalIngevuld, totaal: compleetheid.totaal })}
-              </p>
-            </div>
-          )}
+      {/* Individual draggable widgets — 2-column grid, each widget independently reorderable */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
+        <SortableContext items={orderedSectieIds} strategy={rectSortingStrategy}>
+          <div className="grid gap-6 md:grid-cols-2 pt-4">
+            {orderedSectieIds.map((widgetId) => {
+              if (widgetId === "voortgang") return (
+                <SortableSection key="voortgang" id="voortgang">
+                  {compleetheid ? (
+                    <div className="rounded-lg border bg-card p-5 h-full">
+                      <div className="flex items-center justify-between mb-3">
+                        <h2 className="text-sm font-semibold text-primary">{t("voortgang.titel")}</h2>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-primary">{compleetheid.percentage}%</span>
+                          <HideButton section="showVoortgang" label={t("voortgang.titel")} />
+                        </div>
+                      </div>
+                      <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-500"
+                          style={{ width: `${compleetheid.percentage}%` }}
+                        />
+                      </div>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {t("voortgang.onderdelen", { aantalIngevuld: compleetheid.aantalIngevuld, totaal: compleetheid.totaal })}
+                      </p>
+                    </div>
+                  ) : null}
+                </SortableSection>
+              );
+              if (widgetId === "statistieken") return (
+                <SortableSection key="statistieken" id="statistieken">
+                  <div className="relative h-full">
+                    <div className="absolute top-3 right-3 z-10">
+                      <HideButton section="showStatistieken" label={t("statistieken.titel")} />
+                    </div>
+                    <StatistiekenWidget />
+                  </div>
+                </SortableSection>
+              );
+              if (widgetId === "granulair") return (
+                <SortableSection key="granulair" id="granulair">
+                  <div className="relative h-full">
+                    <div className="absolute top-3 right-3 z-10">
+                      <HideButton section="showVoortgangGranulair" label="Gedetailleerde voortgang" />
+                    </div>
+                    <VoortgangGranulair />
+                  </div>
+                </SortableSection>
+              );
+              if (widgetId === "suggesties") return (
+                <SortableSection key="suggesties" id="suggesties">
+                  <div className="relative h-full">
+                    <div className="absolute top-3 right-3 z-10">
+                      <HideButton section="showSuggesties" label="Slimme suggesties" />
+                    </div>
+                    <ProfielSuggesties />
+                  </div>
+                </SortableSection>
+              );
+              if (widgetId === "meldingen") return (
+                <SortableSection key="meldingen" id="meldingen"><MeldingenWidget /></SortableSection>
+              );
+              if (widgetId === "backup") return (
+                <SortableSection key="backup" id="backup"><BackupStatusWidget onHasContent={reportContent("backup")} /></SortableSection>
+              );
+              if (widgetId === "aanbevolen") return (
+                <SortableSection key="aanbevolen" id="aanbevolen"><AanbevolenStapWidget /></SortableSection>
+              );
+              if (widgetId === "verloopdatum") return (
+                <SortableSection key="verloopdatum" id="verloopdatum"><DocumentenVerloopdatumWidget onHasContent={reportContent("verloopdatum")} /></SortableSection>
+              );
+              return null;
+            })}
+          </div>
+        </SortableContext>
+      </DndContext>
 
-          {/* Statistieken-widget */}
-          {showStatistieken && (
-            <div className="relative">
-              <div className="absolute top-3 right-3 z-10">
-                <HideButton section="showStatistieken" label={t("statistieken.titel")} />
-              </div>
-              <StatistiekenWidget />
+      {/* Domain cards — independently reorderable within their own grid */}
+      {orderedVisibleCards.length > 0 && (
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDomainDragEnd}>
+          <SortableContext items={orderedVisibleCards.map((c) => c.domein)} strategy={rectSortingStrategy}>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {orderedVisibleCards.map((card) => {
+                const cardStatus = getCardStatus(card.domein);
+                const isAanbevolen = card.domein === aanbevolenDomein;
+                return (
+                  <SortableDomeinKaart
+                    key={card.domein}
+                    card={card}
+                    cardStatus={cardStatus}
+                    isAanbevolen={isAanbevolen}
+                    onHide={() => toggleDomeinKaart(card.domein)}
+                    onMarkToggle={async () => {
+                      try {
+                        if (cardStatus === "reviewNodig" || cardStatus === "bezig") {
+                          await api.post(`/api/status/actualisatie/${card.domein}`, {});
+                        } else if (cardStatus === "afgerond") {
+                          await api.delete(`/api/status/actualisatie/${card.domein}`);
+                        } else {
+                          await api.post(`/api/status/actualisatie/${card.domein}`, {});
+                        }
+                        refetchActualisatie();
+                      } catch {
+                        // Ignore
+                      }
+                    }}
+                  />
+                );
+              })}
             </div>
-          )}
-        </div>
+          </SortableContext>
+        </DndContext>
       )}
-
-      {/* Secondary widgets — responsive 2-column grid */}
-      {(showVoortgangGranulair || showSuggesties) && (
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Granulaire voortgang per sectie */}
-          {showVoortgangGranulair && (
-            <div className="relative">
-              <div className="absolute top-3 right-3 z-10">
-                <HideButton section="showVoortgangGranulair" label="Gedetailleerde voortgang" />
-              </div>
-              <VoortgangGranulair />
-            </div>
-          )}
-
-          {/* Slimme suggesties */}
-          {showSuggesties && (
-            <div className="relative">
-              <div className="absolute top-3 right-3 z-10">
-                <HideButton section="showSuggesties" label="Slimme suggesties" />
-              </div>
-              <ProfielSuggesties />
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Widgets: auto-fit grid — columns adapt to however many widgets actually render */}
-      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))]">
-        {showMeldingen && <MeldingenWidget />}
-        {showBackup && <BackupStatusWidget />}
-        {showAanbevolen && <AanbevolenStapWidget />}
-        {showVerloopdatum && <DocumentenVerloopdatumWidget />}
-      </div>
 
       {showInterview && (
         <div className="rounded-lg border bg-card p-6">
@@ -344,105 +465,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {domainCards.filter((card) => !hiddenDomeinKaarten.includes(card.domein)).map((card) => {
-          const cardStatus = getCardStatus(card.domein);
-          const isAanbevolen = card.domein === aanbevolenDomein;
-          return (
-            <Link key={card.href} href={card.href}>
-              <Card className={`h-full transition-shadow hover:shadow-md cursor-pointer ${
-                isAanbevolen
-                  ? "border-primary/60 ring-2 ring-primary/20 shadow-sm"
-                  : ""
-              }`}>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${card.bgColor}`}>
-                      <LumioIcon name={card.lumioIcon} size="md" className={card.color} />
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {cardStatus === "afgerond" ? (
-                        <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
-                          <CheckCircle2 className="h-3 w-3" />
-                          {t("status.afgerond")}
-                        </Badge>
-                      ) : cardStatus === "reviewNodig" ? (
-                        <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
-                          <AlertTriangle className="h-3 w-3" />
-                          {t("status.reviewNodig")}
-                        </Badge>
-                      ) : cardStatus === "bezig" ? (
-                        <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
-                          <Clock className="h-3 w-3" />
-                          {t("status.bezig")}
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="gap-1">
-                          <Circle className="h-3 w-3" />
-                          {t("status.beginnen")}
-                        </Badge>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 text-xs px-2 text-muted-foreground gap-1"
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleDomeinKaart(card.domein); }}
-                      >
-                        <EyeOff className="h-3.5 w-3.5" />
-                        {t("verbergen")}
-                      </Button>
-                    </div>
-                  </div>
-                  <CardTitle className="text-lg mt-3 flex items-center gap-2">
-                    {t(`domein.${card.domeinKey}.titel`)}
-                    {isAanbevolen && <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>{t(`domein.${card.domeinKey}.beschrijving`)}</CardDescription>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-sm text-primary flex items-center">
-                      {t("status.openen")} <ArrowRight className="ml-1 h-3 w-3" />
-                    </span>
-                    {cardStatus !== "beginnen" && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 text-xs px-2 text-muted-foreground"
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          try {
-                            if (cardStatus === "reviewNodig" || cardStatus === "bezig") {
-                              // S4-02: Mark as finished on server (BR-148/BR-190)
-                              await api.post(`/api/status/actualisatie/${card.domein}`, {});
-                            } else if (cardStatus === "afgerond") {
-                              // S4-02: Remove mark on server
-                              await api.delete(`/api/status/actualisatie/${card.domein}`);
-                            } else {
-                              await api.post(`/api/status/actualisatie/${card.domein}`, {});
-                            }
-                            refetchActualisatie();
-                          } catch {
-                            // Ignore
-                          }
-                        }}
-                      >
-                        {cardStatus === "afgerond" ? (
-                          <><Circle className="h-3 w-3 mr-1" />{t("status.markeringOpheffen")}</>
-                        ) : (
-                          <><CheckCircle2 className="h-3 w-3 mr-1" />{t("status.markeerAfgerond")}</>
-                        )}
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
 
       {/* Legal notice — shown until permanently dismissed */}
       {showJuridisch && (

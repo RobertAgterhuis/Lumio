@@ -1,6 +1,10 @@
 import { create } from "zustand";
 
-const STORAGE_KEY = "lumio-dashboard-prefs";
+const STORAGE_KEY_PREFIX = "lumio-dashboard-prefs";
+
+function storageKey(profileId: string | null) {
+  return profileId ? `${STORAGE_KEY_PREFIX}-${profileId}` : STORAGE_KEY_PREFIX;
+}
 
 /* ── Dashboard visibility toggles ─────────────────────────── */
 
@@ -10,6 +14,8 @@ export interface DashboardPreferences {
   showVoortgangGranulair: boolean;
   showSuggesties: boolean;
   hiddenDomeinKaarten: string[];
+  domeinKaartenVolgorde: string[];
+  sectieVolgorde: string[];
   showMeldingen: boolean;
   showBackup: boolean;
   showAanbevolen: boolean;
@@ -23,9 +29,13 @@ export type BooleanPreferenceKey = {
 /* ── Store interface ──────────────────────────────────────── */
 
 interface PreferencesState extends DashboardPreferences {
+  _profileId: string | null;
   // Dashboard visibility
+  initForUser: (profileId: string) => void;
   toggleSection: (key: BooleanPreferenceKey) => void;
   toggleDomeinKaart: (domein: string) => void;
+  setDomeinKaartenVolgorde: (order: string[]) => void;
+  setSectieVolgorde: (order: string[]) => void;
   resetDashboard: () => void;
 }
 
@@ -37,6 +47,8 @@ const dashboardDefaults: DashboardPreferences = {
   showVoortgangGranulair: true,
   showSuggesties: true,
   hiddenDomeinKaarten: [],
+  domeinKaartenVolgorde: [],
+  sectieVolgorde: [],
   showMeldingen: true,
   showBackup: true,
   showAanbevolen: true,
@@ -45,10 +57,9 @@ const dashboardDefaults: DashboardPreferences = {
 
 /* ── Persistence helpers ──────────────────────────────────── */
 
-function load(): DashboardPreferences {
-  if (typeof window === "undefined") return dashboardDefaults;
+function load(profileId: string | null): DashboardPreferences {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey(profileId));
     if (!raw) return dashboardDefaults;
     return { ...dashboardDefaults, ...JSON.parse(raw) };
   } catch {
@@ -64,12 +75,14 @@ function save(state: PreferencesState) {
       showVoortgangGranulair: state.showVoortgangGranulair,
       showSuggesties: state.showSuggesties,
       hiddenDomeinKaarten: state.hiddenDomeinKaarten,
+      domeinKaartenVolgorde: state.domeinKaartenVolgorde,
+      sectieVolgorde: state.sectieVolgorde,
       showMeldingen: state.showMeldingen,
       showBackup: state.showBackup,
       showAanbevolen: state.showAanbevolen,
       showVerloopdatum: state.showVerloopdatum,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
+    localStorage.setItem(storageKey(state._profileId), JSON.stringify(persisted));
   } catch {
     // Storage full / unavailable
   }
@@ -78,7 +91,14 @@ function save(state: PreferencesState) {
 /* ── Store ────────────────────────────────────────────────── */
 
 export const usePreferencesStore = create<PreferencesState>((set, get) => ({
-  ...load(),
+  ...dashboardDefaults,
+  _profileId: null,
+
+  /* Load preferences for a specific user — call after profile is selected */
+  initForUser: (profileId) => {
+    const prefs = load(profileId);
+    set({ ...prefs, _profileId: profileId });
+  },
 
   /* Dashboard visibility */
   toggleSection: (key) => {
@@ -95,8 +115,18 @@ export const usePreferencesStore = create<PreferencesState>((set, get) => ({
     save(get());
   },
 
+  setDomeinKaartenVolgorde: (order) => {
+    set({ domeinKaartenVolgorde: order });
+    save(get());
+  },
+
+  setSectieVolgorde: (order) => {
+    set({ sectieVolgorde: order });
+    save(get());
+  },
+
   resetDashboard: () => {
-    set(dashboardDefaults);
+    set({ ...dashboardDefaults, _profileId: get()._profileId });
     save(get());
   },
 }));

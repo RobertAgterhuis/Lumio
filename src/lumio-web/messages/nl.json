@@ -206,7 +206,7 @@
   },
   "dashboard": {
     "titel": "Dashboard",
-    "beschrijving": "Beheer uw digitale nalatenschap. Klik op een onderdeel om te beginnen.",
+    "beschrijving": "Beheer uw nalatenschap. Klik op een onderdeel om te beginnen.",
     "begroeting": {
       "ochtend": "Goedemorgen",
       "middag": "Goedemiddag",
@@ -224,6 +224,7 @@
       "beherenLink": "Documenten beheren →"
     },
     "verbergen": "Verbergen",
+    "sectieVerplaatsen": "Sectie verplaatsen",
     "voortgang": {
       "titel": "Voortgang nalatenschap",
       "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"

@@ -37,7 +37,7 @@ const statusConfig = {
  * Hidden on the very first run for a profile; shown from the second run onwards.
  * Clicking navigates to /instellingen#backup.
  */
-export function BackupStatusWidget() {
+export function BackupStatusWidget({ onHasContent }: { onHasContent?: (v: boolean) => void }) {
   const t = useTranslations("dashboard.backup");
   const tDash = useTranslations("dashboard");
   const { activeProfile } = useAuthStore();
@@ -62,6 +62,13 @@ export function BackupStatusWidget() {
       setIsFirstRun(stored === today);
     }
   }, [activeProfile]);
+
+  // Report to parent whether this widget has visible content
+  useEffect(() => {
+    if (isFirstRun !== null) {
+      onHasContent?.(!isFirstRun);
+    }
+  }, [isFirstRun, onHasContent]);
 
   // Hide until we've determined run status, and hide on first run
   if (isFirstRun === null || isFirstRun) return null;

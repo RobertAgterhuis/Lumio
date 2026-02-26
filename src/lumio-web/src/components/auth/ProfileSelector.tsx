@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,6 +37,7 @@ interface ProfileSelectorProps {
 export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
   const { profiles, setProfiles, setActiveProfile, setProfileSelected, setProfileNeedsSetup } =
     useAuthStore();
+  const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -66,6 +68,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
       setActiveProfile(profile);
       setProfileSelected(true);
       setProfileNeedsSetup(result.heeftSetupNodig);
+      queryClient.clear();
       onProfileSelected();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("selecterenMislukt"));

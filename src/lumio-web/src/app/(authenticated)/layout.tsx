@@ -10,6 +10,7 @@ import { IdleWarningDialog } from "@/components/layout/IdleWarningDialog";
 import { ShortcutsDialog } from "@/components/layout/ShortcutsDialog";
 import { OnboardingWizard } from "@/components/wizard/OnboardingWizard";
 import { useAuthStore, type Profile } from "@/stores/authStore";
+import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { api } from "@/lib/api-client";
@@ -29,8 +30,9 @@ export default function AuthenticatedLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isUnlocked, setUnlocked, lock, setProfiles, setActiveProfile, setProfileSelected, setReadOnly, isReadOnly } =
+  const { isUnlocked, setUnlocked, lock, setProfiles, setActiveProfile, setProfileSelected, setReadOnly, isReadOnly, activeProfile } =
     useAuthStore();
+  const initForUser = usePreferencesStore((s) => s.initForUser);
   const [checking, setChecking] = useState(!isUnlocked);
   const t = useTranslations("auth.sessie");
 
@@ -45,6 +47,13 @@ export default function AuthenticatedLayout({
 
   const { showWarning, secondsLeft, dismiss } = useIdleTimer(handleIdleLock);
   useKeyboardShortcuts();
+
+  // Load per-user dashboard preferences whenever the active profile changes
+  useEffect(() => {
+    if (activeProfile?.id) {
+      initForUser(activeProfile.id);
+    }
+  }, [activeProfile?.id]);
 
   useEffect(() => {
     if (isUnlocked) {

@@ -29,8 +29,6 @@ interface OnboardingStap {
   href: string;
 }
 
-const ONBOARDING_KEY = "lumio_onboarding_completed";
-
 const stappen: OnboardingStap[] = [
   { id: "profiel", stapKey: "profiel", icon: User, href: "/eigenaar" },
   { id: "noodcontacten", stapKey: "noodcontacten", icon: Phone, href: "/noodcontacten" },
@@ -44,8 +42,8 @@ export function OnboardingWizard() {
   const router = useRouter();
   const t = useTranslations("wizard");
   const { activeProfile } = useAuthStore();
-  // S2-05: Profile-bound localStorage key to prevent cross-profile state leakage
-  const storageKey = activeProfile?.id ? `lumio_onboarding_${activeProfile.id}_completed` : ONBOARDING_KEY;
+  // S2-05: Profile-bound localStorage key — always per-user, never falls back to shared key
+  const storageKey = activeProfile?.id ? `lumio_onboarding_${activeProfile.id}_completed` : null;
   const [visible, setVisible] = useState(false);
   const [localStorageChecked, setLocalStorageChecked] = useState(false);
   // Session-level ref: prevents wizard re-showing after user navigates via it
@@ -72,7 +70,9 @@ export function OnboardingWizard() {
   }), [eigenaar, noodcontacten, testament, uitvaart, erfgenamen, statusMeldingen]);
 
   // Check localStorage and determine visibility
+  // Guard: do NOT run until we have a confirmed profile ID — prevents reading a shared/stale key
   useEffect(() => {
+    if (!storageKey) return;
     const sessionKey = `${storageKey}_session`;
     if (sessionStorage.getItem(sessionKey) === "true") {
       sessionDismissedRef.current = true;
@@ -86,7 +86,7 @@ export function OnboardingWizard() {
 
   // Auto-complete onboarding when all steps done
   useEffect(() => {
-    if (!localStorageChecked || loading) return;
+    if (!storageKey || !localStorageChecked || loading) return;
 
     const allDone = stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus]);
     if (allDone) {
@@ -102,12 +102,14 @@ export function OnboardingWizard() {
   }, [localStorageChecked, loading, stapStatus, storageKey]);
 
   const dismissForSession = () => {
+    if (!storageKey) return;
     const sessionKey = `${storageKey}_session`;
     sessionStorage.setItem(sessionKey, "true");
     sessionDismissedRef.current = true;
   };
 
   const handleComplete = () => {
+    if (!storageKey) return;
     dismissForSession();
     // Permanently complete only when all steps are truly done
     if (stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus])) {
@@ -118,6 +120,7 @@ export function OnboardingWizard() {
   };
 
   const handleDontShowAgain = () => {
+    if (!storageKey) return;
     // Permanently suppress the wizard (survives app restarts)
     localStorage.setItem(storageKey, "true");
     sessionDismissedRef.current = true;

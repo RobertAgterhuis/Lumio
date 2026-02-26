@@ -206,7 +206,7 @@
   },
   "dashboard": {
     "titel": "Dashboard",
-    "beschrijving": "Manage your digital legacy. Click a section to get started.",
+    "beschrijving": "Manage your legacy. Click a section to get started.",
     "begroeting": {
       "ochtend": "Good morning",
       "middag": "Good afternoon",
@@ -224,6 +224,7 @@
       "beherenLink": "Manage documents →"
     },
     "verbergen": "Hide",
+    "sectieVerplaatsen": "Move section",
     "voortgang": {
       "titel": "Legacy progress",
       "onderdelen": "{aantalIngevuld} of {totaal} sections completed"
