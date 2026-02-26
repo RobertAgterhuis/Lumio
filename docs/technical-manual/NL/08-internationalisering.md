@@ -55,6 +55,7 @@ Beide taalbestanden hebben een identieke structuur met 39 secties:
 | `personSelect` | 6 | `domainStatus` | 10 |
 | `testamentWizard` | 89 | `euthanasieWizard` | 102 |
 | `donorWizard` | 56 | `uitvaartWizard` | 113 |
+| `videoboodschappen` | 28 | | |
 
 ### Gebruik in Componenten
 

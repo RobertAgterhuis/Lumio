@@ -93,7 +93,7 @@ De backend is een .NET 10 Web API die draait op Kestrel. Self-contained publicat
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `StatusController` | `api/status` | `GET`, `GET compleetheid`, `GET compleetheid/granulair`, `GET meldingen`, `GET actualisatie`, `POST actualisatie/{domein}`, `POST actualisatie/alles`, `GET statistieken`, `GET snapshot`, `GET suggesties` |
+| `StatusController` | `api/status` | `GET`, `GET compleetheid`, `GET compleetheid/granulair`, `GET meldingen`, `GET actualisatie`, `POST actualisatie/{domein}`, `POST actualisatie/alles`, `GET statistieken`, `GET snapshot`, `GET suggesties`, `POST tijdlijn-bekeken` |
 | `BackupController` | `api/backup` | `GET` (download), `POST restore` |
 | `AuditLogController` | `api/audit-log` | `GET`, `POST` |
 
@@ -105,6 +105,7 @@ De backend is een .NET 10 Web API die draait op Kestrel. Self-contained publicat
 | `NotitiesController` | `api/notities` | `GET`, `GET/PUT/DELETE {sectie}` |
 | `ZoekenController` | `api/zoeken` | `GET` (globaal zoeken) |
 | `NoodcontactenController` | `api/noodcontacten` | CRUD, `GET gedeeld/export`, `POST gedeeld/import` |
+| `VideoboodschappenController` | `api/videoboodschappen` | `GET` (lijst), `POST uploaden`, `GET {id}/stream`, `PUT {id}`, `DELETE {id}`, `GET limiet` |
 
 ## Middleware Detail
 

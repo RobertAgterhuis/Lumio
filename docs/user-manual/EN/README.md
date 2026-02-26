@@ -18,6 +18,7 @@ Welcome to the Lumio user manual. This manual describes all features of the appl
 12. [Emergency Contacts & Emergency Card](12-emergency-contacts.md) — Contact persons, roles, QR emergency card
 13. [Other Features](13-other-features.md) — Search, export, timeline, audit log, settings
 14. [Heir Mode](14-heir-mode.md) — Access as an heir via emergency codes
+15. [Video Messages](15-video-messages.md) — Recording and uploading personal video messages for heirs
 
 ## About Lumio
 

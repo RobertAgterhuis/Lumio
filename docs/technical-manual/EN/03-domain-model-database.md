@@ -90,6 +90,14 @@ data/
 |--------|-------|---------|
 | `PersoonlijkDocument` | `Documenten` | Uploaded document (metadata + file reference) |
 
+### Video Messages
+
+| Entity | DbSet | Purpose |
+|--------|-------|---------|
+| `Videoboodschap` | `Videoboodschappen` | Video message metadata (title, description, filename, duration) |
+| `VideoboodschapBlob` | `VideoboodschapBlobs` | Binary video data (kept separate from metadata for efficient list queries) |
+| `VideoboodschapOntvanger` | — | Receiver link: video message → heir |
+
 ## Relationships
 
 All entities depend on `Eigenaar` as the root aggregate. Cascade delete is configured so that deleting an owner removes all related data.

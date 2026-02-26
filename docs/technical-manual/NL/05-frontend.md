@@ -43,6 +43,7 @@ De frontend is een **Next.js 16** applicatie die als **statische export** wordt 
 | `/erfgenamen` | Erfgenamen | Erfgenamenbeheer, toewijzingen, Shamir |
 | `/noodcontacten` | Noodcontacten | Noodcontactpersonen, noodkaart-QR |
 | `/documenten` | Documenten | Upload, versiebeheer, download |
+| `/videoboodschappen` | Videoboodschappen | Persoonlijke videoboodschappen opnemen en uploaden voor erfgenamen |
 | `/export` | Exporteren | PDF/JSON/XML/CSV/NUV export |
 | `/instellingen` | Instellingen | Wachtwoord, taal, thema, backup |
 | `/audit-log` | Activiteitenlog | Beveiligingslog |
@@ -152,6 +153,7 @@ Zie hoofdstuk 4 (Beveiliging) voor de volledige lijst.
 | `notities/` | `SectieNotitie` |
 | `nabestaanden/` | `NabestaandenDashboard` |
 | `noodcontacten/` | `NoodkaartQR` |
+| `videoboodschappen/` | `VideoboodschapDialog`, `VideoRecorder`, `VideoboodschapSpeler` |
 | `providers/` | `LocaleProvider` |
 | Root | `PasswordGenerator`, `PersonSelect`, `VoorbeeldDialog` |
 
@@ -163,10 +165,14 @@ Beheert authenticatie- en ontgrendelstatus:
 
 | State | Type | Doel |
 |-------|------|------|
-| `isLocked` | boolean | Database vergrendeld? |
+| `isUnlocked` | boolean | Database ontgrendeld? |
 | `isReadOnly` | boolean | Nabestaandenmodus? |
-| `profileId` | string | Huidig profiel-ID |
-| `profileName` | string | Profielnaam |
+| `profiles` | Profile[] | Beschikbare profielen |
+| `activeProfile` | Profile \| null | Huidig actief profiel |
+| `profileSelected` | boolean | Is er een profiel geselecteerd? |
+| `unlock` | Function | Ontgrendel de database |
+| `lock` | Function | Vergrendel de database |
+| `setActiveProfile` | Function | Stel actief profiel in |
 
 ### `preferencesStore`
 
@@ -178,6 +184,20 @@ Beheert gebruikersvoorkeuren (localStorage-gepersisteerd):
 | `showVoortgangGranulair` | boolean | Gedetailleerde voortgang tonen |
 | `showSuggesties` | boolean | Suggesties tonen |
 | `showDomeinKaarten` | boolean | Domeinkaarten tonen |
+| `showStatistieken` | boolean | Statistieken-widget tonen |
+| `showMeldingen` | boolean | Meldingen-widget tonen |
+| `showBackup` | boolean | Backup-widget tonen |
+| `showAanbevolen` | boolean | Aanbevolen-widget tonen |
+| `showVerloopdatum` | boolean | Verloopdatumcontrole tonen |
+| `hiddenDomeinKaarten` | string[] | IDs van verborgen domeinkaarten |
+| `domeinKaartenVolgorde` | string[] | Volgorde van domeinkaarten |
+| `sectieVolgorde` | string[] | Volgorde van dashboardsecties |
+| `sidebarCollapsed` | boolean | Zijbalk ingeklapt? |
+| `taal` | string | Taalinstelling (`nl` / `en`) |
+| `groteTekst` | boolean | Grote-tekst toegankelijkheidsmodus |
+| `autoLockMinuten` | number | Automatisch vergrendelen na X minuten inactiviteit |
+| `togglePreference` | Function | Schakel een boolean voorkeur om |
+| `setPreference` | Function | Stel een voorkeurswaarde in |
 
 ### `toastStore`
 

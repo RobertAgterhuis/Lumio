@@ -90,6 +90,14 @@ data/
 |----------|-------|------|
 | `PersoonlijkDocument` | `Documenten` | Geüpload document (metadata + verwijzing naar bestand) |
 
+### Videoboodschappen
+
+| Entiteit | DbSet | Doel |
+|----------|-------|------|
+| `Videoboodschap` | `Videoboodschappen` | Metagegevens videoboodschap (titel, beschrijving, opnamedatum, duur) |
+| `VideoboodschapBlob` | `VideoboodschapBlobs` | Binaire videodata, apart opgeslagen van metagegevens |
+| `VideoboodschapOntvanger` | — | Koppeling tussen videoboodschap en erfgenaam-ontvanger |
+
 ## Relaties
 
 Alle entiteiten hangen af van `Eigenaar` als root-aggregaat. Cascade-delete is geconfigureerd zodat het verwijderen van een eigenaar alle gerelateerde gegevens verwijdert.
