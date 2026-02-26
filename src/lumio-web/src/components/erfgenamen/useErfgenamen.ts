@@ -66,6 +66,9 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
   // UI state
   const [expandedErfgenaam, setExpandedErfgenaam] = useState<string | null>(null);
 
+  // Delete confirmation state
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
   // Erfgenaam CRUD
   const openDialog = useCallback((existing?: Erfgenaam) => {
     if (existing) {
@@ -147,7 +150,14 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (id: string) => {
+    setPendingDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+    setPendingDeleteId(null);
     try {
       await api.delete(`/api/erfgenamen/${id}`);
       toast.success(translations.verwijderd);
@@ -155,6 +165,10 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
     } catch (err) {
       setError(err instanceof Error ? err.message : translations.verwijderenMislukt);
     }
+  };
+
+  const cancelDelete = () => {
+    setPendingDeleteId(null);
   };
 
   const handleExportErfgenaam = async (id: string, voornaam: string) => {
@@ -278,6 +292,9 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
     openDialog,
     handleSave,
     handleDelete,
+    pendingDeleteId,
+    confirmDelete,
+    cancelDelete,
     handleExportErfgenaam,
     handleDeelMetErfgenaam,
 

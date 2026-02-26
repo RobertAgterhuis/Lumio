@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -54,23 +55,35 @@ export function UitvaartEditDialog({
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-2">
             <Label>{t("editDialog.type")}</Label>
-            <Input
+            {/* S3-27 — whitelist; matches uitvaart-wizard step 1 */}
+            <Select
               value={form.voorkeurType}
               onChange={(e) =>
                 onFormChange({ ...form, voorkeurType: e.target.value })
               }
-              placeholder={t("editDialog.typePlaceholder")}
-            />
+            >
+              <option value="Begrafenis">{t("editDialog.typeBegrafenis")}</option>
+              <option value="Crematie">{t("editDialog.typeCrematie")}</option>
+              <option value="Natuurbegraven">{t("editDialog.typeNatuurbegraven")}</option>
+              <option value="Resomatie">{t("editDialog.typeResomatie")}</option>
+              <option value="Geen voorkeur">{t("editDialog.typeGeenVoorkeur")}</option>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label>{t("editDialog.budget")}</Label>
-            <Input
+            {/* S3-28 — whitelist; matches uitvaart-wizard step 1 */}
+            <Select
               value={form.budgetRichting}
               onChange={(e) =>
                 onFormChange({ ...form, budgetRichting: e.target.value })
               }
-              placeholder={t("editDialog.budgetPlaceholder")}
-            />
+            >
+              <option value="">{t("editDialog.budgetSelecteer")}</option>
+              <option value="Eenvoudig">{t("editDialog.budgetEenvoudig")}</option>
+              <option value="Gemiddeld">{t("editDialog.budgetGemiddeld")}</option>
+              <option value="Uitgebreid">{t("editDialog.budgetUitgebreid")}</option>
+              <option value="Luxe">{t("editDialog.budgetLuxe")}</option>
+            </Select>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">

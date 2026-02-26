@@ -2,6 +2,7 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
 using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
@@ -17,12 +18,14 @@ public class EigenaarController : ControllerBase
     private readonly LumioDbContext _db;
     private readonly LimietenOptions _limieten;
     private readonly IProfileService _profileService;
+    private readonly IAuditService _audit;
 
-    public EigenaarController(LumioDbContext db, IOptions<LimietenOptions> limieten, IProfileService profileService)
+    public EigenaarController(LumioDbContext db, IOptions<LimietenOptions> limieten, IProfileService profileService, IAuditService audit)
     {
         _db = db;
         _limieten = limieten.Value;
         _profileService = profileService;
+        _audit = audit;
     }
 
     [HttpGet]
@@ -45,6 +48,7 @@ public class EigenaarController : ControllerBase
         var eigenaar = request.Adapt<Eigenaar>();
         _db.Eigenaren.Add(eigenaar);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Eigenaar", eigenaar.Id);
 
         return CreatedAtAction(nameof(Get), eigenaar.Adapt<EigenaarResponse>());
     }
@@ -58,6 +62,7 @@ public class EigenaarController : ControllerBase
 
         request.Adapt(eigenaar);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Eigenaar", eigenaar.Id);
 
         return Ok(eigenaar.Adapt<EigenaarResponse>());
     }
@@ -99,6 +104,7 @@ public class EigenaarController : ControllerBase
         // Save a small thumbnail in profiles.json (available before DB unlock)
         var thumbnailBase64 = $"data:{bestand.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
         _profileService.UpdateActiveProfileThumbnail(thumbnailBase64);
+        await _audit.LogAsync("Gewijzigd", "Eigenaar", eigenaar.Id, "profielfoto-upload");
 
         return Ok(new { message = "Profielfoto opgeslagen." });
     }
@@ -117,7 +123,34 @@ public class EigenaarController : ControllerBase
 
         // Clear thumbnail from profiles.json
         _profileService.UpdateActiveProfileThumbnail(null);
+        await _audit.LogAsync("Gewijzigd", "Eigenaar", eigenaar.Id, "profielfoto-verwijderd");
 
         return NoContent();
+    }
+
+    // S6-22: Onboarding wizard status
+    [HttpPost("onboarding-voltooid")]
+    public async Task<IActionResult> OnboardingVoltooid()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null)
+            return Ok(new { onboardingVoltooid = false });
+
+        if (!eigenaar.OnboardingVoltooid)
+        {
+            eigenaar.OnboardingVoltooid = true;
+            await _db.SaveChangesAsync();
+            await _audit.LogAsync("Onboarding voltooid", "Eigenaar", eigenaar.Id);
+        }
+        return Ok(new { onboardingVoltooid = eigenaar.OnboardingVoltooid });
+    }
+
+    // S6-22: Get onboarding status
+    [HttpGet("onboarding-status")]
+    public async Task<IActionResult> GetOnboardingStatus()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null) return Ok(new { onboardingVoltooid = false });
+        return Ok(new { onboardingVoltooid = eigenaar.OnboardingVoltooid });
     }
 }

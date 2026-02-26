@@ -122,7 +122,8 @@
     "gaNaarNoodcontacten": "Ga naar Noodcontacten",
     "gaNaarExporteren": "Ga naar Exporteren",
     "gaNaarActiviteitenlog": "Ga naar Activiteitenlog",
-    "gaNaarInstellingen": "Ga naar Instellingen"
+    "gaNaarInstellingen": "Ga naar Instellingen",
+    "gaNaarHelp": "Ga naar Help"
   },
   "auth": {
     "laden": "Lumio laden...",
@@ -161,7 +162,8 @@
       "disclaimer": "Uw gegevens worden versleuteld opgeslagen. Bewaar uw wachtwoord goed \u2014 zonder wachtwoord is de data niet toegankelijk.",
       "foutMinimaal": "Wachtwoord moet minimaal 8 tekens bevatten.",
       "foutOvereenkomst": "Wachtwoorden komen niet overeen.",
-      "foutSetup": "Setup mislukt"
+      "foutSetup": "Setup mislukt",
+      "wachtwoordWaarschuwing": "Bewaar uw wachtwoord, noodcodes en herstelcodes op een veilige plek. Verlies van uw wachtwoord betekent verlies van toegang tot al uw Lumio-gegevens."
     },
     "ontgrendel": {
       "titel": "Lumio Ontgrendelen",
@@ -181,7 +183,8 @@
       "minimaalCodes": "Minimaal 2 noodcodes zijn vereist.",
       "reconstructieMislukt": "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd.",
       "bezig": "Reconstrueren...",
-      "ontgrendelen": "Ontgrendelen met noodcodes"
+      "ontgrendelen": "Ontgrendelen met noodcodes",
+      "anderProfiel": "\u2190 Ander profiel kiezen"
     },
     "wachtwoordsterkte": {
       "zeerZwak": "Zeer zwak",
@@ -203,16 +206,53 @@
   },
   "dashboard": {
     "titel": "Dashboard",
-    "beschrijving": "Beheer uw digitale nalatenschap. Klik op een onderdeel om te beginnen.",
+    "beschrijving": "Beheer uw nalatenschap. Klik op een onderdeel om te beginnen.",
+    "laden": {
+      "titel": "Even geduld",
+      "beschrijving": "We laden uw nalatenschap..."
+    },
+    "begroeting": {
+      "ochtend": "Goedemorgen",
+      "middag": "Goedemiddag",
+      "avond": "Goedenavond"
+    },
+    "aanbevolenStap": {
+      "titel": "Aanbevolen volgende stap",
+      "beschrijving": "Dit onderdeel is nog niet ingevuld",
+      "actie": "Invullen"
+    },
+    "verloopdatumWidget": {
+      "titel": "Documenten verlopen binnenkort",
+      "verlopen": "Verlopen",
+      "dagenOver": "{dagen} dagen",
+      "beherenLink": "Documenten beheren →"
+    },
     "verbergen": "Verbergen",
+    "sectieVerplaatsen": "Sectie verplaatsen",
     "voortgang": {
       "titel": "Voortgang nalatenschap",
       "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"
     },
     "meldingen": {
-      "titel": "Meldingen ({aantal})",
+      "titel": "Meldingen",
+      "laden": "Meldingen laden...",
+      "fout": "Kan meldingen niet laden.",
+      "geenMeldingen": "Geen meldingen — alles is in orde.",
       "verbergen": "Verbergen",
       "verwijder": "Verwijder melding"
+    },
+    "backup": {
+      "titel": "Back-up status",
+      "laden": "Status ophalen...",
+      "fout": "Kan back-up status niet laden.",
+      "status": {
+        "ok": "Up-to-date",
+        "warning": "Verouderd",
+        "noBackup": "Geen back-up"
+      },
+      "laatste": "Laatste back-up",
+      "dagenGeleden": "{dagen} dag(en) geleden",
+      "nooit": "Er is nog nooit een back-up gemaakt."
     },
     "geenProfiel": {
       "titel": "Vul eerst uw profiel in om te beginnen",
@@ -222,6 +262,7 @@
     },
     "letOp": "Let op:",
     "juridisch": "Lumio is een hulpmiddel voor het vastleggen van uw wensen. Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4).",
+    "juridischBegrepen": "Begrepen, niet meer tonen",
     "status": {
       "ingevuld": "Ingevuld",
       "beginnen": "Beginnen",
@@ -279,9 +320,12 @@
       "beschrijving": "Analyseer uw profiel en ontvang suggesties voor ontbrekende koppelingen en verbeteringen.",
       "analyseren": "Profiel analyseren",
       "analyseMislukt": "Analyse mislukt",
+      "laden": "Suggesties laden...",
       "fout": "Kon de analyse niet uitvoeren.",
       "geenSuggesties": "Geen suggesties",
       "geenSuggestiesBeschrijving": "Uw profiel is goed ingevuld en alle gegevens zijn consistent.",
+      "profielLeeg": "Nog geen gegevens om te analyseren",
+      "profielLeegBeschrijving": "Vul eerst uw profiel in om suggesties te ontvangen.",
       "aantalGevonden": "{aantal, plural, one {# suggestie} other {# suggesties}} gevonden:"
     },
     "statistieken": {
@@ -306,6 +350,7 @@
     "sluiten": "Wizard sluiten",
     "voltooid": "{voltooid} van {totaal} voltooid",
     "laterInvullen": "Later invullen",
+    "nietMeerTonen": "Niet meer tonen",
     "afronden": "Afronden",
     "stappen": {
       "profiel": {
@@ -418,8 +463,12 @@
       "adresPlaceholder": "Straat en huisnummer",
       "postcode": "Postcode",
       "postcodePlaceholder": "1234 AB",
-      "plaats": "Plaats"
-    }
+      "plaats": "Plaats",
+      "voegToeAlsNoodcontact": "Voeg notaris toe als noodcontact",
+      "noodcontactToegevoegd": "Notaris toegevoegd als noodcontact",
+      "noodcontactToevoegenMislukt": "Noodcontact toevoegen mislukt"
+    },
+    "ongeslagenWijzigingen": "Niet-opgeslagen wijzigingen"
   },
   "enums": {
     "burgerlijkeStaat": {
@@ -588,6 +637,13 @@
     "toewijzingOpslaanMislukt": "Toewijzing opslaan mislukt.",
     "toewijzingVerwijderenMislukt": "Toewijzing verwijderen mislukt.",
     "noodcontactAangemaakt": "Erfgenaam ook als noodcontact toegevoegd.",
+    "verwijderBevestiging": {
+      "titel": "Erfgenaam verwijderen?",
+      "vraag": "Weet u zeker dat u {naam} wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "bezittingenWaarschuwing": "{aantal, plural, one {# bezitting is} other {# bezittingen zijn}} aan deze erfgenaam toegewezen en worden losgekoppeld.",
+      "annuleren": "Annuleren",
+      "verwijderen": "Verwijderen"
+    },
     "bezitToewijzen": "Bezit toewijzen",
     "pdfDownloaden": "PDF downloaden",
     "deelOverzicht": "Deel overzicht (HTML)",
@@ -831,6 +887,7 @@
     "tip": "Een volledig overzicht van uw boedel helpt erfgenamen bij de afwikkeling conform BW Boek 4.",
     "tipLabel": "Tip:",
     "opslaanMislukt": "Opslaan mislukt.",
+    "bedragVerplicht": "Bedrag is verplicht en moet groter zijn dan 0.",
     "verwijderenMislukt": "Verwijderen mislukt.",
     "toevoegen": "Toevoegen",
     "annuleren": "Annuleren",
@@ -1109,7 +1166,20 @@
       "titel": "Locatie-voorkeuren",
       "begraafplaats": "Begraafplaats:",
       "crematorium": "Crematorium:",
-      "aula": "Aula:"
+      "aula": "Aula:",
+      "bewerkenKnop": "Locatie bewerken",
+      "locatieNietIngevuld": "Nog geen locatie-voorkeuren vastgelegd.",
+      "dialog": {
+        "titel": "Locatie-voorkeuren bewerken",
+        "begraafplaatsNaam": "Naam begraafplaats",
+        "begraafplaatsAdres": "Adres begraafplaats",
+        "crematoriumNaam": "Naam crematorium",
+        "crematoriumAdres": "Adres crematorium",
+        "aulaNaam": "Naam aula",
+        "aulaAdres": "Adres aula",
+        "annuleren": "Annuleren",
+        "opslaan": "Opslaan"
+      }
     },
     "verloop": {
       "titel": "Ceremonieverloop",
@@ -1156,8 +1226,18 @@
       "sectieUitvaart": "Uitvaart",
       "type": "Type",
       "typePlaceholder": "Begrafenis of crematie",
+      "typeBegrafenis": "Begrafenis",
+      "typeCrematie": "Crematie",
+      "typeNatuurbegraven": "Natuurbegraven",
+      "typeResomatie": "Resomatie",
+      "typeGeenVoorkeur": "Geen voorkeur",
       "budget": "Budget",
       "budgetPlaceholder": "bijv. Eenvoudig, gemiddeld",
+      "budgetSelecteer": "Onbekend / geen voorkeur",
+      "budgetEenvoudig": "Eenvoudig",
+      "budgetGemiddeld": "Gemiddeld",
+      "budgetUitgebreid": "Uitgebreid",
+      "budgetLuxe": "Luxe",
       "ondernemer": "Ondernemer",
       "telOndernemer": "Tel. ondernemer",
       "emailOndernemer": "E-mail ondernemer",
@@ -1237,6 +1317,9 @@
       "adres": "Adres",
       "postcode": "Postcode",
       "woonplaats": "Woonplaats",
+      "sectieVertegenwoordiger2": "Tweede vertegenwoordiger",
+      "situatieOpties": "Situatie-opties",
+      "situatieNotitie": "Notitie bij situatie",
       "sectieClausules": "Aanvullende clausules",
       "dementieclausule": "Dementieclausule",
       "toelichtingDementie": "Toelichting dementieclausule",
@@ -1279,6 +1362,13 @@
     "naamCategorieVerplicht": "Naam en categorie zijn verplicht.",
     "verlopen": "Verlopen",
     "verlooptOver": "Verloopt over {dagen} {dagen, plural, one {dag} other {dagen}}",
+    "verwijderenAlleVersiesTitel": "Alle versies verwijderen",
+    "verwijderenAlleVersiesBevestig": "Weet u zeker dat u alle versies van dit document wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "verwijderenAlleVersies": "Alle versies verwijderen",
+    "verwijderenTitel": "Document verwijderen",
+    "verwijderenBevestig": "Weet u zeker dat u dit document wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "verwijderen": "Verwijderen",
+    "nieuweVersieUploaden": "Nieuwe versie uploaden",
     "dropzone": {
       "titel": "Bestanden hier loslaten",
       "beschrijving": "Sleep bestanden hierheen om te uploaden"
@@ -1298,6 +1388,7 @@
       "verloopdatum": "Verloopdatum",
       "optioneel": "(optioneel)",
       "verloopdatumHint": "Stel een verloopdatum in om een herinnering te ontvangen wanneer dit document vernieuwd moet worden.",
+      "verloopdatumVerleden": "Opgelet: de ingevulde verloopdatum ligt in het verleden.",
       "annuleren": "Annuleren",
       "uploaden": "Uploaden",
       "uploadenBezig": "Uploaden..."
@@ -1310,6 +1401,14 @@
       "sluiten": "Sluiten",
       "klaar": "Klaar",
       "allesUploaden": "Alles uploaden ({aantal})"
+    },
+    "editDialog": {
+      "titel": "Document bewerken",
+      "bewerken": "Bewerken",
+      "notities": "Notities",
+      "notitiesPlaceholder": "Notities bij dit document...",
+      "opslaan": "Opslaan",
+      "opslaanMislukt": "Opslaan mislukt."
     }
   },
   "noodcontacten": {
@@ -1320,6 +1419,9 @@
     "verwijderenMislukt": "Verwijderen mislukt.",
     "exportMislukt": "Export mislukt.",
     "importMislukt": "Import mislukt.",
+    "verwijderen": "Verwijderen",
+    "verwijderenBevestigTitel": "Contact verwijderen",
+    "verwijderenBevestig": "Weet u zeker dat u dit noodcontact wilt verwijderen?",
     "tip": "<strong>Tip:</strong> Voeg hier uw huisarts, notaris, uitvaartondernemer en vertrouwenspersonen toe. Deze contacten worden opgenomen in uw noodkaart PDF.",
     "gedeeldeContacten": "Gedeelde contacten ({aantal})",
     "gedeeldeBeschrijving": "Partners delen vaak dezelfde huisarts, notaris en uitvaartondernemer. Markeer contacten als 'gedeeld' en exporteer/importeer ze tussen profielen.",
@@ -1375,6 +1477,7 @@
   "tijdlijn": {
     "titel": "Tijdlijn na overlijden",
     "beschrijving": "Een overzicht van wat er wanneer geregeld moet worden na een overlijden. Gebruik deze checklist als leidraad voor uw nabestaanden. De exacte volgorde kan per situatie verschillen.",
+    "voortgang": "{ingevuld} van {totaal} stappen vastgelegd",
     "disclaimer": "<strong>Let op:</strong> Dit overzicht is informatief en geen juridisch advies. De termijnen en verplichtingen kunnen per situatie verschillen. Raadpleeg altijd een notaris of juridisch adviseur voor uw specifieke situatie.",
     "fasen": {
       "24uur": {
@@ -1487,25 +1590,38 @@
       "wilsverklaring": "Leg uw medische wensen en behandelwensen vast.",
       "notaris": "Leg uw testamentgegevens en notariscontact vast.",
       "documenten": "Upload uw belangrijke documenten, zoals uw paspoort of polissen.",
-      "naasten": "Voeg noodcontacten toe zodat nabestaanden weten wie zij kunnen bereiken."
+      "naasten": "Voeg noodcontacten toe zodat nabestaanden weten wie zij kunnen bereiken.",
+      "digitaal": "Leg uw digitale accounts vast.",
+      "erfgenamen": "Voeg erfgenamen toe aan uw nalatenschap.",
+      "boedel": "Leg uw bezittingen en schulden vast."
     }
   },
   "auditLog": {
     "titel": "Activiteitenlogboek",
     "beschrijving": "Overzicht van alle acties die in uw nalatenschap zijn uitgevoerd",
     "recenteActiviteiten": "Recente activiteiten",
-    "activiteitenGevonden": "{aantal} activiteiten gevonden",
+    "activiteitenGevonden": "{aantal} activiteiten geladen",
     "laden": "Laden...",
     "geenActiviteiten": "Nog geen activiteiten geregistreerd.",
     "vernieuwen": "Vernieuwen",
-    "alleActies": "Alle acties"
+    "alleActies": "Alle acties",
+    "laadFout": "Activiteiten konden niet worden geladen. Probeer het later opnieuw.",
+    "vandaag": "Vandaag",
+    "dezeWeek": "Deze week",
+    "dezeMaand": "Deze maand",
+    "alles": "Alles",
+    "laadMeer": "Meer laden",
+    "geenMeerActiviteiten": "Geen verdere activiteiten"
   },
   "exporteren": {
     "titel": "Exporteren",
     "beschrijving": "Download uw gegevens als PDF-documenten",
     "exportMislukt": "Export mislukt.",
+    "deelMetErfgenaam": "Deel met erfgenaam",
+    "deelMetErfgenaamBeschrijving": "Genereer een persoonlijk PDF-pakket specifiek voor een erfgenaam.",
     "compleetOverzicht": "Compleet overzicht",
     "compleetBeschrijving": "Exporteer alle vastgelegde informatie in één PDF-document.",
+    "videosUitgesloten": "Videoboodschappen worden niet meegenomen in de export.",
     "allesExporteren": "Alles exporteren als PDF",
     "compleetPakket": "Compleet pakket (ZIP)",
     "gestructureerdeExport": "Gestructureerde export",
@@ -1632,9 +1748,14 @@
       "titel": "Dashboard weergave",
       "beschrijving": "Kies welke secties zichtbaar zijn op uw dashboard.",
       "voortgang": "Voortgang nalatenschap",
+      "statistieken": "Statistieken",
       "voortgangGranulair": "Gedetailleerde voortgang",
       "suggesties": "Slimme suggesties",
       "domeinKaarten": "Domeinkaarten",
+      "meldingen": "Meldingen",
+      "backup": "Back-up status",
+      "aanbevolen": "Aanbevolen volgende stap",
+      "verloopdatum": "Verloopdatum documenten",
       "allesHerstellen": "Alles weer tonen"
     },
     "taal": {
@@ -1670,7 +1791,8 @@
         "Partner": "Partner",
         "Kind": "Kind",
         "Ouder": "Ouder",
-        "Overig": "Overig"
+        "Overig": "Overig",
+        "Primair": "Primair"
       }
     },
     "wachtwoord": {
@@ -2550,7 +2672,21 @@
       "summaryNee": "Nee",
       "summaryReferentie": "Referentie:",
       "summaryOrgaankeuzes": "Orgaankeuzes:",
-      "summaryToelichting": "Toelichting:"
+      "summaryToelichting": "Toelichting:",
+      "summaryBeslisser": "Beslissende persoon:",
+      "summaryBeslisserNaam": "Naam:",
+      "summaryBeslisserRelatie": "Relatie:",
+      "summaryBeslisserTelefoon": "Telefoon:"
+    },
+    "beslisser": {
+      "titel": "Beslissende persoon",
+      "beschrijving": "Geef aan wie namens u de donorkeuze mag maken.",
+      "naamLabel": "Naam beslissende persoon",
+      "naamPlaceholder": "Voor- en achternaam",
+      "relatieLabel": "Relatie tot u",
+      "relatiePlaceholder": "bijv. Partner, Zoon, Dochter",
+      "telefoonLabel": "Telefoonnummer",
+      "telefoonPlaceholder": "06-12345678"
     }
   },
   "uitvaartWizard": {
@@ -2671,14 +2807,11 @@
     "panelTitel": "Hulp",
     "helpOpenen": "Hulp bij dit onderdeel",
     "sluiten": "Sluiten",
-    "laden": "Laden...",
     "zoeken": "Zoeken in handleiding...",
     "geenResultaten": "Geen resultaten gevonden",
     "selecteerHoofdstuk": "Selecteer een hoofdstuk om te beginnen",
     "vorige": "Vorige",
     "volgende": "Volgende",
-    "laadFout": "Fout bij laden",
-    "laadFoutBeschrijving": "Het hoofdstuk kon niet worden geladen. Probeer het later opnieuw.",
     "chapters": {
       "aanDeSlag": "Aan de Slag",
       "dashboard": "Dashboard",
@@ -2957,6 +3090,8 @@
     "verwijderen": "Verwijderen",
     "onbekendeOntvanger": "Onbekend",
     "verwijderenBevestig": "Weet u zeker dat u \"{{titel}}\" wilt verwijderen?",
+    "verwijderenBevestigTitel": "Video verwijderen",
+    "annuleren": "Annuleren",
     "legeStaat": {
       "titel": "Nog geen videoboodschappen",
       "beschrijving": "Leg een persoonlijke boodschap vast voor uw erfgenamen. U kunt opnemen via uw webcam of een videobestand uploaden.",
@@ -3000,6 +3135,7 @@
       "maxOver": "Nog {seconden} sec.",
       "nietBeschikbaar": "Opname niet beschikbaar in deze browser.",
       "httpsVereist": "Camera-opname vereist een beveiligde verbinding (HTTPS)."
-    }
+    },
+    "aantalGebruikt": "{gebruikt} van {max} videoboodschappen gebruikt"
   }
 }

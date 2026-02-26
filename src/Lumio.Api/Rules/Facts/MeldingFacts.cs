@@ -17,4 +17,52 @@ public record MeldingFacts(
     bool ErfgenamenMetSleutel,
     List<string> VerlopenDocumenten,
     List<string> BijnaVerlopenDocumenten,
-    DateTime? LaatsteActualisatie);
+    DateTime? LaatsteActualisatie,
+    // S5: Testament
+    int AantalTestamentBegunstigden,
+    bool HeeftTestamentSnapshot,
+    DateTime? TestamentAangemaaktOp,
+    // S5: Wilsverklaring
+    bool WilsverklaringIsVerouderd,
+    bool HeeftWilsverklaringVertegenwoordiger,
+    bool WilEuthanasie,
+    bool HeeftBehandelVerbod,
+    // S5: Donor
+    string? DonorKeuze,
+    bool HeeftDonorOrgaankeuzes,
+    string? DonorBeslisserNaam,
+    // S5: Boedel / Digitaal bezit
+    bool HeeftBoedel,
+    bool HeeftDigitaalBezit,
+    // S5: Eigenaar legitimatie
+    bool HeeftLegitimatie,
+    bool LegitimatieIsVerlopen,
+    bool LegitimatieIsBijnaVerlopen,
+    bool HeeftLegitimatieZonderVervaldatum,
+    // S5: Uitvaart
+    string? UitvaartVoorkeurType,
+    string? UitvaartBegraafplaats,
+    bool UitvaartIsVerouderd,
+    bool HeeftUitvaartVerzekering,
+    bool HeeftUitvaartVerzekeringDetails,
+    bool HeeftCeremonieDetails,
+    // S5: Shamir
+    DateTime? ShamirOudsteDatumShareUitgegeven,
+    // S6: Legitimaire portie schending
+    bool HeeftLegitimairePortieSchending,
+    // S6: Tijdlijn bezoek
+    bool HeeftTijdlijnGezien,
+    // S8-01: Boedel — bezit zonder geschatte waarde
+    bool HeeftBezitMissendeWaarde,
+    // S8-02: Boedel — netto nalatenschap negatief
+    bool NettoNalatenschapNegatief,
+    // S8-03: Boedel — fysiek bezit zonder bestemde erfgenaam
+    bool HeeftBezitZonderErfgenaam,
+    // S8-04: Erfgenamen — erfgenaam zonder contactgegevens
+    bool HeeftErfgenaamZonderContactgegevens,
+    // S8-08: Noodcontacten — geen vertrouwenspersoon
+    bool HeeftVertrouwenspersoon,
+    // S8-09: Noodcontacten — geen contact met telefoonnummer
+    bool HeeftNoodcontactMetTelefoon,
+    // S8-12: Actualisatie verlopen per domein
+    List<string> VerlopenActualisatieDomeinen);

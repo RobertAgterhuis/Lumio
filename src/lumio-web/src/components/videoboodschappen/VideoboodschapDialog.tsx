@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {
   Dialog,
@@ -20,12 +20,12 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-import { useDomainQuery } from "@/hooks/useDomainQuery";
 import { Loader2, Upload, FileVideo, CheckCircle2, X } from "lucide-react";
 import { VideoRecorder } from "./VideoRecorder";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
 import type { Videoboodschap, VideoboodschapFormData } from "./types";
 import { emptyVideoboodschapForm } from "./types";
+import { api } from "@/lib/api-client";
 
 interface VideoboodschapDialogProps {
   open: boolean;
@@ -37,6 +37,8 @@ interface VideoboodschapDialogProps {
   uploading: boolean;
   uploadProgress: number;
   saving: boolean;
+  /** Pre-loaded erfgenamen list (avoids duplicate fetch). */
+  erfgenamen: Erfgenaam[];
 }
 
 function formatBytes(bytes: number): string {
@@ -53,6 +55,7 @@ export function VideoboodschapDialog({
   uploading,
   uploadProgress,
   saving,
+  erfgenamen,
 }: VideoboodschapDialogProps) {
   const t = useTranslations("videoboodschappen");
   const isEditing = !!editing;
@@ -70,9 +73,30 @@ export function VideoboodschapDialog({
   );
   const [error, setError] = useState<string | null>(null);
   const [videoTab, setVideoTab] = useState("opnemen");
+  const [maxDuurSeconden, setMaxDuurSeconden] = useState<number>(300);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
+  // Fetch duration limit from backend on mount
+  useEffect(() => {
+    api.get<{ maxAantal: number; maxDuurSeconden: number }>("/api/videoboodschappen/limiet")
+      .then((res) => setMaxDuurSeconden(res.maxDuurSeconden))
+      .catch(() => { /* keep default 300 */ });
+  }, []);
+
+  // Q-21: Reset form when editing prop changes (prevents stale formdata)
+  useEffect(() => {
+    setForm(
+      editing
+        ? {
+            titel: editing.titel,
+            beschrijving: editing.beschrijving ?? "",
+            ontvangerIds: editing.ontvangers.map((o) => o.erfgenaamId),
+            file: null,
+          }
+        : { ...emptyVideoboodschapForm }
+    );
+    setError(null);
+  }, [editing]);
 
   // Reset form when dialog opens/closes
   const handleOpenChange = useCallback(
@@ -212,7 +236,7 @@ export function VideoboodschapDialog({
                 </TabsList>
 
                 <TabsContent value="opnemen" className="mt-3">
-                  <VideoRecorder onVideoSelected={handleRecorded} />
+                  <VideoRecorder onVideoSelected={handleRecorded} maxDurationSeconds={maxDuurSeconden} />
                 </TabsContent>
 
                 <TabsContent value="uploaden" className="mt-3">

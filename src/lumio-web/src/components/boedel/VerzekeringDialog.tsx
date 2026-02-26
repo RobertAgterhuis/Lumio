@@ -98,6 +98,7 @@ export function VerzekeringDialog({
           <PersonSelect
             value={form.begunstigde}
             onChange={(v) => onFormChange({ ...form, begunstigde: v })}
+            onIdChange={(id) => onFormChange({ ...form, begunstigdeErfgenaamId: id ?? "" })}
             source="erfgenamen"
           />
         </div>

@@ -56,6 +56,12 @@ Exporteer specifieke categorieën als spreadsheet:
 
 Exporteer uitvaartgegevens in het **NUV-formaat** (XML), de standaard voor de Nederlandse uitvaartbranche.
 
+### Export per Erfgenaam
+
+Op de pagina **Erfgenamen** kunt u voor elke erfgenaam afzonderlijk een persoonsgebonden export genereren. Deze export bevat alleen de informatie die voor die persoon relevant is.
+
+> **Opmerking**: Videoboodschappen zijn niet opgenomen in exports.
+
 ---
 
 ## Tijdlijn Overlijden
@@ -141,6 +147,12 @@ De beveiligingssectie toont de status van:
 ### Account Verwijderen
 
 Onderaan de instellingen kunt u uw account permanent verwijderen. Dit vereist wachtwoordbevestiging en een extra bevestigingsdialoog.
+
+---
+
+## Videoboodschappen
+
+Lumio beschikt over een aparte pagina **Videoboodschappen** waar u persoonlijke videoboodschappen kunt opnemen of uploaden voor uw erfgenamen. Zie [hoofdstuk 15 — Videoboodschappen](15-videoboodschappen.md) voor de volledige uitleg.
 
 ---
 

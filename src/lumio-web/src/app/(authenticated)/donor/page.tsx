@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
-import { Heart } from "lucide-react";
+import { HeartHandshake, Activity } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -45,7 +46,10 @@ export default function DonorPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="donor" size="lg" className="text-primary" />
+            {t("titel")}
+          </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
@@ -54,7 +58,7 @@ export default function DonorPage() {
         </div>
         <Link href="/donor/formulier">
           <Button>
-            <Heart className="h-4 w-4 mr-2" />
+            <LumioIcon name="donor" size="sm" className="mr-2" />
             {data ? t("bewerken") : t("registratieStarten")}
           </Button>
         </Link>
@@ -62,8 +66,8 @@ export default function DonorPage() {
 
       <DomainStatusBanner domein="donor" />
 
-      <div className="rounded-lg border border-danger bg-danger-100 p-4">
-        <p className="text-sm text-danger">
+      <div className="rounded-lg border border-info bg-info-100 p-4">
+        <p className="text-sm text-info">
           {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
         </p>
       </div>
@@ -71,7 +75,7 @@ export default function DonorPage() {
       {!data ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Heart className="h-12 w-12 text-muted-foreground mb-4" />
+            <LumioIcon name="donor" size="xl" className="text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
               {t("geenKeuze")}
             </p>
@@ -79,11 +83,14 @@ export default function DonorPage() {
         </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("keuzeCard.titel")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+          <Card className="overflow-hidden">
+            <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <HeartHandshake className="h-5 w-5 text-success shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-success leading-tight">{t("keuzeCard.titel")}</h3>
+              </div>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               <p>
                 <span className="text-muted-foreground">{t("keuzeCard.keuze")}</span>{" "}
                 <strong>{data.keuze}</strong>
@@ -120,11 +127,14 @@ export default function DonorPage() {
             </CardContent>
           </Card>
           {orgaanKeuzes.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("orgaanCard.titel")}</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <Card className="overflow-hidden">
+              <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+                <Activity className="h-5 w-5 text-success shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-success leading-tight">{t("orgaanCard.titel")}</h3>
+                </div>
+              </div>
+              <CardContent className="pt-5">
                 <div className="space-y-2">
                   {orgaanKeuzes.map((o) => (
                     <div
@@ -132,7 +142,7 @@ export default function DonorPage() {
                       className="flex items-center justify-between rounded-md border p-2"
                     >
                       <span className="text-sm">{o.orgaan}</span>
-                      <Badge variant={o.welDoneren ? "secondary" : "destructive"}>
+                      <Badge variant={o.welDoneren ? "secondary" : "outline"} className={!o.welDoneren ? "text-muted-foreground" : undefined}>
                         {o.welDoneren ? t("ja") : t("nee")}
                       </Badge>
                     </div>

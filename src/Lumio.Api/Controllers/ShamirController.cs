@@ -37,6 +37,11 @@ public class ShamirController : ControllerBase
         if (request.AantalDelen < request.Drempel)
             return BadRequest(new { error = "Aantal delen moet >= drempel zijn." });
 
+        // S2-07: Validate the master password before generating shares
+        var geldig = await _masterPassword.UnlockAsync(request.Wachtwoord);
+        if (!geldig)
+            return Unauthorized(new { error = "Ongeldig wachtwoord. Shamir-sleutels kunnen niet worden gegenereerd." });
+
         var result = _shamirService.GenerateShares(request.Wachtwoord, request.AantalDelen, request.Drempel);
 
         // Reset all existing share assignments first
@@ -66,13 +71,19 @@ public class ShamirController : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Valideert Shamir-delen zonder het wachtwoord te retourneren.
+    /// Gebruik /reconstrueer-en-ontgrendel voor echte toegang (S2-02/S2-06 security fix).
+    /// </summary>
     [HttpPost("reconstrueer")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public IActionResult Reconstrueer([FromBody] ReconstrueerRequest request)
     {
         try
         {
-            var secret = _shamirService.ReconstructSecret(request.Delen);
-            return Ok(new { wachtwoord = secret });
+            _shamirService.ReconstructSecret(request.Delen);
+            // S2-06: Never return the reconstructed secret — validation only
+            return Ok(new { succes = true });
         }
         catch
         {

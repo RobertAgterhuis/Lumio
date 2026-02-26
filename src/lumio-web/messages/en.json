@@ -122,7 +122,8 @@
     "gaNaarNoodcontacten": "Go to Emergency Contacts",
     "gaNaarExporteren": "Go to Export",
     "gaNaarActiviteitenlog": "Go to Activity Log",
-    "gaNaarInstellingen": "Go to Settings"
+    "gaNaarInstellingen": "Go to Settings",
+    "gaNaarHelp": "Go to Help"
   },
   "auth": {
     "laden": "Loading Lumio...",
@@ -161,7 +162,8 @@
       "disclaimer": "Your data is stored encrypted. Keep your password safe \u2014 without it, your data cannot be accessed.",
       "foutMinimaal": "Password must contain at least 8 characters.",
       "foutOvereenkomst": "Passwords do not match.",
-      "foutSetup": "Setup failed"
+      "foutSetup": "Setup failed",
+      "wachtwoordWaarschuwing": "Store your password, emergency codes, and recovery codes in a safe place. Losing your password means losing access to all your Lumio data."
     },
     "ontgrendel": {
       "titel": "Unlock Lumio",
@@ -181,7 +183,8 @@
       "minimaalCodes": "At least 2 emergency codes are required.",
       "reconstructieMislukt": "Reconstruction failed. Please verify that you have entered enough valid emergency codes.",
       "bezig": "Reconstructing...",
-      "ontgrendelen": "Unlock with emergency codes"
+      "ontgrendelen": "Unlock with emergency codes",
+      "anderProfiel": "\u2190 Choose a different profile"
     },
     "wachtwoordsterkte": {
       "zeerZwak": "Very weak",
@@ -203,16 +206,53 @@
   },
   "dashboard": {
     "titel": "Dashboard",
-    "beschrijving": "Manage your digital legacy. Click a section to get started.",
+    "beschrijving": "Manage your legacy. Click a section to get started.",
+    "laden": {
+      "titel": "One moment",
+      "beschrijving": "We are preparing your estate overview..."
+    },
+    "begroeting": {
+      "ochtend": "Good morning",
+      "middag": "Good afternoon",
+      "avond": "Good evening"
+    },
+    "aanbevolenStap": {
+      "titel": "Recommended next step",
+      "beschrijving": "This section has not been filled in yet",
+      "actie": "Fill in"
+    },
+    "verloopdatumWidget": {
+      "titel": "Documents expiring soon",
+      "verlopen": "Expired",
+      "dagenOver": "{dagen} days",
+      "beherenLink": "Manage documents →"
+    },
     "verbergen": "Hide",
+    "sectieVerplaatsen": "Move section",
     "voortgang": {
       "titel": "Legacy progress",
       "onderdelen": "{aantalIngevuld} of {totaal} sections completed"
     },
     "meldingen": {
-      "titel": "Notifications ({aantal})",
+      "titel": "Notifications",
+      "laden": "Loading notifications...",
+      "fout": "Could not load notifications.",
+      "geenMeldingen": "No notifications — everything is in order.",
       "verbergen": "Hide",
       "verwijder": "Dismiss notification"
+    },
+    "backup": {
+      "titel": "Backup status",
+      "laden": "Loading status...",
+      "fout": "Could not load backup status.",
+      "status": {
+        "ok": "Up to date",
+        "warning": "Outdated",
+        "noBackup": "No backup"
+      },
+      "laatste": "Last backup",
+      "dagenGeleden": "{dagen} day(s) ago",
+      "nooit": "A backup has never been made."
     },
     "geenProfiel": {
       "titel": "Complete your profile to get started",
@@ -222,6 +262,7 @@
     },
     "letOp": "Note:",
     "juridisch": "Lumio is a tool for recording your wishes. A notarial will remains required for legal validity under the Dutch Civil Code (BW Book 4).",
+    "juridischBegrepen": "Got it, do not show again",
     "status": {
       "ingevuld": "Completed",
       "beginnen": "Start",
@@ -279,9 +320,12 @@
       "beschrijving": "Analyze your profile and receive suggestions for missing links and improvements.",
       "analyseren": "Analyze profile",
       "analyseMislukt": "Analysis failed",
+      "laden": "Loading suggestions...",
       "fout": "Could not perform the analysis.",
       "geenSuggesties": "No suggestions",
       "geenSuggestiesBeschrijving": "Your profile is well completed and all data is consistent.",
+      "profielLeeg": "No data to analyse yet",
+      "profielLeegBeschrijving": "Fill in your profile first to receive suggestions.",
       "aantalGevonden": "{aantal, plural, one {# suggestion} other {# suggestions}} found:"
     },
     "statistieken": {
@@ -306,6 +350,7 @@
     "sluiten": "Close wizard",
     "voltooid": "{voltooid} of {totaal} completed",
     "laterInvullen": "Fill in later",
+    "nietMeerTonen": "Do not show again",
     "afronden": "Finish",
     "stappen": {
       "profiel": {
@@ -418,8 +463,12 @@
       "adresPlaceholder": "Street and house number",
       "postcode": "Postal code",
       "postcodePlaceholder": "1234 AB",
-      "plaats": "City"
-    }
+      "plaats": "City",
+      "voegToeAlsNoodcontact": "Add notary as emergency contact",
+      "noodcontactToegevoegd": "Notary added as emergency contact",
+      "noodcontactToevoegenMislukt": "Failed to add emergency contact"
+    },
+    "ongeslagenWijzigingen": "Unsaved changes"
   },
   "enums": {
     "burgerlijkeStaat": {
@@ -588,6 +637,13 @@
     "toewijzingOpslaanMislukt": "Failed to save assignment.",
     "toewijzingVerwijderenMislukt": "Failed to delete assignment.",
     "noodcontactAangemaakt": "Heir also added as emergency contact.",
+    "verwijderBevestiging": {
+      "titel": "Delete heir?",
+      "vraag": "Are you sure you want to delete {naam}? This action cannot be undone.",
+      "bezittingenWaarschuwing": "{aantal, plural, one {# asset is} other {# assets are}} assigned to this heir and will be unlinked.",
+      "annuleren": "Cancel",
+      "verwijderen": "Delete"
+    },
     "bezitToewijzen": "Assign asset",
     "pdfDownloaden": "Download PDF",
     "deelOverzicht": "Share overview (HTML)",
@@ -831,6 +887,7 @@
     "tip": "A complete overview of your estate helps heirs with the settlement in accordance with Civil Code Book 4 (BW Boek 4).",
     "tipLabel": "Tip:",
     "opslaanMislukt": "Save failed.",
+    "bedragVerplicht": "Amount is required and must be greater than 0.",
     "verwijderenMislukt": "Delete failed.",
     "toevoegen": "Add",
     "annuleren": "Cancel",
@@ -1109,7 +1166,20 @@
       "titel": "Location preferences",
       "begraafplaats": "Cemetery:",
       "crematorium": "Crematorium:",
-      "aula": "Chapel:"
+      "aula": "Chapel:",
+      "bewerkenKnop": "Edit location",
+      "locatieNietIngevuld": "No location preferences recorded yet.",
+      "dialog": {
+        "titel": "Edit location preferences",
+        "begraafplaatsNaam": "Cemetery name",
+        "begraafplaatsAdres": "Cemetery address",
+        "crematoriumNaam": "Crematorium name",
+        "crematoriumAdres": "Crematorium address",
+        "aulaNaam": "Chapel name",
+        "aulaAdres": "Chapel address",
+        "annuleren": "Cancel",
+        "opslaan": "Save"
+      }
     },
     "verloop": {
       "titel": "Ceremony program",
@@ -1156,8 +1226,18 @@
       "sectieUitvaart": "Funeral",
       "type": "Type",
       "typePlaceholder": "Burial or cremation",
+      "typeBegrafenis": "Burial",
+      "typeCrematie": "Cremation",
+      "typeNatuurbegraven": "Natural burial",
+      "typeResomatie": "Resomation",
+      "typeGeenVoorkeur": "No preference",
       "budget": "Budget",
       "budgetPlaceholder": "e.g. Simple, average",
+      "budgetSelecteer": "Unknown / no preference",
+      "budgetEenvoudig": "Simple",
+      "budgetGemiddeld": "Average",
+      "budgetUitgebreid": "Extended",
+      "budgetLuxe": "Luxurious",
       "ondernemer": "Director",
       "telOndernemer": "Tel. director",
       "emailOndernemer": "Email director",
@@ -1237,6 +1317,9 @@
       "adres": "Address",
       "postcode": "Postal code",
       "woonplaats": "City",
+      "sectieVertegenwoordiger2": "Second representative",
+      "situatieOpties": "Situation options",
+      "situatieNotitie": "Situation note",
       "sectieClausules": "Additional clauses",
       "dementieclausule": "Dementia clause",
       "toelichtingDementie": "Explanation dementia clause",
@@ -1279,6 +1362,13 @@
     "naamCategorieVerplicht": "Name and category are required.",
     "verlopen": "Expired",
     "verlooptOver": "Expires in {dagen} {dagen, plural, one {day} other {days}}",
+    "verwijderenAlleVersiesTitel": "Delete all versions",
+    "verwijderenAlleVersiesBevestig": "Are you sure you want to delete all versions of this document? This cannot be undone.",
+    "verwijderenAlleVersies": "Delete all versions",
+    "verwijderenTitel": "Delete document",
+    "verwijderenBevestig": "Are you sure you want to delete this document? This cannot be undone.",
+    "verwijderen": "Delete",
+    "nieuweVersieUploaden": "Upload new version",
     "dropzone": {
       "titel": "Drop files here",
       "beschrijving": "Drag files here to upload"
@@ -1298,6 +1388,7 @@
       "verloopdatum": "Expiry date",
       "optioneel": "(optional)",
       "verloopdatumHint": "Set an expiry date to receive a reminder when this document needs to be renewed.",
+      "verloopdatumVerleden": "Warning: the entered expiry date is in the past.",
       "annuleren": "Cancel",
       "uploaden": "Upload",
       "uploadenBezig": "Uploading..."
@@ -1310,6 +1401,14 @@
       "sluiten": "Close",
       "klaar": "Done",
       "allesUploaden": "Upload all ({aantal})"
+    },
+    "editDialog": {
+      "titel": "Edit document",
+      "bewerken": "Edit",
+      "notities": "Notes",
+      "notitiesPlaceholder": "Notes for this document...",
+      "opslaan": "Save",
+      "opslaanMislukt": "Saving failed."
     }
   },
   "noodcontacten": {
@@ -1320,6 +1419,9 @@
     "verwijderenMislukt": "Deletion failed.",
     "exportMislukt": "Export failed.",
     "importMislukt": "Import failed.",
+    "verwijderen": "Delete",
+    "verwijderenBevestigTitel": "Delete contact",
+    "verwijderenBevestig": "Are you sure you want to delete this emergency contact?",
     "tip": "<strong>Tip:</strong> Add your general practitioner, notary, funeral director and trusted persons here. These contacts will be included in your emergency card PDF.",
     "gedeeldeContacten": "Shared contacts ({aantal})",
     "gedeeldeBeschrijving": "Partners often share the same GP, notary and funeral director. Mark contacts as 'shared' and export/import them between profiles.",
@@ -1375,6 +1477,7 @@
   "tijdlijn": {
     "titel": "Timeline after death",
     "beschrijving": "An overview of what needs to be arranged and when after a death. Use this checklist as a guide for your next of kin. The exact order may vary per situation.",
+    "voortgang": "{ingevuld} of {totaal} steps recorded",
     "disclaimer": "<strong>Note:</strong> This overview is informational and not legal advice. The deadlines and obligations may vary per situation. Always consult a notary or legal advisor for your specific situation.",
     "fasen": {
       "24uur": {
@@ -1487,25 +1590,38 @@
       "wilsverklaring": "Record your medical wishes and treatment directives.",
       "notaris": "Record your will details and notary contact.",
       "documenten": "Upload your important documents, such as your passport or policies.",
-      "naasten": "Add emergency contacts so next of kin know who to reach."
+      "naasten": "Add emergency contacts so next of kin know who to reach.",
+      "digitaal": "Record your digital accounts.",
+      "erfgenamen": "Add heirs to your estate.",
+      "boedel": "Record your assets and liabilities."
     }
   },
   "auditLog": {
     "titel": "Activity log",
     "beschrijving": "Overview of all actions performed in your estate",
     "recenteActiviteiten": "Recent activities",
-    "activiteitenGevonden": "{aantal} activities found",
+    "activiteitenGevonden": "{aantal} activities loaded",
     "laden": "Loading...",
     "geenActiviteiten": "No activities recorded yet.",
     "vernieuwen": "Refresh",
-    "alleActies": "All actions"
+    "alleActies": "All actions",
+    "laadFout": "Activities could not be loaded. Please try again later.",
+    "vandaag": "Today",
+    "dezeWeek": "This week",
+    "dezeMaand": "This month",
+    "alles": "All time",
+    "laadMeer": "Load more",
+    "geenMeerActiviteiten": "No more activities"
   },
   "exporteren": {
     "titel": "Export",
     "beschrijving": "Download your data as PDF documents",
     "exportMislukt": "Export failed.",
+    "deelMetErfgenaam": "Share with heir",
+    "deelMetErfgenaamBeschrijving": "Generate a personalised PDF package specifically for an heir.",
     "compleetOverzicht": "Complete overview",
     "compleetBeschrijving": "Export all recorded information in a single PDF document.",
+    "videosUitgesloten": "Video messages are not included in the export.",
     "allesExporteren": "Export all as PDF",
     "compleetPakket": "Complete package (ZIP)",
     "gestructureerdeExport": "Structured export",
@@ -1632,9 +1748,14 @@
       "titel": "Dashboard display",
       "beschrijving": "Choose which sections are visible on your dashboard.",
       "voortgang": "Legacy progress",
+      "statistieken": "Statistics",
       "voortgangGranulair": "Detailed progress",
       "suggesties": "Smart suggestions",
       "domeinKaarten": "Domain cards",
+      "meldingen": "Notifications",
+      "backup": "Backup status",
+      "aanbevolen": "Recommended next step",
+      "verloopdatum": "Document expiry dates",
       "allesHerstellen": "Show all"
     },
     "taal": {
@@ -1670,7 +1791,8 @@
         "Partner": "Partner",
         "Kind": "Child",
         "Ouder": "Parent",
-        "Overig": "Other"
+        "Overig": "Other",
+        "Primair": "Primary"
       }
     },
     "wachtwoord": {
@@ -2550,7 +2672,21 @@
       "summaryNee": "No",
       "summaryReferentie": "Reference:",
       "summaryOrgaankeuzes": "Organ choices:",
-      "summaryToelichting": "Explanation:"
+      "summaryToelichting": "Explanation:",
+      "summaryBeslisser": "Decision maker:",
+      "summaryBeslisserNaam": "Name:",
+      "summaryBeslisserRelatie": "Relation:",
+      "summaryBeslisserTelefoon": "Phone:"
+    },
+    "beslisser": {
+      "titel": "Decision maker",
+      "beschrijving": "Indicate who may make the donor decision on your behalf.",
+      "naamLabel": "Name of decision maker",
+      "naamPlaceholder": "First and last name",
+      "relatieLabel": "Relation to you",
+      "relatiePlaceholder": "e.g. Partner, Son, Daughter",
+      "telefoonLabel": "Phone number",
+      "telefoonPlaceholder": "Phone number"
     }
   },
   "uitvaartWizard": {
@@ -2671,14 +2807,11 @@
     "panelTitel": "Help",
     "helpOpenen": "Help for this section",
     "sluiten": "Close",
-    "laden": "Loading...",
     "zoeken": "Search user guide...",
     "geenResultaten": "No results found",
     "selecteerHoofdstuk": "Select a chapter to get started",
     "vorige": "Previous",
     "volgende": "Next",
-    "laadFout": "Loading error",
-    "laadFoutBeschrijving": "The chapter could not be loaded. Please try again later.",
     "chapters": {
       "aanDeSlag": "Getting Started",
       "dashboard": "Dashboard",
@@ -2957,6 +3090,8 @@
     "verwijderen": "Delete",
     "onbekendeOntvanger": "Unknown",
     "verwijderenBevestig": "Are you sure you want to delete \"{{titel}}\"?",
+    "verwijderenBevestigTitel": "Delete video",
+    "annuleren": "Cancel",
     "legeStaat": {
       "titel": "No video messages yet",
       "beschrijving": "Record a personal message for your heirs. You can record via webcam or upload a video file.",
@@ -3000,6 +3135,7 @@
       "maxOver": "{seconden} sec remaining",
       "nietBeschikbaar": "Recording not available in this browser.",
       "httpsVereist": "Camera recording requires a secure connection (HTTPS)."
-    }
+    },
+    "aantalGebruikt": "{gebruikt} of {max} video messages used"
   }
 }

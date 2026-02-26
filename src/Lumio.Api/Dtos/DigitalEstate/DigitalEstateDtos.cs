@@ -26,7 +26,8 @@ public record WachtwoordEntryResponse(
     string Naam,
     string? Gebruikersnaam,
     string? Url,
-    string? Notities);
+    string? Notities,
+    bool HasPassword);
 
 public record WachtwoordEntryCreateRequest(
     string Naam,
@@ -57,6 +58,13 @@ public record CryptoWalletResponse(
     string? WalletAdres,
     string? Exchange,
     string? Notities);
+
+public record CryptoWalletOntsluitelResponse(
+    Guid Id,
+    string WalletNaam,
+    string CryptoType,
+    string? SeedPhrase,
+    string? WalletAdres);
 
 public record CryptoWalletUpsertRequest(
     string WalletNaam,

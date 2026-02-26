@@ -1,31 +1,33 @@
 # 2 — Dashboard
 
-The dashboard is the home screen after logging in. It provides an overview of your progress and quick access to all sections.
+The dashboard is the home screen after logging in. It provides a personalized overview of your progress and quick access to all sections.
 
-## Progress Bar
+## Greeting
 
-At the top you see a **progress bar** showing what percentage of your profile has been filled in. Next to it is how many sections are completed (e.g., "4 of 10 sections").
+The dashboard greets you by name and adapts to the time of day — "Good morning", "Good afternoon", or "Good evening". The first name is taken from your profile.
 
-## Statistics
+## Dashboard Widgets
 
-A compact summary shows the number of:
-- Heirs
-- Digital accounts
-- Documents
-- Estate items
-- Emergency contacts
+The dashboard consists of several independent widgets, each covering a different aspect of your profile. The widgets that can be shown are:
 
-Plus a financial overview: total assets, total debts, and net estate.
+| Widget | Description |
+|--------|-------------|
+| **Progress** | A progress bar showing what percentage of your profile has been filled in, plus how many domains are completed |
+| **Statistics** | A compact summary: number of heirs, digital accounts, documents, estate items, emergency contacts, and a financial overview (assets, debts, net estate) |
+| **Detailed Progress** | Per-domain breakdown of which fields have been filled in, each domain with its own progress bar |
+| **Smart Suggestions** | Contextual tips about missing or incomplete information (e.g., "Your notary is not listed as an emergency contact") |
+| **Notifications** | Warnings and reminders such as outdated backup, expired documents, or undistributed emergency codes |
+| **Backup Status** | Shows when the last backup was made and whether a new backup is recommended |
+| **Recommended Next Step** | Highlights the first incomplete domain so you know what to fill in next |
+| **Document Expiry** | Warns when one or more documents are approaching their expiry date |
 
-## Detailed Progress
+### Hiding a Widget
 
-Click on the progress section to see per domain which fields have been filled in. Each domain shows its own progress bar (e.g., "5 of 8 fields for Will").
+Each widget on the dashboard has a **Hide** button (eye-off icon, top right of the widget). Click it to hide that widget. You can re-enable hidden widgets via **Settings → Dashboard Layout**.
 
-## Smart Suggestions
+### Reordering Widgets
 
-Click **Analyze profile** to receive contextual suggestions. Lumio analyzes your data and provides tips about missing or incomplete information, such as:
-- "Your notary is not listed as an emergency contact"
-- "You have not yet filled in a GP"
+Drag any widget by its header to move it to a different position in the grid. The new order is saved automatically.
 
 ## Interview Wizard
 
@@ -44,7 +46,7 @@ After completion, all answers are automatically saved in the correct sections.
 
 ## Onboarding Wizard
 
-On the first login, an **onboarding wizard** also appears with 6 steps:
+On the first login, an **onboarding wizard** appears with 6 steps:
 1. Create profile
 2. Add emergency contacts
 3. Set up will
@@ -66,7 +68,7 @@ This applies to both the onboarding wizard and the interview wizard.
 
 ## Domain Cards
 
-The dashboard shows 10 cards, one per domain:
+The dashboard shows **10 domain cards**, one per domain:
 
 | Domain | Description |
 |--------|-------------|
@@ -93,17 +95,17 @@ Each card shows a status badge:
 
 On each domain card you can click **Mark as completed** to mark the domain as finished. To undo this, click **Reopen**.
 
-## Customizing the Dashboard
+### Reordering Domain Cards
 
-You can hide sections of the dashboard with the eye icon. Via Settings you can manage the visibility of the following sections:
-- Progress bar
-- Detailed progress
-- Smart suggestions
-- Domain cards
+Drag any domain card to a different position in the grid. The new order is saved automatically per profile.
+
+### Hiding Domain Cards
+
+Individual domain cards can be hidden. Go to **Settings → Dashboard Layout** and toggle the visibility of each domain card using the eye icon.
 
 ## Notifications
 
-In the header you see a **bell icon** with notifications. These are warnings and reminders, such as:
+In the application header there is a **bell icon** with notifications. These are warnings and reminders, such as:
 - "You have never made a backup"
 - "Your backup is older than 30 days"
 - "There are expired documents"

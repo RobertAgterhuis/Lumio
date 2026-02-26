@@ -36,7 +36,17 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
                 v.AangemaaktOp,
                 v.GewijzigdOp,
                 Ontvangers = v.Ontvangers
-                    .Select(o => new { o.Id, o.ErfgenaamId })
+                    .Select(o => new
+                    {
+                        o.Id,
+                        o.ErfgenaamId,
+                        Naam = db.Erfgenamen
+                            .Where(e => e.Id == o.ErfgenaamId)
+                            .Select(e => e.Tussenvoegsel != null && e.Tussenvoegsel != ""
+                                ? e.Voornaam + " " + e.Tussenvoegsel + " " + e.Achternaam
+                                : e.Voornaam + " " + e.Achternaam)
+                            .FirstOrDefault(),
+                    })
                     .ToList(),
             })
             .OrderByDescending(v => v.AangemaaktOp)
@@ -45,11 +55,19 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         var result = items.Select(v => new VideoboodschapResponse(
             v.Id, v.Titel, v.Beschrijving, v.BestandsNaam, v.ContentType,
             v.BestandsGrootte, v.DuurSeconden,
-            v.Ontvangers.Select(o => new OntvangerResponse(o.Id, o.ErfgenaamId)).ToList(),
+            v.Ontvangers.Select(o => new OntvangerResponse(o.Id, o.ErfgenaamId, o.Naam)).ToList(),
             v.AangemaaktOp, v.GewijzigdOp
         )).ToList();
 
         return Ok(result);
+    }
+
+    // ── GET /api/videoboodschappen/limiet ───────────────────────────────────
+    /// <summary>Returns the configured maximum number of video messages allowed.</summary>
+    [HttpGet("limiet")]
+    public IActionResult GetLimiet()
+    {
+        return Ok(new { maxAantal = _limieten.VideoMaxAantal, maxDuurSeconden = _limieten.VideoMaxDuurSeconden });
     }
 
     // ── POST /api/videoboodschappen/uploaden ────────────────────────────────
@@ -84,6 +102,13 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
             return BadRequest(new
             {
                 error = $"Bestand is te groot. Maximum is {_limieten.VideoMaxBytes / 1_048_576} MB."
+            });
+
+        // Enforce duration limit
+        if (duurSeconden.HasValue && duurSeconden.Value > _limieten.VideoMaxDuurSeconden)
+            return BadRequest(new
+            {
+                error = $"Video mag maximaal {_limieten.VideoMaxDuurSeconden} seconden duren."
             });
 
         // Allow only video MIME types
@@ -121,18 +146,22 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         };
 
         // Validate and link recipients
-        foreach (var eid in ontvIds.Distinct())
+        var distinctIds = ontvIds.Distinct().ToList();
+        foreach (var eid in distinctIds)
         {
             var bestaat = await db.Erfgenamen
                 .AnyAsync(e => e.Id == eid && e.EigenaarId == eigenaar.Id);
-            if (bestaat)
-                item.Ontvangers.Add(new VideoboodschapOntvanger { ErfgenaamId = eid });
+            if (!bestaat)
+                return BadRequest(new { error = $"Erfgenaam {eid} bestaat niet of behoort niet tot dit profiel." });
         }
+        foreach (var eid in distinctIds)
+            item.Ontvangers.Add(new VideoboodschapOntvanger { ErfgenaamId = eid });
 
         db.Videoboodschappen.Add(item);
         await db.SaveChangesAsync();
 
-        return Created($"/api/videoboodschappen/{item.Id}", ToResponse(item));
+        var namen = await LaadNamenAsync(item.Ontvangers.Select(o => o.ErfgenaamId));
+        return Created($"/api/videoboodschappen/{item.Id}", ToResponse(item, namen));
     }
 
     // ── GET /api/videoboodschappen/{id}/stream ──────────────────────────────
@@ -204,7 +233,8 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         item.GewijzigdOp = DateTime.UtcNow;
         await db.SaveChangesAsync();
 
-        return Ok(ToResponse(item));
+        var namen = await LaadNamenAsync(item.Ontvangers.Select(o => o.ErfgenaamId));
+        return Ok(ToResponse(item, namen));
     }
 
     // ── DELETE /api/videoboodschappen/{id} ──────────────────────────────────
@@ -221,8 +251,21 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         return deleted == 0 ? NotFound() : NoContent();
     }
 
-    // ── Helper ──────────────────────────────────────────────────────────────
-    private static VideoboodschapResponse ToResponse(Videoboodschap v) => new(
+    // ── Helpers ────────────────────────────────────────────────────────────
+    private async Task<IReadOnlyDictionary<Guid, string?>> LaadNamenAsync(IEnumerable<Guid> erfgenaamIds)
+    {
+        var ids = erfgenaamIds.Distinct().ToList();
+        if (ids.Count == 0) return new Dictionary<Guid, string?>();
+        return await db.Erfgenamen
+            .Where(e => ids.Contains(e.Id))
+            .ToDictionaryAsync(
+                e => e.Id,
+                e => (string?)(string.IsNullOrEmpty(e.Tussenvoegsel)
+                    ? $"{e.Voornaam} {e.Achternaam}"
+                    : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}"));
+    }
+
+    private static VideoboodschapResponse ToResponse(Videoboodschap v, IReadOnlyDictionary<Guid, string?>? namen = null) => new(
         v.Id,
         v.Titel,
         v.Beschrijving,
@@ -230,7 +273,7 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         v.ContentType,
         v.BestandsGrootte,
         v.DuurSeconden,
-        v.Ontvangers.Select(o => new OntvangerResponse(o.Id, o.ErfgenaamId)).ToList(),
+        v.Ontvangers.Select(o => new OntvangerResponse(o.Id, o.ErfgenaamId, namen?.GetValueOrDefault(o.ErfgenaamId))).ToList(),
         v.AangemaaktOp,
         v.GewijzigdOp);
 }

@@ -8,9 +8,6 @@ import { FormField } from "@/components/ui/form-field";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { api } from "@/lib/api-client";
@@ -70,14 +67,15 @@ export function PasswordChangeCard() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Key className="h-5 w-5" /> {t("wachtwoord.titel")}
-        </CardTitle>
-        <CardDescription>{t("wachtwoord.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Key className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("wachtwoord.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("wachtwoord.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md">
           <FormField.Root error={errors.huidigWachtwoord?.message} required>
             <FormField.Label>{t("wachtwoord.huidig")}</FormField.Label>

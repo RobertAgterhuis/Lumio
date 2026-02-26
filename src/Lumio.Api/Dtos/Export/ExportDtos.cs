@@ -95,7 +95,7 @@ public record TestamentExport(
     string? CTR_Nummer,
     string? AlgemeneWensen,
     string? BijzondereBepalingen,
-    bool UitsluitingsClausule,
+    bool? UitsluitingsClausule,
     string? Legaten,
     List<BegunstigdeExport> Begunstigden,
     List<ExecuteurExport> Executeurs

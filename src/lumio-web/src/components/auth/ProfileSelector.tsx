@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +22,14 @@ import { Users, Plus } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 
+// S7-16: Zod schema for the create-profile form
+const profileCreateSchema = z.object({
+  naam: z.string().min(1, "Naam is verplicht."),
+  relatie: z.string(),
+});
+
+type ProfileCreateFormValues = z.infer<typeof profileCreateSchema>;
+
 interface ProfileSelectorProps {
   onProfileSelected: () => void;
 }
@@ -25,12 +37,25 @@ interface ProfileSelectorProps {
 export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
   const { profiles, setProfiles, setActiveProfile, setProfileSelected, setProfileNeedsSetup } =
     useAuthStore();
+  const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [newRelatie, setNewRelatie] = useState("Partner");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const t = useTranslations("auth.profiel");
+
+  // S7-16: react-hook-form + Zod for create-profile form
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors: formErrors },
+  } = useForm<ProfileCreateFormValues>({
+    resolver: zodResolver(profileCreateSchema),
+    defaultValues: { naam: "", relatie: "Partner" },
+  });
+  const selectedRelatie = watch("relatie");
 
   const handleSelect = async (profile: Profile) => {
     setError("");
@@ -43,6 +68,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
       setActiveProfile(profile);
       setProfileSelected(true);
       setProfileNeedsSetup(result.heeftSetupNodig);
+      queryClient.clear();
       onProfileSelected();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("selecterenMislukt"));
@@ -51,27 +77,24 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
     }
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreate = handleSubmit(async (data: ProfileCreateFormValues) => {
     setError("");
-    if (!newName.trim()) return;
-
     setLoading(true);
     try {
       const profile = await api.post<Profile>("/api/profielen", {
-        naam: newName.trim(),
-        relatie: profiles.length === 0 ? "Primair" : newRelatie,
+        naam: data.naam.trim(),
+        relatie: profiles.length === 0 ? "Primair" : data.relatie,
       });
       setProfiles([...profiles, profile]);
       setShowCreate(false);
-      setNewName("");
+      reset();
       // Auto-select the new profile
       await handleSelect(profile);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("aanmakenMislukt"));
       setLoading(false);
     }
-  };
+  });
 
   const relatieOptions = [
     { value: "Partner", label: t("partner") },
@@ -129,12 +152,13 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
               <Label htmlFor="profile-name">{t("naam")}</Label>
               <Input
                 id="profile-name"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
+                {...register("naam")}
                 placeholder={t("naamPlaceholder")}
-                required
                 autoFocus
               />
+              {formErrors.naam && (
+                <p className="text-sm text-destructive">{formErrors.naam.message}</p>
+              )}
             </div>
 
             {profiles.length > 0 && (
@@ -145,9 +169,9 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                     <Button
                       key={rel.value}
                       type="button"
-                      variant={newRelatie === rel.value ? "default" : "outline"}
+                      variant={selectedRelatie === rel.value ? "default" : "outline"}
                       size="sm"
-                      onClick={() => setNewRelatie(rel.value)}
+                      onClick={() => setValue("relatie", rel.value)}
                     >
                       {rel.label}
                     </Button>
@@ -156,7 +180,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading || !newName.trim()}>
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? t("bezig") : t("aanmaken")}
             </Button>
 
@@ -165,7 +189,7 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                 type="button"
                 variant="ghost"
                 className="w-full"
-                onClick={() => setShowCreate(false)}
+                onClick={() => { setShowCreate(false); reset(); }}
               >
                 {t("annuleren")}
               </Button>

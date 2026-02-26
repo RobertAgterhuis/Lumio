@@ -1,76 +1,92 @@
 import { create } from "zustand";
 
-const STORAGE_KEY = "lumio-dashboard-prefs";
+const STORAGE_KEY_PREFIX = "lumio-dashboard-prefs";
+
+function storageKey(profileId: string | null) {
+  return profileId ? `${STORAGE_KEY_PREFIX}-${profileId}` : STORAGE_KEY_PREFIX;
+}
 
 /* ── Dashboard visibility toggles ─────────────────────────── */
 
 export interface DashboardPreferences {
   showVoortgang: boolean;
+  showStatistieken: boolean;
   showVoortgangGranulair: boolean;
   showSuggesties: boolean;
-  showDomeinKaarten: boolean;
+  hiddenDomeinKaarten: string[];
+  domeinKaartenVolgorde: string[];
+  sectieVolgorde: string[];
+  showMeldingen: boolean;
+  showBackup: boolean;
+  showAanbevolen: boolean;
+  showVerloopdatum: boolean;
+  sidebarCollapsed: boolean;
 }
 
-/* ── Domain finished state ────────────────────────────────── */
-
-/** Maps domeinKey → ISO-8601 date string when the user marked it finished */
-export type FinishedDomains = Record<string, string>;
-
-/* ── Combined persisted shape ─────────────────────────────── */
-
-interface PersistedPrefs extends DashboardPreferences {
-  finishedDomains: FinishedDomains;
-}
+export type BooleanPreferenceKey = {
+  [K in keyof DashboardPreferences]: DashboardPreferences[K] extends boolean ? K : never;
+}[keyof DashboardPreferences];
 
 /* ── Store interface ──────────────────────────────────────── */
 
-interface PreferencesState extends PersistedPrefs {
+interface PreferencesState extends DashboardPreferences {
+  _profileId: string | null;
   // Dashboard visibility
-  toggleSection: (key: keyof DashboardPreferences) => void;
+  initForUser: (profileId: string) => void;
+  toggleSection: (key: BooleanPreferenceKey) => void;
+  toggleDomeinKaart: (domein: string) => void;
+  setDomeinKaartenVolgorde: (order: string[]) => void;
+  setSectieVolgorde: (order: string[]) => void;
   resetDashboard: () => void;
-
-  // Domain finished
-  setDomainFinished: (domein: string, finished: boolean) => void;
-  isDomainFinished: (domein: string) => boolean;
+  toggleSidebar: () => void;
 }
 
 /* ── Defaults ─────────────────────────────────────────────── */
 
 const dashboardDefaults: DashboardPreferences = {
   showVoortgang: true,
+  showStatistieken: true,
   showVoortgangGranulair: true,
   showSuggesties: true,
-  showDomeinKaarten: true,
-};
-
-const allDefaults: PersistedPrefs = {
-  ...dashboardDefaults,
-  finishedDomains: {},
+  hiddenDomeinKaarten: [],
+  domeinKaartenVolgorde: [],
+  sectieVolgorde: [],
+  showMeldingen: true,
+  showBackup: true,
+  showAanbevolen: true,
+  showVerloopdatum: true,
+  sidebarCollapsed: false,
 };
 
 /* ── Persistence helpers ──────────────────────────────────── */
 
-function load(): PersistedPrefs {
-  if (typeof window === "undefined") return allDefaults;
+function load(profileId: string | null): DashboardPreferences {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return allDefaults;
-    return { ...allDefaults, ...JSON.parse(raw) };
+    const raw = localStorage.getItem(storageKey(profileId));
+    if (!raw) return dashboardDefaults;
+    return { ...dashboardDefaults, ...JSON.parse(raw) };
   } catch {
-    return allDefaults;
+    return dashboardDefaults;
   }
 }
 
 function save(state: PreferencesState) {
   try {
-    const persisted: PersistedPrefs = {
+    const persisted: DashboardPreferences = {
       showVoortgang: state.showVoortgang,
+      showStatistieken: state.showStatistieken,
       showVoortgangGranulair: state.showVoortgangGranulair,
       showSuggesties: state.showSuggesties,
-      showDomeinKaarten: state.showDomeinKaarten,
-      finishedDomains: state.finishedDomains,
+      hiddenDomeinKaarten: state.hiddenDomeinKaarten,
+      domeinKaartenVolgorde: state.domeinKaartenVolgorde,
+      sectieVolgorde: state.sectieVolgorde,
+      showMeldingen: state.showMeldingen,
+      showBackup: state.showBackup,
+      showAanbevolen: state.showAanbevolen,
+      showVerloopdatum: state.showVerloopdatum,
+      sidebarCollapsed: state.sidebarCollapsed,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
+    localStorage.setItem(storageKey(state._profileId), JSON.stringify(persisted));
   } catch {
     // Storage full / unavailable
   }
@@ -79,7 +95,14 @@ function save(state: PreferencesState) {
 /* ── Store ────────────────────────────────────────────────── */
 
 export const usePreferencesStore = create<PreferencesState>((set, get) => ({
-  ...load(),
+  ...dashboardDefaults,
+  _profileId: null,
+
+  /* Load preferences for a specific user — call after profile is selected */
+  initForUser: (profileId) => {
+    const prefs = load(profileId);
+    set({ ...prefs, _profileId: profileId });
+  },
 
   /* Dashboard visibility */
   toggleSection: (key) => {
@@ -87,24 +110,32 @@ export const usePreferencesStore = create<PreferencesState>((set, get) => ({
     save(get());
   },
 
+  toggleDomeinKaart: (domein) => {
+    const current = get().hiddenDomeinKaarten;
+    const next = current.includes(domein)
+      ? current.filter((d) => d !== domein)
+      : [...current, domein];
+    set({ hiddenDomeinKaarten: next });
+    save(get());
+  },
+
+  setDomeinKaartenVolgorde: (order) => {
+    set({ domeinKaartenVolgorde: order });
+    save(get());
+  },
+
+  setSectieVolgorde: (order) => {
+    set({ sectieVolgorde: order });
+    save(get());
+  },
+
   resetDashboard: () => {
-    set(dashboardDefaults);
+    set({ ...dashboardDefaults, _profileId: get()._profileId });
     save(get());
   },
 
-  /* Domain finished */
-  setDomainFinished: (domein, finished) => {
-    const current = { ...get().finishedDomains };
-    if (finished) {
-      current[domein] = new Date().toISOString();
-    } else {
-      delete current[domein];
-    }
-    set({ finishedDomains: current });
+  toggleSidebar: () => {
+    set({ sidebarCollapsed: !get().sidebarCollapsed });
     save(get());
-  },
-
-  isDomainFinished: (domein) => {
-    return !!get().finishedDomains[domein];
   },
 }));

@@ -18,3 +18,4 @@ export {
   getWizardsWithProgress,
   clearAllWizardProgress,
 } from "./useWizardProgress";
+export { useDocumenten, type PersoonlijkDocument, type DocumentVersie } from "./useDocumenten";

@@ -2,9 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Wallet, Building2, Shield, CreditCard, Plus } from "lucide-react";
+import { Plus, Home, Landmark, ShieldCheck, TrendingDown } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
@@ -70,7 +71,10 @@ export default function BoedelPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">{t("titel")}</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <LumioIcon name="boedel" size="lg" className="text-primary" />
+          {t("titel")}
+        </h1>
         <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
         <VoorbeeldDialog domein="boedel" />
         <SectieNotitie sectie="boedel" />
@@ -92,32 +96,35 @@ export default function BoedelPage() {
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList>
           <TabsTrigger value="bezittingen">
-            <Wallet className="h-4 w-4 mr-1" /> {t("tabs.bezittingen", { aantal: bezittingen.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.bezittingen", { aantal: bezittingen.length })}
           </TabsTrigger>
           <TabsTrigger value="rekeningen">
-            <Building2 className="h-4 w-4 mr-1" /> {t("tabs.rekeningen", { aantal: rekeningen.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.rekeningen", { aantal: rekeningen.length })}
           </TabsTrigger>
           <TabsTrigger value="verzekeringen">
-            <Shield className="h-4 w-4 mr-1" /> {t("tabs.verzekeringen", { aantal: verzekeringen.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.verzekeringen", { aantal: verzekeringen.length })}
           </TabsTrigger>
           <TabsTrigger value="schulden">
-            <CreditCard className="h-4 w-4 mr-1" /> {t("tabs.schulden", { aantal: schulden.length })}
+            <LumioIcon name="boedel" size="sm" className="mr-1" /> {t("tabs.schulden", { aantal: schulden.length })}
           </TabsTrigger>
         </TabsList>
 
         {/* Bezittingen Tab */}
         <TabsContent value="bezittingen">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>{t("bezittingen.titel")}</CardTitle>
+          <Card className="overflow-hidden">
+            <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <Home className="h-5 w-5 text-success shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-success leading-tight">{t("bezittingen.titel")}</h3>
+              </div>
               <Button size="sm" onClick={() => openBezit()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
               </Button>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <CardContent className="pt-5">
               {bezittingen.length === 0 ? (
                 <EmptyState
-                  icon={Building2}
+                  lumioIcon="boedel"
                   title={tEmpty("bezittingen.titel")}
                   description={tEmpty("bezittingen.beschrijving")}
                   ctaLabel={tEmpty("bezittingen.cta")}
@@ -136,17 +143,20 @@ export default function BoedelPage() {
 
         {/* Rekeningen Tab */}
         <TabsContent value="rekeningen">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>{t("rekeningen.titel")}</CardTitle>
+          <Card className="overflow-hidden">
+            <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <Landmark className="h-5 w-5 text-success shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-success leading-tight">{t("rekeningen.titel")}</h3>
+              </div>
               <Button size="sm" onClick={() => openRekening()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
               </Button>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <CardContent className="pt-5">
               {rekeningen.length === 0 ? (
                 <EmptyState
-                  icon={Wallet}
+                  lumioIcon="boedel"
                   title={tEmpty("rekeningen.titel")}
                   description={tEmpty("rekeningen.beschrijving")}
                   ctaLabel={tEmpty("rekeningen.cta")}
@@ -165,17 +175,20 @@ export default function BoedelPage() {
 
         {/* Verzekeringen Tab */}
         <TabsContent value="verzekeringen">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>{t("verzekeringen.titel")}</CardTitle>
+          <Card className="overflow-hidden">
+            <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <ShieldCheck className="h-5 w-5 text-success shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-success leading-tight">{t("verzekeringen.titel")}</h3>
+              </div>
               <Button size="sm" onClick={() => openVerzekering()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
               </Button>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <CardContent className="pt-5">
               {verzekeringen.length === 0 ? (
                 <EmptyState
-                  icon={Shield}
+                  lumioIcon="boedel"
                   title={tEmpty("verzekeringen.titel")}
                   description={tEmpty("verzekeringen.beschrijving")}
                   ctaLabel={tEmpty("verzekeringen.cta")}
@@ -194,17 +207,20 @@ export default function BoedelPage() {
 
         {/* Schulden Tab */}
         <TabsContent value="schulden">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>{t("schulden.titel")}</CardTitle>
+          <Card className="overflow-hidden">
+            <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <TrendingDown className="h-5 w-5 text-success shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-success leading-tight">{t("schulden.titel")}</h3>
+              </div>
               <Button size="sm" onClick={() => openSchuld()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
               </Button>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <CardContent className="pt-5">
               {schulden.length === 0 ? (
                 <EmptyState
-                  icon={CreditCard}
+                  lumioIcon="boedel"
                   title={tEmpty("schulden.titel")}
                   description={tEmpty("schulden.beschrijving")}
                   ctaLabel={tEmpty("schulden.cta")}

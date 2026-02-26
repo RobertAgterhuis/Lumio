@@ -1,31 +1,33 @@
 # 2 — Dashboard
 
-Het dashboard is het startscherm na het inloggen. Het geeft een overzicht van uw voortgang en snelle toegang tot alle onderdelen.
+Het dashboard is het startscherm na het inloggen. Het biedt een gepersonaliseerd overzicht van uw voortgang en snelle toegang tot alle onderdelen.
 
-## Voortgangsbalk
+## Begroeting
 
-Bovenaan ziet u een **voortgangsbalk** die toont hoeveel procent van uw profiel is ingevuld. Daarnaast staat hoeveel secties zijn voltooid (bijv. "4 van 10 secties").
+Het dashboard verwelkomt u bij naam en past zich aan het tijdstip van de dag aan — "Goedemorgen", "Goedemiddag" of "Goedenavond". De voornaam wordt overgenomen uit uw profiel.
 
-## Statistieken
+## Dashboard-widgets
 
-Een compacte samenvatting toont het aantal:
-- Erfgenamen
-- Digitale accounts
-- Documenten
-- Boedelitems
-- Noodcontacten
+Het dashboard bestaat uit meerdere zelfstandige widgets, elk over een ander aspect van uw profiel. De weergavebare widgets zijn:
 
-Plus een financieel overzicht: totale bezittingen, totale schulden en netto nalatenschap.
+| Widget | Beschrijving |
+|--------|--------------|
+| **Voortgang** | Een voortgangsbalk die toont hoeveel procent van uw profiel is ingevuld, plus hoeveel domeinen zijn afgerond |
+| **Statistieken** | Een compacte samenvatting: aantal erfgenamen, digitale accounts, documenten, boedelitems, noodcontacten en een financieel overzicht (bezittingen, schulden, netto nalatenschap) |
+| **Gedetailleerde voortgang** | Per-domein overzicht van welke velden zijn ingevuld, elk domein met een eigen voortgangsbalk |
+| **Slimme suggesties** | Contextuele tips over ontbrekende of onvolledige informatie (bijv. "Uw notaris is niet als noodcontact opgegeven") |
+| **Meldingen** | Waarschuwingen en herinneringen, zoals een verouderde backup, verlopen documenten of niet-uitgereikte noodcodes |
+| **Backup-status** | Toont wanneer de laatste backup is gemaakt en of een nieuwe backup aanbevolen is |
+| **Aanbevolen volgende stap** | Markeert het eerste onvoltooide domein zodat u weet wat u het best als volgende invult |
+| **Documentverloopdatum** | Waarschuwt wanneer één of meer documenten hun verloopdatum naderen |
 
-## Gedetailleerde Voortgang
+### Widget verbergen
 
-Klik op de voortgangssectie om per domein te zien welke velden zijn ingevuld. Elk domein toont een eigen voortgangsbalk (bijv. "5 van 8 velden voor Testament").
+Elke widget op het dashboard heeft een **Verbergen**-knop (oog-uit-icoon, rechtsboven in de widget). Klik hierop om de widget te verbergen. Verborgen widgets kunt u opnieuw inschakelen via **Instellingen → Dashboard-weergave**.
 
-## Slimme Suggesties
+### Widgets herordenen
 
-Klik op **Analyseer profiel** om contextuele suggesties te krijgen. Lumio analyseert uw gegevens en geeft tips over ontbrekende of onvolledige informatie, zoals:
-- "Uw notaris is niet als noodcontact opgegeven"
-- "U heeft nog geen huisarts ingevuld"
+Sleep elke widget aan de koptekst naar een andere positie in het raster. De nieuwe volgorde wordt automatisch opgeslagen.
 
 ## Interview Wizard
 
@@ -66,7 +68,7 @@ Dit geldt voor zowel de onboarding-wizard als de interview-wizard.
 
 ## Domeinkaarten
 
-Het dashboard toont 10 kaarten, één per domein:
+Het dashboard toont **10 domeinkaarten**, één per domein:
 
 | Domein | Beschrijving |
 |--------|--------------|
@@ -78,6 +80,36 @@ Het dashboard toont 10 kaarten, één per domein:
 | Boedel | Bezittingen, rekeningen, schulden |
 | Uitvaartwensen | Begraven, cremeren, ceremonie |
 | Documenten | Persoonlijke documenten |
+| Erfgenamen | Erfgenamen en toewijzingen |
+| Noodcontacten | Noodcontactpersonen |
+
+### Statusbadges
+
+Elke kaart toont een statusbadge:
+- **Begin** — Nog niet gestart
+- **Bezig** — Er zijn gegevens ingevuld maar het domein is nog niet compleet
+- **Afgerond** — U heeft het domein als afgerond gemarkeerd
+- **Review nodig** — Het is tijd om de gegevens te controleren (periodieke actualisatie)
+
+### Domein markeren als afgerond
+
+Op elke domeinkaart kunt u klikken op **Markeer afgerond** om het domein als voltooid te markeren. Om dit ongedaan te maken, klik op **Heropenen**.
+
+### Domeinkaarten herordenen
+
+Sleep elke domeinkaart naar een andere positie in het raster. De nieuwe volgorde wordt automatisch opgeslagen per profiel.
+
+### Domeinkaarten verbergen
+
+Individuele domeinkaarten kunnen worden verborgen. Ga naar **Instellingen → Dashboard-weergave** en schakel de zichtbaarheid van elke domeinkaart in of uit via het oogicoon.
+
+## Meldingen
+
+In de applicatieheader ziet u een **bel-icoon** met meldingen. Dit zijn waarschuwingen en herinneringen, zoals:
+- "U heeft nog nooit een backup gemaakt"
+- "Uw backup is ouder dan 30 dagen"
+- "Er zijn documenten verlopen"
+- "Shamir-noodcodes zijn nog niet verdeeld"
 | Erfgenamen | Erfgenamen en toewijzingen |
 | Noodcontacten | Noodcontactpersonen |
 

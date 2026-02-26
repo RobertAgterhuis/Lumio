@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
@@ -11,18 +12,20 @@ public class BackupController : ControllerBase
 {
     private readonly IMasterPasswordService _passwordService;
     private readonly IProfileService _profileService;
+    private readonly IAuditService _audit;
 
-    public BackupController(IMasterPasswordService passwordService, IProfileService profileService)
+    public BackupController(IMasterPasswordService passwordService, IProfileService profileService, IAuditService audit)
     {
         _passwordService = passwordService;
         _profileService = profileService;
+        _audit = audit;
     }
 
     /// <summary>
     /// Download a backup ZIP containing the encrypted database and salt file for the active profile.
     /// </summary>
     [HttpGet]
-    public IActionResult DownloadBackup()
+    public async Task<IActionResult> DownloadBackup()
     {
         if (!_passwordService.IsUnlocked)
             return StatusCode(423, new { error = "Database is vergrendeld." });
@@ -57,6 +60,10 @@ public class BackupController : ControllerBase
 
         memoryStream.Position = 0;
         var filename = $"lumio-backup-{profileName}-{DateTime.Now:yyyy-MM-dd-HHmm}.zip";
+
+        // S2-08: Log the backup download
+        await _audit.LogAsync("Backup", "database", null, profileName);
+
         return File(memoryStream, "application/zip", filename);
     }
 

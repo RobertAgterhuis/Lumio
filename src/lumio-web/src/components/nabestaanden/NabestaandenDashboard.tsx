@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { api } from "@/lib/api-client";
-import {
+import { Textarea } from "@/components/ui/textarea";
+import { api, downloadAndSave } from "@/lib/api-client";
+import { Loader2,
   ShieldAlert,
   Download,
   Phone,
@@ -35,6 +36,7 @@ import {
   Calendar,
   CalendarDays,
   Flag,
+  Archive,
 } from "lucide-react";
 
 interface DomeinStatus {
@@ -198,6 +200,10 @@ export function NabestaandenDashboard() {
   const t = useTranslations("nabestaanden");
   const [compleetheid, setCompleetheid] = useState<Compleetheid | null>(null);
   const [afhandelingsItems, setAfhandelingsItems] = useState<AfhandelingsItemDto[]>([]);
+  const [initLoading, setInitLoading] = useState(true);
+  const [notitieOpen, setNotitieOpen] = useState<Record<string, boolean>>({});
+  const [notitieValues, setNotitieValues] = useState<Record<string, string>>({});
+  const [zipDownloading, setZipDownloading] = useState(false);
 
   useEffect(() => {
     api
@@ -209,13 +215,13 @@ export function NabestaandenDashboard() {
     api
       .post("/api/afhandeling/initialiseer", {})
       .then(() => api.get<AfhandelingsItemDto[]>("/api/afhandeling"))
-      .then(setAfhandelingsItems)
+      .then((items) => { setAfhandelingsItems(items); setInitLoading(false); })
       .catch(() => {
         // If init fails (already exists), just load
         api
           .get<AfhandelingsItemDto[]>("/api/afhandeling")
-          .then(setAfhandelingsItems)
-          .catch((err) => console.error("Failed to load afhandeling:", err));
+          .then((items) => { setAfhandelingsItems(items); setInitLoading(false); })
+          .catch((err) => { console.error("Failed to load afhandeling:", err); setInitLoading(false); });
       });
   }, []);
 
@@ -234,6 +240,28 @@ export function NabestaandenDashboard() {
       );
     } catch {
       // Silently fail
+    }
+  };
+
+  const handleMarkeerAfgehandeld = (afhandelingId: string) => {
+    setNotitieOpen((prev) => ({ ...prev, [afhandelingId]: true }));
+  };
+
+  const handleBevestigAfgehandeld = async (afhandelingId: string) => {
+    const notitie = notitieValues[afhandelingId] || undefined;
+    await updateItemStatus(afhandelingId, "Afgehandeld", notitie);
+    setNotitieOpen((prev) => ({ ...prev, [afhandelingId]: false }));
+  };
+
+  const handleZipDownload = async () => {
+    setZipDownloading(true);
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      await downloadAndSave("/api/export/alles", `lumio-export-${today}.zip`, { method: "POST" });
+    } catch {
+      // Silently fail
+    } finally {
+      setZipDownloading(false);
     }
   };
 
@@ -278,6 +306,18 @@ export function NabestaandenDashboard() {
             {t("exporteren")}
           </Button>
         </Link>
+        <Button
+          variant="outline"
+          onClick={handleZipDownload}
+          disabled={zipDownloading}
+        >
+          {zipDownloading ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Archive className="h-4 w-4 mr-2" />
+          )}
+          {t("downloadZip")}
+        </Button>
         <Link href="/noodcontacten">
           <Button variant="outline">
             <Phone className="h-4 w-4 mr-2" />
@@ -295,7 +335,12 @@ export function NabestaandenDashboard() {
       </Alert>
 
       {/* Voortgang afhandeling */}
-      {totaalItems > 0 && (
+      {initLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <span className="ml-2 text-sm text-muted-foreground">{t("laden")}</span>
+        </div>
+      ) : totaalItems > 0 && (
         <div className="rounded-lg border bg-card p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold">{t("voortgangTitel")}</h2>
@@ -395,33 +440,72 @@ export function NabestaandenDashboard() {
                     </Link>
                     {/* Status tracking buttons */}
                     {afhandeling && afhandeling.status !== "Afgehandeld" && (
-                      <div className="px-6 pb-4 flex gap-2">
-                        {afhandeling.status === "Open" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-xs flex-1"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              updateItemStatus(afhandeling.id, "InBehandeling");
-                            }}
-                          >
-                            <CalendarDays className="h-3 w-3 mr-1" />
-                            {t("start")}
-                          </Button>
+                      <div className="px-6 pb-4 space-y-2">
+                        {notitieOpen[afhandeling.id] ? (
+                          <div className="space-y-2">
+                            <Textarea
+                              placeholder={t("notitiePlaceholder")}
+                              value={notitieValues[afhandeling.id] ?? ""}
+                              onChange={(e) =>
+                                setNotitieValues((prev) => ({ ...prev, [afhandeling.id]: e.target.value }))
+                              }
+                              className="text-xs min-h-[60px]"
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                className="text-xs flex-1"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  void handleBevestigAfgehandeld(afhandeling.id);
+                                }}
+                              >
+                                <CheckCircle2 className="h-3 w-3 mr-1" />
+                                {t("bevestigen")}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-xs"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setNotitieOpen((prev) => ({ ...prev, [afhandeling.id]: false }));
+                                }}
+                              >
+                                {t("annuleren")}
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            {afhandeling.status === "Open" && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs flex-1"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  updateItemStatus(afhandeling.id, "InBehandeling");
+                                }}
+                              >
+                                <CalendarDays className="h-3 w-3 mr-1" />
+                                {t("start")}
+                              </Button>
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="text-xs flex-1"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleMarkeerAfgehandeld(afhandeling.id);
+                              }}
+                            >
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              {t("markeerAfgehandeld")}
+                            </Button>
+                          </div>
                         )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-xs flex-1"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            updateItemStatus(afhandeling.id, "Afgehandeld");
-                          }}
-                        >
-                          <CheckCircle2 className="h-3 w-3 mr-1" />
-                          {t("markeerAfgehandeld")}
-                        </Button>
                       </div>
                     )}
                   </Card>

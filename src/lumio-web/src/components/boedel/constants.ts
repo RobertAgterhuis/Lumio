@@ -5,7 +5,7 @@ export const emptyBezitForm: BezitFormData = {
   omschrijving: "",
   geschatteWaarde: "",
   locatie: "",
-  bestemdeErfgenaam: "",
+  bestemdeErfgenaamId: "",
   notities: "",
   vermogensSoort: "0",
   kadastraalNummer: "",
@@ -31,6 +31,7 @@ export const emptyVerzekeringForm: VerzekeringFormData = {
   polisNummer: "",
   verzekerdBedrag: "",
   begunstigde: "",
+  begunstigdeErfgenaamId: "",
   notities: "",
   vermogensSoort: "0",
 };

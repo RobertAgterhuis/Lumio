@@ -10,6 +10,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
 import { Shield } from "lucide-react";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function SetupForm() {
   const [password, setPassword] = useState("");
@@ -87,6 +88,12 @@ export function SetupForm() {
           {error && (
             <p className="text-sm text-destructive">{error}</p>
           )}
+
+          <Alert variant="warning">
+            <AlertDescription>
+              {t("wachtwoordWaarschuwing")}
+            </AlertDescription>
+          </Alert>
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? t("bezig") : t("aanmaken")}

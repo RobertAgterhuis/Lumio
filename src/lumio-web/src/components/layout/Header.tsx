@@ -22,7 +22,7 @@ const SearchDialog = dynamic(() => import("./SearchDialog").then(m => m.SearchDi
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export function Header() {
-  const { lock, activeProfile } = useAuthStore();
+  const { lock, activeProfile, profileFotoVersion } = useAuthStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const { theme, toggle: toggleTheme } = useTheme();
   const t = useTranslations("common");
@@ -30,17 +30,16 @@ export function Header() {
   const pathname = usePathname();
   const { openPanel } = useHelpStore();
 
-  // Fetch profile photo when authenticated
+  // Fetch profile photo when authenticated, or when the photo is updated elsewhere
   useEffect(() => {
-    if (!activeProfile) return;
+    if (!activeProfile) { setFotoUrl(null); return; }
     api.get<{ heeftProfielFoto?: boolean }>("/api/eigenaar")
       .then((data) => {
-        if (data.heeftProfielFoto) {
-          setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
-        }
+        setFotoUrl(data.heeftProfielFoto ? `${API_BASE}/api/eigenaar/foto?t=${Date.now()}` : null);
       })
       .catch((err) => console.error("Failed to load profile:", err));
-  }, [activeProfile]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfile, profileFotoVersion]);
 
   const handleLock = async () => {
     try {

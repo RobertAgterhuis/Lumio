@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using RulesEngine.Models;
 
 namespace Lumio.Api.Rules.Engine;
@@ -39,7 +40,8 @@ public class WorkflowLoader : IWorkflowLoader
             var json = File.ReadAllText(path);
             _workflows = JsonSerializer.Deserialize<Workflow[]>(json, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter() }
             });
 
             if (_workflows is null || _workflows.Length == 0)

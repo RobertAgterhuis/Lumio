@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
+import { Settings } from "lucide-react";
 import {
   PasswordChangeCard,
   ProfilesCard,
@@ -31,6 +32,16 @@ import {
 export default function InstellingenPage() {
   const router = useRouter();
   const { lock, profiles, setProfiles } = useAuthStore();
+  const backupRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to and focus backup section when navigated via #backup hash
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash === "#backup" && backupRef.current) {
+      backupRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      backupRef.current.focus();
+    }
+  }, []);
   const t = useTranslations("instellingen");
 
   // Dialog state (orchestrated at page level)
@@ -91,7 +102,10 @@ export default function InstellingenPage() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <h1 className="text-3xl font-bold">{t("titel")}</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <Settings className="h-8 w-8 text-primary" />
+          {t("titel")}
+        </h1>
         <p className="text-muted-foreground mt-1">{t("ondertitel")}</p>
       </div>
 
@@ -112,13 +126,15 @@ export default function InstellingenPage() {
             onDeleteRequest={(profileId) => setShowDeleteProfileConfirm(profileId)}
           />
           <PasswordChangeCard />
-          <BackupRestoreCard
-            onRestoreRequest={(handler: () => void) => {
-              setPendingRestoreHandler(() => handler);
-              setShowRestoreConfirm(true);
-            }}
-            onPostRestore={handlePostAction}
-          />
+          <div id="backup" ref={backupRef} tabIndex={-1} className="outline-none">
+            <BackupRestoreCard
+              onRestoreRequest={(handler: () => void) => {
+                setPendingRestoreHandler(() => handler);
+                setShowRestoreConfirm(true);
+              }}
+              onPostRestore={handlePostAction}
+            />
+          </div>
         </div>
       </div>
 

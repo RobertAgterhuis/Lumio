@@ -108,11 +108,20 @@ public class LumioDbContext : DbContext
             .HasForeignKey(b => b.EigenaarId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // FysiekBezit → Eigenaar
         modelBuilder.Entity<FysiekBezit>()
             .HasOne<Eigenaar>()
             .WithMany()
             .HasForeignKey(f => f.EigenaarId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // FysiekBezit → BestemdeErfgenaam (optional FK to Erfgenaam)
+        modelBuilder.Entity<FysiekBezit>()
+            .HasOne(f => f.BestemdeErfgenaam)
+            .WithMany()
+            .HasForeignKey(f => f.BestemdeErfgenaamId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
 
         modelBuilder.Entity<Schuld>()
             .HasOne<Eigenaar>()
@@ -194,6 +203,12 @@ public class LumioDbContext : DbContext
             .WithMany()
             .HasForeignKey(d => d.EigenaarId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // PersoonlijkDocument.Categorie stored as TEXT string
+        modelBuilder.Entity<PersoonlijkDocument>()
+            .Property(d => d.Categorie)
+            .HasConversion<string>()
+            .HasColumnType("TEXT");
 
         // DonorRegistratie → Eigenaar (with navigation)
         modelBuilder.Entity<DonorRegistratie>()

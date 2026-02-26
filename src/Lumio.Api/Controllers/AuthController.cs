@@ -16,17 +16,20 @@ public class AuthController : ControllerBase
     private readonly IProfileService _profileService;
     private readonly IAuditService _audit;
     private readonly LimietenOptions _limieten;
+    private readonly IWebHostEnvironment _env;
 
     public AuthController(
         IMasterPasswordService passwordService,
         IProfileService profileService,
         IAuditService audit,
-        IOptions<LimietenOptions> limieten)
+        IOptions<LimietenOptions> limieten,
+        IWebHostEnvironment env)
     {
         _passwordService = passwordService;
         _profileService = profileService;
         _audit = audit;
         _limieten = limieten.Value;
+        _env = env;
     }
 
     [HttpGet("status")]
@@ -120,10 +123,14 @@ public class AuthController : ControllerBase
         if (!success)
             return Unauthorized(new { error = "Ongeldig wachtwoord." });
 
-        // Apply any pending migrations (handles both fresh and EnsureCreated-bootstrapped databases)
-        using var scope = serviceProvider.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<LumioDbContext>();
-        await EnsureMigratedAsync(db);
+        // In development: apply any pending EF migrations automatically.
+        // In production: the schema is managed by SQL scripts — no auto-migration.
+        if (_env.IsDevelopment())
+        {
+            using var scope = serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<LumioDbContext>();
+            await EnsureMigratedAsync(db);
+        }
 
         await _audit.LogAsync("Ontgrendeld", details: $"Profiel: {_profileService.ActiveProfile?.Naam}");
         return Ok(new { bericht = "Database ontgrendeld." });

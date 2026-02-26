@@ -67,12 +67,22 @@ public class LegitimairePortieService : ILegitimairePortieService
 
         var portieWaarschuwingen = new List<LegitimairePortieWaarschuwingResult>();
 
+        // S8-10: normaliseer witruimte voor naamvergelijking (trim + collapse meerdere spaties)
+        static string NormNaam(string s) =>
+            System.Text.RegularExpressions.Regex.Replace(s.Trim(), @"\s+", " ");
+
         foreach (var kind in facts.Kinderen)
         {
-            // Zoek matchende begunstigde (op naam)
+            var voornaamNorm = NormNaam(kind.Voornaam);
+            var achternaamNorm = NormNaam(kind.Achternaam);
+
+            // Zoek matchende begunstigde (op naam) — S8-10: OrdinalIgnoreCase + genormaliseerde spaties
             var begunstigde = facts.Begunstigden.FirstOrDefault(b =>
-                b.Naam.Contains(kind.Voornaam, StringComparison.OrdinalIgnoreCase) &&
-                b.Naam.Contains(kind.Achternaam, StringComparison.OrdinalIgnoreCase));
+            {
+                var begunNorm = NormNaam(b.Naam);
+                return begunNorm.Contains(voornaamNorm, StringComparison.OrdinalIgnoreCase) &&
+                       begunNorm.Contains(achternaamNorm, StringComparison.OrdinalIgnoreCase);
+            });
 
             if (begunstigde is null)
             {

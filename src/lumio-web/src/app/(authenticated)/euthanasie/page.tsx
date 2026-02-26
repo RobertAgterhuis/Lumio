@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,8 @@ import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
-import { Stethoscope, Pencil } from "lucide-react";
+import { Pencil, ScrollText, Stethoscope, ShieldCheck } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
@@ -39,6 +40,12 @@ interface Wilsverklaring {
   dementieClausule: boolean;
   dementieClausuleToelichting?: string;
   behandelVerbod?: string;
+  vertegenwoordiger2Naam?: string;
+  vertegenwoordiger2Relatie?: string;
+  vertegenwoordiger2Telefoon?: string;
+  vertegenwoordiger2Email?: string;
+  situatieOpties?: string;
+  situatieNotitie?: string;
 }
 
 export default function EuthanasiePage() {
@@ -57,6 +64,8 @@ export default function EuthanasiePage() {
     vertegenwoordigerTelefoon: "", vertegenwoordigerEmail: "", vertegenwoordigerAdres: "",
     vertegenwoordigerPostcode: "", vertegenwoordigerWoonplaats: "",
     dementieClausule: false, dementieClausuleToelichting: "", behandelVerbod: "",
+    vertegenwoordiger2Naam: "", vertegenwoordiger2Relatie: "", vertegenwoordiger2Telefoon: "",
+    vertegenwoordiger2Email: "", situatieOpties: "", situatieNotitie: "",
   });
   const [editError, setEditError] = useState<string | null>(null);
 
@@ -82,6 +91,12 @@ export default function EuthanasiePage() {
       dementieClausule: data.dementieClausule ?? false,
       dementieClausuleToelichting: data.dementieClausuleToelichting ?? "",
       behandelVerbod: data.behandelVerbod ?? "",
+      vertegenwoordiger2Naam: data.vertegenwoordiger2Naam ?? "",
+      vertegenwoordiger2Relatie: data.vertegenwoordiger2Relatie ?? "",
+      vertegenwoordiger2Telefoon: data.vertegenwoordiger2Telefoon ?? "",
+      vertegenwoordiger2Email: data.vertegenwoordiger2Email ?? "",
+      situatieOpties: data.situatieOpties ?? "",
+      situatieNotitie: data.situatieNotitie ?? "",
     });
     setEditOpen(true);
   };
@@ -108,6 +123,12 @@ export default function EuthanasiePage() {
         dementieClausule: editForm.dementieClausule,
         dementieClausuleToelichting: editForm.dementieClausuleToelichting || null,
         behandelVerbod: editForm.behandelVerbod || null,
+        vertegenwoordiger2Naam: editForm.vertegenwoordiger2Naam || null,
+        vertegenwoordiger2Relatie: editForm.vertegenwoordiger2Relatie || null,
+        vertegenwoordiger2Telefoon: editForm.vertegenwoordiger2Telefoon || null,
+        vertegenwoordiger2Email: editForm.vertegenwoordiger2Email || null,
+        situatieOpties: editForm.situatieOpties || null,
+        situatieNotitie: editForm.situatieNotitie || null,
       };
       const updated = await api.put<Wilsverklaring>("/api/euthanasie", payload);
       refetch();
@@ -129,7 +150,10 @@ export default function EuthanasiePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="wilsverklaring" size="lg" className="text-primary" />
+            <span className="text-primary">{t("titel")}</span>
+          </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
@@ -138,7 +162,7 @@ export default function EuthanasiePage() {
         </div>
         <Link href="/euthanasie/wizard">
           <Button>
-            <Stethoscope className="h-4 w-4 mr-2" />
+            <LumioIcon name="wilsverklaring" size="sm" className="mr-2" />
             {data ? t("bewerken") : t("wizardStarten")}
           </Button>
         </Link>
@@ -155,7 +179,7 @@ export default function EuthanasiePage() {
       {!data ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Stethoscope className="h-12 w-12 text-muted-foreground mb-4" />
+            <LumioIcon name="wilsverklaring" size="xl" className="text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
               {t("geenWilsverklaring")}
             </p>
@@ -167,14 +191,15 @@ export default function EuthanasiePage() {
       ) : (
         <>
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("wilsverklaringCard.titel")}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <ScrollText className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("wilsverklaringCard.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+              <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               <p>
                 <span className="text-muted-foreground">{t("wilsverklaringCard.wilEuthanasie")}</span>{" "}
                 {data.wilEuthanasie ? t("ja") : t("nee")}
@@ -203,14 +228,15 @@ export default function EuthanasiePage() {
               )}
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("contactCard.titel")}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <Stethoscope className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("contactCard.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+              <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               {data.huisarts && (
                 <p>
                   <span className="text-muted-foreground">{t("contactCard.huisarts")}</span>{" "}
@@ -268,14 +294,15 @@ export default function EuthanasiePage() {
         </div>
 
         {(data.dementieClausule || data.behandelVerbod) && (
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{t("clausulesCard.titel")}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4" /></Button>
+          <Card className="overflow-hidden">
+            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+              <ShieldCheck className="h-5 w-5 text-sage shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t("clausulesCard.titel")}</h3>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+              <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
+            </div>
+            <CardContent className="pt-5 space-y-2 text-sm">
               <p><span className="text-muted-foreground">{t("clausulesCard.dementieclausule")}</span> {data.dementieClausule ? t("ja") : t("nee")}</p>
               {data.dementieClausuleToelichting && (
                 <p><span className="text-muted-foreground">{t("clausulesCard.toelichting")}</span> {data.dementieClausuleToelichting}</p>
@@ -303,12 +330,15 @@ export default function EuthanasiePage() {
           <Checkbox id="wil-euthanasie" checked={editForm.wilEuthanasie} onChange={(e) => setEditForm((f) => ({ ...f, wilEuthanasie: e.target.checked }))} label={t("editDialog.wilEuthanasie")} />
           <div className="space-y-2">
             <Label>{t("editDialog.datumOndertekening")}</Label>
+            <Input type="date" value={editForm.datumOndertekening} onChange={(e) => setEditForm((f) => ({ ...f, datumOndertekening: e.target.value }))} />
           </div>
           <div className="space-y-2">
             <Label>{t("editDialog.situatiebeschrijving")}</Label>
+            <Textarea value={editForm.situatieBeschrijving} onChange={(e) => setEditForm((f) => ({ ...f, situatieBeschrijving: e.target.value }))} rows={3} />
           </div>
           <div className="space-y-2">
             <Label>{t("editDialog.aanvullendeWensen")}</Label>
+            <Textarea value={editForm.aanvullendeWensen} onChange={(e) => setEditForm((f) => ({ ...f, aanvullendeWensen: e.target.value }))} rows={2} />
           </div>
           <hr />
           <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieHuisarts")}</p>
@@ -324,6 +354,7 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.praktijk")}</Label>
+              <Input value={editForm.huisartsPraktijk} onChange={(e) => setEditForm((f) => ({ ...f, huisartsPraktijk: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -333,6 +364,7 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.email")}</Label>
+              <Input type="email" value={editForm.huisartsEmail} onChange={(e) => setEditForm((f) => ({ ...f, huisartsEmail: e.target.value }))} />
             </div>
           </div>
           <hr />
@@ -349,6 +381,7 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.relatie")}</Label>
+              <Input value={editForm.vertegenwoordigerRelatie} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerRelatie: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -358,18 +391,57 @@ export default function EuthanasiePage() {
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.email")}</Label>
+              <Input type="email" value={editForm.vertegenwoordigerEmail} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerEmail: e.target.value }))} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-2 col-span-2">
               <Label>{t("editDialog.adres")}</Label>
+              <Input value={editForm.vertegenwoordigerAdres} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerAdres: e.target.value }))} />
             </div>
             <div className="space-y-2">
               <Label>{t("editDialog.postcode")}</Label>
+              <Input value={editForm.vertegenwoordigerPostcode} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerPostcode: e.target.value }))} />
             </div>
           </div>
           <div className="space-y-2">
             <Label>{t("editDialog.woonplaats")}</Label>
+            <Input value={editForm.vertegenwoordigerWoonplaats} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordigerWoonplaats: e.target.value }))} />
+          </div>
+          <hr />
+          <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieVertegenwoordiger2")}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>{t("editDialog.naam")}</Label>
+              <PersonSelect
+                value={editForm.vertegenwoordiger2Naam}
+                onChange={(v) => setEditForm((f) => ({ ...f, vertegenwoordiger2Naam: v }))}
+                onPersonSelect={(p) => setEditForm((f) => ({ ...f, vertegenwoordiger2Naam: p.naam, vertegenwoordiger2Relatie: p.relatie ?? f.vertegenwoordiger2Relatie, vertegenwoordiger2Telefoon: p.telefoon ?? f.vertegenwoordiger2Telefoon, vertegenwoordiger2Email: p.email ?? f.vertegenwoordiger2Email }))}
+                source="both"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("editDialog.relatie")}</Label>
+              <Input value={editForm.vertegenwoordiger2Relatie} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordiger2Relatie: e.target.value }))} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label>{t("editDialog.telefoon")}</Label>
+              <Input value={editForm.vertegenwoordiger2Telefoon} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordiger2Telefoon: e.target.value }))} />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("editDialog.email")}</Label>
+              <Input type="email" value={editForm.vertegenwoordiger2Email} onChange={(e) => setEditForm((f) => ({ ...f, vertegenwoordiger2Email: e.target.value }))} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>{t("editDialog.situatieOpties")}</Label>
+            <Textarea value={editForm.situatieOpties} onChange={(e) => setEditForm((f) => ({ ...f, situatieOpties: e.target.value }))} rows={2} />
+          </div>
+          <div className="space-y-2">
+            <Label>{t("editDialog.situatieNotitie")}</Label>
+            <Textarea value={editForm.situatieNotitie} onChange={(e) => setEditForm((f) => ({ ...f, situatieNotitie: e.target.value }))} rows={3} />
           </div>
           <hr />
           <p className="text-sm font-medium text-muted-foreground">{t("editDialog.sectieClausules")}</p>
@@ -377,6 +449,7 @@ export default function EuthanasiePage() {
           {editForm.dementieClausule && (
             <div className="space-y-2">
               <Label>{t("editDialog.toelichtingDementie")}</Label>
+              <Textarea value={editForm.dementieClausuleToelichting} onChange={(e) => setEditForm((f) => ({ ...f, dementieClausuleToelichting: e.target.value }))} rows={2} />
             </div>
           )}
           <div className="space-y-2">

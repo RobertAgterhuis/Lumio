@@ -61,7 +61,7 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
       url: account.url ?? "",
       gewensteActie: account.gewensteActie ?? "",
       overdrachtAan: account.overdrachtAan ?? "",
-      notities: "",
+      notities: account.notities ?? "",  // S3-29: was "" (lost existing notes on edit)
       wachtwoord: "",
       wachtwoordOpmerking: "",
     } : emptyAccountForm);
@@ -114,7 +114,19 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
       };
       if (editId) {
         await api.put(`/api/digitaal-bezit/accounts/${editId}`, payload);
-        toast.success(tf("opgeslagen"));
+        // S7-07: Write-through — also save a new wachtwoord entry when editing, if provided
+        if (accountForm.wachtwoord) {
+          await api.post("/api/digitaal-bezit/wachtwoorden", {
+            naam: accountForm.platformNaam,
+            gebruikersnaam: accountForm.gebruikersnaam || accountForm.emailAdres || null,
+            wachtwoord: accountForm.wachtwoord,
+            url: accountForm.url || null,
+            notities: accountForm.wachtwoordOpmerking || null,
+          });
+          toast.success(t("wachtwoordOokOpgeslagen"));
+        } else {
+          toast.success(tf("opgeslagen"));
+        }
       } else {
         const newAccount = await api.post<DigitaalAccount>("/api/digitaal-bezit/accounts", payload);
         if (accountForm.wachtwoord) {

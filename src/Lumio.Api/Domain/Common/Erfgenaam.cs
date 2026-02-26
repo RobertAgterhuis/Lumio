@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Lumio.Api.Domain.Common;
 
 public class Erfgenaam : BaseEntity
@@ -9,6 +11,16 @@ public class Erfgenaam : BaseEntity
     public string Achternaam { get; set; } = string.Empty;
     public string? Tussenvoegsel { get; set; }
     public string Relatie { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Type-safe access to <see cref="Relatie"/>. Not mapped to a dedicated column.
+    /// </summary>
+    [NotMapped]
+    public ErfgenaamRelatie RelatieEnum
+    {
+        get => ErfgenaamRelatieHelper.Deserialize(Relatie);
+        set => Relatie = ErfgenaamRelatieHelper.Serialize(value);
+    }
     public string? Telefoon { get; set; }
     public string? Email { get; set; }
     public string? Adres { get; set; }

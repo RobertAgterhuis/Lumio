@@ -43,6 +43,7 @@ The frontend is a **Next.js 16** application built as a **static export**. There
 | `/erfgenamen` | Heirs | Heir management, assignments, Shamir |
 | `/noodcontacten` | Emergency Contacts | Emergency contact persons, QR emergency card |
 | `/documenten` | Documents | Upload, version management, download |
+| `/videoboodschappen` | Video Messages | Upload, record, and manage personal video messages for heirs |
 | `/export` | Export | PDF/JSON/XML/CSV/NUV export |
 | `/instellingen` | Settings | Password, language, theme, backup |
 | `/audit-log` | Activity Log | Security log |
@@ -113,6 +114,12 @@ Reusable building blocks, each with a Storybook story:
 | `ProfielSuggesties` | Recommendations for missing data |
 | `StatistiekenWidget` | Summary statistics |
 | `VoortgangGranulair` | Detailed per-field progress |
+| `MeldingenWidget` | Dashboard notifications widget |
+| `BackupStatusWidget` | Backup recency indicator |
+| `AanbevolenStapWidget` | Next recommended domain to complete |
+| `DocumentenVerloopdatumWidget` | Documents approaching expiry |
+| `SortableDomeinKaart` | Draggable domain card (DnD sortable) |
+| `SortableSection` | Draggable dashboard section wrapper |
 
 ### Domain (`components/domain/`)
 
@@ -152,6 +159,8 @@ See chapter 4 (Security) for the full list.
 | `notities/` | `SectieNotitie` |
 | `nabestaanden/` | `NabestaandenDashboard` |
 | `noodcontacten/` | `NoodkaartQR` |
+| `tijdlijn/` | `TijdlijnStapRow` |
+| `videoboodschappen/` | `VideoboodschapDialog`, `VideoRecorder`, `useVideoboodschappen` |
 | `providers/` | `LocaleProvider` |
 | Root | `PasswordGenerator`, `PersonSelect`, `VoorbeeldDialog` |
 
@@ -163,22 +172,32 @@ Manages authentication and unlock status:
 
 | State | Type | Purpose |
 |-------|------|---------|
-| `isLocked` | boolean | Database locked? |
-| `isReadOnly` | boolean | Heir mode? |
-| `profileId` | string | Current profile ID |
-| `profileName` | string | Profile name |
+| `isUnlocked` | boolean | Database unlocked? |
+| `isReadOnly` | boolean | Heir mode (read-only)? |
+| `profiles` | Profile[] | All profiles for this Lumio installation |
+| `activeProfile` | Profile \| null | Currently active profile |
+| `profileSelected` | boolean | Whether a profile has been selected |
+| `profileNeedsSetup` | boolean | First-time setup required? |
+| `profileFotoVersion` | number | Incremented to force photo refresh |
 
 ### `preferencesStore`
 
-Manages user preferences (localStorage-persisted):
+Manages user preferences (localStorage-persisted, keyed by profile ID):
 
 | State | Type | Purpose |
 |-------|------|---------|
-| `showVoortgang` | boolean | Show dashboard progress indicator |
-| `showVoortgangGranulair` | boolean | Show detailed progress |
-| `showSuggesties` | boolean | Show suggestions |
-| `showDomeinKaarten` | boolean | Show domain cards |
-| `finishedDomains` | Record<string, string> | Domain → ISO date when completed |
+| `showVoortgang` | boolean | Show progress widget |
+| `showStatistieken` | boolean | Show statistics widget |
+| `showVoortgangGranulair` | boolean | Show detailed per-field progress |
+| `showSuggesties` | boolean | Show smart suggestions widget |
+| `showMeldingen` | boolean | Show notifications widget |
+| `showBackup` | boolean | Show backup status widget |
+| `showAanbevolen` | boolean | Show recommended next step widget |
+| `showVerloopdatum` | boolean | Show document expiry widget |
+| `hiddenDomeinKaarten` | string[] | Domain card names that are hidden |
+| `domeinKaartenVolgorde` | string[] | Custom order of domain cards |
+| `sectieVolgorde` | string[] | Custom order of dashboard sections |
+| `sidebarCollapsed` | boolean | Sidebar collapsed state |
 
 ### `toastStore`
 

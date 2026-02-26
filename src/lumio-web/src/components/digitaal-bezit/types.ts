@@ -11,6 +11,7 @@ export interface DigitaalAccount {
   url?: string;
   gewensteActie: string;
   overdrachtAan?: string;
+  notities?: string;
 }
 
 export interface WachtwoordEntry {

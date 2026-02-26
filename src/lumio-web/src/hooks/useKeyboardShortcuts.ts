@@ -20,6 +20,7 @@ const NAV_SHORTCUTS: Record<string, string> = {
   x: "/export",
   a: "/audit-log",
   i: "/instellingen",
+  h: "/help",
 };
 
 export function useKeyboardShortcuts() {
@@ -119,4 +120,5 @@ export const SHORTCUT_LIST = [
   { keys: "G → X", beschrijvingKey: "gaNaarExporteren" },
   { keys: "G → A", beschrijvingKey: "gaNaarActiviteitenlog" },
   { keys: "G → I", beschrijvingKey: "gaNaarInstellingen" },
+  { keys: "G → H", beschrijvingKey: "gaNaarHelp" },
 ];

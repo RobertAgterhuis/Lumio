@@ -55,6 +55,7 @@ Both language files have an identical structure with 39 sections:
 | `personSelect` | 6 | `domainStatus` | 10 |
 | `testamentWizard` | 89 | `euthanasieWizard` | 102 |
 | `donorWizard` | 56 | `uitvaartWizard` | 113 |
+| `videoboodschappen` | 28 | | |
 
 ### Usage in Components
 

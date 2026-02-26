@@ -1,6 +1,8 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
+using Serilog;
+using Serilog.Events;
 using Lumio.Api.Middleware;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
@@ -25,6 +27,25 @@ var dataDir = Environment.GetEnvironmentVariable("LUMIO_DATA_DIR")
     ?? Path.Combine(AppContext.BaseDirectory, "..", "data");
 dataDir = Path.GetFullPath(dataDir);
 Directory.CreateDirectory(dataDir);
+
+// ── Serilog: file + console logging ──────────────────────────────────────
+var logDir = Path.Combine(dataDir, "logs");
+Directory.CreateDirectory(logDir);
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Query", LogEventLevel.Error)
+    .Enrich.FromLogContext()
+    .WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File(
+        path: Path.Combine(logDir, "lumio-.log"),
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+builder.Host.UseSerilog();
+// ─────────────────────────────────────────────────────────────────────────
 
 builder.Configuration["DataDir"] = dataDir;
 
@@ -129,6 +150,34 @@ app.UseRequestLocalization(options =>
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<DatabaseUnlockMiddleware>();
 
+// ── Automatische request logging voor alle controllers ───────────────
+app.UseSerilogRequestLogging(opts =>
+{
+    // Compacte output: "GET /api/erfgenamen → 200 in 12ms"
+    opts.MessageTemplate =
+        "{RequestMethod} {RequestPath} → {StatusCode} in {Elapsed:0}ms";
+
+    // Geen logs voor Swagger-UI en statische bestanden
+    opts.GetLevel = (ctx, _, ex) =>
+    {
+        if (ex is not null) return LogEventLevel.Error;
+        // Swagger en statische assets niet loggen
+        if (ctx.Request.Path.StartsWithSegments("/swagger")
+            || !ctx.Request.Path.StartsWithSegments("/api"))
+            return LogEventLevel.Verbose;
+        // Notities-endpoint: 404 = "nog geen notitie" — verwachte lege staat, geen warning
+        if (ctx.Response.StatusCode == 404
+            && ctx.Request.Path.StartsWithSegments("/api/notities"))
+            return LogEventLevel.Information;
+        return ctx.Response.StatusCode >= 500
+            ? LogEventLevel.Error
+            : ctx.Response.StatusCode >= 400
+                ? LogEventLevel.Warning
+                : LogEventLevel.Information;
+    };
+});
+// ─────────────────────────────────────────────────────────────────────
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -171,7 +220,15 @@ else
     Console.WriteLine($"Frontend niet gevonden: {frontendDir}");
 }
 
-Console.WriteLine($"Lumio API gestart op {port}");
-Console.WriteLine($"Data map: {dataDir}");
+Log.Information("Lumio API gestart op {Port}", port);
+Log.Information("Data map: {DataDir}", dataDir);
+Log.Information("Log map: {LogDir}", logDir);
 
-app.Run();
+try
+{
+    app.Run();
+}
+finally
+{
+    Log.CloseAndFlush();
+}

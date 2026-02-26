@@ -2,12 +2,14 @@
 
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { ErfbelastingCalculator } from "@/components/erfgenamen/ErfbelastingCalculator";
 import { KeyRound, Plus, Users } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import {
   ErfgenaamDialog,
   ErfgenaamItem,
@@ -16,6 +18,7 @@ import {
   useErfgenamen,
   type Erfgenaam,
 } from "@/components/erfgenamen";
+import { useAuthStore } from "@/stores/authStore";
 
 function displayName(e: Erfgenaam): string {
   return e.tussenvoegsel
@@ -27,6 +30,7 @@ export default function ErfgenamenPage() {
   const t = useTranslations("erfgenamen");
   const te = useTranslations("enums");
   const tf = useTranslations("feedback");
+  const { isReadOnly } = useAuthStore();
 
   const hookTranslations = {
     aangemaakt: tf("aangemaakt"),
@@ -138,17 +142,27 @@ export default function ErfgenamenPage() {
     sluiten: t("shamir.sluiten"),
   };
 
+  const pendingErfgenaam = state.pendingDeleteId
+    ? state.erfgenamen.find((e) => e.id === state.pendingDeleteId)
+    : null;
+  const pendingToewijzingenCount = state.pendingDeleteId
+    ? state.getToewijzingenVoorErfgenaam(state.pendingDeleteId).length
+    : 0;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("titel")}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <LumioIcon name="erfgenamen" size="lg" className="text-primary" />
+            {t("titel")}
+          </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="erfgenamen" />
           <SectieNotitie sectie="erfgenamen" />
         </div>
         <div className="flex gap-2">
-          {state.erfgenamen.length >= 2 && (
+          {state.erfgenamen.length >= 2 && !isReadOnly && (
             <Button variant="outline" onClick={() => state.setShamirDialogOpen(true)}>
               <KeyRound className="h-4 w-4 mr-2" /> {t("noodcodesVerdelen")}
             </Button>
@@ -186,11 +200,14 @@ export default function ErfgenamenPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("aantal", { aantal: state.erfgenamen.length })}</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <Users className="h-5 w-5 text-primary shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("aantal", { aantal: state.erfgenamen.length })}</h3>
+            </div>
+          </div>
+          <CardContent className="pt-5">
             <div className="space-y-3">
               {state.erfgenamen.map((e) => (
                 <ErfgenaamItem
@@ -256,6 +273,29 @@ export default function ErfgenamenPage() {
         displayName={displayName}
         translations={shamirTranslations}
       />
+
+      {/* S8-05: Delete confirmation dialog */}
+      <Dialog open={!!state.pendingDeleteId} onOpenChange={(open) => { if (!open) state.cancelDelete(); }}>
+        <DialogHeader>
+          <DialogTitle>{t("verwijderBevestiging.titel")}</DialogTitle>
+        </DialogHeader>
+        <p className="text-sm text-muted-foreground">
+          {pendingErfgenaam && t("verwijderBevestiging.vraag", { naam: displayName(pendingErfgenaam) })}
+        </p>
+        {pendingToewijzingenCount > 0 && (
+          <p className="text-sm text-warning mt-1">
+            {t("verwijderBevestiging.bezittingenWaarschuwing", { aantal: pendingToewijzingenCount })}
+          </p>
+        )}
+        <DialogFooter>
+          <Button variant="outline" onClick={state.cancelDelete}>
+            {t("verwijderBevestiging.annuleren")}
+          </Button>
+          <Button variant="destructive" onClick={state.confirmDelete}>
+            {t("verwijderBevestiging.verwijderen")}
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }

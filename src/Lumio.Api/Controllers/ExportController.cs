@@ -1,5 +1,7 @@
 using Lumio.Api.Services.Pdf;
+using Lumio.Api.Services;
 using Lumio.Api.Data;
+using Lumio.Api.Domain.AssetRegistry;
 using Lumio.Api.Dtos.Export;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,120 +23,137 @@ public class ExportController : ControllerBase
     private readonly ILumioPdfService _pdfService;
     private readonly LumioDbContext _db;
     private readonly IStringLocalizer<ExportController> L;
+    private readonly IAuditService _audit;
 
-    public ExportController(ILumioPdfService pdfService, LumioDbContext db, IStringLocalizer<ExportController> localizer)
+    public ExportController(ILumioPdfService pdfService, LumioDbContext db, IStringLocalizer<ExportController> localizer, IAuditService audit)
     {
         _pdfService = pdfService;
         _db = db;
         L = localizer;
+        _audit = audit;
     }
 
-    [HttpPost("testament")]
+    [HttpGet("testament")]
     public async Task<IActionResult> ExportTestament()
     {
         var pdf = await _pdfService.GenerateTestamentPdf();
+        await _audit.LogAsync("Export", "export", null, "testament");
         return File(pdf, "application/pdf", "lumio-testament.pdf");
     }
 
-    [HttpPost("euthanasie")]
+    [HttpGet("euthanasie")]
     public async Task<IActionResult> ExportEuthanasie()
     {
         var pdf = await _pdfService.GenerateEuthanasiePdf();
+        await _audit.LogAsync("Export", "export", null, "euthanasie");
         return File(pdf, "application/pdf", "lumio-euthanasie.pdf");
     }
 
-    [HttpPost("donor")]
+    [HttpGet("donor")]
     public async Task<IActionResult> ExportDonor()
     {
         var pdf = await _pdfService.GenerateDonorPdf();
+        await _audit.LogAsync("Export", "export", null, "donor");
         return File(pdf, "application/pdf", "lumio-donor.pdf");
     }
 
-    [HttpPost("digitaal-bezit")]
+    [HttpGet("digitaal-bezit")]
     public async Task<IActionResult> ExportDigitaalBezit()
     {
         var pdf = await _pdfService.GenerateDigitaalBezitPdf();
+        await _audit.LogAsync("Export", "export", null, "digitaal-bezit");
         return File(pdf, "application/pdf", "lumio-digitaal-bezit.pdf");
     }
 
-    [HttpPost("boedel")]
+    [HttpGet("boedel")]
     public async Task<IActionResult> ExportBoedel()
     {
         var pdf = await _pdfService.GenerateBoedelPdf();
+        await _audit.LogAsync("Export", "export", null, "boedel");
         return File(pdf, "application/pdf", "lumio-boedel.pdf");
     }
 
-    [HttpPost("uitvaart")]
+    [HttpGet("uitvaart")]
     public async Task<IActionResult> ExportUitvaart()
     {
         var pdf = await _pdfService.GenerateUitvaartPdf();
+        await _audit.LogAsync("Export", "export", null, "uitvaart");
         return File(pdf, "application/pdf", "lumio-uitvaart.pdf");
     }
 
-    [HttpPost("documenten")]
+    [HttpGet("documenten")]
     public async Task<IActionResult> ExportDocumenten()
     {
         var pdf = await _pdfService.GenerateDocumentenOverzichtPdf();
+        await _audit.LogAsync("Export", "export", null, "documenten");
         return File(pdf, "application/pdf", "lumio-documenten.pdf");
     }
 
-    [HttpPost("compleet")]
+    [HttpGet("compleet")]
     public async Task<IActionResult> ExportCompleet()
     {
         var pdf = await _pdfService.GenerateCompleetPdf();
+        await _audit.LogAsync("Export", "export", null, "compleet");
         return File(pdf, "application/pdf", "lumio-compleet.pdf");
     }
 
-    [HttpPost("noodkaart")]
+    [HttpGet("noodkaart")]
     public async Task<IActionResult> ExportNoodkaart()
     {
         var pdf = await _pdfService.GenerateNoodkaartPdf();
+        await _audit.LogAsync("Export", "export", null, "noodkaart");
         return File(pdf, "application/pdf", "lumio-noodkaart.pdf");
     }
 
-    [HttpPost("testament-concept")]
+    [HttpGet("testament-concept")]
     public async Task<IActionResult> ExportTestamentConcept()
     {
         var pdf = await _pdfService.GenerateTestamentConceptPdf();
+        await _audit.LogAsync("Export", "export", null, "testament-concept");
         return File(pdf, "application/pdf", "lumio-testament-concept.pdf");
     }
 
-    [HttpPost("wilsverklaring")]
+    [HttpGet("wilsverklaring")]
     public async Task<IActionResult> ExportWilsverklaring()
     {
         var pdf = await _pdfService.GenerateWilsverklaringPdf();
+        await _audit.LogAsync("Export", "export", null, "wilsverklaring");
         return File(pdf, "application/pdf", "lumio-wilsverklaring.pdf");
     }
 
-    [HttpPost("noodprocedure")]
+    [HttpGet("noodprocedure")]
     public async Task<IActionResult> ExportNoodprocedure()
     {
         var pdf = await _pdfService.GenerateNoodprocedurePdf();
+        await _audit.LogAsync("Export", "export", null, "noodprocedure");
         return File(pdf, "application/pdf", "lumio-noodprocedure.pdf");
     }
 
-    [HttpPost("boedelbeschrijving")]
+    [HttpGet("boedelbeschrijving")]
     public async Task<IActionResult> ExportBoedelbeschrijving()
     {
         var pdf = await _pdfService.GenerateBoedelbeschrijvingPdf();
+        await _audit.LogAsync("Export", "export", null, "boedelbeschrijving");
         return File(pdf, "application/pdf", "lumio-boedelbeschrijving.pdf");
     }
 
-    [HttpPost("executeur-rapport")]
+    [HttpGet("executeur-rapport")]
     public async Task<IActionResult> ExportExecuteurRapport()
     {
         var pdf = await _pdfService.GenerateExecuteurRapportPdf();
+        await _audit.LogAsync("Export", "export", null, "executeur-rapport");
         return File(pdf, "application/pdf", "lumio-executeur-rapport.pdf");
     }
 
-    [HttpPost("notaris")]
+    [HttpGet("notaris")]
     public async Task<IActionResult> ExportNotaris()
     {
         var pdf = await _pdfService.GenerateNotarisPdf();
+        await _audit.LogAsync("Export", "export", null, "notaris");
         return File(pdf, "application/pdf", "lumio-notaris-dossier.pdf");
     }
 
-    [HttpPost("erfgenaam/{erfgenaamId:guid}")]
+    [HttpGet("erfgenaam/{erfgenaamId:guid}")]
     public async Task<IActionResult> ExportErfgenaam(Guid erfgenaamId)
     {
         var erfgenaam = await _db.Erfgenamen.FindAsync(erfgenaamId);
@@ -143,6 +162,7 @@ public class ExportController : ControllerBase
 
         var pdf = await _pdfService.GenerateErfgenaamPdf(erfgenaamId);
         var veiligNaam = erfgenaam.Voornaam.ToLowerInvariant().Replace(" ", "-");
+        await _audit.LogAsync("Export", "export", erfgenaamId, "erfgenaam");
         return File(pdf, "application/pdf", $"lumio-erfgenaam-{veiligNaam}.pdf");
     }
 
@@ -306,6 +326,8 @@ public class ExportController : ControllerBase
                 ("pdf/lumio-executeur-rapport.pdf", _pdfService.GenerateExecuteurRapportPdf),
             };
 
+            var pdfFouten = new List<string>();
+
             foreach (var (naam, generator) in pdfTasks)
             {
                 try
@@ -315,10 +337,25 @@ public class ExportController : ControllerBase
                     using var entryStream = entry.Open();
                     await entryStream.WriteAsync(pdfBytes);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Skip PDFs that fail (e.g. no data)
+                    // Collect failure so we can report it in FOUTEN.txt
+                    pdfFouten.Add($"{naam}: {ex.Message}");
                 }
+            }
+
+            // Write FOUTEN.txt if any PDFs failed
+            if (pdfFouten.Count > 0)
+            {
+                var foutEntry = archive.CreateEntry("FOUTEN.txt", CompressionLevel.Optimal);
+                using var foutStream = foutEntry.Open();
+                var foutTekst = new StringBuilder();
+                foutTekst.AppendLine("De volgende PDF-bestanden konden niet worden gegenereerd:");
+                foutTekst.AppendLine(new string('-', 50));
+                foreach (var fout in pdfFouten)
+                    foutTekst.AppendLine($"- {fout}");
+                var foutBytes = Encoding.UTF8.GetBytes(foutTekst.ToString());
+                await foutStream.WriteAsync(foutBytes);
             }
 
             // Add uploaded documents
@@ -376,6 +413,7 @@ public class ExportController : ControllerBase
         }
 
         memoryStream.Position = 0;
+        await _audit.LogAsync("Export", "export", null, "alles");
         return File(memoryStream.ToArray(), "application/zip", $"lumio-export-{DateTime.Now:yyyy-MM-dd}.zip");
     }
 
@@ -658,9 +696,7 @@ public class ExportController : ControllerBase
 
         // Verzekeringen
         var uitvaartVerzekeringen = verzekeringen
-            .Where(v => (v.Type ?? "").ToLowerInvariant().Contains("uitvaart") ||
-                        (v.Type ?? "").ToLowerInvariant().Contains("begrafenis") ||
-                        (v.Type ?? "").ToLowerInvariant().Contains("overlijden")).ToList();
+            .Where(v => NuvVerzekeringTypen.IsNuvType(v.Type)).ToList();
         if (uitvaartVerzekeringen.Count > 0)
         {
             sb.AppendLine("  <Verzekeringen>");
@@ -703,11 +739,18 @@ public class ExportController : ControllerBase
     [HttpGet("csv/bezittingen")]
     public async Task<IActionResult> ExportBezittingenCsv()
     {
-        var items = await _db.FysiekeBezittingen.ToListAsync();
+        var items = await _db.FysiekeBezittingen
+            .Include(b => b.BestemdeErfgenaam)
+            .ToListAsync();
         var csv = new StringBuilder();
         csv.AppendLine("Categorie;Omschrijving;Geschatte Waarde;Locatie;Bestemde Erfgenaam;Vermogenssoort;Notities;Kadastraal Nummer;Kenteken;KvK Nummer");
         foreach (var b in items)
-            csv.AppendLine($"{Esc(b.Categorie)};{Esc(b.Omschrijving)};{b.GeschatteWaarde};{Esc(b.Locatie)};{Esc(b.BestemdeErfgenaam)};{b.VermogensSoort};{Esc(b.Notities)};{Esc(b.KadastraalNummer)};{Esc(b.Kenteken)};{Esc(b.KvKNummer)}");
+        {
+            var bestemdeNaam = b.BestemdeErfgenaam != null
+                ? $"{b.BestemdeErfgenaam.Voornaam} {b.BestemdeErfgenaam.Tussenvoegsel} {b.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
+                : null;
+            csv.AppendLine($"{Esc(b.Categorie)};{Esc(b.Omschrijving)};{b.GeschatteWaarde};{Esc(b.Locatie)};{Esc(bestemdeNaam)};{b.VermogensSoort};{Esc(b.Notities)};{Esc(b.KadastraalNummer)};{Esc(b.Kenteken)};{Esc(b.KvKNummer)}");
+        }
         return CsvResult(csv, "bezittingen");
     }
 
@@ -806,6 +849,7 @@ public class ExportController : ControllerBase
 
         // Boedel
         var bezittingen = await _db.FysiekeBezittingen
+            .Include(b => b.BestemdeErfgenaam)
             .Where(b => b.EigenaarId == eigenaar.Id).ToListAsync();
         var bankrekeningen = await _db.Bankrekeningen
             .Where(b => b.EigenaarId == eigenaar.Id).ToListAsync();
@@ -901,10 +945,15 @@ public class ExportController : ControllerBase
 
             Boedel = new BoedelExport
             {
-                FysiekeBezittingen = bezittingen.Select(b => new FysiekBezitExport(
+                FysiekeBezittingen = bezittingen.Select(b => {
+                var bestemdeNaam = b.BestemdeErfgenaam != null
+                    ? $"{b.BestemdeErfgenaam.Voornaam} {b.BestemdeErfgenaam.Tussenvoegsel} {b.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
+                    : null;
+                return new FysiekBezitExport(
                     b.Categorie, b.Omschrijving, b.GeschatteWaarde,
-                    b.Locatie, b.BestemdeErfgenaam, b.VermogensSoort.ToString(), b.Notities,
-                    b.KadastraalNummer, b.Kenteken, b.KvKNummer)).ToList(),
+                    b.Locatie, bestemdeNaam, b.VermogensSoort.ToString(), b.Notities,
+                    b.KadastraalNummer, b.Kenteken, b.KvKNummer);
+            }).ToList(),
                 Bankrekeningen = bankrekeningen.Select(b => new BankrekeningExport(
                     b.BankNaam, b.IBAN, b.RekeningType,
                     b.Saldo, b.VermogensSoort.ToString(), b.Notities)).ToList(),
@@ -927,7 +976,7 @@ public class ExportController : ControllerBase
                 d.OverdrachtAan, d.Notities)).ToList(),
 
             Documenten = documenten.Select(d => new DocumentExport(
-                d.Naam, d.Categorie, d.BestandsNaam, d.ContentType,
+                d.Naam, d.Categorie.ToString(), d.BestandsNaam, d.ContentType,
                 d.BestandsGrootte, d.Notities,
                 d.VerlooptOp?.ToString("yyyy-MM-dd"),
                 d.Versie, d.AangemaaktOp.ToString("yyyy-MM-dd HH:mm"))).ToList(),

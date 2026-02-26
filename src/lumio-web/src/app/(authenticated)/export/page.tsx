@@ -6,9 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { api, downloadAndSave } from "@/lib/api-client";
 import {
@@ -20,9 +17,12 @@ import {
   FileCode,
   Sheet,
   Flower2,
+  Users,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import type { LucideIcon } from "lucide-react";
+import { useDomainQuery } from "@/hooks";
+import type { Erfgenaam } from "@/components/erfgenamen/types";
 
 const exportOptions: Array<{
   key: string;
@@ -51,11 +51,13 @@ export default function ExportPage() {
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations("exporteren");
 
+  const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
+
   const handleExport = async (key: string, endpoint: string) => {
     setDownloading(key);
     setError(null);
     try {
-      await downloadAndSave(endpoint, `lumio-${key}.pdf`, { method: "POST" });
+      await downloadAndSave(endpoint, `lumio-${key}.pdf`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -67,7 +69,7 @@ export default function ExportPage() {
     setDownloading("compleet");
     setError(null);
     try {
-      await downloadAndSave("/api/export/compleet", "lumio-compleet.pdf", { method: "POST" });
+      await downloadAndSave("/api/export/compleet", "lumio-compleet.pdf");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("exportMislukt"));
     } finally {
@@ -116,6 +118,19 @@ export default function ExportPage() {
     }
   };
 
+  const handleDeelErfgenaam = async (erfgenaamId: string, voornaam: string) => {
+    const key = `deel-${erfgenaamId}`;
+    setDownloading(key);
+    setError(null);
+    try {
+      await downloadAndSave(`/api/export/delen/${erfgenaamId}`, `lumio-erfgenaam-${voornaam.toLowerCase()}.pdf`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("exportMislukt"));
+    } finally {
+      setDownloading(null);
+    }
+  };
+
   const csvOptions = [
     { naam: "erfgenamen" },
     { naam: "bezittingen" },
@@ -128,7 +143,10 @@ export default function ExportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">{t("titel")}</h1>
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <Archive className="h-8 w-8 text-primary" />
+          {t("titel")}
+        </h1>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
         </p>
@@ -140,16 +158,17 @@ export default function ExportPage() {
         </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Download className="h-5 w-5" /> {t("compleetOverzicht")}
-          </CardTitle>
-          <CardDescription>
-            {t("compleetBeschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex gap-3 flex-wrap">
+      <Card className="overflow-hidden">
+        <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+          <Download className="h-5 w-5 text-sage shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-sage leading-tight">{t("compleetOverzicht")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("compleetBeschrijving")}</p>
+          </div>
+        </div>
+        <CardContent className="pt-5">
+          <p className="text-xs text-muted-foreground mb-4">{t("videosUitgesloten")}</p>
+          <div className="flex gap-3 flex-wrap">
           <Button
             onClick={handleCompleteExport}
             disabled={downloading !== null}
@@ -173,19 +192,19 @@ export default function ExportPage() {
             )}
             {t("compleetPakket")}
           </Button>
+          </div>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileJson className="h-5 w-5" /> {t("gestructureerdeExport")}
-          </CardTitle>
-          <CardDescription>
-            {t("gestructureerdeBeschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex gap-3 flex-wrap">
+      <Card className="overflow-hidden">
+        <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+          <FileJson className="h-5 w-5 text-sage shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-sage leading-tight">{t("gestructureerdeExport")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("gestructureerdeBeschrijving")}</p>
+          </div>
+        </div>
+        <CardContent className="pt-5 flex gap-3 flex-wrap">
           <Button
             variant="outline"
             onClick={() => handleStructuredExport("json")}
@@ -213,16 +232,15 @@ export default function ExportPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sheet className="h-5 w-5" /> {t("csvExport")}
-          </CardTitle>
-          <CardDescription>
-            {t("csvBeschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex gap-3 flex-wrap">
+      <Card className="overflow-hidden">
+        <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+          <Sheet className="h-5 w-5 text-sage shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-sage leading-tight">{t("csvExport")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("csvBeschrijving")}</p>
+          </div>
+        </div>
+        <CardContent className="pt-5 flex gap-3 flex-wrap">
           {csvOptions.map((opt) => (
             <Button
               key={opt.naam}
@@ -242,16 +260,15 @@ export default function ExportPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Flower2 className="h-5 w-5" /> {t("nuvExport")}
-          </CardTitle>
-          <CardDescription>
-            {t("nuvBeschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+        <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+          <Flower2 className="h-5 w-5 text-sage shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-semibold text-sage leading-tight">{t("nuvExport")}</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("nuvBeschrijving")}</p>
+          </div>
+        </div>
+        <CardContent className="pt-5">
           <Button
             variant="outline"
             onClick={async () => {
@@ -278,22 +295,58 @@ export default function ExportPage() {
         </CardContent>
       </Card>
 
+      {erfgenamen.length > 0 && (
+        <Card className="overflow-hidden">
+          <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <Users className="h-5 w-5 text-sage shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-sage leading-tight">{t("deelMetErfgenaam")}</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">{t("deelMetErfgenaamBeschrijving")}</p>
+            </div>
+          </div>
+          <CardContent className="pt-5">
+            <div className="flex flex-wrap gap-3">
+              {erfgenamen.map((e) => {
+                const volNaam = e.tussenvoegsel
+                  ? `${e.voornaam} ${e.tussenvoegsel} ${e.achternaam}`
+                  : `${e.voornaam} ${e.achternaam}`;
+                const key = `deel-${e.id}`;
+                return (
+                  <Button
+                    key={e.id}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDeelErfgenaam(e.id, e.voornaam)}
+                    disabled={downloading !== null}
+                  >
+                    {downloading === key ? (
+                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                    ) : (
+                      <Download className="h-3 w-3 mr-1" />
+                    )}
+                    {volNaam}
+                  </Button>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {exportOptions.map((opt) => {
           const LucideOptIcon = opt.icon;
           return (
-            <Card key={opt.key}>
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  {opt.lumioIcon ? (
-                    <LumioIcon name={opt.lumioIcon} size="sm" />
-                  ) : LucideOptIcon ? (
-                    <LucideOptIcon className="h-4 w-4" />
-                  ) : null}
-                  {t(`opties.${opt.key}`)}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+            <Card key={opt.key} className="overflow-hidden">
+              <div className="bg-sage-100 px-3 py-2 flex items-center gap-2 border-b border-black/5 dark:border-white/10">
+                {opt.lumioIcon ? (
+                  <LumioIcon name={opt.lumioIcon} size="sm" />
+                ) : LucideOptIcon ? (
+                  <LucideOptIcon className="h-4 w-4 text-sage shrink-0" />
+                ) : null}
+                <h3 className="text-sm font-semibold text-sage leading-tight">{t(`opties.${opt.key}`)}</h3>
+              </div>
+              <CardContent className="pt-3">
                 <Button
                   variant="outline"
                   size="sm"

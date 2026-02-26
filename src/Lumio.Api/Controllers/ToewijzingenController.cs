@@ -20,17 +20,22 @@ public class ToewijzingenController : ControllerBase
         var items = await _db.ErfgenaamToewijzingen
             .Include(t => t.Erfgenaam)
             .OrderBy(t => t.Erfgenaam.Achternaam)
+            .ThenBy(t => t.Erfgenaam.Voornaam)
             .ToListAsync();
 
-        var result = new List<ErfgenaamToewijzingResponse>();
-        foreach (var t in items)
+        // Batch-load entity names per EntityType to avoid N+1 queries
+        var nameCache = await BuildEntityNameCacheAsync(items.Select(t => (t.EntityType, t.EntityId)));
+
+        var result = items.Select(t =>
         {
-            var entityNaam = await ResolveEntityNaam(t.EntityType, t.EntityId);
-            var erfgenaamNaam = $"{t.Erfgenaam.Voornaam} {t.Erfgenaam.Tussenvoegsel} {t.Erfgenaam.Achternaam}".Trim();
-            result.Add(new ErfgenaamToewijzingResponse(
+            var erfgenaamNaam = $"{t.Erfgenaam.Voornaam} {t.Erfgenaam.Tussenvoegsel} {t.Erfgenaam.Achternaam}"
+                .Replace("  ", " ").Trim();
+            var entityNaam = nameCache.TryGetValue((t.EntityType, t.EntityId), out var n) ? n : "Onbekend";
+            return new ErfgenaamToewijzingResponse(
                 t.Id, t.ErfgenaamId, erfgenaamNaam,
-                t.EntityType, t.EntityId, entityNaam, t.Instructies));
-        }
+                t.EntityType, t.EntityId, entityNaam, t.Instructies);
+        }).ToList();
+
         return Ok(result);
     }
 
@@ -44,15 +49,18 @@ public class ToewijzingenController : ControllerBase
             .Where(t => t.ErfgenaamId == erfgenaamId)
             .ToListAsync();
 
-        var erfgenaamNaam = $"{erfgenaam.Voornaam} {erfgenaam.Tussenvoegsel} {erfgenaam.Achternaam}".Trim();
-        var result = new List<ErfgenaamToewijzingResponse>();
-        foreach (var t in items)
+        var nameCache = await BuildEntityNameCacheAsync(items.Select(t => (t.EntityType, t.EntityId)));
+        var erfgenaamNaam = $"{erfgenaam.Voornaam} {erfgenaam.Tussenvoegsel} {erfgenaam.Achternaam}"
+            .Replace("  ", " ").Trim();
+
+        var result = items.Select(t =>
         {
-            var entityNaam = await ResolveEntityNaam(t.EntityType, t.EntityId);
-            result.Add(new ErfgenaamToewijzingResponse(
+            var entityNaam = nameCache.TryGetValue((t.EntityType, t.EntityId), out var n) ? n : "Onbekend";
+            return new ErfgenaamToewijzingResponse(
                 t.Id, t.ErfgenaamId, erfgenaamNaam,
-                t.EntityType, t.EntityId, entityNaam, t.Instructies));
-        }
+                t.EntityType, t.EntityId, entityNaam, t.Instructies);
+        }).ToList();
+
         return Ok(result);
     }
 
@@ -85,7 +93,7 @@ public class ToewijzingenController : ControllerBase
         await _db.SaveChangesAsync();
 
         var entityNaam = await ResolveEntityNaam(item.EntityType, item.EntityId);
-        var erfgenaamNaam = $"{erfgenaam.Voornaam} {erfgenaam.Tussenvoegsel} {erfgenaam.Achternaam}".Trim();
+        var erfgenaamNaam = $"{erfgenaam.Voornaam} {erfgenaam.Tussenvoegsel} {erfgenaam.Achternaam}".Replace("  ", " ").Trim();
         return Created($"/api/toewijzingen/{item.Id}",
             new ErfgenaamToewijzingResponse(
                 item.Id, item.ErfgenaamId, erfgenaamNaam,
@@ -106,7 +114,7 @@ public class ToewijzingenController : ControllerBase
 
         var erfgenaam = await _db.Erfgenamen.FindAsync(item.ErfgenaamId);
         var erfgenaamNaam = erfgenaam != null
-            ? $"{erfgenaam.Voornaam} {erfgenaam.Tussenvoegsel} {erfgenaam.Achternaam}".Trim()
+            ? $"{erfgenaam.Voornaam} {erfgenaam.Tussenvoegsel} {erfgenaam.Achternaam}".Replace("  ", " ").Trim()
             : "Onbekend";
         var entityNaam = await ResolveEntityNaam(item.EntityType, item.EntityId);
         return Ok(new ErfgenaamToewijzingResponse(
@@ -127,14 +135,57 @@ public class ToewijzingenController : ControllerBase
 
     private async Task<string> ResolveEntityNaam(string entityType, Guid entityId)
     {
-        return entityType switch
-        {
-            "FysiekBezit" => (await _db.FysiekeBezittingen.FindAsync(entityId))?.Omschrijving ?? "Onbekend",
-            "Bankrekening" => (await _db.Bankrekeningen.FindAsync(entityId))?.BankNaam ?? "Onbekend",
-            "Verzekering" => (await _db.Verzekeringen.FindAsync(entityId))?.Verzekeraar ?? "Onbekend",
-            "DigitaalAccount" => (await _db.DigitaleAccounts.FindAsync(entityId))?.PlatformNaam ?? "Onbekend",
-            "CryptoWallet" => (await _db.CryptoWallets.FindAsync(entityId))?.WalletNaam ?? "Onbekend",
-            _ => "Onbekend"
-        };
+        var cache = await BuildEntityNameCacheAsync([(entityType, entityId)]);
+        return cache.TryGetValue((entityType, entityId), out var name) ? name : "Onbekend";
+    }
+
+    private async Task<Dictionary<(string, Guid), string>> BuildEntityNameCacheAsync(
+        IEnumerable<(string EntityType, Guid EntityId)> entries)
+    {
+        var grouped = entries.ToLookup(e => e.EntityType, e => e.EntityId);
+        var cache = new Dictionary<(string, Guid), string>();
+
+        var fysiekIds = grouped["FysiekBezit"].ToHashSet();
+        var bankIds = grouped["Bankrekening"].ToHashSet();
+        var verzIds = grouped["Verzekering"].ToHashSet();
+        var digitaalIds = grouped["DigitaalAccount"].ToHashSet();
+        var cryptoIds = grouped["CryptoWallet"].ToHashSet();
+
+        if (fysiekIds.Count > 0)
+            foreach (var r in await _db.FysiekeBezittingen
+                .Where(f => fysiekIds.Contains(f.Id))
+                .Select(f => new { f.Id, Name = f.Omschrijving })
+                .ToListAsync())
+                cache[("FysiekBezit", r.Id)] = r.Name;
+
+        if (bankIds.Count > 0)
+            foreach (var r in await _db.Bankrekeningen
+                .Where(b => bankIds.Contains(b.Id))
+                .Select(b => new { b.Id, Name = b.BankNaam })
+                .ToListAsync())
+                cache[("Bankrekening", r.Id)] = r.Name;
+
+        if (verzIds.Count > 0)
+            foreach (var r in await _db.Verzekeringen
+                .Where(v => verzIds.Contains(v.Id))
+                .Select(v => new { v.Id, Name = v.Verzekeraar })
+                .ToListAsync())
+                cache[("Verzekering", r.Id)] = r.Name;
+
+        if (digitaalIds.Count > 0)
+            foreach (var r in await _db.DigitaleAccounts
+                .Where(d => digitaalIds.Contains(d.Id))
+                .Select(d => new { d.Id, Name = d.PlatformNaam })
+                .ToListAsync())
+                cache[("DigitaalAccount", r.Id)] = r.Name;
+
+        if (cryptoIds.Count > 0)
+            foreach (var r in await _db.CryptoWallets
+                .Where(c => cryptoIds.Contains(c.Id))
+                .Select(c => new { c.Id, Name = c.WalletNaam })
+                .ToListAsync())
+                cache[("CryptoWallet", r.Id)] = r.Name;
+
+        return cache;
     }
 }

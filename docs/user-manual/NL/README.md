@@ -18,6 +18,7 @@ Welkom bij de gebruikershandleiding van Lumio. Deze handleiding beschrijft alle 
 12. [Noodcontacten & Noodkaart](12-noodcontacten.md) — Contactpersonen, rollen, QR-noodkaart
 13. [Overige Functies](13-overige-functies.md) — Zoeken, exporteren, tijdlijn, auditlog, instellingen
 14. [Nabestaanden-modus](14-nabestaanden.md) — Toegang als nabestaande via noodcodes
+15. [Videoboodschappen](15-videoboodschappen.md) — Persoonlijke videoboodschappen opnemen en uploaden voor nabestaanden
 
 ## Over Lumio
 

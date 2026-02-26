@@ -30,6 +30,7 @@ public record UitvaartWensenResponse(
     string? VoorkeurAulaNaam,
     string? VoorkeurAulaAdres,
     string? BudgetRichting,
+    DateOnly? DatumOpgesteld,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
@@ -60,7 +61,8 @@ public record UitvaartWensenUpsertRequest(
     string? VoorkeurCrematoriumAdres,
     string? VoorkeurAulaNaam,
     string? VoorkeurAulaAdres,
-    string? BudgetRichting);
+    string? BudgetRichting,
+    DateOnly? DatumOpgesteld);
 
 public record CeremonieDetailResponse(
     Guid Id,

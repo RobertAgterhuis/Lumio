@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
+import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
 
 const organen = [
@@ -47,37 +48,52 @@ export default function DonorFormulierPage() {
     isGeregistreerdBijDonorregister: "",
     donorregisterReferentie: "",
     toelichting: "",
+    beslisserNaam: "",
+    beslisserRelatie: "",
+    beslisserTelefoon: "",
   });
   const [orgaanKeuzes, setOrgaanKeuzes] = useState<
     Record<string, boolean | null>
   >({});
 
-  const [loading, setLoading] = useState(true);
+  const { data: donorData, isLoading: donorLoading } = useDomainQuery<{
+    keuze: string;
+    isGeregistreerdBijDonorregister: boolean;
+    donorregisterReferentie: string;
+    toelichting: string;
+    beslisserNaam?: string;
+    beslisserRelatie?: string;
+    beslisserTelefoon?: string;
+  } | null>("donor");
+  const { data: orgaanData, isLoading: orgaanLoading } = useDomainQuery<
+    { id: string; orgaan: string; welDoneren: boolean }[]
+  >("donor/orgaankeuzes");
+  const loading = donorLoading || orgaanLoading;
 
   useEffect(() => {
-    Promise.all([
-      api.get<{ keuze: string; isGeregistreerdBijDonorregister: boolean; donorregisterReferentie: string; toelichting: string }>("/api/donor").catch((err) => { console.error("Failed to load donor:", err); return null; }),
-      api.get<{ id: string; orgaan: string; welDoneren: boolean }[]>("/api/donor/orgaankeuzes").catch((err) => { console.error("Failed to load orgaankeuzes:", err); return null; }),
-    ])
-      .then(([donorData, orgaanData]) => {
-        if (donorData) {
-          setForm({
-            keuze: donorData.keuze ?? "",
-            isGeregistreerdBijDonorregister: donorData.isGeregistreerdBijDonorregister != null ? String(donorData.isGeregistreerdBijDonorregister) : "",
-            donorregisterReferentie: donorData.donorregisterReferentie ?? "",
-            toelichting: donorData.toelichting ?? "",
-          });
-        }
-        if (Array.isArray(orgaanData)) {
-          const mapped: Record<string, boolean> = {};
-          for (const item of orgaanData) {
-            mapped[item.orgaan] = item.welDoneren;
-          }
-          setOrgaanKeuzes(mapped);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    if (donorData) {
+      setForm({
+        keuze: donorData.keuze ?? "",
+        isGeregistreerdBijDonorregister:
+          donorData.isGeregistreerdBijDonorregister != null
+            ? String(donorData.isGeregistreerdBijDonorregister)
+            : "",
+        donorregisterReferentie: donorData.donorregisterReferentie ?? "",
+        toelichting: donorData.toelichting ?? "",
+        beslisserNaam: donorData.beslisserNaam ?? "",
+        beslisserRelatie: donorData.beslisserRelatie ?? "",
+        beslisserTelefoon: donorData.beslisserTelefoon ?? "",
+      });
+    }
+  }, [donorData]);
+
+  useEffect(() => {
+    if (Array.isArray(orgaanData) && orgaanData.length > 0) {
+      const mapped: Record<string, boolean> = {};
+      for (const item of orgaanData) mapped[item.orgaan] = item.welDoneren;
+      setOrgaanKeuzes(mapped);
+    }
+  }, [orgaanData]);
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -133,6 +149,39 @@ export default function DonorFormulierPage() {
               />
             </div>
           )}
+        </div>
+      ),
+    },
+    {
+      id: "beslisser",
+      titel: t("beslisser.titel"),
+      beschrijving: t("beslisser.beschrijving"),
+      content: (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>{t("beslisser.naamLabel")}</Label>
+            <Input
+              value={form.beslisserNaam}
+              onChange={(e) => update("beslisserNaam", e.target.value)}
+              placeholder={t("beslisser.naamPlaceholder")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>{t("beslisser.relatieLabel")}</Label>
+            <Input
+              value={form.beslisserRelatie}
+              onChange={(e) => update("beslisserRelatie", e.target.value)}
+              placeholder={t("beslisser.relatiePlaceholder")}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>{t("beslisser.telefoonLabel")}</Label>
+            <Input
+              value={form.beslisserTelefoon}
+              onChange={(e) => update("beslisserTelefoon", e.target.value)}
+              placeholder={t("beslisser.telefoonPlaceholder")}
+            />
+          </div>
         </div>
       ),
     },
@@ -247,10 +296,39 @@ export default function DonorFormulierPage() {
               </div>
             </div>
           )}
+          {form.keuze === "Specifiek persoon beslist" && (form.beslisserNaam || form.beslisserRelatie || form.beslisserTelefoon) && (
+            <div className="rounded-lg border p-4 space-y-1">
+              <div className="font-medium mb-1">{t("samenvatting.summaryBeslisser")}</div>
+              {form.beslisserNaam && (
+                <div>
+                  <span className="font-medium">{t("samenvatting.summaryBeslisserNaam")}</span>{" "}
+                  {form.beslisserNaam}
+                </div>
+              )}
+              {form.beslisserRelatie && (
+                <div>
+                  <span className="font-medium">{t("samenvatting.summaryBeslisserRelatie")}</span>{" "}
+                  {form.beslisserRelatie}
+                </div>
+              )}
+              {form.beslisserTelefoon && (
+                <div>
+                  <span className="font-medium">{t("samenvatting.summaryBeslisserTelefoon")}</span>{" "}
+                  {form.beslisserTelefoon}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ),
     },
-  ];
+  ].filter(
+    // S5-08: Verberg organen-stap tenzij de keuze 'Ja, specifiek' is
+    (stap) => !(stap.id === "organen" && form.keuze !== "Ja, specifiek")
+  ).filter(
+    // S8-07: Verberg beslisser-stap tenzij de keuze 'Specifiek persoon beslist' is
+    (stap) => !(stap.id === "beslisser" && form.keuze !== "Specifiek persoon beslist")
+  );
 
   const handleComplete = async () => {
     await api.put("/api/donor", {
@@ -259,24 +337,20 @@ export default function DonorFormulierPage() {
         form.isGeregistreerdBijDonorregister === "true",
       donorregisterReferentie: form.donorregisterReferentie || null,
       toelichting: form.toelichting || null,
+      beslisserNaam: form.keuze === "Specifiek persoon beslist" ? (form.beslisserNaam || null) : null,
+      beslisserRelatie: form.keuze === "Specifiek persoon beslist" ? (form.beslisserRelatie || null) : null,
+      beslisserTelefoon: form.keuze === "Specifiek persoon beslist" ? (form.beslisserTelefoon || null) : null,
     });
 
-    // Delete existing orgaankeuzes to prevent duplicates
-    const bestaande = await api.get<{ id: string }[]>("/api/donor/orgaankeuzes");
-    for (const item of bestaande ?? []) {
-      await api.delete(`/api/donor/orgaankeuzes/${item.id}`);
-    }
-
-    // Create new orgaankeuzes
+    // Atomically replace all orgaankeuzes via batch endpoint
     const orgaanEntries = Object.entries(orgaanKeuzes).filter(
       ([, v]) => v !== null
     );
-    for (const [orgaan, welDoneren] of orgaanEntries) {
-      await api.post("/api/donor/orgaankeuzes", {
-        orgaan,
-        welDoneren,
-      });
-    }
+    const batchKeuzes = orgaanEntries.map(([orgaan, welDoneren]) => ({
+      orgaan,
+      welDoneren,
+    }));
+    await api.put("/api/donor/orgaankeuzes/batch", batchKeuzes);
 
     router.push("/donor");
   };

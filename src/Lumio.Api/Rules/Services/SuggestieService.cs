@@ -171,6 +171,48 @@ public class SuggestieService : ISuggestieService
                 L["SuggestionAddGP"].Value));
         }
 
+        // S5: Boedel suggesties
+        if (facts.AantalVerzekeringenZonderBegunstigde > 0)
+        {
+            suggesties.Add(new Suggestie(
+                "Verzekering zonder begunstigde",
+                $"Er {(facts.AantalVerzekeringenZonderBegunstigde == 1 ? "is 1 verzekering" : $"zijn {facts.AantalVerzekeringenZonderBegunstigde} verzekeringen")} zonder begunstigde.",
+                "Wijs een begunstigde toe aan uw verzekering(en) in het boedeloverzicht."));
+        }
+
+        if (facts.HeeftHypotheekZonderBezit)
+        {
+            suggesties.Add(new Suggestie(
+                "Hypotheek zonder gekoppeld bezit",
+                "Er is een hypotheek geregistreerd zonder gekoppeld onroerend goed.",
+                "Koppel de hypotheek aan de bijbehorende woning in het boedeloverzicht."));
+        }
+
+        // S5: Digitaal bezit suggesties
+        if (facts.HeeftAccountOverdragenZonderNaam)
+        {
+            suggesties.Add(new Suggestie(
+                "Digitaal bezit overdragen zonder ontvanger",
+                "Er is een digitaal account met actie 'overdragen' maar zonder naam van de ontvanger.",
+                "Vul de naam van de ontvanger in bij het digitale account."));
+        }
+
+        if (facts.HeeftCryptoZonderSeedPhrase)
+        {
+            suggesties.Add(new Suggestie(
+                "Crypto wallet zonder seed phrase",
+                "Er is een crypto wallet zonder opgeslagen seed phrase.",
+                "Voeg de seed phrase toe aan uw crypto wallet voor veilige overdracht."));
+        }
+
+        if (facts.HeeftAccountZonderActie)
+        {
+            suggesties.Add(new Suggestie(
+                "Digitaal account zonder gewenste actie",
+                "Er is een digitaal account zonder opgegeven gewenste actie na overlijden.",
+                "Geef aan wat er met elk digitaal account moet gebeuren na uw overlijden."));
+        }
+
         return suggesties;
     }
 

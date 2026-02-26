@@ -5,11 +5,8 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import { usePreferencesStore, type DashboardPreferences } from "@/stores/preferencesStore";
+import { usePreferencesStore, type BooleanPreferenceKey } from "@/stores/preferencesStore";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { api } from "@/lib/api-client";
 import {
@@ -34,12 +31,12 @@ import {
 const TIMEOUT_VALUES = [1, 2, 5, 10, 15, 30, 0];
 
 interface DashboardToggleProps {
-  sectionKey: keyof DashboardPreferences;
+  sectionKey: BooleanPreferenceKey;
   label: string;
 }
 
 function DashboardToggle({ sectionKey, label }: DashboardToggleProps) {
-  const value = usePreferencesStore((s) => s[sectionKey]);
+  const value = usePreferencesStore((s) => s[sectionKey] as boolean);
   const toggle = usePreferencesStore((s) => s.toggleSection);
   return (
     <button
@@ -49,6 +46,38 @@ function DashboardToggle({ sectionKey, label }: DashboardToggleProps) {
     >
       <span className="text-sm font-medium">{label}</span>
       {value ? (
+        <Eye className="h-4 w-4 text-primary" />
+      ) : (
+        <EyeOff className="h-4 w-4 text-muted-foreground" />
+      )}
+    </button>
+  );
+}
+
+const DOMEIN_KAARTEN = [
+  { domein: "eigenaar", domeinKey: "eigenaar" },
+  { domein: "noodcontacten", domeinKey: "noodcontacten" },
+  { domein: "testament", domeinKey: "testament" },
+  { domein: "euthanasie", domeinKey: "euthanasie" },
+  { domein: "donor", domeinKey: "donor" },
+  { domein: "uitvaart", domeinKey: "uitvaart" },
+  { domein: "erfgenamen", domeinKey: "erfgenamen" },
+  { domein: "boedel", domeinKey: "boedel" },
+  { domein: "digitaal-bezit", domeinKey: "digitaalBezit" },
+  { domein: "documenten", domeinKey: "documenten" },
+] as const;
+
+function DomeinKaartToggle({ domein, label }: { domein: string; label: string }) {
+  const isHidden = usePreferencesStore((s) => s.hiddenDomeinKaarten.includes(domein));
+  const toggle = usePreferencesStore((s) => s.toggleDomeinKaart);
+  return (
+    <button
+      type="button"
+      onClick={() => toggle(domein)}
+      className="flex items-center justify-between w-full rounded-lg border p-3 hover:bg-muted/50 transition-colors"
+    >
+      <span className="text-sm font-medium">{label}</span>
+      {!isHidden ? (
         <Eye className="h-4 w-4 text-primary" />
       ) : (
         <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -70,14 +99,15 @@ export function AutoLockCard() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Timer className="h-5 w-5" /> {t("autoLock.titel")}
-        </CardTitle>
-        <CardDescription>{t("autoLock.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Timer className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("autoLock.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("autoLock.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5">
         <div className="flex flex-wrap gap-2">
           {TIMEOUT_VALUES.map((value) => (
             <Button
@@ -122,14 +152,15 @@ export function GroteTekstCard() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Type className="h-5 w-5" /> {t("groteTekst.titel")}
-        </CardTitle>
-        <CardDescription>{t("groteTekst.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Type className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("groteTekst.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("groteTekst.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5">
         <div className="flex items-center gap-4">
           <Button
             variant={!groteTekst ? "default" : "outline"}
@@ -156,19 +187,25 @@ export function GroteTekstCard() {
  */
 export function DashboardWeergaveCard() {
   const t = useTranslations("instellingen");
+  const tDash = useTranslations("dashboard");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <LayoutDashboard className="h-5 w-5" /> {t("dashboardWeergave.titel")}
-        </CardTitle>
-        <CardDescription>{t("dashboardWeergave.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <LayoutDashboard className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("dashboardWeergave.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("dashboardWeergave.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5 space-y-3">
         <DashboardToggle
           sectionKey="showVoortgang"
           label={t("dashboardWeergave.voortgang")}
+        />
+        <DashboardToggle
+          sectionKey="showStatistieken"
+          label={t("dashboardWeergave.statistieken")}
         />
         <DashboardToggle
           sectionKey="showVoortgangGranulair"
@@ -179,9 +216,35 @@ export function DashboardWeergaveCard() {
           label={t("dashboardWeergave.suggesties")}
         />
         <DashboardToggle
-          sectionKey="showDomeinKaarten"
-          label={t("dashboardWeergave.domeinKaarten")}
+          sectionKey="showMeldingen"
+          label={t("dashboardWeergave.meldingen")}
         />
+        <DashboardToggle
+          sectionKey="showBackup"
+          label={t("dashboardWeergave.backup")}
+        />
+        <DashboardToggle
+          sectionKey="showAanbevolen"
+          label={t("dashboardWeergave.aanbevolen")}
+        />
+        <DashboardToggle
+          sectionKey="showVerloopdatum"
+          label={t("dashboardWeergave.verloopdatum")}
+        />
+        <div className="pt-3 border-t">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+            {t("dashboardWeergave.domeinKaarten")}
+          </p>
+          <div className="space-y-2">
+            {DOMEIN_KAARTEN.map(({ domein, domeinKey }) => (
+              <DomeinKaartToggle
+                key={domein}
+                domein={domein}
+                label={tDash(`domein.${domeinKey}.titel`)}
+              />
+            ))}
+          </div>
+        </div>
         <div className="pt-2">
           <Button
             variant="outline"
@@ -203,14 +266,15 @@ export function TaalkeuzeCard() {
   const t = useTranslations("instellingen");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Globe className="h-5 w-5" /> {t("taal.titel")}
-        </CardTitle>
-        <CardDescription>{t("taal.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Globe className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("taal.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("taal.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5">
         <LanguageSelector />
       </CardContent>
     </Card>
@@ -238,21 +302,6 @@ export function ActualisatieCard() {
     text: string;
   } | null>(null);
 
-  useEffect(() => {
-    const loadActualisatie = async () => {
-      try {
-        const data = await api.get<{
-          domeinen: ActualisatieDomein[];
-          herinneringNodig: boolean;
-        }>("/api/status/actualisatie");
-        setActualisatieDomeinen(data.domeinen);
-      } catch {
-        // Ignore
-      }
-    };
-    loadActualisatie();
-  }, []);
-
   const reloadActualisatie = async () => {
     try {
       const data = await api.get<{
@@ -264,6 +313,10 @@ export function ActualisatieCard() {
       // Ignore
     }
   };
+
+  useEffect(() => {
+    reloadActualisatie();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBevestigAlles = async () => {
     setActualisatieConfirming("alles");
@@ -293,14 +346,15 @@ export function ActualisatieCard() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <RefreshCw className="h-5 w-5" /> {t("actualisatie.titel")}
-        </CardTitle>
-        <CardDescription>{t("actualisatie.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <RefreshCw className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("actualisatie.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("actualisatie.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5 space-y-4">
         {actualisatieDomeinen.length > 0 ? (
           <>
             <div className="grid gap-2 sm:grid-cols-2">

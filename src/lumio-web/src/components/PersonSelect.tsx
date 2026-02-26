@@ -65,6 +65,8 @@ interface PersonSelectProps {
   value: string;
   /** Called when value changes (always the name string) */
   onChange: (value: string) => void;
+  /** Called when an existing erfgenaam is selected — provides the raw Guid ID, or null when deselected */
+  onIdChange?: (id: string | null) => void;
   /** Called when an existing person is selected (to auto-fill other fields) */
   onPersonSelect?: (person: PersonDetails) => void;
   /** Which data sources to load */
@@ -86,6 +88,7 @@ function formatErfgenaamNaam(e: Erfgenaam): string {
 export function PersonSelect({
   value,
   onChange,
+  onIdChange,
   onPersonSelect,
   source,
   placeholder,
@@ -167,17 +170,21 @@ export function PersonSelect({
     if (selectedValue === "__manual__") {
       setMode("manual");
       onChange("");
+      onIdChange?.(null);
       return;
     }
 
     if (selectedValue === "") {
       onChange("");
+      onIdChange?.(null);
       return;
     }
 
     const person = persons.find((p) => p.id === selectedValue);
     if (person) {
       onChange(person.naam);
+      // Return the raw Guid for erfgenamen only (noodcontacten are not used as FK targets)
+      onIdChange?.(person.bron === "erfgenaam" ? person.id.replace("erf-", "") : null);
       onPersonSelect?.({
         naam: person.naam,
         relatie: person.relatie,
@@ -193,6 +200,7 @@ export function PersonSelect({
   const handleBackToSelect = () => {
     setMode("select");
     onChange("");
+    onIdChange?.(null);
   };
 
   // No persons available → show plain input

@@ -7,6 +7,7 @@ using Lumio.Api.Dtos.Testament;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Services;
+using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,17 +24,20 @@ public class TestamentController : ControllerBase
     private readonly ErfbelastingOptions _erfbelasting;
     private readonly ILegitimairePortieService _legitiemairePortieService;
     private readonly IStringLocalizer<TestamentController> L;
+    private readonly IAuditService _audit;
 
     public TestamentController(
         LumioDbContext db,
         IOptions<ErfbelastingOptions> erfbelasting,
         ILegitimairePortieService legitiemairePortieService,
-        IStringLocalizer<TestamentController> localizer)
+        IStringLocalizer<TestamentController> localizer,
+        IAuditService audit)
     {
         _db = db;
         _erfbelasting = erfbelasting.Value;
         _legitiemairePortieService = legitiemairePortieService;
         L = localizer;
+        _audit = audit;
     }
 
     [HttpGet]
@@ -51,8 +55,18 @@ public class TestamentController : ControllerBase
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
+        // S7-04: cross-field check — datum testament mag niet vóór geboortedatum eigenaar liggen
+        if (request.DatumTestament.HasValue && request.DatumTestament.Value < eigenaar.Geboortedatum)
+            return BadRequest(new { error = "Datum testament mag niet vóór de geboortedatum van de eigenaar liggen." });
+
         var item = await _db.Testamenten.FirstOrDefaultAsync();
-        if (item is null)
+        bool isNieuw = item is null;
+
+        // Capture previous values to detect critical changes
+        string? vorigeType = item?.TestamentType;
+        string? vorigeNotaris = item?.NotarisNaam;
+
+        if (isNieuw)
         {
             item = request.Adapt<TestamentInfo>();
             item.EigenaarId = eigenaar.Id;
@@ -64,6 +78,50 @@ public class TestamentController : ControllerBase
         }
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Opgeslagen", "Testament", item!.Id);
+
+        // Auto-snapshot on critical field changes
+        if (!isNieuw)
+        {
+            bool typeGewijzigd = !string.Equals(vorigeType, item.TestamentType, StringComparison.OrdinalIgnoreCase);
+            bool notarisGewijzigd = !string.Equals(vorigeNotaris, item.NotarisNaam, StringComparison.OrdinalIgnoreCase);
+
+            if (typeGewijzigd || notarisGewijzigd)
+            {
+                var begunstigden = await _db.Begunstigden
+                    .Where(b => b.TestamentInfoId == item.Id).ToListAsync();
+                var executeurs = await _db.Executeurs
+                    .Where(e => e.TestamentInfoId == item.Id).ToListAsync();
+
+                var snapshotData = new
+                {
+                    testament = item.Adapt<TestamentInfoResponse>(),
+                    begunstigden = begunstigden.Adapt<List<BegunstigdeResponse>>(),
+                    executeurs = executeurs.Adapt<List<ExecuteurResponse>>(),
+                };
+
+                var maxVersie = await _db.TestamentSnapshots
+                    .Where(s => s.TestamentInfoId == item.Id)
+                    .MaxAsync(s => (int?)s.Versie) ?? 0;
+
+                var veranderingen = new List<string>();
+                if (typeGewijzigd) veranderingen.Add($"Testament type gewijzigd van '{vorigeType}' naar '{item.TestamentType}'");
+                if (notarisGewijzigd) veranderingen.Add($"Notaris gewijzigd van '{vorigeNotaris}' naar '{item.NotarisNaam}'");
+
+                var autoSnapshot = new TestamentSnapshot
+                {
+                    TestamentInfoId = item.Id,
+                    Versie = maxVersie + 1,
+                    Notitie = $"Automatisch snapshot: {string.Join("; ", veranderingen)}",
+                    SnapshotJson = JsonSerializer.Serialize(snapshotData,
+                        new JsonSerializerOptions { WriteIndented = false }),
+                };
+                _db.TestamentSnapshots.Add(autoSnapshot);
+                await _db.SaveChangesAsync();
+                await _audit.LogAsync("AutoSnapshot", "TestamentSnapshot", autoSnapshot.Id);
+            }
+        }
+
         return Ok(item.Adapt<TestamentInfoResponse>());
     }
 
@@ -148,6 +206,7 @@ public class TestamentController : ControllerBase
         item.TestamentInfoId = testament.Id;
         _db.Begunstigden.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Begunstigde", item.Id);
         return Created($"/api/testament/begunstigden/{item.Id}", item.Adapt<BegunstigdeResponse>());
     }
 
@@ -159,6 +218,7 @@ public class TestamentController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Begunstigde", id);
         return Ok(item.Adapt<BegunstigdeResponse>());
     }
 
@@ -170,6 +230,7 @@ public class TestamentController : ControllerBase
 
         _db.Begunstigden.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Begunstigde", id);
         return NoContent();
     }
 
@@ -197,6 +258,7 @@ public class TestamentController : ControllerBase
         item.TestamentInfoId = testament.Id;
         _db.Executeurs.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Executeur", item.Id);
         return Created($"/api/testament/executeurs/{item.Id}", item.Adapt<ExecuteurResponse>());
     }
 
@@ -208,6 +270,7 @@ public class TestamentController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Executeur", id);
         return Ok(item.Adapt<ExecuteurResponse>());
     }
 
@@ -219,6 +282,7 @@ public class TestamentController : ControllerBase
 
         _db.Executeurs.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Executeur", id);
         return NoContent();
     }
 
@@ -273,6 +337,7 @@ public class TestamentController : ControllerBase
 
         _db.TestamentSnapshots.Add(snapshot);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "TestamentSnapshot", snapshot.Id);
         return Created($"/api/testament/snapshots/{snapshot.Id}", snapshot.Adapt<TestamentSnapshotResponse>());
     }
 
@@ -311,7 +376,7 @@ public class TestamentController : ControllerBase
             }
         }
 
-        // Compare begunstigden counts/names
+        // S5-02: Compare begunstigden by naam+relatie key (not by position)
         var b1 = json1?["begunstigden"]?.AsArray();
         var b2 = json2?["begunstigden"]?.AsArray();
         var bCount1 = b1?.Count ?? 0;
@@ -321,20 +386,55 @@ public class TestamentController : ControllerBase
             verschillen.Add(new TestamentVerschil(L["NumberOfBeneficiaries"].Value, bCount1.ToString(), bCount2.ToString()));
         }
 
-        // Detail per begunstigde: compare by position
-        var maxB = Math.Max(bCount1, bCount2);
-        for (int i = 0; i < maxB; i++)
+        static string BegKey(JsonNode? node) =>
+            $"{node?["naam"]?.ToString() ?? ""}|{node?["relatie"]?.ToString() ?? ""}";
+
+        var dict1 = new Dictionary<string, JsonNode?>();
+        if (b1 is not null)
+            foreach (var n in b1) { var k = BegKey(n); dict1.TryAdd(k, n); }
+
+        var dict2 = new Dictionary<string, JsonNode?>();
+        if (b2 is not null)
+            foreach (var n in b2) { var k = BegKey(n); dict2.TryAdd(k, n); }
+
+        var alleSleutels = new HashSet<string>(dict1.Keys.Concat(dict2.Keys));
+        foreach (var key in alleSleutels.OrderBy(k => k))
         {
-            var name1 = b1?.ElementAtOrDefault(i)?["naam"]?.ToString() ?? L["NoneValue"].Value;
-            var name2 = b2?.ElementAtOrDefault(i)?["naam"]?.ToString() ?? L["NoneValue"].Value;
-            var pct1 = b1?.ElementAtOrDefault(i)?["percentage"]?.ToString() ?? "—";
-            var pct2 = b2?.ElementAtOrDefault(i)?["percentage"]?.ToString() ?? "—";
-            if (name1 != name2 || pct1 != pct2)
+            var inB1 = dict1.TryGetValue(key, out var node1);
+            var inB2 = dict2.TryGetValue(key, out var node2);
+            var naam = key.Split('|')[0] is { Length: > 0 } n ? n : L["NoneValue"].Value;
+
+            if (!inB1)
             {
+                var pct2 = node2?["percentage"]?.ToString() ?? "—";
+                var rel2 = node2?["relatie"]?.ToString() ?? "";
                 verschillen.Add(new TestamentVerschil(
-                    L["BeneficiaryLabel", i + 1].Value,
-                    $"{name1} ({pct1}%)",
-                    $"{name2} ({pct2}%)"));
+                    L["BeneficiaryLabel", naam].Value,
+                    L["NoneValue"].Value,
+                    $"{naam} ({rel2}) — {pct2}%"));
+            }
+            else if (!inB2)
+            {
+                var pct1 = node1?["percentage"]?.ToString() ?? "—";
+                var rel1 = node1?["relatie"]?.ToString() ?? "";
+                verschillen.Add(new TestamentVerschil(
+                    L["BeneficiaryLabel", naam].Value,
+                    $"{naam} ({rel1}) — {pct1}%",
+                    L["NoneValue"].Value));
+            }
+            else
+            {
+                var pct1 = node1?["percentage"]?.ToString() ?? "—";
+                var pct2 = node2?["percentage"]?.ToString() ?? "—";
+                var rel1 = node1?["relatie"]?.ToString() ?? "";
+                var rel2 = node2?["relatie"]?.ToString() ?? "";
+                if (pct1 != pct2 || rel1 != rel2)
+                {
+                    verschillen.Add(new TestamentVerschil(
+                        L["BeneficiaryLabel", naam].Value,
+                        $"{naam} ({rel1}) — {pct1}%",
+                        $"{naam} ({rel2}) — {pct2}%"));
+                }
             }
         }
 
@@ -352,6 +452,7 @@ public class TestamentController : ControllerBase
 
         _db.TestamentSnapshots.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "TestamentSnapshot", id);
         return NoContent();
     }
 
@@ -365,6 +466,9 @@ public class TestamentController : ControllerBase
         var begunstigden = testament != null
             ? await _db.Begunstigden.Where(b => b.TestamentInfoId == testament.Id).ToListAsync()
             : new List<Begunstigde>();
+        var executeurs = testament != null
+            ? await _db.Executeurs.Where(e => e.TestamentInfoId == testament.Id).ToListAsync()
+            : new List<Executeur>();
         var erfgenamen = eigenaar != null
             ? await _db.Erfgenamen.Where(e => e.EigenaarId == eigenaar.Id).ToListAsync()
             : new List<Erfgenaam>();
@@ -400,7 +504,7 @@ public class TestamentController : ControllerBase
 
             // Handgeschreven testament + executeur → risico
             if ((type.Contains("handgeschreven") || type.Contains("eigen") || type.Contains("olografisch")) &&
-                await _db.Executeurs.AnyAsync(e => e.TestamentInfoId == testament.Id))
+                executeurs.Count > 0)
             {
                 waarschuwingen.Add(new
                 {
@@ -416,7 +520,7 @@ public class TestamentController : ControllerBase
                 (e.Relatie ?? "").ToLowerInvariant().Contains("kind") ||
                 (e.Relatie ?? "").ToLowerInvariant().Contains("zoon") ||
                 (e.Relatie ?? "").ToLowerInvariant().Contains("dochter"));
-            if (!testament.UitsluitingsClausule && heeftKinderen)
+            if (testament.UitsluitingsClausule != true && heeftKinderen)
             {
                 waarschuwingen.Add(new
                 {
@@ -431,9 +535,11 @@ public class TestamentController : ControllerBase
             var totPct = begunstigden.Where(b => b.Percentage.HasValue).Sum(b => b.Percentage!.Value);
             if (begunstigden.Count > 0 && totPct > 0 && totPct != 100)
             {
+                // S8-11: >100% is kritisch (bezit verdeeld over meer dan 100%), <100% is waarschuwing
+                var pctErnst = totPct > 100 ? L["SeverityHigh"].Value : L["SeverityMedium"].Value;
                 waarschuwingen.Add(new
                 {
-                    ernst = L["SeverityMedium"].Value,
+                    ernst = pctErnst,
                     categorie = L["CategoryDistribution"].Value,
                     melding = L["WarningPercentageMismatch", totPct].Value,
                     suggestie = L["SuggestionCheckPercentages"].Value
@@ -449,6 +555,55 @@ public class TestamentController : ControllerBase
                     categorie = L["CategoryNotary"].Value,
                     melding = L["WarningNoNotary"].Value,
                     suggestie = L["SuggestionFillInNotary"].Value
+                });
+            }
+
+            // S5-01: Executeur is ook begunstigde → conflict of interest
+            var executeurNamen = executeurs.Select(e => e.Naam.ToLowerInvariant()).ToHashSet();
+            var begunstigdenAlsExecuteur = begunstigden
+                .Where(b => executeurNamen.Contains(b.Naam.ToLowerInvariant()))
+                .ToList();
+            if (begunstigdenAlsExecuteur.Count > 0)
+            {
+                var namen = string.Join(", ", begunstigdenAlsExecuteur.Select(b => b.Naam));
+                waarschuwingen.Add(new
+                {
+                    ernst = L["SeverityMedium"].Value,
+                    categorie = L["CategoryExecutor"].Value,
+                    melding = L["WarningExecutorAlsoBeneficiary", namen].Value,
+                    suggestie = L["SuggestionExecutorConflict"].Value
+                });
+            }
+
+            // S5-01: Partner niet als begunstigde bij gehuwd/geregistreerd partnerschap
+            if (eigenaar is not null &&
+                (eigenaar.BurgerlijkeStaat == BurgerlijkeStaat.Gehuwd ||
+                 eigenaar.BurgerlijkeStaat == BurgerlijkeStaat.GeregistreerdPartnerschap))
+            {
+                var partnerAlsBegunstigde = begunstigden.Any(b =>
+                    (b.Relatie ?? "").ToLowerInvariant().Contains("partner") ||
+                    (b.Relatie ?? "").ToLowerInvariant().Contains("echtgeno"));
+                if (!partnerAlsBegunstigde)
+                {
+                    waarschuwingen.Add(new
+                    {
+                        ernst = L["SeverityInfo"].Value,
+                        categorie = L["CategoryDistribution"].Value,
+                        melding = L["WarningPartnerNotBeneficiary"].Value,
+                        suggestie = L["SuggestionAddPartnerBeneficiary"].Value
+                    });
+                }
+            }
+
+            // S5-01: Testament aanwezig maar geen begunstigden
+            if (begunstigden.Count == 0)
+            {
+                waarschuwingen.Add(new
+                {
+                    ernst = L["SeverityHigh"].Value,
+                    categorie = L["CategoryDistribution"].Value,
+                    melding = L["WarningNoBeneficiaries"].Value,
+                    suggestie = L["SuggestionAddBeneficiaries"].Value
                 });
             }
         }

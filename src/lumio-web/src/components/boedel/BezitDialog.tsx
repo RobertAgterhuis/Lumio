@@ -7,9 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { PersonSelect } from "@/components/PersonSelect";
 import { BezitSchuldRow } from "./BezitSchuldRow";
 import { useTranslations } from "next-intl";
+import { useDomainQuery } from "@/hooks";
 import type { BezitFormData, BezitSchuld } from "./types";
 
 interface BezitDialogProps {
@@ -33,6 +33,7 @@ export function BezitDialog({
 }: BezitDialogProps) {
   const t = useTranslations("boedel");
   const tEnum = useTranslations("enums");
+  const { data: erfgenamen = [] } = useDomainQuery<{ id: string; voornaam: string; tussenvoegsel?: string; achternaam: string }[]>("erfgenamen");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -79,12 +80,14 @@ export function BezitDialog({
         </div>
         <div className="space-y-2">
           <Label>{t("bezitDialog.bestemdeErfgenaam")}</Label>
-          <PersonSelect
-            value={form.bestemdeErfgenaam}
-            onChange={(v) => onFormChange({ ...form, bestemdeErfgenaam: v })}
-            source="erfgenamen"
-            placeholder={t("bezitDialog.bestemdeErfgenaamPlaceholder")}
-          />
+          <Select value={form.bestemdeErfgenaamId} onChange={(e) => onFormChange({ ...form, bestemdeErfgenaamId: e.target.value })}>
+            <option value="">{t("bezitDialog.bestemdeErfgenaamPlaceholder")}</option>
+            {erfgenamen.map((erf) => (
+              <option key={erf.id} value={erf.id}>
+                {[erf.voornaam, erf.tussenvoegsel, erf.achternaam].filter(Boolean).join(" ")}
+              </option>
+            ))}
+          </Select>
         </div>
         <div className="space-y-2">
           <Label>{t("bezitDialog.vermogensSoort")}</Label>

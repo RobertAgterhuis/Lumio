@@ -14,7 +14,7 @@ public class CompleetheidsOptions
     /// <summary>Aantal verwachte velden per domein (als entiteit ontbreekt).</summary>
     public int EigenaarVelden { get; set; } = 8;
     public int TestamentVelden { get; set; } = 6;
-    public int EuthanasieVelden { get; set; } = 3;
+    public int EuthanasieVelden { get; set; } = 5;
     public int DonorVelden { get; set; } = 1;
-    public int UitvaartVelden { get; set; } = 4;
+    public int UitvaartVelden { get; set; } = 7;
 }

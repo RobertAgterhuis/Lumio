@@ -66,7 +66,7 @@ export function useBoedel() {
       omschrijving: item.omschrijving,
       geschatteWaarde: item.geschatteWaarde?.toString() ?? "",
       locatie: item.locatie ?? "",
-      bestemdeErfgenaam: item.bestemdeErfgenaam ?? "",
+      bestemdeErfgenaamId: item.bestemdeErfgenaamId ?? "",
       notities: item.notities ?? "",
       vermogensSoort: String(item.vermogensSoort ?? 0),
       kadastraalNummer: item.kadastraalNummer ?? "",
@@ -102,6 +102,7 @@ export function useBoedel() {
       polisNummer: item.polisNummer,
       verzekerdBedrag: item.verzekerdBedrag?.toString() ?? "",
       begunstigde: item.begunstigde ?? "",
+      begunstigdeErfgenaamId: item.begunstigdeErfgenaamId ?? "",
       notities: item.notities ?? "",
       vermogensSoort: String(item.vermogensSoort ?? 0),
     } : { ...emptyVerzekeringForm });
@@ -142,7 +143,7 @@ export function useBoedel() {
         omschrijving: bezitForm.omschrijving,
         geschatteWaarde: bezitForm.geschatteWaarde ? parseFloat(bezitForm.geschatteWaarde) : null,
         locatie: bezitForm.locatie || null,
-        bestemdeErfgenaam: bezitForm.bestemdeErfgenaam || null,
+        bestemdeErfgenaamId: bezitForm.bestemdeErfgenaamId || null,
         notities: bezitForm.notities || null,
         vermogensSoort: parseInt(bezitForm.vermogensSoort),
         kadastraalNummer: bezitForm.kadastraalNummer || null,
@@ -157,10 +158,10 @@ export function useBoedel() {
         const created = await api.post<FysiekBezit>("/api/boedel/bezittingen", payload);
         bezitId = created.id;
       }
-      // Save any newly added linked schulden
+      // S7-05: Atomische batch-aanmaak om sequential API-calls te vermijden
       const nieuweSchulden = bezitForm.linkedSchulden.filter((s) => s._isNew && s.schuldeiser);
-      for (const schuld of nieuweSchulden) {
-        await api.post(`/api/boedel/bezittingen/${bezitId}/schulden`, {
+      if (nieuweSchulden.length > 0) {
+        await api.post(`/api/boedel/bezittingen/${bezitId}/schulden/batch`, nieuweSchulden.map((schuld) => ({
           schuldeiser: schuld.schuldeiser,
           type: schuld.type,
           bedrag: schuld.bedrag,
@@ -168,7 +169,7 @@ export function useBoedel() {
           leaseMaatschappij: schuld.leaseMaatschappij || null,
           rentepercentage: schuld.rentepercentage ?? null,
           einddatum: schuld.einddatum || null,
-        });
+        })));
       }
       toast.success(tf(editId ? "opgeslagen" : "aangemaakt"));
       setDialogKind(null);
@@ -216,6 +217,7 @@ export function useBoedel() {
         type: verzekerForm.type,
         verzekerdBedrag: verzekerForm.verzekerdBedrag ? parseFloat(verzekerForm.verzekerdBedrag) : null,
         begunstigde: verzekerForm.begunstigde || null,
+        begunstigdeErfgenaamId: verzekerForm.begunstigdeErfgenaamId || null,
         notities: verzekerForm.notities || null,
         vermogensSoort: parseInt(verzekerForm.vermogensSoort),
       };
@@ -233,6 +235,12 @@ export function useBoedel() {
 
   const saveSchuld = useCallback(async () => {
     setError(null);
+    // S3-30: guard against empty / non-numeric bedrag instead of silently sending 0
+    const bedragValue = parseFloat(schuldForm.bedrag);
+    if (!schuldForm.bedrag || isNaN(bedragValue) || bedragValue <= 0) {
+      setError(t("bedragVerplicht"));
+      return;
+    }
     setSaving(true);
     try {
       const payload = {
@@ -240,7 +248,7 @@ export function useBoedel() {
         schuldeiserTelefoon: schuldForm.schuldeiserTelefoon || null,
         schuldeiserEmail: schuldForm.schuldeiserEmail || null,
         type: schuldForm.type,
-        bedrag: parseFloat(schuldForm.bedrag) || 0,
+        bedrag: bedragValue,
         maandelijkseAflossing: schuldForm.maandelijkseAflossing ? parseFloat(schuldForm.maandelijkseAflossing) : null,
         referentie: schuldForm.referentie || null,
         notities: schuldForm.notities || null,

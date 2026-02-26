@@ -91,6 +91,126 @@
         "Expression": "facts.HeeftEigenaar == true && facts.LaatsteActualisatie != null && facts.LaatsteActualisatie.HasValue && (DateTime.UtcNow - facts.LaatsteActualisatie.Value).TotalDays > 90",
         "RuleExpressionType": "LambdaExpression",
         "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"actualisatie\",\"bericht\":\"Het is langer dan 90 dagen geleden dat u uw gegevens heeft gecontroleerd. Controleer of alles nog actueel is.\",\"actie\":\"/instellingen\"}"
+      },
+      {
+        "RuleName": "TestamentGeenBegunstigden",
+        "Expression": "facts.HeeftTestament == true && facts.AantalTestamentBegunstigden == 0",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"testament\",\"bericht\":\"Uw testament heeft nog geen begunstigden. Voeg begunstigden toe om aan te geven wie uw nalatenschap ontvangt.\",\"actie\":\"/testament\"}"
+      },
+      {
+        "RuleName": "TestamentVerouderd",
+        "Expression": "facts.HeeftTestament == true && facts.TestamentAangemaaktOp != null && facts.TestamentAangemaaktOp.HasValue && (DateTime.UtcNow - facts.TestamentAangemaaktOp.Value).TotalDays > 1825",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"testament\",\"bericht\":\"Uw testamentaire gegevens zijn ouder dan 5 jaar. Controleer of alles nog actueel is.\",\"actie\":\"/testament\"}"
+      },
+      {
+        "RuleName": "TestamentGeenSnapshot",
+        "Expression": "facts.HeeftTestament == true && facts.HeeftTestamentSnapshot == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"testament\",\"bericht\":\"Er is nog geen snapshot van uw testament opgeslagen. Maak een snapshot om versiegeschiedenis bij te houden.\",\"actie\":\"/testament\"}"
+      },
+      {
+        "RuleName": "WilsverklaringVerouderd",
+        "Expression": "facts.HeeftWilsverklaring == true && facts.WilsverklaringIsVerouderd == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"euthanasie\",\"bericht\":\"Uw wilsverklaring euthanasie is ouder dan 5 jaar. Controleer of uw wensen nog actueel zijn.\",\"actie\":\"/euthanasie\"}"
+      },
+      {
+        "RuleName": "WilsverklaringZonderVertegenwoordiger",
+        "Expression": "facts.HeeftWilsverklaring == true && facts.HeeftWilsverklaringVertegenwoordiger == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"euthanasie\",\"bericht\":\"Uw wilsverklaring heeft geen vertegenwoordiger. Voeg een vertegenwoordiger toe die uw wensen kan doorgeven.\",\"actie\":\"/euthanasie\"}"
+      },
+      {
+        "RuleName": "WilEuthanasieZonderBehandelverbod",
+        "Expression": "facts.HeeftWilsverklaring == true && facts.WilEuthanasie == true && facts.HeeftBehandelVerbod == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"euthanasie\",\"bericht\":\"U heeft euthanasie gewenst maar geen behandelverbod opgesteld. Overweeg een behandelverbod toe te voegen.\",\"actie\":\"/euthanasie\"}"
+      },
+      {
+        "RuleName": "DonorKeuzeSpecifiekZonderOrganen",
+        "Expression": "facts.HeeftDonor == true && facts.DonorKeuze == \"Ja, specifiek\" && facts.HeeftDonorOrgaankeuzes == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"donor\",\"bericht\":\"U heeft gekozen voor specifieke orgaandonatie maar nog geen organen geselecteerd.\",\"actie\":\"/donor\"}"
+      },
+      {
+        "RuleName": "DonorSpecifiekPersoonZonderNaam",
+        "Expression": "facts.HeeftDonor == true && facts.DonorKeuze == \"Specifiek persoon beslist\" && facts.DonorBeslisserNaam == null",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"donor\",\"bericht\":\"U heeft een specifiek persoon als beslisser aangewezen maar geen naam ingevuld.\",\"actie\":\"/donor\"}"
+      },
+      {
+        "RuleName": "GeenBoedel",
+        "Expression": "facts.HeeftEigenaar == true && facts.HeeftBoedel == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"boedel\",\"bericht\":\"U heeft nog geen boedelgegevens vastgelegd. Voeg bezittingen, bankrekeningen of schulden toe.\",\"actie\":\"/boedel\"}"
+      },
+      {
+        "RuleName": "GeenDigitaalBezit",
+        "Expression": "facts.HeeftEigenaar == true && facts.HeeftDigitaalBezit == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"digitaal-bezit\",\"bericht\":\"U heeft nog geen digitaal bezit vastgelegd. Voeg accounts, wachtwoorden of crypto wallets toe.\",\"actie\":\"/digitaal-bezit\"}"
+      },
+      {
+        "RuleName": "LegitimatieVerlopen",
+        "Expression": "facts.HeeftLegitimatie == true && facts.LegitimatieIsVerlopen == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"profiel\",\"bericht\":\"Uw legitimatiebewijs is verlopen. Vernieuw uw identiteitsbewijs en werk uw profiel bij.\",\"actie\":\"/eigenaar\"}"
+      },
+      {
+        "RuleName": "LegitimatieBijnaVerlopen",
+        "Expression": "facts.HeeftLegitimatie == true && facts.LegitimatieIsBijnaVerlopen == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"profiel\",\"bericht\":\"Uw legitimatiebewijs verloopt binnenkort. Vernieuw uw identiteitsbewijs tijdig.\",\"actie\":\"/eigenaar\"}"
+      },
+      {
+        "RuleName": "IdentiteitsbewijsZonderVervaldatum",
+        "Expression": "facts.HeeftLegitimatieZonderVervaldatum == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"profiel\",\"bericht\":\"Uw legitimatiebewijs heeft geen vervaldatum. Voeg de geldigheidsdatum toe.\",\"actie\":\"/eigenaar\"}"
+      },
+      {
+        "RuleName": "UitvaartVoorkeurTypeLocatieConflict",
+        "Expression": "facts.HeeftUitvaart == true && facts.UitvaartVoorkeurType == \"Cremeren\" && facts.UitvaartBegraafplaats != null && facts.UitvaartBegraafplaats != \"\"",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"uitvaart\",\"bericht\":\"U heeft crematie als voorkeur maar ook een begraafplaats opgegeven. Controleer of dit klopt.\",\"actie\":\"/uitvaart\"}"
+      },
+      {
+        "RuleName": "UitvaartVerouderd",
+        "Expression": "facts.HeeftUitvaart == true && facts.UitvaartIsVerouderd == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"uitvaart\",\"bericht\":\"Uw uitvaartwensen zijn ouder dan 2 jaar. Controleer of alles nog actueel is.\",\"actie\":\"/uitvaart\"}"
+      },
+      {
+        "RuleName": "UitvaartVerzekeringZonderDetails",
+        "Expression": "facts.HeeftUitvaart == true && facts.HeeftUitvaartVerzekering == true && facts.HeeftUitvaartVerzekeringDetails == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"uitvaart\",\"bericht\":\"U heeft een uitvaartverzekering maar geen details ingevuld. Voeg de verzekeringsinformatie toe.\",\"actie\":\"/uitvaart\"}"
+      },
+      {
+        "RuleName": "UitvaartGeenCeremonieDetails",
+        "Expression": "facts.HeeftUitvaart == true && facts.HeeftCeremonieDetails == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"uitvaart\",\"bericht\":\"U heeft nog geen ceremonie-details voor uw uitvaart opgegeven.\",\"actie\":\"/uitvaart\"}"
+      },
+      {
+        "RuleName": "ShamirVerouderd",
+        "Expression": "facts.ErfgenamenMetSleutel == true && facts.ShamirOudsteDatumShareUitgegeven != null && facts.ShamirOudsteDatumShareUitgegeven.HasValue && (DateTime.UtcNow - facts.ShamirOudsteDatumShareUitgegeven.Value).TotalDays > 730",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"shamir\",\"bericht\":\"Uw noodcodes zijn ouder dan 2 jaar. Overweeg de noodcodes te vernieuwen voor extra zekerheid.\",\"actie\":\"/erfgenamen\"}"
+      },
+      {
+        "RuleName": "LegitimairePortieSchending",
+        "Expression": "facts.HeeftLegitimairePortieSchending == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"waarschuwing\",\"categorie\":\"testament\",\"bericht\":\"De verdeling in uw testament kan de legitimaire portie van uw kinderen schenden. Controleer de percentages bij uw notaris.\",\"actie\":\"/testament\"}"
+      },
+      {
+        "RuleName": "GeenTijdlijnBekeken",
+        "Expression": "facts.HeeftEigenaar == true && facts.HeeftTijdlijnGezien == false",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"type\":\"herinnering\",\"categorie\":\"tijdlijn\",\"bericht\":\"U heeft de tijdlijn nog niet bekeken. Gebruik de tijdlijn om te zien welke stappen uw nabestaanden moeten doorlopen.\",\"actie\":\"/tijdlijn\"}"
       }
     ]
   },
@@ -120,6 +240,36 @@
         "Expression": "facts.Erfgenamen.Count > 0 && facts.Noodcontacten.Count(n => n.Rol == \"Huisarts\") == 0",
         "RuleExpressionType": "LambdaExpression",
         "SuccessEvent": "{\"categorie\":\"Ontbrekend noodcontact\",\"melding\":\"Er is geen huisarts als noodcontact geregistreerd. Een huisarts is belangrijk bij overlijden en voor medische documentatie.\",\"actie\":\"Voeg uw huisarts toe als noodcontact.\"}"
+      },
+      {
+        "RuleName": "VerzekeringZonderBegunstigde",
+        "Expression": "facts.AantalVerzekeringenZonderBegunstigde > 0",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Verzekering zonder begunstigde\",\"melding\":\"Er zijn verzekeringen zonder begunstigde. Een begunstigde bepaalt wie de uitkering ontvangt.\",\"actie\":\"Wijs een begunstigde toe aan uw verzekering(en) in het boedeloverzicht.\"}"
+      },
+      {
+        "RuleName": "SchuldZonderBezit",
+        "Expression": "facts.HeeftHypotheekZonderBezit == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Hypotheek zonder gekoppeld bezit\",\"melding\":\"Er is een hypotheek geregistreerd zonder gekoppeld onroerend goed.\",\"actie\":\"Koppel de hypotheek aan de bijbehorende woning in het boedeloverzicht.\"}"
+      },
+      {
+        "RuleName": "DigitaalBezitOverdragenZonderErfgenaam",
+        "Expression": "facts.HeeftAccountOverdragenZonderNaam == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Digitaal account overdragen zonder ontvanger\",\"melding\":\"Er is een digitaal account met actie 'overdragen' maar zonder naam van de ontvanger.\",\"actie\":\"Vul de naam van de ontvanger in bij het digitale account.\"}"
+      },
+      {
+        "RuleName": "CryptoZonderSeedPhrase",
+        "Expression": "facts.HeeftCryptoZonderSeedPhrase == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Crypto wallet zonder seed phrase\",\"melding\":\"Er is een crypto wallet zonder opgeslagen seed phrase.\",\"actie\":\"Voeg de seed phrase toe aan uw crypto wallet voor veilige overdracht.\"}"
+      },
+      {
+        "RuleName": "DigitaalBezitZonderActie",
+        "Expression": "facts.HeeftAccountZonderActie == true",
+        "RuleExpressionType": "LambdaExpression",
+        "SuccessEvent": "{\"categorie\":\"Digitaal account zonder gewenste actie\",\"melding\":\"Er is een digitaal account zonder opgegeven gewenste actie na overlijden.\",\"actie\":\"Geef aan wat er met elk digitaal account moet gebeuren na uw overlijden.\"}"
       }
     ]
   }

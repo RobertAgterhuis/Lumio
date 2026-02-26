@@ -39,4 +39,12 @@
   <data name="SuggestionCheckPercentages" xml:space="preserve"><value>Controleer de verdeling en zorg dat de percentages optellen tot 100%.</value></data>
   <data name="SuggestionFillInNotary" xml:space="preserve"><value>Vul de gegevens van uw notaris in.</value></data>
   <data name="SuggestionFillContactDetails" xml:space="preserve"><value>Vul contactgegevens in zodat erfgenamen bereikbaar zijn.</value></data>
+
+  <!-- S5-01: Nieuwe juridische checks -->
+  <data name="WarningExecutorAlsoBeneficiary" xml:space="preserve"><value>De volgende persoon/personen zijn zowel executeur als begunstigde, wat een belangenconflict kan opleveren: {0}.</value></data>
+  <data name="SuggestionExecutorConflict" xml:space="preserve"><value>Overweeg een onafhankelijke executeur aan te stellen die zelf niet profiteert van de nalatenschap.</value></data>
+  <data name="WarningPartnerNotBeneficiary" xml:space="preserve"><value>U bent gehuwd of heeft een geregistreerd partnerschap, maar uw partner staat niet als begunstigde in het testament.</value></data>
+  <data name="SuggestionAddPartnerBeneficiary" xml:space="preserve"><value>Overweeg uw partner toe te voegen als begunstigde of controleer of dit bewust is weggelaten.</value></data>
+  <data name="WarningNoBeneficiaries" xml:space="preserve"><value>Er zijn geen begunstigden opgegeven in het testament. Zonder begunstigden is de verdeling van de nalatenschap onduidelijk.</value></data>
+  <data name="SuggestionAddBeneficiaries" xml:space="preserve"><value>Voeg één of meer begunstigden toe aan het testament.</value></data>
 </root>

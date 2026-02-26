@@ -497,19 +497,24 @@ export default function EuthanasieWizardPage() {
                 )}
               </div>
             )}
-            <div>
-              <span className="font-medium">{t("samenvatting.summaryDementie")}</span>{" "}
-              {form.dementieClausule === "true"
-                ? t("samenvatting.summaryJa")
-                : form.dementieClausule === "false"
-                ? t("samenvatting.summaryNee")
-                : "—"}
-            </div>
-            {form.dementieClausuleToelichting && (
-              <div>
-                <span className="font-medium">{t("samenvatting.summaryToelichting")}</span>{" "}
-                {form.dementieClausuleToelichting}
-              </div>
+            {/* S8-14: dementie-samenvatting alleen tonen als gebruiker euthanasie wil */}
+            {form.wilEuthanasie !== "false" && (
+              <>
+                <div>
+                  <span className="font-medium">{t("samenvatting.summaryDementie")}</span>{", "}
+                  {form.dementieClausule === "true"
+                    ? t("samenvatting.summaryJa")
+                    : form.dementieClausule === "false"
+                    ? t("samenvatting.summaryNee")
+                    : "—"}
+                </div>
+                {form.dementieClausuleToelichting && (
+                  <div>
+                    <span className="font-medium">{t("samenvatting.summaryToelichting")}</span>{", "}
+                    {form.dementieClausuleToelichting}
+                  </div>
+                )}
+              </>
             )}
             {form.behandelVerbod && (
               <div>
@@ -597,12 +602,17 @@ export default function EuthanasieWizardPage() {
     router.push("/euthanasie");
   };
 
+  // S8-14: sla de 'dementie'-stap over als de gebruiker geen euthanasie wil
+  const gefilterdStappen = stappen.filter((s) =>
+    s.id !== "dementie" || form.wilEuthanasie !== "false"
+  );
+
   if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
     <WizardShell
       titel={t("titel")}
-      stappen={stappen}
+      stappen={gefilterdStappen}
       onComplete={handleComplete}
       onCancel={() => router.push("/euthanasie")}
     />

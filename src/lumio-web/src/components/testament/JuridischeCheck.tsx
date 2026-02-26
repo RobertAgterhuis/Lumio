@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,7 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Scale, AlertTriangle, Info, CheckCircle, Loader2 } from "lucide-react";
+import { AlertTriangle, Info, CheckCircle, Loader2 } from "lucide-react";
+import { LumioIcon } from "@/components/ui/lumio-icon";
 import { useTranslations } from "next-intl";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api } from "@/lib/api-client";
@@ -31,6 +32,10 @@ export function JuridischeCheck() {
   const [result, setResult] = useState<CheckResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // S5-04: Automatisch controleren bij mounten
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { handleCheck(); }, []);
 
   const handleCheck = async () => {
     setLoading(true);
@@ -76,7 +81,7 @@ export function JuridischeCheck() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Scale className="h-5 w-5" /> {t("titel")}
+          <LumioIcon name="shield-check" size="md" /> {t("titel")}
         </CardTitle>
         <CardDescription>
           {t("beschrijving")}
@@ -87,7 +92,7 @@ export function JuridischeCheck() {
           {loading ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
-            <Scale className="h-4 w-4 mr-2" />
+            <LumioIcon name="shield-check" size="sm" className="mr-2" />
           )}
           {t("controleUitvoeren")}
         </Button>

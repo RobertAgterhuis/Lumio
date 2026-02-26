@@ -106,7 +106,7 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("AangemaaktOp")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("BestemdeErfgenaam")
+                    b.Property<Guid?>("BestemdeErfgenaamId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Categorie")
@@ -145,6 +145,8 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BestemdeErfgenaamId");
 
                     b.HasIndex("EigenaarId");
 
@@ -235,6 +237,9 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Begunstigde")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("BegunstigdeErfgenaamId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("EigenaarId")
@@ -437,6 +442,9 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("NotarisTelefoon")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("OnboardingVoltooid")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Postcode")
                         .HasColumnType("TEXT");
 
@@ -451,6 +459,9 @@ namespace Lumio.Api.Migrations
 
                     b.Property<string>("Telefoon")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("TijdlijnBekeken")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Tussenvoegsel")
                         .HasColumnType("TEXT");
@@ -826,6 +837,15 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("AangemaaktOp")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("BeslisserNaam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BeslisserRelatie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BeslisserTelefoon")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DonorregisterReferentie")
                         .HasColumnType("TEXT");
 
@@ -956,6 +976,24 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SituatieBeschrijving")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SituatieNotitie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SituatieOpties")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Naam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Relatie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Telefoon")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("VertegenwoordigerAdres")
@@ -1105,6 +1143,9 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Condoleance")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("DatumOpgesteld")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("EigenaarId")
@@ -1342,7 +1383,7 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("TestamentType")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("UitsluitingsClausule")
+                    b.Property<bool?>("UitsluitingsClausule")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -1497,11 +1538,18 @@ namespace Lumio.Api.Migrations
 
             modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.FysiekBezit", b =>
                 {
+                    b.HasOne("Lumio.Api.Domain.Common.Erfgenaam", "BestemdeErfgenaam")
+                        .WithMany()
+                        .HasForeignKey("BestemdeErfgenaamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Lumio.Api.Domain.Common.Eigenaar", null)
                         .WithMany()
                         .HasForeignKey("EigenaarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BestemdeErfgenaam");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.Schuld", b =>

@@ -30,7 +30,8 @@ export interface FysiekBezit {
   omschrijving: string;
   geschatteWaarde?: number;
   locatie?: string;
-  bestemdeErfgenaam?: string;
+  bestemdeErfgenaamId?: string;
+  bestemdeErfgenaamNaam?: string;
   notities?: string;
   vermogensSoort: number;
   kadastraalNummer?: string;
@@ -58,6 +59,7 @@ export interface Verzekering {
   type: string;
   verzekerdBedrag?: number;
   begunstigde?: string;
+  begunstigdeErfgenaamId?: string;
   notities?: string;
   vermogensSoort: number;
 }
@@ -90,7 +92,7 @@ export interface BezitFormData {
   omschrijving: string;
   geschatteWaarde: string;
   locatie: string;
-  bestemdeErfgenaam: string;
+  bestemdeErfgenaamId: string;
   notities: string;
   vermogensSoort: string;
   kadastraalNummer: string;
@@ -116,6 +118,7 @@ export interface VerzekeringFormData {
   polisNummer: string;
   verzekerdBedrag: string;
   begunstigde: string;
+  begunstigdeErfgenaamId: string;
   notities: string;
   vermogensSoort: string;
 }

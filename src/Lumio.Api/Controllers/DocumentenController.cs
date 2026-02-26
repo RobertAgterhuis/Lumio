@@ -2,6 +2,7 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.Documents;
 using Lumio.Api.Dtos.Documents;
 using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ public class DocumentenController : ControllerBase
 {
     private readonly LumioDbContext _db;
     private readonly LimietenOptions _limieten;
+    private readonly IAuditService _audit;
 
-    public DocumentenController(LumioDbContext db, IOptions<LimietenOptions> limieten)
+    public DocumentenController(LumioDbContext db, IOptions<LimietenOptions> limieten, IAuditService audit)
     {
         _db = db;
         _limieten = limieten.Value;
+        _audit = audit;
     }
 
     /// <summary>
@@ -45,7 +48,7 @@ public class DocumentenController : ControllerBase
             .ToList();
 
         var result = latest.Select(d => new DocumentResponse(
-            d.Id, d.Naam, d.Categorie, d.BestandsNaam, d.ContentType,
+            d.Id, d.Naam, d.Categorie.ToString(), d.BestandsNaam, d.ContentType,
             d.BestandsGrootte, d.Notities, d.VerlooptOp, d.AangemaaktOp, d.GewijzigdOp,
             d.DocumentGroepId, d.Versie,
             versionCounts.GetValueOrDefault(d.DocumentGroepId, 1)
@@ -64,7 +67,7 @@ public class DocumentenController : ControllerBase
             .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
 
         return Ok(new DocumentResponse(
-            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.Id, item.Naam, item.Categorie.ToString(), item.BestandsNaam, item.ContentType,
             item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));
@@ -93,13 +96,18 @@ public class DocumentenController : ControllerBase
     [HttpPost("uploaden")]
     [RequestSizeLimit(52_428_800)] // 50 MB (compile-time upper bound)
     public async Task<ActionResult<DocumentResponse>> Upload(
-        [FromForm] IFormFile bestand,
-        [FromForm] string naam,
-        [FromForm] string categorie,
-        [FromForm] string? notities,
-        [FromForm] string? verlooptOp,
+        [FromForm] DocumentUploadRequest request,
         [FromServices] IEncryptionService encryption)
     {
+        var bestand = request.Bestand;
+        var naam = request.Naam;
+        var categorie = request.Categorie;
+        var notities = request.Notities;
+        var verlooptOp = request.VerlooptOp;
+
+        if (bestand is null)
+            return BadRequest(new { error = "Geen bestand opgegeven." });
+
         var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
@@ -108,7 +116,8 @@ public class DocumentenController : ControllerBase
 
         using var ms = new MemoryStream();
         await bestand.CopyToAsync(ms);
-        var content = ms.ToArray();
+        var rawContent = ms.ToArray();
+        var content = encryption.EncryptBytes(rawContent);
 
         // Check if a document with the same name already exists → create new version
         var existing = await _db.Documenten
@@ -123,7 +132,9 @@ public class DocumentenController : ControllerBase
         {
             EigenaarId = eigenaar.Id,
             Naam = naam,
-            Categorie = categorie,
+            Categorie = Enum.TryParse<DocumentCategorie>(categorie, ignoreCase: true, out var parsedCat)
+                ? parsedCat
+                : DocumentCategorie.Overig,
             BestandsNaam = bestand.FileName,
             ContentType = bestand.ContentType,
             BestandsGrootte = bestand.Length,
@@ -136,24 +147,40 @@ public class DocumentenController : ControllerBase
 
         _db.Documenten.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Document", item.Id, naam);
 
         var aantalVersies = await _db.Documenten
             .CountAsync(d => d.DocumentGroepId == documentGroepId);
 
         return Created($"/api/documenten/{item.Id}", new DocumentResponse(
-            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.Id, item.Naam, item.Categorie.ToString(), item.BestandsNaam, item.ContentType,
             item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));
     }
 
     [HttpGet("{id:guid}/download")]
-    public async Task<IActionResult> Download(Guid id)
+    public async Task<IActionResult> Download(
+        Guid id,
+        [FromServices] IEncryptionService encryption)
     {
         var item = await _db.Documenten.FindAsync(id);
         if (item is null) return NotFound();
 
-        return File(item.BestandsInhoud, item.ContentType, item.BestandsNaam);
+        await _audit.LogAsync("DocumentGedownload", "Document", id, item.BestandsNaam);
+
+        byte[] content;
+        try
+        {
+            content = encryption.DecryptBytes(item.BestandsInhoud);
+        }
+        catch
+        {
+            // Fallback: document was stored before encryption was enabled
+            content = item.BestandsInhoud;
+        }
+
+        return File(content, item.ContentType, item.BestandsNaam);
     }
 
     /// <summary>
@@ -172,12 +199,13 @@ public class DocumentenController : ControllerBase
             item.Notities = request.Notities;
 
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Document", id);
 
         var aantalVersies = await _db.Documenten
             .CountAsync(d => d.DocumentGroepId == item.DocumentGroepId);
 
         return Ok(new DocumentResponse(
-            item.Id, item.Naam, item.Categorie, item.BestandsNaam, item.ContentType,
+            item.Id, item.Naam, item.Categorie.ToString(), item.BestandsNaam, item.ContentType,
             item.BestandsGrootte, item.Notities, item.VerlooptOp, item.AangemaaktOp, item.GewijzigdOp,
             item.DocumentGroepId, item.Versie, aantalVersies
         ));
@@ -194,6 +222,7 @@ public class DocumentenController : ControllerBase
 
         _db.Documenten.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Document", id);
         return NoContent();
     }
 
@@ -212,6 +241,7 @@ public class DocumentenController : ControllerBase
 
         _db.Documenten.RemoveRange(allVersions);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Document", id, "alle-versies");
         return NoContent();
     }
 }

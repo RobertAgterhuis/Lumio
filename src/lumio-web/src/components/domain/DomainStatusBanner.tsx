@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePreferencesStore } from "@/stores/preferencesStore";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, RotateCcw, AlertTriangle } from "lucide-react";
@@ -16,6 +15,7 @@ interface DomainStatusBannerProps {
 interface ActualisatieDomein {
   domein: string;
   label: string;
+  isAfgerond: boolean;
   laatsteBevestiging: string | null;
   actualisatieNodig: boolean;
 }
@@ -28,12 +28,10 @@ interface ActualisatieDomein {
  * Place this right below the heading section of each domain page.
  */
 export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
-  const { finishedDomains, setDomainFinished } = usePreferencesStore();
   const t = useTranslations("domainStatus");
 
-  const isFinished = !!finishedDomains[domein];
-
-  // Fetch actualisatie status from server (BR-148/BR-190)
+  // S4-01: Server-driven state — no localStorage
+  const [isAfgerond, setIsAfgerond] = useState(false);
   const [needsReview, setNeedsReview] = useState(false);
 
   useEffect(() => {
@@ -41,24 +39,43 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
       .get<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("/api/status/actualisatie")
       .then((data) => {
         const match = data.domeinen.find((d) => d.domein === domein);
+        setIsAfgerond(match?.isAfgerond ?? false);
         setNeedsReview(match?.actualisatieNodig ?? false);
       })
       .catch((err) => console.error(`Failed to load actualisatie for ${domein}:`, err));
   }, [domein]);
 
-  const handleBevestigActualisatie = async () => {
+  const handleMarkeerAfgerond = async () => {
     try {
       await api.post(`/api/status/actualisatie/${domein}`, {});
-      setNeedsReview(false);
-      // Also re-mark as finished with fresh timestamp
-      setDomainFinished(domein, true);
+      setIsAfgerond(true);
     } catch {
       // Ignore
     }
   };
 
-  // Only show review warning for domains that are marked finished
-  const showReview = isFinished && needsReview;
+  const handleMarkeringOpheffen = async () => {
+    try {
+      await api.delete(`/api/status/actualisatie/${domein}`);
+      setIsAfgerond(false);
+      setNeedsReview(false);
+    } catch {
+      // Ignore
+    }
+  };
+
+  const handleBevestigActualisatie = async () => {
+    try {
+      await api.post(`/api/status/actualisatie/${domein}`, {});
+      setNeedsReview(false);
+      setIsAfgerond(true);
+    } catch {
+      // Ignore
+    }
+  };
+
+  // Only show review warning for domains that are explicitly finished
+  const showReview = isAfgerond && needsReview;
 
   return (
     <div className="flex items-center justify-between rounded-lg border bg-card px-4 py-3">
@@ -73,7 +90,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
               {t("reviewBeschrijving")}
             </span>
           </>
-        ) : isFinished ? (
+        ) : isAfgerond ? (
           <>
             <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
               <CheckCircle2 className="h-3 w-3" />
@@ -91,7 +108,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
       </div>
 
       <div className="flex items-center gap-2">
-        {isFinished ? (
+        {isAfgerond ? (
           showReview ? (
             <Button
               size="sm"
@@ -105,7 +122,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setDomainFinished(domein, false)}
+              onClick={handleMarkeringOpheffen}
               className="text-muted-foreground gap-1"
             >
               {t("markeringOpheffen")}
@@ -114,7 +131,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
         ) : (
           <Button
             size="sm"
-            onClick={() => setDomainFinished(domein, true)}
+            onClick={handleMarkeerAfgerond}
             className="gap-1"
           >
             <CheckCircle2 className="h-3.5 w-3.5" />

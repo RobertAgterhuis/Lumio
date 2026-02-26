@@ -21,6 +21,13 @@ public record WilsverklaringResponse(
     bool DementieClausule,
     string? DementieClausuleToelichting,
     string? BehandelVerbod,
+    // S3-01 — Tweede vertegenwoordiger + situatie-opties
+    string? Vertegenwoordiger2Naam,
+    string? Vertegenwoordiger2Relatie,
+    string? Vertegenwoordiger2Telefoon,
+    string? Vertegenwoordiger2Email,
+    string? SituatieOpties,
+    string? SituatieNotitie,
     DateTime AangemaaktOp,
     DateTime GewijzigdOp);
 
@@ -42,7 +49,14 @@ public record WilsverklaringUpsertRequest(
     string? AanvullendeWensen,
     bool DementieClausule,
     string? DementieClausuleToelichting,
-    string? BehandelVerbod);
+    string? BehandelVerbod,
+    // S3-01 — Tweede vertegenwoordiger + situatie-opties
+    string? Vertegenwoordiger2Naam,
+    string? Vertegenwoordiger2Relatie,
+    string? Vertegenwoordiger2Telefoon,
+    string? Vertegenwoordiger2Email,
+    string? SituatieOpties,
+    string? SituatieNotitie);
 
 public record VoorwaardeResponse(
     Guid Id,

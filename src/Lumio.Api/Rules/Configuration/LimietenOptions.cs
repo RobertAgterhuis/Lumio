@@ -17,4 +17,33 @@ public class LimietenOptions
     public long DocumentMaxBytes { get; set; } = 52_428_800; // 50 MB
     public long VideoMaxBytes { get; set; } = 104_857_600;   // 100 MB
     public int VideoMaxAantal { get; set; } = 10;
+    public int VideoMaxDuurSeconden { get; set; } = 300;     // 5 min
+
+    /// <summary>S8-12: Per-domein actualisatie-intervallen (overschrijven de globale waarde).</summary>
+    public ActualisatieIntervallen ActualisatieIntervallen { get; set; } = new();
+}
+
+/// <summary>
+/// S8-12: Domein-specifieke actualisatie-intervallen in dagen.
+/// Domeinen die hier niet zijn opgenomen gebruiken <see cref="LimietenOptions.ActualisatieIntervalDagen"/>.
+/// </summary>
+public class ActualisatieIntervallen
+{
+    public int Standaard { get; set; } = 90;
+    public int Testament { get; set; } = 365;
+    public int Wilsverklaring { get; set; } = 730;
+    public int Donor { get; set; } = 365;
+    public int Uitvaartwensen { get; set; } = 365;
+    public int Eigenaar { get; set; } = 180;
+
+    /// <summary>Geeft de interval in dagen voor het opgegeven domein (lowercase naam).</summary>
+    public int VoorDomein(string domein) => domein switch
+    {
+        "testament"         => Testament,
+        "euthanasie"        => Wilsverklaring,
+        "donor"             => Donor,
+        "uitvaart"          => Uitvaartwensen,
+        "eigenaar"          => Eigenaar,
+        _                   => Standaard,
+    };
 }

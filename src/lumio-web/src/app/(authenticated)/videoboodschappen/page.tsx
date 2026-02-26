@@ -15,6 +15,7 @@ import {
   Dialog,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { useDomainQuery } from "@/hooks/useDomainQuery";
 import {
@@ -65,12 +66,14 @@ export default function VideoboodschappenPage() {
   } = useVideoboodschappen();
 
   const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
+  const { data: limietData } = useDomainQuery<{ maxAantal: number }>("videoboodschappen/limiet");
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Videoboodschap | undefined>(undefined);
   const [playerOpen, setPlayerOpen] = useState(false);
   const [playingItem, setPlayingItem] = useState<Videoboodschap | undefined>(undefined);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteItem, setConfirmDeleteItem] = useState<Videoboodschap | null>(null);
 
   // ── Create helper ────────────────────────────────────────────────────
   const openNew = () => {
@@ -116,16 +119,24 @@ export default function VideoboodschappenPage() {
 
   // ── Delete handler ──────────────────────────────────────────────────
   const handleDelete = useCallback(
-    async (item: Videoboodschap) => {
-      if (!confirm(t("verwijderenBevestig", { titel: item.titel }))) return;
-      setDeletingId(item.id);
+    (item: Videoboodschap) => {
+      setConfirmDeleteItem(item);
+    },
+    []
+  );
+
+  const execDelete = useCallback(
+    async () => {
+      if (!confirmDeleteItem) return;
+      setDeletingId(confirmDeleteItem.id);
+      setConfirmDeleteItem(null);
       try {
-        await verwijderen(item.id, item.titel);
+        await verwijderen(confirmDeleteItem.id, confirmDeleteItem.titel);
       } finally {
         setDeletingId(null);
       }
     },
-    [verwijderen, t]
+    [confirmDeleteItem, verwijderen]
   );
 
   // ── Recipient names ─────────────────────────────────────────────────
@@ -146,6 +157,11 @@ export default function VideoboodschappenPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t("titel")}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t("subtitel")}</p>
+          {limietData && (
+            <p className="text-xs text-muted-foreground mt-1">
+              {t("aantalGebruikt", { gebruikt: videoboodschappen.length, max: limietData.maxAantal })}
+            </p>
+          )}
         </div>
         <Button onClick={openNew} className="gap-2 shrink-0">
           <Plus className="h-4 w-4" />
@@ -293,6 +309,7 @@ export default function VideoboodschappenPage() {
         uploading={uploading}
         uploadProgress={uploadProgress}
         saving={saving}
+        erfgenamen={erfgenamen}
       />
 
       {/* Video player dialog */}
@@ -317,6 +334,27 @@ export default function VideoboodschappenPage() {
           )}
         </Dialog>
       )}
+
+      {/* Delete confirmation dialog */}
+      <Dialog
+        open={confirmDeleteItem !== null}
+        onOpenChange={(open) => { if (!open) setConfirmDeleteItem(null); }}
+      >
+        <DialogHeader>
+          <DialogTitle>{t("verwijderenBevestigTitel")}</DialogTitle>
+        </DialogHeader>
+        <p className="py-4 text-sm text-muted-foreground">
+          {t("verwijderenBevestig", { titel: confirmDeleteItem?.titel ?? "" })}
+        </p>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setConfirmDeleteItem(null)}>
+            {t("annuleren")}
+          </Button>
+          <Button variant="destructive" onClick={execDelete}>
+            {t("verwijderen")}
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }

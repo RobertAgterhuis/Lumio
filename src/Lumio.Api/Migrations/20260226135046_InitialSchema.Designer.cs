@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lumio.Api.Migrations
 {
     [DbContext(typeof(LumioDbContext))]
-    [Migration("20260223160011_AddHypotheekFields")]
-    partial class AddHypotheekFields
+    [Migration("20260226135046_InitialSchema")]
+    partial class InitialSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,7 +109,7 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("AangemaaktOp")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("BestemdeErfgenaam")
+                    b.Property<Guid?>("BestemdeErfgenaamId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Categorie")
@@ -149,6 +149,8 @@ namespace Lumio.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BestemdeErfgenaamId");
+
                     b.HasIndex("EigenaarId");
 
                     b.ToTable("FysiekeBezittingen");
@@ -166,6 +168,9 @@ namespace Lumio.Api.Migrations
                     b.Property<decimal>("Bedrag")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<Guid?>("BezitId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("EigenaarId")
                         .HasColumnType("TEXT");
 
@@ -176,6 +181,9 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("HypotheekVorm")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LeaseMaatschappij")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("MaandelijkseAflossing")
@@ -215,6 +223,8 @@ namespace Lumio.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BezitId");
+
                     b.HasIndex("EigenaarId");
 
                     b.ToTable("Schulden");
@@ -230,6 +240,9 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Begunstigde")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("BegunstigdeErfgenaamId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("EigenaarId")
@@ -432,6 +445,9 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("NotarisTelefoon")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("OnboardingVoltooid")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Postcode")
                         .HasColumnType("TEXT");
 
@@ -446,6 +462,9 @@ namespace Lumio.Api.Migrations
 
                     b.Property<string>("Telefoon")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("TijdlijnBekeken")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Tussenvoegsel")
                         .HasColumnType("TEXT");
@@ -821,6 +840,15 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("AangemaaktOp")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("BeslisserNaam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BeslisserRelatie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BeslisserTelefoon")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DonorregisterReferentie")
                         .HasColumnType("TEXT");
 
@@ -951,6 +979,24 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SituatieBeschrijving")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SituatieNotitie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SituatieOpties")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Naam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Relatie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vertegenwoordiger2Telefoon")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("VertegenwoordigerAdres")
@@ -1100,6 +1146,9 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Condoleance")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("DatumOpgesteld")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("EigenaarId")
@@ -1337,7 +1386,7 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("TestamentType")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("UitsluitingsClausule")
+                    b.Property<bool?>("UitsluitingsClausule")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -1382,6 +1431,88 @@ namespace Lumio.Api.Migrations
                     b.ToTable("TestamentSnapshots");
                 });
 
+            modelBuilder.Entity("Lumio.Api.Domain.VideoMessages.Videoboodschap", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AangemaaktOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Beschrijving")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("BestandsGrootte")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("BestandsNaam")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("DuurSeconden")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("EigenaarId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("GewijzigdOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Titel")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EigenaarId");
+
+                    b.ToTable("Videoboodschappen");
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.VideoMessages.VideoboodschapBlob", b =>
+                {
+                    b.Property<Guid>("VideoboodschapId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Inhoud")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.HasKey("VideoboodschapId");
+
+                    b.ToTable("VideoboodschapBlobs");
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.VideoMessages.VideoboodschapOntvanger", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AangemaaktOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ErfgenaamId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("GewijzigdOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("VideoboodschapId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VideoboodschapId");
+
+                    b.ToTable("VideoboodschapOntvangers");
+                });
+
             modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.Bankrekening", b =>
                 {
                     b.HasOne("Lumio.Api.Domain.Common.Eigenaar", null)
@@ -1410,20 +1541,34 @@ namespace Lumio.Api.Migrations
 
             modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.FysiekBezit", b =>
                 {
+                    b.HasOne("Lumio.Api.Domain.Common.Erfgenaam", "BestemdeErfgenaam")
+                        .WithMany()
+                        .HasForeignKey("BestemdeErfgenaamId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Lumio.Api.Domain.Common.Eigenaar", null)
                         .WithMany()
                         .HasForeignKey("EigenaarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BestemdeErfgenaam");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.Schuld", b =>
                 {
+                    b.HasOne("Lumio.Api.Domain.AssetRegistry.FysiekBezit", "Bezit")
+                        .WithMany("LinkedSchulden")
+                        .HasForeignKey("BezitId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Lumio.Api.Domain.Common.Eigenaar", null)
                         .WithMany()
                         .HasForeignKey("EigenaarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Bezit");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.Verzekering", b =>
@@ -1621,6 +1766,40 @@ namespace Lumio.Api.Migrations
                     b.Navigation("TestamentInfo");
                 });
 
+            modelBuilder.Entity("Lumio.Api.Domain.VideoMessages.Videoboodschap", b =>
+                {
+                    b.HasOne("Lumio.Api.Domain.Common.Eigenaar", null)
+                        .WithMany()
+                        .HasForeignKey("EigenaarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.VideoMessages.VideoboodschapBlob", b =>
+                {
+                    b.HasOne("Lumio.Api.Domain.VideoMessages.Videoboodschap", null)
+                        .WithOne("Blob")
+                        .HasForeignKey("Lumio.Api.Domain.VideoMessages.VideoboodschapBlob", "VideoboodschapId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.VideoMessages.VideoboodschapOntvanger", b =>
+                {
+                    b.HasOne("Lumio.Api.Domain.VideoMessages.Videoboodschap", "Videoboodschap")
+                        .WithMany("Ontvangers")
+                        .HasForeignKey("VideoboodschapId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Videoboodschap");
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.AssetRegistry.FysiekBezit", b =>
+                {
+                    b.Navigation("LinkedSchulden");
+                });
+
             modelBuilder.Entity("Lumio.Api.Domain.DonorRegistration.DonorRegistratie", b =>
                 {
                     b.Navigation("OrgaanKeuzes");
@@ -1645,6 +1824,13 @@ namespace Lumio.Api.Migrations
                     b.Navigation("Executeurs");
 
                     b.Navigation("Snapshots");
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.VideoMessages.Videoboodschap", b =>
+                {
+                    b.Navigation("Blob");
+
+                    b.Navigation("Ontvangers");
                 });
 #pragma warning restore 612, 618
         }

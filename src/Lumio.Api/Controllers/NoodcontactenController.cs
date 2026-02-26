@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +14,13 @@ namespace Lumio.Api.Controllers;
 public class NoodcontactenController : ControllerBase
 {
     private readonly LumioDbContext _db;
+    private readonly IAuditService _audit;
 
-    public NoodcontactenController(LumioDbContext db) => _db = db;
+    public NoodcontactenController(LumioDbContext db, IAuditService audit)
+    {
+        _db = db;
+        _audit = audit;
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<NoodcontactResponse>>> GetAll()
@@ -42,6 +48,7 @@ public class NoodcontactenController : ControllerBase
         item.EigenaarId = eigenaar.Id;
         _db.Noodcontacten.Add(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Aangemaakt", "Noodcontact", item.Id);
         return CreatedAtAction(nameof(GetById), new { id = item.Id }, item.Adapt<NoodcontactResponse>());
     }
 
@@ -53,6 +60,7 @@ public class NoodcontactenController : ControllerBase
 
         request.Adapt(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Gewijzigd", "Noodcontact", id);
         return Ok(item.Adapt<NoodcontactResponse>());
     }
 
@@ -64,6 +72,7 @@ public class NoodcontactenController : ControllerBase
 
         _db.Noodcontacten.Remove(item);
         await _db.SaveChangesAsync();
+        await _audit.LogAsync("Verwijderd", "Noodcontact", id);
         return NoContent();
     }
 
@@ -115,10 +124,12 @@ public class NoodcontactenController : ControllerBase
 
         foreach (var dto in contacten)
         {
-            // Skip duplicates based on name + role
+            // Skip duplicates based on name + role + email + phone
             var isDuplicaat = bestaand.Any(b =>
                 b.Naam.Equals(dto.Naam, StringComparison.OrdinalIgnoreCase) &&
-                b.Rol.Equals(dto.Rol, StringComparison.OrdinalIgnoreCase));
+                b.Rol.Equals(dto.Rol, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(b.Email ?? "", dto.Email ?? "", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(b.Telefoon ?? "", dto.Telefoon ?? "", StringComparison.OrdinalIgnoreCase));
 
             if (isDuplicaat)
             {

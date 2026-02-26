@@ -1,25 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { api } from "@/lib/api-client";
+import { Card, CardContent } from "@/components/ui/card";
+import { api, ApiError } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
-import { User, Save, Loader2, Camera, Trash2 } from "lucide-react";
+import { User, Save, Loader2, Camera, Trash2, AlertTriangle, UserPlus, Heart, CreditCard, Scale } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { toast } from "@/stores/toastStore";
+import { useAuthStore } from "@/stores/authStore";
+import { LumioIcon } from "@/components/ui/lumio-icon";
+import { cn } from "@/lib/utils";
 
 interface Eigenaar {
   id: string;
@@ -78,6 +75,7 @@ const emptyForm = {
 };
 
 export default function EigenaarPage() {
+  const bumpProfileFoto = useAuthStore((s) => s.bumpProfileFoto);
   const t = useTranslations("eigenaar");
   const te = useTranslations("enums");
   const tf = useTranslations("feedback");
@@ -88,6 +86,12 @@ export default function EigenaarPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [fotoUrl, setFotoUrl] = useState<string | null>(null);
   const [fotoUploading, setFotoUploading] = useState(false);
+  // S9-08: track photo load to prevent pop-in
+  const [fotoLoaded, setFotoLoaded] = useState(false);
+  // S9-07: dirty state — track the form at last save/load
+  const originalFormRef = useRef(emptyForm);
+  // S9-06: notaris → noodcontact
+  const [addingNotarisNoodcontact, setAddingNotarisNoodcontact] = useState(false);
 
   // React Query for loading eigenaar data
   const { data: eigenaarData, isLoading: loading } = useDomainQuery<Eigenaar | null>("eigenaar");
@@ -97,7 +101,7 @@ export default function EigenaarPage() {
     const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
     if (eigenaarData) {
       setExists(true);
-      setForm({
+      const loaded = {
         voornaam: eigenaarData.voornaam,
         achternaam: eigenaarData.achternaam,
         tussenvoegsel: eigenaarData.tussenvoegsel ?? "",
@@ -122,7 +126,10 @@ export default function EigenaarPage() {
         legitimatieNummer: eigenaarData.legitimatieNummer ?? "",
         legitimatieDatumAfgifte: eigenaarData.legitimatieDatumAfgifte ?? "",
         legitimatieGeldigTot: eigenaarData.legitimatieGeldigTot ?? "",
-      });
+      };
+      setForm(loaded);
+      // S9-07: snapshot the loaded form so we can detect dirty state
+      originalFormRef.current = loaded;
       if (eigenaarData.heeftProfielFoto) {
         setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
       }
@@ -171,10 +178,42 @@ export default function EigenaarPage() {
       }
       setSuccess(t("profielOpgeslagen"));
       toast.success(tf("opgeslagen"));
+      // S9-07: reset dirty state
+      originalFormRef.current = form;
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
+      // S3-31 — parse ValidationProblemDetails for per-field messages
+      if (err instanceof ApiError && err.errors && Object.keys(err.errors).length > 0) {
+        const fieldMessages = Object.entries(err.errors)
+          .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+          .join("\n");
+        setError(fieldMessages);
+      } else {
+        setError(err instanceof Error ? err.message : t("opslaanMislukt"));
+      }
     } finally {
       setSaving(false);
+    }
+  };
+
+  // S9-06: add notaris as emergency contact
+  const handleVoegNotarisToeAlsNoodcontact = async () => {
+    setAddingNotarisNoodcontact(true);
+    setError(null);
+    try {
+      await api.post("/api/noodcontacten", {
+        naam: form.notaris || form.notarisKantoor,
+        relatie: "Notaris",
+        telefoon: form.notarisTelefoon || null,
+        email: form.notarisEmail || null,
+        adres: form.notarisAdres || null,
+        postcode: form.notarisPostcode || null,
+        woonplaats: form.notarisPlaats || null,
+      });
+      toast.success(t("notaris.noodcontactToegevoegd"));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("notaris.noodcontactToevoegenMislukt"));
+    } finally {
+      setAddingNotarisNoodcontact(false);
     }
   };
 
@@ -189,6 +228,7 @@ export default function EigenaarPage() {
       await api.upload("/api/eigenaar/foto", fd);
       const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
       setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+      bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.uploadMislukt"));
     } finally {
@@ -202,12 +242,16 @@ export default function EigenaarPage() {
     try {
       await api.delete("/api/eigenaar/foto");
       setFotoUrl(null);
+      bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.verwijderenMislukt"));
     } finally {
       setFotoUploading(false);
     }
   };
+
+  // S9-08: reset fotoLoaded when the URL changes to prevent pop-in
+  useEffect(() => { setFotoLoaded(false); }, [fotoUrl]);
 
   if (loading)
     return (
@@ -240,24 +284,30 @@ export default function EigenaarPage() {
       )}
 
       {exists && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("foto.titel")}</CardTitle>
-            <CardDescription>
-              {t("foto.beschrijving")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <Card className="overflow-hidden">
+          {/* Coloured header — matches domain card style, primary palette */}
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:bg-primary-100 dark:border-white/10">
+            <LumioIcon name="profiel" size="md" className="text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("foto.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("foto.beschrijving")}</p>
+            </div>
+          </div>
+          <CardContent className="pt-5">
             <div className="flex items-center gap-6">
               <div className="h-28 w-28 rounded-full bg-muted border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden shrink-0">
-                {fotoUrl ? (
+                {/* S9-08: show placeholder until the image has loaded */}
+                {(!fotoUrl || !fotoLoaded) && (
+                  <Camera className="h-10 w-10 text-muted-foreground/50" />
+                )}
+                {fotoUrl && (
                   <img
                     src={fotoUrl}
                     alt={t("foto.alt")}
-                    className="h-full w-full object-cover"
+                    className={cn("h-full w-full object-cover", !fotoLoaded && "hidden")}
+                    onLoad={() => setFotoLoaded(true)}
+                    onError={() => setFotoLoaded(false)}
                   />
-                ) : (
-                  <Camera className="h-10 w-10 text-muted-foreground/50" />
                 )}
               </div>
               <div className="space-y-3">
@@ -304,14 +354,15 @@ export default function EigenaarPage() {
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("persoon.titel")}</CardTitle>
-          <CardDescription>
-            {t("persoon.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <User className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("persoon.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("persoon.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
@@ -409,14 +460,15 @@ export default function EigenaarPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("burgerlijkeStaat.titel")}</CardTitle>
-          <CardDescription>
-            {t("burgerlijkeStaat.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <Heart className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("burgerlijkeStaat.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("burgerlijkeStaat.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -463,14 +515,15 @@ export default function EigenaarPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("identificatie.titel")}</CardTitle>
-          <CardDescription>
-            {t("identificatie.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <CreditCard className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("identificatie.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("identificatie.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -520,14 +573,15 @@ export default function EigenaarPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("notaris.titel")}</CardTitle>
-          <CardDescription>
-            {t("notaris.beschrijving")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <Card className="overflow-hidden">
+          <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <Scale className="h-5 w-5 text-primary shrink-0" />
+            <div>
+              <h3 className="text-sm font-semibold text-primary leading-tight">{t("notaris.titel")}</h3>
+              <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("notaris.beschrijving")}</p>
+            </div>
+          </div>
+        <CardContent className="pt-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t("notaris.naam")}</Label>
@@ -591,6 +645,24 @@ export default function EigenaarPage() {
               placeholder={t("notaris.plaats")}
             />
           </div>
+          {/* S9-06: Add notary as emergency contact */}
+          {(form.notaris || form.notarisKantoor) && (
+            <div className="flex justify-end pt-2 border-t mt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleVoegNotarisToeAlsNoodcontact}
+                disabled={addingNotarisNoodcontact}
+              >
+                {addingNotarisNoodcontact ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <UserPlus className="h-4 w-4 mr-2" />
+                )}
+                {t("notaris.voegToeAlsNoodcontact")}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -605,7 +677,14 @@ export default function EigenaarPage() {
         </Alert>
       )}
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-3">
+        {/* S9-07: dirty state indicator */}
+        {JSON.stringify(form) !== JSON.stringify(originalFormRef.current) && (
+          <span className="flex items-center gap-1 text-xs text-warning">
+            <AlertTriangle className="h-3 w-3" />
+            {t("ongeslagenWijzigingen")}
+          </span>
+        )}
         <Button
           onClick={handleSave}
           disabled={saving || !form.voornaam || !form.achternaam || !form.geboortedatum}

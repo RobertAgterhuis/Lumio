@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
-import { Plus, Filter } from "lucide-react";
+import { Plus, Filter, Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AccountItem } from "./AccountItem";
 import type { DigitaalAccount } from "./types";
@@ -41,12 +41,15 @@ export function AccountsTab({
     : accounts;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>{t("accounts.titel")}</CardTitle>
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Globe className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("accounts.titel")}</h3>
+        </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <Filter className="h-4 w-4 text-muted-foreground" />
+            <Filter className="h-4 w-4 text-primary/60" />
             <Select
               value={categorieFilter}
               onChange={(e) => onCategorieFilterChange(e.target.value)}
@@ -64,8 +67,8 @@ export function AccountsTab({
             <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
           </Button>
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <CardContent className="pt-5">
         {filteredAccounts.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
             {categorieFilter

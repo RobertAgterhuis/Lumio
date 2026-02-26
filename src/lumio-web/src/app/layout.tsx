@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
+import { DM_Sans } from "next/font/google";
 import { getLocale, getMessages } from "next-intl/server";
 import { LocaleProvider } from "@/components/providers/LocaleProvider";
 import "./globals.css";
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Lumio — Digitale Nalatenschap",
@@ -21,7 +28,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning className={dmSans.variable}>
       <head>
         <meta
           httpEquiv="Content-Security-Policy"

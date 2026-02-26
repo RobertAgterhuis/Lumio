@@ -6,9 +6,6 @@ import { FormField } from "@/components/ui/form-field";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { DataHandtekening } from "@/components/instellingen/DataHandtekening";
 import { api } from "@/lib/api-client";
@@ -67,14 +64,15 @@ export function AccountDeletionCard({ onDeleteRequest, onPostDelete }: AccountDe
   };
 
   return (
-    <Card className="border-destructive/50">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-destructive">
-          <Trash2 className="h-5 w-5" /> {t("verwijderen.titel")}
-        </CardTitle>
-        <CardDescription>{t("verwijderen.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4 max-w-md">
+    <Card className="border-destructive/50 overflow-hidden">
+      <div className="bg-danger-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Trash2 className="h-5 w-5 text-danger shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-danger leading-tight">{t("verwijderen.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("verwijderen.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5 space-y-4 max-w-md">
         <FormField.Root>
           <FormField.Label>{t("verwijderen.bevestigLabel")}</FormField.Label>
           <FormField.Input
@@ -117,14 +115,15 @@ export function SecurityInfoCard() {
   const t = useTranslations("instellingen");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <LumioIcon name="shield" size="md" /> {t("beveiliging.titel")}
-        </CardTitle>
-        <CardDescription>{t("beveiliging.beschrijving")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3 text-sm">
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <LumioIcon name="shield" size="md" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("beveiliging.titel")}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("beveiliging.beschrijving")}</p>
+        </div>
+      </div>
+      <CardContent className="pt-5 space-y-3 text-sm">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-success" />
           <span>{t("beveiliging.sqlcipher")}</span>
@@ -163,13 +162,14 @@ export function AboutCard() {
   const t = useTranslations("instellingen");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Settings className="h-5 w-5" /> {t("overLumio.titel")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="text-sm text-muted-foreground">
+    <Card className="overflow-hidden">
+      <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+        <Settings className="h-5 w-5 text-primary shrink-0" />
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-primary leading-tight">{t("overLumio.titel")}</h3>
+        </div>
+      </div>
+      <CardContent className="pt-5 text-sm text-muted-foreground">
         <p>{t("overLumio.beschrijving")}</p>
         <p className="mt-2">{t("overLumio.juridisch")}</p>
       </CardContent>

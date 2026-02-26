@@ -17,7 +17,7 @@ import { useTranslations } from "next-intl";
 import { KeyRound, Plus, Trash2, Loader2, Unlock } from "lucide-react";
 
 export function HeirUnlockForm() {
-  const { setUnlocked, setReadOnly } = useAuthStore();
+  const { setUnlocked, setReadOnly, setProfileSelected } = useAuthStore();
   const [shares, setShares] = useState<string[]>([""]);
   const [error, setError] = useState<string | null>(null);
   const [reconstructing, setReconstructing] = useState(false);
@@ -41,16 +41,11 @@ export function HeirUnlockForm() {
 
     setReconstructing(true);
     try {
-      // Step 1: Reconstruct the password from shares
-      const result = await api.post<{ wachtwoord: string }>(
-        "/api/shamir/reconstrueer",
+      // Single-step: reconstruct + unlock server-side (S2-01 security fix)
+      await api.post(
+        "/api/shamir/reconstrueer-en-ontgrendel",
         { delen: validShares }
       );
-
-      // Step 2: Use the reconstructed password to unlock
-      await api.post("/api/auth/ontgrendel", {
-        wachtwoord: result.wachtwoord,
-      });
 
       // Erfgenaam-toegang is altijd read-only
       setReadOnly(true);
@@ -63,6 +58,7 @@ export function HeirUnlockForm() {
   };
 
   return (
+    <>
     <Card className="w-full max-w-lg">
       <CardHeader className="text-center">
         <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
@@ -134,5 +130,12 @@ export function HeirUnlockForm() {
         </div>
       </CardContent>
     </Card>
+    <button
+      onClick={() => setProfileSelected(false)}
+      className="mt-4 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
+    >
+      {t("anderProfiel")}
+    </button>
+    </>
   );
 }
