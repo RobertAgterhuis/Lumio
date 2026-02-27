@@ -18,6 +18,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { cn } from "@/lib/utils";
 import { HelpButton } from "@/components/help/HelpButton";
+import { WerkgeverCard } from "@/components/werkgever/WerkgeverCard";
 
 interface Eigenaar {
   id: string;
@@ -667,6 +668,8 @@ export default function EigenaarPage() {
           )}
         </CardContent>
       </Card>
+
+      <WerkgeverCard />
 
       {error && (
         <Alert variant="danger">

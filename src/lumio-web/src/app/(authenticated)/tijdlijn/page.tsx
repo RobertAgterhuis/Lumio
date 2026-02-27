@@ -131,6 +131,7 @@ export default function TijdlijnPage() {
   const { data: bankrekeningenData, isLoading: bankrekeningenLoading } = useDomainQuery<unknown[]>("boedel/bankrekeningen");
   const { data: eigenaarData, isLoading: eigenaarLoading } = useDomainQuery("eigenaar");
   const { data: digitaalAccountsData, isLoading: digitaalAccountsLoading } = useDomainQuery<unknown[]>("digitaal-bezit/accounts");
+  const { data: werkgeverData, isLoading: werkgeverLoading } = useDomainQuery<unknown[]>("werkgever");
 
   // S6-20: Mark tijdlijn as viewed on load
   useEffect(() => {
@@ -140,6 +141,8 @@ export default function TijdlijnPage() {
 
   // Maps stap key → fetched domain data
   const domainDataMap: Record<string, unknown> = {
+    werkgever: werkgeverData,
+    pensioenen: werkgeverData,
     huisarts: noodcontactenData,
     uitvaart: uitvaartData,
     donor: donorData,
@@ -159,6 +162,8 @@ export default function TijdlijnPage() {
 
   // Maps stap key → loading state
   const domainLoadingMap: Record<string, boolean> = {
+    werkgever: werkgeverLoading,
+    pensioenen: werkgeverLoading,
     huisarts: noodcontactenLoading,
     uitvaart: uitvaartLoading,
     donor: donorLoading,

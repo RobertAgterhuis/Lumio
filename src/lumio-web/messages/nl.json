@@ -468,6 +468,84 @@
       "noodcontactToegevoegd": "Notaris toegevoegd als noodcontact",
       "noodcontactToevoegenMislukt": "Noodcontact toevoegen mislukt"
     },
+    "werkgever": {
+      "titel": "Werkgever / Dienstverband",
+      "beschrijving": "Gegevens van uw werkgever of eigen onderneming.",
+      "toevoegen": "Toevoegen",
+      "bewerken": "Bewerken",
+      "laden": "Laden...",
+      "leeg": "U heeft nog geen werkgevergegevens toegevoegd.",
+      "verwijderen": "Verwijderen",
+      "verwijderd": "Werkgevergegevens verwijderd.",
+      "verwijderenMislukt": "Verwijderen mislukt.",
+      "zzpMelding": "Als ZZP'er zijn er specifieke afhandelingstaken: klanten informeren, KvK uitschrijven, BTW-aangifte afsluiten.",
+      "organisatie": {
+        "titel": "Organisatie",
+        "bedrijfsNaamVerplicht": "Bedrijfsnaam *",
+        "bedrijfsNaam": "Bedrijfsnaam",
+        "bedrijfsNaamPlaceholder": "bijv. Acme B.V.",
+        "adres": "Adres",
+        "adresPlaceholder": "Straat en huisnummer",
+        "postcode": "Postcode",
+        "postcodePlaceholder": "1234 AB",
+        "vestigingsplaats": "Vestigingsplaats",
+        "vestigingsplaatsPlaceholder": "bijv. Amsterdam",
+        "website": "Website",
+        "websitePlaceholder": "https://www.bedrijf.nl",
+        "telefoon": "Telefoon hoofdkantoor",
+        "telefoonPlaceholder": "010-1234567"
+      },
+      "dienstverband": {
+        "titel": "Dienstverband",
+        "isZzp": "Ik ben ZZP'er / zelfstandige",
+        "isZzpLabel": "Type",
+        "isZzpJa": "ZZP / Zelfstandige",
+        "kvkNummer": "KvK-nummer",
+        "kvkNummerPlaceholder": "12345678",
+        "functietitel": "Functietitel",
+        "functietitelPlaceholder": "bijv. Software Engineer",
+        "afdeling": "Afdeling",
+        "afdelingPlaceholder": "bijv. IT",
+        "startdatum": "Startdatum dienstverband"
+      },
+      "pensioenfonds": {
+        "titel": "Pensioenfonds",
+        "naam": "Naam pensioenfonds",
+        "naamPlaceholder": "bijv. ABP",
+        "telefoon": "Telefoon pensioenfonds",
+        "telefoonPlaceholder": "Telefoonnummer",
+        "email": "E-mail pensioenfonds",
+        "emailPlaceholder": "pensioen@fonds.nl"
+      },
+      "hrContact": {
+        "titel": "HR-contact",
+        "naam": "Naam HR-contact",
+        "naamPlaceholder": "bijv. Anna de Jong",
+        "telefoon": "Telefoon HR",
+        "telefoonPlaceholder": "Telefoonnummer",
+        "email": "E-mail HR",
+        "emailPlaceholder": "hr@bedrijf.nl"
+      },
+      "leidinggevende": {
+        "titel": "Leidinggevende",
+        "naam": "Naam leidinggevende",
+        "naamPlaceholder": "bijv. Pieter Visser",
+        "telefoon": "Telefoon leidinggevende",
+        "telefoonPlaceholder": "Telefoonnummer",
+        "email": "E-mail leidinggevende",
+        "emailPlaceholder": "leidinggevende@bedrijf.nl"
+      },
+      "notities": "Notities",
+      "notitiesPlaceholder": "Aanvullende informatie over uw werkgever of dienstverband...",
+      "dialog": {
+        "toevoegen": "Werkgever toevoegen",
+        "bewerken": "Werkgever bewerken",
+        "opslaan": "Opslaan",
+        "opgeslagen": "Werkgevergegevens opgeslagen.",
+        "opslaanMislukt": "Opslaan mislukt.",
+        "annuleren": "Annuleren"
+      }
+    },
     "ongeslagenWijzigingen": "Niet-opgeslagen wijzigingen"
   },
   "enums": {
@@ -602,10 +680,18 @@
       "selecteer": "Selecteer rol...",
       "vertrouwenspersoon": "Vertrouwenspersoon",
       "huisarts": "Huisarts",
+      "behandelendArts": "Behandelend arts / Specialist",
+      "tandarts": "Tandarts",
+      "thuiszorg": "Thuiszorg / Zorgverlener",
+      "leidinggevende": "Leidinggevende / Manager",
+      "hrAfdeling": "HR Afdeling / P&O",
+      "pensioencontact": "Pensioencontact",
+      "boekhouder": "Boekhouder / Accountant",
       "notaris": "Notaris",
-      "uitvaartondernemer": "Uitvaartondernemer",
       "advocaat": "Advocaat",
       "financieelAdviseur": "Financieel adviseur",
+      "uitvaartondernemer": "Uitvaartondernemer",
+      "kerkelijkContactpersoon": "Kerkelijk contactpersoon",
       "overig": "Overig"
     },
     "auditActie": {
@@ -1432,6 +1518,14 @@
     "toevoegen": "Toevoegen",
     "geenContacten": "Nog geen noodcontacten. Klik op Toevoegen.",
     "gedeeld": "Gedeeld",
+    "tabs": {
+      "alle": "Alle",
+      "persoonlijk": "Persoonlijk",
+      "medisch": "Medisch",
+      "professioneel": "Professioneel",
+      "juridisch": "Juridisch",
+      "uitvaart": "Uitvaart"
+    },
     "dialog": {
       "bewerken": "Noodcontact bewerken",
       "toevoegen": "Noodcontact toevoegen",
@@ -1452,6 +1546,10 @@
       "woonplaats": "Woonplaats",
       "instructies": "Instructies",
       "instructiesPlaceholder": "Speciale instructies voor nabestaanden bij contact met deze persoon...",
+      "bedrijfsNaam": "Bedrijfsnaam",
+      "bedrijfsNaamPlaceholder": "Naam van het bedrijf of organisatie",
+      "functie": "Functie / Titel",
+      "functiePlaceholder": "bijv. HR Manager, Notaris",
       "isGedeeld": "Gedeeld contact — ook relevant voor partner/andere profielen",
       "annuleren": "Annuleren",
       "opslaan": "Opslaan",
@@ -1601,7 +1699,10 @@
       "digitaalRich": "{teVerwijderen} te verwijderen, {overTeDragen} over te dragen{wallets, plural, =0 {} other {, {wallets} crypto wallet(s)}}",
       "boedelNetto": "Indicatieve netto boedelwaarde: {bedrag}",
       "aanvaarding": "{aantal, plural, one {# erfgenaam} other {# erfgenamen}}: {namen}",
-      "woning": "{aantal, plural, one {# woning} other {# woningen}} vastgelegd: {namen}"
+      "woning": "{aantal, plural, one {# woning} other {# woningen}} vastgelegd: {namen}",
+      "werkgever": "{naam}{hr}{pensioen}",
+      "werkgeverZzp": "ZZP: {naam} — klanten informeren + KvK uitschrijven",
+      "pensioenen": "Pensioenfonds: {naam}{telefoon}"
     },
     "legeStaat": {
       "uitvaart": "Leg uw uitvaartwensen vast zodat nabestaanden weten wat u wilt.",
@@ -1618,7 +1719,9 @@
       "digitaal": "Leg uw digitale accounts vast.",
       "erfgenamen": "Voeg erfgenamen toe aan uw nalatenschap.",
       "boedel": "Leg uw bezittingen en schulden vast.",
-      "woning": "Geen woning vastgelegd in de boedel."
+      "woning": "Geen woning vastgelegd in de boedel.",
+      "werkgever": "Vul uw werkgevergegevens in zodat nabestaanden weten wie te informeren.",
+      "pensioenen": "Vul het pensioenfonds in op de werkgever-kaart in uw profiel."
     }
   },
   "auditLog": {

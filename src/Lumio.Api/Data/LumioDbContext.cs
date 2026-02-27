@@ -19,6 +19,7 @@ public class LumioDbContext : DbContext
     public DbSet<Eigenaar> Eigenaren => Set<Eigenaar>();
     public DbSet<Erfgenaam> Erfgenamen => Set<Erfgenaam>();
     public DbSet<Noodcontact> Noodcontacten => Set<Noodcontact>();
+    public DbSet<Werkgever> Werkgevers => Set<Werkgever>();
     public DbSet<AuditLogEntry> AuditLog => Set<AuditLogEntry>();
     public DbSet<AfhandelingsItem> AfhandelingsItems => Set<AfhandelingsItem>();
     public DbSet<ActualisatieBevestiging> ActualisatieBevestigingen => Set<ActualisatieBevestiging>();

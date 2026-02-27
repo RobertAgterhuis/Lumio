@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogHeader,
@@ -21,8 +22,8 @@ import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
-import { useNoodcontacten, ROLLEN, ROL_KEYS } from "@/components/noodcontacten/useNoodcontacten";
-import type { Noodcontact } from "@/components/noodcontacten/useNoodcontacten";
+import { useNoodcontacten, ROLLEN, ROL_KEYS, PROFESSIONELE_ROLLEN, ROL_CATEGORIE, TABS } from "@/components/noodcontacten/useNoodcontacten";
+import type { Noodcontact, TabValue } from "@/components/noodcontacten/useNoodcontacten";
 import { HelpButton } from "@/components/help/HelpButton";
 import { HelpEmptyState } from "@/components/help/HelpEmptyState";
 
@@ -32,6 +33,9 @@ export default function NoodcontactenPage() {
 
   const {
     contacten,
+    filteredContacten,
+    activeTab,
+    setActiveTab,
     loading,
     gedeeldCount,
     dialogOpen,
@@ -122,9 +126,27 @@ export default function NoodcontactenPage() {
             </Button>
           </div>
         </div>
-        <CardContent className="pt-5">
-          <div className="space-y-2">
-              {contacten.map((c) => (
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabValue)}>
+          <div className="px-4 pt-3 pb-2 border-b border-black/5 dark:border-white/10">
+            <TabsList>
+              {TABS.map((tab) => {
+                const count = tab === "alle"
+                  ? contacten.length
+                  : contacten.filter((c) => (ROL_CATEGORIE[c.rol] ?? "persoonlijk") === tab).length;
+                if (tab !== "alle" && count === 0) return null;
+                return (
+                  <TabsTrigger key={tab} value={tab}>
+                    {t(`tabs.${tab}`)}
+                    {count > 0 && <Badge className="ml-1 text-xs">{count}</Badge>}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </div>
+          <TabsContent value={activeTab}>
+            <CardContent className="pt-5">
+              <div className="space-y-2">
+                {filteredContacten.map((c) => (
                 <div
                   key={c.id}
                   className="flex items-center justify-between rounded-md border p-3"
@@ -141,7 +163,9 @@ export default function NoodcontactenPage() {
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {c.relatie}
-                      {c.telefoon && ` — ${c.telefoon}`}
+                      {c.telefoon && (
+                        <> — <a href={`tel:${c.telefoon}`} className="hover:underline">{c.telefoon}</a></>
+                      )}
                       {c.email && ` — ${c.email}`}
                     </p>
                     {c.instructies && (
@@ -152,9 +176,12 @@ export default function NoodcontactenPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     {c.telefoon && (
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <a
+                        href={`tel:${c.telefoon}`}
+                        className="text-xs text-muted-foreground flex items-center gap-1 hover:underline"
+                      >
                         <Phone className="h-3 w-3" /> {c.telefoon}
-                      </span>
+                      </a>
                     )}
                     <Button
                       variant="ghost"
@@ -173,8 +200,10 @@ export default function NoodcontactenPage() {
                   </div>
                 </div>
               ))}
-            </div>
-        </CardContent>
+              </div>
+            </CardContent>
+          </TabsContent>
+        </Tabs>
       </Card>
       )}
 
@@ -221,6 +250,26 @@ export default function NoodcontactenPage() {
               ))}
             </Select>
           </div>
+          {PROFESSIONELE_ROLLEN.has(form.rol) && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("dialog.bedrijfsNaam")}</Label>
+                <Input
+                  value={form.bedrijfsNaam}
+                  onChange={(e) => setForm((f) => ({ ...f, bedrijfsNaam: e.target.value }))}
+                  placeholder={t("dialog.bedrijfsNaamPlaceholder")}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t("dialog.functie")}</Label>
+                <Input
+                  value={form.functie}
+                  onChange={(e) => setForm((f) => ({ ...f, functie: e.target.value }))}
+                  placeholder={t("dialog.functiePlaceholder")}
+                />
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t("dialog.telefoon")}</Label>

@@ -11,6 +11,9 @@ public record NoodcontactResponse(
     string? Woonplaats,
     string Rol,
     string? Instructies,
+    string? BedrijfsNaam,
+    string? Functie,
+    int Prioriteit,
     bool IsGedeeld);
 
 public record NoodcontactUpsertRequest(
@@ -23,6 +26,9 @@ public record NoodcontactUpsertRequest(
     string? Woonplaats,
     string Rol,
     string? Instructies,
+    string? BedrijfsNaam,
+    string? Functie,
+    int Prioriteit = 3,
     bool IsGedeeld = false);
 
 /// <summary>

@@ -3,6 +3,7 @@ using System;
 using Lumio.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lumio.Api.Migrations
 {
     [DbContext(typeof(LumioDbContext))]
-    partial class LumioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260227084047_AddWerkgever")]
+    partial class AddWerkgever
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
@@ -569,16 +572,10 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Adres")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("BedrijfsNaam")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("EigenaarId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Functie")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("GewijzigdOp")
@@ -596,9 +593,6 @@ namespace Lumio.Api.Migrations
 
                     b.Property<string>("Postcode")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Prioriteit")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Relatie")
                         .IsRequired()

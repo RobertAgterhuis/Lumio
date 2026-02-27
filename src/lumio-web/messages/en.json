@@ -468,6 +468,84 @@
       "noodcontactToegevoegd": "Notary added as emergency contact",
       "noodcontactToevoegenMislukt": "Failed to add emergency contact"
     },
+    "werkgever": {
+      "titel": "Employer / Employment",
+      "beschrijving": "Details of your employer or own business.",
+      "toevoegen": "Add",
+      "bewerken": "Edit",
+      "laden": "Loading...",
+      "leeg": "You have not yet added employer details.",
+      "verwijderen": "Delete",
+      "verwijderd": "Employer details deleted.",
+      "verwijderenMislukt": "Deletion failed.",
+      "zzpMelding": "As a freelancer there are specific tasks to handle: inform clients, deregister from Chamber of Commerce, close VAT returns.",
+      "organisatie": {
+        "titel": "Organisation",
+        "bedrijfsNaamVerplicht": "Company name *",
+        "bedrijfsNaam": "Company name",
+        "bedrijfsNaamPlaceholder": "e.g. Acme Ltd.",
+        "adres": "Address",
+        "adresPlaceholder": "Street and house number",
+        "postcode": "Postal code",
+        "postcodePlaceholder": "1234 AB",
+        "vestigingsplaats": "City",
+        "vestigingsplaatsPlaceholder": "e.g. Amsterdam",
+        "website": "Website",
+        "websitePlaceholder": "https://www.company.com",
+        "telefoon": "Head office phone",
+        "telefoonPlaceholder": "010-1234567"
+      },
+      "dienstverband": {
+        "titel": "Employment details",
+        "isZzp": "I am a freelancer / self-employed",
+        "isZzpLabel": "Type",
+        "isZzpJa": "Freelancer / Self-employed",
+        "kvkNummer": "Chamber of Commerce number",
+        "kvkNummerPlaceholder": "12345678",
+        "functietitel": "Job title",
+        "functietitelPlaceholder": "e.g. Software Engineer",
+        "afdeling": "Department",
+        "afdelingPlaceholder": "e.g. IT",
+        "startdatum": "Employment start date"
+      },
+      "pensioenfonds": {
+        "titel": "Pension fund",
+        "naam": "Pension fund name",
+        "naamPlaceholder": "e.g. ABP",
+        "telefoon": "Pension fund phone",
+        "telefoonPlaceholder": "Phone number",
+        "email": "Pension fund email",
+        "emailPlaceholder": "pension@fund.com"
+      },
+      "hrContact": {
+        "titel": "HR contact",
+        "naam": "HR contact name",
+        "naamPlaceholder": "e.g. Anna de Jong",
+        "telefoon": "HR phone",
+        "telefoonPlaceholder": "Phone number",
+        "email": "HR email",
+        "emailPlaceholder": "hr@company.com"
+      },
+      "leidinggevende": {
+        "titel": "Manager",
+        "naam": "Manager name",
+        "naamPlaceholder": "e.g. Peter Smith",
+        "telefoon": "Manager phone",
+        "telefoonPlaceholder": "Phone number",
+        "email": "Manager email",
+        "emailPlaceholder": "manager@company.com"
+      },
+      "notities": "Notes",
+      "notitiesPlaceholder": "Additional information about your employer or employment...",
+      "dialog": {
+        "toevoegen": "Add employer",
+        "bewerken": "Edit employer",
+        "opslaan": "Save",
+        "opgeslagen": "Employer details saved.",
+        "opslaanMislukt": "Save failed.",
+        "annuleren": "Cancel"
+      }
+    },
     "ongeslagenWijzigingen": "Unsaved changes"
   },
   "enums": {
@@ -602,10 +680,18 @@
       "selecteer": "Select role...",
       "vertrouwenspersoon": "Trusted person",
       "huisarts": "General practitioner",
+      "behandelendArts": "Attending physician / Specialist",
+      "tandarts": "Dentist",
+      "thuiszorg": "Home care / Caregiver",
+      "leidinggevende": "Manager / Supervisor",
+      "hrAfdeling": "HR Department",
+      "pensioencontact": "Pension contact",
+      "boekhouder": "Accountant",
       "notaris": "Notary",
-      "uitvaartondernemer": "Funeral director",
       "advocaat": "Lawyer",
       "financieelAdviseur": "Financial advisor",
+      "uitvaartondernemer": "Funeral director",
+      "kerkelijkContactpersoon": "Church contact",
       "overig": "Other"
     },
     "auditActie": {
@@ -1432,6 +1518,14 @@
     "toevoegen": "Add",
     "geenContacten": "No emergency contacts yet. Click Add.",
     "gedeeld": "Shared",
+    "tabs": {
+      "alle": "All",
+      "persoonlijk": "Personal",
+      "medisch": "Medical",
+      "professioneel": "Professional",
+      "juridisch": "Legal",
+      "uitvaart": "Funeral"
+    },
     "dialog": {
       "bewerken": "Edit emergency contact",
       "toevoegen": "Add emergency contact",
@@ -1452,6 +1546,10 @@
       "woonplaats": "City",
       "instructies": "Instructions",
       "instructiesPlaceholder": "Special instructions for next of kin when contacting this person...",
+      "bedrijfsNaam": "Organisation name",
+      "bedrijfsNaamPlaceholder": "Name of the company or organisation",
+      "functie": "Role / Title",
+      "functiePlaceholder": "e.g. HR Manager, Notary",
       "isGedeeld": "Shared contact — also relevant for partner/other profiles",
       "annuleren": "Cancel",
       "opslaan": "Save",
@@ -1601,7 +1699,10 @@
       "digitaalRich": "{teVerwijderen} to delete, {overTeDragen} to transfer{wallets, plural, =0 {} other {, {wallets} crypto wallet(s)}}",
       "boedelNetto": "Estimated net estate value: {bedrag}",
       "aanvaarding": "{aantal, plural, one {# heir} other {# heirs}}: {namen}",
-      "woning": "{aantal, plural, one {# property} other {# properties}} recorded: {namen}"
+      "woning": "{aantal, plural, one {# property} other {# properties}} recorded: {namen}",
+      "werkgever": "{naam}{hr}{pensioen}",
+      "werkgeverZzp": "Freelancer: {naam} — notify clients + deregister Chamber of Commerce",
+      "pensioenen": "Pension fund: {naam}{telefoon}"
     },
     "legeStaat": {
       "uitvaart": "Record your funeral wishes so next of kin know what you want.",
@@ -1618,7 +1719,9 @@
       "digitaal": "Record your digital accounts.",
       "erfgenamen": "Add heirs to your estate.",
       "boedel": "Record your assets and liabilities.",
-      "woning": "No property recorded in the estate."
+      "woning": "No property recorded in the estate.",
+      "werkgever": "Fill in your employer details so next of kin know who to notify.",
+      "pensioenen": "Fill in the pension fund on the employer card in your profile."
     }
   },
   "auditLog": {

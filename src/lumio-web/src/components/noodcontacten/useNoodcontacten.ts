@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
@@ -17,28 +18,87 @@ export interface Noodcontact {
   woonplaats?: string;
   rol: string;
   instructies?: string;
+  bedrijfsNaam?: string;
+  functie?: string;
+  prioriteit: number;
   isGedeeld: boolean;
 }
 
 export const ROLLEN = [
+  // Persoonlijk
   "Vertrouwenspersoon",
+  // Medisch
   "Huisarts",
+  "Behandelend arts / Specialist",
+  "Tandarts",
+  "Thuiszorg / Zorgverlener",
+  // Professioneel
+  "Leidinggevende / Manager",
+  "HR Afdeling / P&O",
+  "Pensioencontact",
+  "Boekhouder / Accountant",
+  // Juridisch & Financieel
   "Notaris",
-  "Uitvaartondernemer",
   "Advocaat",
   "Financieel adviseur",
+  // Uitvaart
+  "Uitvaartondernemer",
+  "Kerkelijk contactpersoon",
+  // Overig
   "Overig",
 ];
 
 export const ROL_KEYS: Record<string, string> = {
   "Vertrouwenspersoon": "vertrouwenspersoon",
   "Huisarts": "huisarts",
+  "Behandelend arts / Specialist": "behandelendArts",
+  "Tandarts": "tandarts",
+  "Thuiszorg / Zorgverlener": "thuiszorg",
+  "Leidinggevende / Manager": "leidinggevende",
+  "HR Afdeling / P&O": "hrAfdeling",
+  "Pensioencontact": "pensioencontact",
+  "Boekhouder / Accountant": "boekhouder",
   "Notaris": "notaris",
-  "Uitvaartondernemer": "uitvaartondernemer",
   "Advocaat": "advocaat",
   "Financieel adviseur": "financieelAdviseur",
+  "Uitvaartondernemer": "uitvaartondernemer",
+  "Kerkelijk contactpersoon": "kerkelijkContactpersoon",
   "Overig": "overig",
 };
+
+/** Rollen waarbij bedrijfsnaam en functie relevant zijn */
+export const PROFESSIONELE_ROLLEN = new Set([
+  "Leidinggevende / Manager",
+  "HR Afdeling / P&O",
+  "Pensioencontact",
+  "Boekhouder / Accountant",
+  "Notaris",
+  "Advocaat",
+  "Financieel adviseur",
+  "Uitvaartondernemer",
+  "Kerkelijk contactpersoon",
+]);
+
+export const ROL_CATEGORIE: Record<string, string> = {
+  "Vertrouwenspersoon": "persoonlijk",
+  "Huisarts": "medisch",
+  "Behandelend arts / Specialist": "medisch",
+  "Tandarts": "medisch",
+  "Thuiszorg / Zorgverlener": "medisch",
+  "Leidinggevende / Manager": "professioneel",
+  "HR Afdeling / P&O": "professioneel",
+  "Pensioencontact": "professioneel",
+  "Boekhouder / Accountant": "professioneel",
+  "Notaris": "juridisch",
+  "Advocaat": "juridisch",
+  "Financieel adviseur": "juridisch",
+  "Uitvaartondernemer": "uitvaart",
+  "Kerkelijk contactpersoon": "uitvaart",
+  "Overig": "persoonlijk",
+};
+
+export const TABS = ["alle", "persoonlijk", "medisch", "professioneel", "juridisch", "uitvaart"] as const;
+export type TabValue = typeof TABS[number];
 
 export const emptyNoodcontactForm = {
   naam: "",
@@ -50,6 +110,9 @@ export const emptyNoodcontactForm = {
   woonplaats: "",
   rol: "",
   instructies: "",
+  bedrijfsNaam: "",
+  functie: "",
+  prioriteit: 3,
   isGedeeld: false,
 };
 
@@ -58,6 +121,13 @@ export type NoodcontactForm = typeof emptyNoodcontactForm;
 export function useNoodcontacten() {
   const t = useTranslations("noodcontacten");
   const tf = useTranslations("feedback");
+
+  const searchParams = useSearchParams();
+  const validTabValues = [...TABS] as string[];
+  const initialTab = searchParams.get("tab") ?? "alle";
+  const [activeTab, setActiveTab] = useState<TabValue>(
+    validTabValues.includes(initialTab) ? (initialTab as TabValue) : "alle"
+  );
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -68,6 +138,10 @@ export function useNoodcontacten() {
 
   const { data: contacten = [], isLoading: loading, refetch } =
     useDomainQuery<Noodcontact[]>("noodcontacten");
+
+  const filteredContacten = activeTab === "alle"
+    ? contacten
+    : contacten.filter((c) => (ROL_CATEGORIE[c.rol] ?? "persoonlijk") === activeTab);
 
   const openDialog = (c?: Noodcontact) => {
     setError(null);
@@ -83,6 +157,9 @@ export function useNoodcontacten() {
         woonplaats: c.woonplaats ?? "",
         rol: c.rol,
         instructies: c.instructies ?? "",
+        bedrijfsNaam: c.bedrijfsNaam ?? "",
+        functie: c.functie ?? "",
+        prioriteit: c.prioriteit ?? 3,
         isGedeeld: c.isGedeeld,
       });
     } else {
@@ -106,6 +183,9 @@ export function useNoodcontacten() {
         woonplaats: form.woonplaats || null,
         rol: form.rol,
         instructies: form.instructies || null,
+        bedrijfsNaam: form.bedrijfsNaam || null,
+        functie: form.functie || null,
+        prioriteit: form.prioriteit,
         isGedeeld: form.isGedeeld,
       };
       if (editId) {
@@ -176,6 +256,9 @@ export function useNoodcontacten() {
   return {
     // Data
     contacten,
+    filteredContacten,
+    activeTab,
+    setActiveTab,
     loading,
     gedeeldCount,
     // Dialog state

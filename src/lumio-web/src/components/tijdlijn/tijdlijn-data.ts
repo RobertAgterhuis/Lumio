@@ -24,7 +24,7 @@ export const STAP_DOMAIN_CONFIGS: Record<string, TijdlijnStapConfig> = {
   /** Eerste 24 uur */
   huisarts: {
     endpoint: "noodcontacten",
-    href: "/noodcontacten",
+    href: "/noodcontacten?tab=medisch",
     hasData: (data) => {
       if (!Array.isArray(data)) return false;
       return (data as { rol?: string }[]).some(
@@ -117,6 +117,47 @@ export const STAP_DOMAIN_CONFIGS: Record<string, TijdlijnStapConfig> = {
   },
 
   /** Eerste week */
+  werkgever: {
+    endpoint: "werkgever",
+    href: "/eigenaar?sectie=werkgever",
+    hasData: (data) => {
+      if (!Array.isArray(data) || data.length === 0) return false;
+      return !!(data as { bedrijfsNaam?: string }[])[0]?.bedrijfsNaam;
+    },
+    isCompleted: (data) => Array.isArray(data) && (data as unknown[]).length > 0,
+    getSamenvatting: (data, t) => {
+      if (!Array.isArray(data) || data.length === 0) return t("legeStaat.werkgever");
+      const w = data[0] as {
+        bedrijfsNaam?: string;
+        isZzp?: boolean;
+        hrContactNaam?: string;
+        pensioenfondNaam?: string;
+      };
+      if (!w.bedrijfsNaam) return t("legeStaat.werkgever");
+      if (w.isZzp) return t("samenvatting.werkgeverZzp", { naam: w.bedrijfsNaam });
+      const hr = w.hrContactNaam ? ` — HR: ${w.hrContactNaam}` : "";
+      const pensioen = w.pensioenfondNaam ? ` — Pensioen: ${w.pensioenfondNaam}` : "";
+      return t("samenvatting.werkgever", { naam: w.bedrijfsNaam, hr, pensioen });
+    },
+  },
+
+  pensioenen: {
+    endpoint: "werkgever",
+    href: "/eigenaar?sectie=werkgever",
+    hasData: (data) => {
+      if (!Array.isArray(data) || data.length === 0) return false;
+      return !!(data as { pensioenfondNaam?: string }[])[0]?.pensioenfondNaam;
+    },
+    isCompleted: (_data) => false,
+    getSamenvatting: (data, t) => {
+      if (!Array.isArray(data) || data.length === 0) return t("legeStaat.pensioenen");
+      const w = data[0] as { pensioenfondNaam?: string; pensioenfondTelefoon?: string };
+      if (!w.pensioenfondNaam) return t("legeStaat.pensioenen");
+      const telefoon = w.pensioenfondTelefoon ? ` (${w.pensioenfondTelefoon})` : "";
+      return t("samenvatting.pensioenen", { naam: w.pensioenfondNaam, telefoon });
+    },
+  },
+
   notaris: {
     endpoint: "testament",
     href: "/testament",
@@ -163,7 +204,7 @@ export const STAP_DOMAIN_CONFIGS: Record<string, TijdlijnStapConfig> = {
 
   naasten: {
     endpoint: "noodcontacten",
-    href: "/noodcontacten",
+    href: "/noodcontacten?tab=persoonlijk",
     hasData: (data) => Array.isArray(data) && (data as unknown[]).length > 0,
     isCompleted: (data) => Array.isArray(data) && (data as unknown[]).length > 0,
     getSamenvatting: (data, t) => {
