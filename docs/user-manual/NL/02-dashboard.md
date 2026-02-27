@@ -15,7 +15,7 @@ Het dashboard bestaat uit meerdere zelfstandige widgets, elk over een ander aspe
 | **Voortgang** | Een voortgangsbalk die toont hoeveel procent van uw profiel is ingevuld, plus hoeveel domeinen zijn afgerond |
 | **Statistieken** | Een compacte samenvatting: aantal erfgenamen, digitale accounts, documenten, boedelitems, noodcontacten en een financieel overzicht (bezittingen, schulden, netto nalatenschap) |
 | **Gedetailleerde voortgang** | Per-domein overzicht van welke velden zijn ingevuld, elk domein met een eigen voortgangsbalk |
-| **Slimme suggesties** | Contextuele tips over ontbrekende of onvolledige informatie (bijv. "Uw notaris is niet als noodcontact opgegeven") |
+| **Slimme suggesties** | Contextuele tips over ontbrekende of onvolledige informatie. Lumio koppelt gegevens uit alle secties aan elkaar — bijv. “Uw notaris is niet als noodcontact opgegeven”, “Uw legitimatiebewijs verloopt over 45 dagen”, “De vertegenwoordiger in uw wilsverklaring is geen noodcontact” of “Uw donorkeuze is niet officieel geregistreerd bij het Donorregister”. Elke suggestie heeft een actieknop die u direct naar de relevante sectie brengt. |
 | **Meldingen** | Waarschuwingen en herinneringen, zoals een verouderde backup, verlopen documenten of niet-uitgereikte noodcodes |
 | **Backup-status** | Toont wanneer de laatste backup is gemaakt en of een nieuwe backup aanbevolen is |
 | **Aanbevolen volgende stap** | Markeert het eerste onvoltooide domein zodat u weet wat u het best als volgende invult |

@@ -32,6 +32,10 @@ Designate a person who can speak on your behalf if you are no longer able to do 
 | Email | Email address |
 | Address | Address of the representative |
 
+## Second Representative
+
+You can optionally designate a **second representative** as backup. The same fields apply. Having a second representative ensures that someone is always reachable when medical decisions need to be made.
+
 ## Dementia Clause
 
 A specific section for a **dementia clause**:
@@ -72,3 +76,15 @@ The **advance directive wizard** guides you through all steps:
 4. Dementia clause and treatment prohibitions
 5. Additional wishes
 6. Date of signing and overview
+
+## Smart Suggestions
+
+Based on your advance directive data, Lumio automatically generates suggestions on the dashboard:
+
+| Trigger | Suggestion | Rule |
+|---------|-----------|------|
+| Representative (or second representative) not listed as emergency contact | Add your representative as an emergency contact — required for immediate reachability (KNMG Guideline 2022) | BR-SUG-20 |
+| Advance directive is older than 5 years | Reconfirm your advance directive — the NVVE recommends doing this at least every 5 years | BR-SUG-21 |
+| GP named in advance directive not listed as emergency contact | Add your GP as an emergency contact with role ‘Huisarts’ | BR-SUG-22 |
+
+> **Tip**: Your GP and representatives must be directly reachable in medical emergencies. Keeping them as emergency contacts ensures Lumio can signal if contact details are missing.

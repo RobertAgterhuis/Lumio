@@ -65,3 +65,13 @@ Bij elke sectie kunt u een vrije notitie toevoegen via het notitie-icoon. Dit is
 ## Periodieke Actualisatie
 
 Lumio herinnert u periodiek om uw gegevens te controleren. Wanneer een domein toe is aan een review, verschijnt een banner bovenaan de pagina. Klik op **Bevestig actualisatie** om aan te geven dat de gegevens nog actueel zijn.
+
+## Slimme Suggesties
+
+Op basis van uw profielgegevens genereert Lumio automatisch suggesties op het dashboard:
+
+| Trigger | Suggestie | Regel |
+|---------|-----------|-------|
+| Legitimatiebewijs verloopt binnen 6 maanden of is al verlopen | Vernieuw uw legitimatiebewijs | BR-SUG-19 |
+| Gehuwd of geregistreerd partnerschap maar geen huwelijksgoederenregime vastgelegd | Leg uw huwelijkse voorwaarden vast in uw profiel | BR-SUG-17 |
+| Gescheiden maar ex-partner staat nog als erfgenaam met relatie Partner of Echtgenoot | Controleer uw erfgenamenlijst — klopt dit nog? | BR-SUG-18 |

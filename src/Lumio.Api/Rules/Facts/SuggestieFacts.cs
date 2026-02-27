@@ -1,3 +1,5 @@
+using Lumio.Api.Domain.Common;
+
 namespace Lumio.Api.Rules.Facts;
 
 /// <summary>
@@ -16,7 +18,15 @@ public record SuggestieFacts(
     // S5: Digitaal bezit suggesties
     bool HeeftAccountOverdragenZonderNaam,
     bool HeeftCryptoZonderSeedPhrase,
-    bool HeeftAccountZonderActie);
+    bool HeeftAccountZonderActie,
+    // Sprint 2: Profiel & Testament uitbreidingen
+    BurgerlijkeStaat BurgerlijkeStaat,
+    HuwelijksVoorwaarden HuwelijksVoorwaarden,
+    DateOnly? DatumHuwelijk,
+    DateOnly? LegitimatieGeldigTot,
+    // Sprint 3: Wilsverklaring & Donorregistratie
+    SuggestieWilsverklaringFact? Wilsverklaring,
+    SuggestieDonorFact? Donor);
 
 public record SuggestieErfgenaamFact(
     string VolledigeNaam,
@@ -31,4 +41,19 @@ public record SuggestieNoodcontactFact(
 public record SuggestieTestamentFact(
     string? NotarisNaam,
     List<string> BegunstigdeNamen,
-    List<string> ExecuteurNamen);
+    List<string> ExecuteurNamen,
+    // Sprint 2: Testament uitbreiding
+    DateOnly? DatumTestament,
+    bool HeeftCtrNummer);
+
+// Sprint 3: Wilsverklaring & Donorregistratie
+public record SuggestieWilsverklaringFact(
+    string? VertegenwoordigerNaam,
+    string? Vertegenwoordiger2Naam,
+    string? HuisartsNaam,
+    DateOnly? DatumOndertekening);
+
+public record SuggestieDonorFact(
+    string Keuze,
+    string? BeslisserNaam,
+    bool IsGeregistreerdBijDonorregister);

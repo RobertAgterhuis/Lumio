@@ -50,4 +50,41 @@
   <data name="CategoryBeneficiaryHeirLink" xml:space="preserve"><value>Begunstigde ↔ Erfgenaam</value></data>
   <data name="MessageBeneficiaryNotHeir" xml:space="preserve"><value>Begunstigde "{0}" in het testament is niet als erfgenaam geregistreerd.</value></data>
   <data name="SuggestionCheckBeneficiaryHeir" xml:space="preserve"><value>Controleer of deze persoon ook als erfgenaam moet worden toegevoegd.</value></data>
+  <data name="CategoryExecutorEmergencyLink" xml:space="preserve"><value>Executeur ↔ Noodcontact</value></data>
+  <data name="MessageExecutorNotEmergency" xml:space="preserve"><value>Executeur "{0}" is benoemd in het testament maar niet als noodcontact geregistreerd. Nabestaanden kunnen de executeur dan niet direct bereiken.</value></data>
+  <data name="CategoryEmergencyNoPhone" xml:space="preserve"><value>Noodcontact zonder telefoonnummer</value></data>
+  <data name="MessageEmergencyNoPhone" xml:space="preserve"><value>Noodcontact "{0}" heeft geen telefoonnummer. Zonder telefoonnummer is dit contact niet bereikbaar in een noodsituatie.</value></data>
+  <data name="SuggestionAddPhone" xml:space="preserve"><value>Voeg een telefoonnummer toe aan dit noodcontact.</value></data>
+  <data name="CategoryWillBeforeMarriage" xml:space="preserve"><value>Testament vóór huwelijk</value></data>
+  <data name="MessageWillBeforeMarriage" xml:space="preserve"><value>Uw testament is opgesteld vóór uw huwelijk of geregistreerd partnerschap. De inhoud sluit mogelijk niet meer aan bij uw huidige situatie (BW 4:46).</value></data>
+  <data name="SuggestionReviewWill" xml:space="preserve"><value>Raadpleeg uw notaris om het testament opnieuw te laten beoordelen.</value></data>
+  <data name="CategoryNoCtrNumber" xml:space="preserve"><value>Testament zonder CTR-nummer</value></data>
+  <data name="MessageNoCtrNumber" xml:space="preserve"><value>Er is een testament geregistreerd maar er ontbreekt een CTR-registratienummer. Via het Centraal Testamentenregister (CTR) kunnen nabestaanden het testament opvragen na overlijden.</value></data>
+  <data name="SuggestionAskNotaryCtr" xml:space="preserve"><value>Vraag uw notaris naar het CTR-registratienummer en voeg dit toe aan uw profiel.</value></data>
+  <data name="CategoryNoMarriageRegime" xml:space="preserve"><value>Huwelijksgoederenregime niet vastgelegd</value></data>
+  <data name="MessageNoMarriageRegime" xml:space="preserve"><value>U bent gehuwd of heeft een geregistreerd partnerschap, maar het huwelijksgoederenregime is niet ingevuld. Dit regime bepaalt de omvang van uw nalatenschap (BW 1:94).</value></data>
+  <data name="SuggestionAddMarriageRegime" xml:space="preserve"><value>Vul uw huwelijkse voorwaarden in bij uw profiel.</value></data>
+  <data name="CategoryDivorcedHeir" xml:space="preserve"><value>Ex-partner als erfgenaam</value></data>
+  <data name="MessageDivorcedHeir" xml:space="preserve"><value>U staat geregistreerd als gescheiden, maar "{0}" staat nog als erfgenaam met de relatie partner of echtgenoot. Controleer of dit nog steeds uw wens is.</value></data>
+  <data name="SuggestionReviewHeirs" xml:space="preserve"><value>Ga naar Erfgenamen en controleer of de erfgenamenlijst actueel is.</value></data>
+  <data name="CategoryIdExpiry" xml:space="preserve"><value>Legitimatiebewijs verloopt</value></data>
+  <data name="MessageIdExpired" xml:space="preserve"><value>Uw legitimatiebewijs is verlopen. Een geldig legitimatiebewijs is vereist bij notariële akten en bancaire procedures na overlijden.</value></data>
+  <data name="MessageIdExpiringSoon" xml:space="preserve"><value>Uw legitimatiebewijs verloopt over {0} dagen. Zorg dat dit tijdig is vernieuwd voor notariële akten en bancaire procedures.</value></data>
+  <data name="SuggestionRenewId" xml:space="preserve"><value>Vernieuw uw legitimatiebewijs en werk de vervaldatum bij in uw profiel.</value></data>
+  <!-- Sprint 3: Wilsverklaring & Donorregistratie -->
+  <data name="CategoryWilsverklaringVertegenwoordiger" xml:space="preserve"><value>Wilsverklaring: vertegenwoordiger niet als noodcontact</value></data>
+  <data name="MessageWilsverklaringVertegenwoordiger" xml:space="preserve"><value>De vertegenwoordiger '{0}' uit uw wilsverklaring staat niet als noodcontact geregistreerd. Bij een medische noodsituatie moet uw vertegenwoordiger direct bereikbaar zijn (KNMG Richtlijn 2022).</value></data>
+  <data name="SuggestionAddWilsVertegenwoordiger" xml:space="preserve"><value>Voeg uw vertegenwoordiger toe als noodcontact of pas de naam aan zodat deze overeenkomt.</value></data>
+  <data name="CategoryWilsverklaringOud" xml:space="preserve"><value>Wilsverklaring verouderd</value></data>
+  <data name="MessageWilsverklaringOud" xml:space="preserve"><value>Uw wilsverklaring is meer dan 5 jaar oud (ondertekend op {0}). Het NVVE adviseert uw wilsverklaring ten minste elke 5 jaar te herbevestigen.</value></data>
+  <data name="SuggestionHerbevestigWilsverklaring" xml:space="preserve"><value>Herbevestig uw wilsverklaring in de sectie Wilsverklaring.</value></data>
+  <data name="CategoryHuisartsWilsverklaring" xml:space="preserve"><value>Huisarts wilsverklaring niet als noodcontact</value></data>
+  <data name="MessageHuisartsWilsverklaring" xml:space="preserve"><value>Uw behandelend huisarts '{0}' uit uw wilsverklaring staat niet als noodcontact. Uw behandelend arts moet uw wilsverklaring snel kunnen raadplegen.</value></data>
+  <data name="SuggestionAddHuisartsNoodcontact" xml:space="preserve"><value>Voeg uw huisarts toe als noodcontact met de rol 'Huisarts'.</value></data>
+  <data name="CategoryDonorBeslisser" xml:space="preserve"><value>Donor: beslisser niet als noodcontact</value></data>
+  <data name="MessageDonorBeslisser" xml:space="preserve"><value>U heeft '{0}' aangewezen als beslisser bij uw donorregistratie, maar deze persoon staat niet als noodcontact. Bij orgaandonatie is directe bereikbaarheid vereist (Wet orgaandonatie art. 9).</value></data>
+  <data name="SuggestionAddDonorBeslisser" xml:space="preserve"><value>Voeg uw aangewezen beslisser toe als noodcontact.</value></data>
+  <data name="CategoryDonorNietOfficieel" xml:space="preserve"><value>Donorwens officieel registreren</value></data>
+  <data name="MessageDonorNietOfficieel" xml:space="preserve"><value>Uw donorwens is geregistreerd in Lumio maar staat niet officieel geregistreerd bij het Donorregister. Alleen een officiële registratie heeft juridische geldigheid.</value></data>
+  <data name="SuggestionRegistreerBijDonorregister" xml:space="preserve"><value>Registreer uw donorwens op donorregister.nl voor officiële juridische geldigheid.</value></data>
 </root>

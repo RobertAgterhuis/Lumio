@@ -50,4 +50,41 @@
   <data name="CategoryBeneficiaryHeirLink" xml:space="preserve"><value>Beneficiary ↔ Heir</value></data>
   <data name="MessageBeneficiaryNotHeir" xml:space="preserve"><value>Beneficiary "{0}" in the will is not registered as an heir.</value></data>
   <data name="SuggestionCheckBeneficiaryHeir" xml:space="preserve"><value>Check whether this person should also be added as an heir.</value></data>
+  <data name="CategoryExecutorEmergencyLink" xml:space="preserve"><value>Executor ↔ Emergency contact</value></data>
+  <data name="MessageExecutorNotEmergency" xml:space="preserve"><value>Executor "{0}" is named in the will but not registered as an emergency contact. Heirs will be unable to reach the executor directly.</value></data>
+  <data name="CategoryEmergencyNoPhone" xml:space="preserve"><value>Emergency contact without phone number</value></data>
+  <data name="MessageEmergencyNoPhone" xml:space="preserve"><value>Emergency contact "{0}" has no phone number. Without a phone number this contact cannot be reached in an emergency.</value></data>
+  <data name="SuggestionAddPhone" xml:space="preserve"><value>Add a phone number to this emergency contact.</value></data>
+  <data name="CategoryWillBeforeMarriage" xml:space="preserve"><value>Will predates marriage</value></data>
+  <data name="MessageWillBeforeMarriage" xml:space="preserve"><value>Your will was drawn up before your marriage or registered partnership. Its contents may no longer reflect your current situation (Civil Code art. 4:46).</value></data>
+  <data name="SuggestionReviewWill" xml:space="preserve"><value>Consult your notary to have the will reviewed.</value></data>
+  <data name="CategoryNoCtrNumber" xml:space="preserve"><value>Will without CTR number</value></data>
+  <data name="MessageNoCtrNumber" xml:space="preserve"><value>A will is registered but no Central Will Register (CTR) reference number has been recorded. Heirs can use this number to retrieve the will after your death.</value></data>
+  <data name="SuggestionAskNotaryCtr" xml:space="preserve"><value>Ask your notary for the CTR registration number and add it to your profile.</value></data>
+  <data name="CategoryNoMarriageRegime" xml:space="preserve"><value>Marriage property regime not recorded</value></data>
+  <data name="MessageNoMarriageRegime" xml:space="preserve"><value>You are married or have a registered partnership, but the marriage property regime has not been recorded. This regime determines the size of your estate (Civil Code art. 1:94).</value></data>
+  <data name="SuggestionAddMarriageRegime" xml:space="preserve"><value>Fill in your marriage conditions in your profile.</value></data>
+  <data name="CategoryDivorcedHeir" xml:space="preserve"><value>Ex-partner listed as heir</value></data>
+  <data name="MessageDivorcedHeir" xml:space="preserve"><value>You are registered as divorced, but "{0}" is still listed as an heir with the relationship partner or spouse. Please verify whether this still reflects your wishes.</value></data>
+  <data name="SuggestionReviewHeirs" xml:space="preserve"><value>Go to Heirs and verify that the list is up to date.</value></data>
+  <data name="CategoryIdExpiry" xml:space="preserve"><value>Identity document expiring</value></data>
+  <data name="MessageIdExpired" xml:space="preserve"><value>Your identity document has expired. A valid identity document is required for notarial deeds and banking procedures after death.</value></data>
+  <data name="MessageIdExpiringSoon" xml:space="preserve"><value>Your identity document expires in {0} days. Make sure it is renewed in time for notarial deeds and banking procedures.</value></data>
+  <data name="SuggestionRenewId" xml:space="preserve"><value>Renew your identity document and update the expiry date in your profile.</value></data>
+  <!-- Sprint 3: Wilsverklaring & Donorregistratie -->
+  <data name="CategoryWilsverklaringVertegenwoordiger" xml:space="preserve"><value>Advance directive: representative not listed as emergency contact</value></data>
+  <data name="MessageWilsverklaringVertegenwoordiger" xml:space="preserve"><value>The representative '{0}' listed in your advance directive is not registered as an emergency contact. In a medical emergency your representative must be immediately reachable (KNMG Guideline 2022).</value></data>
+  <data name="SuggestionAddWilsVertegenwoordiger" xml:space="preserve"><value>Add your representative as an emergency contact or update the name so it matches.</value></data>
+  <data name="CategoryWilsverklaringOud" xml:space="preserve"><value>Advance directive outdated</value></data>
+  <data name="MessageWilsverklaringOud" xml:space="preserve"><value>Your advance directive is more than 5 years old (signed on {0}). The NVVE recommends reconfirming your advance directive at least every 5 years.</value></data>
+  <data name="SuggestionHerbevestigWilsverklaring" xml:space="preserve"><value>Reconfirm your advance directive in the Advance Directive section.</value></data>
+  <data name="CategoryHuisartsWilsverklaring" xml:space="preserve"><value>GP from advance directive not listed as emergency contact</value></data>
+  <data name="MessageHuisartsWilsverklaring" xml:space="preserve"><value>Your treating GP '{0}' listed in your advance directive is not an emergency contact. Your treating doctor should be able to consult your advance directive quickly.</value></data>
+  <data name="SuggestionAddHuisartsNoodcontact" xml:space="preserve"><value>Add your GP as an emergency contact with the role 'Huisarts'.</value></data>
+  <data name="CategoryDonorBeslisser" xml:space="preserve"><value>Donor registration: decision-maker not listed as emergency contact</value></data>
+  <data name="MessageDonorBeslisser" xml:space="preserve"><value>You have designated '{0}' as the decision-maker in your donor registration, but this person is not listed as an emergency contact. Immediate reachability is required in organ donation situations (Organ Donation Act art. 9).</value></data>
+  <data name="SuggestionAddDonorBeslisser" xml:space="preserve"><value>Add your designated decision-maker as an emergency contact.</value></data>
+  <data name="CategoryDonorNietOfficieel" xml:space="preserve"><value>Register donor wish officially</value></data>
+  <data name="MessageDonorNietOfficieel" xml:space="preserve"><value>Your donor wish is recorded in Lumio but has not been officially registered with the Donor Register. Only an official registration has legal validity.</value></data>
+  <data name="SuggestionRegistreerBijDonorregister" xml:space="preserve"><value>Register your donor wish at donorregister.nl for official legal validity.</value></data>
 </root>

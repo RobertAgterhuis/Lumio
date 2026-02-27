@@ -59,3 +59,15 @@ De QR-code bevat:
 ### Gebruik
 
 Print de QR-code en bewaar deze bij uw identiteitsbewijs, in uw portemonnee, of op een andere plek waar hulpverleners het kunnen vinden. Iedereen met een smartphone kan de QR-code scannen om uw noodcontacten te zien.
+
+## Slimme Suggesties
+
+Lumio analyseert uw noodcontacten in relatie tot gegevens in andere secties en genereert suggesties op het dashboard:
+
+| Trigger | Suggestie | Regel |
+|---------|-----------|-------|
+| Noodcontact heeft geen telefoonnummer | Voeg een telefoonnummer toe — noodcontacten moeten bereikbaar zijn | BR-SUG-14 |
+| Executeur (uit testament) niet als noodcontact geregistreerd | Voeg uw executeur toe als noodcontact | BR-SUG-13 |
+| Vertegenwoordiger (uit wilsverklaring) niet als noodcontact geregistreerd | Voeg uw vertegenwoordiger toe als noodcontact (KNMG Richtlijn 2022) | BR-SUG-20 |
+| Huisarts uit wilsverklaring niet als noodcontact geregistreerd | Voeg uw huisarts toe met rol ‘Huisarts’ | BR-SUG-22 |
+| Aangewezen donor-beslisser niet als noodcontact geregistreerd | Voeg de beslisser toe als noodcontact (Wet orgaandonatie art. 9) | BR-SUG-23 |

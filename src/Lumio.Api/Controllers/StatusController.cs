@@ -1,5 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
+using Lumio.Api.Domain.DonorRegistration;
+using Lumio.Api.Domain.EuthanasiaDirective;
 using Lumio.Api.Rules;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Facts;
@@ -621,7 +623,9 @@ public class StatusController : ControllerBase
     {
         var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null)
-            return new SuggestieFacts(false, null, [], [], null, null, 0, false, false, false, false);
+            return new SuggestieFacts(false, null, [], [], null, null, 0, false, false, false, false,
+                BurgerlijkeStaat.Ongehuwd, HuwelijksVoorwaarden.NietVanToepassing, null, null,
+                null, null);
 
         var erfgenamen = await db.Erfgenamen.Where(e => e.EigenaarId == eigenaar.Id).ToListAsync();
         var noodcontacten = await db.Noodcontacten.Where(n => n.EigenaarId == eigenaar.Id).ToListAsync();
@@ -636,7 +640,9 @@ public class StatusController : ControllerBase
             testamentFact = new SuggestieTestamentFact(
                 testament.NotarisNaam,
                 begunstigden.Select(b => b.Naam).ToList(),
-                executeurs.Select(e => e.Naam).ToList());
+                executeurs.Select(e => e.Naam).ToList(),
+                testament.DatumTestament,
+                !string.IsNullOrEmpty(testament.CTR_Nummer));
         }
 
         string FullName(Erfgenaam e) =>
@@ -662,6 +668,20 @@ public class StatusController : ControllerBase
         var heeftAccountZonderActie = await db.DigitaleAccounts
             .AnyAsync(a => a.EigenaarId == eigenaar.Id && string.IsNullOrEmpty(a.GewensteActie));
 
+        // Sprint 3: Wilsverklaring & Donorregistratie
+        var wilsverklaring = await db.Wilsverklaringen
+            .FirstOrDefaultAsync(w => w.EigenaarId == eigenaar.Id);
+        SuggestieWilsverklaringFact? wilsverklaringFact = wilsverklaring is null ? null :
+            new(wilsverklaring.VertegenwoordigerNaam,
+                wilsverklaring.Vertegenwoordiger2Naam,
+                wilsverklaring.Huisarts,
+                wilsverklaring.DatumOndertekening);
+
+        var donor = await db.DonorRegistraties
+            .FirstOrDefaultAsync(d => d.EigenaarId == eigenaar.Id);
+        SuggestieDonorFact? donorFact = donor is null ? null :
+            new(donor.Keuze, donor.BeslisserNaam, donor.IsGeregistreerdBijDonorregister);
+
         return new SuggestieFacts(
             true,
             eigenaar.Notaris,
@@ -673,6 +693,12 @@ public class StatusController : ControllerBase
             heeftHypotheekZonderBezit,
             heeftAccountOverdragenZonderNaam,
             heeftCryptoZonderSeedPhrase,
-            heeftAccountZonderActie);
+            heeftAccountZonderActie,
+            eigenaar.BurgerlijkeStaat,
+            eigenaar.HuwelijksVoorwaarden,
+            eigenaar.DatumHuwelijk,
+            eigenaar.LegitimatieGeldigTot,
+            wilsverklaringFact,
+            donorFact);
     }
 }

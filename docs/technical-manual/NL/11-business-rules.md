@@ -97,6 +97,8 @@ Het centrale configuratiebestand met alle bedrijfsregels en limieten.
 | `zoekMinLengte` | 2 | Minimaal zoektekst lengte |
 | `fotoMaxMB` | 10 | Maximum foto-upload |
 | `documentMaxMB` | 50 | Maximum document-upload |
+| `legitimatieVerloopWaarschuwingDagen` | 180 | Waarschuw wanneer legitimatiebewijs binnen dit aantal dagen verloopt |
+| `wilsverklaringHerbevestigingDagen` | 1825 | Stel herbevestiging voor als wilsverklaring ouder is dan dit aantal dagen (5 jaar) |
 
 #### `veldLengtes` — Veldlengtelimieten
 
@@ -170,18 +172,75 @@ Genereert waarschuwingen en herinneringen:
 | `NooitGeactualiseerd` | Profiel nooit bijgewerkt |
 | `ActualisatieVerlopen` | Actualisatie langer dan 90 dagen geleden |
 
-### SuggestiesWorkflow (4 regels)
+### SuggestiesWorkflow (16 regels)
 
-Genereert automatische suggesties:
+Genereert automatische suggesties via een **hybride strategie**: de originele 4 booleaanse regels draaien via de RulesEngine; de 12 iteratiegebaseerde BR-SUG regels draaien altijd via code (fallback-veilig).
+
+#### Engine-regels — lumio-workflows.json (4)
 
 | Regel | Suggestie |
-|-------|-----------|
-| `NotarisInconsistentie` | Notaris gegevens niet consistent |
+|-------|----------|
+| `NotarisInconsistentie` | Notarisgegevens niet consistent |
 | `NotarisGeenNoodcontact` | Notaris niet als noodcontact opgegeven |
 | `UitvaartondernemerGeenNoodcontact` | Uitvaartondernemer niet als noodcontact |
 | `GeenHuisarts` | Geen huisarts ingevuld |
 
-Alle regels gebruiken `LambdaExpression` met `SuccessEvent` die JSON-payloads bevatten.
+Alle engine-regels gebruiken `LambdaExpression` met `SuccessEvent` die JSON-payloads bevatten.
+
+#### Code-regels — SuggestieService.cs (12)
+
+Deze regels itereren over lijsten of vereisen meerveldige logica die niet in de RulesEngine DSL uit te drukken is.
+
+| BR-code | Trigger | Rechtsbasis |
+|---------|---------|-------------|
+| `BR-SUG-13` | Executeur in testament maar niet als noodcontact | — |
+| `BR-SUG-14` | Noodcontact heeft geen telefoonnummer | — |
+| `BR-SUG-15` | Testament dateert vóór huwelijk of geregistreerd partnerschap | BW art. 4:46 |
+| `BR-SUG-16` | Testament aanwezig maar geen CTR-registratienummer | Wet op het Notarisambt art. 38a |
+| `BR-SUG-17` | Gehuwd / geregistreerd partnerschap maar geen huwelijksgoederenregime vastgelegd | BW art. 1:94 |
+| `BR-SUG-18` | Gescheiden maar ex-partner nog als erfgenaam (relatie Partner / Echtgenoot) | BW art. 4:52 |
+| `BR-SUG-19` | Legitimatiebewijs verloopt binnen 180 dagen of al verlopen | — |
+| `BR-SUG-20` | Vertegenwoordiger(s) wilsverklaring niet als noodcontact | KNMG Richtlijn 2022 |
+| `BR-SUG-21` | Wilsverklaring ouder dan 5 jaar (1825 dagen) | NVVE-advies |
+| `BR-SUG-22` | Huisarts uit wilsverklaring niet als noodcontact | — |
+| `BR-SUG-23` | Donor-beslisser (\"specifiek persoon\") niet als noodcontact | Wet orgaandonatie art. 9 |
+| `BR-SUG-24` | Donorkeuze vastgelegd in Lumio maar niet officieel geregistreerd bij Donorregister | — |
+
+##### SuggestieFacts input record
+
+```csharp
+public record SuggestieFacts(
+    bool HeeftEigenaar, string? EigenaarNotaris,
+    List<SuggestieErfgenaamFact> Erfgenamen,
+    List<SuggestieNoodcontactFact> Noodcontacten,
+    SuggestieTestamentFact? Testament,
+    string? UitvaartOndernemer,
+    int AantalVerzekeringenZonderBegunstigde,
+    bool HeeftHypotheekZonderBezit,
+    bool HeeftAccountOverdragenZonderNaam,
+    bool HeeftCryptoZonderSeedPhrase,
+    bool HeeftAccountZonderActie,
+    BurgerlijkeStaat BurgerlijkeStaat,           // Sprint 2
+    HuwelijksVoorwaarden HuwelijksVoorwaarden,   // Sprint 2
+    DateOnly? DatumHuwelijk,                     // Sprint 2
+    DateOnly? LegitimatieGeldigTot,              // Sprint 2
+    SuggestieWilsverklaringFact? Wilsverklaring, // Sprint 3
+    SuggestieDonorFact? Donor);                  // Sprint 3
+
+public record SuggestieTestamentFact(
+    string? NotarisNaam, List<string> BegunstigdeNamen,
+    List<string> ExecuteurNamen,
+    DateOnly? DatumTestament,   // Sprint 2
+    bool HeeftCtrNummer);       // Sprint 2
+
+public record SuggestieWilsverklaringFact( // Sprint 3
+    string? VertegenwoordigerNaam, string? Vertegenwoordiger2Naam,
+    string? HuisartsNaam, DateOnly? DatumOndertekening);
+
+public record SuggestieDonorFact(          // Sprint 3
+    string Keuze, string? BeslisserNaam,
+    bool IsGeregistreerdBijDonorregister);
+```
 
 ## Engine-First met Fallback
 

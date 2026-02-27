@@ -15,15 +15,18 @@
 
 /* ── Headings (also styled via React component className) ── */
 .help-prose h1 {
-  @apply mb-4 mt-8 text-2xl font-bold text-foreground first:mt-0;
+  @apply mb-4 mt-8 text-2xl font-bold first:mt-0;
+  color: #2C4A52;
 }
 
 .help-prose h2 {
-  @apply mb-3 mt-6 text-xl font-semibold text-foreground;
+  @apply mb-3 mt-6 text-xl font-semibold;
+  color: #355E68;
 }
 
 .help-prose h3 {
-  @apply mb-2 mt-5 text-lg font-semibold text-foreground;
+  @apply mb-2 mt-5 text-lg font-semibold;
+  color: #4F7A83;
 }
 
 .help-prose h4 {
@@ -52,6 +55,10 @@
   @apply text-sm;
 }
 
+.help-prose li::marker {
+  color: #4A7A4D;
+}
+
 /* ── Ordered lists — Step cards ────────────────────────────── */
 /* ol elements are wrapped in <StepList> by the React renderer  */
 
@@ -66,7 +73,8 @@
 
 .help-step-list > li::before {
   content: counter(step-counter);
-  @apply inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold leading-none;
+  @apply inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-primary-foreground text-xs font-semibold leading-none;
+  background-color: #4A7A4D;
 }
 
 /* ── Horizontal rule ────────────────────────────────────────── */

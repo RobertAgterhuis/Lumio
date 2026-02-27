@@ -67,3 +67,13 @@ When creating a new profile, you can choose to load **example data**. This fills
 ## Periodic Actualization
 
 Lumio recommends periodically reviewing your profile data. If data has not been updated for more than 6 months, a **"Review needed"** status appears on the dashboard.
+
+## Smart Suggestions
+
+Based on your profile data, Lumio automatically generates suggestions on the dashboard:
+
+| Trigger | Suggestion | Rule |
+|---------|-----------|------|
+| Identity document expires within 6 months or has already expired | Renew your identity document | BR-SUG-19 |
+| Married or registered partnership but no marriage property regime recorded | Record your marriage property regime (prenuptial conditions) | BR-SUG-17 |
+| Divorced but ex-partner still listed as heir with relationship Partner or Spouse | Review your heirs list — verify whether this still reflects your wishes | BR-SUG-18 |

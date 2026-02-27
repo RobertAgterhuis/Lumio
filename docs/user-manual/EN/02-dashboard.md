@@ -15,7 +15,7 @@ The dashboard consists of several independent widgets, each covering a different
 | **Progress** | A progress bar showing what percentage of your profile has been filled in, plus how many domains are completed |
 | **Statistics** | A compact summary: number of heirs, digital accounts, documents, estate items, emergency contacts, and a financial overview (assets, debts, net estate) |
 | **Detailed Progress** | Per-domain breakdown of which fields have been filled in, each domain with its own progress bar |
-| **Smart Suggestions** | Contextual tips about missing or incomplete information (e.g., "Your notary is not listed as an emergency contact") |
+| **Smart Suggestions** | Contextual tips about missing or incomplete information. Lumio cross-references data across all sections — e.g., “Your notary is not listed as an emergency contact”, “Your identity document expires in 45 days”, “Your advance directive representative is not an emergency contact”, or “Your donor wish is not officially registered”. Each suggestion has an action button that navigates directly to the relevant section. |
 | **Notifications** | Warnings and reminders such as outdated backup, expired documents, or undistributed emergency codes |
 | **Backup Status** | Shows when the last backup was made and whether a new backup is recommended |
 | **Recommended Next Step** | Highlights the first incomplete domain so you know what to fill in next |

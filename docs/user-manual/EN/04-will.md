@@ -78,4 +78,14 @@ The **will wizard** guides you through recording your will step by step:
 4. Executor
 5. Overview and check
 
+## Smart Suggestions
+
+Based on your will data, Lumio automatically generates suggestions on the dashboard:
+
+| Trigger | Suggestion | Rule |
+|---------|-----------|------|
+| Will present but no CTR registration number recorded | Ask your notary for the Central Testament Register (CTR) number | BR-SUG-16 |
+| Will date is earlier than your marriage or partnership date | Review your will — it may not reflect your current marital situation (BW art. 4:46) | BR-SUG-15 |
+| Executor designated but not listed as emergency contact | Add your executor as an emergency contact for direct reachability | BR-SUG-13 |
+
 Each step contains a progress indicator and clear instructions.

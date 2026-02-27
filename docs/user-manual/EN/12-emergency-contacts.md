@@ -69,3 +69,15 @@ The QR emergency card contains:
 - Save it on your phone
 - The QR code can be scanned with any standard QR scanner
 - Scanning shows the recorded emergency information
+
+## Smart Suggestions
+
+Lumio analyses your emergency contacts in relation to data in other sections and generates suggestions on the dashboard:
+
+| Trigger | Suggestion | Rule |
+|---------|-----------|------|
+| Emergency contact has no phone number | Add a phone number — emergency contacts must be reachable | BR-SUG-14 |
+| Executor (from will) not listed as emergency contact | Add your executor as an emergency contact | BR-SUG-13 |
+| Representative (from advance directive) not listed as emergency contact | Add your representative as an emergency contact (KNMG Guideline 2022) | BR-SUG-20 |
+| GP named in advance directive not listed as emergency contact | Add your GP with role ‘Huisarts’ | BR-SUG-22 |
+| Designated donor decision-maker not listed as emergency contact | Add the decision-maker as an emergency contact (Organ Donation Act art. 9) | BR-SUG-23 |

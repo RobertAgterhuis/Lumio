@@ -63,3 +63,13 @@ Lumio bewaart automatisch **snapshots** van uw testamentgegevens. Hiermee kunt u
 ## Testament Wizard
 
 Via het dashboard kunt u ook de **Testament Wizard** starten — een stapsgewijze begeleiding die u door alle testamentvelden leidt.
+
+## Slimme Suggesties
+
+Op basis van uw testamentgegevens genereert Lumio automatisch suggesties op het dashboard:
+
+| Trigger | Suggestie | Regel |
+|---------|-----------|-------|
+| Testament aanwezig maar geen CTR-registratienummer vastgelegd | Vraag uw notaris naar het CTR-nummer (Centraal Testamentenregister) | BR-SUG-16 |
+| Datum testament ligt vóór uw huwelijks- of partnerschapsdatum | Controleer uw testament — het weerspiegelt mogelijk niet uw huidige situatie (BW art. 4:46) | BR-SUG-15 |
+| Executeur benoemd maar niet als noodcontact geregistreerd | Voeg uw executeur toe als noodcontact voor directe bereikbaarheid | BR-SUG-13 |

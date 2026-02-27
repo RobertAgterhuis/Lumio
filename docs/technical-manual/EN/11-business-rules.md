@@ -97,6 +97,8 @@ The central configuration file with all business rules and limits.
 | `zoekMinLengte` | 2 | Minimum search text length |
 | `fotoMaxMB` | 10 | Maximum photo upload |
 | `documentMaxMB` | 50 | Maximum document upload |
+| `legitimatieVerloopWaarschuwingDagen` | 180 | Warn when ID document expires within this many days |
+| `wilsverklaringHerbevestigingDagen` | 1825 | Suggest reconfirmation if advance directive is older than this many days (5 years) |
 
 #### `veldLengtes` — Field Length Limits
 
@@ -170,9 +172,11 @@ Generates warnings and reminders:
 | `NooitGeactualiseerd` | Profile never updated |
 | `ActualisatieVerlopen` | Actualization more than 90 days ago |
 
-### SuggestiesWorkflow (4 rules)
+### SuggestiesWorkflow (16 rules)
 
-Generates automatic suggestions:
+Generates automatic suggestions using a **hybrid strategy**: the original 4 boolean rules run through the RulesEngine; the 12 iteration-based BR-SUG rules always run via code (fallback-safe).
+
+#### Engine rules — lumio-workflows.json (4)
 
 | Rule | Suggestion |
 |------|------------|
@@ -181,7 +185,62 @@ Generates automatic suggestions:
 | `UitvaartondernemerGeenNoodcontact` | Funeral director not listed as emergency contact |
 | `GeenHuisarts` | No GP filled in |
 
-All rules use `LambdaExpression` with `SuccessEvent` containing JSON payloads.
+All engine rules use `LambdaExpression` with `SuccessEvent` containing JSON payloads.
+
+#### Code rules — SuggestieService.cs (12)
+
+These rules iterate over lists or require multi-field logic that cannot be expressed in the RulesEngine DSL.
+
+| BR-code | Trigger | Legal basis |
+|---------|---------|-------------|
+| `BR-SUG-13` | Executor named in will but not listed as emergency contact | — |
+| `BR-SUG-14` | Emergency contact has no phone number | — |
+| `BR-SUG-15` | Will pre-dates marriage or registered partnership | BW art. 4:46 |
+| `BR-SUG-16` | Will exists but has no CTR registration number | Wet op het Notarisambt art. 38a |
+| `BR-SUG-17` | Married / registered partnership but no marriage property regime recorded | BW art. 1:94 |
+| `BR-SUG-18` | Divorced but ex-partner still listed as heir (relationship Partner / Spouse) | BW art. 4:52 |
+| `BR-SUG-19` | Identity document expires within 180 days or already expired | — |
+| `BR-SUG-20` | Advance directive representative(s) not listed as emergency contact | KNMG Guideline 2022 |
+| `BR-SUG-21` | Advance directive older than 5 years (1825 days) | NVVE advice |
+| `BR-SUG-22` | GP named in advance directive not listed as emergency contact | — |
+| `BR-SUG-23` | Donor decision-maker ("specific person") not listed as emergency contact | Wet orgaandonatie art. 9 |
+| `BR-SUG-24` | Donor wish recorded in Lumio but not officially registered with Donor Register | — |
+
+##### SuggestieFacts input record
+
+```csharp
+public record SuggestieFacts(
+    bool HeeftEigenaar, string? EigenaarNotaris,
+    List<SuggestieErfgenaamFact> Erfgenamen,
+    List<SuggestieNoodcontactFact> Noodcontacten,
+    SuggestieTestamentFact? Testament,
+    string? UitvaartOndernemer,
+    int AantalVerzekeringenZonderBegunstigde,
+    bool HeeftHypotheekZonderBezit,
+    bool HeeftAccountOverdragenZonderNaam,
+    bool HeeftCryptoZonderSeedPhrase,
+    bool HeeftAccountZonderActie,
+    BurgerlijkeStaat BurgerlijkeStaat,       // Sprint 2
+    HuwelijksVoorwaarden HuwelijksVoorwaarden, // Sprint 2
+    DateOnly? DatumHuwelijk,                 // Sprint 2
+    DateOnly? LegitimatieGeldigTot,          // Sprint 2
+    SuggestieWilsverklaringFact? Wilsverklaring, // Sprint 3
+    SuggestieDonorFact? Donor);              // Sprint 3
+
+public record SuggestieTestamentFact(
+    string? NotarisNaam, List<string> BegunstigdeNamen,
+    List<string> ExecuteurNamen,
+    DateOnly? DatumTestament,   // Sprint 2
+    bool HeeftCtrNummer);       // Sprint 2
+
+public record SuggestieWilsverklaringFact( // Sprint 3
+    string? VertegenwoordigerNaam, string? Vertegenwoordiger2Naam,
+    string? HuisartsNaam, DateOnly? DatumOndertekening);
+
+public record SuggestieDonorFact(          // Sprint 3
+    string Keuze, string? BeslisserNaam,
+    bool IsGeregistreerdBijDonorregister);
+```
 
 ## Engine-First with Fallback
 
