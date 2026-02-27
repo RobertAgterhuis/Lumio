@@ -7,11 +7,14 @@ using Lumio.Api.Middleware;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Pdf;
+using Lumio.Api.Services.Pdf.Data;
+using Lumio.Api.Services.Pdf.Generators;
 using Lumio.Api.Services.Security;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.FileProviders;
+using QuestPDF.Drawing;
 using QuestPDF.Infrastructure;
 
 // Initialize SQLCipher provider
@@ -21,6 +24,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // QuestPDF community license
 QuestPDF.Settings.License = LicenseType.Community;
+
+// Register DM Sans font weights so QuestPDF can use them across all generators
+foreach (var weight in new[] { "Regular", "Medium", "SemiBold", "Bold" })
+    FontManager.RegisterFontFromEmbeddedResource($"Lumio.Api.Resources.Fonts.DMSans-{weight}.ttf");
 
 // Determine data directory (relative to exe for USB portability)
 var dataDir = Environment.GetEnvironmentVariable("LUMIO_DATA_DIR")
@@ -60,7 +67,26 @@ builder.Services.AddSingleton<IMasterPasswordService, MasterPasswordService>();
 builder.Services.AddSingleton<IShamirService, ShamirService>();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<ILumioPdfService, LumioPdfService>();
+// PDF generators (scoped — depend on scoped IStringLocalizer + PdfDataLoader)
+builder.Services.AddScoped<PdfDataLoader>();
+builder.Services.AddScoped<TestamentGenerator>();
+builder.Services.AddScoped<EuthanasieGenerator>();
+builder.Services.AddScoped<DonorGenerator>();
+builder.Services.AddScoped<DigitaalBezitGenerator>();
+builder.Services.AddScoped<BoedelGenerator>();
+builder.Services.AddScoped<UitvaartGenerator>();
+builder.Services.AddScoped<DocumentenGenerator>();
+builder.Services.AddScoped<CompleetGenerator>();
+builder.Services.AddScoped<NoodkaartGenerator>();
+builder.Services.AddScoped<TestamentConceptGenerator>();
+builder.Services.AddScoped<WilsverklaringGenerator>();
+builder.Services.AddScoped<NoodprocedureGenerator>();
+builder.Services.AddScoped<BoedelbeschrijvingGenerator>();
+builder.Services.AddScoped<ErfgenaamGenerator>();
+builder.Services.AddScoped<ExecuteurRapportGenerator>();
+builder.Services.AddScoped<NotarisGenerator>();
 builder.Services.AddSingleton<IAuditService, AuditService>();
+builder.Services.AddSingleton<Lumio.Api.Services.Video.VideoStorageService>();
 
 // EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>

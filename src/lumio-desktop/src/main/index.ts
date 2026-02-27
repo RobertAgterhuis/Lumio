@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu, nativeTheme, session, shell } from "electron";
+import { app, globalShortcut, ipcMain, Menu, nativeTheme, session, shell } from "electron";
 import * as path from "path";
 import { startBackend, stopBackend } from "./sidecar";
 import { createMainWindow, getMainWindow, applyTitleBarOverlay } from "./window";
@@ -9,6 +9,12 @@ import { buildApplicationMenu } from "./menu";
 import { showSplash, closeSplash, showSplashError } from "./splash";
 import { createTray, destroyTray } from "./tray";
 import { setupThemeSync } from "./theme";
+import {
+  loadWhitelabelConfig,
+  applyWhitelabelCSS,
+  applyWhitelabelTitleBar,
+  registerWhitelabelIpcHandlers,
+} from "./whitelabel";
 
 // Set to true before calling app.quit() so the close-to-tray handler lets
 // windows actually close during the quit sequence.
@@ -47,6 +53,15 @@ app.whenReady().then(async () => {
   showSplash();
 
   try {
+    // === WHITELABEL: load optional company branding config =================
+    // Must be the very first action so every subsequent step can use the config.
+    // Returns null when no config file exists (standard Lumio build).
+    const whitelabelConfig = loadWhitelabelConfig();
+    // Register IPC handlers so the preload overlay can retrieve logo/message
+    // data synchronously via sendSync before any page JS runs.
+    registerWhitelabelIpcHandlers();
+    // =========================================================================
+
     // === IDENTITY: correct app name on all platforms ===
     app.setName("Lumio");
     // Windows: ensures correct taskbar grouping and notification icon
@@ -200,15 +215,39 @@ app.whenReady().then(async () => {
     // closing the splash just before the main window appears.
     const mainWin = createMainWindow();
 
+    // Register F12 and Ctrl+Shift+I to open DevTools for diagnostics.
+    // globalShortcut is the only way to intercept these keys in a packaged app
+    // where the default Chromium accelerators are stripped.
+    const openDevTools = () => {
+      const win = getMainWindow();
+      if (!win) return;
+      if (win.webContents.isDevToolsOpened()) {
+        win.webContents.closeDevTools();
+      } else {
+        win.webContents.openDevTools({ mode: "detach" });
+      }
+    };
+    globalShortcut.register("F12", openDevTools);
+    globalShortcut.register("CommandOrControl+Shift+I", openDevTools);
+
+    // === WHITELABEL CSS: inject brand-color overrides on every page load ===
+    applyWhitelabelCSS(mainWin, whitelabelConfig);
+    // =========================================================================
+
     // === THEME: forward OS theme-change events into the renderer ===
     // Also updates the Windows title-bar overlay colours on theme changes.
+    // After the teal default is applied, re-apply the whitelabel brand color
+    // so OS theme changes never revert the title bar to Lumio teal.
     setupThemeSync(getMainWindow, (isDark) => {
       applyTitleBarOverlay(getMainWindow(), isDark);
+      applyWhitelabelTitleBar(getMainWindow(), whitelabelConfig);
     });
 
     // Windows: apply themed title-bar overlay immediately after window creation.
     // (setupThemeSync only fires on future OS theme changes, not on first load.)
     applyTitleBarOverlay(mainWin);
+    // Override with whitelabel brand color if configured (must be after above).
+    applyWhitelabelTitleBar(mainWin, whitelabelConfig);
 
     // Hide to tray when the user clicks the window's close (X) button.
     // The window is only truly destroyed during a real app quit (isAppQuitting).
@@ -253,6 +292,7 @@ app.on("window-all-closed", () => {
 app.on("before-quit", () => {
   // Allow the close event to proceed without preventDefault during quit
   isAppQuitting = true;
+  globalShortcut.unregisterAll();
   stopAutoBackupScheduler();
   stopBackend();
   destroyTray();

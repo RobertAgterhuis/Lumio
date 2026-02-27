@@ -1762,6 +1762,23 @@
     "nuvBeschrijving": "Exporteer uitvaartgegevens in het sectorstandaard formaat van de Nederlandse Uitvaart Verzorgers (NUV). Geschikt voor directe import in uitvaartsoftware.",
     "nuvDownloaden": "NUV XML downloaden",
     "pdfDownloaden": "PDF downloaden",
+    "geenData": "Geen data",
+    "beschrijvingen": {
+      "testament": "Uw testamentaire wil: erfgenamen, executeurs en begunstigden.",
+      "euthanasie": "Wilsverklaring euthanasie met behandelwensen en vertegenwoordiger.",
+      "donor": "Uw donorregistratie en orgaankeuzevoorkeur.",
+      "digitaal-bezit": "Online accounts, crypto-wallets en wachtwoorden.",
+      "boedel": "Overzicht van bezittingen, bankrekeningen, verzekeringen en schulden.",
+      "uitvaart": "Uitvaartwensen: type, locatie, ceremonie en verzekering.",
+      "documenten": "Opgeslagen documenten en bestanden in uw dossier.",
+      "noodkaart": "Compact overzicht van noodcontacten voor eerste hulp.",
+      "testament-concept": "Wettelijk geformatteerd testamentconcept ter voorbereiding op de notaris.",
+      "wilsverklaring": "Officieel geformatteerde wilsverklaring euthanasie.",
+      "noodprocedure": "Stappenplan en instructies voor nabestaanden bij overlijden.",
+      "boedelbeschrijving": "Formele beschrijving van de nalatenschap voor notaris of executeur.",
+      "executeur-rapport": "Overzichtsrapport met alle relevante gegevens voor de executeur.",
+      "notaris": "Samenvatting dossier als begeleidende brief voor de notaris."
+    },
     "opties": {
       "testament": "Testament",
       "euthanasie": "Wilsverklaring Euthanasie",
@@ -3219,7 +3236,7 @@
     "bewerken": "Bewerken",
     "verwijderen": "Verwijderen",
     "onbekendeOntvanger": "Onbekend",
-    "verwijderenBevestig": "Weet u zeker dat u \"{{titel}}\" wilt verwijderen?",
+    "verwijderenBevestig": "Weet u zeker dat u \"{titel}\" wilt verwijderen?",
     "verwijderenBevestigTitel": "Video verwijderen",
     "annuleren": "Annuleren",
     "legeStaat": {
@@ -3266,6 +3283,9 @@
       "nietBeschikbaar": "Opname niet beschikbaar in deze browser.",
       "httpsVereist": "Camera-opname vereist een beveiligde verbinding (HTTPS)."
     },
-    "aantalGebruikt": "{gebruikt} van {max} videoboodschappen gebruikt"
+    "aantalGebruikt": "{gebruikt} van {max} videoboodschappen gebruikt",
+    "opslagGebruikt": "{gebruikt} van {max} opslagruimte in gebruik",
+    "erfgenaamToegangInfo": "Erfgenamen zien hun videoboodschappen pas wanneer zij de applicatie openen met noodcodes na uw overlijden. Uw video's zijn beveiligd.",
+    "erfgenaamModus": "U bekijkt videoboodschappen in erfgenaam-modus. Hieronder ziet u alle opgenomen video's."
   }
 }

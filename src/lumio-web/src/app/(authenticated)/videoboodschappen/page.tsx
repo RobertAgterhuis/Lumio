@@ -28,16 +28,19 @@ import {
   HardDrive,
   Video,
   Loader2,
+  ShieldAlert,
 } from "lucide-react";
 import { useVideoboodschappen } from "@/components/videoboodschappen/useVideoboodschappen";
 import { VideoboodschapDialog } from "@/components/videoboodschappen/VideoboodschapDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { toast } from "@/stores/toastStore";
 import { getApiUrl } from "@/lib/api-client";
+import { useAuthStore } from "@/stores/authStore";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
 import type { Videoboodschap, VideoboodschapFormData } from "@/components/videoboodschappen/types";
 import { HelpButton } from "@/components/help/HelpButton";
 import { HelpEmptyState } from "@/components/help/HelpEmptyState";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 function formatBytes(bytes: number): string {
   if (bytes >= 1_048_576) return `${(bytes / 1_048_576).toFixed(1)} MB`;
@@ -55,6 +58,7 @@ function formatDuration(seconds?: number): string {
 
 export default function VideoboodschappenPage() {
   const t = useTranslations("videoboodschappen");
+  const { isReadOnly } = useAuthStore();
 
   const {
     videoboodschappen,
@@ -68,7 +72,12 @@ export default function VideoboodschappenPage() {
   } = useVideoboodschappen();
 
   const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
-  const { data: limietData } = useDomainQuery<{ maxAantal: number }>("videoboodschappen/limiet");
+  const { data: limietData } = useDomainQuery<{
+    maxAantal: number;
+    maxDuurSeconden: number;
+    maxBytes: number;
+    gebruiktBytes: number;
+  }>("videoboodschappen/limiet");
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Videoboodschap | undefined>(undefined);
@@ -159,20 +168,56 @@ export default function VideoboodschappenPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t("titel")}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t("subtitel")}</p>
-          {limietData && (
-            <p className="text-xs text-muted-foreground mt-1">
-              {t("aantalGebruikt", { gebruikt: videoboodschappen.length, max: limietData.maxAantal })}
-            </p>
+          {limietData && limietData.maxBytes > 0 && !isReadOnly && (
+            <div className="mt-2">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-muted-foreground">
+                  {t("opslagGebruikt", {
+                    gebruikt: formatBytes(limietData.gebruiktBytes),
+                    max: formatBytes(limietData.maxBytes),
+                  })}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {Math.min(100, Math.round((limietData.gebruiktBytes / limietData.maxBytes) * 100))}%
+                </span>
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{
+                    width: `${Math.min(100, (limietData.gebruiktBytes / limietData.maxBytes) * 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
           )}
         </div>
-        <Button onClick={openNew} className="gap-2 shrink-0">
-          <Plus className="h-4 w-4" />
-          {t("nieuw")}
-        </Button>
+        {!isReadOnly && (
+          <Button onClick={openNew} className="gap-2 shrink-0">
+            <Plus className="h-4 w-4" />
+            {t("nieuw")}
+          </Button>
+        )}
         <HelpButton className="shrink-0" />
       </div>
 
       <SectieNotitie sectie="videoboodschappen" />
+
+      {/* Eigenaar-informatiebalk: wanneer erfgenamen de video's zien */}
+      {!isReadOnly && (
+        <Alert variant="info">
+          <ShieldAlert className="h-4 w-4" />
+          <AlertDescription>{t("erfgenaamToegangInfo")}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Erfgenaam-modus info banner */}
+      {isReadOnly && (
+        <Alert variant="info">
+          <ShieldAlert className="h-4 w-4" />
+          <AlertDescription>{t("erfgenaamModus")}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Loading */}
       {isLoading && (
@@ -183,12 +228,19 @@ export default function VideoboodschappenPage() {
 
       {/* Empty state */}
       {!isLoading && videoboodschappen.length === 0 && (
-        <HelpEmptyState
-          chapterSlug="videoboodschappen"
-          domeinLabel="videoboodschappen"
-          addLabel={t("legeStaat.actie")}
-          onAdd={openNew}
-        />
+        isReadOnly ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
+            <Video className="h-10 w-10 text-muted-foreground" />
+            <p className="text-muted-foreground text-sm">{t("legeStaat.beschrijving")}</p>
+          </div>
+        ) : (
+          <HelpEmptyState
+            chapterSlug="videoboodschappen"
+            domeinLabel="videoboodschappen"
+            addLabel={t("legeStaat.actie")}
+            onAdd={openNew}
+          />
+        )
       )}
 
       {/* Video list */}
@@ -246,29 +298,33 @@ export default function VideoboodschappenPage() {
                       >
                         <Play className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => openEdit(item)}
-                        title={t("bewerken")}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive hover:text-destructive"
-                        onClick={() => handleDelete(item)}
-                        disabled={isDeleting}
-                        title={t("verwijderen")}
-                      >
-                        {isDeleting ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-3.5 w-3.5" />
-                        )}
-                      </Button>
+                      {!isReadOnly && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => openEdit(item)}
+                            title={t("bewerken")}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive"
+                            onClick={() => handleDelete(item)}
+                            disabled={isDeleting}
+                            title={t("verwijderen")}
+                          >
+                            {isDeleting ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-3.5 w-3.5" />
+                            )}
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
@@ -292,38 +348,42 @@ export default function VideoboodschappenPage() {
         </div>
       )}
 
-      {/* Create / edit dialog */}
-      <VideoboodschapDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        editing={editingItem}
-        onSave={handleSave}
-        uploading={uploading}
-        uploadProgress={uploadProgress}
-        saving={saving}
-        erfgenamen={erfgenamen}
-      />
+      {/* Create / edit dialog — verborgen in erfgenaam-modus */}
+      {!isReadOnly && (
+        <VideoboodschapDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          editing={editingItem}
+          onSave={handleSave}
+          uploading={uploading}
+          uploadProgress={uploadProgress}
+          saving={saving}
+          erfgenamen={erfgenamen}
+        />
+      )}
 
       {/* Video player dialog */}
       {playingItem && (
         <Dialog open={playerOpen} onOpenChange={setPlayerOpen}>
-          <DialogHeader className="pb-2">
+          <DialogHeader className="pb-2 shrink-0">
             <DialogTitle>{playingItem.titel}</DialogTitle>
           </DialogHeader>
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video
-            key={playingItem.id}
-            src={getApiUrl(`/api/videoboodschappen/${playingItem.id}/stream`)}
-            controls
-            autoPlay
-            className="w-full rounded-lg bg-black"
-            style={{ maxHeight: 400 }}
-          />
-          {playingItem.beschrijving && (
-            <p className="text-sm text-muted-foreground pt-2">
-              {playingItem.beschrijving}
-            </p>
-          )}
+          <div className="overflow-y-auto">
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video
+              key={playingItem.id}
+              src={getApiUrl(`/api/videoboodschappen/${playingItem.id}/stream`)}
+              controls
+              autoPlay
+              className="w-full rounded-lg bg-black"
+              style={{ maxHeight: 400 }}
+            />
+            {playingItem.beschrijving && (
+              <p className="text-sm text-muted-foreground pt-2">
+                {playingItem.beschrijving}
+              </p>
+            )}
+          </div>
         </Dialog>
       )}
 

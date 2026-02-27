@@ -10,3 +10,4 @@ export {
   TaalkeuzeCard,
   ActualisatieCard,
 } from "./PreferencesCards";
+export { SortableInstellingenCard } from "./SortableInstellingenCard";

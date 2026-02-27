@@ -18,3 +18,31 @@ The application is built with privacy and ease of use at its core: no cloud, ful
 
 - **Technical documentation:** see [`docs/technical-manual/EN`](docs/technical-manual/EN)
 - **User manual:** see [`docs/user-manual/EN`](docs/user-manual/EN)
+
+---
+
+## 🏢 Corporate Distribution (Whitelabel)
+
+Lumio supports corporate whitelabel builds, allowing organisations to distribute
+a branded version to their employees. The web app and API are never altered —
+branding is applied entirely within the Electron shell.
+
+What can be customised:
+
+- Brand color palette (CSS variables, injected at runtime)
+- App icon, window title, product name, and installer `appId`
+- Startup splash screen color and logo
+- In-app company logo overlay (every screen, bottom-center)
+- Dashboard footer message
+
+**Guide:** [`tools/whitelabel/README.md`](tools/whitelabel/README.md)
+
+**Quick start:**
+
+```powershell
+# Build a whitelabeled installer for your company config
+.\tools\build.ps1 -Whitelabel ".\tools\whitelabel\configs\<company-slug>"
+```
+
+A reference implementation is available at
+[`tools/whitelabel/configs/example-corp/`](tools/whitelabel/configs/example-corp/).

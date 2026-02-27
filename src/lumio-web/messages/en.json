@@ -1762,6 +1762,23 @@
     "nuvBeschrijving": "Export funeral data in the sector standard format of the Dutch Funeral Directors Association (NUV). Suitable for direct import into funeral software.",
     "nuvDownloaden": "Download NUV XML",
     "pdfDownloaden": "Download PDF",
+    "geenData": "No data",
+    "beschrijvingen": {
+      "testament": "Your testamentary will: heirs, executors and beneficiaries.",
+      "euthanasie": "Euthanasia advance directive with treatment wishes and representative.",
+      "donor": "Your donor registration and organ donation preferences.",
+      "digitaal-bezit": "Online accounts, crypto wallets and passwords.",
+      "boedel": "Overview of assets, bank accounts, insurances and debts.",
+      "uitvaart": "Funeral wishes: type, location, ceremony and insurance.",
+      "documenten": "Saved documents and files in your dossier.",
+      "noodkaart": "Compact overview of emergency contacts for first responders.",
+      "testament-concept": "Legally formatted will draft in preparation for the notary.",
+      "wilsverklaring": "Officially formatted euthanasia advance directive.",
+      "noodprocedure": "Step-by-step instructions for next of kin upon death.",
+      "boedelbeschrijving": "Formal estate description for the notary or executor.",
+      "executeur-rapport": "Summary report with all relevant data for the executor.",
+      "notaris": "Dossier summary as a cover letter for the notary."
+    },
     "opties": {
       "testament": "Will",
       "euthanasie": "Euthanasia Advance Directive",
@@ -3219,7 +3236,7 @@
     "bewerken": "Edit",
     "verwijderen": "Delete",
     "onbekendeOntvanger": "Unknown",
-    "verwijderenBevestig": "Are you sure you want to delete \"{{titel}}\"?",
+    "verwijderenBevestig": "Are you sure you want to delete \"{titel}\"?",
     "verwijderenBevestigTitel": "Delete video",
     "annuleren": "Cancel",
     "legeStaat": {
@@ -3266,6 +3283,9 @@
       "nietBeschikbaar": "Recording not available in this browser.",
       "httpsVereist": "Camera recording requires a secure connection (HTTPS)."
     },
-    "aantalGebruikt": "{gebruikt} of {max} video messages used"
+    "aantalGebruikt": "{gebruikt} of {max} video messages used",
+    "opslagGebruikt": "{gebruikt} of {max} storage used",
+    "erfgenaamToegangInfo": "Heirs will see their video messages when they open the application using emergency codes after your passing. Your videos are secured in the meantime.",
+    "erfgenaamModus": "You are viewing video messages in heir mode. The recorded videos are shown below."
   }
 }

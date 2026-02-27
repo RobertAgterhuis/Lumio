@@ -36,4 +36,11 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Embedded fonts: DM Sans Regular / Medium / SemiBold / Bold -->
+    <EmbeddedResource Include="Resources\Fonts\*.ttf" />
+    <!-- Embedded images: Lumio logo -->
+    <EmbeddedResource Include="Resources\Images\*.png" />
+  </ItemGroup>
+
 </Project>

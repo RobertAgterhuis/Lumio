@@ -2,6 +2,7 @@ using Lumio.Api.Data;
 using Lumio.Api.Domain.VideoMessages;
 using Lumio.Api.Dtos.VideoMessages;
 using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Services.Video;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -10,7 +11,10 @@ namespace Lumio.Api.Controllers;
 
 [ApiController]
 [Route("api/videoboodschappen")]
-public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOptions> limieten) : ControllerBase
+public class VideoboodschappenController(
+    LumioDbContext db,
+    IOptions<LimietenOptions> limieten,
+    VideoStorageService videoStorage) : ControllerBase
 {
     private readonly LimietenOptions _limieten = limieten.Value;
 
@@ -63,11 +67,24 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
     }
 
     // ── GET /api/videoboodschappen/limiet ───────────────────────────────────
-    /// <summary>Returns the configured maximum number of video messages allowed.</summary>
+    /// <summary>Returns the configured limits and current usage totals.</summary>
     [HttpGet("limiet")]
-    public IActionResult GetLimiet()
+    public async Task<IActionResult> GetLimiet()
     {
-        return Ok(new { maxAantal = _limieten.VideoMaxAantal, maxDuurSeconden = _limieten.VideoMaxDuurSeconden });
+        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
+        long gebruiktBytes = 0;
+        if (eigenaar is not null)
+            gebruiktBytes = await db.Videoboodschappen
+                .Where(v => v.EigenaarId == eigenaar.Id)
+                .SumAsync(v => (long?)v.BestandsGrootte) ?? 0;
+
+        return Ok(new
+        {
+            maxAantal = _limieten.VideoMaxAantal,
+            maxDuurSeconden = _limieten.VideoMaxDuurSeconden,
+            maxBytes = _limieten.VideoMaxBytes,
+            gebruiktBytes,
+        });
     }
 
     // ── POST /api/videoboodschappen/uploaden ────────────────────────────────
@@ -115,10 +132,6 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         if (!bestand.ContentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
             return BadRequest(new { error = "Alleen videobestanden zijn toegestaan." });
 
-        // Read binary content
-        using var ms = new MemoryStream();
-        await bestand.CopyToAsync(ms);
-
         // Parse recipient erfgenaam IDs
         var ontvIds = new List<Guid>();
         if (!string.IsNullOrWhiteSpace(ontvangerIds))
@@ -133,8 +146,14 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
             }
         }
 
+        // Persist video file to disk (no longer stored in SQLite)
+        var newId = Guid.NewGuid();
+        var extensie = VideoStorageService.ExtensieVanContentType(bestand.ContentType);
+        var bestandsPad = await videoStorage.OpslaanAsync(newId, bestand.OpenReadStream(), extensie);
+
         var item = new Videoboodschap
         {
+            Id = newId,
             EigenaarId = eigenaar.Id,
             Titel = titel.Trim(),
             Beschrijving = string.IsNullOrWhiteSpace(beschrijving) ? null : beschrijving.Trim(),
@@ -142,7 +161,8 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
             ContentType = bestand.ContentType,
             BestandsGrootte = bestand.Length,
             DuurSeconden = duurSeconden,
-            Blob = new VideoboodschapBlob { Inhoud = ms.ToArray() },
+            BestandsPad = bestandsPad,
+            // Blob intentionally null — new uploads go to disk
         };
 
         // Validate and link recipients
@@ -169,6 +189,26 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
     [HttpGet("{id:guid}/stream")]
     public async Task<IActionResult> Stream(Guid id)
     {
+        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is null) return NotFound();
+
+        // Valideer eigenaarschap VOOR we data laden (voorkomt IDOR)
+        var meta = await db.Videoboodschappen
+            .Where(v => v.Id == id && v.EigenaarId == eigenaar.Id)
+            .Select(v => new { v.ContentType, v.BestandsNaam, v.BestandsPad })
+            .FirstOrDefaultAsync();
+
+        if (meta is null) return NotFound();
+
+        // Nieuwe uploads: stream van schijf (echte range-support, geen RAM-spike)
+        if (meta.BestandsPad is not null)
+        {
+            var fs = videoStorage.Openen(meta.BestandsPad);
+            if (fs is null) return NotFound();
+            return File(fs, meta.ContentType, meta.BestandsNaam, enableRangeProcessing: true);
+        }
+
+        // Legacy-fallback: blob uit SQLite
         var blob = await db.VideoboodschapBlobs
             .Where(b => b.VideoboodschapId == id)
             .Select(b => new { b.Inhoud })
@@ -176,16 +216,7 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
 
         if (blob is null) return NotFound();
 
-        // Resolve content type from the metadata row
-        var meta = await db.Videoboodschappen
-            .Where(v => v.Id == id)
-            .Select(v => new { v.ContentType, v.BestandsNaam })
-            .FirstOrDefaultAsync();
-
-        var contentType = meta?.ContentType ?? "video/webm";
-        var bestandsNaam = meta?.BestandsNaam ?? "video.webm";
-
-        return File(blob.Inhoud, contentType, bestandsNaam, enableRangeProcessing: true);
+        return File(blob.Inhoud, meta.ContentType, meta.BestandsNaam, enableRangeProcessing: true);
     }
 
     // ── PATCH /api/videoboodschappen/{id} ───────────────────────────────────
@@ -244,11 +275,53 @@ public class VideoboodschappenController(LumioDbContext db, IOptions<LimietenOpt
         var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null) return NotFound();
 
+        // Haal bestandspad op VOOR we verwijderen, zodat we het schijfbestand kunnen opruimen
+        var bestandsPad = await db.Videoboodschappen
+            .Where(v => v.Id == id && v.EigenaarId == eigenaar.Id)
+            .Select(v => v.BestandsPad)
+            .FirstOrDefaultAsync();
+
         var deleted = await db.Videoboodschappen
             .Where(v => v.Id == id && v.EigenaarId == eigenaar.Id)
             .ExecuteDeleteAsync();
 
-        return deleted == 0 ? NotFound() : NoContent();
+        if (deleted == 0) return NotFound();
+
+        // Verwijder het schijfbestand als dit een nieuwe upload was
+        if (bestandsPad is not null)
+            videoStorage.Verwijderen(bestandsPad);
+
+        return NoContent();
+    }
+
+    // ── GET /api/videoboodschappen/voor-erfgenaam/{erfgenaamId} ─────────────
+    /// <summary>
+    /// Returns all video messages addressed to a specific heir.
+    /// Used in erfgenaam-modus (all Shamir-unlocked sessions).
+    /// </summary>
+    [HttpGet("voor-erfgenaam/{erfgenaamId:guid}")]
+    public async Task<ActionResult<List<VideoboodschapResponse>>> GetVoorErfgenaam(Guid erfgenaamId)
+    {
+        var bestaat = await db.Erfgenamen.AnyAsync(e => e.Id == erfgenaamId);
+        if (!bestaat) return NotFound();
+
+        // Collect IDs of videos addressed to this heir
+        var videoIds = await db.VideoboodschapOntvangers
+            .Where(o => o.ErfgenaamId == erfgenaamId)
+            .Select(o => o.VideoboodschapId)
+            .ToListAsync();
+
+        if (videoIds.Count == 0)
+            return Ok(new List<VideoboodschapResponse>());
+
+        var items = await db.Videoboodschappen
+            .Include(v => v.Ontvangers)
+            .Where(v => videoIds.Contains(v.Id))
+            .OrderByDescending(v => v.AangemaaktOp)
+            .ToListAsync();
+
+        var namen = await LaadNamenAsync(items.SelectMany(v => v.Ontvangers.Select(o => o.ErfgenaamId)));
+        return Ok(items.Select(v => ToResponse(v, namen)).ToList());
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────

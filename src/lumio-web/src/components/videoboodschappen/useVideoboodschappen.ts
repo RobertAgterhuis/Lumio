@@ -30,6 +30,8 @@ export function useVideoboodschappen() {
       return new Promise<Videoboodschap>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", `${apiBase}/api/videoboodschappen/uploaden`);
+        xhr.timeout = 300_000; // 5 minuten — grote bestanden hebben tijd nodig
+        xhr.ontimeout = () => reject(new Error("Upload-timeout: het bestand is te groot of de verbinding is te traag."));
 
         // Accept-Language header (mirrors api-client)
         const locale =

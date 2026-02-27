@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lumio.app/whitelabel/schema.json",
+  "title": "WhitelabelConfig",
+  "description": "Configuration schema for a Lumio whitelabel distribution.",
+  "type": "object",
+  "required": ["companyName", "productName", "appId", "colors"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference — always point to ../../schema.json"
+    },
+
+    "companyName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Human-readable company name (e.g. 'ACME Corp'). Used in splash screen and about dialog."
+    },
+
+    "productName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Full product name shown in Windows taskbar, macOS dock, and installer (e.g. 'ACME Nalatenschap')."
+    },
+
+    "appId": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*){2,}$",
+      "description": "Reverse-domain application identifier. Must be unique per company (e.g. 'com.acme.nalatenschap').",
+      "examples": ["com.acme.nalatenschap", "nl.example.nalatenschap"]
+    },
+
+    "colors": {
+      "type": "object",
+      "description": "Brand color palette. Only 'primaryBase' is required; other shades can be auto-derived.",
+      "required": ["primaryBase"],
+      "additionalProperties": false,
+      "properties": {
+        "primaryBase": {
+          "$ref": "#/definitions/hexColor",
+          "description": "Core brand color. Used as the main primary color across the app (header, buttons, sidebar active items)."
+        },
+        "primaryDark": {
+          "$ref": "#/definitions/hexColor",
+          "description": "Darkest shade of the primary color. Used in dark title bar backgrounds. Defaults to 15% darker than primaryBase."
+        },
+        "primaryMedium": {
+          "$ref": "#/definitions/hexColor",
+          "description": "Medium shade. Used for accent colors and focus rings. Defaults to 20% lighter than primaryBase."
+        },
+        "primaryLight": {
+          "$ref": "#/definitions/hexColor",
+          "description": "Light shade. Used for hover states and secondary indicators. Defaults to 40% lighter than primaryBase."
+        },
+        "primaryPale": {
+          "$ref": "#/definitions/hexColor",
+          "description": "Pale tint. Used for highlight backgrounds and selected state backgrounds. Defaults to 80% lighter than primaryBase."
+        },
+        "primaryGhost": {
+          "$ref": "#/definitions/hexColor",
+          "description": "Near-white tint. Used for page background. Defaults to 92% lighter than primaryBase."
+        },
+        "primaryForeground": {
+          "$ref": "#/definitions/hexColor",
+          "description": "Text/icon color on primary-colored backgrounds. Defaults to '#ffffff' (white)."
+        }
+      }
+    },
+
+    "titleBarColor": {
+      "$ref": "#/definitions/hexColor",
+      "description": "Background color of the Windows Electron title bar overlay. Defaults to colors.primaryDark."
+    },
+
+    "titleBarSymbolColor": {
+      "$ref": "#/definitions/hexColor",
+      "description": "Color of the minimize/maximize/close icons in the Windows title bar. Defaults to '#ffffff'."
+    },
+
+    "splashColor": {
+      "$ref": "#/definitions/hexColor",
+      "description": "Background color of the startup splash screen. Defaults to colors.primaryDark."
+    },
+
+    "logo": {
+      "type": "object",
+      "description": "Company logo configuration.",
+      "required": ["file"],
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "type": "string",
+          "description": "Filename of the logo relative to this config directory. Supported formats: PNG, SVG, JPG, WebP. Minimum recommended size: 512×512 px.",
+          "examples": ["logo.png", "logo.svg", "brand-mark.png"]
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 128,
+          "default": 32,
+          "description": "Display height in pixels of the logo overlay shown inside the app. Width scales proportionally."
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 1.0,
+          "default": 0.7,
+          "description": "Opacity of the logo overlay (0.1 = almost invisible, 1.0 = fully opaque). Slightly transparent looks more natural."
+        },
+        "showOnSplash": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, the company logo is shown centered on the startup splash screen in addition to in-app overlays."
+        },
+        "useAsAppIcon": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, the logo file is used to generate the Windows .ico, macOS .icns, and Linux .png app icons. Requires the build-time engine (WL-4)."
+        }
+      }
+    },
+
+    "dashboardMessage": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 320,
+      "description": "Optional short message shown in a subtle footer bar on the Dashboard page only. Intended for HR/IT messages (e.g. 'Aangeboden door ACME HR. Vragen? hr@acme.nl')."
+    }
+  },
+
+  "definitions": {
+    "hexColor": {
+      "type": "string",
+      "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+      "description": "CSS hex color in 3- or 6-digit form (e.g. '#1a3a5c' or '#fff').",
+      "examples": ["#1a3a5c", "#1E4A75", "#fff", "#FFFFFF"]
+    }
+  }
+}

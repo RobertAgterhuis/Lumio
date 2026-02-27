@@ -22,4 +22,10 @@ public class Videoboodschap : BaseEntity
 
     /// <summary>The binary content — stored in a separate table to keep metadata queries lean.</summary>
     public VideoboodschapBlob? Blob { get; set; }
+
+    /// <summary>
+    /// Absolute path to the video file on disk (new uploads).
+    /// Null for legacy records whose binary content is in <see cref="Blob"/>.
+    /// </summary>
+    public string? BestandsPad { get; set; }
 }

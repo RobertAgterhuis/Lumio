@@ -10,6 +10,21 @@ let splashWindow: BrowserWindow | null = null;
  * Call immediately on app.whenReady() — before the heavy sidecar startup.
  */
 export function showSplash(): void {
+  // ── Whitelabel: prefer a patched splash.html when the engine has built one ──
+  const wlSplashPath  = path.join(__dirname, "..", "..", "build", "whitelabel", "splash.html");
+  const wlConfigPath  = path.join(__dirname, "..", "..", "build", "whitelabel", "whitelabel.json");
+  const useWlSplash   = fs.existsSync(wlSplashPath);
+  let   splashBgColor = "#2C4A52"; // default Lumio teal
+
+  if (useWlSplash && fs.existsSync(wlConfigPath)) {
+    try {
+      const wlCfg = JSON.parse(fs.readFileSync(wlConfigPath, "utf-8"));
+      splashBgColor = wlCfg.splashColor ?? wlCfg.colors?.primaryDark ?? "#2C4A52";
+    } catch {
+      // ignore — fall back to the default Lumio color
+    }
+  }
+
   splashWindow = new BrowserWindow({
     width: 480,
     height: 300,
@@ -18,7 +33,7 @@ export function showSplash(): void {
     movable: true,
     alwaysOnTop: true,
     center: true,
-    backgroundColor: "#2C4A52",
+    backgroundColor: splashBgColor,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -28,7 +43,9 @@ export function showSplash(): void {
   });
 
   splashWindow.loadFile(
-    path.join(__dirname, "..", "..", "build", "splash.html")
+    useWlSplash
+      ? wlSplashPath
+      : path.join(__dirname, "..", "..", "build", "splash.html")
   );
 
   // Inject version number once the page is ready

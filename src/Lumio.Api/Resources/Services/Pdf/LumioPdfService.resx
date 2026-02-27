@@ -367,4 +367,16 @@
   <data name="Signing_Notaris" xml:space="preserve"><value>Notaris:</value></data>
   <data name="Signing_ErflaterTestateur" xml:space="preserve"><value>Erflater / Testateur:</value></data>
   <data name="Signing_DatumPrefix" xml:space="preserve"><value>Datum: {0}</value></data>
+
+  <!-- D-2 additions -->
+  <data name="Section_Ceremonie" xml:space="preserve"><value>Ceremonie</value></data>
+  <data name="Section_NettoOverzicht" xml:space="preserve"><value>Netto-overzicht</value></data>
+  <data name="Section_LocatieVoorkeuren" xml:space="preserve"><value>Locatievoorkeuren</value></data>
+  <data name="Section_Beslisser" xml:space="preserve"><value>Beslissende persoon</value></data>
+  <data name="Label_CeremonieLocatie" xml:space="preserve"><value>Ceremonie locatie</value></data>
+  <data name="Label_Sprekers" xml:space="preserve"><value>Sprekers</value></data>
+  <data name="Label_Rouwadvertentie" xml:space="preserve"><value>Rouwadvertentie</value></data>
+  <data name="Label_Uitvaartverzekering" xml:space="preserve"><value>Uitvaartverzekering</value></data>
+  <data name="Label_BudgetRichting" xml:space="preserve"><value>Budgetrichting</value></data>
+  <data name="Label_DatumOpgesteld" xml:space="preserve"><value>Datum opgesteld</value></data>
 </root>

@@ -55,6 +55,7 @@ export function createMainWindow(): BrowserWindow {
       sandbox: true,
       nodeIntegration: false,
       webSecurity: true,
+      devTools: true,
     },
   });
 

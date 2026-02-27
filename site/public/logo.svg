@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="flame" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%" stop-color="#4F7A83"/>
+      <stop offset="100%" stop-color="#A5C2C9"/>
+    </linearGradient>
+    <radialGradient id="base" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#C8DDE1"/>
+      <stop offset="100%" stop-color="#E6EFF1"/>
+    </radialGradient>
+  </defs>
+  <!-- Base circle -->
+  <circle cx="16" cy="19" r="10" fill="url(#base)" stroke="#7A9EA6" stroke-width="1" stroke-opacity="0.45"/>
+  <!-- Flame -->
+  <path d="M16 4 C16 4 9.5 11 9.5 16.5 C9.5 20.1 12.5 22.5 16 22.5 C19.5 22.5 22.5 20.1 22.5 16.5 C22.5 11 16 4 16 4Z" fill="url(#flame)"/>
+  <!-- Inner highlight -->
+  <path d="M16 8 C16 8 12.5 13 12.5 16.5 C12.5 18.4 14 19.5 15.5 19.5 C15.5 15 16 8 16 8Z" fill="#C8DDE1" fill-opacity="0.55"/>
+  <!-- Sage accent -->
+  <path d="M18.5 12 C20 13.5 21 15.5 21 17 C21 18.2 20.3 19 19.5 19.5 C20.5 17.5 19.5 14.5 18.5 12Z" fill="#84A793" fill-opacity="0.40"/>
+</svg>
