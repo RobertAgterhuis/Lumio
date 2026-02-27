@@ -1488,7 +1488,7 @@
         },
         "uitvaart": {
           "titel": "Engage a funeral director",
-          "beschrijving": "Contact the funeral director or insurance. They will guide the further procedure and arrange transport."
+          "beschrijving": "Contact the funeral director or insurance. They will guide the further procedure and arrange transport. Legal deadline (Dutch Burial Act art. 19): burial or cremation within 6 working days of death."
         },
         "naasten": {
           "titel": "Inform next of kin and emergency contacts",
@@ -1511,11 +1511,15 @@
         },
         "werkgever": {
           "titel": "Inform employer(s)",
-          "beschrijving": "Report the death to the employer. Discuss any entitlement to survivor's pension and holiday pay."
+          "beschrijving": "Notify the employer. Request payment of any outstanding holiday pay and unpaid salary. Check for a survivor's pension at mijnpensioenoverzicht.nl. Apply for the Anw benefit (general survivors' benefit) via SVB (0800-0765) — must be done within 1 year of death. The Anw only applies when the partner's income is below the statutory threshold."
+        },
+        "pensioenen": {
+          "titel": "Pensions",
+          "beschrijving": "Check which pension schemes the deceased had at mijnpensioenoverzicht.nl. Apply for the survivor's pension with the relevant pension provider. Also contact the SVB for the Anw benefit (0800-0765) — must be applied for within 1 year."
         },
         "aangifte": {
           "titel": "Death registration at municipality",
-          "beschrijving": "Register the death within 6 working days at the civil registry of the municipality where the death occurred."
+          "beschrijving": "Register the death at the civil registry of the municipality where the death occurred, within 6 working days (Dutch Civil Code art. 1:19h). Bring: the doctor's death certificate and your own ID. In many municipalities registration is also possible digitally via DigiD."
         },
         "documenten": {
           "titel": "Collect important documents",
@@ -1532,13 +1536,17 @@
           "titel": "Arrange banking matters",
           "beschrijving": "Inform the bank. Accounts are transferred to the heirs' names. Arrange payment orders and possibly an escrow account for the estate."
         },
+        "woning": {
+          "titel": "Arrange property matters",
+          "beschrijving": "Notify the landlord or mortgage provider. For rental: cancel or transfer the tenancy to the partner's name (Civil Code art. 7:268). For ownership: notify the mortgage provider and apply for any term life insurance payout. Don't forget: energy supplier, water company and municipality (property tax)."
+        },
         "abonnementen": {
           "titel": "Cancel subscriptions and contracts",
           "beschrijving": "Cancel phone, internet, TV subscriptions, rental or lease contracts, memberships and streaming services."
         },
         "uitkeringen": {
           "titel": "Stop benefits and allowances",
-          "beschrijving": "Report the death to the SVB (state pension), UWV, municipality (social assistance) and Tax Authority (allowances)."
+          "beschrijving": "Report the death to all institutions that provided benefits. Late reporting may lead to overpayment recovery. SVB (state pension AOW, survivors Anw): 0800-0765. UWV (unemployment, disability): 0900-9294. Municipality (social assistance): local office. Tax Authority (housing/healthcare/childcare allowances): 0800-0543 — stop allowances per date of death."
         },
         "digitaal": {
           "titel": "Handle digital assets",
@@ -1549,11 +1557,11 @@
         "label": "First 3 months",
         "erfbelasting": {
           "titel": "Inheritance tax return",
-          "beschrijving": "File an inheritance tax return with the Tax Authority within 8 months. Start inventorying the estate in good time."
+          "beschrijving": "File an inheritance tax return with the Tax Authority (0800-0543) within 8 months of death (Dutch Succession Act art. 45). 2025 exemptions: partner € 795,156 — child € 25,187 — other € 2,658. An extension can be requested."
         },
         "aanvaarding": {
           "titel": "Acceptance or rejection of inheritance",
-          "beschrijving": "Heirs must choose: accept outright, accept under benefit of inventory, or reject. Accepting under benefit of inventory protects against debts."
+          "beschrijving": "Heirs must choose: unconditional acceptance, conditional acceptance (beneficiair), or rejection. Recommendation: choose conditional acceptance if there is any doubt about debts. Warning: taking or selling belongings of the deceased counts as unconditional acceptance (Civil Code 4:192), even without a formal declaration. A declaration of conditional acceptance must be made before a notary or cantonal court."
         },
         "boedelverdeling": {
           "titel": "Estate distribution",
@@ -1561,7 +1569,7 @@
         },
         "inkomstenbelasting": {
           "titel": "Income tax of the deceased",
-          "beschrijving": "File an income tax return for the year of death (F-form). The deadline is usually before May 1 of the following year."
+          "beschrijving": "File the F-return (income tax return upon death) before 30 April of the year following death. The deceased's DigiD remains usable by heirs or authorised persons for up to 1 year after death."
         },
         "socialMedia": {
           "titel": "Social media and online profiles",
@@ -1578,11 +1586,22 @@
     "samenvatting": {
       "vastgelegd": "Data recorded",
       "uitvaart": "Preference: {type}",
+      "uitvaartMetOndernemer": "Director: {naam} ({telefoon})",
+      "uitvaartMetVerzekering": "Preference: {type} — funeral insurance present",
       "donor": "Choice: {keuze}",
       "wilsverklaring": "Signed on: {datum}",
       "notaris": "Notary: {naam}",
       "documenten": "{aantal, plural, one {# document} other {# documents}} recorded",
-      "naasten": "{aantal, plural, one {# contact} other {# contacts}} recorded"
+      "naasten": "{aantal, plural, one {# contact} other {# contacts}} recorded",
+      "huisarts": "GP: {naam} — {telefoon}",
+      "verzekeringen": "{aantal, plural, one {# policy} other {# policies}} recorded — {types}",
+      "bank": "{aantal, plural, one {# account} other {# accounts}} at {namen}",
+      "aangifte": "Municipality {gemeente} — register death within 6 working days",
+      "socialMedia": "{aantal, plural, one {# social media account} other {# social media accounts}}: {namen}",
+      "digitaalRich": "{teVerwijderen} to delete, {overTeDragen} to transfer{wallets, plural, =0 {} other {, {wallets} crypto wallet(s)}}",
+      "boedelNetto": "Estimated net estate value: {bedrag}",
+      "aanvaarding": "{aantal, plural, one {# heir} other {# heirs}}: {namen}",
+      "woning": "{aantal, plural, one {# property} other {# properties}} recorded: {namen}"
     },
     "legeStaat": {
       "uitvaart": "Record your funeral wishes so next of kin know what you want.",
@@ -1591,9 +1610,15 @@
       "notaris": "Record your will details and notary contact.",
       "documenten": "Upload your important documents, such as your passport or policies.",
       "naasten": "Add emergency contacts so next of kin know who to reach.",
+      "huisarts": "No GP recorded in emergency contacts.",
+      "verzekeringen": "No insurance policies recorded in the estate.",
+      "bank": "No bank accounts recorded in the estate.",
+      "aangifte": "Fill in your city of residence to see the municipality.",
+      "socialMedia": "No social media accounts recorded in digital assets.",
       "digitaal": "Record your digital accounts.",
       "erfgenamen": "Add heirs to your estate.",
-      "boedel": "Record your assets and liabilities."
+      "boedel": "Record your assets and liabilities.",
+      "woning": "No property recorded in the estate."
     }
   },
   "auditLog": {

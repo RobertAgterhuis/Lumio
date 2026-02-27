@@ -1,6 +1,6 @@
-[07:40:51.984] [INFO] storybook v10.2.10
-[07:40:52.576] [DEBUG] Getting package.json info for D:/repositories/Lumio/src/lumio-web/package.json...
-[07:40:53.454] [ERROR] [38;2;241;97;97mError: Failed to load static files, no such directory: [36m.\public[39m
+[09:10:37.841] [INFO] storybook v10.2.10
+[09:10:38.426] [DEBUG] Getting package.json info for D:/repositories/Lumio/src/lumio-web/package.json...
+[09:10:39.289] [ERROR] [38;2;241;97;97mError: Failed to load static files, no such directory: [36m.\public[39m
 Make sure this directory exists.[39m
     at parseStaticDir (file:///D:/repositories/Lumio/src/lumio-web/node_modules/storybook/dist/_node-chunks/chunk-S3MWHNYJ.js:116:11)
     at file:///D:/repositories/Lumio/src/lumio-web/node_modules/storybook/dist/core-server/presets/common-preset.js:1717:48
@@ -12,5 +12,5 @@ Make sure this directory exists.[39m
     at async buildOrThrow (file:///D:/repositories/Lumio/src/lumio-web/node_modules/storybook/dist/core-server/index.js:4504:12)
     at async buildDevStandalone (file:///D:/repositories/Lumio/src/lumio-web/node_modules/storybook/dist/core-server/index.js:7611:66)
     at async withTelemetry (file:///D:/repositories/Lumio/src/lumio-web/node_modules/storybook/dist/_node-chunks/chunk-S3MWHNYJ.js:218:12)
-[07:40:53.457] [WARN] Broken build, fix the error above.
+[09:10:39.293] [WARN] Broken build, fix the error above.
 You may need to refresh the browser.

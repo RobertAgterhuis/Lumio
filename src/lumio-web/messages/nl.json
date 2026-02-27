@@ -1488,7 +1488,7 @@
         },
         "uitvaart": {
           "titel": "Uitvaartondernemer inschakelen",
-          "beschrijving": "Neem contact op met de uitvaartondernemer of -verzekering. Zij begeleiden de verdere procedure en regelen het vervoer."
+          "beschrijving": "Neem contact op met de uitvaartondernemer of -verzekering. Zij begeleiden de verdere procedure en regelen het vervoer. Wettelijke termijn (WvlB art. 19): bijzetting uiterlijk op de 6e werkdag na overlijden."
         },
         "naasten": {
           "titel": "Naasten en noodcontacten informeren",
@@ -1511,11 +1511,15 @@
         },
         "werkgever": {
           "titel": "Werkgever(s) informeren",
-          "beschrijving": "Meld het overlijden bij de werkgever. Bespreek eventueel recht op nabestaandenpensioen en uitkering van het vakantiegeld."
+          "beschrijving": "Meld het overlijden bij de werkgever. Vraag uitbetaling van vakantiegeld en nog niet uitbetaald loon. Controleer op nabestaandenpensioen via mijnpensioenoverzicht.nl. Vraag de Anw-uitkering aan bij de SVB (0800-0765) — dit moet binnen 1 jaar na overlijden. De Anw geldt alleen bij partnerinkomen onder de inkomensgrens."
+        },
+        "pensioenen": {
+          "titel": "Pensioenen",
+          "beschrijving": "Controleer welke pensioenregelingen de overledene had via mijnpensioenoverzicht.nl. Vraag het nabestaandenpensioen aan bij de pensioenuitvoerder. Neem ook contact op met de SVB voor de Anw-uitkering (0800-0765) — aanvragen binnen 1 jaar."
         },
         "aangifte": {
           "titel": "Overlijdensaangifte bij gemeente",
-          "beschrijving": "Doe binnen 6 werkdagen aangifte van overlijden bij de burgerlijke stand van de gemeente waar het overlijden plaatsvond."
+          "beschrijving": "Doe aangifte bij de burgerlijke stand van de gemeente waar het overlijden plaatsvond, binnen 6 werkdagen (BW art. 1:19h). Breng mee: verklaring van overlijden van de arts en uw eigen identiteitsbewijs. In veel gemeenten is aangifte ook digitaal mogelijk via DigiD."
         },
         "documenten": {
           "titel": "Belangrijke documenten verzamelen",
@@ -1532,13 +1536,17 @@
           "titel": "Bankzaken regelen",
           "beschrijving": "Informeer de bank. Rekeningen worden op naam van de erven gezet. Regel betaalopdrachten en eventueel een derdenrekening voor de boedel."
         },
+        "woning": {
+          "titel": "Woning regelen",
+          "beschrijving": "Informeer de verhuurder of hypotheekverstrekker. Bij huur: opzeg of zet het contract over op naam van de partner (BW art. 7:268). Bij koop: informeer de hypotheekverstrekker en vraag uitkering van een eventuele overlijdensrisicoverzekering aan. Vergeet ook niet: energieleverancier, waterbedrijf en gemeente (OZB)."
+        },
         "abonnementen": {
           "titel": "Abonnementen en contracten opzeggen",
           "beschrijving": "Zeg telefoon-, internet-, tv-abonnementen, huur of leasecontracten, lidmaatschappen en streaming-diensten op."
         },
         "uitkeringen": {
           "titel": "Uitkeringen en toeslagen stopzetten",
-          "beschrijving": "Meld het overlijden bij de SVB (AOW), UWV, gemeente (bijstand) en Belastingdienst (toeslagen)."
+          "beschrijving": "Meld het overlijden bij alle instanties die uitkeringen verstrekten. Te laat melden leidt tot terugvorderingen. SVB (AOW, AIO, Anw): 0800-0765. UWV (WW, WIA, WAO, Wajong): 0900-9294. Gemeente (bijstand / Participatiewet): lokaal loket. Belastingdienst (zorgtoeslag, huurtoeslag, kinderbijslag): 0800-0543 — stop toeslagen per overlijdensdatum."
         },
         "digitaal": {
           "titel": "Digitaal bezit afhandelen",
@@ -1549,11 +1557,11 @@
         "label": "Eerste 3 maanden",
         "erfbelasting": {
           "titel": "Aangifte erfbelasting",
-          "beschrijving": "Doe binnen 8 maanden aangifte erfbelasting bij de Belastingdienst. Begin tijdig met het inventariseren van de boedel."
+          "beschrijving": "Doe aangifte erfbelasting bij de Belastingdienst (0800-0543) binnen 8 maanden na overlijden (Successiewet art. 45). Vrijstellingen 2025: partner € 795.156 — kind € 25.187 — overig € 2.658. Uitstel aanvragen is mogelijk."
         },
         "aanvaarding": {
           "titel": "Aanvaarding of verwerping erfenis",
-          "beschrijving": "Erfgenamen moeten kiezen: zuiver aanvaarden, beneficiair aanvaarden of verwerpen. Beneficiair aanvaarden beschermt tegen schulden."
+          "beschrijving": "Erfgenamen moeten kiezen: zuiver aanvaarden, beneficiair aanvaarden of verwerpen. Aanbeveling: beneficiair aanvaarden als er twijfel is over schulden. Let op: bezittingen van de overledene meenemen of verkopen geldt als zuivere aanvaarding (BW 4:192), ook zonder formele verklaring. Een verklaring van beneficiaire aanvaarding wordt afgelegd bij de notaris of kantonrechter."
         },
         "boedelverdeling": {
           "titel": "Boedelverdeling",
@@ -1561,7 +1569,7 @@
         },
         "inkomstenbelasting": {
           "titel": "Inkomstenbelasting overledene",
-          "beschrijving": "Doe aangifte inkomstenbelasting voor het jaar van overlijden (F-biljet). Deadline is meestal vóór 1 mei van het jaar erna."
+          "beschrijving": "Dien het F-biljet in (aangifte inkomstenbelasting bij overlijden) vóór 30 april van het jaar na overlijden. Het DigiD van de overledene is maximaal 1 jaar na overlijden bruikbaar voor erfgenamen of gemachtigden."
         },
         "socialMedia": {
           "titel": "Social media en online profielen",
@@ -1578,11 +1586,22 @@
     "samenvatting": {
       "vastgelegd": "Gegevens vastgelegd",
       "uitvaart": "Voorkeur: {type}",
+      "uitvaartMetOndernemer": "Ondernemer: {naam} ({telefoon})",
+      "uitvaartMetVerzekering": "Voorkeur: {type} — uitvaartverzekering aanwezig",
       "donor": "Keuze: {keuze}",
       "wilsverklaring": "Ondertekend op: {datum}",
       "notaris": "Notaris: {naam}",
       "documenten": "{aantal, plural, one {# document} other {# documenten}} vastgelegd",
-      "naasten": "{aantal, plural, one {# contact} other {# contacten}} vastgelegd"
+      "naasten": "{aantal, plural, one {# contact} other {# contacten}} vastgelegd",
+      "huisarts": "Huisarts: {naam} — {telefoon}",
+      "verzekeringen": "{aantal, plural, one {# polis} other {# polissen}} geregistreerd — {types}",
+      "bank": "{aantal, plural, one {# rekening} other {# rekeningen}} bij {namen}",
+      "aangifte": "Gemeente {gemeente} — doe aangifte binnen 6 werkdagen",
+      "socialMedia": "{aantal, plural, one {# social media account} other {# social media accounts}}: {namen}",
+      "digitaalRich": "{teVerwijderen} te verwijderen, {overTeDragen} over te dragen{wallets, plural, =0 {} other {, {wallets} crypto wallet(s)}}",
+      "boedelNetto": "Indicatieve netto boedelwaarde: {bedrag}",
+      "aanvaarding": "{aantal, plural, one {# erfgenaam} other {# erfgenamen}}: {namen}",
+      "woning": "{aantal, plural, one {# woning} other {# woningen}} vastgelegd: {namen}"
     },
     "legeStaat": {
       "uitvaart": "Leg uw uitvaartwensen vast zodat nabestaanden weten wat u wilt.",
@@ -1591,9 +1610,15 @@
       "notaris": "Leg uw testamentgegevens en notariscontact vast.",
       "documenten": "Upload uw belangrijke documenten, zoals uw paspoort of polissen.",
       "naasten": "Voeg noodcontacten toe zodat nabestaanden weten wie zij kunnen bereiken.",
+      "huisarts": "Geen huisarts vastgelegd in noodcontacten.",
+      "verzekeringen": "Geen verzekeringen vastgelegd in de boedel.",
+      "bank": "Geen bankrekeningen vastgelegd in de boedel.",
+      "aangifte": "Vul uw woonplaats in om de gemeente te zien.",
+      "socialMedia": "Geen social media accounts vastgelegd in digitaal bezit.",
       "digitaal": "Leg uw digitale accounts vast.",
       "erfgenamen": "Voeg erfgenamen toe aan uw nalatenschap.",
-      "boedel": "Leg uw bezittingen en schulden vast."
+      "boedel": "Leg uw bezittingen en schulden vast.",
+      "woning": "Geen woning vastgelegd in de boedel."
     }
   },
   "auditLog": {
