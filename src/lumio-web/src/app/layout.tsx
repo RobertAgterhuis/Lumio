@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { getLocale, getMessages } from "next-intl/server";
 import { LocaleProvider } from "@/components/providers/LocaleProvider";
+import { ElectronThemeSync } from "@/components/electron/ElectronThemeSync";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -41,6 +42,8 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
+        {/* Sync OS dark/light-mode changes into the renderer (Electron only, no-op in browser) */}
+        <ElectronThemeSync />
         <LocaleProvider defaultLocale={locale} defaultMessages={messages as Record<string, unknown>}>
           {children}
         </LocaleProvider>

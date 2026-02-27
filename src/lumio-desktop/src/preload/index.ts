@@ -21,4 +21,26 @@ contextBridge.exposeInMainWorld("lumio", {
    */
   openExternalUrl: (url: string): Promise<{ success: boolean; error?: string }> =>
     ipcRenderer.invoke("open-external-url", url),
+  /**
+   * Subscribe to OS dark/light mode changes.
+   * The callback is invoked with `isDark: boolean` every time the OS theme changes.
+   * Register once in a top-level client component and clean up on unmount if needed.
+   */
+  onThemeChange: (callback: (isDark: boolean) => void): void => {
+    ipcRenderer.on("native-theme-changed", (_event, isDark: boolean) =>
+      callback(isDark)
+    );
+  },
+  /** Returns whether the OS is currently in dark mode (one-shot, async). */
+  getInitialThemeIsDark: (): Promise<boolean> =>
+    ipcRenderer.invoke("get-initial-theme"),
+  /**
+   * Update the native OS window title (visible in ALT+TAB / CMD+TAB).
+   * No-op when called outside the Electron shell.
+   */
+  setWindowTitle: (title: string): void =>
+    ipcRenderer.send("set-window-title", title),
+  /** Returns the Electron app version string (e.g. "1.0.0"). */
+  getAppVersion: (): Promise<string> =>
+    ipcRenderer.invoke("get-app-version"),
 });

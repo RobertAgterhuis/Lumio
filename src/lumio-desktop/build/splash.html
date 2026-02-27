@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: #2C4A52;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: #E6EFF1;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow: hidden;
+    }
+
+    /* Drag the entire window */
+    body { -webkit-app-region: drag; }
+    button { -webkit-app-region: no-drag; }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 20px;
+      padding: 32px;
+    }
+
+    /* ── Icon ─────────────────────────────────────────── */
+    .icon {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35));
+    }
+
+    /* ── App name + tagline ──────────────────────────── */
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #E6EFF1;
+      line-height: 1;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: #7AB5C0;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* ── Loading state ───────────────────────────────── */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .loading-text {
+      font-size: 13px;
+      color: #7AB5C0;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dots span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #4F7A83;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40%            { opacity: 1;   transform: scale(1);   }
+    }
+
+    /* ── Error state ─────────────────────────────────── */
+    #error {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .error-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .error-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #E6EFF1;
+    }
+
+    .error-message {
+      font-size: 12px;
+      color: #7AB5C0;
+      max-width: 340px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    button {
+      padding: 7px 16px;
+      border-radius: 7px;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    button:hover { opacity: 0.85; }
+
+    .btn-primary {
+      background: #4F7A83;
+      color: #E6EFF1;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #7AB5C0;
+    }
+
+    /* ── Version ─────────────────────────────────────── */
+    #version {
+      position: absolute;
+      bottom: 14px;
+      right: 18px;
+      font-size: 11px;
+      color: #355E68;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Icon: inline SVG from build/source/icon.svg (comments stripped) -->
+    <div class="icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="88" height="88">
+        <defs>
+          <linearGradient id="s-flame" x1="0.5" y1="1" x2="0.5" y2="0">
+            <stop offset="0%"   stop-color="#4F7A83" />
+            <stop offset="100%" stop-color="#A5C2C9" />
+          </linearGradient>
+          <radialGradient id="s-base" cx="50%" cy="55%" r="50%">
+            <stop offset="0%"   stop-color="#C8DDE1" stop-opacity="1" />
+            <stop offset="100%" stop-color="#E6EFF1" stop-opacity="1" />
+          </radialGradient>
+          <filter id="s-glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <rect width="512" height="512" rx="112" fill="#F3F7F8" />
+        <circle cx="256" cy="304" r="160"
+          fill="url(#s-base)"
+          stroke="#7A9EA6" stroke-width="16" stroke-opacity="0.45" />
+        <path d="M256 64 C256 64 152 176 152 264 C152 322 200 360 256 360 C312 360 360 322 360 264 C360 176 256 64 256 64Z"
+          fill="url(#s-flame)" filter="url(#s-glow)" />
+        <path d="M256 200 C256 200 290 230 298 258 C306 284 290 310 268 316"
+          fill="none" stroke="#84A793" stroke-width="12"
+          stroke-linecap="round" stroke-opacity="0.6" />
+      </svg>
+    </div>
+
+    <!-- App name -->
+    <div>
+      <div class="title">Lumio</div>
+      <div class="tagline">Nalatenschap</div>
+    </div>
+
+    <!-- Loading indicator (default visible) -->
+    <div id="loading">
+      <div class="dots">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="loading-text">Wordt gestart&hellip;</div>
+    </div>
+
+    <!-- Error zone (hidden until showError() is called) -->
+    <div id="error">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title">Lumio kon niet worden gestart</div>
+      <div class="error-message" id="error-message"></div>
+      <div class="error-actions">
+        <button class="btn-primary"   onclick="window.splashApi?.retryStart()">Opnieuw proberen</button>
+        <button class="btn-secondary" onclick="window.splashApi?.openLog()">Logboek openen</button>
+      </div>
+    </div>
+
+  </div>
+
+  <span id="version"></span>
+
+  <script>
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      var err = document.getElementById('error');
+      err.style.display = 'flex';
+      document.getElementById('error-message').textContent = message;
+    }
+  </script>
+</body>
+</html>
