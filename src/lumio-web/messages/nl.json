@@ -228,6 +228,7 @@
       "beherenLink": "Documenten beheren →"
     },
     "verbergen": "Verbergen",
+    "sectieVerplaatsen": "Sectie verplaatsen",
     "helpHint": "Meer info",
     "voortgang": {
       "titel": "Voortgang nalatenschap",
@@ -713,6 +714,8 @@
     "toevoegen": "Erfgenaam toevoegen",
     "noodcodesInfoLabel": "Noodcodes verdelen:",
     "noodcodesInfo": "Uw hoofdwachtwoord wordt veilig opgesplitst in unieke codes voor uw erfgenamen. Pas wanneer genoeg erfgenamen (de 'drempel') hun code samenvoegen, kan het wachtwoord worden hersteld. Eén code alleen is waardeloos.",
+    "synclinkMeldingLabel": "Let op:",
+    "synclinkMelding": "Wanneer u naam of contactgegevens van een erfgenaam wijzigt, worden eerder opgeslagen gegevens in gekoppelde formulieren (bijv. testament, uitvaart, wilsverklaring) niet automatisch bijgewerkt. Open het betreffende formulier opnieuw om de gegevens te vernieuwen.",
     "geenErfgenamen": "Nog geen erfgenamen toegevoegd.",
     "aantal": "Erfgenamen ({aantal})",
     "opslaanMislukt": "Opslaan mislukt.",
@@ -2543,7 +2546,30 @@
     "selecteer": "— Kies bestaand persoon —",
     "handmatig": "Anders (handmatig invoeren)",
     "kiesUitLijst": "← Kies uit bestaande personen",
-    "noodcontact": "Noodcontact"
+    "noodcontact": "Noodcontact",
+    "laden": "Laden…",
+    "nieuwAanmaken": "Nieuw aanmaken…",
+    "optgroepErfgenamen": "Erfgenamen",
+    "optgroepNoodcontacten": "Noodcontacten",
+    "zoekFilter": "Zoek persoon…",
+    "createDialog": {
+      "titel": "Nieuw persoon aanmaken",
+      "alsErfgenaam": "Als erfgenaam",
+      "alsNoodcontact": "Als noodcontact",
+      "voornaam": "Voornaam",
+      "achternaam": "Achternaam",
+      "naam": "Naam",
+      "relatie": "Relatie",
+      "rol": "Rol",
+      "telefoon": "Telefoon",
+      "email": "E-mail",
+      "opslaan": "Aanmaken & selecteren",
+      "annuleren": "Annuleren",
+      "voornaamVereist": "Voornaam is verplicht",
+      "achternaamVereist": "Achternaam is verplicht",
+      "naamVereist": "Naam is verplicht",
+      "opslaanMislukt": "Aanmaken mislukt. Probeer het opnieuw."
+    }
   },
   "domainStatus": {
     "afgerond": "Afgerond",
@@ -3278,6 +3304,7 @@
       "permissieGeweigerd": "Toegang tot camera of microfoon geweigerd.",
       "fout": "Opname niet mogelijk. Controleer uw camera.",
       "klaarVoorOpname": "Klaar om op te nemen",
+      "previewLaden": "Preview wordt voorbereid...",
       "maxDuur": "Maximaal {minuten} minuten",
       "maxOver": "Nog {seconden} sec.",
       "nietBeschikbaar": "Opname niet beschikbaar in deze browser.",

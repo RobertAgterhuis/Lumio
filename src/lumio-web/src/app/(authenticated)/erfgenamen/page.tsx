@@ -184,6 +184,13 @@ export default function ErfgenamenPage() {
         </p>
       </div>
 
+      {/* M4-4: Inform users that editing erfgenaam data does not auto-sync linked forms */}
+      <div className="rounded-lg border border-info bg-info-100 p-4">
+        <p className="text-sm text-info">
+          <strong>{t("synclinkMeldingLabel")}</strong> {t("synclinkMelding")}
+        </p>
+      </div>
+
       {state.erfgenamen.length > 0 && <ErfbelastingCalculator />}
 
       {state.error && (

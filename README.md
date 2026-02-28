@@ -1,7 +1,7 @@
 # Lumio
 ## 🇳🇱 Nederlands
 
-Lumio is een offline-first desktop applicatie waarmee u uw digitale nalatenschap veilig kunt vastleggen. Denk aan testamentaire wensen, noodcontacten, uitvaartwensen, digitaal bezit, donorregistratie en meer — alles lokaal versleuteld opgeslagen op uw eigen computer.
+Lumio is een offline-first Electron desktop applicatie waarmee u uw digitale nalatenschap veilig kunt vastleggen. Denk aan testamentaire wensen, noodcontacten, uitvaartwensen, digitaal bezit, donorregistratie en meer — alles lokaal versleuteld opgeslagen op uw eigen computer.
 
 De applicatie is gebouwd met privacy en gebruiksgemak als uitgangspunt: geen cloud, volledig onder uw eigen controle.
 
@@ -12,7 +12,7 @@ De applicatie is gebouwd met privacy en gebruiksgemak als uitgangspunt: geen clo
 
 ## 🇬🇧 English
 
-Lumio is an offline-first desktop application for securely recording your digital estate. This includes testamentary wishes, emergency contacts, funeral preferences, digital assets, organ donation registration and more — all encrypted and stored locally on your own computer.
+Lumio is an offline-first Electron desktop application for securely recording your digital estate. This includes testamentary wishes, emergency contacts, funeral preferences, digital assets, organ donation registration and more — all encrypted and stored locally on your own computer.
 
 The application is built with privacy and ease of use at its core: no cloud, fully under your own control.
 

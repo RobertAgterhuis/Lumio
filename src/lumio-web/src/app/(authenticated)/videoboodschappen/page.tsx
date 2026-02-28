@@ -28,7 +28,7 @@ import {
   HardDrive,
   Video,
   Loader2,
-  ShieldAlert,
+  Info,
 } from "lucide-react";
 import { useVideoboodschappen } from "@/components/videoboodschappen/useVideoboodschappen";
 import { VideoboodschapDialog } from "@/components/videoboodschappen/VideoboodschapDialog";
@@ -36,11 +36,11 @@ import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { toast } from "@/stores/toastStore";
 import { getApiUrl } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
+import { HelpButton } from "@/components/help/HelpButton";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
 import type { Videoboodschap, VideoboodschapFormData } from "@/components/videoboodschappen/types";
-import { HelpButton } from "@/components/help/HelpButton";
-import { HelpEmptyState } from "@/components/help/HelpEmptyState";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+
+// ── Utilities ────────────────────────────────────────────────────────────────
 
 function formatBytes(bytes: number): string {
   if (bytes >= 1_048_576) return `${(bytes / 1_048_576).toFixed(1)} MB`;
@@ -49,12 +49,12 @@ function formatBytes(bytes: number): string {
 
 function formatDuration(seconds?: number): string {
   if (!seconds) return "";
-  const m = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, "0");
+  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 }
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function VideoboodschappenPage() {
   const t = useTranslations("videoboodschappen");
@@ -86,7 +86,8 @@ export default function VideoboodschappenPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteItem, setConfirmDeleteItem] = useState<Videoboodschap | null>(null);
 
-  // ── Create helper ────────────────────────────────────────────────────
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
   const openNew = () => {
     setEditingItem(undefined);
     setDialogOpen(true);
@@ -102,11 +103,9 @@ export default function VideoboodschappenPage() {
     setPlayerOpen(true);
   };
 
-  // ── Save handler ────────────────────────────────────────────────────
   const handleSave = useCallback(
     async (form: VideoboodschapFormData) => {
       if (editingItem) {
-        // Update metadata only
         await bijwerken(editingItem.id, {
           titel: form.titel,
           beschrijving: form.beschrijving || undefined,
@@ -128,29 +127,23 @@ export default function VideoboodschappenPage() {
     [editingItem, bijwerken, opslaan, t]
   );
 
-  // ── Delete handler ──────────────────────────────────────────────────
-  const handleDelete = useCallback(
-    (item: Videoboodschap) => {
-      setConfirmDeleteItem(item);
-    },
-    []
-  );
+  const handleDelete = useCallback((item: Videoboodschap) => {
+    setConfirmDeleteItem(item);
+  }, []);
 
-  const execDelete = useCallback(
-    async () => {
-      if (!confirmDeleteItem) return;
-      setDeletingId(confirmDeleteItem.id);
-      setConfirmDeleteItem(null);
-      try {
-        await verwijderen(confirmDeleteItem.id, confirmDeleteItem.titel);
-      } finally {
-        setDeletingId(null);
-      }
-    },
-    [confirmDeleteItem, verwijderen]
-  );
+  const execDelete = useCallback(async () => {
+    if (!confirmDeleteItem) return;
+    setDeletingId(confirmDeleteItem.id);
+    setConfirmDeleteItem(null);
+    try {
+      await verwijderen(confirmDeleteItem.id, confirmDeleteItem.titel);
+    } finally {
+      setDeletingId(null);
+    }
+  }, [confirmDeleteItem, verwijderen]);
 
-  // ── Recipient names ─────────────────────────────────────────────────
+  // ── Recipient name map ───────────────────────────────────────────────────
+
   const erfgenaamMap = new Map(
     erfgenamen.map((e) => [
       e.id,
@@ -160,73 +153,87 @@ export default function VideoboodschappenPage() {
     ])
   );
 
-  // ── Render ──────────────────────────────────────────────────────────
+  // ── Storage bar values (owner only) ─────────────────────────────────────
+
+  const showStorageBar =
+    !isReadOnly &&
+    limietData != null &&
+    limietData.maxBytes > 0;
+
+  const storagePct = showStorageBar
+    ? Math.min(100, Math.round((limietData!.gebruiktBytes / limietData!.maxBytes) * 100))
+    : 0;
+
+  // ── Render ───────────────────────────────────────────────────────────────
+
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-6">
-      {/* Header */}
+
+      {/* ── Header ── */}
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold tracking-tight">{t("titel")}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t("subtitel")}</p>
-          {limietData && limietData.maxBytes > 0 && !isReadOnly && (
+
+          {showStorageBar && (
             <div className="mt-2">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-muted-foreground">
                   {t("opslagGebruikt", {
-                    gebruikt: formatBytes(limietData.gebruiktBytes),
-                    max: formatBytes(limietData.maxBytes),
+                    gebruikt: formatBytes(limietData!.gebruiktBytes),
+                    max: formatBytes(limietData!.maxBytes),
                   })}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {Math.min(100, Math.round((limietData.gebruiktBytes / limietData.maxBytes) * 100))}%
-                </span>
+                <span className="text-xs text-muted-foreground">{storagePct}%</span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-500"
-                  style={{
-                    width: `${Math.min(100, (limietData.gebruiktBytes / limietData.maxBytes) * 100)}%`,
-                  }}
+                  style={{ width: `${storagePct}%` }}
                 />
               </div>
             </div>
           )}
         </div>
-        {!isReadOnly && (
-          <Button onClick={openNew} className="gap-2 shrink-0">
-            <Plus className="h-4 w-4" />
-            {t("nieuw")}
-          </Button>
-        )}
-        <HelpButton className="shrink-0" />
+
+        <div className="flex shrink-0 items-center gap-2">
+          {!isReadOnly && (
+            <Button onClick={openNew} className="gap-2">
+              <Plus className="h-4 w-4" />
+              {t("nieuw")}
+            </Button>
+          )}
+          <HelpButton />
+        </div>
       </div>
 
+      {/* ── Section note ── */}
       <SectieNotitie sectie="videoboodschappen" />
 
-      {/* Eigenaar-informatiebalk: wanneer erfgenamen de video's zien */}
+      {/* ── Info callout (owner) ── */}
       {!isReadOnly && (
-        <Alert variant="info">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertDescription>{t("erfgenaamToegangInfo")}</AlertDescription>
-        </Alert>
+        <div className="flex gap-3 rounded-lg border border-info/30 bg-info-100 px-4 py-3 text-sm text-foreground">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-info" />
+          <p>{t("erfgenaamToegangInfo")}</p>
+        </div>
       )}
 
-      {/* Erfgenaam-modus info banner */}
+      {/* ── Info callout (heir mode) ── */}
       {isReadOnly && (
-        <Alert variant="info">
-          <ShieldAlert className="h-4 w-4" />
-          <AlertDescription>{t("erfgenaamModus")}</AlertDescription>
-        </Alert>
+        <div className="flex gap-3 rounded-lg border border-info/30 bg-info-100 px-4 py-3 text-sm text-foreground">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-info" />
+          <p>{t("erfgenaamModus")}</p>
+        </div>
       )}
 
-      {/* Loading */}
+      {/* ── Loading ── */}
       {isLoading && (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       )}
 
-      {/* Empty state */}
+      {/* ── Empty state ── */}
       {!isLoading && videoboodschappen.length === 0 && (
         isReadOnly ? (
           <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
@@ -234,16 +241,23 @@ export default function VideoboodschappenPage() {
             <p className="text-muted-foreground text-sm">{t("legeStaat.beschrijving")}</p>
           </div>
         ) : (
-          <HelpEmptyState
-            chapterSlug="videoboodschappen"
-            domeinLabel="videoboodschappen"
-            addLabel={t("legeStaat.actie")}
-            onAdd={openNew}
-          />
+          <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <Video className="h-7 w-7 text-primary" />
+            </div>
+            <div>
+              <p className="font-medium">{t("legeStaat.titel")}</p>
+              <p className="text-muted-foreground text-sm mt-0.5">{t("legeStaat.beschrijving")}</p>
+            </div>
+            <Button onClick={openNew} className="gap-2 mt-1">
+              <Plus className="h-4 w-4" />
+              {t("legeStaat.actie")}
+            </Button>
+          </div>
         )
       )}
 
-      {/* Video list */}
+      {/* ── Video list ── */}
       {!isLoading && videoboodschappen.length > 0 && (
         <div className="space-y-3">
           {videoboodschappen.map((item) => {
@@ -256,11 +270,9 @@ export default function VideoboodschappenPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      {/* Icon */}
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <Video className="h-5 w-5 text-primary" />
                       </div>
-
                       <div className="min-w-0">
                         <CardTitle className="text-base leading-tight">
                           {item.titel}
@@ -270,8 +282,6 @@ export default function VideoboodschappenPage() {
                             {item.beschrijving}
                           </CardDescription>
                         )}
-
-                        {/* Meta row */}
                         <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                           {item.duurSeconden !== undefined && (
                             <span className="flex items-center gap-1">
@@ -287,7 +297,6 @@ export default function VideoboodschappenPage() {
                       </div>
                     </div>
 
-                    {/* Action buttons */}
                     <div className="flex shrink-0 gap-1">
                       <Button
                         variant="ghost"
@@ -329,7 +338,6 @@ export default function VideoboodschappenPage() {
                   </div>
                 </CardHeader>
 
-                {/* Recipient badges */}
                 {item.ontvangers.length > 0 && (
                   <CardContent className="pt-0">
                     <div className="flex flex-wrap items-center gap-1.5">
@@ -348,7 +356,7 @@ export default function VideoboodschappenPage() {
         </div>
       )}
 
-      {/* Create / edit dialog — verborgen in erfgenaam-modus */}
+      {/* ── Create / edit dialog (hidden in heir mode) ── */}
       {!isReadOnly && (
         <VideoboodschapDialog
           open={dialogOpen}
@@ -362,7 +370,7 @@ export default function VideoboodschappenPage() {
         />
       )}
 
-      {/* Video player dialog */}
+      {/* ── Player dialog ── */}
       {playingItem && (
         <Dialog open={playerOpen} onOpenChange={setPlayerOpen}>
           <DialogHeader className="pb-2 shrink-0">
@@ -387,7 +395,7 @@ export default function VideoboodschappenPage() {
         </Dialog>
       )}
 
-      {/* Delete confirmation dialog */}
+      {/* ── Delete confirm dialog ── */}
       <Dialog
         open={confirmDeleteItem !== null}
         onOpenChange={(open) => { if (!open) setConfirmDeleteItem(null); }}
@@ -407,6 +415,7 @@ export default function VideoboodschappenPage() {
           </Button>
         </DialogFooter>
       </Dialog>
+
     </div>
   );
 }

@@ -55,15 +55,33 @@ export function GenodigdeDialog({
               onPersonSelect={(p) =>
                 onFormChange({
                   ...form,
+                  naam: p.naam,
                   relatie: p.relatie || form.relatie,
                   telefoon: p.telefoon || form.telefoon,
                   email: p.email || form.email,
                   adres: p.adres || form.adres,
                   postcode: p.postcode || form.postcode,
                   woonplaats: p.woonplaats || form.woonplaats,
+                  erfgenaamId: p.erfgenaamId,
+                  noodcontactId: p.noodcontactId,
+                })
+              }
+              onClear={() =>
+                onFormChange({
+                  ...form,
+                  naam: "",
+                  relatie: "",
+                  telefoon: "",
+                  email: "",
+                  adres: "",
+                  postcode: "",
+                  woonplaats: "",
+                  erfgenaamId: undefined,
+                  noodcontactId: undefined,
                 })
               }
               placeholder={t("genodigdeDialog.naamPlaceholder")}
+              showCreateNew
             />
           </div>
           <div className="space-y-2">

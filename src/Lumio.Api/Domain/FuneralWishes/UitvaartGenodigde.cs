@@ -15,4 +15,8 @@ public class UitvaartGenodigde : BaseEntity
     public string? Postcode { get; set; }
     public string? Woonplaats { get; set; }
     public string? Notities { get; set; }
+
+    // M4: Persistent link to the originating person record
+    public Guid? ErfgenaamId { get; set; }
+    public Guid? NoodcontactId { get; set; }
 }

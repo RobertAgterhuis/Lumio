@@ -17,4 +17,8 @@ public class Begunstigde : BaseEntity
     public string? Omschrijving { get; set; }
     public decimal? Percentage { get; set; }
     public bool IsLegitiemePortie { get; set; }
+
+    // M4: Persistent link to the originating person record
+    public Guid? ErfgenaamId { get; set; }
+    public Guid? NoodcontactId { get; set; }
 }

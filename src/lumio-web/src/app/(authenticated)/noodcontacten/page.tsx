@@ -22,6 +22,7 @@ import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PersonSelect } from "@/components/PersonSelect";
 import { useNoodcontacten, ROLLEN, ROL_KEYS, PROFESSIONELE_ROLLEN, ROL_CATEGORIE, TABS } from "@/components/noodcontacten/useNoodcontacten";
 import type { Noodcontact, TabValue } from "@/components/noodcontacten/useNoodcontacten";
 import { HelpButton } from "@/components/help/HelpButton";
@@ -223,9 +224,35 @@ export default function NoodcontactenPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t("dialog.naam")}</Label>
-              <Input
+              {/* M2-1: PersonSelect allows picking from existing erfgenamen to pre-fill contact fields */}
+              <PersonSelect
+                source="erfgenamen"
                 value={form.naam}
-                onChange={(e) => setForm((f) => ({ ...f, naam: e.target.value }))}
+                onChange={(v) => setForm((f) => ({ ...f, naam: v }))}
+                onPersonSelect={(p) =>
+                  setForm((f) => ({
+                    ...f,
+                    naam: p.naam,
+                    relatie: p.relatie || f.relatie,
+                    telefoon: p.telefoon || f.telefoon,
+                    email: p.email || f.email,
+                    adres: p.adres || f.adres,
+                    postcode: p.postcode || f.postcode,
+                    woonplaats: p.woonplaats || f.woonplaats,
+                  }))
+                }
+                onClear={() =>
+                  setForm((f) => ({
+                    ...f,
+                    naam: "",
+                    relatie: "",
+                    telefoon: "",
+                    email: "",
+                    adres: "",
+                    postcode: "",
+                    woonplaats: "",
+                  }))
+                }
                 placeholder={t("dialog.naamPlaceholder")}
               />
             </div>

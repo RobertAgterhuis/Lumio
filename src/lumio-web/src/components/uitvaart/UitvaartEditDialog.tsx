@@ -98,6 +98,7 @@ export function UitvaartEditDialog({
               onPersonSelect={(p) =>
                 onFormChange({
                   ...form,
+                  uitvaartOndernemer: p.naam,
                   uitvaartOndernemerTelefoon:
                     p.telefoon || form.uitvaartOndernemerTelefoon,
                   uitvaartOndernemerEmail:
@@ -110,6 +111,18 @@ export function UitvaartEditDialog({
                     p.woonplaats || form.uitvaartOndernemerPlaats,
                 })
               }
+              onClear={() =>
+                onFormChange({
+                  ...form,
+                  uitvaartOndernemer: "",
+                  uitvaartOndernemerTelefoon: "",
+                  uitvaartOndernemerEmail: "",
+                  uitvaartOndernemerAdres: "",
+                  uitvaartOndernemerPostcode: "",
+                  uitvaartOndernemerPlaats: "",
+                })
+              }
+              showCreateNew
             />
           </div>
           <div className="space-y-2">

@@ -147,8 +147,11 @@ public class VideoboodschappenController(
         }
 
         // Persist video file to disk (no longer stored in SQLite)
+        // Normalise content type: strip codec parameters so "video/webm;codecs=vp9,opus" → "video/webm".
+        // This ensures correct file extension and clean response headers for Range streaming.
+        var normContentType = bestand.ContentType.Split(';')[0].Trim();
         var newId = Guid.NewGuid();
-        var extensie = VideoStorageService.ExtensieVanContentType(bestand.ContentType);
+        var extensie = VideoStorageService.ExtensieVanContentType(normContentType);
         var bestandsPad = await videoStorage.OpslaanAsync(newId, bestand.OpenReadStream(), extensie);
 
         var item = new Videoboodschap
@@ -158,7 +161,7 @@ public class VideoboodschappenController(
             Titel = titel.Trim(),
             Beschrijving = string.IsNullOrWhiteSpace(beschrijving) ? null : beschrijving.Trim(),
             BestandsNaam = bestand.FileName,
-            ContentType = bestand.ContentType,
+            ContentType = normContentType,
             BestandsGrootte = bestand.Length,
             DuurSeconden = duurSeconden,
             BestandsPad = bestandsPad,
@@ -205,7 +208,9 @@ public class VideoboodschappenController(
         {
             var fs = videoStorage.Openen(meta.BestandsPad);
             if (fs is null) return NotFound();
-            return File(fs, meta.ContentType, meta.BestandsNaam, enableRangeProcessing: true);
+            // Do NOT pass fileDownloadName — that would set Content-Disposition:attachment
+            // which prevents browsers from streaming inside a <video> element.
+            return File(fs, meta.ContentType, enableRangeProcessing: true);
         }
 
         // Legacy-fallback: blob uit SQLite
@@ -216,7 +221,7 @@ public class VideoboodschappenController(
 
         if (blob is null) return NotFound();
 
-        return File(blob.Inhoud, meta.ContentType, meta.BestandsNaam, enableRangeProcessing: true);
+        return File(blob.Inhoud, meta.ContentType, enableRangeProcessing: true);
     }
 
     // ── PATCH /api/videoboodschappen/{id} ───────────────────────────────────
@@ -291,6 +296,58 @@ public class VideoboodschappenController(
         if (bestandsPad is not null)
             videoStorage.Verwijderen(bestandsPad);
 
+        return NoContent();
+    }
+
+    // ── Temp preview endpoints ──────────────────────────────────────────────
+    // Workflow: record → POST /preview (get tempId) → show via GET /preview/{id}/stream
+    // On accept: parent saves + DELETE /preview/{id}; on retry: DELETE /preview/{id}.
+
+    /// <summary>Saves an in-progress recording to temp storage and returns a tempId.</summary>
+    [HttpPost("preview")]
+    [RequestSizeLimit(104_857_600)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 104_857_600)]
+    public async Task<IActionResult> UploadPreview([FromForm] IFormFile bestand)
+    {
+        if (!bestand.ContentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
+            return BadRequest(new { error = "Alleen videobestanden zijn toegestaan." });
+
+        var normContentType = bestand.ContentType.Split(';')[0].Trim();
+        var tempId = Guid.NewGuid();
+        var extensie = VideoStorageService.ExtensieVanContentType(normContentType);
+        await videoStorage.OpslaanTempAsync(tempId, bestand.OpenReadStream(), extensie);
+
+        return Ok(new { tempId, contentType = normContentType });
+    }
+
+    /// <summary>Streams a temp preview file. Supports HTTP Range for seeking.</summary>
+    [HttpGet("preview/{tempId:guid}/stream")]
+    public IActionResult StreamPreview(Guid tempId)
+    {
+        var pad = videoStorage.VindTempBestand(tempId);
+        if (pad is null) return NotFound();
+
+        var fs = videoStorage.Openen(pad);
+        if (fs is null) return NotFound();
+
+        var ext = Path.GetExtension(pad).TrimStart('.').ToLowerInvariant();
+        var contentType = ext switch
+        {
+            "mp4" => "video/mp4",
+            "ogv" => "video/ogg",
+            _     => "video/webm",
+        };
+
+        return File(fs, contentType, enableRangeProcessing: true);
+    }
+
+    /// <summary>Deletes a temp preview file after accept or retry.</summary>
+    [HttpDelete("preview/{tempId:guid}")]
+    public IActionResult VerwijderPreview(Guid tempId)
+    {
+        var pad = videoStorage.VindTempBestand(tempId);
+        if (pad is not null)
+            videoStorage.Verwijderen(pad);
         return NoContent();
     }
 

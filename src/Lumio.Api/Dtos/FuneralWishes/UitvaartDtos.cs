@@ -94,7 +94,9 @@ public record UitvaartGenodigdeResponse(
     string? Adres,
     string? Postcode,
     string? Woonplaats,
-    string? Notities);
+    string? Notities,
+    Guid? ErfgenaamId,
+    Guid? NoodcontactId);
 
 public record UitvaartGenodigdeUpsertRequest(
     string Naam,
@@ -104,4 +106,6 @@ public record UitvaartGenodigdeUpsertRequest(
     string? Adres,
     string? Postcode,
     string? Woonplaats,
-    string? Notities);
+    string? Notities,
+    Guid? ErfgenaamId = null,
+    Guid? NoodcontactId = null);

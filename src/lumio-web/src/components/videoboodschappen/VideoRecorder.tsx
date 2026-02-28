@@ -17,6 +17,7 @@ type RecordState =
   | "idle"
   | "requesting"
   | "recording"
+  | "uploading-preview"
   | "preview"
   | "not-supported";
 
@@ -28,6 +29,10 @@ function formatTime(seconds: number): string {
   return `${m}:${s}`;
 }
 
+function getApiBase(): string {
+  return process.env.NEXT_PUBLIC_API_URL ?? "";
+}
+
 /** In-browser video recorder using the MediaRecorder API. */
 export function VideoRecorder({
   onVideoSelected,
@@ -37,25 +42,28 @@ export function VideoRecorder({
 
   const [state, setState] = useState<RecordState>("idle");
   const [elapsed, setElapsed] = useState(0);
-  const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
+  const [previewTempId, setPreviewTempId] = useState<string | null>(null);
   const [recordedFile, setRecordedFile] = useState<File | null>(null);
   const [recordedDuration, setRecordedDuration] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
+  // Only used during "recording" state for the live camera feed.
   const liveVideoRef = useRef<HTMLVideoElement>(null);
-  const previewVideoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<number>(0);
 
-  // Cleanup on unmount
+  // Cleanup on unmount — also delete any dangling temp preview
+  const previewTempIdRef = useRef<string | null>(null);
   useEffect(() => {
     return () => {
       stopStream();
       if (timerRef.current) clearInterval(timerRef.current);
-      if (recordedUrl) URL.revokeObjectURL(recordedUrl);
+      if (previewTempIdRef.current) {
+        deletePreviewTemp(previewTempIdRef.current);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -64,6 +72,38 @@ export function VideoRecorder({
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
   }, []);
+
+  // Attach live camera stream when the recording video element mounts
+  useEffect(() => {
+    if (state === "recording" && liveVideoRef.current && streamRef.current) {
+      liveVideoRef.current.srcObject = streamRef.current;
+      liveVideoRef.current.muted = true;
+      liveVideoRef.current.play().catch(() => {});
+    }
+  }, [state]);
+
+  // ── Temp preview helpers ────────────────────────────────────────────────
+
+  const uploadPreviewToServer = async (file: File): Promise<string> => {
+    const fd = new FormData();
+    fd.append("bestand", file);
+    const res = await fetch(`${getApiBase()}/api/videoboodschappen/preview`, {
+      method: "POST",
+      body: fd,
+    });
+    if (!res.ok) throw new Error("Preview upload mislukt");
+    const json = (await res.json()) as { tempId: string };
+    return json.tempId;
+  };
+
+  const deletePreviewTemp = (tempId: string) => {
+    // Fire-and-forget: best-effort cleanup of the temp file
+    fetch(`${getApiBase()}/api/videoboodschappen/preview/${tempId}`, {
+      method: "DELETE",
+    }).catch(() => {});
+  };
+
+  // ── Recording ───────────────────────────────────────────────────────────
 
   const startRecording = useCallback(async () => {
     setError(null);
@@ -81,12 +121,6 @@ export function VideoRecorder({
       });
 
       streamRef.current = stream;
-
-      if (liveVideoRef.current) {
-        liveVideoRef.current.srcObject = stream;
-        liveVideoRef.current.muted = true; // avoid feedback
-        await liveVideoRef.current.play();
-      }
 
       // Choose best supported MIME type
       const mimeType = [
@@ -109,17 +143,29 @@ export function VideoRecorder({
         const blob = new Blob(chunksRef.current, { type: actualMime });
         const ext = actualMime.includes("mp4") ? "mp4" : "webm";
         const file = new File([blob], `opname.${ext}`, { type: actualMime });
-
         const duration = Math.round((Date.now() - startTimeRef.current) / 1000);
-        setRecordedDuration(duration);
-        setRecordedFile(file);
-
-        const url = URL.createObjectURL(blob);
-        setRecordedUrl(url);
-        setState("preview");
 
         stopStream();
         if (timerRef.current) clearInterval(timerRef.current);
+
+        setRecordedFile(file);
+        setRecordedDuration(duration);
+        setState("uploading-preview");
+
+        // Upload the recording to a server-side temp location so we can play
+        // it back via the confirmed-working stream endpoint — completely
+        // bypassing all browser blob URL / autoplay policy issues.
+        void (async () => {
+          try {
+            const tempId = await uploadPreviewToServer(file);
+            previewTempIdRef.current = tempId;
+            setPreviewTempId(tempId);
+            setState("preview");
+          } catch {
+            setError(t("fout"));
+            setState("idle");
+          }
+        })();
       };
 
       recorder.start(250); // collect chunks every 250 ms
@@ -131,7 +177,6 @@ export function VideoRecorder({
         const secs = Math.round((Date.now() - startTimeRef.current) / 1000);
         setElapsed(secs);
 
-        // Auto-stop at max duration
         if (secs >= maxDurationSeconds) {
           recorder.stop();
           if (timerRef.current) clearInterval(timerRef.current);
@@ -153,20 +198,28 @@ export function VideoRecorder({
   }, []);
 
   const opnieuw = useCallback(() => {
-    if (recordedUrl) URL.revokeObjectURL(recordedUrl);
-    setRecordedUrl(null);
+    if (previewTempId) {
+      deletePreviewTemp(previewTempId);
+      previewTempIdRef.current = null;
+    }
+    setPreviewTempId(null);
     setRecordedFile(null);
     setElapsed(0);
     setState("idle");
-  }, [recordedUrl]);
+  }, [previewTempId]);
 
   const accepteer = useCallback(() => {
-    if (recordedFile) {
+    if (recordedFile && previewTempId) {
+      // Kick off real save in the parent component
       onVideoSelected(recordedFile, recordedDuration);
+      // Clean up the temp preview file in the background
+      deletePreviewTemp(previewTempId);
+      previewTempIdRef.current = null;
     }
-  }, [recordedFile, recordedDuration, onVideoSelected]);
+  }, [recordedFile, recordedDuration, previewTempId, onVideoSelected]);
 
   // ── Render ──────────────────────────────────────────────────────────────
+
   if (state === "not-supported") {
     return (
       <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed p-6 text-center">
@@ -177,14 +230,27 @@ export function VideoRecorder({
     );
   }
 
-  if (state === "preview" && recordedUrl) {
+  if (state === "uploading-preview") {
+    return (
+      <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed p-8 text-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">{t("previewLaden")}</p>
+      </div>
+    );
+  }
+
+  if (state === "preview" && previewTempId) {
+    const previewSrc = `${getApiBase()}/api/videoboodschappen/preview/${previewTempId}/stream`;
     return (
       <div className="space-y-3">
+        {/* Server-streamed playback — same mechanism as confirmed-working post-save player */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
-          ref={previewVideoRef}
-          src={recordedUrl}
+          key={previewTempId}
+          src={previewSrc}
           controls
+          autoPlay
+          playsInline
           className="w-full rounded-lg bg-black"
           style={{ maxHeight: 300 }}
         />
@@ -211,19 +277,15 @@ export function VideoRecorder({
     const remaining = maxDurationSeconds - elapsed;
     return (
       <div className="space-y-3">
-        {/* Live preview */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           ref={liveVideoRef}
-          autoPlay
           playsInline
-          muted
           className="w-full rounded-lg bg-black"
           style={{ maxHeight: 300 }}
         />
 
         <div className="flex items-center justify-between">
-          {/* Recording indicator + timer */}
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-destructive" />
             <span className="font-mono text-sm tabular-nums">

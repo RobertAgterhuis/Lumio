@@ -228,6 +228,7 @@
       "beherenLink": "Manage documents →"
     },
     "verbergen": "Hide",
+    "sectieVerplaatsen": "Move section",
     "helpHint": "More info",
     "voortgang": {
       "titel": "Legacy progress",
@@ -713,6 +714,8 @@
     "toevoegen": "Add heir",
     "noodcodesInfoLabel": "Distribute emergency codes:",
     "noodcodesInfo": "Your master password is securely split into unique codes for your heirs. Only when enough heirs (the 'threshold') combine their code can the password be recovered. A single code alone is worthless.",
+    "synclinkMeldingLabel": "Note:",
+    "synclinkMelding": "When you change an heir's name or contact details, previously saved data in linked forms (e.g. testament, funeral wishes, advance directive) is not automatically updated. Re-open the relevant form to refresh the data.",
     "geenErfgenamen": "No heirs added yet.",
     "aantal": "Heirs ({aantal})",
     "opslaanMislukt": "Save failed.",
@@ -2543,7 +2546,30 @@
     "selecteer": "— Select existing person —",
     "handmatig": "Other (enter manually)",
     "kiesUitLijst": "← Select from existing persons",
-    "noodcontact": "Emergency contact"
+    "noodcontact": "Emergency contact",
+    "laden": "Loading…",
+    "nieuwAanmaken": "Create new…",
+    "optgroepErfgenamen": "Heirs",
+    "optgroepNoodcontacten": "Emergency contacts",
+    "zoekFilter": "Search person…",
+    "createDialog": {
+      "titel": "Create new person",
+      "alsErfgenaam": "As heir",
+      "alsNoodcontact": "As emergency contact",
+      "voornaam": "First name",
+      "achternaam": "Last name",
+      "naam": "Name",
+      "relatie": "Relation",
+      "rol": "Role",
+      "telefoon": "Phone",
+      "email": "Email",
+      "opslaan": "Create & select",
+      "annuleren": "Cancel",
+      "voornaamVereist": "First name is required",
+      "achternaamVereist": "Last name is required",
+      "naamVereist": "Name is required",
+      "opslaanMislukt": "Failed to create. Please try again."
+    }
   },
   "domainStatus": {
     "afgerond": "Finished",
@@ -3278,6 +3304,7 @@
       "permissieGeweigerd": "Access to camera or microphone denied.",
       "fout": "Recording not possible. Check your camera.",
       "klaarVoorOpname": "Ready to record",
+      "previewLaden": "Preparing preview...",
       "maxDuur": "Maximum {minuten} minutes",
       "maxOver": "{seconden} sec remaining",
       "nietBeschikbaar": "Recording not available in this browser.",

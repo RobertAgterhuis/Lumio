@@ -46,10 +46,14 @@ export function ExecuteurDialog({
               email: p.email ?? form.email,
               adres: p.adres ?? form.adres,
               postcode: p.postcode ?? form.postcode,
-              woonplaats: p.woonplaats ?? form.woonplaats
+              woonplaats: p.woonplaats ?? form.woonplaats,
+              erfgenaamId: p.erfgenaamId,
+              noodcontactId: p.noodcontactId,
             })}
+            onClear={() => onFormChange({ ...form, naam: "", relatie: "", telefoon: "", email: "", adres: "", postcode: "", woonplaats: "", erfgenaamId: undefined, noodcontactId: undefined })}
             source="both"
             placeholder={t("execDialog.naamPlaceholder")}
+            showCreateNew
           />
         </div>
         <div className="space-y-2">
