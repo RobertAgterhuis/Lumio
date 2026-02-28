@@ -49,11 +49,11 @@ lumio/
 │   ├── lumio-web/            # Next.js 16 frontend
 │   │   ├── src/app/          # App Router pagina's (22 routes)
 │   │   ├── src/components/   # UI-componenten (14 groepen)
-│   │   ├── src/stores/       # Zustand stores (2)
-│   │   ├── src/hooks/        # Custom hooks (3)
+│   │   ├── src/stores/       # Zustand stores (4): authStore, preferencesStore, toastStore, helpStore
+│   │   ├── src/hooks/        # Custom hooks (9+)
 │   │   ├── src/lib/          # API client, utilities
 │   │   ├── src/styles/       # Design tokens (tokens.css)
-│   │   └── messages/         # i18n vertalingen (nl.json, en.json)
+│   │   └── messages/         # i18n vertalingen — nl/ en/ (bronbestanden), nl.json + en.json (gegenereerd)
 │   │
 │   └── lumio-desktop/        # Electron 35 shell
 │       └── src/main/         # Main process (sidecar, window, paths, i18n)

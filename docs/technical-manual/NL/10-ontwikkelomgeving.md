@@ -129,7 +129,7 @@ npx vitest --coverage    # Met code coverage
 | `strict` | true |
 | `jsx` | react-jsx |
 | `incremental` | true |
-| **Path alias** | `@/*` → `./src/*` |
+| **Path alias** | `@/*` → `./src/*`, `@messages/*` → `./messages/*` |
 | **Plugin** | `next` |
 
 ### Desktop (`tsconfig.json`)

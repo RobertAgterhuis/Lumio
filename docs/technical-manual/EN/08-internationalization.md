@@ -16,8 +16,18 @@ Lumio supports **Dutch** (default) and **English**. Translations are managed at 
 
 ```
 src/lumio-web/
-├── src/i18n/
-│   └── request.ts       # getRequestConfig() — locale from localStorage
+├── src/
+│   ├── i18n/
+│   │   └── request.ts                         # getRequestConfig() — locale from localStorage
+│   │                                          # loads root bundle only: shared+ui+auth+dashboard
+│   ├── components/providers/
+│   │   ├── LocaleProvider.tsx                 # Root NextIntlClientProvider (root bundle)
+│   │   └── DomainMessagesProvider.tsx         # Supplemental provider per domain
+│   └── app/(authenticated)/
+│       ├── layout.tsx                         # Authenticated shell (root bundle)
+│       ├── boedel/layout.tsx                  # → DomainMessagesProvider with boedel.json
+│       ├── testament/layout.tsx               # → DomainMessagesProvider with testament.json
+│       └── ... (15 domain layouts in total)
 ├── messages/
 │   ├── nl/               # Source files per domain (edit these)
 │   │   ├── shared.json   # common, nav, enums, feedback, errors, ...
@@ -34,6 +44,11 @@ src/lumio-web/
 ```
 
 > **Important**: Always edit files in `messages/nl/` or `messages/en/`. The root files `nl.json` and `en.json` are generated automatically on `npm run dev` and `npm run build` via the `predev`/`prebuild` hooks.
+
+**Path alias**: `@messages/*` maps to `./messages/` (root of lumio-web). Use this alias in source file imports:
+```ts
+import nlMessages from "@messages/nl/boedel.json";
+```
 
 **Locale detection** (static export — no server-side routing):
 1. Client-side: read `localStorage.getItem("lumio-locale")`
@@ -92,6 +107,52 @@ Both language files previously had an identical structure with 39 sections (now 
 | `testamentWizard` | 89 | `euthanasieWizard` | 102 |
 | `donorWizard` | 56 | `uitvaartWizard` | 113 |
 | `videoboodschappen` | 28 | | |
+
+### Runtime Bundle Splitting
+
+To reduce initial load time, the i18n bundle is split per route:
+
+#### Root bundle (~36 KB)
+
+The `LocaleProvider` (and `request.ts` for server-side) always loads the following four files:
+
+| File | Reason |
+|------|--------|
+| `shared.json` | Cross-cutting namespaces present on every page |
+| `ui.json` | Generic UI components (`personSelect`, `help`, etc.) |
+| `auth.json` | `auth.sessie` used in `(authenticated)/layout.tsx` |
+| `dashboard.json` | `NotificationsDropdown` (always visible in the Header) |
+
+#### Domain bundle (per route)
+
+Each domain route segment has its own `layout.tsx` that renders a `DomainMessagesProvider` with the corresponding domain JSON statically imported (both languages):
+
+```tsx
+// e.g. src/app/(authenticated)/boedel/layout.tsx
+import { DomainMessagesProvider } from "@/components/providers/DomainMessagesProvider";
+import nlMessages from "@messages/nl/boedel.json";
+import enMessages from "@messages/en/boedel.json";
+
+const MESSAGES = { nl: nlMessages, en: enMessages };
+
+export default function BoedelLayout({ children }) {
+  return <DomainMessagesProvider messages={MESSAGES}>{children}</DomainMessagesProvider>;
+}
+```
+
+#### `DomainMessagesProvider`
+
+`src/components/providers/DomainMessagesProvider.tsx` is a client component that:
+1. Reads the active locale via `useLocale()`
+2. Reads the full parent messages via `useMessages()` (root bundle)
+3. Merges domain namespaces with the parent messages (`{ ...parentMessages, ...domainMessages }`)
+4. Exposes the combined set via a nested `NextIntlClientProvider`
+
+> **Important**: next-intl v4 does **not** automatically merge nested providers. `DomainMessagesProvider` handles this explicitly via `useMessages()`.
+
+Domain routes that do **not** need their own layout (namespaces already in root bundle):
+- `dashboard/` — `dashboard.json` is part of the root bundle
+- `help/` — `help` and `hulpteksten` are in `ui.json` (root bundle)
 
 ### Usage in Components
 

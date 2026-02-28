@@ -56,6 +56,8 @@ The `(authenticated)` route group shares a layout with:
 - **Sidebar** — Navigation to all domains
 - **Error boundary** — Catches render errors
 
+Each domain route segment also has its own `layout.tsx` containing a `DomainMessagesProvider` that loads domain-specific translation namespaces (see [Chapter 8 — Internationalization](./08-internationalization.md#runtime-bundle-splitting)).
+
 ## Components (14 groups)
 
 ### UI Primitives (`components/ui/`)
@@ -161,8 +163,8 @@ See chapter 4 (Security) for the full list.
 | `noodcontacten/` | `NoodkaartQR` |
 | `tijdlijn/` | `TijdlijnStapRow` |
 | `videoboodschappen/` | `VideoboodschapDialog`, `VideoRecorder`, `useVideoboodschappen` |
-| `providers/` | `LocaleProvider` |
-| Root | `PasswordGenerator`, `PersonSelect`, `VoorbeeldDialog` |
+| `providers/` | `LocaleProvider`, `DomainMessagesProvider` |
+| Root | `PasswordGenerator`, `PersonSelect`, `PersonCreateInlineDialog`, `VoorbeeldDialog` |
 
 ## Stores (Zustand)
 
@@ -173,7 +175,9 @@ Manages authentication and unlock status:
 | State | Type | Purpose |
 |-------|------|---------|
 | `isUnlocked` | boolean | Database unlocked? |
+| `isFirstRun` | boolean | First launch (no profile yet)? |
 | `isReadOnly` | boolean | Heir mode (read-only)? |
+| `isLoading` | boolean | Application initialising? |
 | `profiles` | Profile[] | All profiles for this Lumio installation |
 | `activeProfile` | Profile \| null | Currently active profile |
 | `profileSelected` | boolean | Whether a profile has been selected |
@@ -197,6 +201,8 @@ Manages user preferences (localStorage-persisted, keyed by profile ID):
 | `hiddenDomeinKaarten` | string[] | Domain card names that are hidden |
 | `domeinKaartenVolgorde` | string[] | Custom order of domain cards |
 | `sectieVolgorde` | string[] | Custom order of dashboard sections |
+| `instellingenVolgordeLinks` | string[] | Order of left column in Settings |
+| `instellingenVolgordeRechts` | string[] | Order of right column in Settings |
 | `sidebarCollapsed` | boolean | Sidebar collapsed state |
 
 ### `toastStore`
@@ -211,6 +217,17 @@ Manages toast notifications:
 | `clearToasts` | Function | Remove all toasts |
 
 **Convenience API:** `toast.success()`, `toast.error()`, `toast.warning()`, `toast.info()`
+
+### `helpStore`
+
+Manages the state of the help panel:
+
+| State | Type | Purpose |
+|-------|------|---------|
+| `isOpen` | boolean | Help panel visible? |
+| `activeSection` | string \| null | Currently active help topic |
+| `openHelp` | Function | Open the panel (optionally with a section) |
+| `closeHelp` | Function | Close the panel |
 
 ## Data Fetching (React Query)
 
@@ -301,6 +318,9 @@ Renders active toasts in bottom-right corner. Wrapped in app layout.
 | `useDomainUpdate` | Update mutation with cache invalidation |
 | `useDomainDelete` | Delete mutation with cache invalidation |
 | `useDomainMutations` | Combined CRUD mutations |
+| `useDocumenten` | Documents fetch, upload, and delete |
+| `useFieldHelp` | Context-sensitive help text per form field |
+| `useHelpSearch` | Full-text search in help content |
 | `useIdleTimer` | Detects inactivity, auto-lock after timeout |
 | `useKeyboardShortcuts` | Global keyboard shortcuts (Ctrl+K search, etc.) |
 | `useTheme` | Theme toggle (light/dark), localStorage-persistent |

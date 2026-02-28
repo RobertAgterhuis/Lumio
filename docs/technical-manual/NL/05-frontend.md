@@ -56,6 +56,8 @@ De `(authenticated)` route group deelt een layout met:
 - **Sidebar** — Navigatie naar alle domeinen
 - **Error boundary** — Vangt renderfouten op
 
+Elk domein-route-segment heeft daarnaast een eigen `layout.tsx` met een `DomainMessagesProvider` die de domein-specifieke vertaalnamespaces laadt (zie [Hoofdstuk 8 — Internationalisering](./08-internationalisering.md#runtime-bundle-splitsing)).
+
 ## Componenten (14 groepen)
 
 ### UI Primitieven (`components/ui/`)
@@ -114,6 +116,12 @@ Herbruikbare basisbouwstenen, elk met Storybook-story:
 | `ProfielSuggesties` | Aanbevelingen voor ontbrekende gegevens |
 | `StatistiekenWidget` | Samenvattende statistieken |
 | `VoortgangGranulair` | Gedetailleerde voortgang per veld |
+| `MeldingenWidget` | Meldingen-widget op het dashboard |
+| `BackupStatusWidget` | Indicator voor recente backup |
+| `AanbevolenStapWidget` | Volgende aanbevolen domein om in te vullen |
+| `DocumentenVerloopdatumWidget` | Documenten die bijna verlopen |
+| `SortableDomeinKaart` | Versleepbare domeinkaart (DnD sorteerbaar) |
+| `SortableSection` | Versleepbare dashboardsectie-wrapper |
 
 ### Domein (`components/domain/`)
 
@@ -153,9 +161,10 @@ Zie hoofdstuk 4 (Beveiliging) voor de volledige lijst.
 | `notities/` | `SectieNotitie` |
 | `nabestaanden/` | `NabestaandenDashboard` |
 | `noodcontacten/` | `NoodkaartQR` |
+| `tijdlijn/` | `TijdlijnStapRow` |
 | `videoboodschappen/` | `VideoboodschapDialog`, `VideoRecorder`, `VideoboodschapSpeler` |
-| `providers/` | `LocaleProvider` |
-| Root | `PasswordGenerator`, `PersonSelect`, `VoorbeeldDialog` |
+| `providers/` | `LocaleProvider`, `DomainMessagesProvider` |
+| Root | `PasswordGenerator`, `PersonSelect`, `PersonCreateInlineDialog`, `VoorbeeldDialog` |
 
 ## Stores (Zustand)
 
@@ -166,38 +175,35 @@ Beheert authenticatie- en ontgrendelstatus:
 | State | Type | Doel |
 |-------|------|------|
 | `isUnlocked` | boolean | Database ontgrendeld? |
-| `isReadOnly` | boolean | Nabestaandenmodus? |
+| `isFirstRun` | boolean | Eerste keer opstarten (nog geen profiel)? |
+| `isReadOnly` | boolean | Nabestaandenmodus (alleen-lezen)? |
+| `isLoading` | boolean | Applicatie aan het initialiseren? |
 | `profiles` | Profile[] | Beschikbare profielen |
 | `activeProfile` | Profile \| null | Huidig actief profiel |
 | `profileSelected` | boolean | Is er een profiel geselecteerd? |
-| `unlock` | Function | Ontgrendel de database |
-| `lock` | Function | Vergrendel de database |
-| `setActiveProfile` | Function | Stel actief profiel in |
+| `profileNeedsSetup` | boolean | Eerste installatie vereist voor dit profiel? |
+| `profileFotoVersion` | number | Teller die foto-refresh afdwingt na upload |
 
 ### `preferencesStore`
 
-Beheert gebruikersvoorkeuren (localStorage-gepersisteerd):
+Beheert gebruikersvoorkeuren (localStorage-gepersisteerd, per profiel-ID):
 
 | State | Type | Doel |
 |-------|------|------|
-| `showVoortgang` | boolean | Dashboard voortgangsindicator tonen |
-| `showVoortgangGranulair` | boolean | Gedetailleerde voortgang tonen |
-| `showSuggesties` | boolean | Suggesties tonen |
-| `showDomeinKaarten` | boolean | Domeinkaarten tonen |
+| `showVoortgang` | boolean | Voortgangsindicator tonen |
 | `showStatistieken` | boolean | Statistieken-widget tonen |
+| `showVoortgangGranulair` | boolean | Gedetailleerde voortgang tonen |
+| `showSuggesties` | boolean | Suggesties-widget tonen |
 | `showMeldingen` | boolean | Meldingen-widget tonen |
-| `showBackup` | boolean | Backup-widget tonen |
-| `showAanbevolen` | boolean | Aanbevolen-widget tonen |
-| `showVerloopdatum` | boolean | Verloopdatumcontrole tonen |
-| `hiddenDomeinKaarten` | string[] | IDs van verborgen domeinkaarten |
-| `domeinKaartenVolgorde` | string[] | Volgorde van domeinkaarten |
-| `sectieVolgorde` | string[] | Volgorde van dashboardsecties |
+| `showBackup` | boolean | Backup-statuswidget tonen |
+| `showAanbevolen` | boolean | Aanbevolen volgende stap tonen |
+| `showVerloopdatum` | boolean | Documenten-verloopdatumwidget tonen |
+| `hiddenDomeinKaarten` | string[] | Namen van verborgen domeinkaarten |
+| `domeinKaartenVolgorde` | string[] | Aangepaste volgorde van domeinkaarten |
+| `sectieVolgorde` | string[] | Aangepaste volgorde van dashboardsecties |
+| `instellingenVolgordeLinks` | string[] | Volgorde van de linkerkolom in Instellingen |
+| `instellingenVolgordeRechts` | string[] | Volgorde van de rechterkolom in Instellingen |
 | `sidebarCollapsed` | boolean | Zijbalk ingeklapt? |
-| `taal` | string | Taalinstelling (`nl` / `en`) |
-| `groteTekst` | boolean | Grote-tekst toegankelijkheidsmodus |
-| `autoLockMinuten` | number | Automatisch vergrendelen na X minuten inactiviteit |
-| `togglePreference` | Function | Schakel een boolean voorkeur om |
-| `setPreference` | Function | Stel een voorkeurswaarde in |
 
 ### `toastStore`
 
@@ -211,6 +217,17 @@ Beheert toast-notificaties:
 | `clearToasts` | Function | Verwijder alle toasts |
 
 **Convenience API:** `toast.success()`, `toast.error()`, `toast.warning()`, `toast.info()`
+
+### `helpStore`
+
+Beheert de staat van het help-paneel:
+
+| State | Type | Doel |
+|-------|------|------|
+| `isOpen` | boolean | Help-paneel zichtbaar? |
+| `activeSection` | string \| null | Actief help-onderwerp |
+| `openHelp` | Function | Open het paneel (optioneel met sectie) |
+| `closeHelp` | Function | Sluit het paneel |
 
 ## Data Fetching (React Query)
 
@@ -251,6 +268,14 @@ await update.mutateAsync({ id, data: formData });
 await remove.mutateAsync(id);
 ```
 
+### Query Key Factory
+
+```ts
+domainKeys.all(domain)           // ['domain', 'boedel/bezittingen']
+domainKeys.detail(domain, id)    // ['domain', 'boedel/bezittingen', '123']
+domainKeys.list(domain, params)  // ['domain', 'boedel/bezittingen', 'list', {...}]
+```
+
 ## Toast-notificaties
 
 Globaal toast-notificatiesysteem met Zustand.
@@ -270,6 +295,19 @@ toast.info("Nieuwe update beschikbaar");
 toast.success("Opgeslagen!", 5000);
 ```
 
+### Toast Varianten
+
+| Variant | Doel |
+|---------|------|
+| `success` | Bevestiging van geslaagde actie |
+| `error` | Foutmeldingen |
+| `warning` | Waarschuwingen |
+| `info` | Informatiemeldingen |
+
+### ToastProvider Component
+
+Rendert actieve toasts rechtsonder. Wordt gewrapped in de app-layout.
+
 ## Hooks
 
 | Hook | Doel |
@@ -280,6 +318,9 @@ toast.success("Opgeslagen!", 5000);
 | `useDomainUpdate` | Update-mutatie met cache-invalidatie |
 | `useDomainDelete` | Delete-mutatie met cache-invalidatie |
 | `useDomainMutations` | Gecombineerde CRUD-mutaties |
+| `useDocumenten` | Documenten ophalen, uploaden en verwijderen |
+| `useFieldHelp` | Contextgevoelige help per formulierveld |
+| `useHelpSearch` | Zoeken door help-inhoud |
 | `useIdleTimer` | Detecteert inactiviteit, auto-lock na timeout |
 | `useKeyboardShortcuts` | Globale sneltoetsen (Ctrl+K zoeken, etc.) |
 | `useTheme` | Thema-toggle (licht/donker), localStorage-persistent |
