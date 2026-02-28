@@ -1,0 +1,366 @@
+{
+  "common": {
+    "zoeken": "Search",
+    "vergrendelen": "Lock",
+    "hulp": "Help",
+    "lichtThema": "Light theme",
+    "donkerThema": "Dark theme",
+    "opnieuwProberen": "Try again",
+    "naarDashboard": "Go to dashboard",
+    "actiefBlijven": "Stay active",
+    "omTeOpenen": "to open",
+    "meerInformatie": "More information",
+    "meldingen": "Notifications",
+    "sluiten": "Close"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "mijnProfiel": "My Profile",
+    "testament": "Last Will",
+    "wilsverklaring": "Living Will",
+    "donorregistratie": "Donor Registration",
+    "digitaalBezit": "Digital Assets",
+    "boedel": "Estate",
+    "uitvaartwensen": "Funeral Wishes",
+    "documenten": "Documents",
+    "erfgenamen": "Heirs",
+    "noodcontacten": "Emergency Contacts",
+    "tijdlijnOverlijden": "Death Timeline",
+    "videoboodschappen": "Video Messages",
+    "exporteren": "Export",
+    "activiteitenlog": "Activity Log",
+    "instellingen": "Settings",
+    "handleiding": "User Guide",
+    "navigatie": "Main navigation",
+    "groep": {
+      "overzicht": "Overview",
+      "wensen": "Wishes",
+      "bezittingen": "Assets",
+      "personen": "People",
+      "hulpmiddelen": "Tools"
+    }
+  },
+  "enums": {
+    "burgerlijkeStaat": {
+      "ongehuwd": "Unmarried",
+      "gehuwd": "Married",
+      "geregistreerdPartnerschap": "Registered partnership",
+      "gescheiden": "Divorced",
+      "weduwWeduwnaar": "Widow / Widower"
+    },
+    "huwelijksVoorwaarden": {
+      "nietVanToepassing": "Not applicable",
+      "gemeenschapVanGoederen": "Community of property",
+      "beperktGemeenschap": "Limited community",
+      "koudeUitsluiting": "Complete exclusion"
+    },
+    "legitimatie": {
+      "geen": "None",
+      "paspoort": "Passport",
+      "identiteitskaart": "Identity card",
+      "rijbewijs": "Driver's license"
+    },
+    "relatie": {
+      "Partner": "Partner",
+      "Kind": "Child",
+      "Ouder": "Parent",
+      "Broer/Zus": "Sibling",
+      "Kleinkind": "Grandchild",
+      "Neef/Nicht": "Nephew/Niece",
+      "Vriend": "Friend",
+      "Organisatie": "Organization",
+      "Anders": "Other",
+      "selecteer": "Select..."
+    },
+    "entityType": {
+      "FysiekBezit": "Asset",
+      "Bankrekening": "Bank account",
+      "Verzekering": "Insurance",
+      "DigitaalAccount": "Digital account",
+      "CryptoWallet": "Crypto wallet"
+    },
+    "bezitCategorie": {
+      "selecteer": "Select...",
+      "onroerendGoed": "Real estate",
+      "voertuig": "Vehicle",
+      "sieraden": "Jewellery",
+      "kunst": "Art",
+      "elektronica": "Electronics",
+      "meubels": "Furniture",
+      "overig": "Other"
+    },
+    "rekeningType": {
+      "selecteer": "Select...",
+      "betaalrekening": "Current account",
+      "spaarrekening": "Savings account",
+      "beleggingsrekening": "Investment account",
+      "deposito": "Deposit",
+      "overig": "Other"
+    },
+    "verzekeringsType": {
+      "selecteer": "Select...",
+      "levensverzekering": "Life insurance",
+      "uitvaartverzekering": "Funeral insurance",
+      "overlijdensrisicoverzekering": "Term life insurance",
+      "woonverzekering": "Home insurance",
+      "autoverzekering": "Car insurance",
+      "zorgverzekering": "Health insurance",
+      "overig": "Other"
+    },
+    "schuldType": {
+      "selecteer": "Select...",
+      "hypotheek": "Mortgage",
+      "persoonlijkeLening": "Personal loan",
+      "studielening": "Student loan",
+      "creditcard": "Credit card",
+      "zakelijkeLening": "Business loan",
+      "overig": "Other"
+    },
+    "hypotheekVorm": {
+      "selecteer": "Select mortgage type...",
+      "aflossingsvrij": "Interest-only",
+      "lineair": "Linear",
+      "annuitair": "Annuity",
+      "spaarhypotheek": "Savings mortgage",
+      "beleggingshypotheek": "Investment mortgage"
+    },
+    "vermogensSoort": {
+      "prive": "Private",
+      "gemeenschap": "Community"
+    },
+    "gewensteActie": {
+      "selecteer": "Select...",
+      "verwijderen": "Delete",
+      "herdenkingsstatus": "Memorial status",
+      "overdragen": "Transfer to heir",
+      "geenActie": "No action"
+    },
+    "cryptoType": {
+      "selecteer": "Select...",
+      "bitcoin": "Bitcoin (BTC)",
+      "ethereum": "Ethereum (ETH)",
+      "solana": "Solana (SOL)",
+      "cardano": "Cardano (ADA)",
+      "overig": "Other"
+    },
+    "accountCategorie": {
+      "selecteer": "Select category...",
+      "alle": "All categories",
+      "socialMedia": "Social Media",
+      "email": "Email",
+      "banking": "Banking",
+      "shopping": "Shopping",
+      "streaming": "Streaming",
+      "gaming": "Gaming",
+      "cloud": "Cloud",
+      "werk": "Work",
+      "gezondheid": "Health",
+      "overheid": "Government",
+      "overig": "Other"
+    },
+    "documentCategorie": {
+      "selecteer": "Select...",
+      "testament": "Will",
+      "identiteitsbewijs": "Identity document",
+      "akte": "Deed",
+      "verzekeringspolis": "Insurance policy",
+      "medisch": "Medical document",
+      "financieel": "Financial document",
+      "overig": "Other"
+    },
+    "noodcontactRol": {
+      "selecteer": "Select role...",
+      "vertrouwenspersoon": "Trusted person",
+      "huisarts": "General practitioner",
+      "behandelendArts": "Attending physician / Specialist",
+      "tandarts": "Dentist",
+      "thuiszorg": "Home care / Caregiver",
+      "leidinggevende": "Manager / Supervisor",
+      "hrAfdeling": "HR Department",
+      "pensioencontact": "Pension contact",
+      "boekhouder": "Accountant",
+      "notaris": "Notary",
+      "advocaat": "Lawyer",
+      "financieelAdviseur": "Financial advisor",
+      "uitvaartondernemer": "Funeral director",
+      "kerkelijkContactpersoon": "Church contact",
+      "overig": "Other"
+    },
+    "auditActie": {
+      "alleActies": "All actions",
+      "aangemaakt": "Created",
+      "gewijzigd": "Modified",
+      "verwijderd": "Deleted",
+      "ontgrendeld": "Unlocked",
+      "vergrendeld": "Locked",
+      "wachtwoordGewijzigd": "Password changed",
+      "export": "Export"
+    }
+  },
+  "feedback": {
+    "opgeslagen": "Changes saved",
+    "verwijderd": "Item deleted",
+    "aangemaakt": "Item created",
+    "bijgewerkt": "Item updated",
+    "fout": "Something went wrong",
+    "foutBijOpslaan": "Error while saving",
+    "foutBijVerwijderen": "Error while deleting",
+    "foutBijLaden": "Error while loading"
+  },
+  "errors": {
+    "ietsMisgegaan": "Something went wrong",
+    "onverwachteFout": "An unexpected error occurred while loading this page. Please try again or go back to the dashboard.",
+    "global": {
+      "titel": "A critical error occurred",
+      "beschrijving": "The application could not be loaded. Please try again.",
+      "opnieuw": "Try again"
+    },
+    "page": {
+      "titel": "Something went wrong",
+      "beschrijving": "An unexpected error occurred while loading this page. Please try again or return to the dashboard.",
+      "naarDashboard": "Go to dashboard",
+      "opnieuw": "Try again"
+    },
+    "timeout": "The request took too long. Please try again.",
+    "netwerk": "No connection to the server. Check your network connection."
+  },
+  "idle": {
+    "sessieVerloopt": "Session expiring",
+    "sessieWaarschuwing": "Your session will be automatically locked in {seconds} seconds due to inactivity."
+  },
+  "verwijderBevestiging": {
+    "titel": "Delete {type}",
+    "beschrijving": "Are you sure you want to delete \"{naam}\"? This action cannot be undone.",
+    "itemLabel": "This item will be deleted:",
+    "bevestigen": "Delete",
+    "annuleren": "Cancel",
+    "types": {
+      "erfgenaam": "Heir",
+      "bezit": "Asset",
+      "rekening": "Account",
+      "verzekering": "Insurance",
+      "schuld": "Debt",
+      "document": "Document",
+      "account": "Account",
+      "wachtwoord": "Password",
+      "wallet": "Wallet",
+      "noodcontact": "Emergency Contact",
+      "begunstigde": "Beneficiary",
+      "executeur": "Executor",
+      "genodigde": "Guest",
+      "detail": "Detail"
+    }
+  },
+  "sectieNotitie": {
+    "toevoegen": "Add note",
+    "titel": "Note",
+    "placeholder": "e.g. Note: the original deeds are in the safe in the bedroom.",
+    "annuleren": "Cancel",
+    "opslaan": "Save",
+    "opslaanBezig": "Saving..."
+  },
+  "domainStatus": {
+    "afgerond": "Finished",
+    "afgerondBeschrijving": "This section has been marked as finished.",
+    "nietAfgerond": "This section has not yet been marked as finished.",
+    "reviewNodig": "Review needed",
+    "reviewBeschrijving": "It is time to review this section and verify that everything is still up to date.",
+    "markeerAfgerond": "Mark as finished",
+    "markeringOpheffen": "Remove marking",
+    "opnieuwBevestigen": "Confirm again"
+  },
+  "search": {
+    "placeholder": "Search all records...",
+    "laden": "Searching...",
+    "geenResultaten": "No results found for \"{query}\"",
+    "geenResultatenTip": "Try a different search term or use less specific words",
+    "minimaalTekens": "Type at least 2 characters to search",
+    "resultaten": "{count, plural, one {# result} other {# results}}",
+    "footer": "Search heirs, accounts, assets...",
+    "recent": "Recent searches",
+    "snelNavigatie": "Quick navigation",
+    "navigeer": "navigate",
+    "openen": "open",
+    "sluiten": "close",
+    "domein": {
+      "erfgenamen": "Heirs",
+      "noodcontacten": "Emergency Contacts",
+      "digitaleAccounts": "Digital Accounts",
+      "wachtwoorden": "Passwords",
+      "cryptoWallets": "Crypto Wallets",
+      "bezittingen": "Assets",
+      "bankrekeningen": "Bank Accounts",
+      "verzekeringen": "Insurance",
+      "schulden": "Debts",
+      "documenten": "Documents"
+    }
+  },
+  "shortcuts": {
+    "titel": "Keyboard Shortcuts",
+    "zoeken": "Search",
+    "vergrendelen": "Lock",
+    "nieuwItem": "New item",
+    "sneltoetsenTonen": "Show keyboard shortcuts",
+    "gaNaarDashboard": "Go to Dashboard",
+    "gaNaarProfiel": "Go to Profile",
+    "gaNaarTestament": "Go to Will",
+    "gaNaarWilsverklaring": "Go to Euthanasia Directive",
+    "gaNaarDonorregistratie": "Go to Donor Registration",
+    "gaNaarDigitaalBezit": "Go to Digital Assets",
+    "gaNaarBoedel": "Go to Estate",
+    "gaNaarUitvaartwensen": "Go to Funeral Wishes",
+    "gaNaarDocumenten": "Go to Documents",
+    "gaNaarErfgenamen": "Go to Heirs",
+    "gaNaarNoodcontacten": "Go to Emergency Contacts",
+    "gaNaarExporteren": "Go to Export",
+    "gaNaarActiviteitenlog": "Go to Activity Log",
+    "gaNaarInstellingen": "Go to Settings",
+    "gaNaarHelp": "Go to Help"
+  },
+  "wizard": {
+    "welkom": "Welcome to Lumio",
+    "doorloop": "Complete these steps to set up your legacy",
+    "sluiten": "Close wizard",
+    "voltooid": "{voltooid} of {totaal} completed",
+    "laterInvullen": "Fill in later",
+    "nietMeerTonen": "Do not show again",
+    "afronden": "Finish",
+    "stappen": {
+      "profiel": {
+        "titel": "My Profile",
+        "beschrijving": "Save your personal details as the foundation for your legacy."
+      },
+      "noodcontacten": {
+        "titel": "Emergency Contacts",
+        "beschrijving": "Who should be contacted in case of emergency?"
+      },
+      "testament": {
+        "titel": "Last Will",
+        "beschrijving": "Record testamentary information, such as executors and beneficiaries."
+      },
+      "uitvaart": {
+        "titel": "Funeral Wishes",
+        "beschrijving": "Describe how you want your funeral to be arranged."
+      },
+      "erfgenamen": {
+        "titel": "Heirs",
+        "beschrijving": "Register your heirs and optionally distribute emergency codes."
+      },
+      "backup": {
+        "titel": "Create Backup",
+        "beschrijving": "Create an initial backup to secure your data."
+      }
+    },
+    "shell": {
+      "opslaanMislukt": "Save failed.",
+      "stap": "Step {huidig} of {totaal}: {titel}",
+      "annuleren": "Cancel",
+      "vorige": "Previous",
+      "opslaanBezig": "Saving...",
+      "opslaan": "Save",
+      "volgende": "Next",
+      "voortgangHersteld": "Your progress has been restored. You are at step {stap}.",
+      "opnieuwBeginnen": "Start over"
+    }
+  }
+}

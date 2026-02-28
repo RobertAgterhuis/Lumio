@@ -3,8 +3,10 @@
 import { Component } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
-import nlMessages from "../../../messages/nl.json";
-import enMessages from "../../../messages/en.json";
+// ErrorBoundary uses only the shared bundle (common + errors namespaces).
+// These are always present in the root bundle regardless of which domain is active.
+import nlShared from "../../../messages/nl/shared.json";
+import enShared from "../../../messages/en/shared.json";
 
 interface Props {
   children: React.ReactNode;
@@ -15,9 +17,10 @@ interface State {
 }
 
 // Static message map — class components cannot use hooks.
-const messagesByLocale: Record<string, typeof nlMessages> = {
-  nl: nlMessages,
-  en: enMessages,
+// Only the `errors` and `common` namespaces are needed here; both are in shared.json.
+const messagesByLocale: Record<string, typeof nlShared> = {
+  nl: nlShared,
+  en: enShared,
 };
 
 function getErrorTranslations() {
@@ -25,7 +28,7 @@ function getErrorTranslations() {
     typeof window !== "undefined"
       ? localStorage.getItem("lumio-locale") ?? "nl"
       : "nl";
-  const messages = messagesByLocale[locale] ?? nlMessages;
+  const messages = messagesByLocale[locale] ?? nlShared;
   return {
     title: messages.errors.ietsMisgegaan,
     description: messages.errors.onverwachteFout,

@@ -20,13 +20,38 @@ function getStoredLocale(): string {
     : DEFAULT_LOCALE;
 }
 
+/**
+ * Loads the root bundle (shared + ui + auth + dashboard namespaces) for a given locale.
+ * Domain-specific namespaces are not part of this bundle — they are loaded per-route
+ * by DomainMessagesProvider wrappers in each domain's layout.tsx.
+ */
 async function loadMessages(locale: string): Promise<Messages> {
-  switch (locale) {
-    case "en":
-      return (await import("../../../messages/en.json")).default;
-    default:
-      return (await import("../../../messages/nl.json")).default;
+  if (locale === "en") {
+    const [shared, ui, auth, dashboard] = await Promise.all([
+      import("../../../messages/en/shared.json"),
+      import("../../../messages/en/ui.json"),
+      import("../../../messages/en/auth.json"),
+      import("../../../messages/en/dashboard.json"),
+    ]);
+    return {
+      ...shared.default,
+      ...ui.default,
+      ...auth.default,
+      ...dashboard.default,
+    } as Messages;
   }
+  const [shared, ui, auth, dashboard] = await Promise.all([
+    import("../../../messages/nl/shared.json"),
+    import("../../../messages/nl/ui.json"),
+    import("../../../messages/nl/auth.json"),
+    import("../../../messages/nl/dashboard.json"),
+  ]);
+  return {
+    ...shared.default,
+    ...ui.default,
+    ...auth.default,
+    ...dashboard.default,
+  } as Messages;
 }
 
 /**

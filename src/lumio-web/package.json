@@ -9,9 +9,9 @@
     "url": "https://blog.agterhuis.net"
   },
   "scripts": {
-    "predev": "node scripts/generate-help-content.js",
+    "predev": "node scripts/generate-help-content.js && npx tsx scripts/merge-messages.ts",
     "dev": "next dev --port 3000",
-    "prebuild": "node scripts/generate-help-content.js",
+    "prebuild": "node scripts/generate-help-content.js && npx tsx scripts/merge-messages.ts",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
@@ -25,7 +25,9 @@
     "size": "size-limit",
     "size:why": "size-limit --why",
     "validate-tokens": "npx tsx scripts/validate-tokens.ts",
-    "detect-breaking-changes": "npx tsx scripts/detect-breaking-changes.ts"
+    "detect-breaking-changes": "npx tsx scripts/detect-breaking-changes.ts",
+    "merge-messages": "npx tsx scripts/merge-messages.ts",
+    "validate-messages": "npx tsx scripts/validate-messages.ts"
   },
   "size-limit": [
     {

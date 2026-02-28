@@ -1,0 +1,366 @@
+{
+  "common": {
+    "zoeken": "Zoeken",
+    "vergrendelen": "Vergrendelen",
+    "hulp": "Hulp",
+    "lichtThema": "Licht thema",
+    "donkerThema": "Donker thema",
+    "opnieuwProberen": "Opnieuw proberen",
+    "naarDashboard": "Naar dashboard",
+    "actiefBlijven": "Actief blijven",
+    "omTeOpenen": "om te openen",
+    "meerInformatie": "Meer informatie",
+    "meldingen": "Meldingen",
+    "sluiten": "Sluiten"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "mijnProfiel": "Mijn Profiel",
+    "testament": "Testament",
+    "wilsverklaring": "Wilsverklaring",
+    "donorregistratie": "Donorregistratie",
+    "digitaalBezit": "Digitaal Bezit",
+    "boedel": "Boedel",
+    "uitvaartwensen": "Uitvaartwensen",
+    "documenten": "Documenten",
+    "erfgenamen": "Erfgenamen",
+    "noodcontacten": "Noodcontacten",
+    "tijdlijnOverlijden": "Tijdlijn Overlijden",
+    "videoboodschappen": "Videoboodschappen",
+    "exporteren": "Exporteren",
+    "activiteitenlog": "Activiteitenlog",
+    "instellingen": "Instellingen",
+    "handleiding": "Handleiding",
+    "navigatie": "Hoofdnavigatie",
+    "groep": {
+      "overzicht": "Overzicht",
+      "wensen": "Wensen",
+      "bezittingen": "Bezittingen",
+      "personen": "Personen",
+      "hulpmiddelen": "Hulpmiddelen"
+    }
+  },
+  "enums": {
+    "burgerlijkeStaat": {
+      "ongehuwd": "Ongehuwd",
+      "gehuwd": "Gehuwd",
+      "geregistreerdPartnerschap": "Geregistreerd partnerschap",
+      "gescheiden": "Gescheiden",
+      "weduwWeduwnaar": "Weduwe / Weduwnaar"
+    },
+    "huwelijksVoorwaarden": {
+      "nietVanToepassing": "Niet van toepassing",
+      "gemeenschapVanGoederen": "Gemeenschap van goederen",
+      "beperktGemeenschap": "Beperkte gemeenschap",
+      "koudeUitsluiting": "Koude uitsluiting"
+    },
+    "legitimatie": {
+      "geen": "Geen",
+      "paspoort": "Paspoort",
+      "identiteitskaart": "Identiteitskaart",
+      "rijbewijs": "Rijbewijs"
+    },
+    "relatie": {
+      "Partner": "Partner",
+      "Kind": "Kind",
+      "Ouder": "Ouder",
+      "Broer/Zus": "Broer/Zus",
+      "Kleinkind": "Kleinkind",
+      "Neef/Nicht": "Neef/Nicht",
+      "Vriend": "Vriend(in)",
+      "Organisatie": "Organisatie",
+      "Anders": "Anders",
+      "selecteer": "Selecteer..."
+    },
+    "entityType": {
+      "FysiekBezit": "Bezitting",
+      "Bankrekening": "Bankrekening",
+      "Verzekering": "Verzekering",
+      "DigitaalAccount": "Digitaal Account",
+      "CryptoWallet": "Crypto Wallet"
+    },
+    "bezitCategorie": {
+      "selecteer": "Selecteer...",
+      "onroerendGoed": "Onroerend goed",
+      "voertuig": "Voertuig",
+      "sieraden": "Sieraden",
+      "kunst": "Kunst",
+      "elektronica": "Elektronica",
+      "meubels": "Meubels",
+      "overig": "Overig"
+    },
+    "rekeningType": {
+      "selecteer": "Selecteer...",
+      "betaalrekening": "Betaalrekening",
+      "spaarrekening": "Spaarrekening",
+      "beleggingsrekening": "Beleggingsrekening",
+      "deposito": "Deposito",
+      "overig": "Overig"
+    },
+    "verzekeringsType": {
+      "selecteer": "Selecteer...",
+      "levensverzekering": "Levensverzekering",
+      "uitvaartverzekering": "Uitvaartverzekering",
+      "overlijdensrisicoverzekering": "Overlijdensrisicoverzekering",
+      "woonverzekering": "Woonverzekering",
+      "autoverzekering": "Autoverzekering",
+      "zorgverzekering": "Zorgverzekering",
+      "overig": "Overig"
+    },
+    "schuldType": {
+      "selecteer": "Selecteer...",
+      "hypotheek": "Hypotheek",
+      "persoonlijkeLening": "Persoonlijke lening",
+      "studielening": "Studielening",
+      "creditcard": "Creditcard",
+      "zakelijkeLening": "Zakelijke lening",
+      "overig": "Overig"
+    },
+    "hypotheekVorm": {
+      "selecteer": "Selecteer hypotheekvorm...",
+      "aflossingsvrij": "Aflossingsvrij",
+      "lineair": "Lineair",
+      "annuitair": "Annuïteit",
+      "spaarhypotheek": "Spaarhypotheek",
+      "beleggingshypotheek": "Beleggingshypotheek"
+    },
+    "vermogensSoort": {
+      "prive": "Privé",
+      "gemeenschap": "Gemeenschap"
+    },
+    "gewensteActie": {
+      "selecteer": "Selecteer...",
+      "verwijderen": "Verwijderen",
+      "herdenkingsstatus": "Herdenkingsstatus",
+      "overdragen": "Overdragen aan erfgenaam",
+      "geenActie": "Geen actie"
+    },
+    "cryptoType": {
+      "selecteer": "Selecteer...",
+      "bitcoin": "Bitcoin (BTC)",
+      "ethereum": "Ethereum (ETH)",
+      "solana": "Solana (SOL)",
+      "cardano": "Cardano (ADA)",
+      "overig": "Overig"
+    },
+    "accountCategorie": {
+      "selecteer": "Selecteer categorie...",
+      "alle": "Alle categorieën",
+      "socialMedia": "Social Media",
+      "email": "Email",
+      "banking": "Banking",
+      "shopping": "Shopping",
+      "streaming": "Streaming",
+      "gaming": "Gaming",
+      "cloud": "Cloud",
+      "werk": "Werk",
+      "gezondheid": "Gezondheid",
+      "overheid": "Overheid",
+      "overig": "Overig"
+    },
+    "documentCategorie": {
+      "selecteer": "Selecteer...",
+      "testament": "Testament",
+      "identiteitsbewijs": "Identiteitsbewijs",
+      "akte": "Akte",
+      "verzekeringspolis": "Verzekeringspolis",
+      "medisch": "Medisch document",
+      "financieel": "Financieel document",
+      "overig": "Overig"
+    },
+    "noodcontactRol": {
+      "selecteer": "Selecteer rol...",
+      "vertrouwenspersoon": "Vertrouwenspersoon",
+      "huisarts": "Huisarts",
+      "behandelendArts": "Behandelend arts / Specialist",
+      "tandarts": "Tandarts",
+      "thuiszorg": "Thuiszorg / Zorgverlener",
+      "leidinggevende": "Leidinggevende / Manager",
+      "hrAfdeling": "HR Afdeling / P&O",
+      "pensioencontact": "Pensioencontact",
+      "boekhouder": "Boekhouder / Accountant",
+      "notaris": "Notaris",
+      "advocaat": "Advocaat",
+      "financieelAdviseur": "Financieel adviseur",
+      "uitvaartondernemer": "Uitvaartondernemer",
+      "kerkelijkContactpersoon": "Kerkelijk contactpersoon",
+      "overig": "Overig"
+    },
+    "auditActie": {
+      "alleActies": "Alle acties",
+      "aangemaakt": "Aangemaakt",
+      "gewijzigd": "Gewijzigd",
+      "verwijderd": "Verwijderd",
+      "ontgrendeld": "Ontgrendeld",
+      "vergrendeld": "Vergrendeld",
+      "wachtwoordGewijzigd": "Wachtwoord gewijzigd",
+      "export": "Export"
+    }
+  },
+  "feedback": {
+    "opgeslagen": "Wijzigingen opgeslagen",
+    "verwijderd": "Item verwijderd",
+    "aangemaakt": "Item aangemaakt",
+    "bijgewerkt": "Item bijgewerkt",
+    "fout": "Er is iets misgegaan",
+    "foutBijOpslaan": "Fout bij het opslaan",
+    "foutBijVerwijderen": "Fout bij het verwijderen",
+    "foutBijLaden": "Fout bij het laden"
+  },
+  "errors": {
+    "ietsMisgegaan": "Er is iets misgegaan",
+    "onverwachteFout": "Er is een onverwachte fout opgetreden bij het laden van deze pagina. Probeer het opnieuw of ga terug naar het dashboard.",
+    "global": {
+      "titel": "Er is een kritieke fout opgetreden",
+      "beschrijving": "De applicatie kon niet worden geladen. Probeer het opnieuw.",
+      "opnieuw": "Opnieuw proberen"
+    },
+    "page": {
+      "titel": "Er is iets misgegaan",
+      "beschrijving": "Er is een onverwachte fout opgetreden bij het laden van deze pagina. Probeer het opnieuw of ga terug naar het dashboard.",
+      "naarDashboard": "Naar dashboard",
+      "opnieuw": "Opnieuw proberen"
+    },
+    "timeout": "Het verzoek duurde te lang. Probeer het opnieuw.",
+    "netwerk": "Geen verbinding met de server. Controleer uw netwerkverbinding."
+  },
+  "idle": {
+    "sessieVerloopt": "Sessie verloopt",
+    "sessieWaarschuwing": "Uw sessie wordt over {seconds} seconden automatisch vergrendeld wegens inactiviteit."
+  },
+  "verwijderBevestiging": {
+    "titel": "{type} verwijderen",
+    "beschrijving": "Weet u zeker dat u \"{naam}\" wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+    "itemLabel": "Dit item wordt verwijderd:",
+    "bevestigen": "Verwijderen",
+    "annuleren": "Annuleren",
+    "types": {
+      "erfgenaam": "Erfgenaam",
+      "bezit": "Bezit",
+      "rekening": "Rekening",
+      "verzekering": "Verzekering",
+      "schuld": "Schuld",
+      "document": "Document",
+      "account": "Account",
+      "wachtwoord": "Wachtwoord",
+      "wallet": "Wallet",
+      "noodcontact": "Noodcontact",
+      "begunstigde": "Begunstigde",
+      "executeur": "Executeur",
+      "genodigde": "Genodigde",
+      "detail": "Detail"
+    }
+  },
+  "sectieNotitie": {
+    "toevoegen": "Notitie toevoegen",
+    "titel": "Notitie",
+    "placeholder": "bijv. Let op: de originele aktes liggen in de kluis in de slaapkamer.",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "opslaanBezig": "Opslaan..."
+  },
+  "domainStatus": {
+    "afgerond": "Afgerond",
+    "afgerondBeschrijving": "Dit onderdeel is als afgerond gemarkeerd.",
+    "nietAfgerond": "Dit onderdeel is nog niet als afgerond gemarkeerd.",
+    "reviewNodig": "Review nodig",
+    "reviewBeschrijving": "Het is tijd om dit onderdeel te herzien en te controleren of alles nog actueel is.",
+    "markeerAfgerond": "Markeer als afgerond",
+    "markeringOpheffen": "Markering opheffen",
+    "opnieuwBevestigen": "Opnieuw bevestigen"
+  },
+  "search": {
+    "placeholder": "Zoeken in alle gegevens...",
+    "laden": "Zoeken...",
+    "geenResultaten": "Geen resultaten gevonden voor \"{query}\"",
+    "geenResultatenTip": "Probeer een andere zoekterm of gebruik minder specifieke woorden",
+    "minimaalTekens": "Typ minimaal 2 tekens om te zoeken",
+    "resultaten": "{count, plural, one {# resultaat} other {# resultaten}}",
+    "footer": "Zoek in erfgenamen, accounts, bezittingen...",
+    "recent": "Recent gezocht",
+    "snelNavigatie": "Snel navigeren",
+    "navigeer": "navigeer",
+    "openen": "openen",
+    "sluiten": "sluiten",
+    "domein": {
+      "erfgenamen": "Erfgenamen",
+      "noodcontacten": "Noodcontacten",
+      "digitaleAccounts": "Digitale Accounts",
+      "wachtwoorden": "Wachtwoorden",
+      "cryptoWallets": "Crypto Wallets",
+      "bezittingen": "Bezittingen",
+      "bankrekeningen": "Bankrekeningen",
+      "verzekeringen": "Verzekeringen",
+      "schulden": "Schulden",
+      "documenten": "Documenten"
+    }
+  },
+  "shortcuts": {
+    "titel": "Sneltoetsen",
+    "zoeken": "Zoeken",
+    "vergrendelen": "Vergrendelen",
+    "nieuwItem": "Nieuw item",
+    "sneltoetsenTonen": "Sneltoetsen tonen",
+    "gaNaarDashboard": "Ga naar Dashboard",
+    "gaNaarProfiel": "Ga naar Profiel",
+    "gaNaarTestament": "Ga naar Testament",
+    "gaNaarWilsverklaring": "Ga naar Wilsverklaring",
+    "gaNaarDonorregistratie": "Ga naar Donorregistratie",
+    "gaNaarDigitaalBezit": "Ga naar Digitaal Bezit",
+    "gaNaarBoedel": "Ga naar Boedel",
+    "gaNaarUitvaartwensen": "Ga naar Uitvaartwensen",
+    "gaNaarDocumenten": "Ga naar Documenten",
+    "gaNaarErfgenamen": "Ga naar Erfgenamen",
+    "gaNaarNoodcontacten": "Ga naar Noodcontacten",
+    "gaNaarExporteren": "Ga naar Exporteren",
+    "gaNaarActiviteitenlog": "Ga naar Activiteitenlog",
+    "gaNaarInstellingen": "Ga naar Instellingen",
+    "gaNaarHelp": "Ga naar Help"
+  },
+  "wizard": {
+    "welkom": "Welkom bij Lumio",
+    "doorloop": "Doorloop deze stappen om uw nalatenschap in te richten",
+    "sluiten": "Wizard sluiten",
+    "voltooid": "{voltooid} van {totaal} voltooid",
+    "laterInvullen": "Later invullen",
+    "nietMeerTonen": "Niet meer tonen",
+    "afronden": "Afronden",
+    "stappen": {
+      "profiel": {
+        "titel": "Mijn Profiel",
+        "beschrijving": "Sla uw persoonlijke gegevens op als basis voor uw nalatenschap."
+      },
+      "noodcontacten": {
+        "titel": "Noodcontacten",
+        "beschrijving": "Wie moet er gebeld worden in geval van nood?"
+      },
+      "testament": {
+        "titel": "Testament",
+        "beschrijving": "Leg testamentaire informatie vast, zoals executeurs en begunstigden."
+      },
+      "uitvaart": {
+        "titel": "Uitvaartwensen",
+        "beschrijving": "Beschrijf hoe u wilt dat uw uitvaart wordt geregeld."
+      },
+      "erfgenamen": {
+        "titel": "Erfgenamen",
+        "beschrijving": "Registreer uw erfgenamen en verdeel eventueel noodcodes."
+      },
+      "backup": {
+        "titel": "Backup maken",
+        "beschrijving": "Maak een eerste backup om uw gegevens veilig te stellen."
+      }
+    },
+    "shell": {
+      "opslaanMislukt": "Opslaan mislukt.",
+      "stap": "Stap {huidig} van {totaal}: {titel}",
+      "annuleren": "Annuleren",
+      "vorige": "Vorige",
+      "opslaanBezig": "Opslaan...",
+      "opslaan": "Opslaan",
+      "volgende": "Volgende",
+      "voortgangHersteld": "Uw voortgang is hersteld. U bent bij stap {stap}.",
+      "opnieuwBeginnen": "Opnieuw beginnen"
+    }
+  }
+}

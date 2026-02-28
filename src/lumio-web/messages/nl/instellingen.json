@@ -1,0 +1,168 @@
+{
+  "instellingen": {
+    "titel": "Instellingen",
+    "ondertitel": "Beheer uw beveiligingsinstellingen",
+    "timeoutOpties": {
+      "0": "Uitgeschakeld",
+      "1": "1 minuut",
+      "2": "2 minuten",
+      "5": "5 minuten",
+      "10": "10 minuten",
+      "15": "15 minuten",
+      "30": "30 minuten"
+    },
+    "autoLock": {
+      "titel": "Auto-vergrendeling",
+      "beschrijving": "Vergrendel de app automatisch na een periode van inactiviteit. U krijgt 30 seconden voor vergrendeling een waarschuwing."
+    },
+    "groteTekst": {
+      "titel": "Grote-tekst modus",
+      "beschrijving": "Vergroot de tekst in de hele applicatie voor betere leesbaarheid.",
+      "normaal": "Normaal",
+      "groot": "Grote tekst"
+    },
+    "dashboardWeergave": {
+      "titel": "Dashboard weergave",
+      "beschrijving": "Kies welke secties zichtbaar zijn op uw dashboard.",
+      "voortgang": "Voortgang nalatenschap",
+      "statistieken": "Statistieken",
+      "voortgangGranulair": "Gedetailleerde voortgang",
+      "suggesties": "Slimme suggesties",
+      "domeinKaarten": "Domeinkaarten",
+      "meldingen": "Meldingen",
+      "backup": "Back-up status",
+      "aanbevolen": "Aanbevolen volgende stap",
+      "verloopdatum": "Verloopdatum documenten",
+      "allesHerstellen": "Alles weer tonen"
+    },
+    "taal": {
+      "titel": "Taal",
+      "beschrijving": "Kies de taal van de applicatie."
+    },
+    "actualisatie": {
+      "titel": "Periodieke actualisatie",
+      "beschrijving": "Controleer regelmatig of uw gegevens nog up-to-date zijn. Lumio herinnert u elk kwartaal (90 dagen) per onderdeel.",
+      "gecontroleerd": "Gecontroleerd: {datum}",
+      "nietGecontroleerd": "Nog niet gecontroleerd",
+      "allesBevestigen": "Alles als actueel bevestigen",
+      "laden": "Actualisatiestatus wordt geladen...",
+      "bevestigdSucces": "Alle domeinen als actueel bevestigd.",
+      "bevestigdFout": "Bevestiging mislukt."
+    },
+    "profielen": {
+      "titel": "Profielen",
+      "beschrijving": "Beheer profielen voor uzelf en uw naasten. Elk profiel heeft een eigen versleutelde database. Maximaal 5 profielen.",
+      "actief": "(actief)",
+      "naam": "Naam",
+      "naamPlaceholder": "Bijv. Jan, Partner",
+      "relatie": "Relatie",
+      "aanmaken": "Aanmaken",
+      "annuleren": "Annuleren",
+      "nieuwProfiel": "Nieuw profiel toevoegen",
+      "maxBereikt": "Maximaal 5 profielen bereikt.",
+      "aangemaakt": "Profiel \"{naam}\" aangemaakt.",
+      "aanmakenMislukt": "Profiel aanmaken mislukt.",
+      "verwijderd": "Profiel verwijderd.",
+      "verwijderenMislukt": "Profiel verwijderen mislukt.",
+      "relaties": {
+        "Partner": "Partner",
+        "Kind": "Kind",
+        "Ouder": "Ouder",
+        "Overig": "Overig",
+        "Primair": "Primair"
+      }
+    },
+    "wachtwoord": {
+      "titel": "Wachtwoord wijzigen",
+      "beschrijving": "Wijzig uw hoofdwachtwoord. Na wijziging wordt de database opnieuw versleuteld met het nieuwe wachtwoord.",
+      "huidig": "Huidig wachtwoord",
+      "nieuw": "Nieuw wachtwoord",
+      "bevestig": "Bevestig nieuw wachtwoord",
+      "wijzigen": "Wachtwoord wijzigen",
+      "nietOvereen": "Wachtwoorden komen niet overeen.",
+      "teKort": "Wachtwoord moet minimaal 8 tekens bevatten.",
+      "gewijzigd": "Wachtwoord succesvol gewijzigd.",
+      "wijzigenMislukt": "Wachtwoord wijzigen mislukt. Controleer uw huidige wachtwoord."
+    },
+    "backup": {
+      "titel": "Backup & Herstel",
+      "beschrijving": "Maak een backup van uw versleutelde database of herstel een eerdere backup.",
+      "downloadTitel": "Backup downloaden",
+      "downloadBeschrijving": "Download een versleuteld ZIP-bestand met uw volledige database. Bewaar dit bestand op een veilige locatie.",
+      "downloadKnop": "Download backup",
+      "gedownload": "Backup gedownload.",
+      "downloadMislukt": "Backup downloaden mislukt.",
+      "herstelTitel": "Backup herstellen",
+      "herstelBeschrijving": "Herstel een eerdere backup. Dit vervangt alle huidige gegevens. U hebt het wachtwoord van de backup nodig.",
+      "bestandLabel": "Backup-bestand (.zip)",
+      "wachtwoordLabel": "Wachtwoord van de backup",
+      "wachtwoordPlaceholder": "Wachtwoord waarmee de backup is versleuteld",
+      "herstelKnop": "Backup herstellen",
+      "hersteld": "Backup hersteld. U wordt doorgestuurd naar het ontgrendelscherm.",
+      "herstelMislukt": "Backup herstellen mislukt."
+    },
+    "autoBackup": {
+      "titel": "Automatische backup",
+      "beschrijving": "Configureer automatische backups naar een map op uw computer of USB-stick.",
+      "inschakelen": "Automatische backup inschakelen",
+      "backupMap": "Backup-map",
+      "selecteerMap": "Selecteer een map...",
+      "bladeren": "Bladeren",
+      "frequentie": "Frequentie",
+      "dagelijks": "Dagelijks",
+      "wekelijks": "Wekelijks",
+      "maandelijks": "Maandelijks",
+      "opslaan": "Opslaan",
+      "nuBackup": "Nu backup maken",
+      "opgeslagen": "Auto-backup instellingen opgeslagen.",
+      "uitgeschakeld": "Auto-backup uitgeschakeld.",
+      "opslaanMislukt": "Opslaan mislukt.",
+      "testSucces": "Test-backup succesvol aangemaakt.",
+      "backupMislukt": "Backup mislukt."
+    },
+    "beveiliging": {
+      "titel": "Beveiliging",
+      "beschrijving": "Informatie over de beveiliging van uw gegevens.",
+      "sqlcipher": "Database versleuteld met SQLCipher (AES-256-CBC)",
+      "aesGcm": "Gevoelige velden extra versleuteld (AES-256-GCM)",
+      "lokaal": "Alleen lokale verbinding (127.0.0.1)",
+      "geenInternet": "Geen internetverbinding vereist",
+      "handtekeningTitel": "Digitale handtekening",
+      "handtekeningBeschrijving": "Genereer een unieke hash van uw huidige gegevens. Hiermee kunt u later verifiëren dat uw data niet is gewijzigd."
+    },
+    "overLumio": {
+      "titel": "Over Lumio",
+      "beschrijving": "Lumio is een hulpmiddel voor het vastleggen van uw digitale nalatenschap. Alle gegevens worden lokaal en versleuteld opgeslagen.",
+      "juridisch": "Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4)."
+    },
+    "verwijderen": {
+      "titel": "Alle gegevens wissen",
+      "beschrijving": "Verwijder uw volledige database permanent. Dit kan niet ongedaan worden gemaakt. Maak eerst een backup als u uw gegevens wilt bewaren.",
+      "bevestigLabel": "Bevestig met uw wachtwoord",
+      "bevestigPlaceholder": "Voer uw wachtwoord in ter bevestiging",
+      "knop": "Alle gegevens permanent verwijderen",
+      "succes": "Alle gegevens zijn verwijderd. U wordt doorgestuurd...",
+      "mislukt": "Verwijderen mislukt. Controleer uw wachtwoord."
+    },
+    "dialogen": {
+      "herstel": {
+        "titel": "Backup herstellen?",
+        "beschrijving": "Weet u het zeker? Dit vervangt alle huidige gegevens door de gegevens uit de backup. Deze actie kan niet ongedaan worden gemaakt.",
+        "annuleren": "Annuleren",
+        "bevestigen": "Ja, herstel backup"
+      },
+      "verwijderAlles": {
+        "titel": "Alle gegevens permanent verwijderen?",
+        "beschrijving": "Weet u het zeker? Alle gegevens worden permanent verwijderd. Dit omvat uw profiel, wachtwoorden, documenten, testament-gegevens en alle andere opgeslagen informatie. Deze actie kan niet ongedaan worden gemaakt.",
+        "annuleren": "Annuleren",
+        "bevestigen": "Ja, verwijder alles permanent"
+      },
+      "verwijderProfiel": {
+        "titel": "Profiel verwijderen?",
+        "beschrijving": "Weet u het zeker? Het profiel en de bijbehorende database worden permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+        "annuleren": "Annuleren",
+        "bevestigen": "Ja, verwijder profiel"
+      }
+    }
+  }
+}

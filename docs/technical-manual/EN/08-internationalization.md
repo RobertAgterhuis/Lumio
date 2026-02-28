@@ -19,10 +19,21 @@ src/lumio-web/
 ├── src/i18n/
 │   └── request.ts       # getRequestConfig() — locale from localStorage
 ├── messages/
-│   ├── nl.json           # ~1800 translations
-│   └── en.json           # ~1800 translations
+│   ├── nl/               # Source files per domain (edit these)
+│   │   ├── shared.json   # common, nav, enums, feedback, errors, ...
+│   │   ├── auth.json
+│   │   ├── testament.json
+│   │   └── ... (18 files)
+│   ├── en/               # English equivalents
+│   │   └── ... (18 files)
+│   ├── nl.json           # ⚠ GENERATED — do not edit manually
+│   └── en.json           # ⚠ GENERATED — do not edit manually
+├── scripts/
+│   └── merge-messages.ts # Combines nl/* → nl.json, en/* → en.json
 └── next.config.ts        # createNextIntlPlugin('./src/i18n/request.ts')
 ```
+
+> **Important**: Always edit files in `messages/nl/` or `messages/en/`. The root files `nl.json` and `en.json` are generated automatically on `npm run dev` and `npm run build` via the `predev`/`prebuild` hooks.
 
 **Locale detection** (static export — no server-side routing):
 1. Client-side: read `localStorage.getItem("lumio-locale")`
@@ -31,7 +42,32 @@ src/lumio-web/
 
 ### Message Structure
 
-Both language files have an identical structure with 39 sections:
+Translations are split into **18 domain files** per language. The root `nl.json`/`en.json` files are the generated merge result containing all 46 namespaces.
+
+#### Domain files and their namespaces
+
+| File | Namespaces |
+|------|------------|
+| `shared.json` | `common`, `nav`, `enums`, `feedback`, `errors`, `idle`, `verwijderBevestiging`, `sectieNotitie`, `domainStatus`, `search`, `shortcuts`, `wizard` |
+| `auth.json` | `auth` (incl. all sub-namespaces) |
+| `dashboard.json` | `dashboard` (incl. all sub-namespaces) |
+| `erfgenamen.json` | `erfgenamen`, `erfbelasting`, `nabestaanden` |
+| `testament.json` | `testament`, `testamentWizard` |
+| `boedel.json` | `boedel` |
+| `uitvaart.json` | `uitvaart`, `uitvaartWizard`, `noodkaartQR` |
+| `euthanasie.json` | `euthanasie`, `euthanasieWizard` |
+| `noodcontacten.json` | `noodcontacten` |
+| `documenten.json` | `documenten` |
+| `digitaal-bezit.json` | `digitaalBezit` |
+| `eigenaar.json` | `eigenaar` |
+| `donor.json` | `donor`, `donorWizard` |
+| `videoboodschappen.json` | `videoboodschappen`, `voorbeeldData` |
+| `instellingen.json` | `instellingen` |
+| `export.json` | `exporteren`, `auditLog`, `afsluitInstructies` |
+| `ui.json` | `personSelect`, `help`, `hulpteksten`, `legeStaten` |
+| `misc.json` | `tijdlijn`, `interview`, `wachtwoordGenerator`, `juridischeCheck`, `dataHandtekening` |
+
+Both language files previously had an identical structure with 39 sections (now 46):
 
 | Section | ~Lines | Section | ~Lines |
 |---------|--------|---------|--------|
@@ -137,6 +173,15 @@ User selects language in Settings
 
 ## Adding New Translations
 
-1. Add the key to both `nl.json` and `en.json`
-2. For backend messages: add to the appropriate `.resx` file and the `.en.resx` equivalent
-3. Always use `useTranslations()` in components — never hardcoded text
+### Frontend (Next.js)
+
+1. Add the key to the appropriate domain file in `messages/nl/<domain>.json`
+2. Add the English translation to the same file in `messages/en/<domain>.json`
+3. The `predev` hook merges automatically on `npm run dev`; or run manually: `npm run merge-messages`
+4. Always use `useTranslations("namespace")` in components — never hardcoded text
+
+> **New namespace**: If adding a completely new namespace, create a new domain file or add it to the most appropriate existing domain file.
+
+### Backend (.NET)
+
+1. Add the key to the appropriate `.resx` file and the `.en.resx` equivalent

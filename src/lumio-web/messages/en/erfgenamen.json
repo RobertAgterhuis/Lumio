@@ -1,0 +1,189 @@
+{
+  "erfgenamen": {
+    "titel": "Heirs",
+    "beschrijving": "Manage heirs and distribute emergency codes",
+    "laden": "Loading...",
+    "noodcodesVerdelen": "Distribute emergency codes",
+    "toevoegen": "Add heir",
+    "noodcodesInfoLabel": "Distribute emergency codes:",
+    "noodcodesInfo": "Your master password is securely split into unique codes for your heirs. Only when enough heirs (the 'threshold') combine their code can the password be recovered. A single code alone is worthless.",
+    "synclinkMeldingLabel": "Note:",
+    "synclinkMelding": "When you change an heir's name or contact details, previously saved data in linked forms (e.g. testament, funeral wishes, advance directive) is not automatically updated. Re-open the relevant form to refresh the data.",
+    "geenErfgenamen": "No heirs added yet.",
+    "aantal": "Heirs ({aantal})",
+    "opslaanMislukt": "Save failed.",
+    "verwijderenMislukt": "Delete failed.",
+    "exportMislukt": "Export failed.",
+    "exportMisluktCode": "Export failed ({code})",
+    "sleuteldelenMislukt": "Failed to generate key shares.",
+    "toewijzingOpslaanMislukt": "Failed to save assignment.",
+    "toewijzingVerwijderenMislukt": "Failed to delete assignment.",
+    "noodcontactAangemaakt": "Heir also added as emergency contact.",
+    "verwijderBevestiging": {
+      "titel": "Delete heir?",
+      "vraag": "Are you sure you want to delete {naam}? This action cannot be undone.",
+      "bezittingenWaarschuwing": "{aantal, plural, one {# asset is} other {# assets are}} assigned to this heir and will be unlinked.",
+      "annuleren": "Cancel",
+      "verwijderen": "Delete"
+    },
+    "bezitToewijzen": "Assign asset",
+    "pdfDownloaden": "Download PDF",
+    "deelOverzicht": "Share overview (HTML)",
+    "geenBezittingen": "No assets assigned yet.",
+    "toewijzenKnop": "Assign",
+    "toegewezenBezittingen": "Assigned assets:",
+    "dialog": {
+      "bewerken": "Edit heir",
+      "toevoegen": "Add heir",
+      "voornaam": "First name",
+      "achternaam": "Last name",
+      "tussenvoegsel": "Prefix",
+      "tussenvoegselPlaceholder": "e.g. van, de, van der",
+      "relatie": "Relationship",
+      "email": "Email",
+      "telefoon": "Phone",
+      "geboortedatum": "Date of birth",
+      "bsn": "BSN (optional)",
+      "bsnTooltip": "The Citizen Service Number is required for notarial deeds. This field is stored encrypted.",
+      "bsnPlaceholder": "123456789",
+      "adres": "Address",
+      "adresPlaceholder": "Street and house number",
+      "postcode": "Postal code",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "City",
+      "legitimatie": "Identification",
+      "documentnummer": "Document number",
+      "datumAfgifte": "Date of issue",
+      "geldigTot": "Valid until",
+      "annuleren": "Cancel",
+      "opslaanBezig": "Saving...",
+      "opslaan": "Save",
+      "alsNoodcontact": "Also add as emergency contact",
+      "alsNoodcontactTooltip": "Adds this heir as an emergency contact so they appear in the emergency contacts list. Contact details will be copied."
+    },
+    "toewijzingDialog": {
+      "titel": "Assign asset to heir",
+      "beschrijving": "Assign an asset, account or policy to an heir.",
+      "erfgenaam": "Heir",
+      "erfgenaamSelecteer": "Select heir...",
+      "typeBezit": "Asset type",
+      "alleTypes": "All types...",
+      "bezit": "Asset",
+      "bezitSelecteer": "Select asset...",
+      "instructies": "Instructions (optional)",
+      "instructiesPlaceholder": "E.g. 'Keep as a memento' or 'Sell and divide proceeds'",
+      "annuleren": "Cancel",
+      "opslaanBezig": "Saving...",
+      "toewijzen": "Assign"
+    },
+    "shamir": {
+      "titel": "Generate Emergency Codes",
+      "beschrijving": "Split your master password into {aantal} unique emergency codes. Only when the minimum number of people (threshold) combine their code can the password be reconstructed.",
+      "waarschuwing": "Warning:",
+      "waarschuwingTekst": "The emergency codes are NOT stored in Lumio. Record them carefully or print them. Lost codes cannot be recovered.",
+      "wachtwoord": "Your master password",
+      "wachtwoordPlaceholder": "Enter your Lumio master password",
+      "drempel": "Threshold (minimum number of codes for reconstruction)",
+      "drempelTooltip": "The threshold determines how many heirs must cooperate to reconstruct your master password. With a threshold of 3, at least 3 heirs must combine their code. A higher threshold is more secure, but requires more cooperation.",
+      "drempelOptie": "{n} of {totaal} people",
+      "delenInfo": "<strong>{aantal}</strong> shares will be generated, of which at least <strong>{drempel}</strong> are required.",
+      "annuleren": "Cancel",
+      "genererenBezig": "Generating...",
+      "genereren": "Generate",
+      "succes": "Success!",
+      "succesTekst": "{aantal} shares have been generated with a threshold of {drempel}. Copy each share and give it to the respective heir.",
+      "deel": "Share {index}",
+      "erfgenaamFallback": "Heir {nummer}",
+      "gekopieerd": "Copied",
+      "kopieren": "Copy",
+      "sluiten": "Close"
+    }
+  },
+  "erfbelasting": {
+    "berekenBezig": "Calculating...",
+    "berekenen": "Calculate inheritance tax",
+    "titel": "Indicative inheritance tax",
+    "sluiten": "Close",
+    "nettoNalatenschap": "Net estate",
+    "perErfgenaam": "Per heir",
+    "kolomNaam": "Name",
+    "kolomTariefgroep": "Rate group",
+    "kolomErfdeel": "Inheritance share",
+    "kolomVrijstelling": "Exemption",
+    "kolomBelastbaar": "Taxable",
+    "kolomErfbelasting": "Inheritance tax",
+    "kolomNetto": "Net",
+    "totaalErfbelasting": "Total inheritance tax",
+    "geenErfgenamen": "Add heirs first to calculate inheritance tax."
+  },
+  "nabestaanden": {
+    "titel": "Next of Kin Dashboard",
+    "introTekst": "Our condolences for your loss. This dashboard guides you step by step through handling the estate. Take your time — you don't have to do everything at once.",
+    "gegevensInfo": "All data is available in read-only mode. Use the buttons below to track what you have already handled.",
+    "exporteren": "Export all",
+    "noodcontactenBekijken": "View emergency contacts",
+    "hulpTitel": "Need help?",
+    "hulpTekst": "It's normal if this feels overwhelming. Start with the urgent matters at the top and work your way down calmly. You can always come back and continue where you left off. Seek help from a notary or funeral director if that feels right.",
+    "voortgangTitel": "Handling progress",
+    "voortgangTekst": "{afgehandeld} of {totaal} items handled",
+    "bekijken": "View",
+    "start": "Start",
+    "markeerAfgehandeld": "Handled",
+    "statusAfgehandeld": "Handled",
+    "statusInBehandeling": "In progress",
+    "statusBeschikbaar": "Available",
+    "statusNietIngevuld": "Not filled in",
+    "fases": {
+      "urgent": "Immediate — first 24 hours",
+      "week1": "Week 1 — first week",
+      "maand1": "Month 1 — first month",
+      "afronden": "Wrap up"
+    },
+    "stappen": {
+      "noodcontacten": {
+        "titel": "Inform emergency contacts",
+        "beschrijving": "Contact the general practitioner, notary and other trusted persons."
+      },
+      "uitvaart": {
+        "titel": "Review funeral wishes",
+        "beschrijving": "Review the recorded wishes for the funeral and ceremony."
+      },
+      "donor": {
+        "titel": "Check donor registration",
+        "beschrijving": "Check if a donor registration has been recorded — this is urgent."
+      },
+      "euthanasie": {
+        "titel": "Euthanasia directive",
+        "beschrijving": "Check if a euthanasia directive has been drawn up."
+      },
+      "testament": {
+        "titel": "Review will",
+        "beschrijving": "Review the testamentary information, beneficiaries and the appointed executor."
+      },
+      "erfgenamen": {
+        "titel": "Heirs overview",
+        "beschrijving": "View who has been designated as heir and their contact details."
+      },
+      "documenten": {
+        "titel": "Important documents",
+        "beschrijving": "Download copies of stored documents (ID, policies, deeds)."
+      },
+      "boedel": {
+        "titel": "Estate & finances",
+        "beschrijving": "Overview of assets, bank accounts, insurances and debts."
+      },
+      "digitaalBezit": {
+        "titel": "Digital assets",
+        "beschrijving": "Online accounts, passwords and crypto wallets that need to be handled."
+      },
+      "export": {
+        "titel": "Export complete file",
+        "beschrijving": "Download all information as PDF or ZIP for your records."
+      },
+      "eigenaar": {
+        "titel": "Deceased's personal data",
+        "beschrijving": "Personal details for death notification and funeral arrangements."
+      }
+    }
+  }
+}

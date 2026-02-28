@@ -1,0 +1,93 @@
+{
+  "donor": {
+    "laden": "Laden...",
+    "titel": "Donorregistratie",
+    "beschrijving": "Uw keuze conform de Donorwet",
+    "bewerken": "Bewerken",
+    "registratieStarten": "Registratie starten",
+    "ja": "Ja",
+    "nee": "Nee",
+    "tip": "<strong>Tip:</strong> Registreer uw keuze ook officieel bij het Donorregister via donorregister.nl. De informatie hier is voor uw nabestaanden.",
+    "geenKeuze": "Nog geen donorkeuze vastgelegd.",
+    "keuzeCard": {
+      "titel": "Keuze",
+      "keuze": "Keuze:",
+      "geregistreerd": "Geregistreerd bij Donorregister:",
+      "referentie": "Referentie:",
+      "toelichting": "Toelichting:"
+    },
+    "orgaanCard": {
+      "titel": "Orgaankeuzes"
+    }
+  },
+  "donorWizard": {
+    "titel": "Donorregistratie",
+    "laden": "Laden...",
+    "organen": {
+      "hart": "Hart",
+      "longen": "Longen",
+      "lever": "Lever",
+      "nieren": "Nieren",
+      "alvleesklier": "Alvleesklier",
+      "dunneDarm": "Dunne darm",
+      "hoornvliezen": "Hoornvliezen",
+      "huid": "Huid",
+      "botweefsel": "Botweefsel",
+      "hartkleppen": "Hartkleppen",
+      "bloedvaten": "Bloedvaten"
+    },
+    "keuze": {
+      "titel": "Uw Donorkeuze",
+      "beschrijving": "Registreer hier uw donorkeuze. Vergeet niet om dit ook officieel te melden bij het Donorregister.",
+      "keuzeLabel": "Keuze",
+      "keuzeTooltip": "Uw donorkeuze wordt opgeslagen in Lumio als persoonlijk overzicht. Vergeet niet uw keuze ook officieel te registreren bij het Donorregister (donorregister.nl). Alleen de officiële registratie is juridisch bindend.",
+      "selecteer": "Selecteer...",
+      "jaAlles": "Ja, ik geef alles voor transplantatie",
+      "jaSpecifiek": "Ja, specifieke organen/weefsels",
+      "nee": "Nee, ik wil geen donor zijn",
+      "nabestaanden": "Mijn nabestaanden beslissen",
+      "specifiekPersoon": "Een specifiek persoon beslist",
+      "donorregisterLabel": "Geregistreerd bij Donorregister?",
+      "donorregisterJa": "Ja",
+      "donorregisterNee": "Nee",
+      "referentieLabel": "Referentienummer Donorregister",
+      "referentiePlaceholder": "Uw referentienummer"
+    },
+    "orgaankeuzes": {
+      "titel": "Orgaankeuzes",
+      "beschrijving": "Geef per orgaan/weefsel aan of u dit wilt doneren. (Alleen relevant bij 'specifieke organen')",
+      "ja": "Ja",
+      "nee": "Nee"
+    },
+    "toelichting": {
+      "titel": "Toelichting",
+      "label": "Toelichting",
+      "placeholder": "Eventuele aanvullende toelichting bij uw donorkeuze..."
+    },
+    "samenvatting": {
+      "titel": "Samenvatting",
+      "beschrijving": "Controleer uw gegevens voordat u opslaat.",
+      "summaryKeuze": "Keuze:",
+      "summaryDonorregister": "Donorregister:",
+      "summaryJa": "Ja",
+      "summaryNee": "Nee",
+      "summaryReferentie": "Referentie:",
+      "summaryOrgaankeuzes": "Orgaankeuzes:",
+      "summaryToelichting": "Toelichting:",
+      "summaryBeslisser": "Beslissende persoon:",
+      "summaryBeslisserNaam": "Naam:",
+      "summaryBeslisserRelatie": "Relatie:",
+      "summaryBeslisserTelefoon": "Telefoon:"
+    },
+    "beslisser": {
+      "titel": "Beslissende persoon",
+      "beschrijving": "Geef aan wie namens u de donorkeuze mag maken.",
+      "naamLabel": "Naam beslissende persoon",
+      "naamPlaceholder": "Voor- en achternaam",
+      "relatieLabel": "Relatie tot u",
+      "relatiePlaceholder": "bijv. Partner, Zoon, Dochter",
+      "telefoonLabel": "Telefoonnummer",
+      "telefoonPlaceholder": "06-12345678"
+    }
+  }
+}
