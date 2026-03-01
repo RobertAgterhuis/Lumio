@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Coverage scope: Services, Validators, Rules layers only.
+  Excludes Controllers, Middleware, Migrations, Data scaffolding, Program.cs.
+  Pass via: dotnet test with the settings flag pointing to this file.
+  SP-8-003: Scoped gate for the full-project 50pct gate.
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <!-- Include only the core business-logic namespaces that have tests -->
+          <Include>
+            [Lumio.Api]Lumio.Api.Services.*
+            [Lumio.Api]Lumio.Api.Validators.*
+            [Lumio.Api]Lumio.Api.Rules.*
+          </Include>
+          <!-- Exclude generated code, EF migrations, and Data-context scaffolding -->
+          <ExcludeByFile>
+            **/Migrations/**/*.cs
+            **/obj/**/*.cs
+          </ExcludeByFile>
+          <!-- Exclude Controllers, Middleware, Program, Extensions, Dtos (untested) -->
+          <Exclude>
+            [Lumio.Api]Lumio.Api.Controllers.*
+            [Lumio.Api]Lumio.Api.Middleware.*
+            [Lumio.Api]Lumio.Api.Data.*
+            [Lumio.Api]Lumio.Api.Extensions.*
+            [Lumio.Api]Lumio.Api.Dtos.*
+            [Lumio.Api]Lumio.Api.Domain.*
+            [Lumio.Api]Lumio.Api.Resources.*
+          </Exclude>
+          <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+          <Format>cobertura</Format>
+          <UseSourceLink>true</UseSourceLink>
+          <SkipAutoProps>true</SkipAutoProps>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

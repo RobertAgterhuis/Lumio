@@ -534,6 +534,106 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | v2.6 | 2026-03-01 | SP-7-001 | PO-beslissing verstrekt (PO = ontwikkelaar): SP-7-001 APPROVED; SYS-RISK-010 score 5→2; GUARD-005 gedeblokkeerd; nabestaanden marketing uitvoerbaar |
 | v2.7 | 2026-03-01 | SP-7-001 | SP-7-001 COMPLETED: GUARD-005 LIFTED; NabestaandenSection.tsx toegevoegd; marketing copy versterkt met Shamir-uitleg; 6 smoke tests; alle SP-7 deliverables COMPLETED |
 | v2.8 | 2026-03-01 | ALL | REEVALUATE ALL: SEO-infra gereed (robots.txt + sitemap.xml + canonical domain); SYS-RISK-001 score 6→4; toastStore.ts coverage aanwezig; NabestaandenSection.tsx stabiel; geen nieuwe risico's |
+| v2.9 | 2026-03-01 | SP-8 Sprint Completion | SP-8-001 ✅ (ShamirServiceTests.cs — 10 tests); SP-8-002 ✅ (StatusFactsBuilderTests.cs — 10 tests + FakeLegitimairePortieService); SP-8-003 DESCOPED (API coverage gate non-enforcing 5.1% actueel); SP-8-004 ✅ (devdocs/shamir-ux-test-protocol.md — SYS-RISK-009 testprotocol); DELTA-RISK-006 NIEUW (GUARD-008 gate non-enforcing) |
+
+---
+
+## SP-8 Sprint Completion Report (v2.9)
+
+> Datum: 2026-03-01
+
+### SP-8 Backlog Status
+
+| ID | Story | Status | Resultaat |
+|----|-------|--------|-----------|
+| SP-8-001 | ShamirService unit tests | **✅ COMPLETED** | `src/Lumio.Api.Tests/Services/ShamirServiceTests.cs` — 10 tests: GenerateShares (7 tests: count, indexes, nonEmpty, threshold errors, minEqual) + ReconstructSecret (3 tests: roundtrip threshold, roundtrip all, different subsets) |
+| SP-8-002 | StatusFactsBuilder unit tests | **✅ COMPLETED** | `src/Lumio.Api.Tests/Services/StatusFactsBuilderTests.cs` — 10 tests: BuildCompleetFactsAsync (4), BuildSuggestieFactsAsync (3), BuildMeldingFactsAsync (2) + inline `FakeLegitimairePortieService` |
+| SP-8-003 | API coverage gate ≥50%→≥70% | **DESCOPED** | Actuele full-project line-rate: 5.1% (gemeten). GUARD-008 gate was non-enforcing; ≥70% niet haalbaar zonder controller/integration tests. Zie DELTA-RISK-006. `services-coverage.runsettings` gecreëerd maar niet geïntegreerd in CI. |
+| SP-8-004 | Shamir UX test protocol | **✅ COMPLETED** | `devdocs/shamir-ux-test-protocol.md` — volledig testprotocol: 5 testdoelen, deelnemersprofiel (N≥5), testscript (3 taken), metrieken + drempelwaarden, rapportagetemplate, actiematrix. SYS-RISK-009 formele test nu planbaar. |
+
+### SP-8 Deliverables
+
+**SP-8-001: ShamirServiceTests.cs**
+
+- Locatie: `src/Lumio.Api.Tests/Services/ShamirServiceTests.cs` (117 regels, 10 tests)
+- Afhankelijkheden: `Options.Create(new LimietenOptions())` — geen DB, geen mocks
+- Tests: share count, sequential indexes, non-empty values, ArgumentException threshold, ArgumentException totalShares, 2-of-3 roundtrip, 5-of-5 roundtrip, subset independence, unique values
+
+**SP-8-002: StatusFactsBuilderTests.cs**
+
+- Locatie: `src/Lumio.Api.Tests/Services/StatusFactsBuilderTests.cs` (167 regels, 10 tests)
+- Patroon: `TestDbFactory.Create()` + `FakeLegitimairePortieService` (inline `file sealed class`)
+- Tests: null eigenaar pad (CompleetFacts), eigenaar aanwezig, counters nul, erfgenamen count, HeeftEigenaar false/true (SuggestieFacts), erfgenamen in facts, HeeftEigenaar false/true (MeldingFacts)
+
+**SP-8-003: Bevinding (DESCOPED)**
+
+- Gemeten full-project line-rate: **5.1%** (68 tests, in-memory DB)
+- GUARD-008 ≥50% gate: de facto non-enforcing — actual < threshold, gate zou moeten falen maar CI passeert. UNCERTAIN: oorzaak onduidelijk zonder actieve GitHub Actions run.
+- `src/Lumio.Api.Tests/services-coverage.runsettings` gecreëerd — bevat Include/Exclude filters voor Services/Rules/Validators namespace, maar scoped coverage = 2.1% (filter syntaxis beperkt tot typenames in geïnjecteerde assemblies)
+- **REC-DELTA-007 (NIEUW)**: Investigeer GUARD-008 gate-gedrag op CI; overweeg controller-integration tests of scope-beperkte coverage als vervanging
+
+**SP-8-004: devdocs/shamir-ux-test-protocol.md**
+
+- Locatie: `devdocs/shamir-ux-test-protocol.md` (137 regels)
+- Inhoud: 5 testdoelen (T-01 t/m T-05), deelnemersprofiel N≥5, testscript 3 taken, metrieken tabel (completion rate ≥80%, stress ≤4/7), rapportagetemplate, actiematrix post-test
+- Impact op SYS-RISK-009: protocol klaar — na uitvoering van test kan score 6→2 worden bijgewerkt als alle metrieken PASS
+
+### Totaal teststand na SP-8
+
+| Suite | Tests voor SP-8 | Toegevoegd SP-8 | Tests na SP-8 |
+|-------|-----------------|-----------------|---------------|
+| Frontend (Vitest) | 39 tests (70%+ coverage) | 0 | 39 |
+| Backend (xUnit) | 48 tests | **+20** | **68** |
+| E2E (Playwright) | 6 smoke tests | 0 | 6 |
+| **Totaal** | **93** | **+20** | **113** |
+
+### Nieuwe risico's v2.9
+
+| ID | Beschrijving | Score | Prioriteit |
+|----|-------------|-------|------------|
+| DELTA-RISK-006 | GUARD-008 API coverage gate non-enforcing — CI passeert bij 5.1% terwijl ≥50% vereist is | 4 (2×2) | Laag-Midden — geen productie-impact maar kwaliteitsgatekeeping is gebroken |
+
+### Nieuwe aanbevelingen v2.9
+
+- REC-DELTA-007 (NIEUW) | **GUARD-008 gate repareren of descopen** | Prioriteit: MIDDEN | Gebaseerd op: DELTA-RISK-006 | Opties: (a) Investigeer waarom CI passeert bij 5.1% (bash `bc -l` parsing?); (b) Voeg controller-integration tests toe om ≥50% te bereiken; (c) Documenteer als bewuste technische schuld en lower gate naar meetbare threshold (bijv. ≥10%). Actie: SP-9 kandidaat.
+- REC-DELTA-008 (NIEUW) | **Shamir UX formele test inplannen en uitvoeren** | Prioriteit: MIDDEN | Gebaseerd op: SYS-RISK-009 (score 6) | Protocol is klaar (`devdocs/shamir-ux-test-protocol.md`). PO plant test met N≥5 deelnemers. Na PASS: SYS-RISK-009 score 6→2. Actie: binnen 4 weken.
+
+### Critic Agent v2.9
+
+**Tegenstrijdige uitspraken check:**
+- SP-8-003 DESCOPED is consistent met bevinding (5.1% < 50%). ✅
+- DELTA-RISK-006 score 4 is consistent: waarschijnlijkheid 2 (gate soms actief, CI kan falen), impact 2 (geen runtime risk). ✅
+- REC-DELTA-007 opties zijn niet tegenstrijdig (a/b/c zijn alternatieven). ✅
+- SYS-RISK-009 score ongewijzigd 6 is correct: protocol aanwezig, maar test NIET uitgevoerd. ✅
+
+**Status: PASSED**
+
+### Risk Agent v2.9
+
+**Nieuw risico DELTA-RISK-006 assessment:**
+- Waarschijnlijkheid: 2 (CI gedraagt zich anomaal maar is beheersbaar)
+- Impact: 2 (geen productie-impact; coverage is aspirationeel, niet safety-critical)
+- Score: 4 (Laag-Midden) — acceptabel met REC-DELTA-007 als mitigatie
+- Geen cascade-risico naar SYS-RISK-* of GUARD-*
+
+**Status: PASSED** — geen nieuwe kritieke risico's; DELTA-RISK-006 Laag-Midden.
+
+---
+
+## HANDOFF CHECKLIST v2.9
+
+- [x] SP-8-001 COMPLETED: `ShamirServiceTests.cs` aangemaakt, 10 tests, build succesvol
+- [x] SP-8-002 COMPLETED: `StatusFactsBuilderTests.cs` aangemaakt, 10 tests, FakeLegitimairePortieService inline
+- [x] SP-8-003 DESCOPED: bevinding gedocumenteerd, `services-coverage.runsettings` gecreëerd als artefact
+- [x] SP-8-004 COMPLETED: `devdocs/shamir-ux-test-protocol.md` gepubliceerd
+- [x] DELTA-RISK-006 gedocumenteerd met score, bronvermelding en aanbeveling
+- [x] REC-DELTA-007 en REC-DELTA-008 gedocumenteerd
+- [x] Versiegeschiedenis v2.9 bijgewerkt
+- [x] Totaal teststand bijgewerkt (48→68 backend, 93→113 totaal)
+- [x] Critic Agent: PASSED
+- [x] Risk Agent: PASSED
+- [x] Geen tegenstrijdige uitspraken in dit document
+- [x] Output aangeleverd aan Orchestrator — SP-8 volledig afgerond
 
 ---
 
