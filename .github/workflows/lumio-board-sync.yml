@@ -17,6 +17,7 @@ jobs:
   secret-scan:
     name: Secret Scan (TruffleHog)
     runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
     permissions:
       contents: read
       security-events: write
@@ -49,7 +50,7 @@ jobs:
   sync-board:
     name: Sync GitHub Project Board
     runs-on: ubuntu-latest
-    if: github.event_name == 'issues' || github.event_name == 'workflow_dispatch'
+    if: false  # DISABLED until further notice
     permissions:
       contents: read
       issues: write
@@ -79,7 +80,7 @@ jobs:
   validate-issue-labels:
     name: Validate Issue Labels
     runs-on: ubuntu-latest
-    if: github.event_name == 'issues' && github.event.action == 'opened'
+    if: false  # DISABLED until further notice
     permissions:
       issues: write
     steps:
