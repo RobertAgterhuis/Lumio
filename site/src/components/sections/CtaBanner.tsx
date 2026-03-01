@@ -1,5 +1,6 @@
 import Button from "@/components/ui/Button";
 import Container from "@/components/layout/Container";
+import { BUY_CONSUMER_HREF } from "@/lib/constants";
 
 export default function CtaBanner() {
   return (
@@ -18,7 +19,7 @@ export default function CtaBanner() {
               €125 eenmalig. Alle functies inbegrepen, geen abonnement ooit.
               Je ontvangt de licentie en downloadlink direct per e-mail.
             </p>
-            <Button href="/prijzen#particulier" size="lg">
+            <Button href={BUY_CONSUMER_HREF} size="lg">
               Koop nu &mdash; &euro;125
             </Button>
           </div>

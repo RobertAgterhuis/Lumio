@@ -22,6 +22,15 @@ public interface IMasterPasswordService
     void UsePassword(PasswordConsumer use);
 
     Task<bool> UnlockAsync(string password);
+
+    /// <summary>
+    /// Verifies that <paramref name="password"/> matches the database key without
+    /// side-effects: does not update the in-memory password buffer.
+    /// Use this for re-authentication checks (e.g. before destructive operations)
+    /// when the database is already unlocked.
+    /// </summary>
+    Task<bool> VerifyPasswordAsync(string password);
+
     Task SetupAsync(string password);
     void Lock();
     void SetReadOnly(bool readOnly);

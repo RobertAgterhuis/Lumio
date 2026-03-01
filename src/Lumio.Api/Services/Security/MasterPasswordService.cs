@@ -59,6 +59,33 @@ public class MasterPasswordService : IMasterPasswordService
         }
     }
 
+    public async Task<bool> VerifyPasswordAsync(string password)
+    {
+        var dbPath = _profileService.ActiveDbPath
+            ?? throw new InvalidOperationException("Geen profiel geselecteerd.");
+
+        var connStr = new SqliteConnectionStringBuilder
+        {
+            DataSource = dbPath,
+            Mode = SqliteOpenMode.ReadWrite,
+            Password = password
+        }.ToString();
+
+        using var conn = new SqliteConnection(connStr);
+        try
+        {
+            await conn.OpenAsync();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT count(*) FROM sqlite_master;";
+            await cmd.ExecuteScalarAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public Task SetupAsync(string password)
     {
         if (!IsFirstRun)

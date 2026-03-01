@@ -22,6 +22,21 @@ export const NAV_LINKS = [
 // ── Pricing ────────────────────────────────────────────────────────────────────
 export const PRICE_PER_USER = 125;
 
+/**
+ * Primary consumer purchase destination. Points to the dedicated B2C landing page
+ * anchored at the pricing card — no B2B pricing adjacent, shortest path to purchase.
+ *
+ * Swap the value for an Odoo checkout URL when SP-CRO1-001 (EXTERN) is unblocked.
+ */
+export const BUY_CONSUMER_HREF = "/voor-jezelf#particulier";
+
+/**
+ * Mailto fallback used inside ConsumerPricing while the Odoo checkout
+ * is EXTERN_BLOCKED (SP-CRO1-001). Replace with the Odoo payment link once available.
+ */
+export const BUY_CONSUMER_MAILTO =
+  "mailto:info@lumio.app?subject=Lumio kopen&body=Ik wil graag een licentie aanschaffen.";
+
 export const SCALE_TIERS = [
   { users: 10,  total: 1_250 },
   { users: 25,  total: 3_125 },

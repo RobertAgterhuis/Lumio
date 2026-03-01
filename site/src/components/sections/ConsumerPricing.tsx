@@ -1,6 +1,6 @@
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
-import { PRICE_PER_USER } from "@/lib/constants";
+import { PRICE_PER_USER, BUY_CONSUMER_MAILTO } from "@/lib/constants";
 import { Check } from "lucide-react";
 
 const FEATURES = [
@@ -40,7 +40,7 @@ export default function ConsumerPricing() {
                 ))}
               </ul>
 
-              <Button href="mailto:info@lumio.app?subject=Lumio kopen&body=Ik wil graag een licentie aanschaffen." size="lg">
+              <Button href={BUY_CONSUMER_MAILTO} size="lg">
                 Koop Lumio nu — €{PRICE_PER_USER}
               </Button>
 

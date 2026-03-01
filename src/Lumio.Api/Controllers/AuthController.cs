@@ -115,17 +115,23 @@ public class AuthController : ControllerBase
         if (_profileService.ActiveProfile == null)
             return BadRequest(new { error = "Geen profiel geselecteerd." });
 
-        // Verify the password before deleting
-        var success = await _passwordService.UnlockAsync(request.Wachtwoord);
-        if (!success)
+        // AVG Art.17: Re-authenticate with password before destructive operation.
+        // Use VerifyPasswordAsync (no side-effects) — DB is already unlocked.
+        var verified = await _passwordService.VerifyPasswordAsync(request.Wachtwoord);
+        if (!verified)
             return Unauthorized(new { error = "Ongeldig wachtwoord." });
 
         var profileId = _profileService.ActiveProfile.Id;
+        var profileNaam = _profileService.ActiveProfile.Naam;
 
-        // Lock the database first
+        // AVG Art.17: Audit BEFORE lock/delete — DB must still be open to write the log.
+        await _audit.LogAsync("Account verwijderd", entityType: "Account", entityId: profileId,
+            details: $"Profiel '{profileNaam}' en alle bijbehorende gegevens permanent verwijderd (AVG Art.17 verzoek).");
+
+        // Lock the database connection before removing the files.
         _passwordService.Lock();
 
-        // Delete the profile and its files
+        // Delete the profile entry, database file and salt.
         _profileService.DeleteProfile(profileId);
 
         return Ok(new { bericht = "Alle gegevens zijn permanent verwijderd." });

@@ -4,7 +4,7 @@
 
 Lumio uses an **externalizable rule system** based on Microsoft RulesEngine. All business rules, limits, and configurable values are defined in JSON files, not in code.
 
-```
+```text
 Architecture:
 
 lumio-rules.json     ─┐
@@ -16,7 +16,7 @@ lumio-workflows.json ─┘
 
 ## Directory Structure
 
-```
+```text
 src/Lumio.Api/Rules/
 ├── Configuration/              # IOptions<T> classes + DI
 │   ├── RuleServiceExtensions.cs    # AddLumioRules() extension
@@ -246,7 +246,7 @@ public record SuggestieDonorFact(          // Sprint 3
 
 `MeldingService` and `SuggestieService` use a **dual pattern**:
 
-```
+```text
 Request arrives
   ├── Try RulesEngine (lumio-workflows.json)
   │   ├── Success → return results
@@ -287,7 +287,7 @@ builder.Services.AddLumioRules(builder.Configuration);
 
 Each domain service follows the same pattern:
 
-```
+```text
 Input: *Facts record
   │
   ↓

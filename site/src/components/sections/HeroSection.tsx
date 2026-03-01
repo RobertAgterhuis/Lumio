@@ -1,4 +1,5 @@
 import Button from "@/components/ui/Button";
+import { BUY_CONSUMER_HREF } from "@/lib/constants";
 
 export default function HeroSection() {
   return (
@@ -23,7 +24,7 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button href="/prijzen#particulier" size="lg">
+            <Button href={BUY_CONSUMER_HREF} size="lg">
               Koop nu &mdash; &euro;125
             </Button>
             <Button href="#voor-wie" variant="secondary" size="lg">
