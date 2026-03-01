@@ -182,7 +182,7 @@ export default function OnePagerPage() {
               </p>
             </div>
             <div className="shrink-0 text-right print:block">
-              <p className="text-sm font-semibold text-[var(--color-primary-700)]">lumio.nl/contact</p>
+              <p className="text-sm font-semibold text-[var(--color-primary-700)]">lumio-legacy.nl/contact</p>
               <p className="text-sm text-[var(--color-neutral-500)]">info@lumio.app</p>
             </div>
           </div>

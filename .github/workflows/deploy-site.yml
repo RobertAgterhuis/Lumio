@@ -7,8 +7,8 @@
 #   Settings → Pages → Source: "GitHub Actions"
 #
 # LIVE URL (after first deploy):
-#   https://<org>.github.io/<repo>/   (custom domain: https://www.lumio.nl)
-#   Configure custom domain in Settings → Pages → Custom domain → "www.lumio.nl"
+#   https://<org>.github.io/<repo>/   (custom domain: https://www.lumio-legacy.nl)
+#   Configure custom domain in Settings → Pages → Custom domain → "www.lumio-legacy.nl"
 #   and ensure a CNAME DNS record: www → <org>.github.io
 
 name: Deploy marketing site to GitHub Pages

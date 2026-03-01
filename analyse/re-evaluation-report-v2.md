@@ -109,7 +109,7 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
   - SYS-RISK-011: Launch op non-compliant product — sterk gemitigeerd via DPIA + DPO; resterende blocker: website deployment + contrast check
   - COMPLIANCE_RISK-GROWTH-001: PostHog analytics — niet geïmplementeerd
   - OI-001: Team-samenstelling en capaciteit — INSUFFICIENT_DATA
-  - OI-002: Domeinregistratie lumio.nl — INSUFFICIENT_DATA (website-code aanwezig, maar live status onbekend)
+  - OI-002: Domeinregistratie `lumio-legacy.nl` — ✅ **RESOLVED** (PO bevestigd 2026-03-01); CNAME-bestand aanwezig in repo
   - OI-003: DPO aangesteld — ✅ OPGELOST (softwaredeveloper, 2026-03-01)
   - OI-004: CRM aanwezig — INSUFFICIENT_DATA
   - OI-006: Etymologie productnaam — LAAG, niet geverifieerd
@@ -223,7 +223,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 | SP-7-002 | PostHog activeren | **COMPLETED** | `ci.yml` Build-step uitgebreid met `NEXT_PUBLIC_POSTHOG_KEY` + `NEXT_PUBLIC_POSTHOG_HOST` secrets; `devdocs/posthog-analytics.md` setup guide gepubliceerd |
 | SP-7-003 | Vitest coverage 70% | **COMPLETED** | 2 nieuwe test-files (39 tests); thresholds 70/70/70/70%; actuals: 71.8% stmts / 71.1% branches / 73.2% funcs / 72.2% lines |
 | SP-7-004 | GUARD-010 controller refactoring | **COMPLETED** | 6 nieuwe controller-files; 3 controller-files ingekort; alle 4 targets nu ≤200 regels; `AfhandelingController.cs` 210L toegevoegd aan KNOWN_VIOLATIONS; overige 3 verwijderd |
-| SP-7-005 | Domeinregistratie `lumio.nl` | **BLOCKED (EXTERN)** | Buiten scope codebase — OI-002 vereist, niet implementeerbaar |
+| SP-7-005 | Domeinregistratie `lumio-legacy.nl` + GitHub Pages CNAME | **✅ COMPLETED** | Domein `lumio-legacy.nl` geregistreerd (PO bevestigd 2026-03-01); `site/public/CNAME` aangemaakt; alle domeinreferenties bijgewerkt (`sitemap.xml`, `robots.txt`, `layout.tsx`, `deployment-urls.md`, Electron-app, messages nl/en); DNS bij registrar + GitHub Pages GUI-instelling restant |
 
 ### SP-7-003 Deliverables
 
@@ -309,7 +309,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 |----|-------------|-----------|-----------|--------|
 | SYS-RISK-003 | AVG art.9 grondslag | 4 | **4** | ✅ GESLOTEN — ongewijzigd |
 | SYS-RISK-011 | Launch op non-compliant product | 4 | **3** | ✅ Contrast + disclaimers + PostHog-infra: minimaal restrisico |
-| SYS-RISK-001 | Website niet live | 6 | **4** | ⚠️ EXTERN — SEO infra gereed (v2.8); DNS + GitHub Pages activering vereist (OI-002) |
+| SYS-RISK-001 | Website niet live | 6 | **2** | ✅ Domein geregistreerd (`lumio-legacy.nl`); CNAME aanwezig; DNS-propagatie + GitHub Pages GUI enig restpunt |
 | SEC-RISK-001 | Master password cleartext | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
 | SYS-RISK-008 | EAA accessibility | 3 | **2** | ✅ SC 1.4.3 bevestigd (v2.3 OPGELOST-R002). Restrisico: formeel audit nog niet uitgevoerd |
 | SYS-RISK-009 | Shamir UX crisissituatie | 6 | **6** | Wizard aanwezig; formele UX-test pending — ongewijzigd |
@@ -502,7 +502,7 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | KPI | Baseline (v1) | Target 12-mnd | Huidige stand (v2) | Status |
 |-----|--------------|--------------|-------------------|--------|
 | AVG grondslag coverage | 0% | 100% | ~90% (retentiebeleid + DPIA v1.0 + DPO aangesteld; BrEVR-001 pending) | 🟢 Grotendeels behaald |
-| Website live | 0 | ✅ Live | Infra klaar (deploy-site.yml + robots.txt + sitemap); live URL BLOCKED: EXTERN (OI-002) | 🟡 Infra klaar |
+| Website live | 0 | ✅ Live | Domein `lumio-legacy.nl` geregistreerd; CNAME-bestand aanwezig; DNS-instelling + GitHub Pages GUI = laatste stap voor livegang | 🟡 DNS afwachten |
 | Messaging alignment score | 17/100 | ≥75/100 | INSUFFICIENT_DATA | 🔴 Onmeetbaar |
 | Shamir completion rate | INSUFFICIENT_DATA | ≥60% | ShamirDialog.tsx aanwezig (4-staps wizard); formele rate-meting vereist analytics | 🟡 Wizard klaar; meting pending |
 | Day-7 activation rate | INSUFFICIENT_DATA | ≥50% | INSUFFICIENT_DATA | 🔴 Onmeetbaar |
@@ -535,6 +535,7 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | v2.7 | 2026-03-01 | SP-7-001 | SP-7-001 COMPLETED: GUARD-005 LIFTED; NabestaandenSection.tsx toegevoegd; marketing copy versterkt met Shamir-uitleg; 6 smoke tests; alle SP-7 deliverables COMPLETED |
 | v2.8 | 2026-03-01 | ALL | REEVALUATE ALL: SEO-infra gereed (robots.txt + sitemap.xml + canonical domain); SYS-RISK-001 score 6→4; toastStore.ts coverage aanwezig; NabestaandenSection.tsx stabiel; geen nieuwe risico's |
 | v2.9 | 2026-03-01 | SP-8 Sprint Completion | SP-8-001 ✅ (ShamirServiceTests.cs — 10 tests); SP-8-002 ✅ (StatusFactsBuilderTests.cs — 10 tests + FakeLegitimairePortieService); SP-8-003 DESCOPED (API coverage gate non-enforcing 5.1% actueel); SP-8-004 ✅ (devdocs/shamir-ux-test-protocol.md — SYS-RISK-009 testprotocol); DELTA-RISK-006 NIEUW (GUARD-008 gate non-enforcing) |
+| v2.10 | 2026-03-01 | SP-7-005 Late Completion | Domein `lumio-legacy.nl` geregistreerd (PO-bevestiging); `site/public/CNAME` aangemaakt; alle 9 domeinverwijzingen bijgewerkt (`sitemap.xml` 8 URLs, `robots.txt`, `layout.tsx`, `deployment-urls.md`, `one-pager/page.tsx`, `messages/nl.json`, `messages/en.json`, `electron/index.ts`, `deploy-site.yml`); SP-7-005 ✅ COMPLETED; OI-002 ✅ RESOLVED; SYS-RISK-001 score 4→2 |
 
 ---
 
@@ -713,3 +714,24 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 - [x] Alle SP-7 deliverables (001–005) COMPLETED of BLOCKED EXTERN
 - [x] Geen tegenstrijdige uitspraken in dit document
 - [x] Output aangeleverd aan Orchestrator — Sprint 7 volledig afgerond
+
+---
+
+## HANDOFF CHECKLIST v2.10
+
+- [x] `site/public/CNAME` aangemaakt met `www.lumio-legacy.nl`
+- [x] `site/public/sitemap.xml` — alle 8 URLs bijgewerkt naar `www.lumio-legacy.nl`
+- [x] `site/public/robots.txt` — sitemap-URL bijgewerkt
+- [x] `site/src/app/layout.tsx` — `metadataBase` bijgewerkt
+- [x] `site/src/app/werkgevers/one-pager/page.tsx` — zichtbaar domein bijgewerkt
+- [x] `.github/workflows/deploy-site.yml` — commentaar bijgewerkt
+- [x] `devdocs/deployment-urls.md` — alle refs bijgewerkt; BLOCKED → DNS PROPAGATIE AFWACHTEN
+- [x] `src/lumio-web/messages/nl.json` + `en.json` — aanbeveel-teksten bijgewerkt
+- [x] `src/lumio-desktop/src/main/index.ts` — Electron about-website bijgewerkt
+- [x] SP-7-005 status bijgewerkt naar COMPLETED in sprint backlog
+- [x] OI-002 bijgewerkt naar RESOLVED
+- [x] SYS-RISK-001 score bijgewerkt (4 → 2)
+- [x] KPI Website live — status bijgewerkt
+- [x] Versiegeschiedenis v2.10 toegevoegd
+- [x] Geen tegenstrijdige uitspraken in dit document
+- [x] Output aangeleverd aan Orchestrator — domein-activatie klaar voor DNS

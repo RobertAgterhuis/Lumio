@@ -81,7 +81,7 @@ app.whenReady().then(async () => {
         applicationVersion: app.getVersion(),
         copyright: `© ${new Date().getFullYear()} Lumio`,
         iconPath: path.join(__dirname, "..", "..", "build", "icon.icns"),
-        website: "https://lumio.nl",
+        website: "https://www.lumio-legacy.nl",
       });
 
       // macOS dock right-click menu

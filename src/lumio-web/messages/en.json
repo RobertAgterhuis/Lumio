@@ -1437,10 +1437,10 @@
     "aanbevelen": {
       "titel": "Recommend Lumio",
       "beschrijving": "Know someone who also wants to arrange their estate? Share Lumio with colleagues, friends or your employer.",
-      "tekst": "I use Lumio to digitally record my estate plan — offline, encrypted and completely private. More information at lumio.nl",
+      "tekst": "I use Lumio to digitally record my estate plan — offline, encrypted and completely private. More information at lumio-legacy.nl",
       "emailOnderwerp": "Lumio — digitally arrange your estate",
       "emailBodyPre": "Dear,\n\nI would like to recommend Lumio — a secure application for your digital estate.",
-      "emailBodyPost": "More information: https://lumio.nl\n\nKind regards",
+      "emailBodyPost": "More information: https://www.lumio-legacy.nl\n\nKind regards",
       "kopieren": "Copy referral text",
       "gekopieerd": "Copied!",
       "viaEmail": "Recommend via email"

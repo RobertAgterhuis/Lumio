@@ -19,7 +19,7 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lumio.nl"),
+  metadataBase: new URL("https://www.lumio-legacy.nl"),
   title: {
     default: "Lumio — Rust en overzicht voor uw medewerkers",
     template: "%s | Lumio",
