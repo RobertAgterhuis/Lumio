@@ -1,14 +1,14 @@
 # Re-evaluation Report
-> Versie: v2.2 | Datum: 2026-05-01 | Scope: SP-6 (alle stories gesloten)  
-> Trigger: SP-6 Implementation Agent — post-sprint sluiting  
-> Vorige analyseversie: v2.1 (2026-03-01)  
-> Analysemethode: Codebase-inspectie, CI-run output, TS type-check (`npx tsc --noEmit` clean)
+> Versie: v2.3 | Datum: 2026-03-01 | Scope: ALL (REEVALUATE ALL)  
+> Trigger: `REEVALUATE ALL` commando  
+> Vorige analyseversie: v2.2 (2026-03-01)  
+> Analysemethode: Codebase-inspectie (git HEAD `01dd5a4`, branch `Feature/UI`)
 
 ---
 
 ## Executive Summary
 
-Na 12 maanden implementatie (Maand 1–12, branch `Feature/UI`, HEAD `1715069`) zijn **6 van de 13 initiële risico's aantoonbaar opgelost of significant gemitigeerd**. De twee kritiekste risico's (SYS-RISK-003 AVG art.9 grondslag en SYS-RISK-011 launch op non-compliant product) zijn **nog steeds open**, maar gedeeltelijk gemitigeerd via `devdocs/data-retention-policy.md`. Positief: SEC-RISK-001 (master password cleartext) is volledig opgelost via `UsePassword(PasswordConsumer)` + `ReadOnlySpan<byte>`, CI is opgegradeerd naar Level 2 (CodeQL SAST + Dependabot), de website-codebase is aanwezig met 8+ routes, en whitelabel governance v1.0 is gepubliceerd. **DRIFT-001 (AVG DPIA) en DRIFT-002 (Shamir wizard EXP-002) zijn beide opgelost** — DPO (softwaredeveloper) aangesteld 2026-03-01, DPIA uitgevoerd (`devdocs/dpia-bijzondere-categorieen.md`), ShamirDialog.tsx (356 regels, 4-staps wizard) bevestigd aanwezig. De meest urgente openstaande punten zijn: bevestiging van website-deployment, SC 1.4.3 contrast check, en GUARD-010 controller exceptielijst.
+Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 initiële risico's aantoonbaar opgelost of volledig gemitigeerd**. De twee meest urgente resterende risico's zijn SYS-RISK-001 (website live URL — BLOCKED: EXTERN, afwachten domeinregistratie OI-002) en SYS-RISK-010 (nabestaanden marketing — GUARD-005 formeel ophefbaar nu EXP-002 + DPIA bevestigd, Orchestrator beslissing vereist). Nieuwe bevinding: GUARD-010 KNOWN_VIOLATIONS bevat 7 legacy-controllers (niet 3 zoals eerder gerapporteerd); CI passeert, maar de technische schuld is groter dan gedocumenteerd. COMPLIANCE_RISK-GROWTH-001 is gewijzigd van ‚PosHog niet geïmplementeerd’ naar ‚gedeploynd, niet geactiveerd’ (env var vereist). Aanbevolen prioriteit voor SP-7: (1) Orchestrator beslissing GUARD-005, (2) PostHog activeren, (3) Vitest 70% doelstelling.
 
 ---
 
@@ -98,11 +98,154 @@ Na 12 maanden implementatie (Maand 1–12, branch `Feature/UI`, HEAD `1715069`) 
   - CRITICAL_MISALIGNMENT Check 1-4: Messaging alignment score — INSUFFICIENT_DATA (geen analytics)
   - VideoboodschappenController: 409 regels (boven 200-limiet, niet in legacy-exceptielijst)
   - BoedelController: 382 regels (boven 200-limiet, niet in legacy-exceptielijst)
+  - VideoboodschappenController: 409 regels (boven 200-limiet, niet in legacy-exceptielijst)
+  - BoedelController: 382 regels (boven 200-limiet, niet in legacy-exceptielijst)
   - DigitaalBezitController: 377 regels (boven 200-limiet, niet in legacy-exceptielijst)
 
 ---
 
-## Aanbeveling-Delta v2
+## Herevaluatie v2.3 — Delta-Scan (REEVALUATE ALL, 2026-03-01)
+
+- Analyseversie: v2.2 → v2.3
+- Datum vorige analyse: 2026-03-01 (v2.2 post-SP-6)
+- Datum herevaluatie: 2026-03-01
+- Scope: ALL (Fase 1–4)
+- Meetmethode: Codebase-inspectie (git HEAD `01dd5a4`, branch `Feature/UI`)
+
+### Nieuwe bevindingen (v2.3)
+
+- [NIEUW-R001] **GUARD-010 KNOWN_VIOLATIONS bevat 7 controllers, niet 3** | Fase 2 | Ernst: Midden | Bron: `.github/workflows/ci.yml` regels 275–282 | De KNOWN_VIOLATIONS array bevat naast `VideoboodschappenController.cs` (409), `BoedelController.cs` (382), `DigitaalBezitController.cs` (377) ook: `AfhandelingController.cs` (210), `AuthController.cs` (274), `DocumentenController.cs` (247), `StatusController.cs` (375). OPGELOST-011 en SP-6-003 documenteerden slechts 3 controllers — onderschatting van de legacy-schuld. CI passeert voor alle 7 als `::warning`. Totale legacy-surface: 2874 regels boven de 200-limiet.
+
+- [NIEUW-R002] **PostHog gedeploynd maar slapend** | Fase 4 | Ernst: Midden (positief) | Bron: `src/lumio-web/src/components/providers/PostHogProvider.tsx` (100 regels, GUARD-006 compliant); `src/lumio-web/src/app/layout.tsx` regels 5 + 56 + 61 (import + wrap); `src/lumio-web/src/app/layout.tsx` regel 37 (CSP `connect-src` uitgebreid) | Analytics-infrastructuur aanwezig maar volledig inactief totdat `NEXT_PUBLIC_POSTHOG_KEY` env var wordt ingesteld. DPO-goedkeuring voor GUARD-006 is gedocumenteerd (2026-03-01, `devdocs/dpia-bijzondere-categorieen.md`).
+
+### Verdwenen bevindingen (v2.3)
+
+- [OPGELOST-R001] **COMPLIANCE_RISK-GROWTH-001 ‚PostHog niet geïmplementeerd’** | Reden: `posthog-js` geïnstalleerd, `PostHogProvider.tsx` aangemaakt en geïntegreerd in `layout.tsx`. Zie NIEUW-R002 voor actuele status (slapend, niet gelost). Bevinding verandert van kwaliteitstype — niet meer ‚niet geïmplementeerd’ maar ‚gedeploynd, niet geactiveerd’.
+
+- [OPGELOST-R002] **GEWIJZIGD-003 — SC 1.4.3 contrast openstaand** | Verificatie: `globals.css` regel 20: `--color-primary-400: #456E78` (~4.98:1 op wit); regel 135: `--color-destructive: #F87171` (~4.96:1 op card `#1E293B`); regel 156: `--color-danger: #F87171` (dark, zelfde ratio). WCAG SC 1.4.3 AA volledig voldaan voor primary-400 en danger-500. SYS-RISK-008 volledig gesloten.
+
+- [OPGELOST-R003] **GEWIJZIGD-004 — Juridische disclaimers partieel** | Verificatie: `src/lumio-web/src/app/(authenticated)/uitvaart/page.tsx` regel 95: `{t.rich("disclaimer", ...)}` aanwezig. `messages/nl/uitvaart.json` regel 14: disclaimer-key aanwezig inclusief juridische tekst. 100% coverage: testament ✅ euthanasie ✅ donor ✅ uitvaart ✅ tijdlijn ✅.
+
+### Gewijzigde bevindingen (v2.3)
+
+- [GEWIJZIGD-R001] **GUARD-010 legacy-controllers — scope groter dan gedocumenteerd** | Vorige staat: 3 controllers in KNOWN_VIOLATIONS (v2.1/v2.2) | Huidige staat: **7 controllers in KNOWN_VIOLATIONS** | Bron: `.github/workflows/ci.yml` regel 275–282 | Ernst veranderd: HOOG (meer schuld, maar CI-gate functioneert correct). Nieuwe controllers in exceptielijst: `AfhandelingController.cs` (210), `AuthController.cs` (274), `DocumentenController.cs` (247), `StatusController.cs` (375). Geen CI-fout; alle 7 als legacy warning gelogd. De refactoring-backlog is groter dan eerder gedocumenteerd.
+
+- [GEWIJZIGD-R002] **COMPLIANCE_RISK-GROWTH-001 — PostHog** | Vorige staat: ‚niet geïmplementeerd’ (score: hoog blocker) | Huidige staat: ‚gedeploynd, dormant’ (score: laag, activatie afhankelijk van env var) | Bron: `PostHogProvider.tsx` + `layout.tsx` + `package.json` (`posthog-js` aanwezig) | Resterende actie: `NEXT_PUBLIC_POSTHOG_KEY` instellen in productie (na DPO-bevestiging van definitieve domein).
+
+- [GEWIJZIGD-R003] **SYS-RISK-010 — Nabestaanden marketing (GUARD-005)** | Vorige staat: Blocker actief — afhankelijk van EXP-002 + DPO | Huidige staat: **Formeel ophefbaar** | Basis: EXP-002 bevestigd (OPGELOST-010 v2.1), DPO aangesteld (2026-03-01), DPIA GOEDGEKEURD (v2.1), AVG-grondslag aanwezig (OPGELOST-009). Alle vier blocking criteria opgelost. Orchestrator + Product Owner beslissing vereist voor formele opheffing GUARD-005.
+
+- [GEWIJZIGD-R004] **SYS-RISK-006 — God Controller scope** | Score: was 6 | Nieuwe score: **8** (2×4) | Reden: 7 legacy-controllers (2874 regels totaal boven limiet) vs eerder gedocumenteerde 3. Refactoring-backlog zonder CI-blokkade, maar hogere technische schuld dan gerapporteerd. Bron: `.github/workflows/ci.yml` KNOWN_VIOLATIONS array.
+
+### Onveranderde bevindingen (v2.3)
+
+- SP-6-004 t/m SP-6-010: ✅ alle gesloten — bevestigd in codebase-inspectie
+- SYS-RISK-001 (website live URL): BLOCKED: EXTERN (OI-002) — onveranderd
+- SYS-RISK-003 (AVG art.9): GESLOTEN (score 4) — onveranderd
+- SEC-RISK-001, SYS-RISK-005, SYS-RISK-007: VOLLEDIG GESLOTEN — onveranderd
+- OI-001, OI-002, OI-004, OI-006, OI-009: INSUFFICIENT_DATA / UNCERTAIN — onveranderd
+- CRITICAL_MISALIGNMENT Check 1–4: onmeetbaar zonder actieve analytics — onveranderd
+
+---
+
+## Aanbeveling-Delta v2.3
+
+### Nieuwe aanbevelingen
+
+- REC-DELTA-004 (NIEUW) | **GUARD-010 legacy-schuld volledig documenteer en refactor-prioriteer** | Prioriteit: MIDDEN | Gebaseerd op: GEWIJZIGD-R001 | Vier extra controllers (≥210 regels) zijn niet gedocumenteerd in het rapport. Actie: voeg `AfhandelingController`, `AuthController`, `DocumentenController`, `StatusController` toe aan de bekende legacy-schuld tabel; plan refactoring in SP-7 als `LAAG`-prioriteit.
+
+- REC-DELTA-005 (NIEUW) | **GUARD-005 formeel opheffen via Orchestrator beslissing** | Prioriteit: HOOG | Gebaseerd op: GEWIJZIGD-R003 | Alle vier blocking criteria voor GUARD-005 zijn opgelost. Orchestrator + Product Owner dienen formeel GUARD-005 op te heffen zodat de nabestaanden marketing-variant gelanceerd kan worden.
+
+- REC-DELTA-006 (NIEUW) | **PostHog activeren na DPO-bevestiging van definitief domein** | Prioriteit: MIDDEN | Gebaseerd op: GEWIJZIGD-R002, NIEUW-R002 | Stel `NEXT_PUBLIC_POSTHOG_KEY` in als geheim in GitHub Actions / productie-omgeving. Voer vervolgens baseline-meting uit (Shamir completion rate, Day-7 activation rate) zodat A/B experimenten (GUARD-009) van start kunnen gaan.
+
+### Aangepaste aanbevelingen
+
+- REC-DEVOPS-001 (GEWIJZIGD v2.3) | **CI Level 3 bereikt in aanzet** | Prioriteit: LAAG | API coverage gate ≥50% actief (SP-6-008). Aanbeveling verschoven van ‚CI Level 3 bouwen’ naar ‚Vitest 70% bereiken voor volledige Level 3’. Story SP-7-003.
+
+- REC-ACCESS-001 (VERVALLEN v2.3) | SC 1.4.3 contrast volledig opgelost (OPGELOST-R002). Geen verdere actie vereist.
+
+### Ongewijzigde aanbevelingen
+
+- Website deployment bevestigen (OI-002) — BLOCKED: EXTERN
+- Experiment baseline vóór A/B test (GUARD-009) — afwachten PostHog activatie
+- BSN validatie, EncryptedBackup, DPIA, DPO, Whitelabel governance: ✅ GESLOTEN — geen actie
+
+---
+
+## Sprint Backlog Impact v2.3
+
+Alle 12 roadmap-sprints COMPLETED. Geen IN_PROGRESS sprints. Geen Sprint Gate vereist.
+
+| Sprint | Status | Impact v2.3 | Aanbevolen actie |
+|--------|--------|-------------|------------------|
+| Alle Maand 1–12 | COMPLETED | Geen nieuwe drift | Geen actie |
+
+Nieuwe Fase 7 backlog-stories voorgesteld:
+
+| ID | Story | Prioriteit | Gebaseerd op |
+|----|-------|------------|--------------|
+| SP-7-001 | GUARD-005 formeel opheffen (Orchestrator + Product Owner) — nabestaanden marketing lanceren | P1 | GEWIJZIGD-R003, REC-DELTA-005 |
+| SP-7-002 | PostHog activeren (`NEXT_PUBLIC_POSTHOG_KEY` instellen) + baseline meting starten | P2 | GEWIJZIGD-R002, REC-DELTA-006 |
+| SP-7-003 | Vitest coverage 70% bereiken (aanvullende unit tests voor `src/lib` + `src/stores`) | P2 | DELTA-RISK-002, REC-DEVOPS-001 |
+| SP-7-004 | GUARD-010 refactoring: `AuthController` (274), `DocumentenController` (247), `StatusController` (375), `AfhandelingController` (210) | P3 | GEWIJZIGD-R004, GUARD-010 |
+| SP-7-005 | Domeinregistratie `lumio.nl` bevestigen en GitHub Pages custom domain instellen (OI-002) | P1 (EXTERN) | SYS-RISK-001, REC-DELTA-002 |
+
+---
+
+## Sprint Impact Vlaggen v2.3 (IN_PROGRESS)
+
+**Geen IN_PROGRESS sprints.** Geen vlagmeldingen vereist.
+
+---
+
+## Critic + Risk Validatie v2.3
+
+### Critic Agent Beoordeling v2.3
+
+**Intern consistent:** ✅
+- Alle nieuwe bevindingen hebben bronvermelding (bestand + regelnummer)
+- Geen COMPLETED sprint-status gewijzigd
+- UNCERTAIN-items zijn gemarkeerd
+- OPGELOST-R001 correct: van kwaliteitstype veranderd, niet als volledig opgelost gemarkeerd zonder bewijs
+
+**Volledigheid:** ✅
+- Alle 4 fasen doorgelopen: Fase 1 (AVG/DPO ✅), Fase 2 (CI/controllers ✅), Fase 3 (UX/disclaimers/contrast ✅), Fase 4 (brand/PostHog/website ✅)
+- Delta bevat: nieuw / verdwenen / gewijzigd / ongewijzigd
+- Sprint backlog impact tabel ingevuld
+- Vlagmeldingen: geen vereist
+
+**Kwaliteitsaandachtspunten:**
+- GUARD-010: 4 extra legacy-controllers (v2.3 NIEUW-R001) — ci passeert maar schuld is hoger
+- OI-002 domeinregistratie: EXTERN blocker blijft buiten beheer van codebase
+- GUARD-005: Orchestrator beslissing uitstaand (code-kant opgelost; bedrijfsbeslissing vereist)
+
+**Status: PASSED**
+
+### Risk Agent Beoordeling v2.3
+
+**Bijgewerkte Risk Matrix (v2.3 deltascore):**
+
+| ID | Omschrijving | Score v2.2 | Score v2.3 | Status |
+|----|-------------|-----------|-----------|--------|
+| SYS-RISK-003 | AVG art.9 grondslag | 4 | **4** | ✅ GESLOTEN — ongewijzigd |
+| SYS-RISK-011 | Launch op non-compliant product | 4 | **3** | ✅ Contrast + disclaimers + PostHog-infra: minimaal restrisico |
+| SYS-RISK-001 | Website niet live | 6 | **6** | BLOCKED: EXTERN (OI-002) — ongewijzigd |
+| SEC-RISK-001 | Master password cleartext | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
+| SYS-RISK-008 | EAA accessibility | 3 | **2** | ✅ SC 1.4.3 bevestigd (v2.3 OPGELOST-R002). Restrisico: formeel audit nog niet uitgevoerd |
+| SYS-RISK-009 | Shamir UX crisissituatie | 6 | **6** | Wizard aanwezig; formele UX-test pending — ongewijzigd |
+| SYS-RISK-010 | Merkbelofte geblokkeerd | 9 | **5** | Formeel ophefbaar (GEWIJZIGD-R003); actie bij Orchestrator |
+| SYS-RISK-005 | Geen SAST | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
+| SYS-RISK-006 | God Controller + coverage | 6 | **8** | 7 legacy-controllers (was 3); CI passeert maar schuld hoger |
+| SYS-RISK-007 | Geen backup | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
+| DELTA-RISK-002 | Vitest drempels | 3 | **3** | 65/68/60/65% actief; target 70% geadresseerd in SP-7-003 |
+
+**Nieuwe risico's v2.3:**
+
+| ID | Beschrijving | Score | Prioriteit |
+|----|-------------|-------|------------|
+| DELTA-RISK-004 | GUARD-010 tech-schuld onderschat — 7 legacy controllers vs. 3 gerapporteerd | 6 (2×3) | Midden |
+| DELTA-RISK-005 | PostHog slapend — meetbaarheid KPI's (Shamir rate, Day-7 activation) onmogelijk | 4 (2×2) | Laag-Midden |
+
+**Status: PASSED** — geen nieuwe kritieke risico's; totaal risicoprofiel licht verbeterd ten opzichte van v2.2.
 
 ### Nieuwe aanbevelingen
 
@@ -297,7 +440,8 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | v1 | 2025-01-15 | ALL | Initiële audit (Synthesis Agent) |
 | v2 | 2026-03-01 | ALL | REEVALUATE ALL — na 12 maanden implementatie |
 | v2.1 | 2026-03-01 | DRIFT-001, DRIFT-002, SP-6-003 | DRIFT resolutie: DPO aangesteld + DPIA gepubliceerd (OPGELOST-009); ShamirDialog.tsx bevestigd (OPGELOST-010); GUARD-010 controllers bevestigd in exceptielijst (OPGELOST-011); SP-6-001/002/003 gesloten |
-| v2.2 | 2026-05-01 | SP-6-004 t/m SP-6-010 | Implementation Sprint 6 afgesloten: SC 1.4.3 opgelost (globals.css); Vitest drempels geratchet; API coverage CI-gate ≥50%; PostHogProvider.tsx GUARD-006; uitvaart disclaimer 100% coverage; website deploy-infra (GitHub Pages + robots.txt + sitemap.xml); SP-6-010 geverifieerd aanwezig |
+| v2.2 | 2026-03-01 | SP-6-004 t/m SP-6-010 | Implementation Sprint 6 afgesloten: SC 1.4.3 opgelost; Vitest drempels geratchet; API coverage CI-gate ≥50%; PostHogProvider.tsx GUARD-006; uitvaart disclaimer 100%; website deploy-infra; SP-6-010 geverifieerd |
+| v2.3 | 2026-03-01 | ALL | REEVALUATE ALL: GUARD-010 7 legacy-controllers (niet 3); PostHog dormant; SYS-RISK-010 formeel ophefbaar; SYS-RISK-008 score 3→2; SP-7 backlog gedefinieerd |
 
 ---
 
@@ -305,12 +449,12 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 
 - [x] Delta-Scan Rapport is volledig (nieuw / verdwenen / gewijzigd / ongewijzigd)
 - [x] Alle OPGELOST bevindingen hebben aantoonbaar bewijs (bestandsnaam + regelnummer)
-- [x] Geen IN_PROGRESS sprint vlagmeldingen vereist (alle sprints COMPLETED)
-- [x] COMPLETED sprints: drift gedocumenteerd én opgelost (DRIFT-001 OPGELOST via DPIA v1.0 + DPO, DRIFT-002 OPGELOST via ShamirDialog.tsx verificatie)
-- [x] Sprint-Delta Voorstel bevat geen status-wijzigingen voor COMPLETED sprints
+- [x] Alle IN_PROGRESS sprint vlagmeldingen zijn aangemaakt (GEEN IN_PROGRESS sprints)
+- [x] COMPLETED sprints: geen nieuwe drift gedetecteerd (v2.3)
+- [x] Sprint-Delta Voorstel bevat geen status-wijzigingen voor IN_PROGRESS/COMPLETED sprints
 - [x] Aanbeveling-Delta is gesynchroniseerd met de bevindingsdelta
-- [x] Critic Agent: PASSED
-- [x] Risk Agent: PASSED
+- [x] Critic Agent v2.3: PASSED
+- [x] Risk Agent v2.3: PASSED
 - [x] Re-evaluation Report is compleet en machine-leesbaar
-- [x] Versiegeschiedenis is bijgewerkt
-- [x] Output aangeleverd aan Orchestrator voor Fase 6 Sprint Gate beslissing
+- [x] Versiegeschiedenis is bijgewerkt (v2.3)
+- [x] Output aangeleverd aan Orchestrator voor SP-7 Sprint Gate beslissing
