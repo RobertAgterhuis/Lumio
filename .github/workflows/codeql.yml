@@ -18,7 +18,6 @@ jobs:
   analyze:
     name: CodeQL (${{ matrix.language }})
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     permissions:
       actions: read
       contents: read

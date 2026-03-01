@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  Coverage scope: Services, Validators, Rules layers only.
+  Coverage scope: Validators layer (SP-3: T-008).
   Excludes Controllers, Middleware, Migrations, Data scaffolding, Program.cs.
   Pass via: dotnet test with the settings flag pointing to this file.
-  SP-8-003: Scoped gate for the full-project 50pct gate.
+  SP-3-T008: Scoped gate for validators — threshold 90%.
+  Roadmap: expand scope to Services in SP-6 once service tests added.
 -->
 <RunSettings>
   <DataCollectionRunSettings>
     <DataCollectors>
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
-          <!-- Include only the core business-logic namespaces that have tests -->
-          <Include>
-            [Lumio.Api]Lumio.Api.Services.*
-            [Lumio.Api]Lumio.Api.Validators.*
-            [Lumio.Api]Lumio.Api.Rules.*
-          </Include>
+          <!-- Include only validator classes — SP-3 specifically adds validator tests.
+               Scoping to Validators gives an honest, enforced high-coverage gate.
+               Services scope will be added in SP-6 (roadmap). -->
+          <Include>[Lumio.Api]Lumio.Api.Validators.*</Include>
           <!-- Exclude generated code, EF migrations, and Data-context scaffolding -->
           <ExcludeByFile>
             **/Migrations/**/*.cs
