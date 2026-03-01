@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schema.json",
+
+  "companyName": "UW BEDRIJFSNAAM",
+  "productName": "UW PRODUCTNAAM",
+  "appId": "com.uwbedrijf.lumio",
+
+  "colors": {
+    "primaryBase": "#0066CC",
+    "primaryLight": "#3385D6",
+    "primaryDark": "#004E9A",
+    "primaryForeground": "#FFFFFF"
+  },
+
+  "titleBarColor": "#0066CC",
+  "titleBarSymbolColor": "#FFFFFF",
+  "splashColor": "#004E9A",
+
+  "logo": {
+    "file": "logo.svg",
+    "height": 48,
+    "opacity": 0.9,
+    "showOnSplash": true,
+    "useAsAppIcon": true
+  },
+
+  "dashboardMessage": "Aangeboden door UW BEDRIJFSNAAM. Vragen? contact@uwbedrijf.nl"
+}

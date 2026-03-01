@@ -273,3 +273,47 @@ jobs:
           done
           echo "✓ GUARD-010: $WARNINGS known legacy violations (tracked). New violations: $FAILED."
           if [ "$FAILED" -gt 0 ]; then exit 1; fi
+
+  # ── Whitelabel Schema Validation ──────────────────────────────────
+  whitelabel-validate:
+    name: Whitelabel config schema validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli@5
+
+      - name: Validate example-corp config
+        run: |
+          ajv validate \
+            -s tools/whitelabel/schema.json \
+            -d tools/whitelabel/configs/example-corp/whitelabel.json
+          echo "✓ Whitelabel: example-corp config is schema-valid."
+
+      - name: Validate new-partner-template config
+        run: |
+          ajv validate \
+            -s tools/whitelabel/schema.json \
+            -d tools/whitelabel/configs/new-partner-template/whitelabel.json
+          echo "✓ Whitelabel: new-partner-template config is schema-valid."
+
+      - name: Validate all partner configs (if any)
+        shell: bash
+        run: |
+          FAILED=0
+          for config in tools/whitelabel/configs/*/whitelabel.json; do
+            slug=$(basename $(dirname "$config"))
+            if ajv validate -s tools/whitelabel/schema.json -d "$config" 2>/dev/null; then
+              echo "  ✓ $slug"
+            else
+              echo "::error file=$config::Whitelabel config for '$slug' failed schema validation."
+              FAILED=1
+            fi
+          done
+          echo "Whitelabel schema validation complete."
+          if [ "$FAILED" -gt 0 ]; then exit 1; fi
