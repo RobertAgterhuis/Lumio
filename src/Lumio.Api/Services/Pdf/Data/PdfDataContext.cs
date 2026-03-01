@@ -10,6 +10,13 @@ using Lumio.Api.Domain.Testament;
 namespace Lumio.Api.Services.Pdf.Data;
 
 /// <summary>
+/// T-005: Safe PDF projection of WachtwoordEntry.
+/// Contains ONLY non-sensitive metadata — NEVER EncryptedWachtwoord or Gebruikersnaam.
+/// Used to prevent credential leakage in any generated PDF or export (AVG Art.9).
+/// </summary>
+public record WachtwoordEntrySafePdf(Guid Id, string Naam, string? Url, string? Notities, DateTime GewijzigdOp);
+
+/// <summary>
 /// Immutable data bag passed to every IPdfPageGenerator.
 /// Populated once per request by PdfDataLoader.
 /// </summary>
@@ -33,7 +40,8 @@ public record PdfDataContext(
     // ── Digitale nalatenschap ─────────────────────────────────────────────
     IList<DigitaalAccount> DigitaleAccounts,
     IList<CryptoWallet> CryptoWallets,
-    IList<WachtwoordEntry> Wachtwoorden,
+    /// <summary>T-005: Safe projection — no EncryptedWachtwoord / Gebruikersnaam.</summary>
+    IList<WachtwoordEntrySafePdf> Wachtwoorden,
 
     // ── Boedel / vermogen ─────────────────────────────────────────────────
     IList<FysiekBezit> FysiekeBezittingen,

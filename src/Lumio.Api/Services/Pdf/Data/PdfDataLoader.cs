@@ -75,7 +75,11 @@ public class PdfDataLoader
 
         var digitaleAccountsTask = _db.DigitaleAccounts.Where(a => a.EigenaarId == eid).ToListAsync();
         var cryptoWalletsTask    = _db.CryptoWallets.Where(c => c.EigenaarId == eid).ToListAsync();
-        var wachtwoordenTask     = _db.Wachtwoorden.Where(w => w.EigenaarId == eid).ToListAsync();
+        // T-005: Project naar WachtwoordEntrySafePdf — NOOIT EncryptedWachtwoord of Gebruikersnaam laden (AVG Art.9)
+        var wachtwoordenTask     = _db.Wachtwoorden
+            .Where(w => w.EigenaarId == eid)
+            .Select(w => new WachtwoordEntrySafePdf(w.Id, w.Naam, w.Url, w.Notities, w.GewijzigdOp))
+            .ToListAsync();
 
         var fysiekTask        = _db.FysiekeBezittingen.Where(f => f.EigenaarId == eid).ToListAsync();
         var bankrekeningenTask = _db.Bankrekeningen.Where(b => b.EigenaarId == eid).ToListAsync();
