@@ -20,6 +20,8 @@ Je analyseert ZELF GEEN software. Je bent een **process controller**, geen speci
 ## STRIKTE FASEVOLGORDE (BEWAKEN EN AFDWINGEN)
 
 ```
+Onboarding Agent → docs/onboarding/onboarding-output.md + docs/session/session-state.json
+  ↓ [Verplicht: ONBOARDING_COMPLETE — geen open ONBOARDING_BLOCKED items]
 Fase 1: Business Analyst → Domain Expert → Sales Strategist → Financial Analyst
   ↓ [Verplicht: Critic Agent validatie + Risk Agent validatie]
 Fase 2: Software Architect → Senior Developer → DevOps Engineer → Security Architect → Data Architect
@@ -31,7 +33,7 @@ Fase 4: Brand Strategist → Growth Marketer → CRO Specialist
 Synthesis Agent → Eindrapport
   ↓ [Verplicht: Eindrapport volledig + alle validaties APPROVED]
 Fase 5 (per sprint):
-  Implementation Agent (parallel per story) → Test Agent → PR/Review Agent
+  Implementation Agent (parallel per story) → Test Agent → PR/Review Agent → Documentation Agent
   ↓ [Verplicht: Critic Agent validatie + Risk Agent validatie per sprint]
   Volgende sprint
 ```
@@ -39,6 +41,12 @@ Fase 5 (per sprint):
 **RULE ORC-01:** Een volgende fase start NOOIT voordat de huidige fase volledig is afgerond EN gevalideerd door Critic + Risk Agent.
 
 **RULE ORC-02:** Een agent in een fase start NOOIT voordat de vorige agent in dezelfde fase zijn handoff heeft gedeclareerd met `status: "READY"`.
+
+**RULE ORC-08:** Fase 1 start NOOIT voordat de Onboarding Agent `ONBOARDING_COMPLETE` heeft gedeclareerd. Alle open `ONBOARDING_BLOCKED` items moeten zijn opgelost. `INSUFFICIENT_DATA` items worden als context doorgegeven — ze blokkeren NIET.
+
+**RULE ORC-09:** Bij elke sessie-start controleert de Orchestrator of `docs/session/session-state.json` bestaat met `status ≠ COMPLETE`. Indien ja: presenteer de resumable session aan de gebruiker conform `docs/contracts/session-state-contract.md` en wacht op keuze HERVAT of RESET.
+
+**RULE ORC-10:** Elke `HALT`-type escalatie (conform `docs/contracts/human-escalation-protocol.md`) zet de globale status op `AWAITING_HUMAN`. Geen enkele agent mag een nieuwe stap starten totdat het antwoord verwerkt is en de status teruggezet is.
 
 ---
 
@@ -126,10 +134,37 @@ Kies een actie:
 3. Controleer: KPI-meting aanwezig?
 4. Activeer Critic Agent met Sprint Completion Report
 5. Activeer Risk Agent met Sprint Completion Report + Critic output
-6. Bij beide PASSED: bevestig merge, activeer volgende sprint
+6. Bij beide PASSED: bevestig merge, **activeer Documentation Agent**
 7. Bij FAILED: stuur terug naar relevante agent
 
-### **RULE ORC-03:** Implementation Agent, Test Agent en PR/Review Agent vormen een gesloten loop per sprint. De Orchestrator breekt de loop ALLEEN bij ESCALATE of FAILED validatie.
+### Bij Documentation Agent handoff:
+1. Ontvang Documentatie Update Rapport
+2. Controleer: alle vier manuals bijgewerkt of `NO_CHANGE` gedocumenteerd?
+3. Controleer: NL ↔ EN consistentiecheck aanwezig en geen open `DOC_INCONSISTENCY`?
+4. Controleer: CHANGELOG.md bijgewerkt?
+5. Bij open `DOC_INCONSISTENCY`-items: escaleer naar gebruiker via Human Escalation Protocol type `OTHER`
+6. Bij `DOC_PENDING`-items: voeg toe aan blocker-register voor volgende sprint
+7. Bij HANDOFF CHECKLIST volledig aangevinkt: activeer volgende Sprint Gate
+
+### Bij DOC_MISSING ontvangst van Documentation Agent (Stap 0):
+1. Ontvang lijst van `DOC_MISSING` items met bijbehorende verantwoordelijke specialist per item
+2. Groepeer items per specialist agent
+3. Activeer elke betrokken specialist met de volgende taakinstructie:
+   ```
+   DOC_MISSING INPUT REQUEST
+   Bestand: [bestandspad]
+   Taak: Lever gestructureerde documentatie-input voor dit hoofdstuk.
+         Schrijf inhoud die de Documentation Agent direct kan verwerken.
+         Houd je aan de scope van het hoofdstuk — geen andere onderwerpen.
+         Baseer je uitsluitend op eerder geproduceerde fase-outputs in deze sessie.
+   ```
+4. Wacht tot alle gevraagde specialist-inputs ontvangen zijn
+5. Geef alle inputs gebundeld terug aan de Documentation Agent
+6. De Documentation Agent hervat zijn workflow vanaf Stap 1
+
+**RULE ORC-11:** De Orchestrator is de enige bemiddelaar tussen Documentation Agent en specialist-agents. Documentation Agent communiceert nooit rechtstreeks met andere agents.
+
+### **RULE ORC-03:** Implementation Agent, Test Agent, PR/Review Agent en Documentation Agent vormen een gesloten loop per sprint. De Orchestrator breekt de loop ALLEEN bij ESCALATE of FAILED validatie.
 
 ---
 
@@ -181,6 +216,18 @@ De Orchestrator leest `story_type` van elke sprint story en routeert als volgt:
 | `REEVALUATE [scope]` commando ontvangen | Activeer Reevaluate Agent met opgegeven scope; PAUZEER lopende Sprint Gate beslissingen tot Re-evaluation Report beschikbaar is |
 | Reevaluate Agent SPRINT IMPACT VLAG op IN_PROGRESS sprint | Presenteer vlagmelding aan gebruiker via Sprint Gate; wacht op beslissing vóór verdere implementatie |
 | Reevaluate Agent Critic/Risk FAILED | Stuur Delta-rapport terug naar Reevaluate Agent voor correctie |
+| `FEATURE [naam]: [beschrijving]` commando ontvangen | Activeer Feature Agent; maak `Workitems/[naam]/` aan; loop volledig Fase 1–4 + Synthesis + Sprintplan + Fase 5 door geïsoleerd van hoofd-backlog |
+| Feature Agent raakt IN_PROGRESS sprint in hoofd-backlog | Genereer SPRINT IMPACT VLAG conform Reevaluate Agent protocol; wacht op gebruikersbeslissing |
+| Feature sprint afhankelijk van BACKLOG hoofd-sprint | Documenteer cross-backlog afhankelijkheid; cascade-regel geldt ook hier |
+| `AUDIT [project]` commando ontvangen | Activeer Onboarding Agent; start intake-flow; GEEN Fase 1 vóór ONBOARDING_COMPLETE |
+| Sessie hervat na onderbreking | Laad `docs/session/session-state.json`; presenteer status aan gebruiker; bied HERVAT of RESET aan conform session-state-contract.md |
+| `ONBOARDING_BLOCKED` in Onboarding Output | HALT alle agenten; documenteer blokkade; gebruik Human Escalation Protocol type `ONBOARDING_BLOCKED`; wacht op invoer |
+| `TOOLING_GAP` (Categorie C) gedetecteerd | Documenteer; BLOKKEER uitsluitend Fase 5; Fase 1–4 mogen doorgaan; voeg toe aan synthesis input |
+| Open Human Escalation `HALT`-type aanwezig | Zet status op `AWAITING_HUMAN`; stel vraag conform `docs/contracts/human-escalation-protocol.md`; GEEN verdere agent-activiteit tot antwoord ontvangen |
+| Open Human Escalation `PAUSE`-type aanwezig | Pauzeer afhankelijke stap; parallelstappen zonder afhankelijkheid mogen doorgaan; stel vraag conform escalatieprotocol |
+| Documentation Agent `DOC_INCONSISTENCY` aanwezig | Escaleer via Human Escalation Protocol type `OTHER`; wacht op beslissing; PR mag nog wél gemerged zijn |
+| Documentation Agent `DOC_PENDING` items aanwezig | Voeg toe aan blocker-register met referentie naar geblokkeerde story; meenemen in volgende sprint documentation pass |
+| Documentation Agent `DOC_MISSING` items ontvangen | Groepeer per specialist; activeer elke specialist met DOC_MISSING INPUT REQUEST; wacht op alle inputs; geef gebundeld terug aan Documentation Agent |
 
 ---
 

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -339,7 +339,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -560,10 +560,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-yes">151x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -575,8 +575,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">224x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
@@ -597,7 +597,7 @@ export interface AfsluitInstructie {
   categorie?: string;
 }
 &nbsp;
-export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = <span class="cstat-no" title="statement not covered" >[</span>
+export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = [
   // ── Social Media ──────────────────────────────────────────────
   {
     platform: "Facebook / Meta",
@@ -815,13 +815,13 @@ export const AFSLUIT_INSTRUCTIES: AfsluitInstructie[] = <span class="cstat-no" t
  * Zoek afsluitinstructie op basis van platformnaam.
  * Matcht op zoekwoorden (case-insensitive, deels).
  */
-export function <span class="fstat-no" title="function not covered" >zoekAfsluitInstructie(</span>
+export function zoekAfsluitInstructie(
   platformNaam: string
 ): AfsluitInstructie | undefined {
-  const naam = <span class="cstat-no" title="statement not covered" >platformNaam.toLowerCase().trim();</span>
-<span class="cstat-no" title="statement not covered" >  return AFSLUIT_INSTRUCTIES.find(<span class="fstat-no" title="function not covered" >(i</span>) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >    i.zoekwoorden.some(</span>
-<span class="fstat-no" title="function not covered" >      (z</span>) =&gt; <span class="cstat-no" title="statement not covered" >naam.includes(z) || z.includes(naam)</span>
+  const naam = platformNaam.toLowerCase().trim();
+  return AFSLUIT_INSTRUCTIES.find((i) =&gt;
+    i.zoekwoorden.some(
+      (z) =&gt; naam.includes(z) || z.includes(naam)
     )
   );
 }
@@ -830,11 +830,11 @@ export function <span class="fstat-no" title="function not covered" >zoekAfsluit
  * Zoek afsluitinstructies op basis van categorie (fallback).
  * Retourneert alle instructies in de gegeven categorie.
  */
-export function <span class="fstat-no" title="function not covered" >zoekAfsluitInstructiesVoorCategorie(</span>
+export function zoekAfsluitInstructiesVoorCategorie(
   categorie: string
 ): AfsluitInstructie[] {
-<span class="cstat-no" title="statement not covered" >  return AFSLUIT_INSTRUCTIES.filter(</span>
-<span class="fstat-no" title="function not covered" >    (i</span>) =&gt; <span class="cstat-no" title="statement not covered" >i.categorie?.toLowerCase() === categorie.toLowerCase()</span>
+  return AFSLUIT_INSTRUCTIES.filter(
+    (i) =&gt; i.categorie?.toLowerCase() === categorie.toLowerCase()
   );
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -844,7 +844,7 @@ export function <span class="fstat-no" title="function not covered" >zoekAfsluit
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-01T08:30:37.677Z
+                at 2026-03-01T11:12:30.710Z
             </div>
         <script src="../prettify.js"></script>
         <script>

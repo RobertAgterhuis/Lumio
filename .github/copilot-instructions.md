@@ -27,8 +27,11 @@ Dit is een **multi-agent, sequentieel systeem**. Elke agent:
 
 ### Fasevolgorde (VERPLICHT)
 ```
+Op commando of automatisch bij start nieuwe cyclus:
+  AUDIT [project] → Onboarding Agent → intake validatie → docs/onboarding/onboarding-output.md → Orchestrator
+
 Orchestrator
-  ↓
+  ↓ [vereist: Onboarding Output COMPLETE inclusief session-state.json]
 Fase 1: Business Analyst → Domain Expert → Sales Strategist → Financial Analyst
   ↓ [CRITIC + RISK validatie]
 Fase 2: Software Architect → Senior Developer → DevOps Engineer → Security Architect → Data Architect
@@ -40,12 +43,16 @@ Fase 4: Brand Strategist → Growth Marketer → CRO Specialist
 Synthesis Agent → Eindrapport
   ↓ [Eindrapport volledig APPROVED]
 Fase 5 (per sprint, herhaalbaar):
-  Implementation Agent (parallel per story) → Test Agent → PR/Review Agent
+  Implementation Agent (parallel per story) → Test Agent → PR/Review Agent → Documentation Agent
   ↓ [CRITIC + RISK validatie per sprint]
   Volgende sprint
 
 Op commando (elk moment):
   REEVALUATE [scope] → Reevaluate Agent → Critic + Risk validatie → Re-evaluation Report → Orchestrator (Sprint Gate voor IN_PROGRESS impacts)
+
+Op commando (elk moment, onafhankelijk van lopende cycli):
+  FEATURE [naam]: [beschrijving] → Feature Agent → volledige cyclus (Fase 1–4 + Synthesis + Sprintplan + Fase 5)
+  Output: Workitems\[FEATURENAAM]\ (geïsoleerde werkmap per feature, eigen sprint IDs, eigen Sprint Gate)
 ```
 
 ---
@@ -122,6 +129,9 @@ Elke agent heeft een dedicated skill file:
 | Test Agent | `.github/skills/21-test-agent.md` |
 | PR/Review Agent | `.github/skills/22-pr-review-agent.md` |
 | Reevaluate Agent | `.github/skills/23-reevaluate-agent.md` |
+| Feature Agent | `.github/skills/24-feature-agent.md` |
+| Onboarding Agent | `.github/skills/25-onboarding-agent.md` |
+| Documentation Agent | `.github/skills/26-documentation-agent.md` |
 
 ---
 
@@ -149,6 +159,10 @@ Elke agent heeft een dedicated skill file:
 | Guardrails output | `docs/contracts/guardrails-output-contract.md` |
 | Agent Handoff | `docs/contracts/agent-handoff-contract.md` |
 | Implementatie output | `docs/contracts/implementation-output-contract.md` |
+| Feature Request | `Workitems/[FEATURENAAM]/00-feature-request.md` (gegenereerd per feature) |
+| Tooling | `docs/contracts/tooling-contract.md` |
+| Session State | `docs/contracts/session-state-contract.md` |
+| Human Escalation | `docs/contracts/human-escalation-protocol.md` |
 
 ---
 
@@ -166,4 +180,4 @@ Het systeem is compleet wanneer:
 3. De Synthesis Agent heeft het eindrapport geproduceerd
 4. Het eindrapport bevat: Executive Summary, Capability Heatmap, Risk Matrix, 12-maanden roadmap, Guardrail document, KPI baseline + target
 5. Geen open `UNCERTAIN:` of `INSUFFICIENT_DATA:` items zonder resolutie
-6. (Fase 5) Per sprint: Sprint Completion Report APPROVED, alle stories IMPLEMENTED of BLOCKED met escalatie, KPI-meting gedocumenteerd, PR gemerged
+6. (Fase 5) Per sprint: Sprint Completion Report APPROVED, alle stories IMPLEMENTED of BLOCKED met escalatie, KPI-meting gedocumenteerd, PR gemerged, alle vier manuals bijgewerkt (user-manual-nl.md, user-manual-en.md, technical-manual-nl.md, technical-manual-en.md), NL ↔ EN consistentiecheck PASSED
