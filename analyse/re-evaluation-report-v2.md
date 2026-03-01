@@ -1,8 +1,8 @@
 # Re-evaluation Report
-> Versie: v2.7 | Datum: 2026-03-01 | Scope: SP-7-001 COMPLETED  
-> Trigger: SP-7-001 implementatie afgesloten  
-> Vorige analyseversie: v2.6 (2026-03-01)  
-> Analysemethode: Codebase-inspectie (git HEAD `b481f23`, werkmap `Feature/UI`)
+> Versie: v2.8 | Datum: 2026-03-01 | Scope: ALL (REEVALUATE ALL)  
+> Trigger: `REEVALUATE ALL` commando  
+> Vorige analyseversie: v2.7 (2026-03-01)  
+> Analysemethode: Codebase-inspectie (git HEAD `081d534`, werkmap `Feature/UI`)
 
 ---
 
@@ -16,6 +16,8 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 **v2.6 update (SP-7-001 GUARD-005 onblokkering):** PO-beslissing verstrekt (PO = ontwikkelaar, 2026-03-01). SP-7-001 status gewijzigd van BLOCKED naar **APPROVED**. SYS-RISK-010 score 5→**2**. GUARD-005 kan formeel worden opgeheven; nabestaanden marketing-variant kan worden gelanceerd. Alle overige bevindingen ongewijzigd.
 
 **v2.7 update (SP-7-001 COMPLETED):** Implementatie afgesloten. GUARD-005 formeel opgeheven in `analyse/synthesis-agent-output.md`. `NabestaandenSection.tsx` toegevoegd aan marketing site (product- + voor-jezelf-pagina). `PRODUCT_FEATURES` nabestaanden-copy versterkt met expliciete Shamir-modus beschrijving. Smoke test uitgebreid naar 6 tests (product-pagina nabestaanden-sectie). Alle SP-7 deliverables **COMPLETED**.
+
+**v2.8 update (REEVALUATE ALL):** SEO-infrastructuur volledig gereed: `robots.txt` (canonical `www.lumio.nl`), `sitemap.xml` (8 pagina's), Google Search Console instructies in `devdocs/deployment-urls.md`. SYS-RISK-001 score 6→**4** (infra klaar; alleen DNS + repo-instelling EXTERN blocker). `NabestaandenSection.tsx` stabiel na formatter-pass. Coverage `toastStore.ts.html` nieuw aanwezig. Geen nieuwe risico's.
 ---
 
 ## Delta-Scan Rapport
@@ -45,6 +47,10 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 - [NIEUW-R001] **Playwright E2E smoke-tests voor marketing site volledig aanwezig** | Fase 2/4 | Ernst: Positief | Bron: `site/tests/smoke.spec.ts` (5 tests: homepage, werkgevers, privacy, one-pager, 404), `site/playwright.config.ts`, `site/package.json` (`"test:e2e": "playwright test"`), `.github/workflows/ci.yml` job `e2e` (regels 170–202, `needs: [site]`). Playwright Chromium browser; lokale static export via `serve ./out`. CI Level 3 criterium E2E afgevinkt.
 
 - [NIEUW-R002] **Icon Guard CI-job toegevoegd** | Fase 2 | Ernst: Positief | Bron: `.github/workflows/ci.yml` job `icon-guard` (regels 108–165). Acht verboden Lucide-importpatronen (Shield, ShieldCheck, ShieldAlert, ShieldX, LayoutDashboard, ScrollText, Church, Stethoscope) geblokkeerd in `src/lumio-web/src/`. LumioIcon-bestanden zijn expliciet uitgesloten. Nieuw kwaliteitsgate voor design system integriteit.
+
+- [NIEUW-R003] **SEO-infrastructuur marketing site volledig gereed** | Fase 4 | Ernst: Positief | Bron: `site/public/robots.txt` (Allow: /, Sitemap: `https://www.lumio.nl/sitemap.xml`), `site/public/sitemap.xml` (8 URLs met `www.lumio.nl` canonical, prioriteiten 1.0–0.4), `devdocs/deployment-urls.md` (Google indexering sectie, canonical domein beslissing `www.lumio.nl`, Google Search Console instructies, DNS CNAME handleiding). Alle SEO-artefacten aanwezig; activatie wacht op custom domain DNS (EXTERN OI-002).
+
+- [NIEUW-R004] **Coverage `toastStore.ts.html` individueel aanwezig** | Fase 2 | Ernst: Positief | Bron: `src/lumio-web/coverage/lcov-report/stores/toastStore.ts.html` (nieuw bestand). `toastStore.ts` heeft nu individuele coverage-rapportage — bevestigt dat het SP-7-003 uitsluiting correct is opgeheven.
 
 - [NIEUW-007] **Data Retention Policy v1.0 gepubliceerd** | Fase 1/2 | Ernst: Positief/Midden | Bron: `devdocs/data-retention-policy.md`. Vermeldt AVG art. 9 lid 2 sub a (uitdrukkelijke toestemming) als grondslag voor bijzondere categorieën. Partiele mitigatie van SYS-RISK-003, maar geen DPO-goedkeuring of DPIA gedocumenteerd.
 
@@ -89,6 +95,8 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 - [GEWIJZIGD-005] **API test coverage 0%** | Vorige staat: 0% | Huidige staat: 48 backend tests aanwezig | Ernst: Nog steeds HOOG voor het 12-maands target van ≥70% | Bron: test run output "Passed: 48" (`Lumio.Api.Tests.dll`). Absolute percentage API-endpoint coverage onbekend zonder coverage-run.
 
 - [GEWIJZIGD-R001] **CI Level 3 status** | Vorige staat: "in aanzet" (v2.4) | Nieuwe staat: **VOLLEDIG BEHAALD** | Wijziging: E2E tests (`site/tests/smoke.spec.ts`, Playwright) toegevoegd + Icon Guard gate. CI-matrix nu compleet: SAST (CodeQL) ✅ + Dependabot ✅ + Frontend coverage ≥70% ✅ + Backend coverage ≥50% ✅ + E2E smoke tests ✅ + Custom quality gates (GUARD-002, GUARD-010, icon-guard) ✅. Bron: `.github/workflows/ci.yml` jobs `e2e` + `icon-guard`.
+
+- [GEWIJZIGD-R002] **SYS-RISK-001 — Website niet live** | Vorige score: 6 | Nieuwe score: **4** | Wijziging: SEO-infrastructuur volledig aanwezig (`robots.txt`, `sitemap.xml`, canonical domain beslissing). Nog openstaand: DNS CNAME instelling bij registrar (EXTERN OI-002) + GitHub Pages custom domain activering (eenmalige repo-instelling). Bron: `site/public/robots.txt`, `site/public/sitemap.xml`, `devdocs/deployment-urls.md`.
 
 - [GEWIJZIGD-006] **OI-005 — Whitelabel pricing model ongedefinieerd** | Vorige staat: INSUFFICIENT_DATA | Huidige staat: Framework aanwezig | Wijziging: `tools/whitelabel/BRAND-GOVERNANCE.md` §6 definieert Enterprise Whitelabel vs Pilot Whitelabel licentiemodel. Exacte pricingbedragen: INSUFFICIENT_DATA.
 
@@ -301,7 +309,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 |----|-------------|-----------|-----------|--------|
 | SYS-RISK-003 | AVG art.9 grondslag | 4 | **4** | ✅ GESLOTEN — ongewijzigd |
 | SYS-RISK-011 | Launch op non-compliant product | 4 | **3** | ✅ Contrast + disclaimers + PostHog-infra: minimaal restrisico |
-| SYS-RISK-001 | Website niet live | 6 | **6** | BLOCKED: EXTERN (OI-002) — ongewijzigd |
+| SYS-RISK-001 | Website niet live | 6 | **4** | ⚠️ EXTERN — SEO infra gereed (v2.8); DNS + GitHub Pages activering vereist (OI-002) |
 | SEC-RISK-001 | Master password cleartext | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
 | SYS-RISK-008 | EAA accessibility | 3 | **2** | ✅ SC 1.4.3 bevestigd (v2.3 OPGELOST-R002). Restrisico: formeel audit nog niet uitgevoerd |
 | SYS-RISK-009 | Shamir UX crisissituatie | 6 | **6** | Wizard aanwezig; formele UX-test pending — ongewijzigd |
@@ -525,6 +533,7 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | v2.5 | 2026-03-01 | ALL | REEVALUATE ALL: E2E Playwright smoke tests (NIEUW-R001 ✅); Icon Guard CI-job (NIEUW-R002 ✅); CI Level 3 volledig behaald (GEWIJZIGD-R001); DELTA-RISK-004 GESLOTEN; geen nieuwe risico's |
 | v2.6 | 2026-03-01 | SP-7-001 | PO-beslissing verstrekt (PO = ontwikkelaar): SP-7-001 APPROVED; SYS-RISK-010 score 5→2; GUARD-005 gedeblokkeerd; nabestaanden marketing uitvoerbaar |
 | v2.7 | 2026-03-01 | SP-7-001 | SP-7-001 COMPLETED: GUARD-005 LIFTED; NabestaandenSection.tsx toegevoegd; marketing copy versterkt met Shamir-uitleg; 6 smoke tests; alle SP-7 deliverables COMPLETED |
+| v2.8 | 2026-03-01 | ALL | REEVALUATE ALL: SEO-infra gereed (robots.txt + sitemap.xml + canonical domain); SYS-RISK-001 score 6→4; toastStore.ts coverage aanwezig; NabestaandenSection.tsx stabiel; geen nieuwe risico's |
 
 ---
 
@@ -578,6 +587,26 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 - [x] GUARD-005 formeel opgeheven in `analyse/synthesis-agent-output.md` (commit `b481f23`)
 - [x] SP-7-001 status COMPLETED in backlog-tabel
 - [x] `NabestaandenSection.tsx` aangemaakt en geïntegreerd in product + voor-jezelf pagina (commit `b17316d`)
+- [x] `PRODUCT_FEATURES` nabestaanden-copy versterkt
+- [x] Smoke test 6-de test toegevoegd (product-pagina nabestaanden-sectie)
+- [x] Versiegeschiedenis v2.7 toegevoegd
+- [x] Geen tegenstrijdige uitspraken in dit document
+- [x] Output aangeleverd aan Orchestrator
+
+---
+
+## HANDOFF CHECKLIST v2.8
+
+- [x] Delta-Scan Rapport volledig: 4 nieuwe bevindingen (NIEUW-R003, NIEUW-R004, GEWIJZIGD-R002) + ongewijzigde bevindingen bevestigd
+- [x] SEO-infrastructuur bevindingen gedocumenteerd met bronvermelding (`robots.txt`, `sitemap.xml`, `deployment-urls.md`)
+- [x] SYS-RISK-001 score bijgewerkt (6 → 4)
+- [x] `NabestaandenSection.tsx` formatter-wijziging bevestigd stabiel (inhoud ongewijzigd)
+- [x] Coverage `toastStore.ts.html` gedocumenteerd als positieve bevinding
+- [x] Versiegeschiedenis v2.8 toegevoegd
+- [x] Critic: PASSED — geen tegenstrijdige uitspraken
+- [x] Risk: PASSED — geen nieuwe risico's; SYS-RISK-001 verbeterd
+- [x] Alle SP-7 deliverables COMPLETED bevestigd
+- [x] Output aangeleverd aan Orchestrator
 - [x] `PRODUCT_FEATURES` nabestaanden-copy versterkt met expliciete Shamir-beschrijving
 - [x] Smoke test uitgebreid: product-pagina nabestaanden-sectie (6 tests totaal)
 - [x] Versiegeschiedenis v2.7 toegevoegd
