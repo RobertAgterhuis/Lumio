@@ -13,6 +13,8 @@ export interface WizardStep {
   beschrijving?: string;
   content: ReactNode;
   isOptional?: boolean;
+  /** When explicitly false, the "Next / Save" button is disabled for this step */
+  canAdvance?: boolean;
 }
 
 interface WizardShellProps {
@@ -177,7 +179,7 @@ export function WizardShell({
             <ChevronLeft className="h-4 w-4 mr-1" />
             {t("vorige")}
           </Button>
-          <Button onClick={handleNext} disabled={completing}>
+          <Button onClick={handleNext} disabled={completing || step.canAdvance === false}>
             {isLastStep ? (
               completing ? t("opslaanBezig") : t("opslaan")
             ) : (

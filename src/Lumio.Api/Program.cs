@@ -6,6 +6,7 @@ using Serilog.Events;
 using Lumio.Api.Middleware;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
+using Lumio.Api.Services.Export;
 using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services.Pdf.Data;
 using Lumio.Api.Services.Pdf.Generators;
@@ -88,18 +89,33 @@ builder.Services.AddScoped<NotarisGenerator>();
 builder.Services.AddSingleton<IAuditService, AuditService>();
 builder.Services.AddSingleton<Lumio.Api.Services.Video.VideoStorageService>();
 
+// Status + Export services (scoped — depend on LumioDbContext)
+builder.Services.AddScoped<IStatusFactsBuilder, StatusFactsBuilder>();
+builder.Services.AddScoped<IExportStatusService, ExportStatusService>();
+builder.Services.AddScoped<IExportDataService, ExportDataService>();
+builder.Services.AddScoped<IZipExportService, ZipExportService>();
+builder.Services.AddScoped<INuvExportService, NuvExportService>();
+builder.Services.AddScoped<IHtmlExportService, HtmlExportService>();
+builder.Services.AddScoped<IEncryptedBackupService, EncryptedBackupService>();
+
 // EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
 {
     var passwordService = serviceProvider.GetRequiredService<IMasterPasswordService>();
     if (passwordService.IsUnlocked && passwordService.ActiveDbPath is { } activeDbPath)
     {
-        var connStr = new SqliteConnectionStringBuilder
+        // Build the connection string inside UsePassword so the password is never stored
+        // as a managed string beyond the brief span of this callback.
+        var connStr = string.Empty;
+        passwordService.UsePassword(pw =>
         {
-            DataSource = activeDbPath,
-            Mode = SqliteOpenMode.ReadWriteCreate,
-            Password = passwordService.CurrentPassword
-        }.ToString();
+            connStr = new SqliteConnectionStringBuilder
+            {
+                DataSource = activeDbPath,
+                Mode = SqliteOpenMode.ReadWriteCreate,
+                Password = System.Text.Encoding.UTF8.GetString(pw)
+            }.ToString();
+        });
         options.UseSqlite(connStr);
     }
     else

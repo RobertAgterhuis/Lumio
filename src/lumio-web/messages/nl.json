@@ -34,6 +34,8 @@
       "bezig": "Database aanmaken...",
       "aanmaken": "Database Aanmaken",
       "disclaimer": "Uw gegevens worden versleuteld opgeslagen. Bewaar uw wachtwoord goed — zonder wachtwoord is de data niet toegankelijk.",
+      "avgConsent": "Ik begrijp dat Lumio bijzondere persoonsgegevens verwerkt (waaronder gezondheidsgegevens, wilsverklaringen en donorregistratie) conform AVG art.\u00a09 lid\u00a02(a) — uitdrukkelijke toestemming van de betrokkene. Dit is een persoonlijk, offline archief uitsluitend voor mijn eigen gebruik en voor mijn nabestaanden.",
+      "avgConsentFout": "Bevestig dat u akkoord gaat met de verwerking van bijzondere persoonsgegevens.",
       "foutMinimaal": "Wachtwoord moet minimaal 8 tekens bevatten.",
       "foutOvereenkomst": "Wachtwoorden komen niet overeen.",
       "foutSetup": "Setup mislukt",
@@ -538,6 +540,7 @@
     "ja": "Ja",
     "nee": "Nee",
     "tip": "<strong>Tip:</strong> Registreer uw keuze ook officieel bij het Donorregister via donorregister.nl. De informatie hier is voor uw nabestaanden.",
+    "disclaimer": "<strong>Let op:</strong> De informatie die u hier vastlegt is een persoonlijk overzicht voor uw nabestaanden. Alleen een officiële registratie bij het Donorregister (donorregister.nl) is juridisch bindend conform de Donorwet.",
     "geenKeuze": "Nog geen donorkeuze vastgelegd.",
     "keuzeCard": {
       "titel": "Keuze",
@@ -875,7 +878,34 @@
       "erfgenaamFallback": "Erfgenaam {nummer}",
       "gekopieerd": "Gekopieerd",
       "kopieren": "Kopiëren",
-      "sluiten": "Sluiten"
+      "sluiten": "Sluiten",
+      "stap1Titel": "Wat zijn noodcodes?",
+      "stap1Uitleg": "Met de Shamir-methode wordt uw hoofdwachtwoord veilig opgesplitst in unieke codes. Elk van uw erfgenamen ontvangt één code. Pas wanneer het minimum aantal erfgenamen hun codes samenvoegt, kan uw nalatenschap worden ontgrendeld.",
+      "stap1Bullet1": "Eén code alleen is waardeloos — samenwerking is vereist.",
+      "stap1Bullet2": "U bepaalt het minimum aantal (de drempel) dat nodig is.",
+      "stap1Bullet3": "Veilig, zelfs als één erfgenaam zijn code kwijt is.",
+      "stap1Callout": "De noodcodes worden NIET opgeslagen in Lumio. Noteer of druk ze af en geef ze persoonlijk aan uw erfgenamen.",
+      "stap2Titel": "Instellingen",
+      "stap2ErfgenamenLabel": "Erfgenamen die een noodcode ontvangen",
+      "stap3Titel": "Beveiliging",
+      "stap4Titel": "Verdeel de noodcodes",
+      "stap4NogTeKopieren": "{n, plural, one {# code nog te kopiëren} other {# codes nog te kopiëren}}",
+      "stap4AlleGekopieerd": "✓ Alle codes gekopieerd",
+      "volgende": "Volgende",
+      "vorige": "Vorige",
+      "stapIndicator": "Stap {huidig} van {totaal}"
+    },
+    "shamirStatus": {
+      "titel": "Noodcodes verdelen",
+      "uitleg": "Geef elke erfgenaam hun persoonlijke noodcode — bewaard buiten Lumio.",
+      "differentiator": "✦ Lumio gebruikt Shamir Secret Sharing: geen enkele erfgenaam heeft alleen toegang. Uw privacy is gewaarborgd, zelfs als een code in verkeerde handen valt.",
+      "aantalLabel": "{ontvangen} van {totaal} codes verdeeld",
+      "shareStatus": "Code verdeeld",
+      "geenShare": "Nog geen code verdeeld",
+      "noodcodesHerdelen": "Noodcodes opnieuw genereren",
+      "noodcodesGenereren": "Noodcodes genereren",
+      "deelOverzicht": "Deel overzicht",
+      "drempelUitleg": "Stel in hoeveel erfgenamen hun code moeten samenvoegen om toegang te krijgen."
     }
   },
   "erfbelasting": {
@@ -1404,6 +1434,17 @@
       "succes": "Alle gegevens zijn verwijderd. U wordt doorgestuurd...",
       "mislukt": "Verwijderen mislukt. Controleer uw wachtwoord."
     },
+    "aanbevelen": {
+      "titel": "Lumio aanbevelen",
+      "beschrijving": "Ken iemand die ook zijn nalatenschap wil regelen? Deel Lumio met collega's, vrienden of uw werkgever.",
+      "tekst": "Ik gebruik Lumio om mijn nalatenschap digitaal vast te leggen — offline, versleuteld en volledig privé. Meer informatie op lumio.nl",
+      "emailOnderwerp": "Lumio — uw nalatenschap digitaal regelen",
+      "emailBodyPre": "Goedendag,\n\nIk wil u Lumio aanbevelen — een veilige applicatie voor uw digitale nalatenschap.",
+      "emailBodyPost": "Meer informatie: https://lumio.nl\n\nMet vriendelijke groet",
+      "kopieren": "Kopieer aanraadtekst",
+      "gekopieerd": "Gekopieerd!",
+      "viaEmail": "Aanbevelen via e-mail"
+    },
     "dialogen": {
       "herstel": {
         "titel": "Backup herstellen?",
@@ -1797,7 +1838,9 @@
       "bezittingen": "Bezittingen",
       "personen": "Personen",
       "hulpmiddelen": "Hulpmiddelen"
-    }
+    },
+    "voortgang": "{aantalIngevuld} van {totaal} secties ingevuld",
+    "voortgangAria": "Voortgang nalatenschap: {percentage}% ingevuld"
   },
   "enums": {
     "burgerlijkeStaat": {
@@ -2074,7 +2117,8 @@
     "gaNaarExporteren": "Ga naar Exporteren",
     "gaNaarActiviteitenlog": "Ga naar Activiteitenlog",
     "gaNaarInstellingen": "Ga naar Instellingen",
-    "gaNaarHelp": "Ga naar Help"
+    "gaNaarHelp": "Ga naar Help",
+    "validatieNaamVerplicht": "Vul uw voor- en achternaam in om verder te gaan."
   },
   "wizard": {
     "welkom": "Welkom bij Lumio",
@@ -2130,6 +2174,7 @@
     "wizardStarten": "Wizard Starten",
     "opslaanMislukt": "Opslaan mislukt.",
     "verwijderenMislukt": "Verwijderen mislukt.",
+    "disclaimer": "<strong>Let op:</strong> De informatie in Lumio is een persoonlijk overzicht. Een notarieel testament is alleen rechtsgeldig als het door een notaris is opgesteld en ondertekend (BW Boek 4, art. 4:94 e.v.). Raadpleeg altijd uw notaris voor officiële vastlegging.",
     "ja": "Ja",
     "nee": "Nee",
     "legitimairePortie": {

@@ -66,9 +66,13 @@ export default function Footer() {
             <p className="text-xs text-[var(--color-primary-400)]">
               © {year} Lumio. Alle rechten voorbehouden.
             </p>
-            <p className="text-xs text-[var(--color-primary-400)]">
-              Offline-first · Privé · Veilig
-            </p>
+            <div className="flex items-center gap-4 text-xs text-[var(--color-primary-400)]">
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                Privacyverklaring
+              </Link>
+              <span aria-hidden="true">·</span>
+              <span>Offline-first · Privé · Veilig</span>
+            </div>
           </div>
         </div>
       </Container>

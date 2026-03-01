@@ -113,6 +113,12 @@ export default function TestamentPage() {
 
       <DomainStatusBanner domein="testament" />
 
+      <div className="rounded-lg border border-secure bg-secure-100 p-4">
+        <p className="text-sm text-secure">
+          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </p>
+      </div>
+
       {testament ? (
         <>
           <LegitimairePortieAlert check={legitiemaireCheck} />

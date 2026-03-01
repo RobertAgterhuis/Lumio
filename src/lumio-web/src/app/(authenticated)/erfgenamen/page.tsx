@@ -14,6 +14,7 @@ import {
   ErfgenaamDialog,
   ErfgenaamItem,
   ShamirDialog,
+  ShamirStatusBanner,
   ToewijzingDialog,
   useErfgenamen,
   type Erfgenaam,
@@ -142,6 +143,36 @@ export default function ErfgenamenPage() {
     gekopieerd: t("shamir.gekopieerd"),
     kopieren: t("shamir.kopieren"),
     sluiten: t("shamir.sluiten"),
+    // wizard step labels
+    stap1Titel: t("shamir.stap1Titel"),
+    stap1Uitleg: t("shamir.stap1Uitleg"),
+    stap1Bullet1: t("shamir.stap1Bullet1"),
+    stap1Bullet2: t("shamir.stap1Bullet2"),
+    stap1Bullet3: t("shamir.stap1Bullet3"),
+    stap1Callout: t("shamir.stap1Callout"),
+    stap2Titel: t("shamir.stap2Titel"),
+    stap2ErfgenamenLabel: t("shamir.stap2ErfgenamenLabel"),
+    stap3Titel: t("shamir.stap3Titel"),
+    stap4Titel: t("shamir.stap4Titel"),
+    stap4NogTeKopieren: (n: number) => t("shamir.stap4NogTeKopieren", { n }),
+    stap4AlleGekopieerd: t("shamir.stap4AlleGekopieerd"),
+    volgende: t("shamir.volgende"),
+    vorige: t("shamir.vorige"),
+    stapIndicator: (huidig: number, totaal: number) => t("shamir.stapIndicator", { huidig, totaal }),
+  };
+
+  const shamirStatusTranslations = {
+    titel: t("shamirStatus.titel"),
+    uitleg: t("shamirStatus.uitleg"),
+    differentiator: t("shamirStatus.differentiator"),
+    aantalLabel: (ontvangen: number, totaal: number) =>
+      t("shamirStatus.aantalLabel", { ontvangen, totaal }),
+    shareStatus: t("shamirStatus.shareStatus"),
+    geenShare: t("shamirStatus.geenShare"),
+    noodcodesHerdelen: t("shamirStatus.noodcodesHerdelen"),
+    noodcodesGenereren: t("shamirStatus.noodcodesGenereren"),
+    deelOverzicht: t("shamirStatus.deelOverzicht"),
+    drempelUitleg: t("shamirStatus.drempelUitleg"),
   };
 
   const pendingErfgenaam = state.pendingDeleteId
@@ -178,11 +209,14 @@ export default function ErfgenamenPage() {
 
       <DomainStatusBanner domein="erfgenamen" />
 
-      <div className="rounded-lg border border-secure bg-secure-100 p-4">
-        <p className="text-sm text-secure">
-          <strong>{t("noodcodesInfoLabel")}</strong> {t("noodcodesInfo")}
-        </p>
-      </div>
+      <ShamirStatusBanner
+        erfgenamen={state.erfgenamen}
+        onOpenShamirDialog={() => state.setShamirDialogOpen(true)}
+        onShareErfgenaam={state.handleDeelMetErfgenaam}
+        displayName={displayName}
+        isReadOnly={isReadOnly}
+        translations={shamirStatusTranslations}
+      />
 
       {/* M4-4: Inform users that editing erfgenaam data does not auto-sync linked forms */}
       <div className="rounded-lg border border-info bg-info-100 p-4">

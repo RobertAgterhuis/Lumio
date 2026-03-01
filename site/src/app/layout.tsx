@@ -56,8 +56,15 @@ export default function RootLayout({
   return (
     <html lang="nl" className={`${dmSans.variable} ${dmSerif.variable}`}>
       <body className="flex min-h-screen flex-col">
+        {/* SC 2.4.1 — skip navigation */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-[#355E68] focus:px-4 focus:py-2 focus:text-white focus:shadow-md"
+        >
+          Ga naar hoofdinhoud
+        </a>
         <Header />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" tabIndex={-1} className="flex-1 outline-none">{children}</main>
         <Footer />
       </body>
     </html>

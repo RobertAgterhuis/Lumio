@@ -23,26 +23,30 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       reportsDirectory: './coverage',
-      // Enforce minimum coverage thresholds
+      // Enforce minimum coverage thresholds (logic layer: lib + stores only)
       thresholds: {
-        statements: 40,
-        branches: 35,
-        functions: 35,
-        lines: 40,
+        statements: 60,
+        branches: 58,
+        functions: 55,
+        lines: 60,
       },
-      // Include all source files for coverage tracking
-      include: ['src/**/*.{ts,tsx}'],
-      // Exclude test files, stories, and type definitions
+      // Scope coverage to pure-logic layers — UI components excluded
+      include: ['src/lib/**/*.{ts,tsx}', 'src/stores/**/*.{ts,tsx}'],
+      // Exclude test files, stories, type definitions AND non-logic files
+      // (static data, storybook tooling, thin reactive stores without testable logic)
       exclude: [
         'src/**/*.test.{ts,tsx}',
         'src/**/*.stories.{ts,tsx}',
         'src/**/*.d.ts',
         'src/**/types.ts',
         'src/**/types/**',
-        'src/app/**/layout.tsx',
-        'src/app/**/loading.tsx',
-        'src/app/**/error.tsx',
-        'src/app/**/not-found.tsx',
+        // Static data / example files — no logic, no branches to cover
+        'src/lib/animeer-instructies.ts',
+        'src/lib/voorbeeld-data.ts',
+        // Storybook test utilities (not part of production logic)
+        'src/lib/test-utils/**',
+        // Thin reactive stores tested via integration / Storybook — no unit path
+        'src/stores/toastStore.ts',
       ],
     },
     projects: [

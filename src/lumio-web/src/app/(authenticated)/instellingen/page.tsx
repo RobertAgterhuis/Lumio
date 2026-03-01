@@ -47,11 +47,12 @@ import {
   TaalkeuzeCard,
   ActualisatieCard,
   SortableInstellingenCard,
+  ReferralCard,
 } from "@/components/instellingen";
 import { HelpButton } from "@/components/help/HelpButton";
 
 const DEFAULT_LINKS = ["autolock", "grote-tekst", "dashboard-weergave", "taalkeuze", "actualisatie"] as const;
-const DEFAULT_RECHTS = ["profielen", "wachtwoord", "backup", "beveiliging", "over", "verwijderen"] as const;
+const DEFAULT_RECHTS = ["profielen", "wachtwoord", "backup", "beveiliging", "over", "aanbevelen", "verwijderen"] as const;
 const ALL_CARDS = [...DEFAULT_LINKS, ...DEFAULT_RECHTS] as readonly string[];
 
 function resolveOrder(stored: string[], defaults: readonly string[], exclude: string[] = []): string[] {
@@ -247,6 +248,7 @@ export default function InstellingenPage() {
         );
       case "beveiliging":      return <SecurityInfoCard />;
       case "over":             return <AboutCard />;
+      case "aanbevelen":      return <ReferralCard />;
       case "verwijderen":
         return (
           <AccountDeletionCard

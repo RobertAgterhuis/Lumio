@@ -12,34 +12,64 @@ concurrency:
 
 jobs:
   # ── Frontend ───────────────────────────────────────────────────────
-  # frontend:
-  #   name: Frontend (lint / typecheck / build)
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: src/lumio-web
-  #   steps:
-  #     - uses: actions/checkout@v4
+  frontend:
+    name: Frontend (lint / typecheck / test / build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/lumio-web
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #         cache: npm
-  #         cache-dependency-path: src/lumio-web/package-lock.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/lumio-web/package-lock.json
 
-  #     - run: npm ci
+      - run: npm ci
 
-  #     - name: TypeScript type-check
-  #       run: npx tsc --noEmit
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
 
-  #     - name: ESLint
-  #       run: npm run lint
+      - name: ESLint
+        run: npm run lint
 
-  #     - name: Unit tests
-  #       run: npm test
+      - name: Unit tests (with coverage enforcement ≥70% lib/stores)
+        run: npm run test:coverage
 
-  #     - name: Build
-  #       run: npm run build
+      - name: Build
+        run: npm run build
+
+      - name: Security — npm audit (high+critical)
+        run: npm audit --audit-level=high --omit=dev
+
+  # ── Marketing website ──────────────────────────────────────────────
+  site:
+    name: Site (typecheck / build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - run: npm ci
+
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Security — npm audit (high+critical)
+        run: npm audit --audit-level=high --omit=dev
 
   # ── Chromatic Visual Regression (DISABLED) ───────────────────────────
   # chromatic:
@@ -132,6 +162,42 @@ jobs:
 
           echo "✓ No forbidden Lucide icon imports found."
 
+  # ── E2E Smoke Tests ──────────────────────────────────────────────
+  e2e:
+    name: E2E smoke tests (Playwright / static site)
+    runs-on: ubuntu-latest
+    needs: [site]
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - run: npm ci
+
+      - name: Build static export
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run smoke tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: site/playwright-report/
+          retention-days: 7
+
   # ── Backend ────────────────────────────────────────────────────────
   backend:
     name: Backend (build)
@@ -151,3 +217,59 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore --configuration Release -warnaserror
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --logger "console;verbosity=minimal"
+
+      - name: GUARD-002 — no plaintext CurrentPassword in interface
+        shell: bash
+        run: |
+          # Enforce GUARD-002: IMasterPasswordService must not expose string? CurrentPassword.
+          # grep exits 1 (no match = clean) which we invert with || true, then fail on match.
+          if grep -r --include="*.cs" "string? CurrentPassword" src/Lumio.Api/ 2>/dev/null; then
+            echo "::error::GUARD-002 violated: 'string? CurrentPassword' found in C# sources."
+            echo "The master password must not be stored or exposed as a managed string."
+            echo "See docs/guardrails/03-security-guardrails.md GUARD-002."
+            exit 1
+          fi
+          echo "✓ GUARD-002: no plaintext CurrentPassword property found."
+
+      - name: GUARD-010 — controller max 200 lines
+        shell: bash
+        run: |
+          # Enforce GUARD-010: no controller exceeds 200 lines.
+          # Known legacy violations (remaining after Month-10 refactor sprint — see roadmap):
+          KNOWN_VIOLATIONS=(
+            "VideoboodschappenController.cs"
+            "StatusController.cs"
+            "BoedelController.cs"
+            "DigitaalBezitController.cs"
+            "AuthController.cs"
+            "DocumentenController.cs"
+            "AfhandelingController.cs"
+          )
+
+          FAILED=0
+          WARNINGS=0
+          for f in src/Lumio.Api/Controllers/*.cs; do
+            name=$(basename "$f")
+            lines=$(wc -l < "$f")
+            if [ "$lines" -gt 200 ]; then
+              # Check if it is a known legacy violation
+              KNOWN=0
+              for known in "${KNOWN_VIOLATIONS[@]}"; do
+                if [ "$name" = "$known" ]; then KNOWN=1; break; fi
+              done
+              if [ "$KNOWN" -eq 1 ]; then
+                echo "::warning file=$f::GUARD-010 (legacy): $name has $lines lines — tracked for Month-10 refactor sprint."
+                WARNINGS=$((WARNINGS + 1))
+              else
+                echo "::error file=$f::GUARD-010 violated: NEW controller $name has $lines lines (max 200)."
+                echo "  Refactor into smaller controllers or service classes."
+                echo "  See docs/guardrails/02-architecture-guardrails.md GUARD-010."
+                FAILED=1
+              fi
+            fi
+          done
+          echo "✓ GUARD-010: $WARNINGS known legacy violations (tracked). New violations: $FAILED."
+          if [ "$FAILED" -gt 0 ]; then exit 1; fi

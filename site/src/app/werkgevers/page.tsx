@@ -3,7 +3,8 @@ import CfoPitch from "@/components/sections/CfoPitch";
 import WkrUitleg from "@/components/sections/WkrUitleg";
 import EmployerBranding from "@/components/sections/EmployerBranding";
 import FaqAccordion from "@/components/sections/FaqAccordion";
-import CtaBanner from "@/components/sections/CtaBanner";
+import ExperimentCtaBanner from "@/components/sections/ExperimentCtaBanner";
+import RoiCalculator from "@/components/sections/RoiCalculator";
 import Container from "@/components/layout/Container";
 import type { Metadata } from "next";
 
@@ -38,9 +39,34 @@ export default function WerkgeversPage() {
       <HrPitch />
       <EmployerBranding />
       <CfoPitch />
+      <RoiCalculator />
       <WkrUitleg />
       <FaqAccordion />
-      <CtaBanner />
+
+      {/* One-pager download strip */}
+      <section className="py-10 bg-[var(--color-primary-50)] border-t border-[var(--color-primary-100)]">
+        <Container>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+              <p className="font-semibold text-[var(--color-neutral-900)]">
+                Alles op één pagina
+              </p>
+              <p className="text-sm text-[var(--color-neutral-600)]">
+                Download de Lumio-one-pager voor HR en Finance — printklaar als PDF.
+              </p>
+            </div>
+            <a
+              href="/werkgevers/one-pager"
+              className="shrink-0 inline-flex items-center gap-2 bg-[var(--color-primary-700)] hover:bg-[var(--color-primary-800)] transition-colors text-white font-semibold rounded-lg px-6 py-3 text-sm"
+            >
+              Bekijk de one-pager →
+            </a>
+          </div>
+        </Container>
+      </section>
+
+      {/* EXP-003: A/B CTA — control: pilot aanvragen | variant: demo plannen */}
+      <ExperimentCtaBanner />
     </>
   );
 }

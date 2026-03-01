@@ -34,6 +34,8 @@
       "bezig": "Creating database...",
       "aanmaken": "Create Database",
       "disclaimer": "Your data is stored encrypted. Keep your password safe — without it, your data cannot be accessed.",
+      "avgConsent": "I understand that Lumio processes special categories of personal data (including health data, advance directives and donor registration) pursuant to GDPR art.\u00a09(2)(a) — explicit consent of the data subject. This is a personal, offline archive solely for my own use and for my next of kin.",
+      "avgConsentFout": "Please confirm that you consent to the processing of special categories of personal data.",
       "foutMinimaal": "Password must contain at least 8 characters.",
       "foutOvereenkomst": "Passwords do not match.",
       "foutSetup": "Setup failed",
@@ -538,6 +540,7 @@
     "ja": "Yes",
     "nee": "No",
     "tip": "<strong>Tip:</strong> Also register your choice officially with the Donor Register at donorregister.nl. The information here is for your next of kin.",
+    "disclaimer": "<strong>Note:</strong> The information you record here is a personal overview for your next of kin. Only an official registration at the Donor Register (donorregister.nl) is legally binding under the Donor Act (Donorwet).",
     "geenKeuze": "No donor choice recorded yet.",
     "keuzeCard": {
       "titel": "Choice",
@@ -875,7 +878,34 @@
       "erfgenaamFallback": "Heir {nummer}",
       "gekopieerd": "Copied",
       "kopieren": "Copy",
-      "sluiten": "Close"
+      "sluiten": "Close",
+      "stap1Titel": "What are emergency codes?",
+      "stap1Uitleg": "Using the Shamir method, your master password is securely split into unique codes. Each heir receives one code. Only when the minimum number of heirs combine their codes can your estate be unlocked.",
+      "stap1Bullet1": "One code alone is worthless — cooperation is required.",
+      "stap1Bullet2": "You choose the minimum number (the threshold) required.",
+      "stap1Bullet3": "Secure, even if one heir loses their code.",
+      "stap1Callout": "Emergency codes are NOT stored in Lumio. Write them down or print them and hand them personally to your heirs.",
+      "stap2Titel": "Settings",
+      "stap2ErfgenamenLabel": "Heirs who will receive an emergency code",
+      "stap3Titel": "Security",
+      "stap4Titel": "Distribute emergency codes",
+      "stap4NogTeKopieren": "{n, plural, one {# code still to copy} other {# codes still to copy}}",
+      "stap4AlleGekopieerd": "✓ All codes copied",
+      "volgende": "Next",
+      "vorige": "Back",
+      "stapIndicator": "Step {huidig} of {totaal}"
+    },
+    "shamirStatus": {
+      "titel": "Distribute emergency codes",
+      "uitleg": "Give each heir their personal emergency code — stored outside Lumio.",
+      "differentiator": "✦ Lumio uses Shamir Secret Sharing: no single heir can access the vault alone. Your privacy is protected, even if one code falls into the wrong hands.",
+      "aantalLabel": "{ontvangen} of {totaal} codes distributed",
+      "shareStatus": "Code distributed",
+      "geenShare": "No code distributed yet",
+      "noodcodesHerdelen": "Regenerate emergency codes",
+      "noodcodesGenereren": "Generate emergency codes",
+      "deelOverzicht": "Share overview",
+      "drempelUitleg": "Set how many heirs must combine their code to gain access."
     }
   },
   "erfbelasting": {
@@ -1404,6 +1434,17 @@
       "succes": "All data has been deleted. You will be redirected...",
       "mislukt": "Deletion failed. Check your password."
     },
+    "aanbevelen": {
+      "titel": "Recommend Lumio",
+      "beschrijving": "Know someone who also wants to arrange their estate? Share Lumio with colleagues, friends or your employer.",
+      "tekst": "I use Lumio to digitally record my estate plan — offline, encrypted and completely private. More information at lumio.nl",
+      "emailOnderwerp": "Lumio — digitally arrange your estate",
+      "emailBodyPre": "Dear,\n\nI would like to recommend Lumio — a secure application for your digital estate.",
+      "emailBodyPost": "More information: https://lumio.nl\n\nKind regards",
+      "kopieren": "Copy referral text",
+      "gekopieerd": "Copied!",
+      "viaEmail": "Recommend via email"
+    },
     "dialogen": {
       "herstel": {
         "titel": "Restore backup?",
@@ -1797,7 +1838,9 @@
       "bezittingen": "Assets",
       "personen": "People",
       "hulpmiddelen": "Tools"
-    }
+    },
+    "voortgang": "{aantalIngevuld} of {totaal} sections completed",
+    "voortgangAria": "Legacy progress: {percentage}% completed"
   },
   "enums": {
     "burgerlijkeStaat": {
@@ -2074,7 +2117,8 @@
     "gaNaarExporteren": "Go to Export",
     "gaNaarActiviteitenlog": "Go to Activity Log",
     "gaNaarInstellingen": "Go to Settings",
-    "gaNaarHelp": "Go to Help"
+    "gaNaarHelp": "Go to Help",
+    "validatieNaamVerplicht": "Please enter your first and last name to continue."
   },
   "wizard": {
     "welkom": "Welcome to Lumio",
@@ -2130,6 +2174,7 @@
     "wizardStarten": "Start Wizard",
     "opslaanMislukt": "Save failed.",
     "verwijderenMislukt": "Delete failed.",
+    "disclaimer": "<strong>Note:</strong> The information in Lumio is a personal overview. A notarial will is only legally valid when drawn up and signed by a notary (Civil Code Book 4, art. 4:94 et seq.). Always consult your notary for official registration.",
     "ja": "Yes",
     "nee": "No",
     "legitimairePortie": {

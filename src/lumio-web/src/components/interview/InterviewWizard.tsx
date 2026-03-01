@@ -94,23 +94,26 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
     setData((prev) => ({ ...prev, [field]: value }));
 
   const handleSave = async () => {
+    // Validate required fields
+    if (!data.voornaam || !data.achternaam) {
+      throw new Error(t("validatieNaamVerplicht"));
+    }
+
     // 1. Sla eigenaar op
-    if (data.voornaam && data.achternaam) {
-      const eigenaarPayload = {
-        voornaam: data.voornaam,
-        achternaam: data.achternaam,
-        geboortedatum: data.geboortedatum || null,
-        woonplaats: data.woonplaats || null,
-        telefoon: data.telefoon || null,
-        email: data.email || null,
-        notaris: data.notarisNaam || null,
-      };
-      try {
-        await api.post("/api/eigenaar", eigenaarPayload);
-      } catch {
-        // Profiel bestaat al, probeer PUT
-        await api.put("/api/eigenaar", eigenaarPayload);
-      }
+    const eigenaarPayload = {
+      voornaam: data.voornaam,
+      achternaam: data.achternaam,
+      geboortedatum: data.geboortedatum || null,
+      woonplaats: data.woonplaats || null,
+      telefoon: data.telefoon || null,
+      email: data.email || null,
+      notaris: data.notarisNaam || null,
+    };
+    try {
+      await api.post("/api/eigenaar", eigenaarPayload);
+    } catch {
+      // Profile already exists — update instead
+      await api.put("/api/eigenaar", eigenaarPayload);
     }
 
     // 2. Noodcontact
@@ -160,8 +163,14 @@ export function InterviewWizard({ onComplete, onCancel }: InterviewWizardProps) 
       id: "persoonlijk",
       titel: t("stappen.persoonlijk.titel"),
       beschrijving: t("stappen.persoonlijk.beschrijving"),
+      canAdvance: !!(data.voornaam && data.achternaam),
       content: (
         <div className="space-y-4">
+          {(!data.voornaam || !data.achternaam) && (
+            <Alert variant="warning">
+              <AlertDescription>{t("validatieNaamVerplicht")}</AlertDescription>
+            </Alert>
+          )}
           <QuestionBlock
             vraag={t("stappen.persoonlijk.vraagNaam")}
             toelichting={t("stappen.persoonlijk.toelichtingNaam")}

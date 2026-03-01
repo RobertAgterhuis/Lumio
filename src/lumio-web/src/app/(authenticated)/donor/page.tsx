@@ -68,6 +68,12 @@ export default function DonorPage() {
 
       <DomainStatusBanner domein="donor" />
 
+      <div className="rounded-lg border border-secure bg-secure-100 p-4">
+        <p className="text-sm text-secure">
+          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </p>
+      </div>
+
       <div className="rounded-lg border border-info bg-info-100 p-4">
         <p className="text-sm text-info">
           {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}

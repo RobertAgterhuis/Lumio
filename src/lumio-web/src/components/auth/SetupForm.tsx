@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
@@ -15,6 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 export function SetupForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [avgConsent, setAvgConsent] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { setUnlocked, setFirstRun } = useAuthStore();
@@ -31,6 +33,11 @@ export function SetupForm() {
 
     if (password !== confirmPassword) {
       setError(t("foutOvereenkomst"));
+      return;
+    }
+
+    if (!avgConsent) {
+      setError(t("avgConsentFout"));
       return;
     }
 
@@ -89,13 +96,24 @@ export function SetupForm() {
             <p className="text-sm text-destructive">{error}</p>
           )}
 
+          {/* AVG art.9 consent — verplicht voor bijzondere categorieën (gezondheid, euthanasie, donorregistratie) */}
+          <div className="rounded-md border border-secure/30 bg-secure-100 p-3">
+            <Checkbox
+              id="avg-consent"
+              checked={avgConsent}
+              onChange={(e) => setAvgConsent(e.target.checked)}
+              label={t("avgConsent")}
+              className="mt-0.5 shrink-0"
+            />
+          </div>
+
           <Alert variant="warning">
             <AlertDescription>
               {t("wachtwoordWaarschuwing")}
             </AlertDescription>
           </Alert>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading || !avgConsent}>
             {loading ? t("bezig") : t("aanmaken")}
           </Button>
 
