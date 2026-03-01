@@ -128,6 +128,6 @@
   "parallel_tracks_executed": ["T-002", "T-003", "T-004"],
   "new_critical_findings": [],
   "secret_scan": "PASSED — geen hardcoded secrets gevonden",
-  "pr_url": "",
+  "pr_url": "https://github.com/RobertAgterhuis/Lumio/pull/41",
   "review_status": "APPROVED"
 }
