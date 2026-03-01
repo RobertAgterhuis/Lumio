@@ -94,7 +94,8 @@ builder.Services.AddScoped<ErfgenaamGenerator>();
 builder.Services.AddScoped<ExecuteurRapportGenerator>();
 builder.Services.AddScoped<NotarisGenerator>();
 builder.Services.AddSingleton<IAuditService, AuditService>();
-builder.Services.AddSingleton<Lumio.Api.Services.Video.VideoStorageService>();
+// T-006: Registered via interface for compensating-transaction testability
+builder.Services.AddSingleton<Lumio.Api.Services.Video.IVideoStorageService, Lumio.Api.Services.Video.VideoStorageService>();
 
 // Status + Export services (scoped — depend on LumioDbContext)
 builder.Services.AddScoped<IStatusFactsBuilder, StatusFactsBuilder>();

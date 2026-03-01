@@ -64,8 +64,13 @@ public class DigitaalBezitGenerator : IPdfPageGenerator
                 if (wachtwoorden.Count > 0)
                     PdfComponents.Section(col, L["Section_Wachtwoorden"].Value, t =>
                     {
-                        foreach (var w in wachtwoorden)
-                            PdfComponents.Row(t, w.Naam, w.Gebruikersnaam ?? "—");
+                        // T-005: Gebruikersnaam en EncryptedWachtwoord worden NOOIT in PDF getoond (AVG Art.9)
+                        // Gebruik de Lumio app om individuele credentials te bekijken.
+                        t.Item()
+                            .Text($"[{wachtwoorden.Count} beveiligd{(wachtwoorden.Count != 1 ? "e" : "")} item{(wachtwoorden.Count != 1 ? "s" : "")} — gebruik de Lumio app voor toegang]")
+                            .FontSize(PdfBrandTheme.FontCaption + 1)
+                            .Italic()
+                            .FontColor(PdfBrandTheme.TextMuted);
                     });
             });
             page.Footer().Element(PdfComponents.RenderFooter);

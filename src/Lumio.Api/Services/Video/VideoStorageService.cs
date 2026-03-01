@@ -6,7 +6,7 @@ namespace Lumio.Api.Services.Video;
 /// Handles writing, reading, and deleting video files on disk.
 /// Files are stored in {DataDir}/videos/{guid}{extension}.
 /// </summary>
-public class VideoStorageService(IConfiguration configuration)
+public class VideoStorageService(IConfiguration configuration) : IVideoStorageService
 {
     private string VideoDir
     {

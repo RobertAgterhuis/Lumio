@@ -14,7 +14,7 @@ namespace Lumio.Api.Controllers;
 public class VideoboodschappenController(
     LumioDbContext db,
     IOptions<LimietenOptions> limieten,
-    VideoStorageService videoStorage) : ControllerBase
+    IVideoStorageService videoStorage) : ControllerBase
 {
     private readonly LimietenOptions _limieten = limieten.Value;
 
@@ -274,27 +274,49 @@ public class VideoboodschappenController(
     }
 
     // ── DELETE /api/videoboodschappen/{id} ──────────────────────────────────
+    /// <summary>
+    /// T-006: Atomaire verwijdering — compensating transaction patroon.
+    /// Schijfbestand wordt verwijderd VOOR de DB-commit. Als het bestand niet
+    /// verwijderd kan worden, wordt de DB-transactie teruggedraaid zodat het
+    /// record intact blijft (GDPR Art.17 correctheid).
+    /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
         if (eigenaar is null) return NotFound();
 
-        // Haal bestandspad op VOOR we verwijderen, zodat we het schijfbestand kunnen opruimen
-        var bestandsPad = await db.Videoboodschappen
-            .Where(v => v.Id == id && v.EigenaarId == eigenaar.Id)
-            .Select(v => v.BestandsPad)
-            .FirstOrDefaultAsync();
+        // Laad entiteit inclusief ontvangers voor expliciete cascade bij InMemory-provider
+        var item = await db.Videoboodschappen
+            .Include(v => v.Ontvangers)
+            .FirstOrDefaultAsync(v => v.Id == id && v.EigenaarId == eigenaar.Id);
 
-        var deleted = await db.Videoboodschappen
-            .Where(v => v.Id == id && v.EigenaarId == eigenaar.Id)
-            .ExecuteDeleteAsync();
+        if (item is null) return NotFound();
 
-        if (deleted == 0) return NotFound();
+        var bestandsPad = item.BestandsPad;
 
-        // Verwijder het schijfbestand als dit een nieuwe upload was
-        if (bestandsPad is not null)
-            videoStorage.Verwijderen(bestandsPad);
+        // T-006: Compensating transaction
+        // 1. Stage DB-verwijdering (nog niet gecommit)
+        // 2. Verwijder schijfbestand
+        //    → bij file-fout: rollback DB zodat record intact blijft
+        // 3. Commit
+        using var tx = await db.Database.BeginTransactionAsync();
+        try
+        {
+            db.VideoboodschapOntvangers.RemoveRange(item.Ontvangers);
+            db.Videoboodschappen.Remove(item);
+            await db.SaveChangesAsync();
+
+            if (bestandsPad is not null)
+                videoStorage.Verwijderen(bestandsPad); // gooit → rollback hieronder
+
+            await tx.CommitAsync();
+        }
+        catch
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
 
         return NoContent();
     }
