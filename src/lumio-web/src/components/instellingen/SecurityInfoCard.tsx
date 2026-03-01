@@ -102,6 +102,10 @@ export function AccountDeletionCard({ onDeleteRequest, onPostDelete }: AccountDe
           <Trash2 className="h-4 w-4 mr-2" />
           {t("verwijderen.knop")}
         </Button>
+
+        <p className="text-xs text-muted-foreground border-t border-border pt-3 mt-1">
+          {t("verwijderen.dataMapNote")}
+        </p>
       </CardContent>
     </Card>
   );

@@ -370,3 +370,104 @@ Thin `fetch` wrapper around the backend API:
 - HTTP 423 → Database is locked (special error message)
 - HTTP 204 → Returns `undefined`
 - `Accept-Language` header is automatically included (from localStorage)
+
+---
+
+## Accessibility (WCAG 2.1 AA)
+
+Lumio targets **WCAG 2.1 AA** as the minimum standard, required by the EU Accessibility Act (EAA) as of 28 June 2025.
+
+### Language attribute
+
+```tsx
+// src/lumio-web/src/app/layout.tsx
+<html lang={locale}  // default: "nl" via i18n/request.ts
+```
+
+The `lang` attribute is set dynamically via `getLocale()` (next-intl). Default value is `"nl"` (see `src/i18n/request.ts`). Screen readers use this attribute to activate the correct language engine (SC 3.1.1).
+
+### skip-to-content
+
+All layouts include a skip-navigation link that becomes visible on tab focus (SC 2.4.1):
+
+```tsx
+// Pattern present in root layout, authenticated layout, and marketing site layout
+<a
+  href="#main-content"
+  className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] ..."
+>
+  {t("skipNaarInhoud")}   {/* or "Ga naar hoofdinhoud" */}
+</a>
+// ...
+<main id="main-content" className="...">   {/* SC 2.4.1 target */}
+```
+
+Implementation locations:
+
+| File | Skip-link | Target |
+|---|---|---|
+| `src/lumio-web/src/app/layout.tsx` | line 51-56 | line 59 (`div#main-content`) |
+| `src/lumio-web/src/app/(authenticated)/layout.tsx` | line 120-123 | line 139 (`main#main-content`) |
+| `site/src/app/layout.tsx` | line 60-65 | line 66 (`main#main-content`) |
+
+### axe-playwright / Storybook a11y (CI)
+
+Automatic WCAG detection runs in CI via the `a11y` job in `.github/workflows/ci.yml`. The job uses `@storybook/addon-vitest` + `@storybook/addon-a11y` to scan all Storybook stories with axe-core:
+
+```bash
+# Run locally:
+npm run test:storybook    # src/lumio-web
+
+# CI: triggered automatically on every PR/push to main (needs: [frontend])
+```
+
+Implemented in Sprint 1 (SP-ACC1-001).
+
+### ARIA live regions — Toast notifications
+
+Toasts use differentiated ARIA roles per variant (SC 4.1.3):
+
+```tsx
+// src/lumio-web/src/components/ui/toast.tsx
+<div
+  role={variant === "error" || variant === "warning" ? "alert" : "status"}
+  ...
+>
+```
+
+| Variant | Role | ARIA live | Reason |
+|---|---|---|---|
+| `error`, `warning` | `role="alert"` | assertive | Critical — interrupts screen reader |
+| `success`, `info` | `role="status"` | polite | Non-critical — waits for silence |
+
+Implemented in Sprint 1 (SP-ACC1-003).
+
+### Form errors (role="alert")
+
+`FormField.Error` uses `role="alert"` so screen readers announce errors immediately (SC 4.1.3). Inputs additionally carry `aria-invalid`, `aria-describedby`, and `aria-required`. Pre-existing, confirmed Sprint 1 (SP-ACC1-004).
+
+### Confirmation dialogs for legally significant operations (SC 3.3.4)
+
+Legally/medically significant saves (testament, euthanasia advance directive, donor preference) require explicit confirmation before committing. Component: `ConfirmJuridischDialog` at `src/lumio-web/src/components/security/ConfirmJuridischDialog.tsx`.
+
+Applied to: euthanasie/page.tsx, testament/wizard/page.tsx, donor/formulier/page.tsx. Implemented Sprint 1 (SP-ACC1-006).
+
+### Remaining items (Sprint 2+)
+
+| Item | Sprint | SC | Priority |
+|---|---|---|---|
+| Color token contrast corrections: `warning`, `danger`, `success`, `muted-foreground` | Sprint 2 | SC 1.4.3 | **CRITICAL** (warning: 2.19:1) |
+| lang attribute E2E test | Sprint 2 | SC 3.1.1 | P2 |
+| Skip-link Playwright test | Sprint 2 | SC 2.4.1 | P2 |
+
+**Contrast audit findings (Sprint 1 SP-ACC1-007):**
+
+| Token | Fg | Bg | Ratio | Status |
+|---|---|---|---|---|
+| `--color-warning` on `--color-warning-100` | #D4A017 | #FFF8E1 | ~2.19:1 | ❌ FAIL |
+| `--color-danger` on `--color-danger-100` | #B44A4A | #FDE8E8 | ~4.24:1 | ⚠️ FAIL normal text |
+| `--color-success` on `--color-success-100` | #5E8C61 | #E8F5E9 | ~3.30:1 | ⚠️ FAIL normal text |
+| `--color-muted-foreground` on card/bg | #6B7280 | #FFF/#F3F7F8 | ~4.14-4.29:1 | ⚠️ FAIL normal text |
+| `--color-foreground` on background | #1F2933 | #F3F7F8 | ~11.9:1 | ✅ PASS |
+| `--color-info` on `--color-info-100` | #3A506B | #E3EDF5 | ~6.32:1 | ✅ PASS |
+

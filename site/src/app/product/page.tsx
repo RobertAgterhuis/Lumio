@@ -17,7 +17,7 @@ export default function ProductPage() {
   return (
     <>
       {/* Page hero */}
-      <section className="py-16 bg-[var(--color-primary-700)] text-white">
+      <section className="py-16 bg-primary-700 text-white">
         <Container>
           <div className="max-w-2xl">
             <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold tracking-wide mb-5">

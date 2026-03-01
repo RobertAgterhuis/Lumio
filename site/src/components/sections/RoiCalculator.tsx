@@ -42,7 +42,7 @@ export default function RoiCalculator() {
   }, [aantalMedewerkers, gemiddeldSalaris]);
 
   return (
-    <section className="py-20 bg-white border-t border-[var(--color-primary-100)]" id="roi-calculator">
+    <section className="py-20 bg-white border-t border-primary-100" id="roi-calculator">
       <Container>
         <SectionHeading
           badge="ROI-model"
@@ -57,10 +57,10 @@ export default function RoiCalculator() {
             {/* Aantal medewerkers */}
             <div>
               <div className="flex justify-between items-baseline mb-2">
-                <label className="text-sm font-semibold text-[var(--color-neutral-900)]">
+                <label className="text-sm font-semibold text-(--color-neutral-900)">
                   Aantal medewerkers
                 </label>
-                <span className="font-display text-lg text-[var(--color-primary-700)] tabular-nums">
+                <span className="font-display text-lg text-primary-700 tabular-nums">
                   {aantalMedewerkers}
                 </span>
               </div>
@@ -71,9 +71,9 @@ export default function RoiCalculator() {
                 step={5}
                 value={aantalMedewerkers}
                 onChange={(e) => setAantalMedewerkers(Number(e.target.value))}
-                className="w-full accent-[var(--color-primary-700)]"
+                className="w-full accent-primary-700"
               />
-              <div className="flex justify-between text-xs text-[var(--color-neutral-400)] mt-1">
+              <div className="flex justify-between text-xs text-neutral-400 mt-1">
                 <span>5</span><span>500</span>
               </div>
             </div>
@@ -81,10 +81,10 @@ export default function RoiCalculator() {
             {/* Gemiddeld jaarsalaris */}
             <div>
               <div className="flex justify-between items-baseline mb-2">
-                <label className="text-sm font-semibold text-[var(--color-neutral-900)]">
+                <label className="text-sm font-semibold text-(--color-neutral-900)">
                   Gemiddeld bruto jaarsalaris
                 </label>
-                <span className="font-display text-lg text-[var(--color-primary-700)] tabular-nums">
+                <span className="font-display text-lg text-primary-700 tabular-nums">
                   {FORMAT_EUR(gemiddeldSalaris)}
                 </span>
               </div>
@@ -95,16 +95,16 @@ export default function RoiCalculator() {
                 step={2_500}
                 value={gemiddeldSalaris}
                 onChange={(e) => setGemiddeldSalaris(Number(e.target.value))}
-                className="w-full accent-[var(--color-primary-700)]"
+                className="w-full accent-primary-700"
               />
-              <div className="flex justify-between text-xs text-[var(--color-neutral-400)] mt-1">
+              <div className="flex justify-between text-xs text-neutral-400 mt-1">
                 <span>€25k</span><span>€120k</span>
               </div>
             </div>
 
             {/* Assumption callout */}
-            <div className="bg-[var(--color-primary-50)] rounded-xl p-4 border border-[var(--color-primary-100)] text-sm text-[var(--color-neutral-600)]">
-              <p className="font-semibold text-[var(--color-neutral-800)] mb-1">Hoe is dit berekend?</p>
+            <div className="bg-(--color-primary-50) rounded-xl p-4 border border-primary-100 text-sm text-neutral-600">
+              <p className="font-semibold text-neutral-800 mb-1">Hoe is dit berekend?</p>
               <p>
                 Medewerkers verliezen gemiddeld <strong>1 werkdag per jaar</strong> door
                 gebrek aan voorbereiding bij life events (testament, zorgvolmacht, digitale nalatenschap).
@@ -117,7 +117,7 @@ export default function RoiCalculator() {
           {/* ── Output cards ── */}
           <div className="space-y-4">
             {/* Investering */}
-            <div className="bg-[var(--color-primary-700)] text-white rounded-2xl p-6">
+            <div className="bg-primary-700 text-white rounded-2xl p-6">
               <p className="text-sm font-semibold text-white/70 uppercase tracking-widest mb-1">
                 Eenmalige investering
               </p>
@@ -129,52 +129,52 @@ export default function RoiCalculator() {
 
             <div className="grid sm:grid-cols-2 gap-4">
               {/* Jaarlijkse besparing */}
-              <div className="bg-[var(--color-sage-100)] border border-[var(--color-sage-600)]/30 rounded-xl p-5">
-                <p className="text-xs font-semibold text-[var(--color-sage-600)] uppercase tracking-widest mb-1">
+              <div className="bg-sage-100 border border-sage-600/30 rounded-xl p-5">
+                <p className="text-xs font-semibold text-sage-600 uppercase tracking-widest mb-1">
                   Jaarlijkse besparing
                 </p>
-                <p className="font-display text-2xl text-[var(--color-neutral-900)] mb-0.5">
+                <p className="font-display text-2xl text-(--color-neutral-900) mb-0.5">
                   {FORMAT_EUR(roi.jaarlijkseBesparing)}
                 </p>
-                <p className="text-xs text-[var(--color-neutral-500)]">productiviteits­herstel</p>
+                <p className="text-xs text-neutral-500">productiviteits­herstel</p>
               </div>
 
               {/* Terugverdientijd */}
-              <div className="bg-[var(--color-primary-50)] border border-[var(--color-primary-100)] rounded-xl p-5">
-                <p className="text-xs font-semibold text-[var(--color-primary-700)] uppercase tracking-widest mb-1">
+              <div className="bg-(--color-primary-50) border border-primary-100 rounded-xl p-5">
+                <p className="text-xs font-semibold text-primary-700 uppercase tracking-widest mb-1">
                   Terugverdientijd
                 </p>
-                <p className="font-display text-2xl text-[var(--color-primary-700)] mb-0.5">
+                <p className="font-display text-2xl text-primary-700 mb-0.5">
                   {roi.terugverdienMaanden} mnd
                 </p>
-                <p className="text-xs text-[var(--color-neutral-500)]">positief rendement daarna</p>
+                <p className="text-xs text-neutral-500">positief rendement daarna</p>
               </div>
             </div>
 
             {/* 3-jaar ROI */}
-            <div className="bg-[var(--color-primary-50)] border border-[var(--color-primary-100)] rounded-xl p-5 flex items-center gap-4">
+            <div className="bg-(--color-primary-50) border border-primary-100 rounded-xl p-5 flex items-center gap-4">
               <div className="flex-1">
-                <p className="text-xs font-semibold text-[var(--color-primary-700)] uppercase tracking-widest mb-1">
+                <p className="text-xs font-semibold text-primary-700 uppercase tracking-widest mb-1">
                   3-jaars ROI
                 </p>
-                <p className="font-display text-3xl text-[var(--color-primary-700)]">
+                <p className="font-display text-3xl text-primary-700">
                   {roi.roi3jaar > 0 ? "+" : ""}{roi.roi3jaar}%
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-semibold text-[var(--color-neutral-500)] uppercase tracking-widest mb-1">
+                <p className="text-xs font-semibold text-neutral-500 uppercase tracking-widest mb-1">
                   WKR-passend?
                 </p>
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${
                     roi.wkrPassend
-                      ? "bg-[var(--color-sage-100)] text-[var(--color-sage-600)]"
+                      ? "bg-sage-100 text-sage-600"
                       : "bg-orange-100 text-orange-700"
                   }`}
                 >
                   {roi.wkrPassend ? "✓ Ja" : "⚠ Controleer"}
                 </span>
-                <p className="text-xs text-[var(--color-neutral-400)] mt-1">
+                <p className="text-xs text-neutral-400 mt-1">
                   {roi.wkrPercentage}% van uw loonsom
                 </p>
               </div>
@@ -183,7 +183,7 @@ export default function RoiCalculator() {
             {/* CTA */}
             <a
               href="/contact"
-              className="block w-full text-center bg-[var(--color-primary-700)] hover:bg-[var(--color-primary-800)] transition-colors text-white font-semibold rounded-xl py-3.5 text-sm"
+              className="block w-full text-center bg-primary-700 hover:bg-primary-800 transition-colors text-white font-semibold rounded-xl py-3.5 text-sm"
             >
               Vraag een vrijblijvende pilot aan →
             </a>

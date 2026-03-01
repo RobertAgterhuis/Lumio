@@ -10,7 +10,7 @@ const STATS = [
 
 export default function EmployerBranding() {
   return (
-    <section className="py-20 bg-[var(--color-primary-700)] text-white">
+    <section className="py-20 bg-primary-700 text-white">
       <Container>
         <div className="grid lg:grid-cols-2 gap-14 items-center">
           <div>
@@ -36,7 +36,7 @@ export default function EmployerBranding() {
           <div className="grid gap-5">
             {STATS.map((stat) => (
               <div key={stat.value} className="flex gap-5 bg-white/10 backdrop-blur rounded-xl p-5">
-                <div className="font-display text-3xl text-[var(--color-primary-100)] flex-shrink-0 w-16 text-center">
+                <div className="font-display text-3xl text-primary-100 shrink-0 w-16 text-center">
                   {stat.value}
                 </div>
                 <p className="text-white/80 text-sm leading-relaxed self-center">{stat.label}</p>

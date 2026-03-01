@@ -154,7 +154,7 @@ function DomeinDetail({
           </div>
           {domein.label}
         </h1>
-        <p className="text-sm text-muted-foreground mt-1 ml-[52px]">{domein.beschrijving}</p>
+        <p className="text-sm text-muted-foreground mt-1 ml-13">{domein.beschrijving}</p>
       </div>
 
       {/* Card sections with colored header bar — matches testament/page.tsx exactly */}
@@ -267,7 +267,7 @@ function ErfgenaamView() {
   const pct = Math.round((done / total) * 100);
 
   return (
-    <div className="flex min-h-[580px]">
+    <div className="flex min-h-145">
       {/* ── Sidebar ── */}
       <aside className="w-64 shrink-0 flex flex-col border-r border-border bg-sidebar">
         {/* Primary header strip */}
@@ -344,7 +344,7 @@ function ErfgenaamView() {
         ) : (
           <div className="space-y-6">
             {/* Empathetic header — matches NabestaandenDashboard rounded-lg border bg-gradient */}
-            <div className="rounded-lg border border-muted bg-gradient-to-br from-muted/50 to-background p-6">
+            <div className="rounded-lg border border-muted bg-linear-to-br from-muted/50 to-background p-6">
               <div className="flex items-center gap-2 mb-2">
                 <ShieldAlert className="h-5 w-5 text-muted-foreground" />
                 <h1 className="text-2xl font-bold">Nabestaandenmodus</h1>
@@ -501,7 +501,7 @@ export function DemoShell() {
 
       {/* Body */}
       {perspectief === "eigenaar" ? (
-        <div className="flex min-h-[580px]">
+        <div className="flex min-h-145">
           {/* Sidebar — matches Sidebar.tsx bg-sidebar, border-r, nav groups */}
           <aside className="w-56 shrink-0 flex flex-col border-r border-border bg-sidebar overflow-y-auto">
             {/* User chip */}

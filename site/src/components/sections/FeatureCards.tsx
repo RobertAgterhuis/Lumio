@@ -5,7 +5,7 @@ import { EMPLOYEE_BENEFITS } from "@/lib/constants";
 
 export default function FeatureCards() {
   return (
-    <section className="py-20 bg-[var(--color-primary-50)]">
+    <section className="py-20 bg-(--color-primary-50)">
       <Container>
         <SectionHeading
           badge="Voor uw medewerkers"
@@ -18,11 +18,11 @@ export default function FeatureCards() {
         <div className="grid md:grid-cols-3 gap-6">
           {EMPLOYEE_BENEFITS.map((benefit) => (
             <Card key={benefit.title}>
-              <benefit.icon className="w-8 h-8 mb-4 text-[var(--color-primary-700)]" strokeWidth={1.5} />
-              <h3 className="text-lg font-semibold text-[var(--color-neutral-900)] mb-2">
+              <benefit.icon className="w-8 h-8 mb-4 text-primary-700" strokeWidth={1.5} />
+              <h3 className="text-lg font-semibold text-(--color-neutral-900) mb-2">
                 {benefit.title}
               </h3>
-              <p className="text-[var(--color-neutral-600)] leading-relaxed">
+              <p className="text-neutral-600 leading-relaxed">
                 {benefit.description}
               </p>
             </Card>

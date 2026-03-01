@@ -14,12 +14,12 @@ const FEATURES = [
 
 export default function ConsumerPricing() {
   return (
-    <section id="particulier" className="py-20 bg-[var(--color-primary-50)]">
+    <section id="particulier" className="py-20 bg-(--color-primary-50)">
       <Container>
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-2xl border border-[var(--color-primary-100)] shadow-lg overflow-hidden">
+          <div className="bg-white rounded-2xl border border-primary-100 shadow-lg overflow-hidden">
             {/* Header */}
-            <div className="bg-[var(--color-primary-700)] text-white p-8 text-center">
+            <div className="bg-primary-700 text-white p-8 text-center">
               <p className="text-sm font-semibold uppercase tracking-widest text-white/70 mb-2">
                 Particulier
               </p>
@@ -33,8 +33,8 @@ export default function ConsumerPricing() {
             <div className="p-8">
               <ul className="space-y-3 mb-8">
                 {FEATURES.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-[var(--color-neutral-700)]">
-                    <Check className="w-4 h-4 flex-shrink-0 text-[var(--color-sage-600)]" strokeWidth={2.5} />
+                  <li key={f} className="flex items-center gap-3 text-neutral-700">
+                    <Check className="w-4 h-4 shrink-0 text-sage-600" strokeWidth={2.5} />
                     <span className="text-sm">{f}</span>
                   </li>
                 ))}
@@ -44,7 +44,7 @@ export default function ConsumerPricing() {
                 Koop Lumio nu — €{PRICE_PER_USER}
               </Button>
 
-              <p className="text-center text-xs text-[var(--color-neutral-400)] mt-4">
+              <p className="text-center text-xs text-neutral-400 mt-4">
                 Je ontvangt de licentie en downloadlink per e-mail.
               </p>
             </div>

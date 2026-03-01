@@ -22,23 +22,23 @@ export default function ConsumerFaq() {
           {CONSUMER_FAQ_ITEMS.map((item, index) => (
             <div
               key={index}
-              className="bg-[var(--color-primary-50)] rounded-xl border border-[var(--color-primary-100)] overflow-hidden"
+              className="bg-(--color-primary-50) rounded-xl border border-primary-100 overflow-hidden"
             >
               <button
                 className="w-full flex items-center justify-between px-6 py-5 text-left group"
                 onClick={() => setOpen(open === index ? null : index)}
                 aria-expanded={open === index}
               >
-                <span className="font-semibold text-[var(--color-neutral-900)] group-hover:text-[var(--color-primary-700)] transition-colors">
+                <span className="font-semibold text-(--color-neutral-900) group-hover:text-primary-700 transition-colors">
                   {item.question}
                 </span>
-                <span className={`text-[var(--color-primary-600)] text-xl transition-transform duration-200 ${open === index ? "rotate-45" : ""}`}>
+                <span className={`text-(--color-primary-600) text-xl transition-transform duration-200 ${open === index ? "rotate-45" : ""}`}>
                   +
                 </span>
               </button>
 
               {open === index && (
-                <div className="px-6 pb-6 text-[var(--color-neutral-600)] leading-relaxed border-t border-[var(--color-primary-100)] pt-4">
+                <div className="px-6 pb-6 text-neutral-600 leading-relaxed border-t border-primary-100 pt-4">
                   {item.answer}
                 </div>
               )}

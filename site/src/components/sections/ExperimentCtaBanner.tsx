@@ -88,7 +88,7 @@ export default function ExperimentCtaBanner() {
   if (!mounted) return <CtaBannerSkeleton />;
 
   return (
-    <section className="py-20 bg-[var(--color-primary-700)]">
+    <section className="py-20 bg-primary-700">
       <Container>
         <div className="text-center text-white max-w-2xl mx-auto">
           {config.badge && (
@@ -124,7 +124,7 @@ export default function ExperimentCtaBanner() {
               href={config.secondaryHref}
               variant="ghost"
               size="lg"
-              className="!text-white hover:!bg-white/15"
+              className="text-white! hover:bg-white/15!"
             >
               {config.secondaryLabel}
             </Button>
@@ -138,7 +138,7 @@ export default function ExperimentCtaBanner() {
 /* ── Skeleton (SSR placeholder — identiek aan control layout) ───────────── */
 function CtaBannerSkeleton() {
   return (
-    <section className="py-20 bg-[var(--color-primary-700)]">
+    <section className="py-20 bg-primary-700">
       <Container>
         <div className="text-center text-white max-w-2xl mx-auto">
           <h2 className="font-display text-3xl md:text-4xl mb-4">
@@ -155,7 +155,7 @@ function CtaBannerSkeleton() {
               href={CONTROL.secondaryHref}
               variant="ghost"
               size="lg"
-              className="!text-white hover:!bg-white/15"
+              className="text-white! hover:bg-white/15!"
             >
               {CONTROL.secondaryLabel}
             </Button>

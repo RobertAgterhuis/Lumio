@@ -621,7 +621,9 @@
       "relatiePlaceholder": "bijv. Partner, Zoon, Dochter",
       "telefoonLabel": "Telefoonnummer",
       "telefoonPlaceholder": "06-12345678"
-    }
+    },
+    "bevestigenTitel": "Donorregistratie opslaan",
+    "bevestigenBeschrijving": "U staat op het punt uw donorkeuze op te slaan. Controleer of uw keuze correct is en of u deze ook officieel heeft geregistreerd bij het Donorregister."
   },
   "eigenaar": {
     "titel": "Mijn Profiel",
@@ -1056,12 +1058,16 @@
       "dementieclausule": "Dementieclausule",
       "toelichtingDementie": "Toelichting dementieclausule",
       "behandelverbod": "Behandelverbod",
-      "behandelverbodPlaceholder": "Welke behandelingen wilt u weigeren?"
+      "behandelverbodPlaceholder": "Welke behandelingen wilt u weigeren?",
+      "bevestigenTitel": "Wilsverklaring opslaan",
+      "bevestigenBeschrijving": "U staat op het punt uw wilsverklaring te bewaren. Controleer of uw gegevens correct en volledig zijn voordat u bevestigt."
     }
   },
   "euthanasieWizard": {
     "titel": "Wilsverklaring Euthanasie",
     "laden": "Laden...",
+    "bevestigenTitel": "Wilsverklaring opslaan",
+    "bevestigenBeschrijving": "U staat op het punt uw wilsverklaring euthanasie op te slaan. Controleer of alle gegevens correct en volledig zijn voordat u bevestigt.",
     "keuze": {
       "titel": "Uw Keuze",
       "beschrijving": "Wilt u een wilsverklaring euthanasie vastleggen? Dit is conform de Wet toetsing levensbeëindiging (Wtl).",
@@ -1432,7 +1438,8 @@
       "bevestigPlaceholder": "Voer uw wachtwoord in ter bevestiging",
       "knop": "Alle gegevens permanent verwijderen",
       "succes": "Alle gegevens zijn verwijderd. U wordt doorgestuurd...",
-      "mislukt": "Verwijderen mislukt. Controleer uw wachtwoord."
+      "mislukt": "Verwijderen mislukt. Controleer uw wachtwoord.",
+      "dataMapNote": "Let op: de map 'data/' naast de applicatie wordt niet automatisch verwijderd bij deïnstallatie. Verwijder deze map handmatig als u alle gegevens wilt wissen."
     },
     "aanbevelen": {
       "titel": "Lumio aanbevelen",
@@ -2149,6 +2156,10 @@
         "titel": "Erfgenamen",
         "beschrijving": "Registreer uw erfgenamen en verdeel eventueel noodcodes."
       },
+      "sleutels": {
+        "titel": "Sleutels verdelen",
+        "beschrijving": "Verdeel uw beveiligingssleutels via Shamir Secret Sharing met uw erfgenamen."
+      },
       "backup": {
         "titel": "Backup maken",
         "beschrijving": "Maak een eerste backup om uw gegevens veilig te stellen."
@@ -2400,7 +2411,9 @@
       "summaryAlgemeneWensen": "Algemene wensen:",
       "genereren": "Genereren...",
       "downloadPdf": "Concept-testament downloaden (PDF)"
-    }
+    },
+    "bevestigenTitel": "Testament opslaan",
+    "bevestigenBeschrijving": "U staat op het punt uw testamentgegevens op te slaan. Controleer of alle gegevens correct zijn voordat u bevestigt."
   },
   "personSelect": {
     "selecteer": "— Kies bestaand persoon —",
@@ -2832,6 +2845,8 @@
   "uitvaartWizard": {
     "titel": "Uitvaartwensen",
     "laden": "Laden...",
+    "bevestigenTitel": "Uitvaartwensen opslaan",
+    "bevestigenBeschrijving": "U staat op het punt uw uitvaartwensen op te slaan. Controleer of alle ingevulde gegevens correct zijn voordat u bevestigt.",
     "type": {
       "titel": "Type Uitvaart",
       "beschrijving": "Wat is uw voorkeur voor de uitvaart?",

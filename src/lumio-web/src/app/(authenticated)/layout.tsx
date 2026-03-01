@@ -115,9 +115,10 @@ export default function AuthenticatedLayout({
 
   return (
     <div className="flex h-screen">
+      {/* SC 2.4.1 — skip link targets #authenticated-main (unique id to avoid duplicating root layout's #main-content) */}
       <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg"
+        href="#authenticated-main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-sticky focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg"
       >
         {t("skipNaarInhoud")}
       </a>
@@ -132,7 +133,7 @@ export default function AuthenticatedLayout({
           </Alert>
         )}
         <ErrorBoundary>
-          <main id="main-content" className="flex-1 overflow-y-auto p-6">
+          <main id="authenticated-main" tabIndex={-1} className="flex-1 overflow-y-auto p-6 outline-none">
             {children}
           </main>
         </ErrorBoundary>

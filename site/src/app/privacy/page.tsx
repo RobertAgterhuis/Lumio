@@ -16,8 +16,8 @@ const Section = ({
   children: React.ReactNode;
 }) => (
   <section className="mb-10">
-    <h2 className="font-display text-2xl text-[var(--color-neutral-900)] mb-4">{title}</h2>
-    <div className="space-y-3 text-[var(--color-neutral-700)] leading-relaxed">{children}</div>
+    <h2 className="font-display text-2xl text-(--color-neutral-900) mb-4">{title}</h2>
+    <div className="space-y-3 text-neutral-700 leading-relaxed">{children}</div>
   </section>
 );
 
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
   return (
     <>
       {/* Page hero */}
-      <section className="py-16 bg-[var(--color-primary-700)] text-white">
+      <section className="py-16 bg-primary-700 text-white">
         <Container>
           <div className="max-w-2xl">
             <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold tracking-wide mb-5">
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
               nabestaanden te ondersteunen bij de afwikkeling van uw nalatenschap.
             </p>
             <p className="text-white/60 text-sm mt-4">
-              Versie 1.0 — Ingangsdatum: 1 januari 2025 — Laatste update: januari 2025
+              Versie 1.1 — Ingangsdatum: 1 januari 2025 — Laatste update: 1 maart 2026
             </p>
           </div>
         </Container>
@@ -52,10 +52,10 @@ export default function PrivacyPage() {
             <p>
               De verwerkingsverantwoordelijke in de zin van artikel 4 lid 7 AVG is:
             </p>
-            <address className="not-italic bg-[var(--color-primary-50)] border border-[var(--color-primary-100)] rounded-lg p-4 text-sm">
+            <address className="not-italic bg-(--color-primary-50) border border-primary-100 rounded-lg p-4 text-sm">
               <strong>Lumio B.V.</strong> (in oprichting)<br />
               KvK-nummer: [in te vullen na inschrijving]<br />
-              E-mail: <a href="mailto:privacy@lumio.app" className="text-[var(--color-primary-700)] underline">privacy@lumio.app</a>
+              E-mail: <a href="mailto:privacy@lumio.app" className="text-primary-700 underline">privacy@lumio.app</a>
             </address>
             <p>
               Voor vragen of verzoeken over de verwerking van uw persoonsgegevens kunt u contact
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
                 (geen persoonsgegevens).
               </li>
             </ul>
-            <p className="text-sm text-[var(--color-neutral-500)] bg-[var(--color-primary-50)] border border-[var(--color-primary-100)] rounded-lg p-4">
+            <p className="text-sm text-neutral-500 bg-(--color-primary-50) border border-primary-100 rounded-lg p-4">
               * BSN-verwerking vindt uitsluitend lokaal (on-device) plaats t.b.v. validatie conform
               de Wet BSN. Gezondheidsgegevens worden verwerkt op grond van uw <strong>uitdrukkelijke
               toestemming</strong> (art. 9 lid 2 sub a AVG), die u intrekt door de betreffende
@@ -107,12 +107,12 @@ export default function PrivacyPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
-                  <tr className="bg-[var(--color-primary-100)] text-[var(--color-neutral-800)]">
+                  <tr className="bg-primary-100 text-neutral-800">
                     <th className="text-left p-3 font-semibold">Verwerkingsdoel</th>
                     <th className="text-left p-3 font-semibold">Rechtsgrond</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--color-primary-100)]">
+                <tbody className="divide-y divide-primary-100">
                   <tr>
                     <td className="p-3">Uitvoering van de overeenkomst (gebruik van de app)</td>
                     <td className="p-3">Art. 6 lid 1 sub b AVG — uitvoering overeenkomst</td>
@@ -222,7 +222,7 @@ export default function PrivacyPage() {
           <Section title="7. Uw rechten als betrokkene">
             <p>
               Op grond van de AVG heeft u de volgende rechten. U kunt ze uitoefenen via{" "}
-              <a href="mailto:privacy@lumio.app" className="text-[var(--color-primary-700)] underline font-semibold">
+              <a href="mailto:privacy@lumio.app" className="text-primary-700 underline font-semibold">
                 privacy@lumio.app
               </a>
               . Wij reageren binnen 4 weken (art. 12 lid 3 AVG).
@@ -230,13 +230,13 @@ export default function PrivacyPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
-                  <tr className="bg-[var(--color-primary-100)] text-[var(--color-neutral-800)]">
+                  <tr className="bg-primary-100 text-neutral-800">
                     <th className="text-left p-3 font-semibold">Recht</th>
                     <th className="text-left p-3 font-semibold">Artikel AVG</th>
                     <th className="text-left p-3 font-semibold">Toelichting</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--color-primary-100)]">
+                <tbody className="divide-y divide-primary-100">
                   <tr>
                     <td className="p-3 font-medium">Inzage</td>
                     <td className="p-3">Art. 15</td>
@@ -282,7 +282,7 @@ export default function PrivacyPage() {
                 href="https://www.autoriteitpersoonsgegevens.nl"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--color-primary-700)] underline"
+                className="text-primary-700 underline"
               >
                 autoriteitpersoonsgegevens.nl
               </a>
@@ -294,9 +294,26 @@ export default function PrivacyPage() {
           <Section title="8. Cookies en tracking">
             <p>
               De marketingwebsite (lumio.app) gebruikt uitsluitend technisch noodzakelijke
-              cookies voor sessie- en taalvoorkeur. Er worden <strong>geen tracking- of
-              advertentiecookies</strong> geplaatst. De Lumio-applicatie zelf plaatst geen
+              cookies voor sessie- en taalvoorkeur. Er worden <strong>geen advertising- of
+              profilerende cookies</strong> geplaatst. De Lumio-applicatie zelf plaatst geen
               cookies.
+            </p>
+            <p>
+              Lumio maakt gebruik van <strong>PostHog Analytics</strong> (EU-regio,
+              eu.i.posthog.com) voor geanonimiseerde gebruikstelemetrie op de marketingwebsite.
+              Dit betreft uitsluitend gedragspatronen — geen persoonsgegevens, geen
+              gezondheidsgegevens, geen sessie-opnames. Auto-capture en session recording zijn
+              uitgeschakeld. De volgende maatregelen zijn van kracht conform GUARD-006:
+            </p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Alleen expliciete events (bijv. <code>lumio_activated</code>) — geen automatische paginaregistratie</li>
+              <li>Gevoelige URL-paden (<code>/euthanasie</code>, <code>/testament</code>, etc.) worden geredigeerd vóór verzending</li>
+              <li>Geen koppeling aan persoonlijke identificatoren (naam, e-mail, BSN)</li>
+              <li>Respects browser <strong>Do Not Track (DNT)</strong> instelling — analytics worden overgeslagen als DNT actief is</li>
+            </ul>
+            <p>
+              U kunt analytics uitschakelen door <strong>Do Not Track</strong> in uw browser in
+              te schakelen, of door een browser-extensie zoals uBlock Origin te gebruiken.
             </p>
           </Section>
 
@@ -319,14 +336,14 @@ export default function PrivacyPage() {
           </Section>
 
           {/* Footer nav */}
-          <div className="pt-8 border-t border-[var(--color-primary-100)] text-sm text-[var(--color-neutral-500)]">
+          <div className="pt-8 border-t border-primary-100 text-sm text-neutral-500">
             <p>
               Vragen over dit beleid?{" "}
-              <a href="mailto:privacy@lumio.app" className="text-[var(--color-primary-700)] underline">
+              <a href="mailto:privacy@lumio.app" className="text-primary-700 underline">
                 privacy@lumio.app
               </a>
               {" "}·{" "}
-              <a href="/contact" className="text-[var(--color-primary-700)] underline">
+              <a href="/contact" className="text-primary-700 underline">
                 Pilot aanvragen
               </a>
             </p>

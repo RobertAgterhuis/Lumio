@@ -621,7 +621,9 @@
       "relatiePlaceholder": "e.g. Partner, Son, Daughter",
       "telefoonLabel": "Phone number",
       "telefoonPlaceholder": "Phone number"
-    }
+    },
+    "bevestigenTitel": "Save donor registration",
+    "bevestigenBeschrijving": "You are about to save your donor preference. Please verify your choice is correct and that you have also officially registered with the Donor Register."
   },
   "eigenaar": {
     "titel": "My Profile",
@@ -1056,12 +1058,16 @@
       "dementieclausule": "Dementia clause",
       "toelichtingDementie": "Explanation dementia clause",
       "behandelverbod": "Treatment refusal",
-      "behandelverbodPlaceholder": "Which treatments do you wish to refuse?"
+      "behandelverbodPlaceholder": "Which treatments do you wish to refuse?",
+      "bevestigenTitel": "Save advance directive",
+      "bevestigenBeschrijving": "You are about to save your advance directive. Please verify that your details are correct and complete before confirming."
     }
   },
   "euthanasieWizard": {
     "titel": "Euthanasia Advance Directive",
     "laden": "Loading...",
+    "bevestigenTitel": "Save Advance Directive",
+    "bevestigenBeschrijving": "You are about to save your euthanasia advance directive. Please verify all details are correct and complete before confirming.",
     "keuze": {
       "titel": "Your Choice",
       "beschrijving": "Do you want to record an advance directive for euthanasia? This is in accordance with the Termination of Life on Request and Assisted Suicide Act (Wtl).",
@@ -1432,7 +1438,8 @@
       "bevestigPlaceholder": "Enter your password to confirm",
       "knop": "Permanently delete all data",
       "succes": "All data has been deleted. You will be redirected...",
-      "mislukt": "Deletion failed. Check your password."
+      "mislukt": "Deletion failed. Check your password.",
+      "dataMapNote": "Note: the 'data/' folder next to the application is not removed automatically when you uninstall. Delete this folder manually if you want to erase all data."
     },
     "aanbevelen": {
       "titel": "Recommend Lumio",
@@ -2149,6 +2156,10 @@
         "titel": "Heirs",
         "beschrijving": "Register your heirs and optionally distribute emergency codes."
       },
+      "sleutels": {
+        "titel": "Distribute Keys",
+        "beschrijving": "Distribute your security keys via Shamir Secret Sharing with your heirs."
+      },
       "backup": {
         "titel": "Create Backup",
         "beschrijving": "Create an initial backup to secure your data."
@@ -2400,7 +2411,9 @@
       "summaryAlgemeneWensen": "General wishes:",
       "genereren": "Generating...",
       "downloadPdf": "Download draft will (PDF)"
-    }
+    },
+    "bevestigenTitel": "Save testament",
+    "bevestigenBeschrijving": "You are about to save your testament details. Please verify that all information is correct before confirming."
   },
   "personSelect": {
     "selecteer": "— Select existing person —",
@@ -2832,6 +2845,8 @@
   "uitvaartWizard": {
     "titel": "Funeral Wishes",
     "laden": "Loading...",
+    "bevestigenTitel": "Save Funeral Wishes",
+    "bevestigenBeschrijving": "You are about to save your funeral wishes. Please verify all details are correct before confirming.",
     "type": {
       "titel": "Type of Funeral",
       "beschrijving": "What is your preference for the funeral?",

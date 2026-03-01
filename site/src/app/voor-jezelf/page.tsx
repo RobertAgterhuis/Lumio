@@ -5,6 +5,7 @@ import NabestaandenSection from "@/components/sections/NabestaandenSection";
 import WatIsLumio from "@/components/sections/WatIsLumio";
 import ProductFeatureGrid from "@/components/sections/ProductFeatureGrid";
 import PrivacyBlok from "@/components/sections/PrivacyBlok";
+import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import ConsumerPricing from "@/components/sections/ConsumerPricing";
 import ConsumerFaq from "@/components/sections/ConsumerFaq";
 import CtaBanner from "@/components/sections/CtaBanner";
@@ -27,6 +28,7 @@ export default function VoorJezelfPage() {
       <ProductFeatureGrid />
       <NabestaandenSection />
       <PrivacyBlok />
+      <TestimonialsSection />
       <ConsumerPricing />
       <ConsumerFaq />
       <CtaBanner />

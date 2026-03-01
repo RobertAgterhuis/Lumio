@@ -15,7 +15,7 @@ export default function HrPitch() {
               Lumio helpt hen voorbereid te zijn."
             />
 
-            <p className="text-[var(--color-neutral-600)] leading-relaxed mb-6">
+            <p className="text-neutral-600 leading-relaxed mb-6">
               U hoeft geen nieuw programma op te tuigen. Lumio is een eenmalige aanschaf —
               geen beheersysteem, geen helpdesk-tickets, geen jaargesprekrekken over het gebruik.
               Medewerkers installeren de app zelf en bepalen zelf wat ze erin zetten.
@@ -28,23 +28,23 @@ export default function HrPitch() {
                 "Eenvoudig te communiceren als betekenisvol benefit",
                 "Versterkt employer branding richting nieuwe medewerkers",
               ].map((item) => (
-                <li key={item} className="flex gap-3 text-[var(--color-neutral-600)]">
-                  <span className="text-[var(--color-sage-600)] font-bold mt-0.5">✓</span>
+                <li key={item} className="flex gap-3 text-neutral-600">
+                  <span className="text-sage-600 font-bold mt-0.5">✓</span>
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-[var(--color-primary-50)] rounded-2xl p-8 border border-[var(--color-primary-100)]">
-            <p className="text-sm font-semibold text-[var(--color-primary-600)] uppercase tracking-widest mb-4">
+          <div className="bg-(--color-primary-50) rounded-2xl p-8 border border-primary-100">
+            <p className="text-sm font-semibold text-(--color-primary-600) uppercase tracking-widest mb-4">
               Wat uw medewerkers typerend vinden
             </p>
-            <blockquote className="font-display text-xl text-[var(--color-neutral-900)] mb-6 leading-relaxed">
+            <blockquote className="font-display text-xl text-(--color-neutral-900) mb-6 leading-relaxed">
               "Ik had nooit nagedacht over mijn digitale wachtwoorden.
               Lumio hielp me in één middag alles te regelen."
             </blockquote>
-            <cite className="text-sm text-[var(--color-neutral-600)] not-italic">
+            <cite className="text-sm text-neutral-600 not-italic">
               — Oud-medewerker na gebruik van Lumio tijdens pilot
             </cite>
           </div>

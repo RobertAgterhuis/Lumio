@@ -20,6 +20,7 @@ import { PersonSelect } from "@/components/PersonSelect";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { HelpButton } from "@/components/help/HelpButton";
+import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
 
 interface Wilsverklaring {
   id: string;
@@ -69,6 +70,7 @@ export default function EuthanasiePage() {
     vertegenwoordiger2Email: "", situatieOpties: "", situatieNotitie: "",
   });
   const [editError, setEditError] = useState<string | null>(null);
+  const [confirmSaveOpen, setConfirmSaveOpen] = useState(false);
 
   const openEdit = () => {
     if (!data) return;
@@ -461,9 +463,18 @@ export default function EuthanasiePage() {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setEditOpen(false)}>{t("annuleren")}</Button>
-          <Button onClick={saveEdit}>{t("opslaan")}</Button>
+          <Button onClick={() => setConfirmSaveOpen(true)}>{t("opslaan")}</Button>
         </DialogFooter>
       </Dialog>
+
+      {/* SP-ACC1-006: SC 3.3.4 confirmation gate before legally significant save */}
+      <ConfirmJuridischDialog
+        open={confirmSaveOpen}
+        onOpenChange={setConfirmSaveOpen}
+        title={t("editDialog.bevestigenTitel")}
+        description={t("editDialog.bevestigenBeschrijving")}
+        onConfirm={saveEdit}
+      />
     </div>
   );
 }

@@ -18,14 +18,14 @@ export default function ProductFeatureGrid() {
           {PRODUCT_FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="flex gap-4 p-5 rounded-xl border border-[var(--color-primary-100)] hover:bg-[var(--color-primary-50)] transition-colors"
+              className="flex gap-4 p-5 rounded-xl border border-primary-100 hover:bg-(--color-primary-50) transition-colors"
             >
-              <feature.icon className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--color-primary-600)]" strokeWidth={1.5} />
+              <feature.icon className="w-5 h-5 shrink-0 mt-0.5 text-primary-600" strokeWidth={1.5} />
               <div>
-                <h3 className="font-semibold text-[var(--color-neutral-900)] mb-1">
+                <h3 className="font-semibold text-(--color-neutral-900) mb-1">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-[var(--color-neutral-600)] leading-relaxed">
+                <p className="text-sm text-neutral-600 leading-relaxed">
                   {feature.description}
                 </p>
               </div>

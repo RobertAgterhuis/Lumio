@@ -71,7 +71,7 @@ export function Toast({
 
   return (
     <div
-      role="alert"
+      role={variant === "error" || variant === "warning" ? "alert" : "status"}
       className={cn(toastVariants({ variant }), className)}
       {...props}
     >

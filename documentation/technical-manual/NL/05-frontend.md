@@ -370,3 +370,133 @@ Dunne `fetch`-wrapper rond de backend API:
 - HTTP 423 → Database is vergrendeld (speciale foutmelding)
 - HTTP 204 → Retourneert `undefined`
 - `Accept-Language` header wordt automatisch meegezonden (uit localStorage)
+
+---
+
+## Toegankelijkheid (WCAG 2.1 AA)
+
+Lumio richt zich op **WCAG 2.1 AA** als minimumnorm, vereist door de EU Accessibility Act (EAA) per 28 juni 2025.
+
+### Taalattribuut
+
+```tsx
+// src/lumio-web/src/app/layout.tsx
+<html lang={locale}  // default: "nl" via i18n/request.ts
+```
+
+De `lang`-attribuut wordt dynamisch ingesteld via `getLocale()` (next-intl). Standaardwaarde is `"nl"` (zie `src/i18n/request.ts`). Screen readers gebruiken dit attribuut om de juiste taal-engine te activeren (SC 3.1.1).
+
+### skip-to-content
+
+Alle layouts bevatten een skip-navigatielink die zichtbaar wordt bij tab-focus (SC 2.4.1):
+
+```tsx
+// Zichtbaar patroon in root layout, authenticated layout en marketing site layout
+<a
+  href="#main-content"
+  className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] ..."
+>
+  {t("skipNaarInhoud")}   {/* of "Ga naar hoofdinhoud" */}
+</a>
+// ...
+<main id="main-content" className="...">   {/* SC 2.4.1 target */}
+```
+
+Implementatielocaties:
+
+| Bestand | Skip-link | Target |
+|---|---|---|
+| `src/lumio-web/src/app/layout.tsx` | regel 51-56 | regel 59 (`div#main-content`) |
+| `src/lumio-web/src/app/(authenticated)/layout.tsx` | regel 120-123 | regel 139 (`main#main-content`) |
+| `site/src/app/layout.tsx` | regel 60-65 | regel 66 (`main#main-content`) |
+
+### axe-playwright / Storybook a11y (CI)
+
+Automatische WCAG-detectie draait in CI via het `a11y` job in `.github/workflows/ci.yml`. Het job gebruikt `@storybook/addon-vitest` + `@storybook/addon-a11y` om alle Storybook stories te scannen met axe-core (SC-evaluatie per component):
+
+```bash
+# Lokaal draaien:
+npm run test:storybook    # src/lumio-web
+
+# CI: automatisch getriggerd op elke PR/push naar main (needs: [frontend])
+```
+
+Geïmplementeerd in Sprint 1 (SP-ACC1-001).
+
+### ARIA live regio's — Toast notificaties
+
+Toasts gebruiken gedifferentieerde ARIA-rollen per variant (SC 4.1.3):
+
+```tsx
+// src/lumio-web/src/components/ui/toast.tsx
+<div
+  role={variant === "error" || variant === "warning" ? "alert" : "status"}
+  ...
+>
+```
+
+| Variant | Role | ARIA live | Reden |
+|---|---|---|---|
+| `error`, `warning` | `role="alert"` | assertive | Kritiek — onderbreekt screenreader |
+| `success`, `info` | `role="status"` | polite | Niet-kritiek — wacht op stilte |
+
+De ToastProvider container heeft aanvullend `aria-live="polite"` + `aria-atomic="true"` op de regio.
+Geïmplementeerd in Sprint 1 (SP-ACC1-003).
+
+### Formulierfouten (role="alert")
+
+`FormField.Error` gebruikt `role="alert"` zodat screenreaders foutmeldingen direct aankondigen (SC 4.1.3):
+
+```tsx
+// src/lumio-web/src/components/ui/form-field.tsx
+<p role="alert" id={errorId} className="text-sm text-danger">
+  {children}
+</p>
+```
+
+Inputs hebben tevens `aria-invalid`, `aria-describedby` (Error ID), en `aria-required` — volledig WCAG-conform compound-patroon. Pre-existing implementatie, bevestigd Sprint 1 (SP-ACC1-004).
+
+### Bevestigingsdialogs voor juridisch significante bewerkingen (SC 3.3.4)
+
+Juridisch/medisch significante bewerkingen (testament, wilsverklaring euthanasie, donorkeuze) vereisen een expliciete bevestiging vóór opslaan. Component: `ConfirmJuridischDialog`:
+
+```tsx
+// src/lumio-web/src/components/security/ConfirmJuridischDialog.tsx
+<ConfirmJuridischDialog
+  open={confirmOpen}
+  onOpenChange={setConfirmOpen}
+  title={t("bevestigenTitel")}
+  description={t("bevestigenBeschrijving")}
+  onConfirm={executeComplete}
+/>
+```
+
+Geïmplementeerd op:
+
+| Pagina | Trigger | 
+|---|---|
+| `(authenticated)/euthanasie/page.tsx` | "Opslaan" knop in bewerkdialoog |
+| `(authenticated)/testament/wizard/page.tsx` | "Afronden" knop in WizardShell |
+| `(authenticated)/donor/formulier/page.tsx` | "Afronden" knop in WizardShell |
+
+Geïmplementeerd in Sprint 1 (SP-ACC1-006).
+
+### Openstaande items (Sprint 2+)
+
+| Item | Sprint | SC | Prioriteit |
+|---|---|---|---|
+| Kleurtoken contrast-correcties: `warning`, `danger`, `success`, `muted-foreground` (zie audit) | Sprint 2 | SC 1.4.3 | **KRITIEK** (warning: 2.19:1) |
+| lang-attribuut E2E test | Sprint 2 | SC 3.1.1 | P2 |
+| Skip-link Playwright test | Sprint 2 | SC 2.4.1 | P2 |
+
+**Contrast audit bevindingen (Sprint 1 SP-ACC1-007):**
+
+| Token | Fg | Bg | Ratio | Status |
+|---|---|---|---|---|
+| `--color-warning` op `--color-warning-100` | #D4A017 | #FFF8E1 | ~2.19:1 | ❌ FAIL |
+| `--color-danger` op `--color-danger-100` | #B44A4A | #FDE8E8 | ~4.24:1 | ⚠️ FAIL normaal |
+| `--color-success` op `--color-success-100` | #5E8C61 | #E8F5E9 | ~3.30:1 | ⚠️ FAIL normaal |
+| `--color-muted-foreground` op card/bg | #6B7280 | #FFF/#F3F7F8 | ~4.14-4.29:1 | ⚠️ FAIL normaal |
+| `--color-foreground` op background | #1F2933 | #F3F7F8 | ~11.9:1 | ✅ PASS |
+| `--color-info` op `--color-info-100` | #3A506B | #E3EDF5 | ~6.32:1 | ✅ PASS |
+

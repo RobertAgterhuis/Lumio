@@ -11,6 +11,7 @@ import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { useTranslations } from "next-intl";
+import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
 
 const organen = [
   "Hart",
@@ -330,7 +331,10 @@ export default function DonorFormulierPage() {
     (stap) => !(stap.id === "beslisser" && form.keuze !== "Specifiek persoon beslist")
   );
 
-  const handleComplete = async () => {
+  const handleComplete = () => setConfirmCompleteOpen(true);
+  const [confirmCompleteOpen, setConfirmCompleteOpen] = useState(false);
+
+  const executeComplete = async () => {
     await api.put("/api/donor", {
       keuze: form.keuze,
       isGeregistreerdBijDonorregister:
@@ -358,11 +362,21 @@ export default function DonorFormulierPage() {
   if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
-    <WizardShell
-      titel={t("titel")}
-      stappen={stappen}
-      onComplete={handleComplete}
-      onCancel={() => router.push("/donor")}
-    />
+    <>
+      <WizardShell
+        titel={t("titel")}
+        stappen={stappen}
+        onComplete={handleComplete}
+        onCancel={() => router.push("/donor")}
+      />
+      {/* SP-ACC1-006: SC 3.3.4 confirmation gate before legally significant save */}
+      <ConfirmJuridischDialog
+        open={confirmCompleteOpen}
+        onOpenChange={setConfirmCompleteOpen}
+        title={t("bevestigenTitel")}
+        description={t("bevestigenBeschrijving")}
+        onConfirm={executeComplete}
+      />
+    </>
   );
 }

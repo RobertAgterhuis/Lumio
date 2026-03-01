@@ -63,10 +63,10 @@ export default function ContactForm() {
             <div className="space-y-5 mt-2">
               {PILOT_POINTS.map((item) => (
                 <div key={item.title} className="flex gap-4">
-                  <item.icon className="w-6 h-6 flex-shrink-0 text-[var(--color-primary-700)]" strokeWidth={1.5} />
+                  <item.icon className="w-6 h-6 shrink-0 text-primary-700" strokeWidth={1.5} />
                   <div>
-                    <p className="font-semibold text-[var(--color-neutral-900)]">{item.title}</p>
-                    <p className="text-sm text-[var(--color-neutral-600)]">{item.text}</p>
+                    <p className="font-semibold text-(--color-neutral-900)">{item.title}</p>
+                    <p className="text-sm text-neutral-600">{item.text}</p>
                   </div>
                 </div>
               ))}
@@ -75,23 +75,23 @@ export default function ContactForm() {
 
           {/* Form */}
           {submitted ? (
-            <div className="bg-[var(--color-primary-50)] rounded-2xl p-10 text-center border border-[var(--color-primary-100)]">
+            <div className="bg-(--color-primary-50) rounded-2xl p-10 text-center border border-primary-100">
               <div className="text-4xl mb-4">✅</div>
-              <h3 className="font-display text-2xl text-[var(--color-neutral-900)] mb-2">Bedankt!</h3>
-              <p className="text-[var(--color-neutral-600)]">We nemen zo snel mogelijk contact met u op.</p>
+              <h3 className="font-display text-2xl text-(--color-neutral-900) mb-2">Bedankt!</h3>
+              <p className="text-neutral-600">We nemen zo snel mogelijk contact met u op.</p>
             </div>
           ) : (
             <form
               onSubmit={handleSubmit}
               data-netlify="true"
               name="pilot-aanvraag"
-              className="bg-[var(--color-primary-50)] rounded-2xl p-8 border border-[var(--color-primary-100)] space-y-5"
+              className="bg-(--color-primary-50) rounded-2xl p-8 border border-primary-100 space-y-5"
             >
               <input type="hidden" name="form-name" value="pilot-aanvraag" />
 
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-semibold text-[var(--color-neutral-900)] mb-1.5">
+                  <label className="block text-sm font-semibold text-(--color-neutral-900) mb-1.5">
                     Uw naam <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -100,12 +100,12 @@ export default function ContactForm() {
                     required
                     value={form.name}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-[var(--color-primary-100)] bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-700)]"
+                    className="w-full rounded-lg border border-primary-100 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-700"
                     placeholder="Jan de Vries"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[var(--color-neutral-900)] mb-1.5">
+                  <label className="block text-sm font-semibold text-(--color-neutral-900) mb-1.5">
                     E-mailadres <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -114,14 +114,14 @@ export default function ContactForm() {
                     required
                     value={form.email}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-[var(--color-primary-100)] bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-700)]"
+                    className="w-full rounded-lg border border-primary-100 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-700"
                     placeholder="jan@bedrijf.nl"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[var(--color-neutral-900)] mb-1.5">
+                <label className="block text-sm font-semibold text-(--color-neutral-900) mb-1.5">
                   Bedrijfsnaam <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -130,20 +130,20 @@ export default function ContactForm() {
                   required
                   value={form.company}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-[var(--color-primary-100)] bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-700)]"
+                  className="w-full rounded-lg border border-primary-100 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-700"
                   placeholder="Uw Bedrijf B.V."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[var(--color-neutral-900)] mb-1.5">
+                <label className="block text-sm font-semibold text-(--color-neutral-900) mb-1.5">
                   Aantal medewerkers
                 </label>
                 <select
                   name="employees"
                   value={form.employees}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-[var(--color-primary-100)] bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-700)]"
+                  className="w-full rounded-lg border border-primary-100 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-700"
                 >
                   <option value="">Kies een range</option>
                   <option value="1-10">1 – 10</option>
@@ -155,7 +155,7 @@ export default function ContactForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[var(--color-neutral-900)] mb-1.5">
+                <label className="block text-sm font-semibold text-(--color-neutral-900) mb-1.5">
                   Toelichting (optioneel)
                 </label>
                 <textarea
@@ -163,7 +163,7 @@ export default function ContactForm() {
                   value={form.message}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full rounded-lg border border-[var(--color-primary-100)] bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-700)] resize-none"
+                  className="w-full rounded-lg border border-primary-100 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-700 resize-none"
                   placeholder="Vertel ons iets over uw organisatie of uw wensen..."
                 />
               </div>

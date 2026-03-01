@@ -5,7 +5,7 @@ export default function PrintButton() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="text-sm font-semibold text-[var(--color-primary-700)] hover:underline"
+      className="text-sm font-semibold text-primary-700 hover:underline"
     >
       Afdrukken / opslaan als PDF →
     </button>

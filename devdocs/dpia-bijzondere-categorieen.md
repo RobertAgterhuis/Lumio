@@ -144,7 +144,7 @@ De verwerking is strikt noodzakelijk voor het bereiken van de doeleinden:
 
 ### 4.1 Openstaande maatregel (BrEVR-001)
 
-**BrEVR-001:** Voeg aan de gebruikershandleiding en de B2B whitelabel onboarding een expliciet alinea toe over deïnstallatie: "De database wordt NIET automatisch verwijderd bij deïnstallatie. Verwijder het data-bestand handmatig via [locatie] als u uw gegevens volledig wilt wissen." — Prioriteit: MIDDEN. Status: TODO (opnemen in SP-6-009 of aparte story).
+**BrEVR-001:** Voeg aan de gebruikershandleiding en de B2B whitelabel onboarding een expliciet alinea toe over deïnstallatie: "De database wordt NIET automatisch verwijderd bij deïnstallatie. Verwijder het data-bestand handmatig via [locatie] als u uw gegevens volledig wilt wissen." — Prioriteit: MIDDEN. Status: **✅ GEDAAN 2026-03-01** — toegevoegd aan `documentation/user-manual/NL/13-overige-functies.md` en `documentation/user-manual/EN/13-other-features.md`.
 
 ---
 
@@ -190,7 +190,7 @@ Conform het principe dat "consumenten hier niet mee lastig gevallen worden" (bes
 | Technische en organisatorische maatregelen gedocumenteerd | ✅ |
 | DPO-advies ontvangen | ✅ Goedgekeurd |
 | Voorafgaande AP-raadpleging noodzakelijk | ✅ Niet vereist |
-| Openstaande actie (BrEVR-001) | ⬜ TODO — opnemen in Fase 6 backlog |
+| Openstaande actie (BrEVR-001) | ✅ GEDAAN 2026-03-01 — gebruikershandleidingen NL + EN bijgewerkt |
 
 **EINDOORDEEL: De verwerking van bijzondere categorieën persoonsgegevens in Lumio is conform de AVG. DPIA-verplichting voldaan. SYS-RISK-003 / DRIFT-001 GESLOTEN.**
 
@@ -201,6 +201,7 @@ Conform het principe dat "consumenten hier niet mee lastig gevallen worden" (bes
 | Versie | Datum | Wijziging | DPO sign-off |
 |--------|-------|-----------|-------------|
 | v1.0 | 2026-03-01 | Initiële DPIA — alle fasen doorlopen | ✅ Softwaredeveloper Lumio |
+| v1.1 | 2026-03-01 | DPO-toets telemetrie (PostHog, GUARD-006 + COMPLIANCE_RISK-GROWTH-001) — goedgekeurd; `posthog-analytics.md` bijgewerkt | ✅ Softwaredeveloper Lumio |
 
 ---
 
@@ -209,5 +210,5 @@ Conform het principe dat "consumenten hier niet mee lastig gevallen worden" (bes
 Dit DPIA-document wordt herzien:
 - Bij elke significante wijziging in de verwerking van bijzondere categorieën
 - Bij introductie van cloud-opslag of externe API-verbindingen (dit zou een nieuw DPIA vereisen)
-- Bij introductie van telemetrie (DPO-toets vereist conform GUARD-006 + COMPLIANCE_RISK-GROWTH-001)
+- Bij introductie van telemetrie (DPO-toets vereist conform GUARD-006 + COMPLIANCE_RISK-GROWTH-001) — **✅ PostHog goedgekeurd 2026-03-01 (v1.1)**
 - Jaarlijks op de datum van dit document (uiterlijk 2027-03-01)

@@ -10,6 +10,7 @@ import { Select } from "@/components/ui/select";
 import { useDomainQuery } from "@/hooks";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
+import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
 
 interface UitvaartData {
   voorkeurType: string;
@@ -76,6 +77,7 @@ export default function UitvaartWizardPage() {
 
   // Load existing data with React Query
   const { data: existingData, isLoading: loading } = useDomainQuery<UitvaartData | null>("uitvaart");
+  const [confirmCompleteOpen, setConfirmCompleteOpen] = useState(false);
 
   // Populate form when data loads
   useEffect(() => {
@@ -504,7 +506,9 @@ export default function UitvaartWizardPage() {
     },
   ];
 
-  const handleComplete = async () => {
+  const handleComplete = () => setConfirmCompleteOpen(true);
+
+  const executeComplete = async () => {
     await api.put("/api/uitvaart", {
       ...form,
       heeftUitvaartVerzekering: form.heeftUitvaartVerzekering,
@@ -540,11 +544,20 @@ export default function UitvaartWizardPage() {
   if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
-    <WizardShell
-      titel={t("titel")}
-      stappen={stappen}
-      onComplete={handleComplete}
-      onCancel={() => router.push("/uitvaart")}
-    />
+    <>
+      <WizardShell
+        titel={t("titel")}
+        stappen={stappen}
+        onComplete={handleComplete}
+        onCancel={() => router.push("/uitvaart")}
+      />
+      <ConfirmJuridischDialog
+        open={confirmCompleteOpen}
+        onOpenChange={setConfirmCompleteOpen}
+        title={t("bevestigenTitel")}
+        description={t("bevestigenBeschrijving")}
+        onConfirm={executeComplete}
+      />
+    </>
   );
 }

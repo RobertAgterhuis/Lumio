@@ -9,6 +9,7 @@ import { useDomainQuery } from "@/hooks";
 import { useAuthStore } from "@/stores/authStore";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
+import posthog from "posthog-js";
 import {
   User,
   Phone,
@@ -16,6 +17,7 @@ import {
   Church,
   Download,
   Users,
+  KeyRound,
   ChevronRight,
   Check,
   Sparkles,
@@ -35,6 +37,8 @@ const stappen: OnboardingStap[] = [
   { id: "testament", stapKey: "testament", icon: ScrollText, href: "/testament" },
   { id: "uitvaart", stapKey: "uitvaart", icon: Church, href: "/uitvaart" },
   { id: "erfgenamen", stapKey: "erfgenamen", icon: Users, href: "/erfgenamen" },
+  // SP-S2-001: Shamir Secret Sharing stap — verdeel sleutels met erfgenamen
+  { id: "sleutels", stapKey: "sleutels", icon: KeyRound, href: "/erfgenamen" },
   { id: "backup", stapKey: "backup", icon: Download, href: "/instellingen" },
 ];
 
@@ -66,6 +70,13 @@ export function OnboardingWizard() {
     testament: !!testament?.id,
     uitvaart: !!uitvaart?.id,
     erfgenamen: Array.isArray(erfgenamen) && erfgenamen.length > 0,
+    // SP-S2-001: Shamir-sleutels zijn verdeeld wanneer alle erfgenamen (min. 2) een share hebben ontvangen
+    sleutels:
+      Array.isArray(erfgenamen) &&
+      erfgenamen.length >= 2 &&
+      (erfgenamen as Array<{ heeftShareOntvangen?: boolean }>).every(
+        (e) => e.heeftShareOntvangen === true
+      ),
     backup: !statusMeldingen?.meldingen?.some((m) => m.categorie === "backup"),
   }), [eigenaar, noodcontacten, testament, uitvaart, erfgenamen, statusMeldingen]);
 
@@ -90,8 +101,16 @@ export function OnboardingWizard() {
 
     const allDone = stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus]);
     if (allDone) {
+      const wasAlreadyCompleted = localStorage.getItem(storageKey) === "true";
       localStorage.setItem(storageKey, "true");
       void api.post("/api/eigenaar/onboarding-voltooid").catch(() => void 0);
+      if (!wasAlreadyCompleted) {
+        // SP-5-002: fire once when all onboarding steps are newly completed — GUARD-006 compliant
+        posthog.capture("lumio_activated", {
+          stappen_voltooid: 7,
+          activatie_reden: "onboarding_wizard_compleet",
+        });
+      }
       setVisible(false);
     } else {
       const completed = localStorage.getItem(storageKey);
@@ -113,8 +132,16 @@ export function OnboardingWizard() {
     dismissForSession();
     // Permanently complete only when all steps are truly done
     if (stappen.every((s) => stapStatus[s.id as keyof typeof stapStatus])) {
+      const wasAlreadyCompleted = localStorage.getItem(storageKey) === "true";
       localStorage.setItem(storageKey, "true");
       void api.post("/api/eigenaar/onboarding-voltooid").catch(() => void 0);
+      if (!wasAlreadyCompleted) {
+        // SP-5-002: fire once on manual close when all steps done — GUARD-006 compliant
+        posthog.capture("lumio_activated", {
+          stappen_voltooid: 7,
+          activatie_reden: "onboarding_wizard_compleet",
+        });
+      }
     }
     setVisible(false);
   };

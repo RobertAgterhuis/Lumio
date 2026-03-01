@@ -12,9 +12,9 @@ export default function WkrUitleg() {
           Lumio past hier netjes in als personeelsvoorziening."
         />
 
-        <div className="space-y-6 text-[var(--color-neutral-600)] leading-relaxed">
-          <div className="bg-[var(--color-primary-50)] rounded-xl p-6 border-l-4 border-[var(--color-primary-700)]">
-            <h3 className="font-semibold text-[var(--color-neutral-900)] mb-2">
+        <div className="space-y-6 text-neutral-600 leading-relaxed">
+          <div className="bg-(--color-primary-50) rounded-xl p-6 border-l-4 border-primary-700">
+            <h3 className="font-semibold text-(--color-neutral-900) mb-2">
               Vrije ruimte 2026
             </h3>
             <p>

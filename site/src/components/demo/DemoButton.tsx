@@ -20,10 +20,10 @@ export default function DemoButton({
   const [open, setOpen] = useState(false);
 
   const baseNav =
-    "text-sm font-semibold text-[var(--color-primary-700)] bg-[var(--color-primary-50)] hover:bg-[var(--color-primary-100)] px-3 py-1 rounded-full transition-colors";
+    "text-sm font-semibold text-primary-700 bg-(--color-primary-50) hover:bg-primary-100 px-3 py-1 rounded-full transition-colors";
 
   const baseHero =
-    "inline-flex items-center gap-2 rounded-xl bg-[var(--color-primary-700)] px-6 py-3 text-base font-semibold text-white hover:bg-[var(--color-primary-800)] transition-colors shadow-lg";
+    "inline-flex items-center gap-2 rounded-xl bg-primary-700 px-6 py-3 text-base font-semibold text-white hover:bg-primary-800 transition-colors shadow-lg";
 
   return (
     <>

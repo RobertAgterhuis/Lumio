@@ -3,6 +3,7 @@ import AudienceSplit from "@/components/sections/AudienceSplit";
 import WatIsLumio from "@/components/sections/WatIsLumio";
 import ProductFeatureGrid from "@/components/sections/ProductFeatureGrid";
 import PrivacyBlok from "@/components/sections/PrivacyBlok";
+import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import CtaBanner from "@/components/sections/CtaBanner";
 import type { Metadata } from "next";
 
@@ -23,6 +24,7 @@ export default function HomePage() {
       <WatIsLumio />
       <ProductFeatureGrid />
       <PrivacyBlok />
+      <TestimonialsSection />
       <CtaBanner />
     </>
   );

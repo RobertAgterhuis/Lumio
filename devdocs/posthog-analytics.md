@@ -84,6 +84,6 @@ Bij het bouwen van de Electron-distributie via `tools/build.ps1`:
 ## DPO-toets vereiste
 
 Zie `devdocs/dpia-bijzondere-categorieen.md`. Vóór productie-activering moet:
-- [ ] DPO DPIA goedkering ontvangen
+- [x] DPO DPIA goedkeuring ontvangen — **✅ Goedgekeurd 2026-03-01** (COMPLIANCE_RISK-GROWTH-001 GESLOTEN)
 - [ ] Privacy policy bijgewerkt met analytics disclosure
-- [ ] Opt-out mechanisme geïmplementeerd (of expliciete toestemming)
+- [ ] Opt-out mechanisme geïmplementeerd (of expliciete toestemming) — `respect_dnt: true` actief; UI opt-out nog te documenteren

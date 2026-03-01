@@ -148,6 +148,8 @@ De beveiligingssectie toont de status van:
 
 Onderaan de instellingen kunt u uw account permanent verwijderen. Dit vereist wachtwoordbevestiging en een extra bevestigingsdialoog.
 
+> ⚠️ **Belangrijk bij deïnstallatie:** De Lumio-database wordt **niet automatisch verwijderd** wanneer u de applicatie deïnstalleert. Als u uw gegevens volledig wilt wissen, verwijder dan handmatig de map **`data/`** die zich bevindt in dezelfde map als het Lumio-programma (naast `Lumio.exe` op Windows of `Lumio.app` op macOS). Deze map bevat uw versleutelde database en alle uploads.
+
 ---
 
 ## Videoboodschappen

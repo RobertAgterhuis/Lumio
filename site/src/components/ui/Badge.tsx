@@ -4,9 +4,9 @@ interface BadgeProps {
 }
 
 const variants = {
-  teal:    "bg-[var(--color-primary-100)] text-[var(--color-primary-700)]",
-  sage:    "bg-[var(--color-sage-100)]    text-[var(--color-sage-600)]",
-  neutral: "bg-[var(--color-neutral-100)] text-[var(--color-neutral-600)]",
+  teal:    "bg-primary-100 text-primary-700",
+  sage:    "bg-sage-100    text-sage-600",
+  neutral: "bg-neutral-100 text-neutral-600",
 };
 
 export default function Badge({ children, variant = "teal" }: BadgeProps) {

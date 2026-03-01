@@ -9,11 +9,11 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-primary-100)] bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-primary-100 bg-white/95 backdrop-blur-sm">
       <Container>
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-[var(--color-primary-700)] font-display text-2xl font-normal tracking-tight">
+          <Link href="/" className="flex items-center gap-2 text-primary-700 font-display text-2xl font-normal tracking-tight">
             <img src="/logo.svg" alt="" width={28} height={28} className="w-7 h-7" />
             Lumio
           </Link>
@@ -24,7 +24,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-[var(--color-neutral-600)] hover:text-[var(--color-primary-700)] transition-colors"
+                className="text-sm font-medium text-neutral-600 hover:text-primary-700 transition-colors"
               >
                 {link.label}
               </Link>
@@ -35,7 +35,7 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/prijzen"
-              className="rounded-[var(--radius-sm)] bg-[var(--color-primary-700)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-600)] transition-colors"
+              className="rounded-sm bg-primary-700 px-4 py-2 text-sm font-semibold text-white hover:bg-(--color-primary-600) transition-colors"
             >
               Aan de slag
             </Link>
@@ -43,7 +43,7 @@ export default function Header() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 text-[var(--color-neutral-600)]"
+            className="md:hidden p-2 text-neutral-600"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? "Menu sluiten" : "Menu openen"}
           >
@@ -61,13 +61,13 @@ export default function Header() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-[var(--color-primary-100)] py-4">
+          <div className="md:hidden border-t border-primary-100 py-4">
             <nav className="flex flex-col gap-3">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium py-1 text-[var(--color-neutral-700)] hover:text-[var(--color-primary-700)] transition-colors"
+                  className="text-sm font-medium py-1 text-neutral-700 hover:text-primary-700 transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
@@ -75,7 +75,7 @@ export default function Header() {
               ))}
               <Link
                 href="/prijzen"
-                className="mt-2 inline-flex justify-center rounded-[var(--radius-sm)] bg-[var(--color-primary-700)] px-4 py-2 text-sm font-semibold text-white"
+                className="mt-2 inline-flex justify-center rounded-sm bg-primary-700 px-4 py-2 text-sm font-semibold text-white"
                 onClick={() => setMobileOpen(false)}
               >
                 Aan de slag

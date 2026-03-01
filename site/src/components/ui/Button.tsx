@@ -16,11 +16,11 @@ interface ButtonProps {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-[var(--color-primary-700)] text-white hover:bg-[var(--color-primary-600)] shadow-[var(--shadow-1)]",
+    "bg-primary-700 text-white hover:bg-(--color-primary-600) shadow-(--shadow-1)",
   secondary:
-    "border border-[var(--color-primary-700)] text-[var(--color-primary-700)] hover:bg-[var(--color-primary-50)]",
+    "border border-primary-700 text-primary-700 hover:bg-(--color-primary-50)",
   ghost:
-    "text-[var(--color-primary-700)] hover:bg-[var(--color-primary-50)]",
+    "text-primary-700 hover:bg-(--color-primary-50)",
 };
 
 const sizeClasses: Record<Size, string> = {
@@ -39,7 +39,7 @@ export default function Button({
   onClick,
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-[var(--radius-sm)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary-500)] focus-visible:ring-offset-2";
+    "inline-flex items-center justify-center gap-2 rounded-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2";
 
   const cls = `${base} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 

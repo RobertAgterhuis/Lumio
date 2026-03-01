@@ -21,8 +21,8 @@ export default function SchaalTabel() {
         />
 
         {/* Calculator */}
-        <div className="bg-[var(--color-primary-50)] rounded-2xl p-8 border border-[var(--color-primary-100)] mb-12 max-w-2xl">
-          <label className="block text-sm font-semibold text-[var(--color-neutral-900)] mb-2">
+        <div className="bg-(--color-primary-50) rounded-2xl p-8 border border-primary-100 mb-12 max-w-2xl">
+          <label className="block text-sm font-semibold text-(--color-neutral-900) mb-2">
             Totale loonsom (exclusief btw)
           </label>
           <input
@@ -32,26 +32,26 @@ export default function SchaalTabel() {
             step={50000}
             value={loonsom}
             onChange={(e) => setLoonsom(Number(e.target.value))}
-            className="w-full accent-[var(--color-primary-700)] mb-3"
+            className="w-full accent-primary-700 mb-3"
           />
-          <div className="flex justify-between text-sm text-[var(--color-neutral-600)] mb-6">
+          <div className="flex justify-between text-sm text-neutral-600 mb-6">
             <span>€100.000</span>
-            <span className="font-semibold text-[var(--color-neutral-900)]">
+            <span className="font-semibold text-(--color-neutral-900)">
               €{loonsom.toLocaleString("nl-NL")}
             </span>
             <span>€5.000.000</span>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-5 border border-[var(--color-primary-100)] text-center">
-              <p className="text-xs text-[var(--color-neutral-600)] uppercase tracking-widest mb-1">WKR vrije ruimte</p>
-              <p className="font-display text-2xl text-[var(--color-primary-700)]">
+            <div className="bg-white rounded-xl p-5 border border-primary-100 text-center">
+              <p className="text-xs text-neutral-600 uppercase tracking-widest mb-1">WKR vrije ruimte</p>
+              <p className="font-display text-2xl text-primary-700">
                 €{Math.round(wkrRuimte).toLocaleString("nl-NL")}
               </p>
             </div>
-            <div className="bg-white rounded-xl p-5 border border-[var(--color-primary-100)] text-center">
-              <p className="text-xs text-[var(--color-neutral-600)] uppercase tracking-widest mb-1">Max. Lumio licenties</p>
-              <p className="font-display text-2xl text-[var(--color-primary-700)]">
+            <div className="bg-white rounded-xl p-5 border border-primary-100 text-center">
+              <p className="text-xs text-neutral-600 uppercase tracking-widest mb-1">Max. Lumio licenties</p>
+              <p className="font-display text-2xl text-primary-700">
                 {maxUsers}
               </p>
             </div>
@@ -59,7 +59,7 @@ export default function SchaalTabel() {
         </div>
 
         {/* Static table explanation */}
-        <p className="text-sm text-[var(--color-neutral-600)]">
+        <p className="text-sm text-neutral-600">
           * Berekening op basis van WKR 2026: 2,00% over eerste €400.000 + 1,18% over het meerdere.
           Raadpleeg uw fiscaal adviseur voor uw specifieke situatie.
         </p>

@@ -18,7 +18,7 @@ export default function PrijzenPage() {
   return (
     <>
       {/* Page hero */}
-      <section className="py-16 bg-[var(--color-primary-700)] text-white">
+      <section className="py-16 bg-primary-700 text-white">
         <Container>
           <div className="max-w-2xl">
             <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold tracking-wide mb-5">
@@ -56,13 +56,13 @@ export default function PrijzenPage() {
       <section id="werkgevers" className="py-20 bg-white">
         <Container>
           <div className="text-center mb-10">
-            <p className="text-sm font-semibold text-[var(--color-primary-600)] uppercase tracking-widest mb-2">
+            <p className="text-sm font-semibold text-(--color-primary-600) uppercase tracking-widest mb-2">
               Voor werkgevers
             </p>
-            <h2 className="font-display text-3xl md:text-4xl text-[var(--color-neutral-900)] mb-3">
+            <h2 className="font-display text-3xl md:text-4xl text-(--color-neutral-900) mb-3">
               Licenties voor uw organisatie
             </h2>
-            <p className="text-[var(--color-neutral-600)] max-w-xl mx-auto">
+            <p className="text-neutral-600 max-w-xl mx-auto">
               €125 per medewerker, eenmalig. WKR-passend als personeelsvoorziening.
               Kies het pakket dat bij uw organisatie past.
             </p>
@@ -72,9 +72,9 @@ export default function PrijzenPage() {
               <PricingCard key={users} users={users} highlighted={i === 1} />
             ))}
           </div>
-          <p className="text-center text-sm text-[var(--color-neutral-600)] mt-8">
+          <p className="text-center text-sm text-neutral-600 mt-8">
             Meer dan 100 medewerkers?{" "}
-            <a href="/contact" className="text-[var(--color-primary-700)] font-semibold hover:underline">
+            <a href="/contact" className="text-primary-700 font-semibold hover:underline">
               Neem contact op voor een maatwerkofferte
             </a>
           </p>

@@ -1,3 +1,6 @@
+// DO-2-003: crash handler — must be first import so uncaughtException is captured
+// from the very start of the process lifecycle.
+import "./crash";
 import { app, globalShortcut, ipcMain, Menu, nativeTheme, session, shell } from "electron";
 import * as path from "path";
 import { startBackend, stopBackend } from "./sidecar";

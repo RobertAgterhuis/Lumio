@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function DemoPage() {
   return (
-    <div className="py-10 bg-[var(--color-background)]">
+    <div className="py-10 bg-(--color-background)">
       <DemoShell />
     </div>
   );

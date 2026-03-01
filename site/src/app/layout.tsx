@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { DM_Serif_Display } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -66,6 +67,12 @@ export default function RootLayout({
         <Header />
         <main id="main-content" tabIndex={-1} className="flex-1 outline-none">{children}</main>
         <Footer />
+        <Script
+          defer
+          data-domain="lumio-legacy.nl"
+          src="https://plausible.io/js/script.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0",
+  "session_id": "2026-03-01T00-00-00Z",
+  "cycle_type": "FULL_AUDIT",
+  "feature_name": null,
+  "initiated_at": "2026-03-01T00:00:00Z",
+  "last_updated": "2026-03-01T12:00:00Z",
+
+  "status": "FASE_5_SPRINT_1_COMPLETE__AWAITING_SPRINT_2",
+
+  "current_phase": "FASE-5",
+  "current_agent": null,
+  "current_sprint": "sprint-1",
+  "sprint_1_status": "COMPLETE (ACC-1 stories — zie addendum sprint-1-plan.md) | SP-CRO1-001/SEC-2-001 BLOCKED_EXTERN (PO actie vereist)",
+  "sprint_2_pending_story": "Color token contrast corrections (SP-ACC1-007 findings: warning/danger/success/muted-foreground)",
+
+  "completed_phases": ["ONBOARDING", "FASE-1", "FASE-2", "FASE-3", "FASE-4", "SYNTHESIS"],
+  "completed_agents": ["25-onboarding-agent", "01-business-analyst", "02-domain-expert", "03-sales-strategist", "04-financial-analyst", "18-critic-agent", "19-risk-agent", "05-software-architect", "06-senior-developer", "07-devops-engineer", "08-security-architect", "09-data-architect", "10-ux-researcher", "11-ux-designer", "12-ui-designer", "13-accessibility-specialist", "14-brand-strategist", "15-growth-marketer", "16-cro-specialist", "17-synthesis-agent"],
+
+  "phase_outputs": {
+    "onboarding": "docs/onboarding/onboarding-output.md",
+    "fase-1": {
+      "01": "docs/fase-1/01-business-analyst.md",
+      "02": "docs/fase-1/02-domain-expert.md",
+      "03": "docs/fase-1/03-sales-strategist.md",
+      "04": "docs/fase-1/04-financial-analyst.md",
+      "critic_risk": "docs/fase-1/critic-risk-validatie.md"
+    },
+    "fase-2": {
+      "05": "docs/fase-2/05-software-architect.md",
+      "06": "docs/fase-2/06-senior-developer.md",
+      "07": "docs/fase-2/07-devops-engineer.md",
+      "08": "docs/fase-2/08-security-architect.md",
+      "09": "docs/fase-2/09-data-architect.md",
+      "critic_risk": "docs/fase-2/critic-risk-validatie.md"
+    },
+    "fase-3": {
+      "10": "docs/fase-3/10-ux-researcher.md",
+      "11": "docs/fase-3/11-ux-designer.md",
+      "12": "docs/fase-3/12-ui-designer.md",
+      "13": "docs/fase-3/13-accessibility-specialist.md",
+      "critic_risk": "docs/fase-3/critic-risk-validatie.md"
+    },
+    "fase-4": {
+      "14": "docs/fase-4/14-brand-strategist.md",
+      "15": "docs/fase-4/15-growth-marketer.md",
+      "16": "docs/fase-4/16-cro-specialist.md",
+      "critic_risk": "docs/fase-4/critic-risk-validatie.md"
+    },
+    "synthesis": "docs/synthese/eindrapport.md",
+    "sprintplan": "docs/fase-5/sprint-1/sprint-1-plan.md"
+  },
+
+  "sprint_backlog": {
+    "path": "docs/fase-5/sprint-1/sprint-1-plan.md",
+    "total_sprints": 1,
+    "sprint_statuses": {
+      "sprint-1": "COMPLETE — SP-ACC1-001/002/003/004/005/006 DONE, SP-ACC1-007 ANALYSIS_DONE, SP-CRO1-001/SEC-2-001 BLOCKED_EXTERN (deferred to PO)"
+    }
+  },
+
+  "po_decisions": [
+    {
+      "id": "PO-001",
+      "topic": "Betaalplatform",
+      "beslissing": "Odoo",
+      "toelichting": "Odoo eCommerce / Payment module voor €125 eenmalige licentieverkoop. EU VAT + AVG Art.13 conformiteit valideren in Odoo-configuratie.",
+      "datum": "2026-03-01",
+      "impacts": ["F4-001", "OI-007", "CRO-CRITICAL-001"]
+    },
+    {
+      "id": "PO-002",
+      "topic": "B2B-strategie",
+      "beslissing": "Optie A — Electron per device",
+      "toelichting": "Geen employer dashboard. B2B marketingtekst aanpassen: Lumio wordt per device geïnstalleerd; werkgever distribueert download-links aan medewerkers. Sprint BS-1 tekstwijziging + GUARD-BS-002.",
+      "datum": "2026-03-01",
+      "impacts": ["F4-003", "CRITICAL_MISALIGNMENT BS-002"]
+    }
+  ],
+
+  "open_human_escalations": [],
+
+  "insufficient_data_items": [
+    {
+      "id": "ID-001",
+      "description": "Eerdere auditresultaten / re-evaluatierapporten",
+      "reported_by": "25-onboarding-agent",
+      "status": "OPEN"
+    },
+    {
+      "id": "ID-002",
+      "description": "KPI-definities niet aangetroffen als apart document",
+      "reported_by": "25-onboarding-agent",
+      "status": "OPEN"
+    },
+    {
+      "id": "ID-003",
+      "description": "Brand guidelines (standalone document) niet aangetroffen",
+      "reported_by": "25-onboarding-agent",
+      "status": "OPEN"
+    },
+    {
+      "id": "ID-004",
+      "description": "EN-documentatie (technische manual + user manual) inhoud niet geverifieerd",
+      "reported_by": "25-onboarding-agent",
+      "status": "OPEN"
+    },
+    {
+      "id": "ID-005",
+      "description": "Frontend-routes voor Shamir, Notities, Zoeken, Werkgever, Afhandeling, Toewijzingen niet bevestigd",
+      "reported_by": "25-onboarding-agent",
+      "status": "OPEN"
+    },
+    {
+      "id": "ID-006",
+      "description": "Commercieel model / prijsstrategie niet aangetroffen",
+      "reported_by": "25-onboarding-agent",
+      "status": "OPEN"
+    },
+    {
+      "id": "ID-007",
+      "description": "PostHog analytics consent-scope en configuratie te reviewen",
+      "reported_by": "25-onboarding-agent",
+      "status": "OPEN"
+    }
+  ],
+
+  "out_of_scope_items": [
+    "SQLCipher-encrypted SQLite beveiligingsreview → 08-security-architect",
+    "Shamir Secret Sharing UX/security-afweging → 08-security-architect + 11-ux-designer",
+    "Commercieel model whitelabel-route → 01-business-analyst",
+    "PostHog analytics consent → 08-security-architect + 15-growth-marketer",
+    "Actieve branch Feature/UI (niet main) → 05-software-architect"
+  ]
+}

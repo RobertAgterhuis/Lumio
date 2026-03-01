@@ -26,7 +26,7 @@ export default function DemoModal({ onClose }: Props) {
   return (
     /* Backdrop — fixed, full-screen, scrollable */
     <div
-      className="fixed inset-0 z-[200] overflow-y-auto bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-200 overflow-y-auto bg-black/60 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       {/* Inner wrapper — min-h-full so clicking empty space still triggers onClose */}

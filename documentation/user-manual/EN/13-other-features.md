@@ -162,6 +162,8 @@ The security card shows the active security measures:
 
 At the bottom of Settings you can **permanently delete your account**. All data is irrecoverably removed. This requires password confirmation and an explicit confirmation dialog.
 
+> ⚠️ **Important when uninstalling:** The Lumio database is **not automatically deleted** when you uninstall the application. If you want to completely erase your data, manually delete the **`data/`** folder located in the same directory as the Lumio program (next to `Lumio.exe` on Windows or `Lumio.app` on macOS). This folder contains your encrypted database and all uploads.
+
 ---
 
 ## Video Messages

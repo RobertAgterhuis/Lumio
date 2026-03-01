@@ -19,6 +19,7 @@
     "generate-api": "openapi-ts",
     "test": "vitest run --project unit",
     "test:coverage": "vitest run --project unit --coverage",
+    "test:storybook": "vitest run --project storybook",
     "test:watch": "vitest --project unit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

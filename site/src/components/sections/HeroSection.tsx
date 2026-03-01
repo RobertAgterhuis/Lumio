@@ -2,9 +2,9 @@ import Button from "@/components/ui/Button";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[var(--color-primary-700)] text-white">
+    <section className="relative overflow-hidden bg-primary-700 text-white">
       {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1a2e33] via-[var(--color-primary-700)] to-[var(--color-primary-500)] opacity-80" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary-900 via-primary-700 to-primary-500 opacity-80" />
 
       <div className="relative mx-auto max-w-6xl px-6 py-24 md:py-32 lg:py-40">
         <div className="max-w-3xl">
@@ -23,13 +23,18 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button href="#voor-wie" size="lg">
-              Bekijk voor wie Lumio is
+            <Button href="/prijzen#particulier" size="lg">
+              Koop nu &mdash; &euro;125
             </Button>
-            <Button href="/product" variant="secondary" size="lg">
-              Alle functies
+            <Button href="#voor-wie" variant="secondary" size="lg">
+              Meer over Lumio
             </Button>
           </div>
+
+          {/* Trust strip */}
+          <p className="mt-6 text-sm text-white/60">
+            Eenmalig &middot; geen abonnement &middot; 100% offline &middot; Windows &amp; macOS
+          </p>
         </div>
       </div>
 

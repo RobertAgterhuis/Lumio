@@ -9,10 +9,10 @@ interface CardProps {
 export default function Card({ children, className = "", highlighted = false }: CardProps) {
   return (
     <div
-      className={`rounded-[var(--radius-md)] p-6 ${
+      className={`rounded-md p-6 ${
         highlighted
-          ? "bg-[var(--color-primary-700)] text-white shadow-[var(--shadow-3)]"
-          : "bg-white border border-[var(--color-neutral-100)] shadow-[var(--shadow-1)] hover:shadow-[var(--shadow-2)] transition-shadow"
+          ? "bg-primary-700 text-white shadow-(--shadow-3)"
+          : "bg-white border border-neutral-100 shadow-(--shadow-1) hover:shadow-(--shadow-2) transition-shadow"
       } ${className}`}
     >
       {children}
