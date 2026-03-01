@@ -7,6 +7,7 @@ namespace Lumio.Api.Services.Security;
 public class MasterPasswordService : IMasterPasswordService
 {
     private readonly IProfileService _profileService;
+    private readonly ISqlCipherKdfService _kdfService;
     // Stored as UTF-8 bytes so the buffer can be zeroed on Lock() via ZeroMemory.
     // Never expose as string — use UsePassword() for scoped access.
     private byte[]? _currentPasswordBytes;
@@ -19,9 +20,10 @@ public class MasterPasswordService : IMasterPasswordService
     public bool IsReadOnly => _isReadOnly;
     public string? ActiveDbPath => _profileService.ActiveDbPath;
 
-    public MasterPasswordService(IProfileService profileService)
+    public MasterPasswordService(IProfileService profileService, ISqlCipherKdfService kdfService)
     {
         _profileService = profileService;
+        _kdfService = kdfService;
     }
 
     public void UsePassword(PasswordConsumer use)
@@ -51,7 +53,22 @@ public class MasterPasswordService : IMasterPasswordService
             cmd.CommandText = "SELECT count(*) FROM sqlite_master;";
             await cmd.ExecuteScalarAsync();
             _currentPasswordBytes = Encoding.UTF8.GetBytes(password);
-            return true;
+
+        // GAP-SEC-01: Ensure the database uses target KDF (PBKDF2-SHA512 ≥310 000 iterations).
+        // Runs after every successful unlock — is a no-op when the DB already meets the target.
+        // `dbPath` is already declared (non-null) above this try-block.
+        try
+        {
+            await _kdfService.EnsureTargetKdfAsync(dbPath, password);
+        }
+        catch (Exception kdfEx)
+        {
+            // Log and continue — KDF migration failure must never prevent unlock.
+            // The database is still accessible; migration will be retried on next unlock.
+            System.Diagnostics.Debug.WriteLine($"KDF migration warning: {kdfEx.Message}");
+        }
+
+        return true;
         }
         catch
         {

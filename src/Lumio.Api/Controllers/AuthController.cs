@@ -17,19 +17,22 @@ public class AuthController : ControllerBase
     private readonly IAuditService _audit;
     private readonly LimietenOptions _limieten;
     private readonly IWebHostEnvironment _env;
+    private readonly IBruteForceProtectionService _bruteForce;
 
     public AuthController(
         IMasterPasswordService passwordService,
         IProfileService profileService,
         IAuditService audit,
         IOptions<LimietenOptions> limieten,
-        IWebHostEnvironment env)
+        IWebHostEnvironment env,
+        IBruteForceProtectionService bruteForce)
     {
         _passwordService = passwordService;
         _profileService = profileService;
         _audit = audit;
         _limieten = limieten.Value;
         _env = env;
+        _bruteForce = bruteForce;
     }
 
     [HttpGet("status")]
@@ -66,9 +69,29 @@ public class AuthController : ControllerBase
         if (_passwordService.IsUnlocked)
             return Ok(new { bericht = "Database is al ontgrendeld." });
 
+        // GAP-SEC-02: Brute-force bescherming — geef 429 terug als het account geblokkeerd is.
+        var profileId = _profileService.ActiveProfile.Id.ToString();
+        if (_bruteForce.IsLocked(profileId))
+        {
+            var remaining = _bruteForce.GetRemainingLockout(profileId);
+            return StatusCode(
+                StatusCodes.Status429TooManyRequests,
+                new
+                {
+                    error = "Te veel mislukte pogingen. Probeer het later opnieuw.",
+                    lockoutRemainingSeconds = (int)(remaining?.TotalSeconds ?? 0)
+                });
+        }
+
         var success = await _passwordService.UnlockAsync(request.Wachtwoord);
         if (!success)
+        {
+            _bruteForce.RecordFailedAttempt(profileId);
             return Unauthorized(new { error = "Ongeldig wachtwoord." });
+        }
+
+        // Succesvolle ontgrendeling — reset pogingenteller.
+        _bruteForce.RecordSuccess(profileId);
 
         // In development: apply any pending EF migrations automatically.
         // In production: the schema is managed by SQL scripts — no auto-migration.

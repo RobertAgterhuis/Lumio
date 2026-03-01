@@ -1,0 +1,109 @@
+name: Lumio Board Sync + Secret Scan
+
+on:
+  push:
+    branches: [main, develop, "Feature/**", "feature/**"]
+  pull_request:
+    branches: [main, develop]
+  issues:
+    types: [opened, edited, closed, reopened, labeled, unlabeled, assigned]
+  workflow_dispatch:
+
+env:
+  GITHUB_PROJECT_NAME: "Lumio Workitems"
+
+jobs:
+  # ── Job 1: TruffleHog Secret Scan ────────────────────────────────────────────
+  secret-scan:
+    name: Secret Scan (TruffleHog)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: >
+            --debug
+            --only-verified
+            --fail
+        continue-on-error: false
+
+      - name: Upload TruffleHog SARIF (if available)
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trufflehog.sarif
+        continue-on-error: true
+
+  # ── Job 2: Board Sync ─────────────────────────────────────────────────────────
+  sync-board:
+    name: Sync GitHub Project Board
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      issues: write
+      repository-projects: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add issue to project board
+        id: add-to-project
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/${{ github.repository_owner }}/projects/5
+          github-token: ${{ secrets.BOARD_SYNC_TOKEN }}
+
+      - name: Update project status on close
+        if: github.event.action == 'closed'
+        uses: titoportas/update-project-fields@v0.1.0
+        with:
+          project-url: https://github.com/orgs/${{ github.repository_owner }}/projects/5
+          github-token: ${{ secrets.BOARD_SYNC_TOKEN }}
+          item-id: ${{ steps.add-to-project.outputs.item-id }}
+          field-keys: Status
+          field-values: Done
+
+  # ── Job 3: Sprint Label Enforcement ──────────────────────────────────────────
+  validate-issue-labels:
+    name: Validate Issue Labels
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    permissions:
+      issues: write
+    steps:
+      - name: Check for sprint label
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(l => l.name);
+            const hasSprintLabel = labels.some(l => l.startsWith('sprint:'));
+            const hasTypeLabel = labels.some(l => l.startsWith('type:'));
+            const hasPriorityLabel = labels.some(l => l.startsWith('priority:'));
+
+            const missing = [];
+            if (!hasSprintLabel) missing.push('sprint:SP-N');
+            if (!hasTypeLabel) missing.push('type:[code|infra|design|content|analysis]');
+            if (!hasPriorityLabel) missing.push('priority:[critical|high|medium|low]');
+
+            if (missing.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `⚠️ **Label Validation** — Dit issue mist verplichte labels:\n\n${missing.map(l => `- \`${l}\``).join('\n')}\n\nVoeg de ontbrekende labels toe conform het [Lumio Workitems format](docs/github-sync/github-sync-rapport.md).`
+              });
+            }
