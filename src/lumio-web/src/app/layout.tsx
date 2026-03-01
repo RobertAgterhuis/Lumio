@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { getLocale, getMessages } from "next-intl/server";
 import { LocaleProvider } from "@/components/providers/LocaleProvider";
+import { PostHogProvider } from "@/components/providers/PostHogProvider";
 import { ElectronThemeSync } from "@/components/electron/ElectronThemeSync";
 import "./globals.css";
 
@@ -33,7 +34,7 @@ export default async function RootLayout({
       <head>
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://app.posthog.com https://us.i.posthog.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
         />
         <script
           dangerouslySetInnerHTML={{
@@ -52,10 +53,12 @@ export default async function RootLayout({
         {/* Sync OS dark/light-mode changes into the renderer (Electron only, no-op in browser) */}
         <ElectronThemeSync />
         <LocaleProvider defaultLocale={locale} defaultMessages={messages as Record<string, unknown>}>
-          {/* id="main-content" is the skip-nav target (SC 2.4.1); tabIndex={-1} allows programmatic focus */}
-          <div id="main-content" tabIndex={-1} className="outline-none">
-            {children}
-          </div>
+          <PostHogProvider>
+            {/* id="main-content" is the skip-nav target (SC 2.4.1); tabIndex={-1} allows programmatic focus */}
+            <div id="main-content" tabIndex={-1} className="outline-none">
+              {children}
+            </div>
+          </PostHogProvider>
         </LocaleProvider>
       </body>
     </html>

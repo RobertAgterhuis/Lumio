@@ -218,8 +218,41 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release -warnaserror
 
-      - name: Test
-        run: dotnet test --no-build --configuration Release --logger "console;verbosity=minimal"
+      - name: Test (with coverage — SP-6-008)
+        run: dotnet test --no-build --configuration Release --logger "console;verbosity=minimal" --collect:"XPlat Code Coverage" --results-directory /tmp/coverage
+
+      - name: Coverage summary + ≥50% gate (SP-6-008 / GUARD-008)
+        shell: bash
+        run: |
+          # Install report generator for human-readable summary
+          dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.3.11 2>/dev/null || true
+          # Find coverage XML
+          COVERAGE_XML=$(find /tmp/coverage -name "coverage.cobertura.xml" | head -1)
+          if [ -z "$COVERAGE_XML" ]; then
+            echo "::warning::No coverage.cobertura.xml found — skipping coverage gate."
+            exit 0
+          fi
+          # Parse line-rate from Cobertura XML (attribute on root <coverage> element)
+          LINE_RATE=$(grep -oP '(?<=line-rate=")[0-9.]+' "$COVERAGE_XML" | head -1)
+          PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.1f")
+          echo "API line coverage: ${PCT}%"
+          echo "::notice::API test coverage (line-rate): ${PCT}% — target ≥50%"
+          # Enforce 50% minimum
+          THRESHOLD=50
+          INT_PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.0f")
+          if [ "$INT_PCT" -lt "$THRESHOLD" ]; then
+            echo "::error::GUARD-008: API coverage ${PCT}% is below the ≥${THRESHOLD}% minimum."
+            exit 1
+          fi
+          echo "✓ GUARD-008: API coverage ${PCT}% ≥ ${THRESHOLD}% threshold."
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage
+          path: /tmp/coverage
+          retention-days: 14
 
       - name: GUARD-002 — no plaintext CurrentPassword in interface
         shell: bash

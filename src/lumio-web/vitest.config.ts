@@ -24,11 +24,13 @@ export default defineConfig({
       reporter: ['text', 'json', 'html', 'lcov'],
       reportsDirectory: './coverage',
       // Enforce minimum coverage thresholds (logic layer: lib + stores only)
+      // SP-6-007: ratcheted to measured actuals (2026-03-01): stmts 66%, branches 69%, funcs 61%, lines 66%
+      // Target is 70% — reaching it requires additional unit tests in src/lib & src/stores.
       thresholds: {
-        statements: 60,
-        branches: 58,
-        functions: 55,
-        lines: 60,
+        statements: 65,
+        branches: 68,
+        functions: 60,
+        lines: 65,
       },
       // Scope coverage to pure-logic layers — UI components excluded
       include: ['src/lib/**/*.{ts,tsx}', 'src/stores/**/*.{ts,tsx}'],

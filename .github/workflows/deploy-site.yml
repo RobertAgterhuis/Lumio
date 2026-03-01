@@ -1,0 +1,70 @@
+# SP-6-005 — Website deployment (GitHub Pages)
+# Deploys the marketing site (site/) to GitHub Pages on every push to main.
+# The site is configured as a static export (output: "export" in next.config.ts),
+# so the build output in site/out/ is served directly by Pages.
+#
+# PREREQUISITES (one-time repo setup):
+#   Settings → Pages → Source: "GitHub Actions"
+#
+# LIVE URL (after first deploy):
+#   https://<org>.github.io/<repo>/   (custom domain: https://www.lumio.nl)
+#   Configure custom domain in Settings → Pages → Custom domain → "www.lumio.nl"
+#   and ensure a CNAME DNS record: www → <org>.github.io
+
+name: Deploy marketing site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/deploy-site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (static export)
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/out
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

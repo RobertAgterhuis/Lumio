@@ -91,6 +91,9 @@ export default function UitvaartPage() {
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="uitvaart" />
           <SectieNotitie sectie="uitvaart" />
+          <p className="text-sm text-muted-foreground mt-2">
+            {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+          </p>
         </div>
         <Link href="/uitvaart/wizard">
           <Button>
