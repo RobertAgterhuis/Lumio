@@ -2,6 +2,7 @@ using Lumio.Api.Controllers;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Auth;
 using Lumio.Api.Rules.Configuration;
+using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -21,13 +22,15 @@ public sealed class AuthControllerTests
         FakeMasterPasswordService? pwd = null,
         FakeProfileService? profiles = null,
         SpyAuditService? audit = null,
-        string env = "Production") =>
+        string env = "Production",
+        IBruteForceProtectionService? bruteForce = null) =>
         new(
             pwd ?? new FakeMasterPasswordService(),
             profiles ?? new FakeProfileService(),
             audit ?? new SpyAuditService(),
             Options.Create(new LimietenOptions()),
-            new FakeWebHostEnvironment { EnvironmentName = env });
+            new FakeWebHostEnvironment { EnvironmentName = env },
+            bruteForce ?? new BruteForceProtectionService());
 
     private static Profile MakeProfile(string naam = "Test", string relatie = "Partner") =>
         new() { Id = Guid.NewGuid(), Naam = naam, Relatie = relatie };

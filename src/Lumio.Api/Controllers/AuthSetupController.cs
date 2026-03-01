@@ -20,15 +20,18 @@ public class AuthSetupController : ControllerBase
     private readonly IMasterPasswordService _passwordService;
     private readonly IProfileService _profileService;
     private readonly LimietenOptions _limieten;
+    private readonly ISqlCipherKdfService _kdfService;
 
     public AuthSetupController(
         IMasterPasswordService passwordService,
         IProfileService profileService,
-        IOptions<LimietenOptions> limieten)
+        IOptions<LimietenOptions> limieten,
+        ISqlCipherKdfService kdfService)
     {
         _passwordService = passwordService;
         _profileService = profileService;
         _limieten = limieten.Value;
+        _kdfService = kdfService;
     }
 
     [HttpPost("selecteer-profiel")]
@@ -80,6 +83,11 @@ public class AuthSetupController : ControllerBase
 
         // Ensure new columns are present even if migration had SQLite FK issues
         await MigratieDbHelper.EnsureSchuldKolommenAsync(db);
+
+        // GAP-SEC-01: KDF migratie — brengt de nieuwe DB naar PBKDF2-SHA512 ±312 000 iteraties.
+        // Loopt na MigrateAsync zodat het DB-bestand zeker bestaat.
+        if (_profileService.ActiveDbPath is { } dbPath)
+            await _kdfService.EnsureTargetKdfAsync(dbPath, request.Wachtwoord);
 
         return Ok(new { bericht = "Database aangemaakt en ontgrendeld." });
     }

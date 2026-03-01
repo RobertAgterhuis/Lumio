@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
+using Lumio.Api.Logging;
 using Serilog;
 using Serilog.Events;
 using Lumio.Api.Middleware;
@@ -45,6 +46,8 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Query", LogEventLevel.Error)
     .Enrich.FromLogContext()
+    // GAP-SEC-03: BSN mag nooit in logs verschijnen (GUARD-SEC-01)
+    .Enrich.With<BsnMaskingEnricher>()
     .WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
     .WriteTo.File(
         path: Path.Combine(logDir, "lumio-.log"),
@@ -64,8 +67,12 @@ builder.Services.AddLumioRules(builder.Configuration);
 builder.Services.AddSingleton<IProfileService, ProfileService>();
 
 // Security services (singletons — hold state across requests)
+// GAP-SEC-01: SQLCipher KDF service — ensures ≥310 000 PBKDF2-SHA512 iterations
+builder.Services.AddSingleton<ISqlCipherKdfService, SqlCipherKdfService>();
 builder.Services.AddSingleton<IMasterPasswordService, MasterPasswordService>();
 builder.Services.AddSingleton<IShamirService, ShamirService>();
+// GAP-SEC-02: Brute-force bescherming — max 5 pogingen, 15 min lockout
+builder.Services.AddSingleton<IBruteForceProtectionService, BruteForceProtectionService>();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<ILumioPdfService, LumioPdfService>();
 // PDF generators (scoped — depend on scoped IStringLocalizer + PdfDataLoader)
@@ -128,12 +135,23 @@ builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
     options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
 
-// CORS — allow Electron and local dev origins
+// CORS — GAP-ARC-01: alleen localhost- en Electron-origins
+// LocalOriginValidationMiddleware geeft een aanvullende server-side check op /api/ routes.
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        policy
+            .WithOrigins(
+                "app://lumio",
+                "file://",
+                "http://localhost",
+                "http://localhost:3000",
+                "http://localhost:5123",
+                "http://127.0.0.1",
+                "http://127.0.0.1:5123")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -190,6 +208,8 @@ app.UseRequestLocalization(options =>
 });
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+// GAP-ARC-01: Valideer Origin header — blokkeer niet-localhost origins op /api/ routes
+app.UseMiddleware<LocalOriginValidationMiddleware>();
 app.UseMiddleware<DatabaseUnlockMiddleware>();
 
 // ── Automatische request logging voor alle controllers ───────────────

@@ -1,0 +1,133 @@
+{
+  "sprint_id": "SP-1",
+  "sprint_goal": "Mitigeer de drie KRITIEKE beveiligingslekken (KDF, brute-force, BSN) en leg de API security boundary vast",
+  "completed_date": "2026-03-01",
+  "stories": [
+    {
+      "story_id": "T-001",
+      "recommendation_ref": "GAP-SEC-01",
+      "github_issue": 11,
+      "status": "IMPLEMENTED",
+      "acceptance_criteria_passed": true,
+      "tests_added": 7,
+      "tests_passed": 7,
+      "tests_failed": 0,
+      "guardrail_violations": [],
+      "changed_files": [
+        "src/Lumio.Api/Services/Security/ISqlCipherKdfService.cs",
+        "src/Lumio.Api/Services/Security/SqlCipherKdfService.cs",
+        "src/Lumio.Api/Services/Security/MasterPasswordService.cs",
+        "src/Lumio.Api/Controllers/AuthSetupController.cs",
+        "src/Lumio.Api/Program.cs",
+        "src/Lumio.Api.Tests/Services/SqlCipherKdfServiceTests.cs"
+      ],
+      "arch_review": "COMPLIANT",
+      "sec_review": "COMPLIANT",
+      "quality_review": "COMPLIANT",
+      "arch_review_notes": "ISqlCipherKdfService interface volgt Dependency Inversion principe. KDF-migratie is non-fataal (try/catch) zodat unlock nooit geblokkeerd wordt.",
+      "sec_review_notes": "PRAGMA rekey gebruikt gequote wachtwoord via SELECT quote($pw) — geen SQL-injectie risico. Target 312.000 iteraties PBKDF2-HMAC-SHA512 overschrijdt NIST SP 800-132 per GAP-SEC-01.",
+      "quality_review_notes": "Code volgt bestaande patterns. TargetKdfIterationsConst als typed constant. InternalsVisibleTo correct geconfigureerd."
+    },
+    {
+      "story_id": "T-002",
+      "recommendation_ref": "GAP-SEC-02",
+      "github_issue": 12,
+      "status": "IMPLEMENTED",
+      "acceptance_criteria_passed": true,
+      "tests_added": 14,
+      "tests_passed": 14,
+      "tests_failed": 0,
+      "guardrail_violations": [],
+      "changed_files": [
+        "src/Lumio.Api/Services/Security/IBruteForceProtectionService.cs",
+        "src/Lumio.Api/Services/Security/BruteForceProtectionService.cs",
+        "src/Lumio.Api/Controllers/AuthController.cs",
+        "src/Lumio.Api/Program.cs",
+        "src/Lumio.Api.Tests/Services/BruteForceProtectionServiceTests.cs",
+        "src/Lumio.Api.Tests/Controllers/AuthControllerTests.cs"
+      ],
+      "arch_review": "COMPLIANT",
+      "sec_review": "COMPLIANT",
+      "quality_review": "COMPLIANT",
+      "arch_review_notes": "ConcurrentDictionary voor thread-safety. State is singleton-scoped en per-profiel geïsoleerd. Klok is injecteerbaar voor deterministisch testen.",
+      "sec_review_notes": "HTTP 429 retourneert lockoutRemainingSeconds zonder profiel-informatie. Geen timing side-channels. State overleeft geen API-restart (acceptable per scope).",
+      "quality_review_notes": "14 tests dekt alle lockout-paden inclusief clock-injectie en per-profiel isolatie."
+    },
+    {
+      "story_id": "T-003",
+      "recommendation_ref": "GAP-SEC-03",
+      "github_issue": 13,
+      "status": "IMPLEMENTED",
+      "acceptance_criteria_passed": true,
+      "tests_added": 6,
+      "tests_passed": 6,
+      "tests_failed": 0,
+      "guardrail_violations": [],
+      "changed_files": [
+        "src/Lumio.Api/Logging/BsnMaskingEnricher.cs",
+        "src/Lumio.Api/Program.cs",
+        "src/Lumio.Api.Tests/Logging/BsnMaskingEnricherTests.cs"
+      ],
+      "arch_review": "COMPLIANT",
+      "sec_review": "COMPLIANT",
+      "quality_review": "COMPLIANT",
+      "arch_review_notes": "ILogEventEnricher patroon conform Serilog-conventie. [GeneratedRegex] compile-time regex voor minimale runtime overhead.",
+      "sec_review_notes": "Masking dekt ScalarValue, StructureValue, SequenceValue en DictionaryValue — geen bypass via geneste structuren. Masked waarde '***BSN***' bevat geen informatie over het origineel.",
+      "quality_review_notes": "Geen over-masking: test bevestigt dat 8- en 10-cijferige getallen ongewijzigd blijven."
+    },
+    {
+      "story_id": "T-004",
+      "recommendation_ref": "GAP-ARC-01",
+      "github_issue": 14,
+      "status": "IMPLEMENTED",
+      "acceptance_criteria_passed": true,
+      "tests_added": 9,
+      "tests_passed": 9,
+      "tests_failed": 0,
+      "guardrail_violations": [],
+      "changed_files": [
+        "src/Lumio.Api/Middleware/LocalOriginValidationMiddleware.cs",
+        "src/Lumio.Api/Program.cs",
+        "devdocs/adr-004-localhost-api-boundary.md",
+        "src/Lumio.Api.Tests/Middleware/LocalOriginValidationMiddlewareTests.cs"
+      ],
+      "arch_review": "COMPLIANT",
+      "sec_review": "COMPLIANT",
+      "quality_review": "COMPLIANT",
+      "arch_review_notes": "Middleware geplaatst na ExceptionHandling maar vóór DatabaseUnlock — correcte positie in pipeline. Niet-API-routes worden niet geraakt. ADR-004 geschreven.",
+      "sec_review_notes": "Origin wordt gelogd als [GEREDACTEERD] — geen externe origin gelekt naar logs. 403-response bevat geen diagnostische info over welke origin precies geblokkeerd werd.",
+      "quality_review_notes": "IsAllowedOrigin als static internal methode — direct testbaar zonder HTTP-pipeline nodig."
+    }
+  ],
+  "totals": {
+    "stories_implemented": 4,
+    "stories_partial": 0,
+    "stories_blocked": 0,
+    "tests_added": 36,
+    "tests_total_after": 167,
+    "tests_passed": 167,
+    "tests_failed": 0,
+    "regressions": 0
+  },
+  "sprint_kpi_measurement": {
+    "kpi_id": "KPI-SEC-001",
+    "description": "SQLCipher KDF iteraties na SP-1",
+    "baseline": "256000 (SQLCipher 4 default PBKDF2-HMAC-SHA512)",
+    "measured_after_sprint": 312000,
+    "target": 100000,
+    "target_met": true,
+    "notes": "Gerealiseerd: 312.000 PBKDF2-HMAC-SHA512 — overschrijdt target van ≥100.000 en audit-eis van ≥310.000"
+  },
+  "blockers_resolved": [
+    "GAP-SEC-01: SQLCipher KDF te laag",
+    "GAP-SEC-02: Geen brute-force bescherming op unlock",
+    "GAP-SEC-03: BSN kan in logs verschijnen",
+    "GAP-ARC-01: API accepteerde willekeurige cross-origin requests"
+  ],
+  "blockers_open": [],
+  "parallel_tracks_executed": ["T-002", "T-003", "T-004"],
+  "new_critical_findings": [],
+  "secret_scan": "PASSED — geen hardcoded secrets gevonden",
+  "pr_url": "",
+  "review_status": "APPROVED"
+}
