@@ -52,59 +52,6 @@ public class AuthController : ControllerBase
         });
     }
 
-    [HttpPost("selecteer-profiel")]
-    public IActionResult SelecteerProfiel([FromBody] SelectProfileRequest request)
-    {
-        try
-        {
-            // Lock current profile first if unlocked
-            if (_passwordService.IsUnlocked)
-                _passwordService.Lock();
-
-            _profileService.SelectProfile(request.ProfielId);
-            var profile = _profileService.ActiveProfile!;
-            return Ok(new
-            {
-                bericht = $"Profiel '{profile.Naam}' geselecteerd.",
-                heeftSetupNodig = !_profileService.ActiveProfileDbExists
-            });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
-    }
-
-    [HttpPost("setup")]
-    public async Task<IActionResult> Setup(
-        [FromBody] SetupRequest request,
-        [FromServices] IServiceProvider serviceProvider)
-    {
-        if (_profileService.ActiveProfile == null)
-            return BadRequest(new { error = "Geen profiel geselecteerd. Selecteer of maak eerst een profiel aan." });
-
-        if (!_passwordService.IsFirstRun)
-            return BadRequest(new { error = "Database bestaat al. Gebruik ontgrendel." });
-
-        if (string.IsNullOrWhiteSpace(request.Wachtwoord) || request.Wachtwoord.Length < _limieten.WachtwoordMinLengte)
-            return BadRequest(new { error = $"Wachtwoord moet minimaal {_limieten.WachtwoordMinLengte} tekens bevatten." });
-
-        // (1) Set the password — now IsUnlocked = true
-        await _passwordService.SetupAsync(request.Wachtwoord);
-
-        // (2) Create a NEW scope so DbContext gets the real SQLCipher connection string
-        using var scope = serviceProvider.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<LumioDbContext>();
-
-        // (3) Apply all migrations (creates schema + __EFMigrationsHistory)
-        await db.Database.MigrateAsync();
-
-        // Ensure new columns are present even if migration had SQLite FK issues
-        await EnsureSchuldKolommenAsync(db);
-
-        return Ok(new { bericht = "Database aangemaakt en ontgrendeld." });
-    }
-
     [HttpPost("ontgrendel")]
     public async Task<IActionResult> Ontgrendel(
         [FromBody] OntgrendelRequest request,
@@ -129,73 +76,11 @@ public class AuthController : ControllerBase
         {
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<LumioDbContext>();
-            await EnsureMigratedAsync(db);
+            await MigratieDbHelper.EnsureMigratedAsync(db);
         }
 
         await _audit.LogAsync("Ontgrendeld", details: $"Profiel: {_profileService.ActiveProfile?.Naam}");
         return Ok(new { bericht = "Database ontgrendeld." });
-    }
-
-    /// <summary>
-    /// Applies pending EF migrations. Handles databases that were created with EnsureCreated
-    /// (no __EFMigrationsHistory table) by creating the table and baselining existing migrations.
-    /// </summary>
-    private static async Task EnsureMigratedAsync(LumioDbContext db)
-    {
-        // Check if the migration history table exists
-        bool historyExists;
-        try
-        {
-            await db.Database.ExecuteSqlRawAsync("SELECT COUNT(*) FROM \"__EFMigrationsHistory\"");
-            historyExists = true;
-        }
-        catch
-        {
-            historyExists = false;
-        }
-
-        if (!historyExists)
-        {
-            // Database was bootstrapped with EnsureCreated — create the history table
-            await db.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE IF NOT EXISTS ""__EFMigrationsHistory"" (
-                    ""MigrationId"" TEXT NOT NULL CONSTRAINT ""PK___EFMigrationsHistory"" PRIMARY KEY,
-                    ""ProductVersion"" TEXT NOT NULL
-                )");
-
-            // Mark all non-new migrations as already applied so Migrate() only runs new ones
-            var newMigrations = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "20260224151055_AddSchuldBezitLink"
-            };
-            foreach (var migrationId in db.Database.GetMigrations().Where(m => !newMigrations.Contains(m)))
-            {
-                await db.Database.ExecuteSqlAsync(
-                    $"INSERT OR IGNORE INTO \"__EFMigrationsHistory\" VALUES ({migrationId}, '10.0.3')");
-            }
-        }
-
-        await db.Database.MigrateAsync();
-
-        // Belt-and-suspenders: if the migration was recorded as applied but the
-        // ALTER TABLE failed (SQLite FK issue), add the columns directly.
-        await EnsureSchuldKolommenAsync(db);
-    }
-
-    private static async Task EnsureSchuldKolommenAsync(LumioDbContext db)
-    {
-        try
-        {
-            await db.Database.ExecuteSqlRawAsync("SELECT \"BezitId\" FROM \"Schulden\" LIMIT 0");
-            // Column exists — nothing to do
-        }
-        catch
-        {
-            // Column missing — apply it directly
-            await db.Database.ExecuteSqlRawAsync("ALTER TABLE \"Schulden\" ADD COLUMN \"BezitId\" TEXT NULL");
-            await db.Database.ExecuteSqlRawAsync("ALTER TABLE \"Schulden\" ADD COLUMN \"LeaseMaatschappij\" TEXT NULL");
-            await db.Database.ExecuteSqlRawAsync("CREATE INDEX IF NOT EXISTS \"IX_Schulden_BezitId\" ON \"Schulden\" (\"BezitId\")");
-        }
     }
 
     [HttpPost("vergrendel")]

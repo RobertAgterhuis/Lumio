@@ -39,6 +39,10 @@ jobs:
         run: npm run test:coverage
 
       - name: Build
+        env:
+          # SP-7-002: PostHog — optional; build succeeds without the key (analytics silently disabled)
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
         run: npm run build
 
       - name: Security — npm audit (high+critical)
@@ -271,14 +275,11 @@ jobs:
         shell: bash
         run: |
           # Enforce GUARD-010: no controller exceeds 200 lines.
-          # Known legacy violations (remaining after Month-10 refactor sprint — see roadmap):
+          # Known legacy violations (remaining after SP-7-004 refactor — see roadmap):
           KNOWN_VIOLATIONS=(
             "VideoboodschappenController.cs"
-            "StatusController.cs"
             "BoedelController.cs"
             "DigitaalBezitController.cs"
-            "AuthController.cs"
-            "DocumentenController.cs"
             "AfhandelingController.cs"
           )
 
