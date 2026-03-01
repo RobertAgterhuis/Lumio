@@ -1,3 +1,4 @@
+import NabestaandenSection from "@/components/sections/NabestaandenSection";
 import ProductFeatureGrid from "@/components/sections/ProductFeatureGrid";
 import PrivacyBlok from "@/components/sections/PrivacyBlok";
 import WatIsLumio from "@/components/sections/WatIsLumio";
@@ -35,6 +36,7 @@ export default function ProductPage() {
 
       <WatIsLumio />
       <ProductFeatureGrid />
+      <NabestaandenSection />
       <PrivacyBlok />
       <CtaBanner />
     </>

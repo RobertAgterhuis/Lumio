@@ -54,6 +54,20 @@ test.describe("Marketing site smoke tests", () => {
     await expect(printButton).toBeVisible();
   });
 
+  test("product page loads and shows nabestaanden-modus section", async ({ page }) => {
+    await page.goto("/product");
+    await expect(page).not.toHaveURL(/error/);
+
+    const h1 = page.locator("h1").first();
+    await expect(h1).toBeVisible();
+
+    // NabestaandenSection heading must be rendered (GUARD-005 lifted — SP-7-001)
+    const nabestaandenHeading = page.locator("h2", {
+      hasText: /naasten|nabestaanden/i,
+    });
+    await expect(nabestaandenHeading.first()).toBeVisible();
+  });
+
   test("404 page renders gracefully for unknown route", async ({ page }) => {
     const response = await page.goto("/does-not-exist-abc123");
     // Static exports produce a 404.html; serve returns 404 status

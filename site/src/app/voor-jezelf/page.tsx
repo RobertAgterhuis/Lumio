@@ -1,6 +1,7 @@
 import ConsumerHero from "@/components/sections/ConsumerHero";
 import ConsumerBenefits from "@/components/sections/ConsumerBenefits";
 import ConsumerHoeWerktHet from "@/components/sections/ConsumerHoeWerktHet";
+import NabestaandenSection from "@/components/sections/NabestaandenSection";
 import WatIsLumio from "@/components/sections/WatIsLumio";
 import ProductFeatureGrid from "@/components/sections/ProductFeatureGrid";
 import PrivacyBlok from "@/components/sections/PrivacyBlok";
@@ -24,6 +25,7 @@ export default function VoorJezelfPage() {
       <ConsumerHoeWerktHet />
       <WatIsLumio />
       <ProductFeatureGrid />
+      <NabestaandenSection />
       <PrivacyBlok />
       <ConsumerPricing />
       <ConsumerFaq />

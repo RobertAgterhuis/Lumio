@@ -46,7 +46,7 @@ export const PRODUCT_FEATURES: IconItem[] = [
   { icon: FileText,       title: "Documenten",       description: "Veilig opslaan van belangrijke persoonlijke documenten." },
   { icon: PhoneCall,      title: "Noodcontacten",    description: "Gestructureerd vastleggen wie er bij nood gebeld moet worden." },
   { icon: Flower2,        title: "Uitvaartwensen",   description: "Eigen wensen voor de uitvaart nauwkeurig en rustig vastleggen." },
-  { icon: Users,          title: "Erfgenamen modus", description: "Veilig toegang geven aan naasten op het juiste moment." },
+  { icon: Users,          title: "Nabestaanden-modus", description: "Naasten krijgen via Shamir-noodcodes veilig toegang — alleen als genoeg erfgenamen hun code invullen. Wiskundige zekerheid, geen enkel risico op ongeautoriseerde toegang." },
 ];
 
 // ── Employee benefits (Home) ──────────────────────────────────────────────────
