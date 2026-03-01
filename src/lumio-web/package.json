@@ -100,7 +100,7 @@
     "axe-core": "^4.11.1",
     "axe-playwright": "^2.2.2",
     "chromatic": "^15.2.0",
-    "eslint": "^9.39.3",
+    "eslint": "^10.0.2",
     "eslint-config-next": "^16.1.6",
     "eslint-plugin-storybook": "^10.2.13",
     "playwright": "^1.58.2",
