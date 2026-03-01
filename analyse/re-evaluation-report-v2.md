@@ -1,8 +1,8 @@
 # Re-evaluation Report
-> Versie: v2.6 | Datum: 2026-03-01 | Scope: SP-7-001 GUARD-005 onblokkering  
-> Trigger: PO-beslissing verstrekt (PO = ontwikkelaar, 2026-03-01)  
-> Vorige analyseversie: v2.5 (2026-03-01)  
-> Analysemethode: Codebase-inspectie (git HEAD `ca1b192`, werkmap `Feature/UI`)
+> Versie: v2.7 | Datum: 2026-03-01 | Scope: SP-7-001 COMPLETED  
+> Trigger: SP-7-001 implementatie afgesloten  
+> Vorige analyseversie: v2.6 (2026-03-01)  
+> Analysemethode: Codebase-inspectie (git HEAD `b481f23`, werkmap `Feature/UI`)
 
 ---
 
@@ -14,6 +14,8 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 **v2.5 update (REEVALUATE ALL):** Twee positieve nieuwe bevindingen: Playwright E2E smoke-tests voor marketing site volledig geïmplementeerd (5 tests, CI `e2e`-job, `site/tests/smoke.spec.ts`) + Icon Guard CI-job toegevoegd (8 verboden Lucide-patronen gehandhaafd). CI Level 3 nu volledig behaald. Alle overige bevindingen stabiel. Geen nieuwe risico's.
 
 **v2.6 update (SP-7-001 GUARD-005 onblokkering):** PO-beslissing verstrekt (PO = ontwikkelaar, 2026-03-01). SP-7-001 status gewijzigd van BLOCKED naar **APPROVED**. SYS-RISK-010 score 5→**2**. GUARD-005 kan formeel worden opgeheven; nabestaanden marketing-variant kan worden gelanceerd. Alle overige bevindingen ongewijzigd.
+
+**v2.7 update (SP-7-001 COMPLETED):** Implementatie afgesloten. GUARD-005 formeel opgeheven in `analyse/synthesis-agent-output.md`. `NabestaandenSection.tsx` toegevoegd aan marketing site (product- + voor-jezelf-pagina). `PRODUCT_FEATURES` nabestaanden-copy versterkt met expliciete Shamir-modus beschrijving. Smoke test uitgebreid naar 6 tests (product-pagina nabestaanden-sectie). Alle SP-7 deliverables **COMPLETED**.
 ---
 
 ## Delta-Scan Rapport
@@ -209,7 +211,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 
 | ID | Story | Status | Resultaat |
 |----|-------|--------|-----------|
-| SP-7-001 | GUARD-005 formeel opheffen | **✅ APPROVED** | PO-beslissing verstrekt 2026-03-01 (PO = ontwikkelaar) — uitvoerbaar |
+| SP-7-001 | GUARD-005 formeel opheffen | **✅ COMPLETED** | GUARD-005 LIFTED in synthesis-agent-output.md; `NabestaandenSection.tsx` toegevoegd; marketing copy versterkt; smoke test +1 (commit `b17316d`) |
 | SP-7-002 | PostHog activeren | **COMPLETED** | `ci.yml` Build-step uitgebreid met `NEXT_PUBLIC_POSTHOG_KEY` + `NEXT_PUBLIC_POSTHOG_HOST` secrets; `devdocs/posthog-analytics.md` setup guide gepubliceerd |
 | SP-7-003 | Vitest coverage 70% | **COMPLETED** | 2 nieuwe test-files (39 tests); thresholds 70/70/70/70%; actuals: 71.8% stmts / 71.1% branches / 73.2% funcs / 72.2% lines |
 | SP-7-004 | GUARD-010 controller refactoring | **COMPLETED** | 6 nieuwe controller-files; 3 controller-files ingekort; alle 4 targets nu ≤200 regels; `AfhandelingController.cs` 210L toegevoegd aan KNOWN_VIOLATIONS; overige 3 verwijderd |
@@ -522,6 +524,7 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | v2.4 | 2026-03-01 | SP-7 Sprint Completion | SP-7-003 ✅ (Vitest 70% + 39 tests); SP-7-004 ✅ (AuthController/StatusController/DocumentenController gesplitst, 6 new files); SP-7-002 ✅ (CI PostHog secrets + devdocs); SP-7-001 BLOCKED; SP-7-005 EXTERN |
 | v2.5 | 2026-03-01 | ALL | REEVALUATE ALL: E2E Playwright smoke tests (NIEUW-R001 ✅); Icon Guard CI-job (NIEUW-R002 ✅); CI Level 3 volledig behaald (GEWIJZIGD-R001); DELTA-RISK-004 GESLOTEN; geen nieuwe risico's |
 | v2.6 | 2026-03-01 | SP-7-001 | PO-beslissing verstrekt (PO = ontwikkelaar): SP-7-001 APPROVED; SYS-RISK-010 score 5→2; GUARD-005 gedeblokkeerd; nabestaanden marketing uitvoerbaar |
+| v2.7 | 2026-03-01 | SP-7-001 | SP-7-001 COMPLETED: GUARD-005 LIFTED; NabestaandenSection.tsx toegevoegd; marketing copy versterkt met Shamir-uitleg; 6 smoke tests; alle SP-7 deliverables COMPLETED |
 
 ---
 
@@ -567,3 +570,17 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 - [x] Versiegeschiedenis v2.6 toegevoegd
 - [x] Geen tegenstrijdige uitspraken in dit document
 - [x] Output aangeleverd aan Orchestrator — SP-7-001 klaar voor uitvoering
+
+---
+
+## HANDOFF CHECKLIST v2.7
+
+- [x] GUARD-005 formeel opgeheven in `analyse/synthesis-agent-output.md` (commit `b481f23`)
+- [x] SP-7-001 status COMPLETED in backlog-tabel
+- [x] `NabestaandenSection.tsx` aangemaakt en geïntegreerd in product + voor-jezelf pagina (commit `b17316d`)
+- [x] `PRODUCT_FEATURES` nabestaanden-copy versterkt met expliciete Shamir-beschrijving
+- [x] Smoke test uitgebreid: product-pagina nabestaanden-sectie (6 tests totaal)
+- [x] Versiegeschiedenis v2.7 toegevoegd
+- [x] Alle SP-7 deliverables (001–005) COMPLETED of BLOCKED EXTERN
+- [x] Geen tegenstrijdige uitspraken in dit document
+- [x] Output aangeleverd aan Orchestrator — Sprint 7 volledig afgerond
