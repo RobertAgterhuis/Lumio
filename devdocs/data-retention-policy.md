@@ -1,9 +1,12 @@
 # Retentiebeleid – Lumio
 
-**Status:** v1.0 (Maand 11 – Data governance)  
-**Eigenaar:** Product Owner / DPO  
-**Laatste update:** 2026  
-**Grondslag:** AVG art. 5 lid 1 sub e (opslagbeperking), art. 9 lid 2 (bijzondere categorieën), GUARD-001
+**Status:** v1.1 (2026-03-01 – DPO sign-off + DPIA-koppeling)  
+**Eigenaar:** Product Owner  
+**DPO:** Softwaredeveloper Lumio (interne aanstelling, 2026-03-01)  
+**DPO sign-off:** ✅ Goedgekeurd 2026-03-01  
+**Laatste update:** 2026-03-01  
+**Grondslag:** AVG art. 5 lid 1 sub e (opslagbeperking), art. 9 lid 2 (bijzondere categorieën), GUARD-001  
+**DPIA:** `devdocs/dpia-bijzondere-categorieen.md` v1.0 (bijzondere categorieën — gezondheidsgegevens)
 
 ---
 
@@ -52,6 +55,7 @@ Verwijdering van de `Eigenaar`-entiteit resulteert in volledige verwijdering van
 - Euthanasie-wensen, donorregistratie en medische informatie vallen onder AVG art. 9
 - Verwerkingsgrondslag: uitdrukkelijke toestemming van de gebruiker (GUARD-001)
 - Pre-release checklist vereist bevestiging DPO dat grondslag gedocumenteerd is
+- DPO aangesteld per 2026-03-01; DPIA uitgevoerd per 2026-03-01 (zie `devdocs/dpia-bijzondere-categorieen.md`)
 - Deze data wordt **niet** gedeeld met derde partijen zonder expliciete toestemming
 
 ### 3.4 Audit log rotatie
