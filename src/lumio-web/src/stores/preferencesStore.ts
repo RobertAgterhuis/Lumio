@@ -16,6 +16,8 @@ export interface DashboardPreferences {
   hiddenDomeinKaarten: string[];
   domeinKaartenVolgorde: string[];
   sectieVolgorde: string[];
+  instellingenVolgordeLinks: string[];
+  instellingenVolgordeRechts: string[];
   showMeldingen: boolean;
   showBackup: boolean;
   showAanbevolen: boolean;
@@ -37,6 +39,8 @@ interface PreferencesState extends DashboardPreferences {
   toggleDomeinKaart: (domein: string) => void;
   setDomeinKaartenVolgorde: (order: string[]) => void;
   setSectieVolgorde: (order: string[]) => void;
+  setInstellingenVolgordeLinks: (order: string[]) => void;
+  setInstellingenVolgordeRechts: (order: string[]) => void;
   resetDashboard: () => void;
   toggleSidebar: () => void;
 }
@@ -51,6 +55,8 @@ const dashboardDefaults: DashboardPreferences = {
   hiddenDomeinKaarten: [],
   domeinKaartenVolgorde: [],
   sectieVolgorde: [],
+  instellingenVolgordeLinks: [],
+  instellingenVolgordeRechts: [],
   showMeldingen: true,
   showBackup: true,
   showAanbevolen: true,
@@ -80,6 +86,8 @@ function save(state: PreferencesState) {
       hiddenDomeinKaarten: state.hiddenDomeinKaarten,
       domeinKaartenVolgorde: state.domeinKaartenVolgorde,
       sectieVolgorde: state.sectieVolgorde,
+      instellingenVolgordeLinks: state.instellingenVolgordeLinks,
+      instellingenVolgordeRechts: state.instellingenVolgordeRechts,
       showMeldingen: state.showMeldingen,
       showBackup: state.showBackup,
       showAanbevolen: state.showAanbevolen,
@@ -126,6 +134,16 @@ export const usePreferencesStore = create<PreferencesState>((set, get) => ({
 
   setSectieVolgorde: (order) => {
     set({ sectieVolgorde: order });
+    save(get());
+  },
+
+  setInstellingenVolgordeLinks: (order) => {
+    set({ instellingenVolgordeLinks: order });
+    save(get());
+  },
+
+  setInstellingenVolgordeRechts: (order) => {
+    set({ instellingenVolgordeRechts: order });
     save(get());
   },
 

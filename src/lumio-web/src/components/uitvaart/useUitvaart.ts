@@ -14,6 +14,28 @@ import type {
   UitvaartEditFormData,
   LocatieEditFormData,
 } from "./types";
+
+// M4-5: Minimal response shapes for person auto-sync when re-opening a linked dialog
+interface ErfgenaamSyncResponse {
+  voornaam: string;
+  achternaam: string;
+  tussenvoegsel?: string;
+  relatie?: string;
+  telefoon?: string;
+  email?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
+}
+interface NoodcontactSyncResponse {
+  naam: string;
+  relatie?: string;
+  telefoon?: string;
+  email?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
+}
 import {
   emptyDetailForm,
   emptyGenodigdeForm,
@@ -276,11 +298,11 @@ export function useUitvaart() {
   );
 
   // Genodigde handlers
-  const openGenDialog = useCallback((g?: UitvaartGenodigde) => {
+  const openGenDialog = useCallback(async (g?: UitvaartGenodigde) => {
     setGenError(null);
     if (g) {
       setEditGenId(g.id);
-      setGenForm({
+      let form: GenodigdeFormData = {
         naam: g.naam,
         relatie: g.relatie ?? "",
         telefoon: g.telefoon ?? "",
@@ -289,7 +311,23 @@ export function useUitvaart() {
         postcode: g.postcode ?? "",
         woonplaats: g.woonplaats ?? "",
         notities: g.notities ?? "",
-      });
+        erfgenaamId: g.erfgenaamId,
+        noodcontactId: g.noodcontactId,
+      };
+      // M4-5: Auto-sync contact data if linked to a person record
+      if (g.erfgenaamId) {
+        try {
+          const e = await api.get<ErfgenaamSyncResponse>(`/api/erfgenamen/${g.erfgenaamId}`);
+          const naam = e.tussenvoegsel ? `${e.voornaam} ${e.tussenvoegsel} ${e.achternaam}` : `${e.voornaam} ${e.achternaam}`;
+          form = { ...form, naam, relatie: e.relatie ?? form.relatie, telefoon: e.telefoon ?? form.telefoon, email: e.email ?? form.email, adres: e.adres ?? form.adres, postcode: e.postcode ?? form.postcode, woonplaats: e.woonplaats ?? form.woonplaats };
+        } catch { /* silently fail — show existing saved data */ }
+      } else if (g.noodcontactId) {
+        try {
+          const n = await api.get<NoodcontactSyncResponse>(`/api/noodcontacten/${g.noodcontactId}`);
+          form = { ...form, naam: n.naam, relatie: n.relatie ?? form.relatie, telefoon: n.telefoon ?? form.telefoon, email: n.email ?? form.email, adres: n.adres ?? form.adres, postcode: n.postcode ?? form.postcode, woonplaats: n.woonplaats ?? form.woonplaats };
+        } catch { /* silently fail */ }
+      }
+      setGenForm(form);
     } else {
       setEditGenId(null);
       setGenForm(emptyGenodigdeForm);
@@ -309,6 +347,8 @@ export function useUitvaart() {
         postcode: genForm.postcode || null,
         woonplaats: genForm.woonplaats || null,
         notities: genForm.notities || null,
+        erfgenaamId: genForm.erfgenaamId ?? null,
+        noodcontactId: genForm.noodcontactId ?? null,
       };
       if (editGenId) {
         await api.put(`/api/uitvaart/genodigden/${editGenId}`, payload);

@@ -13,6 +13,7 @@
   "scripts": {
     "dev": "tsc && electron .",
     "build": "tsc",
+    "build:icons": "node scripts/build-icons.mjs",
     "package": "tsc && electron-builder --dir",
     "start": "electron ."
   },
@@ -20,6 +21,8 @@
     "@types/node": "^22.15.0",
     "electron": "^35.2.1",
     "electron-builder": "^26.0.12",
+    "electron-icon-builder": "^2.0.1",
+    "sharp": "^0.34.5",
     "typescript": "^5.9.3"
   },
   "dependencies": {

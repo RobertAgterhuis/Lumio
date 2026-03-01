@@ -6,9 +6,10 @@ copyright: Copyright © 2026 Lumio
 directories:
   output: ../../dist/Lumio
 
-# The Electron app itself (compiled TS output)
+# The Electron app itself (compiled TS output + static assets)
 files:
   - dist/**/*
+  - build/**/*
   - package.json
 
 # Extra resources bundled alongside the app

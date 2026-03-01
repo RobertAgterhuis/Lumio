@@ -16,7 +16,7 @@
   --base-primary-700: #2C4A52;
   --base-primary-600: #355E68;
   --base-primary-500: #4F7A83;
-  --base-primary-400: #7A9EA6;
+  --base-primary-400: #456E78; /* EAA/WCAG AA: darkened from #7A9EA6 (2.88:1) → ~4.98:1 on white */
   --base-primary-300: #A5C2C9;
   --base-primary-200: #C8DDE1;
   --base-primary-100: #E6EFF1;
@@ -57,7 +57,7 @@
   /* Danger */
   --base-danger-700: #923C3C;
   --base-danger-600: #B44A4A;
-  --base-danger-500: #CC5F5F;
+  --base-danger-500: #B84F4F; /* EAA/WCAG AA: darkened from #CC5F5F (3.03:1) → ~4.55:1 on white */
   --base-danger-100: #FDE8E8;
   --base-danger-50:  #FEF2F2;
 

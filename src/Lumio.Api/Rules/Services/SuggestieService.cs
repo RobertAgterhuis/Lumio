@@ -1,3 +1,4 @@
+using Lumio.Api.Domain.Common;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Engine;
 using Lumio.Api.Rules.Facts;
@@ -100,6 +101,8 @@ public class SuggestieService : ISuggestieService
         suggesties.AddRange(EvalueerErfgenaamNoodcontactKoppeling(facts));
         suggesties.AddRange(EvalueerNoodcontactErfgenaamKoppeling(facts));
         suggesties.AddRange(EvalueerBegunstigdeErfgenaamKoppeling(facts));
+        suggesties.AddRange(EvalueerExecuteurNoodcontactKoppeling(facts));
+        suggesties.AddRange(EvalueerWilsverklaringVertegenwoordigerKoppeling(facts));
 
         return suggesties;
     }
@@ -161,6 +164,12 @@ public class SuggestieService : ISuggestieService
         // Begunstigde ↔ Erfgenaam
         suggesties.AddRange(EvalueerBegunstigdeErfgenaamKoppeling(facts));
 
+        // BR-SUG-13: Executeur ↔ Noodcontact
+        suggesties.AddRange(EvalueerExecuteurNoodcontactKoppeling(facts));
+
+        // BR-SUG-20: Wilsverklaring vertegenwoordiger ↔ Noodcontact (Sprint 3)
+        suggesties.AddRange(EvalueerWilsverklaringVertegenwoordigerKoppeling(facts));
+
         // Huisarts in noodcontacten
         var heeftHuisarts = facts.Noodcontacten.Any(n => n.Rol == "Huisarts");
         if (!heeftHuisarts && facts.Erfgenamen.Count > 0)
@@ -169,6 +178,136 @@ public class SuggestieService : ISuggestieService
                 L["CategoryMissingEmergencyContact"].Value,
                 L["MessageMissingGP"].Value,
                 L["SuggestionAddGP"].Value));
+        }
+
+        // BR-SUG-14: Noodcontact zonder telefoonnummer
+        foreach (var nc in facts.Noodcontacten.Where(n => string.IsNullOrWhiteSpace(n.Telefoon)))
+        {
+            suggesties.Add(new Suggestie(
+                L["CategoryEmergencyNoPhone"].Value,
+                L["MessageEmergencyNoPhone", nc.Naam].Value,
+                L["SuggestionAddPhone"].Value));
+        }
+
+        // BR-SUG-15: Testament vóór huwelijk (BW 4:46)
+        if (facts.Testament?.DatumTestament is { } testamentDatum
+            && facts.DatumHuwelijk is { } datumHuwelijk
+            && testamentDatum < datumHuwelijk
+            && (facts.BurgerlijkeStaat == BurgerlijkeStaat.Gehuwd
+                || facts.BurgerlijkeStaat == BurgerlijkeStaat.GeregistreerdPartnerschap))
+        {
+            suggesties.Add(new Suggestie(
+                L["CategoryWillBeforeMarriage"].Value,
+                L["MessageWillBeforeMarriage"].Value,
+                L["SuggestionReviewWill"].Value));
+        }
+
+        // BR-SUG-16: Testament zonder CTR-nummer (Wet op het Notarisambt art. 38a)
+        if (facts.Testament is not null && !facts.Testament.HeeftCtrNummer)
+        {
+            suggesties.Add(new Suggestie(
+                L["CategoryNoCtrNumber"].Value,
+                L["MessageNoCtrNumber"].Value,
+                L["SuggestionAskNotaryCtr"].Value));
+        }
+
+        // BR-SUG-17: Gehuwd zonder huwelijksgoederenregime (BW 1:94)
+        if ((facts.BurgerlijkeStaat == BurgerlijkeStaat.Gehuwd
+                || facts.BurgerlijkeStaat == BurgerlijkeStaat.GeregistreerdPartnerschap)
+            && facts.HuwelijksVoorwaarden == HuwelijksVoorwaarden.NietVanToepassing)
+        {
+            suggesties.Add(new Suggestie(
+                L["CategoryNoMarriageRegime"].Value,
+                L["MessageNoMarriageRegime"].Value,
+                L["SuggestionAddMarriageRegime"].Value));
+        }
+
+        // BR-SUG-18: Gescheiden maar ex-partner als erfgenaam (BW 4:52)
+        if (facts.BurgerlijkeStaat == BurgerlijkeStaat.Gescheiden)
+        {
+            foreach (var ex in facts.Erfgenamen.Where(e =>
+                e.Relatie.Equals("Partner", StringComparison.OrdinalIgnoreCase) ||
+                e.Relatie.Equals("Echtgenoot", StringComparison.OrdinalIgnoreCase) ||
+                e.Relatie.Equals("Echtgenote", StringComparison.OrdinalIgnoreCase)))
+            {
+                suggesties.Add(new Suggestie(
+                    L["CategoryDivorcedHeir"].Value,
+                    L["MessageDivorcedHeir", ex.VolledigeNaam].Value,
+                    L["SuggestionReviewHeirs"].Value));
+            }
+        }
+
+        // BR-SUG-19: Legitimatiegegevens verlopen of bijna verlopen (180 dagen drempel)
+        if (facts.LegitimatieGeldigTot is { } geldigTot)
+        {
+            var dagenTot = (geldigTot.ToDateTime(TimeOnly.MinValue) - DateTime.Today).Days;
+            if (dagenTot <= 180)
+            {
+                var melding = dagenTot < 0
+                    ? L["MessageIdExpired"].Value
+                    : L["MessageIdExpiringSoon", dagenTot].Value;
+                suggesties.Add(new Suggestie(
+                    L["CategoryIdExpiry"].Value,
+                    melding,
+                    L["SuggestionRenewId"].Value));
+            }
+        }
+
+        // Sprint 3: Wilsverklaring & Donorregistratie
+
+        // BR-SUG-21: Wilsverklaring ouder dan 5 jaar (NVVE-advies: herbevestig elke 1825 dagen)
+        if (facts.Wilsverklaring?.DatumOndertekening is { } datumOndertekening)
+        {
+            var ouderDan = (DateTime.Today - datumOndertekening.ToDateTime(TimeOnly.MinValue)).Days;
+            if (ouderDan > 1825)
+            {
+                suggesties.Add(new Suggestie(
+                    L["CategoryWilsverklaringOud"].Value,
+                    L["MessageWilsverklaringOud", datumOndertekening.ToString("d MMMM yyyy")].Value,
+                    L["SuggestionHerbevestigWilsverklaring"].Value));
+            }
+        }
+
+        // BR-SUG-22: Huisarts wilsverklaring niet als noodcontact (aanvulling op S-07)
+        if (!string.IsNullOrWhiteSpace(facts.Wilsverklaring?.HuisartsNaam))
+        {
+            var huisartsAlsNoodcontact = facts.Noodcontacten.Any(n =>
+                n.Rol == "Huisarts" ||
+                n.Naam.Equals(facts.Wilsverklaring.HuisartsNaam, StringComparison.OrdinalIgnoreCase));
+            if (!huisartsAlsNoodcontact)
+            {
+                suggesties.Add(new Suggestie(
+                    L["CategoryHuisartsWilsverklaring"].Value,
+                    L["MessageHuisartsWilsverklaring", facts.Wilsverklaring.HuisartsNaam].Value,
+                    L["SuggestionAddHuisartsNoodcontact"].Value));
+            }
+        }
+
+        // BR-SUG-23: Donor beslisser niet als noodcontact (Wet orgaandonatie art. 9)
+        if (facts.Donor is { } donor
+            && !string.IsNullOrWhiteSpace(donor.BeslisserNaam)
+            && donor.Keuze.Contains("specifiek", StringComparison.OrdinalIgnoreCase))
+        {
+            var beslisserAlsNoodcontact = facts.Noodcontacten.Any(n =>
+                n.Naam.Equals(donor.BeslisserNaam, StringComparison.OrdinalIgnoreCase));
+            if (!beslisserAlsNoodcontact)
+            {
+                suggesties.Add(new Suggestie(
+                    L["CategoryDonorBeslisser"].Value,
+                    L["MessageDonorBeslisser", donor.BeslisserNaam].Value,
+                    L["SuggestionAddDonorBeslisser"].Value));
+            }
+        }
+
+        // BR-SUG-24: Donorwens niet officieel geregistreerd bij Donorregister
+        if (facts.Donor is { IsGeregistreerdBijDonorregister: false } donorNietOfficieel
+            && !string.IsNullOrWhiteSpace(donorNietOfficieel.Keuze)
+            && !donorNietOfficieel.Keuze.Equals("Nee", StringComparison.OrdinalIgnoreCase))
+        {
+            suggesties.Add(new Suggestie(
+                L["CategoryDonorNietOfficieel"].Value,
+                L["MessageDonorNietOfficieel"].Value,
+                L["SuggestionRegistreerBijDonorregister"].Value));
         }
 
         // S5: Boedel suggesties
@@ -270,6 +409,54 @@ public class SuggestieService : ISuggestieService
                     L["CategoryBeneficiaryHeirLink"].Value,
                     L["MessageBeneficiaryNotHeir", b].Value,
                     L["SuggestionCheckBeneficiaryHeir"].Value));
+            }
+        }
+        return suggesties;
+    }
+
+    // BR-SUG-13: Executeur ↔ Noodcontact (Sprint 1)
+    private List<Suggestie> EvalueerExecuteurNoodcontactKoppeling(SuggestieFacts facts)
+    {
+        if (facts.Testament is null) return [];
+
+        var suggesties = new List<Suggestie>();
+        foreach (var executeur in facts.Testament.ExecuteurNamen)
+        {
+            var isNoodcontact = facts.Noodcontacten.Any(n =>
+                n.Naam.Equals(executeur, StringComparison.OrdinalIgnoreCase));
+            if (!isNoodcontact)
+            {
+                suggesties.Add(new Suggestie(
+                    L["CategoryExecutorEmergencyLink"].Value,
+                    L["MessageExecutorNotEmergency", executeur].Value,
+                    L["SuggestionGoToEmergencyContacts"].Value));
+            }
+        }
+        return suggesties;
+    }
+
+    // BR-SUG-20: Wilsverklaring vertegenwoordiger ↔ Noodcontact (Sprint 3)
+    private List<Suggestie> EvalueerWilsverklaringVertegenwoordigerKoppeling(SuggestieFacts facts)
+    {
+        if (facts.Wilsverklaring is null) return [];
+
+        var suggesties = new List<Suggestie>();
+        var vertegenwoordigers = new[]
+        {
+            facts.Wilsverklaring.VertegenwoordigerNaam,
+            facts.Wilsverklaring.Vertegenwoordiger2Naam
+        };
+
+        foreach (var naam in vertegenwoordigers.Where(n => !string.IsNullOrWhiteSpace(n)))
+        {
+            var isNoodcontact = facts.Noodcontacten.Any(n =>
+                n.Naam.Equals(naam, StringComparison.OrdinalIgnoreCase));
+            if (!isNoodcontact)
+            {
+                suggesties.Add(new Suggestie(
+                    L["CategoryWilsverklaringVertegenwoordiger"].Value,
+                    L["MessageWilsverklaringVertegenwoordiger", naam!].Value,
+                    L["SuggestionAddWilsVertegenwoordiger"].Value));
             }
         }
         return suggesties;

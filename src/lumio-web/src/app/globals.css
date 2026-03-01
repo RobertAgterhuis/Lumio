@@ -17,7 +17,7 @@
   --color-primary-700: #2C4A52;
   --color-primary-600: #355E68;
   --color-primary-500: #4F7A83;
-  --color-primary-400: #7A9EA6;
+  --color-primary-400: #456E78; /* SC 1.4.3 / EAA: ~4.98:1 on white — SP-6-004 (was #7A9EA6 = 2.88:1) */
   --color-primary-100: #E6EFF1;
   --color-primary-50:  #F3F7F8;
 
@@ -35,7 +35,7 @@
 
   /* ── Muted ── */
   --color-muted: #F3F4F6;
-  --color-muted-foreground: #6B7280;
+  --color-muted-foreground: #545B6A; /* SP-ACC1-007: was #6B7280 (4.14:1) → 6.86:1 on #FFFFFF — WCAG 2.1 AA SC 1.4.3 */
 
   /* ── Borders & Inputs ── */
   --color-border: #E5E7EB;
@@ -57,11 +57,11 @@
   --color-sidebar-active-foreground: #FFFFFF;
 
   /* ── Status ── */
-  --color-success: #5E8C61;
+  --color-success: #2D6B31; /* SP-ACC1-007: was #5E8C61 (3.30:1) → 5.74:1 on #E8F5E9 — WCAG 2.1 AA SC 1.4.3 */
   --color-success-100: #E8F5E9;
-  --color-warning: #D4A017;
+  --color-warning: #7A5800; /* SP-ACC1-007: was #D4A017 (2.19:1 CRITICAL) → 6.14:1 on #FFF8E1 — WCAG 2.1 AA SC 1.4.3 */
   --color-warning-100: #FFF8E1;
-  --color-danger: #B44A4A;
+  --color-danger: #9E2A2A; /* SP-ACC1-007: was #B44A4A (4.24:1) → 6.35:1 on #FDE8E8 — WCAG 2.1 AA SC 1.4.3 */
   --color-danger-100: #FDE8E8;
   --color-info: #3A506B;
   --color-info-100: #E3EDF5;
@@ -132,7 +132,7 @@
   --color-secondary-foreground: #E5E7EB;
   --color-accent: #60A5FA;
   --color-accent-foreground: #FFFFFF;
-  --color-destructive: #E06060;
+  --color-destructive: #F87171; /* SC 1.4.3 / EAA: ~4.96:1 on card #1E293B — SP-6-004 (was #E06060 = 3.97:1) */
   --color-destructive-foreground: #FFFFFF;
   --color-muted: #1E293B;
   --color-muted-foreground: #9CA3AF;
@@ -151,7 +151,7 @@
   --color-success-100: #1A2E1A;
   --color-warning: #F0C040;
   --color-warning-100: #2E2A10;
-  --color-danger: #E06060;
+  --color-danger: #F87171; /* SC 1.4.3 / EAA: ~4.96:1 on card #1E293B — SP-6-004 */
   --color-danger-100: #2E1A1A;
   --color-info: #6A8AA6;
   --color-info-100: #1A2430;

@@ -44,6 +44,9 @@ export interface Begunstigde {
   woonplaats?: string;
   percentage?: number;
   isLegitiemePortie: boolean;
+  /** M4: Persistent link to originating person record */
+  erfgenaamId?: string;
+  noodcontactId?: string;
 }
 
 export interface Executeur {
@@ -56,6 +59,9 @@ export interface Executeur {
   postcode?: string;
   woonplaats?: string;
   notarieleAkte?: boolean;
+  /** M4: Persistent link to originating person record */
+  erfgenaamId?: string;
+  noodcontactId?: string;
 }
 
 export interface TestamentSnapshot {
@@ -86,6 +92,9 @@ export interface ExecuteurFormData {
   adres: string;
   postcode: string;
   woonplaats: string;
+  /** M4: Persistent link to originating person record */
+  erfgenaamId?: string;
+  noodcontactId?: string;
 }
 
 export interface BegunstigdeFormData {
@@ -98,6 +107,9 @@ export interface BegunstigdeFormData {
   woonplaats: string;
   percentage: string;
   isLegitiemePortie: boolean;
+  /** M4: Persistent link to originating person record */
+  erfgenaamId?: string;
+  noodcontactId?: string;
 }
 
 export interface TestamentEditFormData {

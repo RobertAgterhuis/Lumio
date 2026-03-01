@@ -26,6 +26,7 @@ import {
   VergelijkingDialog,
   LegitimairePortieAlert,
 } from "@/components/testament";
+import { HelpButton } from "@/components/help/HelpButton";
 
 export default function TestamentPage() {
   const t = useTranslations("testament");
@@ -92,6 +93,7 @@ export default function TestamentPage() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <LumioIcon name="testament" size="lg" className="text-primary" />
             {t("titel")}
+            <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="testament" />
@@ -110,6 +112,12 @@ export default function TestamentPage() {
       </div>
 
       <DomainStatusBanner domein="testament" />
+
+      <div className="rounded-lg border border-secure bg-secure-100 p-4">
+        <p className="text-sm text-secure">
+          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </p>
+      </div>
 
       {testament ? (
         <>

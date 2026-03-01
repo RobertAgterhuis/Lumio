@@ -23,6 +23,8 @@ import {
   Scale,
   HeartHandshake,
   UserX,
+  PiggyBank,
+  House,
 } from "lucide-react";
 import { useDomainQuery } from "@/hooks";
 import { useEffect } from "react";
@@ -30,6 +32,7 @@ import { api } from "@/lib/api-client";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { TijdlijnStapRow } from "@/components/tijdlijn/TijdlijnStapRow";
 import { STAP_DOMAIN_CONFIGS } from "@/components/tijdlijn/tijdlijn-data";
+import { HelpButton } from "@/components/help/HelpButton";
 
 interface TijdlijnStap {
   key: string;
@@ -72,6 +75,7 @@ const tijdlijn: TijdlijnFase[] = [
     stappen: [
       { key: "notaris", icon: ScrollText },
       { key: "werkgever", icon: Building2 },
+      { key: "pensioenen", icon: PiggyBank },
       { key: "aangifte", icon: Landmark },
       { key: "documenten", icon: FileText },
     ],
@@ -86,6 +90,7 @@ const tijdlijn: TijdlijnFase[] = [
     stappen: [
       { key: "verzekeringen", icon: ShieldCheck },
       { key: "bank", icon: Landmark },
+      { key: "woning", icon: House },
       { key: "abonnementen", icon: FileText },
       { key: "uitkeringen", icon: Building2 },
       { key: "digitaal", icon: Globe },
@@ -118,9 +123,15 @@ export default function TijdlijnPage() {
   const { data: testamentData, isLoading: testamentLoading } = useDomainQuery("testament");
   const { data: documentenData, isLoading: documentenLoading } = useDomainQuery<unknown[]>("documenten");
   const { data: noodcontactenData, isLoading: noodcontactenLoading } = useDomainQuery<unknown[]>("noodcontacten");
-  const { data: boedelData, isLoading: boedelLoading } = useDomainQuery("boedel");
+  const { data: boedelSamenvattingData, isLoading: boedelSamenvattingLoading } = useDomainQuery("boedel/samenvatting");
+  const { data: bezittingenData, isLoading: bezittingenLoading } = useDomainQuery<unknown[]>("boedel/bezittingen");
   const { data: erfgenamenData, isLoading: erfgenamenLoading } = useDomainQuery<unknown[]>("erfgenamen");
   const { data: digitaalBezitData, isLoading: digitaalBezitLoading } = useDomainQuery("digitaal-bezit");
+  const { data: verzekeringenData, isLoading: verzekeringenLoading } = useDomainQuery<unknown[]>("boedel/verzekeringen");
+  const { data: bankrekeningenData, isLoading: bankrekeningenLoading } = useDomainQuery<unknown[]>("boedel/bankrekeningen");
+  const { data: eigenaarData, isLoading: eigenaarLoading } = useDomainQuery("eigenaar");
+  const { data: digitaalAccountsData, isLoading: digitaalAccountsLoading } = useDomainQuery<unknown[]>("digitaal-bezit/accounts");
+  const { data: werkgeverData, isLoading: werkgeverLoading } = useDomainQuery<unknown[]>("werkgever");
 
   // S6-20: Mark tijdlijn as viewed on load
   useEffect(() => {
@@ -130,28 +141,44 @@ export default function TijdlijnPage() {
 
   // Maps stap key → fetched domain data
   const domainDataMap: Record<string, unknown> = {
+    werkgever: werkgeverData,
+    pensioenen: werkgeverData,
+    huisarts: noodcontactenData,
     uitvaart: uitvaartData,
     donor: donorData,
     wilsverklaring: euthanasieData,
     notaris: testamentData,
+    aangifte: eigenaarData,
     documenten: documentenData,
     naasten: noodcontactenData,
+    verzekeringen: verzekeringenData,
+    bank: bankrekeningenData,
+    woning: bezittingenData,
     digitaal: digitaalBezitData,
     aanvaarding: erfgenamenData,
-    boedelverdeling: boedelData,
+    boedelverdeling: boedelSamenvattingData,
+    socialMedia: digitaalAccountsData,
   };
 
   // Maps stap key → loading state
   const domainLoadingMap: Record<string, boolean> = {
+    werkgever: werkgeverLoading,
+    pensioenen: werkgeverLoading,
+    huisarts: noodcontactenLoading,
     uitvaart: uitvaartLoading,
     donor: donorLoading,
     wilsverklaring: euthanasieLoading,
     notaris: testamentLoading,
+    aangifte: eigenaarLoading,
     documenten: documentenLoading,
     naasten: noodcontactenLoading,
+    verzekeringen: verzekeringenLoading,
+    bank: bankrekeningenLoading,
+    woning: bezittingenLoading,
     digitaal: digitaalBezitLoading,
     aanvaarding: erfgenamenLoading,
-    boedelverdeling: boedelLoading,
+    boedelverdeling: boedelSamenvattingLoading,
+    socialMedia: digitaalAccountsLoading,
   };
 
   // S6-18: Count steps linked to domain configs
@@ -167,6 +194,7 @@ export default function TijdlijnPage() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <LumioIcon name="tijdlijn" size="lg" className="text-primary" />
           {t("titel")}
+          <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-2 max-w-2xl">
           {t("beschrijving")}

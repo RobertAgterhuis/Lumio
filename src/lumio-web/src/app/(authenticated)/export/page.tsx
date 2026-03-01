@@ -23,6 +23,7 @@ import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import type { LucideIcon } from "lucide-react";
 import { useDomainQuery } from "@/hooks";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
+import { HelpButton } from "@/components/help/HelpButton";
 
 const exportOptions: Array<{
   key: string;
@@ -52,6 +53,7 @@ export default function ExportPage() {
   const t = useTranslations("exporteren");
 
   const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
+  const { data: exportStatus } = useDomainQuery<Record<string, boolean>>("export/status");
 
   const handleExport = async (key: string, endpoint: string) => {
     setDownloading(key);
@@ -146,6 +148,7 @@ export default function ExportPage() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Archive className="h-8 w-8 text-primary" />
           {t("titel")}
+          <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
@@ -336,6 +339,7 @@ export default function ExportPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {exportOptions.map((opt) => {
           const LucideOptIcon = opt.icon;
+          const heeftData = exportStatus == null ? null : (exportStatus[opt.key] ?? null);
           return (
             <Card key={opt.key} className="overflow-hidden">
               <div className="bg-sage-100 px-3 py-2 flex items-center gap-2 border-b border-black/5 dark:border-white/10">
@@ -344,9 +348,15 @@ export default function ExportPage() {
                 ) : LucideOptIcon ? (
                   <LucideOptIcon className="h-4 w-4 text-sage shrink-0" />
                 ) : null}
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t(`opties.${opt.key}`)}</h3>
+                <h3 className="text-sm font-semibold text-sage leading-tight flex-1">{t(`opties.${opt.key}`)}</h3>
+                {heeftData === false && (
+                  <span className="text-xs text-muted-foreground bg-black/5 dark:bg-white/10 rounded px-1.5 py-0.5 shrink-0">
+                    {t("geenData")}
+                  </span>
+                )}
               </div>
               <CardContent className="pt-3">
+                <p className="text-xs text-muted-foreground mb-3">{t(`beschrijvingen.${opt.key}`)}</p>
                 <Button
                   variant="outline"
                   size="sm"

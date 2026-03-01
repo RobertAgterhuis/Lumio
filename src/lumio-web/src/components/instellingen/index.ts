@@ -10,3 +10,5 @@ export {
   TaalkeuzeCard,
   ActualisatieCard,
 } from "./PreferencesCards";
+export { SortableInstellingenCard } from "./SortableInstellingenCard";
+export { ReferralCard } from "./ReferralCard";

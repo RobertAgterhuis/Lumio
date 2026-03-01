@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import {
@@ -102,6 +102,10 @@ export function AccountDeletionCard({ onDeleteRequest, onPostDelete }: AccountDe
           <Trash2 className="h-4 w-4 mr-2" />
           {t("verwijderen.knop")}
         </Button>
+
+        <p className="text-xs text-muted-foreground border-t border-border pt-3 mt-1">
+          {t("verwijderen.dataMapNote")}
+        </p>
       </CardContent>
     </Card>
   );
@@ -160,6 +164,14 @@ export function SecurityInfoCard() {
  */
 export function AboutCard() {
   const t = useTranslations("instellingen");
+  const [appVersion, setAppVersion] = useState<string | null>(null);
+
+  // EL-6-05: Fetch Electron app version once on mount.
+  // Only runs inside the Electron shell; no-op in browser mode.
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.lumio) return;
+    window.lumio.getAppVersion().then(setAppVersion).catch(() => null);
+  }, []);
 
   return (
     <Card className="overflow-hidden">
@@ -172,6 +184,11 @@ export function AboutCard() {
       <CardContent className="pt-5 text-sm text-muted-foreground">
         <p>{t("overLumio.beschrijving")}</p>
         <p className="mt-2">{t("overLumio.juridisch")}</p>
+        {appVersion !== null && (
+          <p className="mt-3 text-xs text-muted-foreground/70">
+            Versie {appVersion}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

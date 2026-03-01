@@ -1,17 +1,22 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
+using Lumio.Api.Logging;
 using Serilog;
 using Serilog.Events;
 using Lumio.Api.Middleware;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
+using Lumio.Api.Services.Export;
 using Lumio.Api.Services.Pdf;
+using Lumio.Api.Services.Pdf.Data;
+using Lumio.Api.Services.Pdf.Generators;
 using Lumio.Api.Services.Security;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.FileProviders;
+using QuestPDF.Drawing;
 using QuestPDF.Infrastructure;
 
 // Initialize SQLCipher provider
@@ -21,6 +26,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // QuestPDF community license
 QuestPDF.Settings.License = LicenseType.Community;
+
+// Register DM Sans font weights so QuestPDF can use them across all generators
+foreach (var weight in new[] { "Regular", "Medium", "SemiBold", "Bold" })
+    FontManager.RegisterFontFromEmbeddedResource($"Lumio.Api.Resources.Fonts.DMSans-{weight}.ttf");
 
 // Determine data directory (relative to exe for USB portability)
 var dataDir = Environment.GetEnvironmentVariable("LUMIO_DATA_DIR")
@@ -37,6 +46,8 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Query", LogEventLevel.Error)
     .Enrich.FromLogContext()
+    // GAP-SEC-03: BSN mag nooit in logs verschijnen (GUARD-SEC-01)
+    .Enrich.With<BsnMaskingEnricher>()
     .WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
     .WriteTo.File(
         path: Path.Combine(logDir, "lumio-.log"),
@@ -56,11 +67,44 @@ builder.Services.AddLumioRules(builder.Configuration);
 builder.Services.AddSingleton<IProfileService, ProfileService>();
 
 // Security services (singletons — hold state across requests)
+// GAP-SEC-01: SQLCipher KDF service — ensures ≥310 000 PBKDF2-SHA512 iterations
+builder.Services.AddSingleton<ISqlCipherKdfService, SqlCipherKdfService>();
 builder.Services.AddSingleton<IMasterPasswordService, MasterPasswordService>();
 builder.Services.AddSingleton<IShamirService, ShamirService>();
+// GAP-SEC-02: Brute-force bescherming — max 5 pogingen, 15 min lockout
+builder.Services.AddSingleton<IBruteForceProtectionService, BruteForceProtectionService>();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<ILumioPdfService, LumioPdfService>();
+// PDF generators (scoped — depend on scoped IStringLocalizer + PdfDataLoader)
+builder.Services.AddScoped<PdfDataLoader>();
+builder.Services.AddScoped<TestamentGenerator>();
+builder.Services.AddScoped<EuthanasieGenerator>();
+builder.Services.AddScoped<DonorGenerator>();
+builder.Services.AddScoped<DigitaalBezitGenerator>();
+builder.Services.AddScoped<BoedelGenerator>();
+builder.Services.AddScoped<UitvaartGenerator>();
+builder.Services.AddScoped<DocumentenGenerator>();
+builder.Services.AddScoped<CompleetGenerator>();
+builder.Services.AddScoped<NoodkaartGenerator>();
+builder.Services.AddScoped<TestamentConceptGenerator>();
+builder.Services.AddScoped<WilsverklaringGenerator>();
+builder.Services.AddScoped<NoodprocedureGenerator>();
+builder.Services.AddScoped<BoedelbeschrijvingGenerator>();
+builder.Services.AddScoped<ErfgenaamGenerator>();
+builder.Services.AddScoped<ExecuteurRapportGenerator>();
+builder.Services.AddScoped<NotarisGenerator>();
 builder.Services.AddSingleton<IAuditService, AuditService>();
+// T-006: Registered via interface for compensating-transaction testability
+builder.Services.AddSingleton<Lumio.Api.Services.Video.IVideoStorageService, Lumio.Api.Services.Video.VideoStorageService>();
+
+// Status + Export services (scoped — depend on LumioDbContext)
+builder.Services.AddScoped<IStatusFactsBuilder, StatusFactsBuilder>();
+builder.Services.AddScoped<IExportStatusService, ExportStatusService>();
+builder.Services.AddScoped<IExportDataService, ExportDataService>();
+builder.Services.AddScoped<IZipExportService, ZipExportService>();
+builder.Services.AddScoped<INuvExportService, NuvExportService>();
+builder.Services.AddScoped<IHtmlExportService, HtmlExportService>();
+builder.Services.AddScoped<IEncryptedBackupService, EncryptedBackupService>();
 
 // EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
@@ -68,12 +112,18 @@ builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
     var passwordService = serviceProvider.GetRequiredService<IMasterPasswordService>();
     if (passwordService.IsUnlocked && passwordService.ActiveDbPath is { } activeDbPath)
     {
-        var connStr = new SqliteConnectionStringBuilder
+        // Build the connection string inside UsePassword so the password is never stored
+        // as a managed string beyond the brief span of this callback.
+        var connStr = string.Empty;
+        passwordService.UsePassword(pw =>
         {
-            DataSource = activeDbPath,
-            Mode = SqliteOpenMode.ReadWriteCreate,
-            Password = passwordService.CurrentPassword
-        }.ToString();
+            connStr = new SqliteConnectionStringBuilder
+            {
+                DataSource = activeDbPath,
+                Mode = SqliteOpenMode.ReadWriteCreate,
+                Password = System.Text.Encoding.UTF8.GetString(pw)
+            }.ToString();
+        });
         options.UseSqlite(connStr);
     }
     else
@@ -86,12 +136,23 @@ builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
     options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
 
-// CORS — allow Electron and local dev origins
+// CORS — GAP-ARC-01: alleen localhost- en Electron-origins
+// LocalOriginValidationMiddleware geeft een aanvullende server-side check op /api/ routes.
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        policy
+            .WithOrigins(
+                "app://lumio",
+                "file://",
+                "http://localhost",
+                "http://localhost:3000",
+                "http://localhost:5123",
+                "http://127.0.0.1",
+                "http://127.0.0.1:5123")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -148,6 +209,8 @@ app.UseRequestLocalization(options =>
 });
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+// GAP-ARC-01: Valideer Origin header — blokkeer niet-localhost origins op /api/ routes
+app.UseMiddleware<LocalOriginValidationMiddleware>();
 app.UseMiddleware<DatabaseUnlockMiddleware>();
 
 // ── Automatische request logging voor alle controllers ───────────────

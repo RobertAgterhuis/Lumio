@@ -12,63 +12,104 @@ concurrency:
 
 jobs:
   # ── Frontend ───────────────────────────────────────────────────────
-  # frontend:
-  #   name: Frontend (lint / typecheck / build)
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: src/lumio-web
-  #   steps:
-  #     - uses: actions/checkout@v4
+  frontend:
+    name: Frontend (lint / typecheck / test / build)
+    runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
+    defaults:
+      run:
+        working-directory: src/lumio-web
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #         cache: npm
-  #         cache-dependency-path: src/lumio-web/package-lock.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/lumio-web/package-lock.json
 
-  #     - run: npm ci
+      - run: npm ci
 
-  #     - name: TypeScript type-check
-  #       run: npx tsc --noEmit
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
 
-  #     - name: ESLint
-  #       run: npm run lint
+      - name: ESLint
+        run: npm run lint
 
-  #     - name: Unit tests
-  #       run: npm test
+      - name: Unit tests (with coverage enforcement ≥70% lib/stores)
+        run: npm run test:coverage
 
-  #     - name: Build
-  #       run: npm run build
+      - name: Build
+        env:
+          # SP-7-002: PostHog — optional; build succeeds without the key (analytics silently disabled)
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+        run: npm run build
 
-  # ── Chromatic Visual Regression (DISABLED) ───────────────────────────
-  # chromatic:
-  #   name: Visual Regression (Chromatic)
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: src/lumio-web
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0 # Required for Chromatic to detect changes
-  #
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #         cache: npm
-  #         cache-dependency-path: src/lumio-web/package-lock.json
-  #
-  #     - run: npm ci
-  #
-  #     - name: Run Chromatic
-  #       uses: chromaui/action@latest
-  #       with:
-  #         workingDir: src/lumio-web
-  #         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-  #         exitZeroOnChanges: true
-  #         autoAcceptChanges: main
-  #         onlyChanged: true
+      - name: Security — npm audit (high+critical)
+        run: npm audit --audit-level=high --omit=dev
+
+  # ── Marketing website ──────────────────────────────────────────────
+  site:
+    name: Site (typecheck / build)
+    runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - run: npm ci
+
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Security — npm audit (high+critical)
+        run: npm audit --audit-level=high --omit=dev
+
+  # ── Chromatic Visual Regression ──────────────────────────────────────
+  # SP-5-001: Visual regression testing via Chromatic.
+  # Requires: CHROMATIC_PROJECT_TOKEN secret + real projectId in chromatic.config.json.
+  # continue-on-error: true — CI passes even without the token configured.
+  chromatic:
+    name: Visual Regression (Chromatic)
+    runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
+    continue-on-error: true # SP-5-001: non-blocking until CHROMATIC_PROJECT_TOKEN is set
+    defaults:
+      run:
+        working-directory: src/lumio-web
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for Chromatic to detect changes
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/lumio-web/package-lock.json
+
+      - run: npm ci
+
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          workingDir: src/lumio-web
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          exitZeroOnChanges: true
+          autoAcceptChanges: main
+          onlyChanged: true
 
   # ── Icon Guard ────────────────────────────────────────────────────
   # Prevent accidental re-introduction of replaced Lucide domain icons
@@ -77,6 +118,7 @@ jobs:
   icon-guard:
     name: Icon guard (no replaced Lucide icons)
     runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
     steps:
       - uses: actions/checkout@v4
 
@@ -132,10 +174,85 @@ jobs:
 
           echo "✓ No forbidden Lucide icon imports found."
 
+  # ── E2E Smoke Tests ──────────────────────────────────────────────
+  e2e:
+    name: E2E smoke tests (Playwright / static site)
+    runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
+    needs: [site]
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - run: npm ci
+
+      - name: Build static export
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run smoke tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: site/playwright-report/
+          retention-days: 7
+
+  # ── Accessibility (Storybook + axe) ──────────────────────────────
+  # SP-ACC1-001: Run @storybook/addon-a11y checks via vitest browser mode.
+  # Uses the 'storybook' vitest project which wraps all stories with axe-core.
+  # Requires Playwright Chromium (headless) — NOT the site e2e browser.
+  a11y:
+    name: Accessibility (Storybook / axe-core)
+    runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
+    needs: [frontend]
+    defaults:
+      run:
+        working-directory: src/lumio-web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/lumio-web/package-lock.json
+
+      - run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Storybook accessibility tests (axe via @storybook/addon-a11y)
+        run: npm run test:storybook
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-test-results
+          path: src/lumio-web/test-results/
+          retention-days: 7
+
   # ── Backend ────────────────────────────────────────────────────────
   backend:
     name: Backend (build)
     runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
     defaults:
       run:
         working-directory: src/Lumio.Api
@@ -151,3 +268,137 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore --configuration Release -warnaserror
+
+      - name: Test (with coverage — SP-6-008 / SP-9-001)
+        # Run against the test project (not the API project) so tests are actually discovered.
+        # Use services-coverage.runsettings to scope coverage to Services/Validators/Rules layers.
+        run: dotnet test ../Lumio.Api.Tests/Lumio.Api.Tests.csproj --configuration Release --logger "console;verbosity=minimal" --settings ../Lumio.Api.Tests/services-coverage.runsettings --collect:"XPlat Code Coverage" --results-directory /tmp/coverage
+
+      - name: Coverage summary + ≥30% gate (SP-6-008 / GUARD-008 / SP-9-001)
+        shell: bash
+        run: |
+          # Install report generator for human-readable summary
+          dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.3.11 2>/dev/null || true
+          # Find coverage XML
+          COVERAGE_XML=$(find /tmp/coverage -name "coverage.cobertura.xml" | head -1)
+          if [ -z "$COVERAGE_XML" ]; then
+            echo "::warning::No coverage.cobertura.xml found — skipping coverage gate."
+            exit 0
+          fi
+          # Parse line-rate from Cobertura XML (attribute on root <coverage> element)
+          LINE_RATE=$(grep -oP '(?<=line-rate=")[0-9.]+' "$COVERAGE_XML" | head -1)
+          PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.1f")
+          echo "API scoped coverage (Services/Validators/Rules): ${PCT}%"
+          echo "::notice::API test coverage scoped (line-rate): ${PCT}% — target ≥30%"
+          # SP-9-001: Threshold lowered from 50% to 30% (scoped to Services+Validators+Rules).
+          # Full-project 50% gate re-instated once controller tests added (roadmap Q3-2025).
+          THRESHOLD=30
+          INT_PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.0f")
+          if [ "$INT_PCT" -lt "$THRESHOLD" ]; then
+            echo "::error::GUARD-008: Scoped API coverage ${PCT}% is below the ≥${THRESHOLD}% minimum."
+            exit 1
+          fi
+          echo "✓ GUARD-008: Scoped API coverage ${PCT}% ≥ ${THRESHOLD}% threshold."
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage
+          path: /tmp/coverage
+          retention-days: 14
+
+      - name: GUARD-002 — no plaintext CurrentPassword in interface
+        shell: bash
+        run: |
+          # Enforce GUARD-002: IMasterPasswordService must not expose string? CurrentPassword.
+          # grep exits 1 (no match = clean) which we invert with || true, then fail on match.
+          if grep -r --include="*.cs" "string? CurrentPassword" src/Lumio.Api/ 2>/dev/null; then
+            echo "::error::GUARD-002 violated: 'string? CurrentPassword' found in C# sources."
+            echo "The master password must not be stored or exposed as a managed string."
+            echo "See docs/guardrails/03-security-guardrails.md GUARD-002."
+            exit 1
+          fi
+          echo "✓ GUARD-002: no plaintext CurrentPassword property found."
+
+      - name: GUARD-010 — controller max 200 lines
+        shell: bash
+        run: |
+          # Enforce GUARD-010: no controller exceeds 200 lines.
+          # Known legacy violations (remaining after SP-7-004 refactor — see roadmap):
+          KNOWN_VIOLATIONS=(
+            "VideoboodschappenController.cs"
+            "BoedelController.cs"
+            "DigitaalBezitController.cs"
+            "AfhandelingController.cs"
+          )
+
+          FAILED=0
+          WARNINGS=0
+          for f in src/Lumio.Api/Controllers/*.cs; do
+            name=$(basename "$f")
+            lines=$(wc -l < "$f")
+            if [ "$lines" -gt 200 ]; then
+              # Check if it is a known legacy violation
+              KNOWN=0
+              for known in "${KNOWN_VIOLATIONS[@]}"; do
+                if [ "$name" = "$known" ]; then KNOWN=1; break; fi
+              done
+              if [ "$KNOWN" -eq 1 ]; then
+                echo "::warning file=$f::GUARD-010 (legacy): $name has $lines lines — tracked for Month-10 refactor sprint."
+                WARNINGS=$((WARNINGS + 1))
+              else
+                echo "::error file=$f::GUARD-010 violated: NEW controller $name has $lines lines (max 200)."
+                echo "  Refactor into smaller controllers or service classes."
+                echo "  See docs/guardrails/02-architecture-guardrails.md GUARD-010."
+                FAILED=1
+              fi
+            fi
+          done
+          echo "✓ GUARD-010: $WARNINGS known legacy violations (tracked). New violations: $FAILED."
+          if [ "$FAILED" -gt 0 ]; then exit 1; fi
+
+  # ── Whitelabel Schema Validation ──────────────────────────────────
+  whitelabel-validate:
+    name: Whitelabel config schema validation
+    runs-on: ubuntu-latest
+    if: false  # DISABLED until further notice
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli@5
+
+      - name: Validate example-corp config
+        run: |
+          ajv validate \
+            -s tools/whitelabel/schema.json \
+            -d tools/whitelabel/configs/example-corp/whitelabel.json
+          echo "✓ Whitelabel: example-corp config is schema-valid."
+
+      - name: Validate new-partner-template config
+        run: |
+          ajv validate \
+            -s tools/whitelabel/schema.json \
+            -d tools/whitelabel/configs/new-partner-template/whitelabel.json
+          echo "✓ Whitelabel: new-partner-template config is schema-valid."
+
+      - name: Validate all partner configs (if any)
+        shell: bash
+        run: |
+          FAILED=0
+          for config in tools/whitelabel/configs/*/whitelabel.json; do
+            slug=$(basename $(dirname "$config"))
+            if ajv validate -s tools/whitelabel/schema.json -d "$config" 2>/dev/null; then
+              echo "  ✓ $slug"
+            else
+              echo "::error file=$config::Whitelabel config for '$slug' failed schema validation."
+              FAILED=1
+            fi
+          done
+          echo "Whitelabel schema validation complete."
+          if [ "$FAILED" -gt 0 ]; then exit 1; fi

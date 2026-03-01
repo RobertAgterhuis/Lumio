@@ -1,0 +1,70 @@
+version: 2
+updates:
+  # ── npm (Next.js / Electron frontend) ─────────────────────────────
+  - package-ecosystem: npm
+    directory: /src/lumio-web
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - frontend
+    groups:
+      # Group all non-breaking minor + patch updates into one PR per week
+      non-breaking:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: npm
+    directory: /src/lumio-desktop
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - electron
+
+  - package-ecosystem: npm
+    directory: /site
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - site
+
+  # ── NuGet (.NET API) ──────────────────────────────────────────────
+  - package-ecosystem: nuget
+    directory: /src/Lumio.Api
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - backend
+    groups:
+      non-breaking:
+        update-types:
+          - minor
+          - patch
+
+  # ── GitHub Actions ────────────────────────────────────────────────
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci

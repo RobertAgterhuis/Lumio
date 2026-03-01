@@ -1,0 +1,143 @@
+{
+  "dashboard": {
+    "titel": "Dashboard",
+    "beschrijving": "Manage your legacy. Click a section to get started.",
+    "laden": {
+      "titel": "One moment",
+      "beschrijving": "We are preparing your estate overview..."
+    },
+    "begroeting": {
+      "ochtend": "Good morning",
+      "middag": "Good afternoon",
+      "avond": "Good evening"
+    },
+    "aanbevolenStap": {
+      "titel": "Recommended next step",
+      "beschrijving": "This section has not been filled in yet",
+      "actie": "Fill in"
+    },
+    "verloopdatumWidget": {
+      "titel": "Documents expiring soon",
+      "verlopen": "Expired",
+      "dagenOver": "{dagen} days",
+      "beherenLink": "Manage documents →"
+    },
+    "verbergen": "Hide",
+    "sectieVerplaatsen": "Move section",
+    "helpHint": "More info",
+    "voortgang": {
+      "titel": "Legacy progress",
+      "onderdelen": "{aantalIngevuld} of {totaal} sections completed"
+    },
+    "meldingen": {
+      "titel": "Notifications",
+      "laden": "Loading notifications...",
+      "fout": "Could not load notifications.",
+      "geenMeldingen": "No notifications — everything is in order.",
+      "verbergen": "Hide",
+      "verwijder": "Dismiss notification"
+    },
+    "backup": {
+      "titel": "Backup status",
+      "laden": "Loading status...",
+      "fout": "Could not load backup status.",
+      "status": {
+        "ok": "Up to date",
+        "warning": "Outdated",
+        "noBackup": "No backup"
+      },
+      "laatste": "Last backup",
+      "dagenGeleden": "{dagen} day(s) ago",
+      "nooit": "A backup has never been made."
+    },
+    "geenProfiel": {
+      "titel": "Complete your profile to get started",
+      "beschrijving": "Before you can save data in Lumio, you need to fill in your personal information first. Choose how to start:",
+      "interview": "Guided setup (interview)",
+      "direct": "Create profile directly"
+    },
+    "letOp": "Note:",
+    "juridisch": "Lumio is a tool for recording your wishes. A notarial will remains required for legal validity under the Dutch Civil Code (BW Book 4).",
+    "juridischBegrepen": "Got it, do not show again",
+    "status": {
+      "ingevuld": "Completed",
+      "beginnen": "Start",
+      "openen": "Open",
+      "afgerond": "Finished",
+      "bezig": "In progress",
+      "reviewNodig": "Review needed",
+      "markeerAfgerond": "Mark complete",
+      "markeringOpheffen": "Reopen"
+    },
+    "domein": {
+      "eigenaar": {
+        "titel": "My Profile",
+        "beschrijving": "Personal details and contact information"
+      },
+      "testament": {
+        "titel": "Last Will",
+        "beschrijving": "Testamentary information, beneficiaries and executors"
+      },
+      "euthanasie": {
+        "titel": "Euthanasia Directive",
+        "beschrijving": "Your wishes regarding euthanasia and medical treatment"
+      },
+      "donor": {
+        "titel": "Donor Registration",
+        "beschrijving": "Organ donation choices and registration"
+      },
+      "digitaalBezit": {
+        "titel": "Digital Assets",
+        "beschrijving": "Online accounts, passwords and crypto wallets"
+      },
+      "boedel": {
+        "titel": "Estate",
+        "beschrijving": "Assets, bank accounts, insurance and debts"
+      },
+      "uitvaart": {
+        "titel": "Funeral Wishes",
+        "beschrijving": "Burial or cremation, ceremony and mourning card"
+      },
+      "documenten": {
+        "titel": "Documents",
+        "beschrijving": "Safely store important documents"
+      },
+      "erfgenamen": {
+        "titel": "Heirs",
+        "beschrijving": "Manage heirs and distribute emergency codes"
+      },
+      "noodcontacten": {
+        "titel": "Emergency Contacts",
+        "beschrijving": "Trusted persons and responders for emergencies"
+      }
+    },
+    "suggesties": {
+      "titel": "Smart suggestions",
+      "beschrijving": "Analyze your profile and receive suggestions for missing links and improvements.",
+      "analyseren": "Analyze profile",
+      "analyseMislukt": "Analysis failed",
+      "laden": "Loading suggestions...",
+      "fout": "Could not perform the analysis.",
+      "geenSuggesties": "No suggestions",
+      "geenSuggestiesBeschrijving": "Your profile is well completed and all data is consistent.",
+      "profielLeeg": "No data to analyse yet",
+      "profielLeegBeschrijving": "Fill in your profile first to receive suggestions.",
+      "aantalGevonden": "{aantal, plural, one {# suggestion} other {# suggestions}} found:"
+    },
+    "statistieken": {
+      "titel": "Statistics",
+      "erfgenamen": "Heirs",
+      "digitaleAccounts": "Digital accounts",
+      "documenten": "Documents",
+      "boedelitems": "Estate items",
+      "noodcontacten": "Emergency contacts",
+      "totaleWaarde": "Total value",
+      "schulden": "Debts",
+      "nettoNalatenschap": "Net estate"
+    },
+    "voortgangGranulair": {
+      "titel": "Detailed progress",
+      "veldenIngevuld": "{ingevuld} of {totaal} fields completed"
+    }
+  }
+}

@@ -14,6 +14,7 @@ import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
+import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
 
 const WIZARD_ID = "testament";
 const TOTAL_STEPS = 6;
@@ -353,7 +354,10 @@ export default function TestamentWizardPage() {
     },
   ];
 
-  const handleComplete = async () => {
+  const handleComplete = () => setConfirmCompleteOpen(true);
+  const [confirmCompleteOpen, setConfirmCompleteOpen] = useState(false);
+
+  const executeComplete = async () => {
     await api.put("/api/testament", {
       ...form,
       datumTestament: form.datumTestament || null,
@@ -373,15 +377,25 @@ export default function TestamentWizardPage() {
   if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
-    <WizardShell
-      titel={t("titel")}
-      stappen={stappen}
-      onComplete={handleComplete}
-      onCancel={() => router.push("/testament")}
-      initialStep={currentStep}
-      onStepChange={setCurrentStep}
-      wasRestored={wasRestored}
-      onClearProgress={clearProgress}
-    />
+    <>
+      <WizardShell
+        titel={t("titel")}
+        stappen={stappen}
+        onComplete={handleComplete}
+        onCancel={() => router.push("/testament")}
+        initialStep={currentStep}
+        onStepChange={setCurrentStep}
+        wasRestored={wasRestored}
+        onClearProgress={clearProgress}
+      />
+      {/* SP-ACC1-006: SC 3.3.4 confirmation gate before legally significant save */}
+      <ConfirmJuridischDialog
+        open={confirmCompleteOpen}
+        onOpenChange={setConfirmCompleteOpen}
+        title={t("bevestigenTitel")}
+        description={t("bevestigenBeschrijving")}
+        onConfirm={executeComplete}
+      />
+    </>
   );
 }

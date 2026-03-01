@@ -23,6 +23,8 @@ import { LumioIcon } from "@/components/ui/lumio-icon";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
 import { toast } from "@/stores/toastStore";
+import { HelpButton } from "@/components/help/HelpButton";
+import { HelpEmptyState } from "@/components/help/HelpEmptyState";
 
 const CATEGORIE_KEYS: Record<string, string> = {
   "Testament": "testament",
@@ -241,6 +243,7 @@ export default function DocumentenPage() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <LumioIcon name="documenten" size="lg" className="text-primary" />
             {t("titel")}
+            <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
@@ -265,17 +268,12 @@ export default function DocumentenPage() {
       )}
 
       {documenten.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">
-              {t("geenDocumenten")}
-            </p>
-            <Button className="mt-4" onClick={() => setUploadOpen(true)}>
-              {t("uploaden")}
-            </Button>
-          </CardContent>
-        </Card>
+        <HelpEmptyState
+          chapterSlug="documenten"
+          domeinLabel="documenten"
+          addLabel={t("uploaden")}
+          onAdd={() => setUploadOpen(true)}
+        />
       ) : (
         <Card className="overflow-hidden">
           <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">

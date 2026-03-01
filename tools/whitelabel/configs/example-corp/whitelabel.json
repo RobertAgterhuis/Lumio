@@ -1,0 +1,31 @@
+{
+  "$schema": "../../schema.json",
+
+  "companyName": "ExampleCorp",
+  "productName": "ExampleCorp Nalatenschap",
+  "appId": "com.examplecorp.nalatenschap",
+
+  "colors": {
+    "primaryBase":   "#66368a",
+    "primaryDark":   "#1a3a5c",
+    "primaryMedium": "#ef7b31",
+    "primaryLight":  "#c4b0cf",
+    "primaryPale":   "#c5daf0",
+    "primaryGhost":  "#e8f2fb",
+    "primaryForeground": "#ffffff"
+  },
+
+  "titleBarColor":        "#1a3a5c",
+  "titleBarSymbolColor":  "#ffffff",
+  "splashColor":          "#66368a",
+
+  "logo": {
+    "file": "logo.svg",
+    "height": 32,
+    "opacity": 0.70,
+    "showOnSplash": true,
+    "useAsAppIcon": true
+  },
+
+  "dashboardMessage": "Aangeboden door Stichting Philadelphio HR. Vragen? Stuur een e-mail naar hr@examplecorp.nl"
+}

@@ -21,6 +21,34 @@ const SearchDialog = dynamic(() => import("./SearchDialog").then(m => m.SearchDi
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
+/** Static map of pathname prefixes → human-readable page titles.
+ *  Used for the native OS window title (ALT+TAB / CMD+TAB). */
+const ROUTE_TITLES: Record<string, string> = {
+  "/dashboard":          "Dashboard",
+  "/eigenaar":           "Mijn Profiel",
+  "/testament":          "Testament",
+  "/euthanasie":         "Wilsverklaring",
+  "/donor":              "Donorregistratie",
+  "/uitvaart":           "Uitvaartwensen",
+  "/digitaal-bezit":     "Digitaal Bezit",
+  "/boedel":             "Boedel",
+  "/documenten":         "Documenten",
+  "/erfgenamen":         "Erfgenamen",
+  "/noodcontacten":      "Noodcontacten",
+  "/tijdlijn":           "Tijdlijn",
+  "/videoboodschappen":  "Videoboodschappen",
+  "/instellingen":       "Instellingen",
+  "/help":               "Help",
+  "/export":             "Exporteren",
+};
+
+function getPageTitleForPath(pathname: string): string {
+  for (const [prefix, title] of Object.entries(ROUTE_TITLES)) {
+    if (pathname.includes(prefix)) return title;
+  }
+  return "Lumio";
+}
+
 export function Header() {
   const { lock, activeProfile, profileFotoVersion } = useAuthStore();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -29,6 +57,15 @@ export function Header() {
   const [fotoUrl, setFotoUrl] = useState<string | null>(null);
   const pathname = usePathname();
   const { openPanel } = useHelpStore();
+
+  // EL-6-04: Update the native OS window title on every route change.
+  // Guard: window.lumio is undefined in browser mode — no-op there.
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.lumio || !pathname) return;
+    const pageTitle = getPageTitleForPath(pathname);
+    const windowTitle = pageTitle === "Lumio" ? "Lumio" : `${pageTitle} — Lumio`;
+    window.lumio.setWindowTitle(windowTitle);
+  }, [pathname]);
 
   // Fetch profile photo when authenticated, or when the photo is updated elsewhere
   useEffect(() => {
@@ -68,7 +105,11 @@ export function Header() {
 
   return (
     <>
-      <header className="flex h-16 items-center justify-between border-b border-border bg-primary px-6 text-primary-foreground">
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      <header
+        className="flex h-16 items-center justify-between border-b border-border bg-primary px-6 text-primary-foreground"
+        style={{ WebkitAppRegion: "drag" } as any}
+      >
         {activeProfile ? (
           <div className="flex items-center gap-2 text-sm text-primary-foreground/80">
             {fotoUrl ? (
@@ -85,7 +126,8 @@ export function Header() {
         ) : (
           <div />
         )}
-        <div className="flex items-center gap-2">
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <div className="flex items-center gap-2" style={{ WebkitAppRegion: "no-drag" } as any}>
           <Button
             variant="ghost"
             size="sm"

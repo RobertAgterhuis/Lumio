@@ -17,7 +17,10 @@ import {
   GripVertical,
   Sparkles,
   ArrowRight,
+  BookOpen,
 } from "lucide-react";
+import { useHelpStore } from "@/stores/helpStore";
+import { helpChapters } from "@/content/help-chapters";
 
 // Maps bgColor utility class → a header background colour via an explicit
 // Tailwind class (so the compiler never purges it).
@@ -48,6 +51,12 @@ interface Props {
 
 export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, onMarkToggle }: Props) {
   const t = useTranslations("dashboard");
+  const { openPanel } = useHelpStore();
+
+  // Derive the help chapter slug that matches this domain
+  const chapterSlug =
+    helpChapters.find((ch) => ch.relatedRoute === "/" + card.domein)?.slug ??
+    card.domein;
 
   const {
     attributes,
@@ -140,7 +149,23 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
               <span className="text-sm text-primary flex items-center">
                 {t("status.openen")} <ArrowRight className="ml-1 h-3 w-3" />
               </span>
-              {cardStatus !== "beginnen" && (
+              {cardStatus === "beginnen" ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-xs px-2 gap-1 text-muted-foreground hover:text-primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openPanel(chapterSlug);
+                  }}
+                  title={`Hoe werkt ${t(`domein.${card.domeinKey}.titel`)}?`}
+                  aria-label={`Hoe werkt ${t(`domein.${card.domeinKey}.titel`)}?`}
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  {t("helpHint")}
+                </Button>
+              ) : (
                 <Button
                   variant="ghost"
                   size="sm"

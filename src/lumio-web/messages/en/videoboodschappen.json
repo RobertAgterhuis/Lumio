@@ -1,0 +1,404 @@
+{
+  "videoboodschappen": {
+    "titel": "Video Messages",
+    "subtitel": "Personal videos for your heirs, to be watched after your passing.",
+    "nieuw": "New video message",
+    "opgeslagen": "Video message saved",
+    "toegevoegd": "Video message added",
+    "afspelen": "Play",
+    "bewerken": "Edit",
+    "verwijderen": "Delete",
+    "onbekendeOntvanger": "Unknown",
+    "verwijderenBevestig": "Are you sure you want to delete \"{titel}\"?",
+    "verwijderenBevestigTitel": "Delete video",
+    "annuleren": "Cancel",
+    "legeStaat": {
+      "titel": "No video messages yet",
+      "beschrijving": "Record a personal message for your heirs. You can record via webcam or upload a video file.",
+      "actie": "Add first video"
+    },
+    "dialog": {
+      "nieuw": "New video message",
+      "bewerken": "Edit video message",
+      "video": "Video",
+      "tabOpnemen": "Record",
+      "tabUploaden": "Upload",
+      "titel": "Title",
+      "titelPlaceholder": "E.g. Message for my children",
+      "beschrijving": "Description (optional)",
+      "beschrijvingPlaceholder": "Brief description of the content",
+      "ontvangers": "Who is this video for?",
+      "aantalOntvangers": "{aantal, plural, one {# recipient selected} other {# recipients selected}}",
+      "annuleren": "Cancel",
+      "opslaan": "Save",
+      "uploading": "Uploading...",
+      "titelVerplicht": "Please enter a title.",
+      "videoVerplicht": "Please choose or record a video.",
+      "alleenVideo": "Only video files are allowed.",
+      "bestandTeGroot": "File is too large. Maximum is 100 MB.",
+      "fout": "Something went wrong. Please try again.",
+      "uploadKlik": "Click to choose a file",
+      "uploadTip": "MP4, WebM — maximum 100 MB",
+      "standaardTitel": "Recording {{datum}}",
+      "bestaandeVideo": "Existing video"
+    },
+    "recorder": {
+      "start": "Start recording",
+      "stop": "Stop recording",
+      "gebruik": "Use this recording",
+      "opnieuw": "Record again",
+      "toestemming": "Requesting camera and microphone permission...",
+      "permissieGeweigerd": "Access to camera or microphone denied.",
+      "fout": "Recording not possible. Check your camera.",
+      "klaarVoorOpname": "Ready to record",
+      "previewLaden": "Preparing preview...",
+      "maxDuur": "Maximum {minuten} minutes",
+      "maxOver": "{seconden} sec remaining",
+      "nietBeschikbaar": "Recording not available in this browser.",
+      "httpsVereist": "Camera recording requires a secure connection (HTTPS)."
+    },
+    "aantalGebruikt": "{gebruikt} of {max} video messages used",
+    "opslagGebruikt": "{gebruikt} of {max} storage used",
+    "erfgenaamToegangInfo": "Heirs will see their video messages when they open the application using emergency codes after your passing. Your videos are secured in the meantime.",
+    "erfgenaamModus": "You are viewing video messages in heir mode. The recorded videos are shown below."
+  },
+  "voorbeeldData": {
+    "disclaimer": "This is fictional example data from \"The Example Family\". No real persons or data.",
+    "bekijkVoorbeeld": "View example",
+    "sluiten": "Close",
+    "eigenaar": {
+      "titel": "My Profile — Example",
+      "beschrijving": "Below you see an example of a completed profile. Use this as inspiration for your own information.",
+      "secties": {
+        "persoonsgegevens": {
+          "titel": "Personal details",
+          "voornaam": "First name",
+          "voornaamWaarde": "Pieter",
+          "tussenvoegsel": "Prefix",
+          "tussenvoegselWaarde": "de",
+          "achternaam": "Last name",
+          "achternaamWaarde": "Voorbeeld",
+          "geboortedatum": "Date of birth",
+          "geboortedatumWaarde": "15-03-1965",
+          "bsn": "SSN",
+          "bsnWaarde": "123456789",
+          "telefoon": "Phone",
+          "telefoonWaarde": "06-12345678",
+          "email": "Email",
+          "emailWaarde": "pieter@voorbeeld.nl"
+        },
+        "adresgegevens": {
+          "titel": "Address details",
+          "adres": "Address",
+          "adresWaarde": "Voorbeeldstraat 42",
+          "postcode": "Postal code",
+          "postcodeWaarde": "1234 AB",
+          "woonplaats": "City",
+          "woonplaatsWaarde": "Voorbeeldstad"
+        },
+        "burgerlijkeStaat": {
+          "titel": "Marital status",
+          "burgerlijkeStaat": "Marital status",
+          "burgerlijkeStaatWaarde": "Married",
+          "huwelijksvoorwaarden": "Prenuptial agreement",
+          "huwelijksvoorwaardenWaarde": "Limited community of property",
+          "datumHuwelijk": "Date of marriage",
+          "datumHuwelijkWaarde": "22-06-1992"
+        },
+        "legitimatie": {
+          "titel": "Identification",
+          "soort": "Type",
+          "soortWaarde": "Passport",
+          "documentnummer": "Document number",
+          "documentnummerWaarde": "NX1234567",
+          "datumAfgifte": "Date of issue",
+          "datumAfgifteWaarde": "01-02-2022",
+          "geldigTot": "Valid until",
+          "geldigTotWaarde": "01-02-2032"
+        }
+      }
+    },
+    "testament": {
+      "titel": "Last Will — Example",
+      "beschrijving": "An example of testamentary information. The content is fictional.",
+      "secties": {
+        "testamentgegevens": {
+          "titel": "Will details",
+          "typeTestament": "Type of will",
+          "typeTestamentWaarde": "Notarial will",
+          "datumTestament": "Date of will",
+          "datumTestamentWaarde": "10-09-2020",
+          "ctrNummer": "CTR number",
+          "ctrNummerWaarde": "CTR-2020-098765",
+          "locatie": "Location",
+          "locatieWaarde": "Safe at notary"
+        },
+        "notaris": {
+          "titel": "Notary",
+          "naam": "Name",
+          "naamWaarde": "Mr. J.H. Bakker",
+          "kantoor": "Office",
+          "kantoorWaarde": "Bakker & Partners Notarissen",
+          "telefoon": "Phone",
+          "telefoonWaarde": "020-1234567",
+          "email": "Email",
+          "emailWaarde": "info@bakkernotarissen.nl",
+          "adres": "Address",
+          "adresWaarde": "Keizersgracht 100, 1015 AB Amsterdam"
+        },
+        "executeur": {
+          "titel": "Executor",
+          "naam": "Name",
+          "naamWaarde": "Maria de Voorbeeld-Jansen",
+          "relatie": "Relationship",
+          "relatieWaarde": "Spouse",
+          "bevoegdheden": "Powers",
+          "bevoegdhedenWaarde": "Full executor (management, distribution, sale)",
+          "telefoon": "Phone",
+          "telefoonWaarde": "06-98765432"
+        },
+        "begunstigden": {
+          "titel": "Beneficiaries",
+          "mariaDeVoorbeeldJansen": "Maria de Voorbeeld-Jansen",
+          "mariaDeVoorbeeldJansenWaarde": "Spouse — 50%",
+          "thomasDeVoorbeeld": "Thomas de Voorbeeld",
+          "thomasDeVoorbeeldWaarde": "Son — 25%",
+          "sophieDeVoorbeeld": "Sophie de Voorbeeld",
+          "sophieDeVoorbeeldWaarde": "Daughter — 25%"
+        },
+        "aanvullend": {
+          "titel": "Additional",
+          "uitsluitingsclausule": "Exclusion clause",
+          "uitsluitingsclausuleWaarde": "Yes",
+          "legaten": "Legacies",
+          "legatenWaarde": "Grandfather's painting → to nephew Karel",
+          "algemeneWensen": "General wishes",
+          "algemeneWensenWaarde": "My book collection may be divided among the children."
+        }
+      }
+    },
+    "euthanasie": {
+      "titel": "Living Will — Example",
+      "beschrijving": "An example of a recorded euthanasia living will.",
+      "secties": {
+        "wilsverklaring": {
+          "titel": "Living will",
+          "type": "Type",
+          "typeWaarde": "Euthanasia request",
+          "datumOpgesteld": "Date drafted",
+          "datumOpgesteldWaarde": "05-01-2021",
+          "locatieDocument": "Document location",
+          "locatieDocumentWaarde": "General practitioner and home safe",
+          "huisarts": "General practitioner",
+          "huisartsWaarde": "Dr. A.B. Smit — Centrum Medical Practice",
+          "telefoonHuisarts": "GP phone",
+          "telefoonHuisartsWaarde": "020-7654321"
+        },
+        "wensenEnVoorwaarden": {
+          "titel": "Wishes & conditions",
+          "wanneerVanToepassing": "When applicable",
+          "wanneerVanToepassingWaarde": "In case of hopeless and unbearable suffering, including advanced dementia where I no longer recognize myself and loved ones.",
+          "behandelverbod": "Treatment prohibition",
+          "behandelverbodWaarde": "No resuscitation, no artificial ventilation, no tube feeding.",
+          "aanvullendeWensen": "Additional wishes",
+          "aanvullendeWensenWaarde": "I wish to pass away in my own home if possible."
+        }
+      }
+    },
+    "donor": {
+      "titel": "Donor Registration — Example",
+      "beschrijving": "An example of a donor registration.",
+      "secties": {
+        "registratie": {
+          "titel": "Registration",
+          "keuze": "Choice",
+          "keuzeWaarde": "Yes, I give consent",
+          "specificatie": "Specification",
+          "specificatieWaarde": "All organs and tissues, except cornea (eyes)",
+          "geregistreerdOp": "Registered on",
+          "geregistreerdOpWaarde": "12-04-2019",
+          "donorregister": "Donor register",
+          "donorregisterWaarde": "Yes, registered with the Donor Register"
+        }
+      }
+    },
+    "boedel": {
+      "titel": "Estate — Example",
+      "beschrijving": "An example of a completed estate with assets, accounts, insurance and debts.",
+      "secties": {
+        "fysiekeBezittingen": {
+          "titel": "Physical assets",
+          "woningVoorbeeldstraat": "Property Voorbeeldstraat 42",
+          "woningVoorbeeldstraatWaarde": "€ 425,000 — Cad. ASD01-A-1234",
+          "volkswagenId4": "Volkswagen ID.4 (2023)",
+          "volkswagenId4Waarde": "€ 35,000 — AB-123-CD",
+          "antiekDressoir": "Antique dresser (heirloom)",
+          "antiekDressoirWaarde": "€ 2,500",
+          "zonnepanelen": "Solar panels (12 units)",
+          "zonnepanelenWaarde": "€ 4,000"
+        },
+        "bankrekeningen": {
+          "titel": "Bank accounts",
+          "ingBetaalrekening": "ING Current account",
+          "ingBetaalrekeningWaarde": "NL91INGB0001234567 — € 8,450",
+          "rabobankSpaarrekening": "Rabobank Savings account",
+          "rabobankSpaarrekeningWaarde": "NL20RABO9876543210 — € 52,300",
+          "abnAmroBeleggingsrekening": "ABN AMRO Investment account",
+          "abnAmroBeleggingsrekeningWaarde": "NL44ABNA5678901234 — € 87,000"
+        },
+        "verzekeringen": {
+          "titel": "Insurance",
+          "overlijdensrisicoverzekering": "Life insurance",
+          "overlijdensrisicoverzekeringWaarde": "Nationale-Nederlanden — € 200,000 — Policy VZ-2019-4567",
+          "uitvaartverzekering": "Funeral insurance",
+          "uitvaartverzekeringWaarde": "DELA — € 12,500 — Policy UIT-2015-8901",
+          "inboedelverzekering": "Home contents insurance",
+          "inboedelverzekeringWaarde": "Centraal Beheer — € 75,000"
+        },
+        "schulden": {
+          "titel": "Debts",
+          "hypotheekWoning": "Mortgage property",
+          "hypotheekWoningWaarde": "Rabobank — € 195,000 (remaining debt)",
+          "persoonlijkeLening": "Personal loan",
+          "persoonlijkeLeningWaarde": "ING — € 5,000"
+        }
+      }
+    },
+    "uitvaart": {
+      "titel": "Funeral Wishes — Example",
+      "beschrijving": "An example of recorded funeral wishes.",
+      "secties": {
+        "vormEnLocatie": {
+          "titel": "Type & location",
+          "voorkeur": "Preference",
+          "voorkeurWaarde": "Cremation",
+          "locatie": "Location",
+          "locatieWaarde": "Crematorium Westgaarde, Amsterdam",
+          "uitvaartondernemer": "Funeral director",
+          "uitvaartondernemerWaarde": "Monuta",
+          "verzekeraar": "Insurer",
+          "verzekeraarWaarde": "DELA — Policy number UIT-2015-8901"
+        },
+        "ceremonie": {
+          "titel": "Ceremony",
+          "type": "Type",
+          "typeWaarde": "Personal non-religious gathering",
+          "muziek": "Music",
+          "muziekWaarde": "Time to Say Goodbye (Andrea Bocelli), Imagine (John Lennon)",
+          "sprekers": "Speaker(s)",
+          "sprekersWaarde": "Maria (spouse), Thomas (son), colleague Jan",
+          "bloemen": "Flowers",
+          "bloemenWaarde": "White roses, no wreaths",
+          "dresscode": "Dress code",
+          "dresscodeWaarde": "No black, colorful clothing preferred"
+        },
+        "naDeUitvaart": {
+          "titel": "After the funeral",
+          "asbestemming": "Ashes destination",
+          "asbestemmingWaarde": "Scatter at sea, near Scheveningen",
+          "rouwkaart": "Mourning card",
+          "rouwkaartWaarde": "Simple, with photo from 2023",
+          "condoleance": "Condolences",
+          "condoleanceWaarde": "At home, on the day of the funeral"
+        }
+      }
+    },
+    "erfgenamen": {
+      "titel": "Heirs — Example",
+      "beschrijving": "An example of recorded heirs.",
+      "secties": {
+        "erfgenaam1": {
+          "titel": "Heir 1",
+          "naam": "Name",
+          "naamWaarde": "Maria de Voorbeeld-Jansen",
+          "relatie": "Relationship",
+          "relatieWaarde": "Spouse",
+          "geboortedatum": "Date of birth",
+          "geboortedatumWaarde": "28-07-1967",
+          "bsn": "SSN",
+          "bsnWaarde": "987654321",
+          "telefoon": "Phone",
+          "telefoonWaarde": "06-98765432",
+          "email": "Email",
+          "emailWaarde": "maria@voorbeeld.nl",
+          "legitimatie": "Identification",
+          "legitimatieWaarde": "Identity card — ID9876543"
+        },
+        "erfgenaam2": {
+          "titel": "Heir 2",
+          "naam": "Name",
+          "naamWaarde": "Thomas de Voorbeeld",
+          "relatie": "Relationship",
+          "relatieWaarde": "Child",
+          "geboortedatum": "Date of birth",
+          "geboortedatumWaarde": "14-11-1995",
+          "telefoon": "Phone",
+          "telefoonWaarde": "06-11223344",
+          "email": "Email",
+          "emailWaarde": "thomas@voorbeeld.nl"
+        },
+        "erfgenaam3": {
+          "titel": "Heir 3",
+          "naam": "Name",
+          "naamWaarde": "Sophie de Voorbeeld",
+          "relatie": "Relationship",
+          "relatieWaarde": "Child",
+          "geboortedatum": "Date of birth",
+          "geboortedatumWaarde": "03-05-1998",
+          "telefoon": "Phone",
+          "telefoonWaarde": "06-55667788",
+          "email": "Email",
+          "emailWaarde": "sophie@voorbeeld.nl"
+        }
+      }
+    },
+    "digitaalBezit": {
+      "titel": "Digital Assets — Example",
+      "beschrijving": "An example of recorded online accounts and digital assets.",
+      "secties": {
+        "emailEnCloud": {
+          "titel": "Email & Cloud",
+          "google": "Google (pieter@gmail.com)",
+          "googleWaarde": "Delete after death — Inactive Account Manager configured",
+          "icloud": "iCloud (pieter@icloud.com)",
+          "icloudWaarde": "Transfer to spouse — Digital Legacy contact configured"
+        },
+        "socialMedia": {
+          "titel": "Social media",
+          "facebook": "Facebook",
+          "facebookWaarde": "Set to memorial mode",
+          "linkedin": "LinkedIn",
+          "linkedinWaarde": "Delete profile",
+          "instagram": "Instagram (@pietervoorbeeld)",
+          "instagramWaarde": "Delete"
+        },
+        "financieelEnCrypto": {
+          "titel": "Financial & Crypto",
+          "paypal": "PayPal",
+          "paypalWaarde": "Transfer balance and close",
+          "bitcoinWallet": "Bitcoin wallet (Ledger Nano)",
+          "bitcoinWalletWaarde": "Seed phrase in safe — transfer to Thomas"
+        }
+      }
+    },
+    "noodcontacten": {
+      "titel": "Emergency Contacts — Example",
+      "beschrijving": "An example of recorded emergency contacts.",
+      "secties": {
+        "contactpersonen": {
+          "titel": "Contact persons",
+          "mariaDeVoorbeeldJansen": "Maria de Voorbeeld-Jansen",
+          "mariaDeVoorbeeldJansenWaarde": "Spouse — 06-98765432 — maria@voorbeeld.nl",
+          "mrJhBakker": "Mr. J.H. Bakker",
+          "mrJhBakkerWaarde": "Notary — 020-1234567 — info@bakkernotarissen.nl",
+          "drAbSmit": "Dr. A.B. Smit",
+          "drAbSmitWaarde": "General practitioner — 020-7654321",
+          "janDeVries": "Jan de Vries",
+          "janDeVriesWaarde": "Financial advisor — 030-9876543",
+          "karelJansen": "Karel Jansen",
+          "karelJansenWaarde": "Neighbor (key holder) — 06-44556677"
+        }
+      }
+    }
+  }
+}

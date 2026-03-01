@@ -28,14 +28,19 @@ import {
   HardDrive,
   Video,
   Loader2,
+  Info,
 } from "lucide-react";
 import { useVideoboodschappen } from "@/components/videoboodschappen/useVideoboodschappen";
 import { VideoboodschapDialog } from "@/components/videoboodschappen/VideoboodschapDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { toast } from "@/stores/toastStore";
 import { getApiUrl } from "@/lib/api-client";
+import { useAuthStore } from "@/stores/authStore";
+import { HelpButton } from "@/components/help/HelpButton";
 import type { Erfgenaam } from "@/components/erfgenamen/types";
 import type { Videoboodschap, VideoboodschapFormData } from "@/components/videoboodschappen/types";
+
+// ── Utilities ────────────────────────────────────────────────────────────────
 
 function formatBytes(bytes: number): string {
   if (bytes >= 1_048_576) return `${(bytes / 1_048_576).toFixed(1)} MB`;
@@ -44,15 +49,16 @@ function formatBytes(bytes: number): string {
 
 function formatDuration(seconds?: number): string {
   if (!seconds) return "";
-  const m = Math.floor(seconds / 60)
-    .toString()
-    .padStart(2, "0");
+  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 }
 
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function VideoboodschappenPage() {
   const t = useTranslations("videoboodschappen");
+  const { isReadOnly } = useAuthStore();
 
   const {
     videoboodschappen,
@@ -66,7 +72,12 @@ export default function VideoboodschappenPage() {
   } = useVideoboodschappen();
 
   const { data: erfgenamen = [] } = useDomainQuery<Erfgenaam[]>("erfgenamen");
-  const { data: limietData } = useDomainQuery<{ maxAantal: number }>("videoboodschappen/limiet");
+  const { data: limietData } = useDomainQuery<{
+    maxAantal: number;
+    maxDuurSeconden: number;
+    maxBytes: number;
+    gebruiktBytes: number;
+  }>("videoboodschappen/limiet");
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Videoboodschap | undefined>(undefined);
@@ -75,7 +86,8 @@ export default function VideoboodschappenPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteItem, setConfirmDeleteItem] = useState<Videoboodschap | null>(null);
 
-  // ── Create helper ────────────────────────────────────────────────────
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
   const openNew = () => {
     setEditingItem(undefined);
     setDialogOpen(true);
@@ -91,11 +103,9 @@ export default function VideoboodschappenPage() {
     setPlayerOpen(true);
   };
 
-  // ── Save handler ────────────────────────────────────────────────────
   const handleSave = useCallback(
     async (form: VideoboodschapFormData) => {
       if (editingItem) {
-        // Update metadata only
         await bijwerken(editingItem.id, {
           titel: form.titel,
           beschrijving: form.beschrijving || undefined,
@@ -117,29 +127,23 @@ export default function VideoboodschappenPage() {
     [editingItem, bijwerken, opslaan, t]
   );
 
-  // ── Delete handler ──────────────────────────────────────────────────
-  const handleDelete = useCallback(
-    (item: Videoboodschap) => {
-      setConfirmDeleteItem(item);
-    },
-    []
-  );
+  const handleDelete = useCallback((item: Videoboodschap) => {
+    setConfirmDeleteItem(item);
+  }, []);
 
-  const execDelete = useCallback(
-    async () => {
-      if (!confirmDeleteItem) return;
-      setDeletingId(confirmDeleteItem.id);
-      setConfirmDeleteItem(null);
-      try {
-        await verwijderen(confirmDeleteItem.id, confirmDeleteItem.titel);
-      } finally {
-        setDeletingId(null);
-      }
-    },
-    [confirmDeleteItem, verwijderen]
-  );
+  const execDelete = useCallback(async () => {
+    if (!confirmDeleteItem) return;
+    setDeletingId(confirmDeleteItem.id);
+    setConfirmDeleteItem(null);
+    try {
+      await verwijderen(confirmDeleteItem.id, confirmDeleteItem.titel);
+    } finally {
+      setDeletingId(null);
+    }
+  }, [confirmDeleteItem, verwijderen]);
 
-  // ── Recipient names ─────────────────────────────────────────────────
+  // ── Recipient name map ───────────────────────────────────────────────────
+
   const erfgenaamMap = new Map(
     erfgenamen.map((e) => [
       e.id,
@@ -149,57 +153,111 @@ export default function VideoboodschappenPage() {
     ])
   );
 
-  // ── Render ──────────────────────────────────────────────────────────
+  // ── Storage bar values (owner only) ─────────────────────────────────────
+
+  const showStorageBar =
+    !isReadOnly &&
+    limietData != null &&
+    limietData.maxBytes > 0;
+
+  const storagePct = showStorageBar
+    ? Math.min(100, Math.round((limietData!.gebruiktBytes / limietData!.maxBytes) * 100))
+    : 0;
+
+  // ── Render ───────────────────────────────────────────────────────────────
+
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-6">
-      {/* Header */}
+
+      {/* ── Header ── */}
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold tracking-tight">{t("titel")}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t("subtitel")}</p>
-          {limietData && (
-            <p className="text-xs text-muted-foreground mt-1">
-              {t("aantalGebruikt", { gebruikt: videoboodschappen.length, max: limietData.maxAantal })}
-            </p>
+
+          {showStorageBar && (
+            <div className="mt-2">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-muted-foreground">
+                  {t("opslagGebruikt", {
+                    gebruikt: formatBytes(limietData!.gebruiktBytes),
+                    max: formatBytes(limietData!.maxBytes),
+                  })}
+                </span>
+                <span className="text-xs text-muted-foreground">{storagePct}%</span>
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{ width: `${storagePct}%` }}
+                />
+              </div>
+            </div>
           )}
         </div>
-        <Button onClick={openNew} className="gap-2 shrink-0">
-          <Plus className="h-4 w-4" />
-          {t("nieuw")}
-        </Button>
+
+        <div className="flex shrink-0 items-center gap-2">
+          {!isReadOnly && (
+            <Button onClick={openNew} className="gap-2">
+              <Plus className="h-4 w-4" />
+              {t("nieuw")}
+            </Button>
+          )}
+          <HelpButton />
+        </div>
       </div>
 
+      {/* ── Section note ── */}
       <SectieNotitie sectie="videoboodschappen" />
 
-      {/* Loading */}
+      {/* ── Info callout (owner) ── */}
+      {!isReadOnly && (
+        <div className="flex gap-3 rounded-lg border border-info/30 bg-info-100 px-4 py-3 text-sm text-foreground">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-info" />
+          <p>{t("erfgenaamToegangInfo")}</p>
+        </div>
+      )}
+
+      {/* ── Info callout (heir mode) ── */}
+      {isReadOnly && (
+        <div className="flex gap-3 rounded-lg border border-info/30 bg-info-100 px-4 py-3 text-sm text-foreground">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-info" />
+          <p>{t("erfgenaamModus")}</p>
+        </div>
+      )}
+
+      {/* ── Loading ── */}
       {isLoading && (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       )}
 
-      {/* Empty state */}
+      {/* ── Empty state ── */}
       {!isLoading && videoboodschappen.length === 0 && (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-              <Video className="h-6 w-6 text-muted-foreground" />
+        isReadOnly ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
+            <Video className="h-10 w-10 text-muted-foreground" />
+            <p className="text-muted-foreground text-sm">{t("legeStaat.beschrijving")}</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <Video className="h-7 w-7 text-primary" />
             </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold">{t("legeStaat.titel")}</h3>
-              <p className="text-sm text-muted-foreground max-w-xs">
-                {t("legeStaat.beschrijving")}
-              </p>
+            <div>
+              <p className="font-medium">{t("legeStaat.titel")}</p>
+              <p className="text-muted-foreground text-sm mt-0.5">{t("legeStaat.beschrijving")}</p>
             </div>
-            <Button onClick={openNew} className="gap-2" variant="outline">
+            <Button onClick={openNew} className="gap-2 mt-1">
               <Plus className="h-4 w-4" />
               {t("legeStaat.actie")}
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        )
       )}
 
-      {/* Video list */}
+      {/* ── Video list ── */}
       {!isLoading && videoboodschappen.length > 0 && (
         <div className="space-y-3">
           {videoboodschappen.map((item) => {
@@ -212,11 +270,9 @@ export default function VideoboodschappenPage() {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      {/* Icon */}
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                         <Video className="h-5 w-5 text-primary" />
                       </div>
-
                       <div className="min-w-0">
                         <CardTitle className="text-base leading-tight">
                           {item.titel}
@@ -226,8 +282,6 @@ export default function VideoboodschappenPage() {
                             {item.beschrijving}
                           </CardDescription>
                         )}
-
-                        {/* Meta row */}
                         <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                           {item.duurSeconden !== undefined && (
                             <span className="flex items-center gap-1">
@@ -243,7 +297,6 @@ export default function VideoboodschappenPage() {
                       </div>
                     </div>
 
-                    {/* Action buttons */}
                     <div className="flex shrink-0 gap-1">
                       <Button
                         variant="ghost"
@@ -254,34 +307,37 @@ export default function VideoboodschappenPage() {
                       >
                         <Play className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => openEdit(item)}
-                        title={t("bewerken")}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive hover:text-destructive"
-                        onClick={() => handleDelete(item)}
-                        disabled={isDeleting}
-                        title={t("verwijderen")}
-                      >
-                        {isDeleting ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-3.5 w-3.5" />
-                        )}
-                      </Button>
+                      {!isReadOnly && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => openEdit(item)}
+                            title={t("bewerken")}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive"
+                            onClick={() => handleDelete(item)}
+                            disabled={isDeleting}
+                            title={t("verwijderen")}
+                          >
+                            {isDeleting ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-3.5 w-3.5" />
+                            )}
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
 
-                {/* Recipient badges */}
                 {item.ontvangers.length > 0 && (
                   <CardContent className="pt-0">
                     <div className="flex flex-wrap items-center gap-1.5">
@@ -300,42 +356,46 @@ export default function VideoboodschappenPage() {
         </div>
       )}
 
-      {/* Create / edit dialog */}
-      <VideoboodschapDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        editing={editingItem}
-        onSave={handleSave}
-        uploading={uploading}
-        uploadProgress={uploadProgress}
-        saving={saving}
-        erfgenamen={erfgenamen}
-      />
+      {/* ── Create / edit dialog (hidden in heir mode) ── */}
+      {!isReadOnly && (
+        <VideoboodschapDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          editing={editingItem}
+          onSave={handleSave}
+          uploading={uploading}
+          uploadProgress={uploadProgress}
+          saving={saving}
+          erfgenamen={erfgenamen}
+        />
+      )}
 
-      {/* Video player dialog */}
+      {/* ── Player dialog ── */}
       {playingItem && (
         <Dialog open={playerOpen} onOpenChange={setPlayerOpen}>
-          <DialogHeader className="pb-2">
+          <DialogHeader className="pb-2 shrink-0">
             <DialogTitle>{playingItem.titel}</DialogTitle>
           </DialogHeader>
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video
-            key={playingItem.id}
-            src={getApiUrl(`/api/videoboodschappen/${playingItem.id}/stream`)}
-            controls
-            autoPlay
-            className="w-full rounded-lg bg-black"
-            style={{ maxHeight: 400 }}
-          />
-          {playingItem.beschrijving && (
-            <p className="text-sm text-muted-foreground pt-2">
-              {playingItem.beschrijving}
-            </p>
-          )}
+          <div className="overflow-y-auto">
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video
+              key={playingItem.id}
+              src={getApiUrl(`/api/videoboodschappen/${playingItem.id}/stream`)}
+              controls
+              autoPlay
+              className="w-full rounded-lg bg-black"
+              style={{ maxHeight: 400 }}
+            />
+            {playingItem.beschrijving && (
+              <p className="text-sm text-muted-foreground pt-2">
+                {playingItem.beschrijving}
+              </p>
+            )}
+          </div>
         </Dialog>
       )}
 
-      {/* Delete confirmation dialog */}
+      {/* ── Delete confirm dialog ── */}
       <Dialog
         open={confirmDeleteItem !== null}
         onOpenChange={(open) => { if (!open) setConfirmDeleteItem(null); }}
@@ -355,6 +415,7 @@ export default function VideoboodschappenPage() {
           </Button>
         </DialogFooter>
       </Dialog>
+
     </div>
   );
 }

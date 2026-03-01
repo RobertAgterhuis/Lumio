@@ -50,6 +50,9 @@ export interface UitvaartGenodigde {
   postcode?: string;
   woonplaats?: string;
   notities?: string;
+  /** M4: Persistent link to originating person record */
+  erfgenaamId?: string;
+  noodcontactId?: string;
 }
 
 export interface CeremonieDetailFormData {
@@ -71,6 +74,9 @@ export interface GenodigdeFormData {
   postcode: string;
   woonplaats: string;
   notities: string;
+  /** M4: Persistent link to originating person record */
+  erfgenaamId?: string;
+  noodcontactId?: string;
 }
 
 export interface UitvaartEditFormData {

@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogHeader,
@@ -21,8 +22,11 @@ import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
-import { useNoodcontacten, ROLLEN, ROL_KEYS } from "@/components/noodcontacten/useNoodcontacten";
-import type { Noodcontact } from "@/components/noodcontacten/useNoodcontacten";
+import { PersonSelect } from "@/components/PersonSelect";
+import { useNoodcontacten, ROLLEN, ROL_KEYS, PROFESSIONELE_ROLLEN, ROL_CATEGORIE, TABS } from "@/components/noodcontacten/useNoodcontacten";
+import type { Noodcontact, TabValue } from "@/components/noodcontacten/useNoodcontacten";
+import { HelpButton } from "@/components/help/HelpButton";
+import { HelpEmptyState } from "@/components/help/HelpEmptyState";
 
 export default function NoodcontactenPage() {
   const t = useTranslations("noodcontacten");
@@ -30,6 +34,9 @@ export default function NoodcontactenPage() {
 
   const {
     contacten,
+    filteredContacten,
+    activeTab,
+    setActiveTab,
     loading,
     gedeeldCount,
     dialogOpen,
@@ -61,6 +68,7 @@ export default function NoodcontactenPage() {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <LumioIcon name="noodcontacten" size="lg" className="text-primary" />
           {t("titel")}
+          <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
@@ -98,6 +106,14 @@ export default function NoodcontactenPage() {
         </div>
       </div>
 
+      {contacten.length === 0 ? (
+        <HelpEmptyState
+          chapterSlug="noodcontacten"
+          domeinLabel={t("domeinLabel")}
+          addLabel={t("toevoegen")}
+          onAdd={() => openDialog()}
+        />
+      ) : (
       <Card className="overflow-hidden">
         <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
           <Phone className="h-5 w-5 text-primary shrink-0" />
@@ -111,14 +127,27 @@ export default function NoodcontactenPage() {
             </Button>
           </div>
         </div>
-        <CardContent className="pt-5">
-          {contacten.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              {t("geenContacten")}
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {contacten.map((c) => (
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabValue)}>
+          <div className="px-4 pt-3 pb-2 border-b border-black/5 dark:border-white/10">
+            <TabsList>
+              {TABS.map((tab) => {
+                const count = tab === "alle"
+                  ? contacten.length
+                  : contacten.filter((c) => (ROL_CATEGORIE[c.rol] ?? "persoonlijk") === tab).length;
+                if (tab !== "alle" && count === 0) return null;
+                return (
+                  <TabsTrigger key={tab} value={tab}>
+                    {t(`tabs.${tab}`)}
+                    {count > 0 && <Badge className="ml-1 text-xs">{count}</Badge>}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </div>
+          <TabsContent value={activeTab}>
+            <CardContent className="pt-5">
+              <div className="space-y-2">
+                {filteredContacten.map((c) => (
                 <div
                   key={c.id}
                   className="flex items-center justify-between rounded-md border p-3"
@@ -135,7 +164,9 @@ export default function NoodcontactenPage() {
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {c.relatie}
-                      {c.telefoon && ` — ${c.telefoon}`}
+                      {c.telefoon && (
+                        <> — <a href={`tel:${c.telefoon}`} className="hover:underline">{c.telefoon}</a></>
+                      )}
                       {c.email && ` — ${c.email}`}
                     </p>
                     {c.instructies && (
@@ -146,9 +177,12 @@ export default function NoodcontactenPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     {c.telefoon && (
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <a
+                        href={`tel:${c.telefoon}`}
+                        className="text-xs text-muted-foreground flex items-center gap-1 hover:underline"
+                      >
                         <Phone className="h-3 w-3" /> {c.telefoon}
-                      </span>
+                      </a>
                     )}
                     <Button
                       variant="ghost"
@@ -167,10 +201,12 @@ export default function NoodcontactenPage() {
                   </div>
                 </div>
               ))}
-            </div>
-          )}
-        </CardContent>
+              </div>
+            </CardContent>
+          </TabsContent>
+        </Tabs>
       </Card>
+      )}
 
       {error && (
         <div className="rounded-lg border border-danger bg-danger-100 p-3">
@@ -188,9 +224,35 @@ export default function NoodcontactenPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t("dialog.naam")}</Label>
-              <Input
+              {/* M2-1: PersonSelect allows picking from existing erfgenamen to pre-fill contact fields */}
+              <PersonSelect
+                source="erfgenamen"
                 value={form.naam}
-                onChange={(e) => setForm((f) => ({ ...f, naam: e.target.value }))}
+                onChange={(v) => setForm((f) => ({ ...f, naam: v }))}
+                onPersonSelect={(p) =>
+                  setForm((f) => ({
+                    ...f,
+                    naam: p.naam,
+                    relatie: p.relatie || f.relatie,
+                    telefoon: p.telefoon || f.telefoon,
+                    email: p.email || f.email,
+                    adres: p.adres || f.adres,
+                    postcode: p.postcode || f.postcode,
+                    woonplaats: p.woonplaats || f.woonplaats,
+                  }))
+                }
+                onClear={() =>
+                  setForm((f) => ({
+                    ...f,
+                    naam: "",
+                    relatie: "",
+                    telefoon: "",
+                    email: "",
+                    adres: "",
+                    postcode: "",
+                    woonplaats: "",
+                  }))
+                }
                 placeholder={t("dialog.naamPlaceholder")}
               />
             </div>
@@ -215,6 +277,26 @@ export default function NoodcontactenPage() {
               ))}
             </Select>
           </div>
+          {PROFESSIONELE_ROLLEN.has(form.rol) && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("dialog.bedrijfsNaam")}</Label>
+                <Input
+                  value={form.bedrijfsNaam}
+                  onChange={(e) => setForm((f) => ({ ...f, bedrijfsNaam: e.target.value }))}
+                  placeholder={t("dialog.bedrijfsNaamPlaceholder")}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t("dialog.functie")}</Label>
+                <Input
+                  value={form.functie}
+                  onChange={(e) => setForm((f) => ({ ...f, functie: e.target.value }))}
+                  placeholder={t("dialog.functiePlaceholder")}
+                />
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t("dialog.telefoon")}</Label>

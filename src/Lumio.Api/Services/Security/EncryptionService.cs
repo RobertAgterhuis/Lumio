@@ -21,14 +21,18 @@ public class EncryptionService : IEncryptionService
     {
         _encryptie = encryptie.Value;
 
-        if (!passwordService.IsUnlocked || passwordService.CurrentPassword is null)
+        if (!passwordService.IsUnlocked)
             throw new InvalidOperationException("Database moet ontgrendeld zijn voor veldversleuteling.");
 
         var dbPath = profileService.ActiveDbPath
             ?? throw new InvalidOperationException("Geen profiel geselecteerd.");
 
         var salt = GetOrCreateSalt(dbPath);
-        _key = DeriveKey(passwordService.CurrentPassword, salt);
+        // Use the scoped callback — password bytes are never stored as a string.
+        // Compute the key in a local first, then assign to the readonly field.
+        byte[] derivedKey = Array.Empty<byte>();
+        passwordService.UsePassword(pw => derivedKey = DeriveKey(pw, salt));
+        _key = derivedKey;
     }
 
     public string Encrypt(string plaintext)
@@ -129,10 +133,10 @@ public class EncryptionService : IEncryptionService
         return salt;
     }
 
-    private byte[] DeriveKey(string password, byte[] salt)
+    private byte[] DeriveKey(ReadOnlySpan<byte> passwordBytes, byte[] salt)
     {
         return Rfc2898DeriveBytes.Pbkdf2(
-            Encoding.UTF8.GetBytes(password),
+            passwordBytes,
             salt,
             iterations: _encryptie.Pbkdf2Iteraties,
             HashAlgorithmName.SHA256,

@@ -5,6 +5,8 @@ import * as http from "http";
 import { getDataDir } from "./paths";
 import { getBackendPort } from "./sidecar";
 import { t } from "./i18n";
+import { showBackupNotification } from "./notifications";
+import { setTaskbarOverlayIcon } from "./window";
 
 interface AutoBackupConfig {
   pad: string;
@@ -120,8 +122,14 @@ export function startAutoBackupScheduler(): void {
   backupTimer = setInterval(async () => {
     console.log("[auto-backup] Running scheduled backup...");
     const result = await performBackup();
-    if (!result.success) {
+    if (result.success) {
+      const cfg = loadConfig();
+      showBackupNotification(true, cfg?.pad);
+      setTaskbarOverlayIcon(true);
+    } else {
       console.error(`[auto-backup] Failed: ${result.error}`);
+      showBackupNotification(false);
+      setTaskbarOverlayIcon(false);
     }
   }, intervalMs);
 }
@@ -217,4 +225,22 @@ export function registerAutoBackupHandlers(): void {
   ipcMain.handle("trigger-auto-backup", async () => {
     return performBackup();
   });
+}
+
+/**
+ * Perform a backup and show an OS notification with the result.
+ * Used by the system tray "Nu back-uppen" menu item.
+ */
+export async function performBackupForTray(): Promise<void> {
+  console.log("[auto-backup] Manual backup triggered from tray...");
+  const result = await performBackup();
+  const cfg = loadConfig();
+  if (result.success) {
+    showBackupNotification(true, cfg?.pad);
+    setTaskbarOverlayIcon(true);
+  } else {
+    console.error(`[auto-backup] Tray backup failed: ${result.error}`);
+    showBackupNotification(false);
+    setTaskbarOverlayIcon(false);
+  }
 }

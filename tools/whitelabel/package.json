@@ -1,0 +1,18 @@
+{
+  "name": "lumio-whitelabel-engine",
+  "version": "1.0.0",
+  "description": "Build-time whitelabeling engine for Lumio Desktop",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "validate": "node engine.mjs --validate-only --config configs/example-corp"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.33.5"
+  }
+}

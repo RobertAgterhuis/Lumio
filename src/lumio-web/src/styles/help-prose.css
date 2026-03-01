@@ -2,28 +2,38 @@
    Applied via the .help-prose class on the MarkdownRenderer.
    Uses Tailwind utility-compatible values without requiring
    @tailwindcss/typography.
+
+   Note: headings, blockquotes, tables, ol, inline code, and
+   pre are handled by custom React components in MarkdownRenderer.
+   CSS here covers elements NOT overridden in the components config
+   (ul/li) plus new component-support styles (step-list, kbd).
    ───────────────────────────────────────────────────────── */
 
 .help-prose {
   @apply text-foreground leading-relaxed;
 }
 
+/* ── Headings (also styled via React component className) ── */
 .help-prose h1 {
-  @apply mb-4 mt-8 text-2xl font-bold text-foreground first:mt-0;
+  @apply mb-4 mt-8 text-2xl font-bold first:mt-0;
+  color: #2C4A52;
 }
 
 .help-prose h2 {
-  @apply mb-3 mt-6 text-xl font-semibold text-foreground;
+  @apply mb-3 mt-6 text-xl font-semibold;
+  color: #355E68;
 }
 
 .help-prose h3 {
-  @apply mb-2 mt-5 text-lg font-semibold text-foreground;
+  @apply mb-2 mt-5 text-lg font-semibold;
+  color: #4F7A83;
 }
 
 .help-prose h4 {
   @apply mb-2 mt-4 text-base font-semibold text-foreground;
 }
 
+/* ── Text ──────────────────────────────────────────────────── */
 .help-prose p {
   @apply mb-3;
 }
@@ -36,22 +46,7 @@
   @apply italic;
 }
 
-.help-prose code {
-  @apply rounded bg-muted px-1.5 py-0.5 text-sm font-mono;
-}
-
-.help-prose blockquote {
-  @apply my-4 border-l-4 border-primary/40 bg-primary/5 py-2 pl-4 pr-3 text-sm;
-}
-
-.help-prose blockquote p {
-  @apply mb-1 last:mb-0;
-}
-
-.help-prose ol {
-  @apply my-3 list-decimal space-y-1.5 pl-6;
-}
-
+/* ── Unordered lists (bullet) ──────────────────────────────── */
 .help-prose ul {
   @apply my-3 list-disc space-y-1.5 pl-6;
 }
@@ -60,6 +55,71 @@
   @apply text-sm;
 }
 
+.help-prose li::marker {
+  color: #4A7A4D;
+}
+
+/* ── Ordered lists — Step cards ────────────────────────────── */
+/* ol elements are wrapped in <StepList> by the React renderer  */
+
+.help-step-list {
+  counter-reset: step-counter;
+}
+
+.help-step-list > li {
+  counter-increment: step-counter;
+  @apply flex gap-3 text-sm;
+}
+
+.help-step-list > li::before {
+  content: counter(step-counter);
+  @apply inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-primary-foreground text-xs font-semibold leading-none;
+  background-color: #4A7A4D;
+}
+
+/* ── Horizontal rule ────────────────────────────────────────── */
 .help-prose hr {
   @apply my-6 border-border;
+}
+
+/* ── Keyboard badge ─────────────────────────────────────────── */
+kbd.help-kbd,
+.help-prose kbd {
+  @apply font-mono text-xs px-1.5 py-0.5 rounded border border-border bg-muted;
+  box-shadow: inset 0 -1px 0 0 hsl(var(--border));
+}
+
+/* ── Print styles ───────────────────────────────────────────── */
+@media print {  /* Hide the navigation sidebar */
+  .help-sidebar {
+    display: none !important;
+  }
+
+  /* Main content takes full width */
+  .help-main {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Flatten callout cards to border-only (saves ink, keeps context) */
+  .help-prose [role="note"],
+  .help-prose [role="alert"] {
+    background: transparent !important;
+    border: 1px solid currentColor !important;
+    box-shadow: none !important;
+  }
+
+  /* Keyboard badges: no shadow, wrap in parens for plain-text readability */  .help-prose kbd {
+    box-shadow: none;
+    border: 1px solid currentColor;
+  }
+
+  .help-prose kbd::before {
+    content: "(";
+  }
+
+  .help-prose kbd::after {
+    content: ")";
+  }
 }

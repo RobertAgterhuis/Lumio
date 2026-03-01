@@ -49,7 +49,9 @@ public record BegunstigdeResponse(
     string? Woonplaats,
     string? Omschrijving,
     decimal? Percentage,
-    bool IsLegitiemePortie);
+    bool IsLegitiemePortie,
+    Guid? ErfgenaamId,
+    Guid? NoodcontactId);
 
 public record BegunstigdeUpsertRequest(
     string Naam,
@@ -61,7 +63,9 @@ public record BegunstigdeUpsertRequest(
     string? Woonplaats,
     string? Omschrijving,
     decimal? Percentage,
-    bool IsLegitiemePortie);
+    bool IsLegitiemePortie,
+    Guid? ErfgenaamId = null,
+    Guid? NoodcontactId = null);
 
 public record ExecuteurResponse(
     Guid Id,
@@ -72,7 +76,9 @@ public record ExecuteurResponse(
     string? Adres,
     string? Postcode,
     string? Woonplaats,
-    string? Bevoegdheden);
+    string? Bevoegdheden,
+    Guid? ErfgenaamId,
+    Guid? NoodcontactId);
 
 public record ExecuteurUpsertRequest(
     string Naam,
@@ -82,7 +88,9 @@ public record ExecuteurUpsertRequest(
     string? Adres,
     string? Postcode,
     string? Woonplaats,
-    string? Bevoegdheden);
+    string? Bevoegdheden,
+    Guid? ErfgenaamId = null,
+    Guid? NoodcontactId = null);
 
 // --- Legitimaire portie check ---
 

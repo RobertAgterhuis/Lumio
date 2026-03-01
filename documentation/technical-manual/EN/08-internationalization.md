@@ -1,0 +1,248 @@
+# 8 — Internationalization (i18n)
+
+## Overview
+
+Lumio supports **Dutch** (default) and **English**. Translations are managed at three levels:
+
+| Layer | Technology | Files |
+|-------|------------|-------|
+| Frontend (Next.js) | next-intl 4 | `messages/nl.json`, `messages/en.json` |
+| Desktop (Electron) | Custom `t()` function | Inline dictionary in `i18n.ts` |
+| Backend (.NET) | `IStringLocalizer<T>` + `.resx` | `Resources/` directory |
+
+## Frontend — next-intl
+
+### Configuration
+
+```
+src/lumio-web/
+├── src/
+│   ├── i18n/
+│   │   └── request.ts                         # getRequestConfig() — locale from localStorage
+│   │                                          # loads root bundle only: shared+ui+auth+dashboard
+│   ├── components/providers/
+│   │   ├── LocaleProvider.tsx                 # Root NextIntlClientProvider (root bundle)
+│   │   └── DomainMessagesProvider.tsx         # Supplemental provider per domain
+│   └── app/(authenticated)/
+│       ├── layout.tsx                         # Authenticated shell (root bundle)
+│       ├── boedel/layout.tsx                  # → DomainMessagesProvider with boedel.json
+│       ├── testament/layout.tsx               # → DomainMessagesProvider with testament.json
+│       └── ... (15 domain layouts in total)
+├── messages/
+│   ├── nl/               # Source files per domain (edit these)
+│   │   ├── shared.json   # common, nav, enums, feedback, errors, ...
+│   │   ├── auth.json
+│   │   ├── testament.json
+│   │   └── ... (18 files)
+│   ├── en/               # English equivalents
+│   │   └── ... (18 files)
+│   ├── nl.json           # ⚠ GENERATED — do not edit manually
+│   └── en.json           # ⚠ GENERATED — do not edit manually
+├── scripts/
+│   └── merge-messages.ts # Combines nl/* → nl.json, en/* → en.json
+└── next.config.ts        # createNextIntlPlugin('./src/i18n/request.ts')
+```
+
+> **Important**: Always edit files in `messages/nl/` or `messages/en/`. The root files `nl.json` and `en.json` are generated automatically on `npm run dev` and `npm run build` via the `predev`/`prebuild` hooks.
+
+**Path alias**: `@messages/*` maps to `./messages/` (root of lumio-web). Use this alias in source file imports:
+```ts
+import nlMessages from "@messages/nl/boedel.json";
+```
+
+**Locale detection** (static export — no server-side routing):
+1. Client-side: read `localStorage.getItem("lumio-locale")`
+2. Build-time: default `"nl"`
+3. No `middleware.ts` — locale is entirely client-side
+
+### Message Structure
+
+Translations are split into **18 domain files** per language. The root `nl.json`/`en.json` files are the generated merge result containing all 46 namespaces.
+
+#### Domain files and their namespaces
+
+| File | Namespaces |
+|------|------------|
+| `shared.json` | `common`, `nav`, `enums`, `feedback`, `errors`, `idle`, `verwijderBevestiging`, `sectieNotitie`, `domainStatus`, `search`, `shortcuts`, `wizard` |
+| `auth.json` | `auth` (incl. all sub-namespaces) |
+| `dashboard.json` | `dashboard` (incl. all sub-namespaces) |
+| `erfgenamen.json` | `erfgenamen`, `erfbelasting`, `nabestaanden` |
+| `testament.json` | `testament`, `testamentWizard` |
+| `boedel.json` | `boedel` |
+| `uitvaart.json` | `uitvaart`, `uitvaartWizard`, `noodkaartQR` |
+| `euthanasie.json` | `euthanasie`, `euthanasieWizard` |
+| `noodcontacten.json` | `noodcontacten` |
+| `documenten.json` | `documenten` |
+| `digitaal-bezit.json` | `digitaalBezit` |
+| `eigenaar.json` | `eigenaar` |
+| `donor.json` | `donor`, `donorWizard` |
+| `videoboodschappen.json` | `videoboodschappen`, `voorbeeldData` |
+| `instellingen.json` | `instellingen` |
+| `export.json` | `exporteren`, `auditLog`, `afsluitInstructies` |
+| `ui.json` | `personSelect`, `help`, `hulpteksten`, `legeStaten` |
+| `misc.json` | `tijdlijn`, `interview`, `wachtwoordGenerator`, `juridischeCheck`, `dataHandtekening` |
+
+Both language files previously had an identical structure with 39 sections (now 46):
+
+| Section | ~Lines | Section | ~Lines |
+|---------|--------|---------|--------|
+| `common` | 10 | `nav` | 17 |
+| `search` | 26 | `errors` | 4 |
+| `idle` | 4 | `shortcuts` | 21 |
+| `auth` | 76 | `dashboard` | 68 |
+| `wizard` | 25 | `eigenaar` | 76 |
+| `enums` | 148 | `erfgenamen` | 88 |
+| `erfbelasting` | 17 | `testament` | 146 |
+| `boedel` | 121 | `digitaalBezit` | 97 |
+| `uitvaart` | 113 | `euthanasie` | 61 |
+| `donor` | 21 | `documenten` | 47 |
+| `noodcontacten` | 44 | `noodkaartQR` | 16 |
+| `tijdlijn` | 11 | `auditLog` | 10 |
+| `exporteren` | 43 | `juridischeCheck` | 14 |
+| `sectieNotitie` | 8 | `dataHandtekening` | 4 |
+| `wachtwoordGenerator` | 7 | `afsluitInstructies` | 30 |
+| `instellingen` | 140 | `nabestaanden` | 37 |
+| `interview` | 10 | `voorbeeldData` | 50 |
+| `personSelect` | 6 | `domainStatus` | 10 |
+| `testamentWizard` | 89 | `euthanasieWizard` | 102 |
+| `donorWizard` | 56 | `uitvaartWizard` | 113 |
+| `videoboodschappen` | 28 | | |
+
+### Runtime Bundle Splitting
+
+To reduce initial load time, the i18n bundle is split per route:
+
+#### Root bundle (~36 KB)
+
+The `LocaleProvider` (and `request.ts` for server-side) always loads the following four files:
+
+| File | Reason |
+|------|--------|
+| `shared.json` | Cross-cutting namespaces present on every page |
+| `ui.json` | Generic UI components (`personSelect`, `help`, etc.) |
+| `auth.json` | `auth.sessie` used in `(authenticated)/layout.tsx` |
+| `dashboard.json` | `NotificationsDropdown` (always visible in the Header) |
+
+#### Domain bundle (per route)
+
+Each domain route segment has its own `layout.tsx` that renders a `DomainMessagesProvider` with the corresponding domain JSON statically imported (both languages):
+
+```tsx
+// e.g. src/app/(authenticated)/boedel/layout.tsx
+import { DomainMessagesProvider } from "@/components/providers/DomainMessagesProvider";
+import nlMessages from "@messages/nl/boedel.json";
+import enMessages from "@messages/en/boedel.json";
+
+const MESSAGES = { nl: nlMessages, en: enMessages };
+
+export default function BoedelLayout({ children }) {
+  return <DomainMessagesProvider messages={MESSAGES}>{children}</DomainMessagesProvider>;
+}
+```
+
+#### `DomainMessagesProvider`
+
+`src/components/providers/DomainMessagesProvider.tsx` is a client component that:
+1. Reads the active locale via `useLocale()`
+2. Reads the full parent messages via `useMessages()` (root bundle)
+3. Merges domain namespaces with the parent messages (`{ ...parentMessages, ...domainMessages }`)
+4. Exposes the combined set via a nested `NextIntlClientProvider`
+
+> **Important**: next-intl v4 does **not** automatically merge nested providers. `DomainMessagesProvider` handles this explicitly via `useMessages()`.
+
+Domain routes that do **not** need their own layout (namespaces already in root bundle):
+- `dashboard/` — `dashboard.json` is part of the root bundle
+- `help/` — `help` and `hulpteksten` are in `ui.json` (root bundle)
+
+### Usage in Components
+
+```tsx
+import { useTranslations } from "next-intl";
+
+function MyComponent() {
+  const t = useTranslations("dashboard");
+  return <h1>{t("titel")}</h1>;
+}
+```
+
+## Desktop — Electron
+
+`src/lumio-desktop/src/main/i18n.ts` contains a compact translation module:
+
+- **Inline dictionary** with keys: `windowTitle`, `errorStartTitle`, `errorStartBody`, `noAutoBackupConfigured`, `backupDirNotFound`, `backupApiError`, `backupTimeout`, `selectBackupLocation`
+- **`loadLocale(dataDir)`** — reads `locale.txt` from the data directory
+- **`persistLocale(dataDir, locale)`** — writes locale to disk
+- **`t(key, params?)`** — translation function with `{placeholder}` support
+
+The language setting is synchronized with the frontend: the preload script writes `locale.txt` on a language switch.
+
+## Backend — .NET Localization
+
+### Configuration in Program.cs
+
+```csharp
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+app.UseRequestLocalization(options =>
+{
+    options.SetDefaultCulture("nl")
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+});
+```
+
+The backend determines the language based on the `Accept-Language` HTTP header sent by the frontend.
+
+### Resource Files (16 .resx files)
+
+| Path | Purpose |
+|------|---------|
+| `Resources/Services/Pdf/LumioPdfService.resx` (+`.en.resx`) | PDF export labels |
+| `Resources/Rules/Services/SuggestieService.resx` (+`.en.resx`) | Suggestion messages |
+| `Resources/Rules/Services/MeldingService.resx` (+`.en.resx`) | Warnings and reminders |
+| `Resources/Rules/Services/CompleetheidsService.resx` (+`.en.resx`) | Completeness domain labels |
+| `Resources/Controllers/TestamentController.resx` (+`.en.resx`) | Testament controller messages |
+| `Resources/Controllers/StatusController.resx` (+`.en.resx`) | Status controller messages |
+| `Resources/Controllers/ExportController.resx` (+`.en.resx`) | Export controller messages |
+| `Resources/Controllers/AfhandelingController.resx` (+`.en.resx`) | Settlement checklist labels |
+
+### Usage in Services/Controllers
+
+```csharp
+public class MeldingService
+{
+    private readonly IStringLocalizer<MeldingService> _localizer;
+
+    public MeldingService(IStringLocalizer<MeldingService> localizer)
+    {
+        _localizer = localizer;
+    }
+
+    public string GetWarning() => _localizer["GeenTestament"];
+}
+```
+
+## Language Switch Flow
+
+```
+User selects language in Settings
+  ├── Frontend: localStorage.setItem("lumio-locale", "en")
+  ├── Frontend: page reloads with new locale
+  ├── Electron: IPC → persistLocale() → locale.txt
+  └── Backend: Accept-Language header on every request
+```
+
+## Adding New Translations
+
+### Frontend (Next.js)
+
+1. Add the key to the appropriate domain file in `messages/nl/<domain>.json`
+2. Add the English translation to the same file in `messages/en/<domain>.json`
+3. The `predev` hook merges automatically on `npm run dev`; or run manually: `npm run merge-messages`
+4. Always use `useTranslations("namespace")` in components — never hardcoded text
+
+> **New namespace**: If adding a completely new namespace, create a new domain file or add it to the most appropriate existing domain file.
+
+### Backend (.NET)
+
+1. Add the key to the appropriate `.resx` file and the `.en.resx` equivalent

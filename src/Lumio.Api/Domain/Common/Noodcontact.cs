@@ -10,8 +10,17 @@ public class Noodcontact : BaseEntity
     public string? Adres { get; set; }
     public string? Postcode { get; set; }
     public string? Woonplaats { get; set; }
-    public string Rol { get; set; } = string.Empty; // Huisarts, Notaris, Uitvaartondernemer, Vertrouwenspersoon, Overig
+    public string Rol { get; set; } = string.Empty;
     public string? Instructies { get; set; }
+
+    // Organisatiecontext (professionele en juridische rollen)
+    public string? BedrijfsNaam { get; set; }
+    public string? Functie { get; set; }
+
+    /// <summary>
+    /// Belprioriteitsvolgorde: 1 = eerst bellen, 2 = daarna, 3 = later.
+    /// </summary>
+    public int Prioriteit { get; set; } = 3;
 
     /// <summary>
     /// Markeer als gedeeld contact — bijv. huisarts, notaris of uitvaartondernemer

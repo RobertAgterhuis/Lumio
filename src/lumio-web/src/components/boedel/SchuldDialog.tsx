@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { PersonSelect } from "@/components/PersonSelect";
 import { useTranslations } from "next-intl";
 import type { SchuldFormData } from "./types";
 
@@ -39,10 +40,29 @@ export function SchuldDialog({
       <div className="space-y-4 py-4">
         <div className="space-y-2">
           <Label>{t("schuldDialog.schuldeiser")}</Label>
-          <Input
+          {/* M2-2: PersonSelect allows picking from noodcontacten (e.g. Notaris, Bank) to pre-fill contact fields */}
+          <PersonSelect
+            source="noodcontacten"
             value={form.schuldeiser}
-            onChange={(e) => onFormChange({ ...form, schuldeiser: e.target.value })}
+            onChange={(v) => onFormChange({ ...form, schuldeiser: v })}
+            onPersonSelect={(p) =>
+              onFormChange({
+                ...form,
+                schuldeiser: p.naam,
+                schuldeiserTelefoon: p.telefoon || form.schuldeiserTelefoon,
+                schuldeiserEmail: p.email || form.schuldeiserEmail,
+              })
+            }
+            onClear={() =>
+              onFormChange({
+                ...form,
+                schuldeiser: "",
+                schuldeiserTelefoon: "",
+                schuldeiserEmail: "",
+              })
+            }
             placeholder={t("schuldDialog.schuldeiserPlaceholder")}
+            showCreateNew
           />
         </div>
         <div className="grid grid-cols-2 gap-2">

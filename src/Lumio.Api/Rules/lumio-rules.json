@@ -72,7 +72,9 @@
       "donor": 365,
       "uitvaartwensen": 365,
       "eigenaar": 180
-    }
+    },
+    "legitimatieVerloopWaarschuwingDagen": 180,
+    "wilsverklaringHerbevestigingDagen": 1825
   },
   "veldLengtes": {
     "naamMax": 100,

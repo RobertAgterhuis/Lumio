@@ -1,0 +1,108 @@
+{
+  "digitaalBezit": {
+    "laden": "Loading...",
+    "titel": "Digital estate",
+    "beschrijving": "Online accounts, passwords and crypto wallets",
+    "beveiligingsTip": "Passwords and seed phrases are stored with additional encryption (AES-256-GCM). They are only visible after unlocking.",
+    "beveiligingsTipLabel": "Note:",
+    "opslaanMislukt": "Save failed.",
+    "verwijderenMislukt": "Delete failed.",
+    "ontsluitenMislukt": "Decrypt failed.",
+    "importerenMislukt": "Import failed.",
+    "wachtwoordOokOpgeslagen": "Account and password saved.",
+    "toevoegen": "Add",
+    "annuleren": "Cancel",
+    "opslaan": "Save",
+    "opslaanBezig": "Saving...",
+    "tabs": {
+      "accounts": "Accounts ({aantal})",
+      "wachtwoorden": "Passwords ({aantal})",
+      "crypto": "Crypto ({aantal})"
+    },
+    "accounts": {
+      "titel": "Online Accounts",
+      "geenAccounts": "No accounts yet. Click Add.",
+      "geenInCategorie": "No accounts in category \"{categorie}\".",
+      "afsluitInstructies": "Closure instructions — {platform}",
+      "bekijkInstructies": "View official instructions",
+      "verbergen": "Hide",
+      "ontsluiten": "Decrypt"
+    },
+    "wachtwoorden": {
+      "titel": "Passwords",
+      "importeren": "Import",
+      "geenWachtwoorden": "No passwords yet. Click Add.",
+      "verbergen": "Hide",
+      "ontsluiten": "Decrypt",
+      "account": "Account"
+    },
+    "crypto": {
+      "titel": "Crypto Wallets",
+      "geenWallets": "No wallets yet. Click Add."
+    },
+    "accountDialog": {
+      "bewerken": "Edit account",
+      "toevoegen": "Add account",
+      "platformNaam": "Platform name",
+      "platformPlaceholder": "e.g. Google, Facebook, LinkedIn",
+      "categorie": "Category",
+      "gebruikersnaam": "Username",
+      "email": "Email address",
+      "emailPlaceholder": "Email linked to this account",
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "gewensteActie": "Desired action after death",
+      "overdrachtAan": "Transfer to",
+      "overdrachtPlaceholder": "Name of person (for transfer)",
+      "notities": "Notes",
+      "wachtwoordOpslaan": "Save password",
+      "wachtwoord": "Password",
+      "wachtwoordPlaceholder": "Enter the password",
+      "wachtwoordOpmerking": "Note",
+      "wachtwoordOpmerkingPlaceholder": "Hint or location note",
+      "verbergen": "Hide",
+      "tonen": "Show"
+    },
+    "wachtwoordDialog": {
+      "bewerken": "Edit password",
+      "toevoegen": "Add password",
+      "naam": "Name / service",
+      "naamPlaceholder": "e.g. Gmail, DigiD",
+      "gebruikersnaam": "Username",
+      "wachtwoord": "Password",
+      "nieuwWachtwoord": "New password (leave empty to keep current)",
+      "wachtwoordPlaceholder": "Password",
+      "nieuwWachtwoordPlaceholder": "Leave empty to keep current",
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "notities": "Notes",
+      "notitiesPlaceholder": "Hint or instructions for next of kin..."
+    },
+    "cryptoDialog": {
+      "bewerken": "Edit wallet",
+      "toevoegen": "Add wallet",
+      "walletNaam": "Wallet name",
+      "walletPlaceholder": "e.g. My Bitcoin Wallet",
+      "cryptoType": "Crypto type",
+      "walletAdres": "Wallet address (public)",
+      "walletAdresPlaceholder": "Public wallet address",
+      "exchange": "Exchange",
+      "exchangePlaceholder": "e.g. Coinbase, Binance, Bitvavo",
+      "seedPhrase": "Seed Phrase (optional)",
+      "seedPhrasePlaceholder": "Your seed phrase will be stored encrypted",
+      "seedPhraseInfo": "The seed phrase is encrypted with AES-256-GCM.",
+      "notities": "Notes",
+      "notitiesPlaceholder": "Instructions for access, seed phrase location..."
+    },
+    "importDialog": {
+      "titel": "Import passwords",
+      "info": "Supports CSV export from <strong>1Password</strong>, <strong>Bitwarden</strong>, <strong>LastPass</strong>, <strong>KeePass</strong> and <strong>Chrome</strong>. Export your passwords as CSV from your current password manager and upload the file below.",
+      "csvBestand": "CSV file",
+      "resultaat": "{geimporteerd} passwords imported",
+      "resultaatMetFouten": "{geimporteerd} passwords imported, {fouten} errors",
+      "sluiten": "Close",
+      "importerenKnop": "Import",
+      "importerenBezig": "Importing..."
+    }
+  }
+}

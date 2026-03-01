@@ -125,7 +125,9 @@ function checkHealth(port: number): Promise<boolean> {
     const req = http.get(
       `http://127.0.0.1:${port}/api/status`,
       (res) => {
-        resolve(res.statusCode === 200);
+        // Any HTTP response means the server is listening.
+        // 423 is expected before a profile is unlocked — that is healthy.
+        resolve(res.statusCode !== undefined);
         res.resume();
       }
     );

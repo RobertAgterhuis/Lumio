@@ -569,10 +569,16 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Adres")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("BedrijfsNaam")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("EigenaarId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Functie")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("GewijzigdOp")
@@ -590,6 +596,9 @@ namespace Lumio.Api.Migrations
 
                     b.Property<string>("Postcode")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Prioriteit")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Relatie")
                         .IsRequired()
@@ -640,6 +649,90 @@ namespace Lumio.Api.Migrations
                     b.HasIndex("EigenaarId");
 
                     b.ToTable("SectieNotities");
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.Common.Werkgever", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AangemaaktOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Adres")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Afdeling")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BedrijfsNaam")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EigenaarId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Functietitel")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("GewijzigdOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HrContactEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HrContactNaam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HrContactTelefoon")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsZzp")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("KvKNummer")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LeidinggevendeEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LeidinggevendeNaam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LeidinggevendeTelefoon")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notities")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PensioenfondEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PensioenfondNaam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PensioenfondTelefoon")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Postcode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("StartdatumDienstverband")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TelefoonHoofdkantoor")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vestigingsplaats")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Werkgevers");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.DigitalEstate.CryptoWallet", b =>
@@ -1086,11 +1179,17 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("ErfgenaamId")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("GewijzigdOp")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Naam")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("NoodcontactId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notities")
@@ -1240,6 +1339,9 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("ErfgenaamId")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("GewijzigdOp")
                         .HasColumnType("TEXT");
 
@@ -1248,6 +1350,9 @@ namespace Lumio.Api.Migrations
 
                     b.Property<string>("Naam")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("NoodcontactId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Omschrijving")
@@ -1297,11 +1402,17 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("ErfgenaamId")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("GewijzigdOp")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Naam")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("NoodcontactId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Postcode")
@@ -1445,6 +1556,9 @@ namespace Lumio.Api.Migrations
 
                     b.Property<string>("BestandsNaam")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BestandsPad")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ContentType")

@@ -16,6 +16,7 @@ import { useDomainQuery } from "@/hooks";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
 
 export default function EuthanasieWizardPage() {
   const router = useRouter();
@@ -52,6 +53,7 @@ export default function EuthanasieWizardPage() {
   });
 
   const [generating, setGenerating] = useState(false);
+  const [confirmCompleteOpen, setConfirmCompleteOpen] = useState(false);
 
   // Load existing data with React Query
   const { data: existingData, isLoading: loading } = useDomainQuery<Record<string, unknown> | null>("euthanasie");
@@ -581,7 +583,9 @@ export default function EuthanasieWizardPage() {
     },
   ];
 
-  const handleComplete = async () => {
+  const handleComplete = () => setConfirmCompleteOpen(true);
+
+  const executeComplete = async () => {
     await api.put("/api/euthanasie", {
       ...form,
       wilEuthanasie: form.wilEuthanasie === "true",
@@ -610,11 +614,20 @@ export default function EuthanasieWizardPage() {
   if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
 
   return (
-    <WizardShell
-      titel={t("titel")}
-      stappen={gefilterdStappen}
-      onComplete={handleComplete}
-      onCancel={() => router.push("/euthanasie")}
-    />
+    <>
+      <WizardShell
+        titel={t("titel")}
+        stappen={gefilterdStappen}
+        onComplete={handleComplete}
+        onCancel={() => router.push("/euthanasie")}
+      />
+      <ConfirmJuridischDialog
+        open={confirmCompleteOpen}
+        onOpenChange={setConfirmCompleteOpen}
+        title={t("bevestigenTitel")}
+        description={t("bevestigenBeschrijving")}
+        onConfirm={executeComplete}
+      />
+    </>
   );
 }

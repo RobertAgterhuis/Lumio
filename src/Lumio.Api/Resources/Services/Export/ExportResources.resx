@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- HTML Heir Overview page (HtmlExportService) -->
+  <data name="HeirOverviewTitle" xml:space="preserve"><value>Erfgenaam overzicht</value></data>
+  <data name="RegardingEstateOf" xml:space="preserve"><value>Betreft de nalatenschap van:</value></data>
+  <data name="HeirLabel" xml:space="preserve"><value>Erfgenaam:</value></data>
+  <data name="PhoneLabel" xml:space="preserve"><value>Telefoon:</value></data>
+  <data name="EmailLabel" xml:space="preserve"><value>Email:</value></data>
+  <data name="ImportantContacts" xml:space="preserve"><value>Belangrijke contactpersonen</value></data>
+  <data name="NameHeader" xml:space="preserve"><value>Naam</value></data>
+  <data name="RoleHeader" xml:space="preserve"><value>Rol</value></data>
+  <data name="TestamentaryInformation" xml:space="preserve"><value>Testamentaire informatie</value></data>
+  <data name="TypeLabel" xml:space="preserve"><value>Type</value></data>
+  <data name="NotaryLabel" xml:space="preserve"><value>Notaris</value></data>
+  <data name="DateLabel" xml:space="preserve"><value>Datum</value></data>
+  <data name="CtrNumberLabel" xml:space="preserve"><value>CTR-nummer</value></data>
+  <data name="LocationLabel" xml:space="preserve"><value>Locatie</value></data>
+  <data name="ItemsAssignedToYou" xml:space="preserve"><value>Aan u toegewezen items</value></data>
+  <data name="DescriptionHeader" xml:space="preserve"><value>Omschrijving</value></data>
+  <data name="InstructionsHeader" xml:space="preserve"><value>Instructies</value></data>
+  <data name="AssetType" xml:space="preserve"><value>Bezitting</value></data>
+  <data name="BankAccountType" xml:space="preserve"><value>Bankrekening</value></data>
+  <data name="InsuranceType" xml:space="preserve"><value>Verzekering</value></data>
+  <data name="DigitalAccountType" xml:space="preserve"><value>Digitaal account</value></data>
+  <data name="DisclaimerTitle" xml:space="preserve"><value>Let op:</value></data>
+  <data name="DisclaimerText" xml:space="preserve"><value>Dit overzicht is informatief en gegenereerd door Lumio. Het bevat geen gevoelige gegevens zoals wachtwoorden of financiële details. Neem contact op met de notaris voor officiële informatie over de nalatenschap.</value></data>
+  <data name="GeneratedByLumioOn" xml:space="preserve"><value>Gegenereerd door Lumio op {0}.</value></data>
+  <data name="DocumentIntendedForCoHeirs" xml:space="preserve"><value>Dit document is bedoeld om te delen met mede-erfgenamen.</value></data>
+
+  <!-- INHOUD.txt (ZIP export — ZipExportService) -->
+  <data name="ExportPackageTitle" xml:space="preserve"><value>LUMIO — COMPLEET EXPORT-PAKKET</value></data>
+  <data name="GeneratedOn" xml:space="preserve"><value>Gegenereerd op: {0}</value></data>
+  <data name="ContentsLabel" xml:space="preserve"><value>INHOUD:</value></data>
+  <data name="PdfDescription" xml:space="preserve"><value>Alle PDF-documenten met uw vastgelegde gegevens.</value></data>
+  <data name="UploadedDocsDescription" xml:space="preserve"><value>Uw geüploade documenten (ID-bewijs, polissen, aktes, etc.).</value></data>
+  <data name="FileCount" xml:space="preserve"><value>Aantal: {0}</value></data>
+  <data name="InstructionsTitle" xml:space="preserve"><value>INSTRUCTIES:</value></data>
+  <data name="Instruction1" xml:space="preserve"><value>1. Open de PDF-bestanden in de map 'pdf/' voor een overzicht.</value></data>
+  <data name="Instruction2" xml:space="preserve"><value>2. Het bestand 'lumio-compleet.pdf' bevat alle informatie in één document.</value></data>
+  <data name="Instruction3" xml:space="preserve"><value>3. Het bestand 'lumio-noodprocedure.pdf' bevat stappen voor nabestaanden.</value></data>
+  <data name="Instruction4" xml:space="preserve"><value>4. Bewaar dit pakket op een veilige locatie.</value></data>
+</root>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
@@ -28,7 +29,12 @@ export function useBoedel() {
   const tf = useTranslations("feedback");
   const t = useTranslations("boedel");
 
-  const [tab, setTab] = useState("bezittingen");
+  const searchParams = useSearchParams();
+  const validTabs = ["bezittingen", "rekeningen", "verzekeringen", "schulden"];
+  const initialTab = searchParams.get("tab") ?? "bezittingen";
+  const [tab, setTab] = useState(
+    validTabs.includes(initialTab) ? initialTab : "bezittingen"
+  );
 
   // React Query for data loading
   const { data: bezittingen = [], isLoading: bezittingenLoading, refetch: refetchBezittingen } = useDomainQuery<FysiekBezit[]>("boedel/bezittingen");

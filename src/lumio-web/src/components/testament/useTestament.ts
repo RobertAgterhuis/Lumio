@@ -22,6 +22,28 @@ import type {
   TestamentEditFormData
 } from "./types";
 
+// M4-5: Minimal response shapes for person auto-sync when re-opening a linked dialog
+interface ErfgenaamSyncResponse {
+  voornaam: string;
+  achternaam: string;
+  tussenvoegsel?: string;
+  relatie?: string;
+  telefoon?: string;
+  email?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
+}
+interface NoodcontactSyncResponse {
+  naam: string;
+  relatie?: string;
+  telefoon?: string;
+  email?: string;
+  adres?: string;
+  postcode?: string;
+  woonplaats?: string;
+}
+
 export function useTestament() {
   const t = useTranslations("testament");
   const tf = useTranslations("feedback");
@@ -69,10 +91,10 @@ export function useTestament() {
   const [vergelijkIds, setVergelijkIds] = useState<[string, string]>(["", ""]);
 
   // Executeur CRUD
-  const openExecDialog = useCallback((exec?: Executeur) => {
+  const openExecDialog = useCallback(async (exec?: Executeur) => {
     if (exec) {
       setEditExecId(exec.id);
-      setExecForm({
+      let form: ExecuteurFormData = {
         naam: exec.naam,
         relatie: exec.relatie ?? "",
         telefoon: exec.telefoon ?? "",
@@ -80,7 +102,23 @@ export function useTestament() {
         adres: exec.adres ?? "",
         postcode: exec.postcode ?? "",
         woonplaats: exec.woonplaats ?? "",
-      });
+        erfgenaamId: exec.erfgenaamId,
+        noodcontactId: exec.noodcontactId,
+      };
+      // M4-5: Auto-sync contact data if linked to a person record
+      if (exec.erfgenaamId) {
+        try {
+          const e = await api.get<ErfgenaamSyncResponse>(`/api/erfgenamen/${exec.erfgenaamId}`);
+          const naam = e.tussenvoegsel ? `${e.voornaam} ${e.tussenvoegsel} ${e.achternaam}` : `${e.voornaam} ${e.achternaam}`;
+          form = { ...form, naam, relatie: e.relatie ?? form.relatie, telefoon: e.telefoon ?? form.telefoon, email: e.email ?? form.email, adres: e.adres ?? form.adres, postcode: e.postcode ?? form.postcode, woonplaats: e.woonplaats ?? form.woonplaats };
+        } catch { /* silently fail — show existing saved data */ }
+      } else if (exec.noodcontactId) {
+        try {
+          const n = await api.get<NoodcontactSyncResponse>(`/api/noodcontacten/${exec.noodcontactId}`);
+          form = { ...form, naam: n.naam, relatie: n.relatie ?? form.relatie, telefoon: n.telefoon ?? form.telefoon, email: n.email ?? form.email, adres: n.adres ?? form.adres, postcode: n.postcode ?? form.postcode, woonplaats: n.woonplaats ?? form.woonplaats };
+        } catch { /* silently fail */ }
+      }
+      setExecForm(form);
     } else {
       setEditExecId(null);
       setExecForm(emptyExecuteurForm);
@@ -98,6 +136,8 @@ export function useTestament() {
         adres: execForm.adres || null,
         postcode: execForm.postcode || null,
         woonplaats: execForm.woonplaats || null,
+        erfgenaamId: execForm.erfgenaamId ?? null,
+        noodcontactId: execForm.noodcontactId ?? null,
       };
       if (editExecId) {
         await api.put(`/api/testament/executeurs/${editExecId}`, payload);
@@ -124,10 +164,10 @@ export function useTestament() {
   }, [t, tf, refetchExecuteurs]);
 
   // Begunstigde CRUD
-  const openBegDialog = useCallback((beg?: Begunstigde) => {
+  const openBegDialog = useCallback(async (beg?: Begunstigde) => {
     if (beg) {
       setEditBegId(beg.id);
-      setBegForm({
+      let form: BegunstigdeFormData = {
         naam: beg.naam,
         relatie: beg.relatie ?? "",
         telefoon: beg.telefoon ?? "",
@@ -137,7 +177,23 @@ export function useTestament() {
         woonplaats: beg.woonplaats ?? "",
         percentage: beg.percentage != null ? String(beg.percentage) : "",
         isLegitiemePortie: beg.isLegitiemePortie,
-      });
+        erfgenaamId: beg.erfgenaamId,
+        noodcontactId: beg.noodcontactId,
+      };
+      // M4-5: Auto-sync contact data if linked to a person record
+      if (beg.erfgenaamId) {
+        try {
+          const e = await api.get<ErfgenaamSyncResponse>(`/api/erfgenamen/${beg.erfgenaamId}`);
+          const naam = e.tussenvoegsel ? `${e.voornaam} ${e.tussenvoegsel} ${e.achternaam}` : `${e.voornaam} ${e.achternaam}`;
+          form = { ...form, naam, relatie: e.relatie ?? form.relatie, telefoon: e.telefoon ?? form.telefoon, email: e.email ?? form.email, adres: e.adres ?? form.adres, postcode: e.postcode ?? form.postcode, woonplaats: e.woonplaats ?? form.woonplaats };
+        } catch { /* silently fail — show existing saved data */ }
+      } else if (beg.noodcontactId) {
+        try {
+          const n = await api.get<NoodcontactSyncResponse>(`/api/noodcontacten/${beg.noodcontactId}`);
+          form = { ...form, naam: n.naam, relatie: n.relatie ?? form.relatie, telefoon: n.telefoon ?? form.telefoon, email: n.email ?? form.email, adres: n.adres ?? form.adres, postcode: n.postcode ?? form.postcode, woonplaats: n.woonplaats ?? form.woonplaats };
+        } catch { /* silently fail */ }
+      }
+      setBegForm(form);
     } else {
       setEditBegId(null);
       setBegForm(emptyBegunstigdeForm);
@@ -157,6 +213,8 @@ export function useTestament() {
         woonplaats: begForm.woonplaats || null,
         percentage: begForm.percentage ? Number(begForm.percentage) : null,
         isLegitiemePortie: begForm.isLegitiemePortie,
+        erfgenaamId: begForm.erfgenaamId ?? null,
+        noodcontactId: begForm.noodcontactId ?? null,
       };
       if (editBegId) {
         await api.put(`/api/testament/begunstigden/${editBegId}`, payload);

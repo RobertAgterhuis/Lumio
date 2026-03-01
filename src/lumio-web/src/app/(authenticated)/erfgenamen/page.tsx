@@ -14,11 +14,14 @@ import {
   ErfgenaamDialog,
   ErfgenaamItem,
   ShamirDialog,
+  ShamirStatusBanner,
   ToewijzingDialog,
   useErfgenamen,
   type Erfgenaam,
 } from "@/components/erfgenamen";
 import { useAuthStore } from "@/stores/authStore";
+import { HelpButton } from "@/components/help/HelpButton";
+import { HelpEmptyState } from "@/components/help/HelpEmptyState";
 
 function displayName(e: Erfgenaam): string {
   return e.tussenvoegsel
@@ -140,6 +143,36 @@ export default function ErfgenamenPage() {
     gekopieerd: t("shamir.gekopieerd"),
     kopieren: t("shamir.kopieren"),
     sluiten: t("shamir.sluiten"),
+    // wizard step labels
+    stap1Titel: t("shamir.stap1Titel"),
+    stap1Uitleg: t("shamir.stap1Uitleg"),
+    stap1Bullet1: t("shamir.stap1Bullet1"),
+    stap1Bullet2: t("shamir.stap1Bullet2"),
+    stap1Bullet3: t("shamir.stap1Bullet3"),
+    stap1Callout: t("shamir.stap1Callout"),
+    stap2Titel: t("shamir.stap2Titel"),
+    stap2ErfgenamenLabel: t("shamir.stap2ErfgenamenLabel"),
+    stap3Titel: t("shamir.stap3Titel"),
+    stap4Titel: t("shamir.stap4Titel"),
+    stap4NogTeKopieren: (n: number) => t("shamir.stap4NogTeKopieren", { n }),
+    stap4AlleGekopieerd: t("shamir.stap4AlleGekopieerd"),
+    volgende: t("shamir.volgende"),
+    vorige: t("shamir.vorige"),
+    stapIndicator: (huidig: number, totaal: number) => t("shamir.stapIndicator", { huidig, totaal }),
+  };
+
+  const shamirStatusTranslations = {
+    titel: t("shamirStatus.titel"),
+    uitleg: t("shamirStatus.uitleg"),
+    differentiator: t("shamirStatus.differentiator"),
+    aantalLabel: (ontvangen: number, totaal: number) =>
+      t("shamirStatus.aantalLabel", { ontvangen, totaal }),
+    shareStatus: t("shamirStatus.shareStatus"),
+    geenShare: t("shamirStatus.geenShare"),
+    noodcodesHerdelen: t("shamirStatus.noodcodesHerdelen"),
+    noodcodesGenereren: t("shamirStatus.noodcodesGenereren"),
+    deelOverzicht: t("shamirStatus.deelOverzicht"),
+    drempelUitleg: t("shamirStatus.drempelUitleg"),
   };
 
   const pendingErfgenaam = state.pendingDeleteId
@@ -156,6 +189,7 @@ export default function ErfgenamenPage() {
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <LumioIcon name="erfgenamen" size="lg" className="text-primary" />
             {t("titel")}
+            <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
           <VoorbeeldDialog domein="erfgenamen" />
@@ -175,9 +209,19 @@ export default function ErfgenamenPage() {
 
       <DomainStatusBanner domein="erfgenamen" />
 
-      <div className="rounded-lg border border-secure bg-secure-100 p-4">
-        <p className="text-sm text-secure">
-          <strong>{t("noodcodesInfoLabel")}</strong> {t("noodcodesInfo")}
+      <ShamirStatusBanner
+        erfgenamen={state.erfgenamen}
+        onOpenShamirDialog={() => state.setShamirDialogOpen(true)}
+        onShareErfgenaam={state.handleDeelMetErfgenaam}
+        displayName={displayName}
+        isReadOnly={isReadOnly}
+        translations={shamirStatusTranslations}
+      />
+
+      {/* M4-4: Inform users that editing erfgenaam data does not auto-sync linked forms */}
+      <div className="rounded-lg border border-info bg-info-100 p-4">
+        <p className="text-sm text-info">
+          <strong>{t("synclinkMeldingLabel")}</strong> {t("synclinkMelding")}
         </p>
       </div>
 
@@ -190,15 +234,12 @@ export default function ErfgenamenPage() {
       )}
 
       {state.erfgenamen.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Users className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">{t("geenErfgenamen")}</p>
-            <Button className="mt-4" onClick={() => state.openDialog()}>
-              {t("toevoegen")}
-            </Button>
-          </CardContent>
-        </Card>
+        <HelpEmptyState
+          chapterSlug="erfgenamen"
+          domeinLabel="erfgenamen"
+          addLabel={t("toevoegen")}
+          onAdd={() => state.openDialog()}
+        />
       ) : (
         <Card className="overflow-hidden">
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">

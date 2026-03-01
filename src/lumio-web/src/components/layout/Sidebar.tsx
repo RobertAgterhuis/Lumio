@@ -219,6 +219,32 @@ export function Sidebar() {
           ))}
         </nav>
 
+        {/* Completeness indicator */}
+        {!sidebarCollapsed && compleetheid && (
+          <div className="shrink-0 border-t border-border/50 px-3 py-3">
+            <div className="mb-1.5 flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">
+                {t("voortgang", {
+                  aantalIngevuld: compleetheid.aantalIngevuld,
+                  totaal: compleetheid.totaal,
+                })}
+              </span>
+              <span className="text-xs font-bold text-primary">{compleetheid.percentage}%</span>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-300"
+                style={{ width: `${compleetheid.percentage}%` }}
+                role="progressbar"
+                aria-valuenow={compleetheid.percentage}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={t("voortgangAria", { percentage: compleetheid.percentage })}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Footer toggle */}
         <div className="shrink-0 border-t border-border p-2">
           <button

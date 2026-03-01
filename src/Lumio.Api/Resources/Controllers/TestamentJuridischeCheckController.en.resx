@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Juridische check: severity -->
+  <data name="SeverityHigh" xml:space="preserve"><value>high</value></data>
+  <data name="SeverityMedium" xml:space="preserve"><value>medium</value></data>
+  <data name="SeverityInfo" xml:space="preserve"><value>info</value></data>
+
+  <!-- Juridische check: categories -->
+  <data name="CategoryTestamentType" xml:space="preserve"><value>Will type</value></data>
+  <data name="CategoryExecutor" xml:space="preserve"><value>Executor</value></data>
+  <data name="CategoryExclusionClause" xml:space="preserve"><value>Exclusion clause</value></data>
+  <data name="CategoryDistribution" xml:space="preserve"><value>Distribution</value></data>
+  <data name="CategoryNotary" xml:space="preserve"><value>Notary</value></data>
+  <data name="CategoryContactDetails" xml:space="preserve"><value>Contact details</value></data>
+
+  <!-- Juridische check: warnings -->
+  <data name="WarningCodicilRealEstate" xml:space="preserve"><value>You chose a codicil, but you have real estate. Distribution of real estate is only legally valid through a notarial will (art. 4:97 Civil Code).</value></data>
+  <data name="WarningHandwrittenExecutor" xml:space="preserve"><value>You have designated an executor in a handwritten will. An executor can only receive 'three-star powers' (management, distribution, liquidation) through a notarial will.</value></data>
+  <data name="WarningNoExclusionClause" xml:space="preserve"><value>You have children but no exclusion clause. Without an exclusion clause, your children's inheritance may fall into the community of property during a divorce.</value></data>
+  <data name="WarningPercentageMismatch" xml:space="preserve"><value>The beneficiary percentages total {0}% (expected: 100%). This may lead to ambiguity about the distribution.</value></data>
+  <data name="WarningNoNotary" xml:space="preserve"><value>No notary has been entered for the will. A notary is required for a valid notarial will.</value></data>
+  <data name="WarningHeirWithoutContactSingle" xml:space="preserve"><value>{0} heir without phone or email: {1}.</value></data>
+  <data name="WarningHeirsWithoutContactMultiple" xml:space="preserve"><value>{0} heirs without phone or email: {1}.</value></data>
+
+  <!-- Juridische check: suggestions -->
+  <data name="SuggestionConsiderNotarialWill" xml:space="preserve"><value>Consider having a notarial will drawn up.</value></data>
+  <data name="SuggestionIncludeExecutorInNotarialWill" xml:space="preserve"><value>Have the executor appointment included in a notarial will.</value></data>
+  <data name="SuggestionAddExclusionClause" xml:space="preserve"><value>Consider adding an exclusion clause.</value></data>
+  <data name="SuggestionCheckPercentages" xml:space="preserve"><value>Check the distribution and ensure percentages add up to 100%.</value></data>
+  <data name="SuggestionFillInNotary" xml:space="preserve"><value>Fill in your notary's details.</value></data>
+  <!-- S5-01: New juridical checks -->
+  <data name="WarningExecutorAlsoBeneficiary" xml:space="preserve"><value>The following person(s) are both executor and beneficiary, which may create a conflict of interest: {0}.</value></data>
+  <data name="SuggestionExecutorConflict" xml:space="preserve"><value>Consider appointing an independent executor who does not benefit from the estate.</value></data>
+  <data name="WarningPartnerNotBeneficiary" xml:space="preserve"><value>You are married or have a registered partnership, but your partner is not listed as a beneficiary in the will.</value></data>
+  <data name="SuggestionAddPartnerBeneficiary" xml:space="preserve"><value>Consider adding your partner as a beneficiary or verify that this omission is intentional.</value></data>
+  <data name="WarningNoBeneficiaries" xml:space="preserve"><value>No beneficiaries are specified in the will. Without beneficiaries, the distribution of the estate is unclear.</value></data>
+  <data name="SuggestionAddBeneficiaries" xml:space="preserve"><value>Add one or more beneficiaries to the will.</value></data>
+  <data name="SuggestionFillContactDetails" xml:space="preserve"><value>Fill in contact details so heirs can be reached.</value></data>
+</root>

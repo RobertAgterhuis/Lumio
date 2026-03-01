@@ -1,4 +1,5 @@
 using Lumio.Api.Dtos.Auth;
+using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,12 @@ namespace Lumio.Api.Controllers;
 public class ProfileController : ControllerBase
 {
     private readonly IProfileService _profileService;
+    private readonly IAuditService _audit;
 
-    public ProfileController(IProfileService profileService)
+    public ProfileController(IProfileService profileService, IAuditService audit)
     {
         _profileService = profileService;
+        _audit = audit;
     }
 
     /// <summary>Get all profiles.</summary>
@@ -52,7 +55,7 @@ public class ProfileController : ControllerBase
 
     /// <summary>Delete a profile and all its data. Requires the active database to be unlocked.</summary>
     [HttpDelete("{id:guid}")]
-    public IActionResult Delete(
+    public async Task<IActionResult> Delete(
         Guid id,
         [FromServices] IMasterPasswordService passwordService)
     {
@@ -66,6 +69,10 @@ public class ProfileController : ControllerBase
 
         try
         {
+            // AVG Art.17: Audit BEFORE lock/delete — DB must still be open to write the log.
+            await _audit.LogAsync("Profiel verwijderd", entityType: "Profiel", entityId: id,
+                details: $"Profiel '{profile.Naam}' (relatie: {profile.Relatie}) en alle bijbehorende gegevens permanent verwijderd (AVG Art.17).");
+
             // Lock the session only when deleting the currently active profile
             if (_profileService.ActiveProfile?.Id == id)
                 passwordService.Lock();

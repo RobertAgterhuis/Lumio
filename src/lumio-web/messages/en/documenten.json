@@ -1,0 +1,65 @@
+{
+  "documenten": {
+    "laden": "Loading...",
+    "titel": "Documents",
+    "beschrijving": "Store important documents securely",
+    "uploaden": "Upload document",
+    "uploadenBezig": "Uploading...",
+    "uploadMislukt": "Upload failed.",
+    "uploadenMislukt": "Upload failed.",
+    "downloadMislukt": "Download failed.",
+    "verwijderenMislukt": "Deletion failed.",
+    "versieLadenMislukt": "Failed to load version history.",
+    "naamCategorieVerplicht": "Name and category are required.",
+    "verlopen": "Expired",
+    "verlooptOver": "Expires in {dagen} {dagen, plural, one {day} other {days}}",
+    "verwijderenAlleVersiesTitel": "Delete all versions",
+    "verwijderenAlleVersiesBevestig": "Are you sure you want to delete all versions of this document? This cannot be undone.",
+    "verwijderenAlleVersies": "Delete all versions",
+    "verwijderenTitel": "Delete document",
+    "verwijderenBevestig": "Are you sure you want to delete this document? This cannot be undone.",
+    "verwijderen": "Delete",
+    "nieuweVersieUploaden": "Upload new version",
+    "dropzone": {
+      "titel": "Drop files here",
+      "beschrijving": "Drag files here to upload"
+    },
+    "letOp": "<strong>Note:</strong> Documents are stored encrypted in the database. Upload copies of important documents such as your will, passport or insurance papers here.",
+    "geenDocumenten": "No documents uploaded yet.",
+    "opgeslagenDocumenten": "Stored documents ({aantal})",
+    "versie": "version {nummer}",
+    "versiegeschiedenis": "Version history",
+    "uploadDialog": {
+      "titel": "Upload document",
+      "naam": "Name",
+      "naamPlaceholder": "e.g. Copy of will, Passport",
+      "categorie": "Category",
+      "selecteer": "Select...",
+      "bestand": "File",
+      "verloopdatum": "Expiry date",
+      "optioneel": "(optional)",
+      "verloopdatumHint": "Set an expiry date to receive a reminder when this document needs to be renewed.",
+      "verloopdatumVerleden": "Warning: the entered expiry date is in the past.",
+      "annuleren": "Cancel",
+      "uploaden": "Upload",
+      "uploadenBezig": "Uploading..."
+    },
+    "dropDialog": {
+      "titel": "{aantal, plural, one {# file} other {# files}} to upload",
+      "naamPlaceholder": "Name",
+      "uploadenBezig": "Uploading...",
+      "geupload": "Uploaded",
+      "sluiten": "Close",
+      "klaar": "Done",
+      "allesUploaden": "Upload all ({aantal})"
+    },
+    "editDialog": {
+      "titel": "Edit document",
+      "bewerken": "Edit",
+      "notities": "Notes",
+      "notitiesPlaceholder": "Notes for this document...",
+      "opslaan": "Save",
+      "opslaanMislukt": "Saving failed."
+    }
+  }
+}
