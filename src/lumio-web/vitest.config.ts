@@ -25,12 +25,12 @@ export default defineConfig({
       reportsDirectory: './coverage',
       // Enforce minimum coverage thresholds (logic layer: lib + stores only)
       // SP-6-007: ratcheted to measured actuals (2026-03-01): stmts 66%, branches 69%, funcs 61%, lines 66%
-      // Target is 70% — reaching it requires additional unit tests in src/lib & src/stores.
+      // SP-7-003: raised to 70% after adding toastStore.test.ts + afsluit-instructies.test.ts (2026-03-01)
       thresholds: {
-        statements: 65,
-        branches: 68,
-        functions: 60,
-        lines: 65,
+        statements: 70,
+        branches: 70,
+        functions: 70,
+        lines: 70,
       },
       // Scope coverage to pure-logic layers — UI components excluded
       include: ['src/lib/**/*.{ts,tsx}', 'src/stores/**/*.{ts,tsx}'],
@@ -48,7 +48,7 @@ export default defineConfig({
         // Storybook test utilities (not part of production logic)
         'src/lib/test-utils/**',
         // Thin reactive stores tested via integration / Storybook — no unit path
-        'src/stores/toastStore.ts',
+        // NOTE: toastStore.ts now has unit tests (SP-7-003) and is included in coverage.
       ],
     },
     projects: [
