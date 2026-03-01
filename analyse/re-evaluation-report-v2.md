@@ -1,8 +1,8 @@
 # Re-evaluation Report
-> Versie: v2.5 | Datum: 2026-03-01 | Scope: ALL (REEVALUATE ALL)  
-> Trigger: `REEVALUATE ALL` commando  
-> Vorige analyseversie: v2.4 (2026-03-01)  
-> Analysemethode: Codebase-inspectie (git HEAD `0d67149`, werkmap `Feature/UI`)
+> Versie: v2.6 | Datum: 2026-03-01 | Scope: SP-7-001 GUARD-005 onblokkering  
+> Trigger: PO-beslissing verstrekt (PO = ontwikkelaar, 2026-03-01)  
+> Vorige analyseversie: v2.5 (2026-03-01)  
+> Analysemethode: Codebase-inspectie (git HEAD `ca1b192`, werkmap `Feature/UI`)
 
 ---
 
@@ -12,6 +12,8 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 **v2.4 update (SP-7 Completion):** SP-7-002 ✅ (PostHog CI-wiring), SP-7-003 ✅ (Vitest 70% — actuals 71.8%), SP-7-004 ✅ (AuthController/StatusController/DocumentenController gesplitst; SYS-RISK-006 score 8→4). SP-7-001 BLOCKED (Orchestrator vereist). SP-7-005 EXTERN.
 
 **v2.5 update (REEVALUATE ALL):** Twee positieve nieuwe bevindingen: Playwright E2E smoke-tests voor marketing site volledig geïmplementeerd (5 tests, CI `e2e`-job, `site/tests/smoke.spec.ts`) + Icon Guard CI-job toegevoegd (8 verboden Lucide-patronen gehandhaafd). CI Level 3 nu volledig behaald. Alle overige bevindingen stabiel. Geen nieuwe risico's.
+
+**v2.6 update (SP-7-001 GUARD-005 onblokkering):** PO-beslissing verstrekt (PO = ontwikkelaar, 2026-03-01). SP-7-001 status gewijzigd van BLOCKED naar **APPROVED**. SYS-RISK-010 score 5→**2**. GUARD-005 kan formeel worden opgeheven; nabestaanden marketing-variant kan worden gelanceerd. Alle overige bevindingen ongewijzigd.
 ---
 
 ## Delta-Scan Rapport
@@ -140,7 +142,7 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 
 - [GEWIJZIGD-R002] **COMPLIANCE_RISK-GROWTH-001 — PostHog** | Vorige staat: ‚niet geïmplementeerd’ (score: hoog blocker) | Huidige staat: ‚gedeploynd, dormant’ (score: laag, activatie afhankelijk van env var) | Bron: `PostHogProvider.tsx` + `layout.tsx` + `package.json` (`posthog-js` aanwezig) | Resterende actie: `NEXT_PUBLIC_POSTHOG_KEY` instellen in productie (na DPO-bevestiging van definitieve domein).
 
-- [GEWIJZIGD-R003] **SYS-RISK-010 — Nabestaanden marketing (GUARD-005)** | Vorige staat: Blocker actief — afhankelijk van EXP-002 + DPO | Huidige staat: **Formeel ophefbaar** | Basis: EXP-002 bevestigd (OPGELOST-010 v2.1), DPO aangesteld (2026-03-01), DPIA GOEDGEKEURD (v2.1), AVG-grondslag aanwezig (OPGELOST-009). Alle vier blocking criteria opgelost. Orchestrator + Product Owner beslissing vereist voor formele opheffing GUARD-005.
+- [GEWIJZIGD-R003] **SYS-RISK-010 — Nabestaanden marketing (GUARD-005)** | Vorige staat: Blocker actief — afhankelijk van EXP-002 + DPO | Huidige staat: **✅ GEDEBLOKKEERD** | Basis: EXP-002 bevestigd (OPGELOST-010 v2.1), DPO aangesteld (2026-03-01), DPIA GOEDGEKEURD (v2.1), AVG-grondslag aanwezig (OPGELOST-009). Alle vier blocking criteria opgelost. **PO-beslissing verstrekt 2026-03-01 (PO = ontwikkelaar)**. SP-7-001 kan worden uitgevoerd.
 
 - [GEWIJZIGD-R004] **SYS-RISK-006 — God Controller scope** | Score: was 6 | Nieuwe score: **8** (2×4) | Reden: 7 legacy-controllers (2874 regels totaal boven limiet) vs eerder gedocumenteerde 3. Refactoring-backlog zonder CI-blokkade, maar hogere technische schuld dan gerapporteerd. Bron: `.github/workflows/ci.yml` KNOWN_VIOLATIONS array.
 
@@ -161,7 +163,7 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 
 - REC-DELTA-004 (NIEUW) | **GUARD-010 legacy-schuld volledig documenteer en refactor-prioriteer** | Prioriteit: MIDDEN | Gebaseerd op: GEWIJZIGD-R001 | Vier extra controllers (≥210 regels) zijn niet gedocumenteerd in het rapport. Actie: voeg `AfhandelingController`, `AuthController`, `DocumentenController`, `StatusController` toe aan de bekende legacy-schuld tabel; plan refactoring in SP-7 als `LAAG`-prioriteit.
 
-- REC-DELTA-005 (NIEUW) | **GUARD-005 formeel opheffen via Orchestrator beslissing** | Prioriteit: HOOG | Gebaseerd op: GEWIJZIGD-R003 | Alle vier blocking criteria voor GUARD-005 zijn opgelost. Orchestrator + Product Owner dienen formeel GUARD-005 op te heffen zodat de nabestaanden marketing-variant gelanceerd kan worden.
+- REC-DELTA-005 (GEWIJZIGD v2.6) | **GUARD-005 formeel opheffen** | Prioriteit: HOOG | Status: **✅ GEDEBLOKKEERD** | Gebaseerd op: GEWIJZIGD-R003 | Alle vier blocking criteria voor GUARD-005 zijn opgelost. PO-beslissing verstrekt 2026-03-01 (PO = ontwikkelaar). Actie: update `docs/guardrails/` om GUARD-005 formeel op te heffen en lanceer de nabestaanden marketing-variant.
 
 - REC-DELTA-006 (NIEUW) | **PostHog activeren na DPO-bevestiging van definitief domein** | Prioriteit: MIDDEN | Gebaseerd op: GEWIJZIGD-R002, NIEUW-R002 | Stel `NEXT_PUBLIC_POSTHOG_KEY` in als geheim in GitHub Actions / productie-omgeving. Voer vervolgens baseline-meting uit (Shamir completion rate, Day-7 activation rate) zodat A/B experimenten (GUARD-009) van start kunnen gaan.
 
@@ -191,7 +193,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 
 | ID | Story | Prioriteit | Gebaseerd op |
 |----|-------|------------|--------------|
-| SP-7-001 | GUARD-005 formeel opheffen (Orchestrator + Product Owner) — nabestaanden marketing lanceren | P1 | GEWIJZIGD-R003, REC-DELTA-005 |
+| SP-7-001 | GUARD-005 formeel opheffen — nabestaanden marketing lanceren | P1 | GEWIJZIGD-R003, REC-DELTA-005 |
 | SP-7-002 | PostHog activeren (`NEXT_PUBLIC_POSTHOG_KEY` instellen) + baseline meting starten | P2 | GEWIJZIGD-R002, REC-DELTA-006 |
 | SP-7-003 | Vitest coverage 70% bereiken (aanvullende unit tests voor `src/lib` + `src/stores`) | P2 | DELTA-RISK-002, REC-DEVOPS-001 |
 | SP-7-004 | GUARD-010 refactoring: `AuthController` (274), `DocumentenController` (247), `StatusController` (375), `AfhandelingController` (210) | P3 | GEWIJZIGD-R004, GUARD-010 |
@@ -207,7 +209,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 
 | ID | Story | Status | Resultaat |
 |----|-------|--------|-----------|
-| SP-7-001 | GUARD-005 formeel opheffen | **BLOCKED** | Orchestrator + Product Owner beslissing vereist — geen codebase-actie mogelijk |
+| SP-7-001 | GUARD-005 formeel opheffen | **✅ APPROVED** | PO-beslissing verstrekt 2026-03-01 (PO = ontwikkelaar) — uitvoerbaar |
 | SP-7-002 | PostHog activeren | **COMPLETED** | `ci.yml` Build-step uitgebreid met `NEXT_PUBLIC_POSTHOG_KEY` + `NEXT_PUBLIC_POSTHOG_HOST` secrets; `devdocs/posthog-analytics.md` setup guide gepubliceerd |
 | SP-7-003 | Vitest coverage 70% | **COMPLETED** | 2 nieuwe test-files (39 tests); thresholds 70/70/70/70%; actuals: 71.8% stmts / 71.1% branches / 73.2% funcs / 72.2% lines |
 | SP-7-004 | GUARD-010 controller refactoring | **COMPLETED** | 6 nieuwe controller-files; 3 controller-files ingekort; alle 4 targets nu ≤200 regels; `AfhandelingController.cs` 210L toegevoegd aan KNOWN_VIOLATIONS; overige 3 verwijderd |
@@ -285,7 +287,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 **Kwaliteitsaandachtspunten:**
 - GUARD-010: 4 extra legacy-controllers (v2.3 NIEUW-R001) — ci passeert maar schuld is hoger
 - OI-002 domeinregistratie: EXTERN blocker blijft buiten beheer van codebase
-- GUARD-005: Orchestrator beslissing uitstaand (code-kant opgelost; bedrijfsbeslissing vereist)
+- GUARD-005: ✅ PO-beslissing verstrekt 2026-03-01 — SP-7-001 APPROVED, uitvoerbaar
 
 **Status: PASSED**
 
@@ -301,7 +303,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 | SEC-RISK-001 | Master password cleartext | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
 | SYS-RISK-008 | EAA accessibility | 3 | **2** | ✅ SC 1.4.3 bevestigd (v2.3 OPGELOST-R002). Restrisico: formeel audit nog niet uitgevoerd |
 | SYS-RISK-009 | Shamir UX crisissituatie | 6 | **6** | Wizard aanwezig; formele UX-test pending — ongewijzigd |
-| SYS-RISK-010 | Merkbelofte geblokkeerd | 9 | **5** | Formeel ophefbaar (GEWIJZIGD-R003); actie bij Orchestrator |
+| SYS-RISK-010 | Merkbelofte geblokkeerd | 9 | **2** | ✅ GEDEBLOKKEERD (v2.6) — PO-beslissing verstrekt; SP-7-001 APPROVED |
 | SYS-RISK-005 | Geen SAST | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
 | SYS-RISK-006 | God Controller + coverage | 6 | **8** | 7 legacy-controllers (was 3); CI passeert maar schuld hoger |
 | SYS-RISK-007 | Geen backup | 0 | **0** | ✅ VOLLEDIG GESLOTEN — ongewijzigd |
@@ -338,7 +340,7 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 
 - REC-DEVOPS-001 (GEWIJZIGD) | **CI Level 2 behaald — focussen op Level 3** | Prioriteit: MIDDEN | Gebaseerd op: OPGELOST-007, NIEUW-003 | CI Level 2 (CodeQL SAST + Dependabot) is actief. Voor CI Level 3 conform GUARD-008: (1) API endpoint coverage run toevoegen aan `backend` CI-job, (2) Vitest drempels vervangen 58–60% door 70%.
 
-- REC-UX-001 (VERVALLEN als actieve aanbeveling v2.1) | **Shamir wizard (EXP-002) geïmplementeerd** | Status: ✅ GESLOTEN | Gebaseerd op: OPGELOST-010 | `ShamirDialog.tsx` (356 regels, TOTAL_STEPS=4) is de 4-staps begeleide wizard. Geïntegreerd in `erfgenamen/page.tsx`. GUARD-005 marketing-blokkade kan nu worden heroverwogen door Orchestrator / Product Owner.
+- REC-UX-001 (VERVALLEN als actieve aanbeveling v2.1) | **Shamir wizard (EXP-002) geïmplementeerd** | Status: ✅ GESLOTEN | Gebaseerd op: OPGELOST-010 | `ShamirDialog.tsx` (356 regels, TOTAL_STEPS=4) is de 4-staps begeleide wizard. Geïntegreerd in `erfgenamen/page.tsx`. GUARD-005 marketing-blokkade is gedeblokkeerd — PO-beslissing verstrekt 2026-03-01.
 
 - REC-ACCESS-001 (GEWIJZIGD) | **SC 1.4.3 contrast check uitvoeren voor primary-400 en danger-500** | Prioriteit: MIDDEN | Gebaseerd op: GEWIJZIGD-003 | SC 3.1.1 en SC 2.4.1 zijn opgelost. Resterende openstaande item: contrast voor deze twee kleurwaarden. Actie: run `npx storybook` met a11y addon of gebruik webaim.org/resources/contrastchecker voor de huidige token-waarden uit `src/lumio-web/src/app/globals.css` of `tokens.css`.
 
@@ -519,6 +521,7 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | v2.3 | 2026-03-01 | ALL | REEVALUATE ALL: GUARD-010 7 legacy-controllers (niet 3); PostHog dormant; SYS-RISK-010 formeel ophefbaar; SYS-RISK-008 score 3→2; SP-7 backlog gedefinieerd |
 | v2.4 | 2026-03-01 | SP-7 Sprint Completion | SP-7-003 ✅ (Vitest 70% + 39 tests); SP-7-004 ✅ (AuthController/StatusController/DocumentenController gesplitst, 6 new files); SP-7-002 ✅ (CI PostHog secrets + devdocs); SP-7-001 BLOCKED; SP-7-005 EXTERN |
 | v2.5 | 2026-03-01 | ALL | REEVALUATE ALL: E2E Playwright smoke tests (NIEUW-R001 ✅); Icon Guard CI-job (NIEUW-R002 ✅); CI Level 3 volledig behaald (GEWIJZIGD-R001); DELTA-RISK-004 GESLOTEN; geen nieuwe risico's |
+| v2.6 | 2026-03-01 | SP-7-001 | PO-beslissing verstrekt (PO = ontwikkelaar): SP-7-001 APPROVED; SYS-RISK-010 score 5→2; GUARD-005 gedeblokkeerd; nabestaanden marketing uitvoerbaar |
 
 ---
 
@@ -551,3 +554,16 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 - [x] Re-evaluation Report is compleet en machine-leesbaar
 - [x] Versiegeschiedenis is bijgewerkt (v2.5)
 - [x] Output aangeleverd aan Orchestrator
+
+---
+
+## HANDOFF CHECKLIST v2.6
+
+- [x] PO-beslissing gedocumenteerd met datum (2026-03-01) en identiteit (PO = ontwikkelaar)
+- [x] SP-7-001 status gewijzigd van BLOCKED → APPROVED in backlog-tabel
+- [x] SYS-RISK-010 score bijgewerkt (5 → 2)
+- [x] GEWIJZIGD-R003 finale status gedocumenteerd
+- [x] REC-DELTA-005 bijgewerkt naar GEDEBLOKKEERD
+- [x] Versiegeschiedenis v2.6 toegevoegd
+- [x] Geen tegenstrijdige uitspraken in dit document
+- [x] Output aangeleverd aan Orchestrator — SP-7-001 klaar voor uitvoering
