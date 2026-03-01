@@ -1,8 +1,8 @@
 # Re-evaluation Report
-> Versie: v2.4 | Datum: 2026-03-01 | Scope: SP-7 Sprint Completion  
-> Trigger: SP-7 implementatie afgesloten (commits `00dbf49`, `2c9d8f7`)  
-> Vorige analyseversie: v2.3 (2026-03-01)  
-> Analysemethode: Codebase-inspectie (git HEAD `2c9d8f7`, branch `Feature/UI`)
+> Versie: v2.5 | Datum: 2026-03-01 | Scope: ALL (REEVALUATE ALL)  
+> Trigger: `REEVALUATE ALL` commando  
+> Vorige analyseversie: v2.4 (2026-03-01)  
+> Analysemethode: Codebase-inspectie (git HEAD `0d67149`, werkmap `Feature/UI`)
 
 ---
 
@@ -10,6 +10,8 @@
 
 Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 initiële risico's aantoonbaar opgelost of volledig gemitigeerd**. De twee meest urgente resterende risico's zijn SYS-RISK-001 (website live URL — BLOCKED: EXTERN, afwachten domeinregistratie OI-002) en SYS-RISK-010 (nabestaanden marketing — GUARD-005 formeel ophefbaar nu EXP-002 + DPIA bevestigd, Orchestrator beslissing vereist). Nieuwe bevinding: GUARD-010 KNOWN_VIOLATIONS bevat 7 legacy-controllers (niet 3 zoals eerder gerapporteerd); CI passeert, maar de technische schuld is groter dan gedocumenteerd. COMPLIANCE_RISK-GROWTH-001 is gewijzigd van ‚PosHog niet geïmplementeerd’ naar ‚gedeploynd, niet geactiveerd’ (env var vereist). Aanbevolen prioriteit voor SP-7: (1) Orchestrator beslissing GUARD-005, (2) PostHog activeren, (3) Vitest 70% doelstelling.
 **v2.4 update (SP-7 Completion):** SP-7-002 ✅ (PostHog CI-wiring), SP-7-003 ✅ (Vitest 70% — actuals 71.8%), SP-7-004 ✅ (AuthController/StatusController/DocumentenController gesplitst; SYS-RISK-006 score 8→4). SP-7-001 BLOCKED (Orchestrator vereist). SP-7-005 EXTERN.
+
+**v2.5 update (REEVALUATE ALL):** Twee positieve nieuwe bevindingen: Playwright E2E smoke-tests voor marketing site volledig geïmplementeerd (5 tests, CI `e2e`-job, `site/tests/smoke.spec.ts`) + Icon Guard CI-job toegevoegd (8 verboden Lucide-patronen gehandhaafd). CI Level 3 nu volledig behaald. Alle overige bevindingen stabiel. Geen nieuwe risico's.
 ---
 
 ## Delta-Scan Rapport
@@ -35,6 +37,10 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 - [NIEUW-005] **Whitelabel governance framework v1.0 gepubliceerd** | Fase 4 | Ernst: Positief | Bron: `tools/whitelabel/BRAND-GOVERNANCE.md`, `tools/whitelabel/PARTNER-ONBOARDING.md`, `tools/whitelabel/configs/new-partner-template/`. Volledig governance framework inclusief merklicentie-model, WCAG-drempel, partner kwaliteitschecklist en onboarding handleiding.
 
 - [NIEUW-006] **CI schema-validatie voor whitelabel-configs toegevoegd** | Fase 2/4 | Ernst: Positief | Bron: `.github/workflows/ci.yml` job `whitelabel-validate`. Alle `*/configs/*/whitelabel.json`-bestanden worden gevalideerd bij elke push/PR.
+
+- [NIEUW-R001] **Playwright E2E smoke-tests voor marketing site volledig aanwezig** | Fase 2/4 | Ernst: Positief | Bron: `site/tests/smoke.spec.ts` (5 tests: homepage, werkgevers, privacy, one-pager, 404), `site/playwright.config.ts`, `site/package.json` (`"test:e2e": "playwright test"`), `.github/workflows/ci.yml` job `e2e` (regels 170–202, `needs: [site]`). Playwright Chromium browser; lokale static export via `serve ./out`. CI Level 3 criterium E2E afgevinkt.
+
+- [NIEUW-R002] **Icon Guard CI-job toegevoegd** | Fase 2 | Ernst: Positief | Bron: `.github/workflows/ci.yml` job `icon-guard` (regels 108–165). Acht verboden Lucide-importpatronen (Shield, ShieldCheck, ShieldAlert, ShieldX, LayoutDashboard, ScrollText, Church, Stethoscope) geblokkeerd in `src/lumio-web/src/`. LumioIcon-bestanden zijn expliciet uitgesloten. Nieuw kwaliteitsgate voor design system integriteit.
 
 - [NIEUW-007] **Data Retention Policy v1.0 gepubliceerd** | Fase 1/2 | Ernst: Positief/Midden | Bron: `devdocs/data-retention-policy.md`. Vermeldt AVG art. 9 lid 2 sub a (uitdrukkelijke toestemming) als grondslag voor bijzondere categorieën. Partiele mitigatie van SYS-RISK-003, maar geen DPO-goedkeuring of DPIA gedocumenteerd.
 
@@ -77,6 +83,8 @@ Na SP-6 implementatie (branch `Feature/UI`, HEAD `01dd5a4`) zijn **10 van de 13 
 - [GEWIJZIGD-004] **GUARD-007 — Juridische disclaimers als DoD-criterium** | Vorige ernst: Onzekere status | Huidige staat: Partieel aanwezig | Wijziging: Disclaimer aangetroffen in Testament wizard samenvatting-stap (`src/lumio-web/src/app/(authenticated)/testament/wizard/page.tsx` regels 312–315) en Euthanasie wizard samenvatting-stap (`src/lumio-web/src/app/(authenticated)/euthanasie/wizard/page.tsx` regels 468–472), beide via i18n-keys (`t("samenvatting.disclaimer")` + `t("samenvatting.disclaimerTekst")`). JuridischeCheck-component heeft een `t("disclaimer")` in de footer. Echter: de 100% coverage-eis (donor, wilsverklaring stand-alone scherm) is niet geverifieerd.
 
 - [GEWIJZIGD-005] **API test coverage 0%** | Vorige staat: 0% | Huidige staat: 48 backend tests aanwezig | Ernst: Nog steeds HOOG voor het 12-maands target van ≥70% | Bron: test run output "Passed: 48" (`Lumio.Api.Tests.dll`). Absolute percentage API-endpoint coverage onbekend zonder coverage-run.
+
+- [GEWIJZIGD-R001] **CI Level 3 status** | Vorige staat: "in aanzet" (v2.4) | Nieuwe staat: **VOLLEDIG BEHAALD** | Wijziging: E2E tests (`site/tests/smoke.spec.ts`, Playwright) toegevoegd + Icon Guard gate. CI-matrix nu compleet: SAST (CodeQL) ✅ + Dependabot ✅ + Frontend coverage ≥70% ✅ + Backend coverage ≥50% ✅ + E2E smoke tests ✅ + Custom quality gates (GUARD-002, GUARD-010, icon-guard) ✅. Bron: `.github/workflows/ci.yml` jobs `e2e` + `icon-guard`.
 
 - [GEWIJZIGD-006] **OI-005 — Whitelabel pricing model ongedefinieerd** | Vorige staat: INSUFFICIENT_DATA | Huidige staat: Framework aanwezig | Wijziging: `tools/whitelabel/BRAND-GOVERNANCE.md` §6 definieert Enterprise Whitelabel vs Pilot Whitelabel licentiemodel. Exacte pricingbedragen: INSUFFICIENT_DATA.
 
@@ -303,10 +311,12 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 
 | ID | Beschrijving | Score | Prioriteit |
 |----|-------------|-------|------------|
-| DELTA-RISK-004 | GUARD-010 tech-schuld onderschat — 7 legacy controllers vs. 3 gerapporteerd | 6 (2×3) | Midden |
-| DELTA-RISK-005 | PostHog slapend — meetbaarheid KPI's (Shamir rate, Day-7 activation) onmogelijk | 4 (2×2) | Laag-Midden |
+| DELTA-RISK-004 | GUARD-010 tech-schuld onderschat — 7 legacy controllers vs. 3 gerapporteerd | 6 (2×3) | **✅ GESLOTEN** (v2.4) — controllers gesplitst, KNOWN_VIOLATIONS bijgewerkt |
+| DELTA-RISK-005 | PostHog slapend — meetbaarheid KPI's (Shamir rate, Day-7 activation) onmogelijk | 4 (2×2) | Laag-Midden — CI-wiring AANWEZIG (v2.4); activatie vereist GitHub Secret |
 
-**Status: PASSED** — geen nieuwe kritieke risico's; totaal risicoprofiel licht verbeterd ten opzichte van v2.2.
+**Nieuwe risico's (v2.5):** Geen nieuwe risico's gedetecteerd.
+
+**Status: PASSED** — geen nieuwe risico's; DELTA-RISK-004 volledig gesloten; totaal risicoprofiel licht verbeterd ten opzichte van v2.3.
 
 ### Nieuwe aanbevelingen
 
@@ -315,6 +325,10 @@ Nieuwe Fase 7 backlog-stories voorgesteld:
 - REC-DELTA-002 (NIEUW) | **Bevestig live deployment status van site/ en koppel aan OI-002 (domeinregistratie)** | Prioriteit: HOOG | Gebaseerd op: NIEUW-002 | Actie: Verifieer of `site/` live is op een publiek bereikbaar domein; documenteer URL in `README.md` of `devdocs/`.
 
 - REC-DELTA-003 (NIEUW) | **Verhoog Vitest coverage-drempels naar 70% conform roadmap-target** | Prioriteit: MIDDEN | Gebaseerd op: NIEUW-003 | Bron: `src/lumio-web/vitest.config.ts`. Huidige drempels 58–60%; roadmap target 70%.
+
+- REC-DELTA-004 (NIEUW v2.5) | **PostHog GitHub Secret instellen voor productie-activering** | Prioriteit: MIDDEN | Gebaseerd op: NIEUW-R002 (v2.4 PostHog CI-wiring), DELTA-RISK-005 | CI-wiring is aanwezig; DPO-checklist gedocumenteerd in `devdocs/posthog-analytics.md`. Enige ontbrekende stap: `NEXT_PUBLIC_POSTHOG_KEY` secret instellen in GitHub repo. Vereist DPO-goedkeuring conform checklist vóór productie-activering.
+
+- REC-DELTA-005 (NIEUW v2.5) | **CI Level 3 bevestigd — overweeg API coverage target verhogen naar ≥70%** | Prioriteit: LAAG | Gebaseerd op: GEWIJZIGD-R001 | CI Level 3 volledig behaald. Volgende iteratie: API coverage van ≥50% naar ≥70% verhogen conform het 12-maands target. Vereist aanvullende backend-tests.
 
 ### Aangepaste aanbevelingen
 
@@ -482,7 +496,7 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | Day-7 activation rate | INSUFFICIENT_DATA | ≥50% | INSUFFICIENT_DATA | 🔴 Onmeetbaar |
 | WCAG 2.1 AA contrast | Partial fail | 100% | SC 3.1.1 + 2.4.1 + SC 1.4.3 opgelost (primary-400 #456E78, danger dark #F87171) | 🟢 Behaald |
 | API test coverage | 0% | ≥70% | 48 tests; ≥50% CI-gate actief (v2.2); endpoint-% onbekend | 🟡 Gate actief |
-| CI security scan | Niet actief | Level 3 | Level 2 behaald; coverage + gate = Level 3 in aanzet | 🟡 Bijna L3 |
+| CI security scan | Niet actief | Level 3 | **✅ Level 3 behaald** (v2.5): CodeQL + Dependabot + Frontend/Backend coverage gates + E2E Playwright + icon-guard | 🟢 Behaald |
 | Juridische disclaimers | 0% | 100% | ✅ 100% bevestigd (v2.2): testament, euthanasie, donor, uitvaart, tijdlijn | 🟢 Behaald |
 | Werkgeverscontracten | 0 | ≥3 | INSUFFICIENT_DATA | 🔴 Onmeetbaar |
 | Jaarlijkse revisie-rate | INSUFFICIENT_DATA | ≥60% | INSUFFICIENT_DATA | 🔴 Onmeetbaar |
@@ -504,6 +518,7 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 | v2.2 | 2026-03-01 | SP-6-004 t/m SP-6-010 | Implementation Sprint 6 afgesloten: SC 1.4.3 opgelost; Vitest drempels geratchet; API coverage CI-gate ≥50%; PostHogProvider.tsx GUARD-006; uitvaart disclaimer 100%; website deploy-infra; SP-6-010 geverifieerd |
 | v2.3 | 2026-03-01 | ALL | REEVALUATE ALL: GUARD-010 7 legacy-controllers (niet 3); PostHog dormant; SYS-RISK-010 formeel ophefbaar; SYS-RISK-008 score 3→2; SP-7 backlog gedefinieerd |
 | v2.4 | 2026-03-01 | SP-7 Sprint Completion | SP-7-003 ✅ (Vitest 70% + 39 tests); SP-7-004 ✅ (AuthController/StatusController/DocumentenController gesplitst, 6 new files); SP-7-002 ✅ (CI PostHog secrets + devdocs); SP-7-001 BLOCKED; SP-7-005 EXTERN |
+| v2.5 | 2026-03-01 | ALL | REEVALUATE ALL: E2E Playwright smoke tests (NIEUW-R001 ✅); Icon Guard CI-job (NIEUW-R002 ✅); CI Level 3 volledig behaald (GEWIJZIGD-R001); DELTA-RISK-004 GESLOTEN; geen nieuwe risico's |
 
 ---
 
@@ -520,3 +535,19 @@ Geen stories worden verwijderd — alle roadmap-sprints zijn afgerond.
 - [x] Re-evaluation Report is compleet en machine-leesbaar
 - [x] Versiegeschiedenis is bijgewerkt (v2.3)
 - [x] Output aangeleverd aan Orchestrator voor SP-7 Sprint Gate beslissing
+
+---
+
+## HANDOFF CHECKLIST v2.5
+
+- [x] Delta-Scan Rapport is volledig (nieuw / verdwenen / gewijzigd / ongewijzigd)
+- [x] Alle OPGELOST bevindingen hebben aantoonbaar bewijs (bestandsnaam + regelnummer)
+- [x] Alle IN_PROGRESS sprint vlagmeldingen zijn aangemaakt (GEEN IN_PROGRESS sprints)
+- [x] COMPLETED sprints: geen nieuwe drift gedetecteerd (v2.5)
+- [x] Sprint-Delta Voorstel: geen wijzigingen vereist — geen nieuwe implementeerbare stories
+- [x] Aanbeveling-Delta is gesynchroniseerd met de bevindingsdelta
+- [x] Critic Agent v2.5: PASSED
+- [x] Risk Agent v2.5: PASSED
+- [x] Re-evaluation Report is compleet en machine-leesbaar
+- [x] Versiegeschiedenis is bijgewerkt (v2.5)
+- [x] Output aangeleverd aan Orchestrator
