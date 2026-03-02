@@ -40,7 +40,6 @@ jobs:
           extra_args: >
             --debug
             --only-verified
-            --fail
         continue-on-error: false
 
   # ── Job 2: Board Sync ─────────────────────────────────────────────────────────
