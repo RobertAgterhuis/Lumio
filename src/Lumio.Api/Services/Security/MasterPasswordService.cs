@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 
 namespace Lumio.Api.Services.Security;
 
@@ -8,6 +9,7 @@ public class MasterPasswordService : IMasterPasswordService
 {
     private readonly IProfileService _profileService;
     private readonly ISqlCipherKdfService _kdfService;
+    private readonly ILogger<MasterPasswordService> _logger;
     // Stored as UTF-8 bytes so the buffer can be zeroed on Lock() via ZeroMemory.
     // Never expose as string — use UsePassword() for scoped access.
     private byte[]? _currentPasswordBytes;
@@ -20,10 +22,11 @@ public class MasterPasswordService : IMasterPasswordService
     public bool IsReadOnly => _isReadOnly;
     public string? ActiveDbPath => _profileService.ActiveDbPath;
 
-    public MasterPasswordService(IProfileService profileService, ISqlCipherKdfService kdfService)
+    public MasterPasswordService(IProfileService profileService, ISqlCipherKdfService kdfService, ILogger<MasterPasswordService> logger)
     {
         _profileService = profileService;
         _kdfService = kdfService;
+        _logger = logger;
     }
 
     public void UsePassword(PasswordConsumer use)
@@ -59,13 +62,13 @@ public class MasterPasswordService : IMasterPasswordService
         // `dbPath` is already declared (non-null) above this try-block.
         try
         {
-            await _kdfService.EnsureTargetKdfAsync(dbPath, password);
+            await ExecuteKdfMigrationAsync(dbPath, password);
         }
         catch (Exception kdfEx)
         {
-            // Log and continue — KDF migration failure must never prevent unlock.
+            // KDF migration failure must never prevent unlock — log for operator observability.
             // The database is still accessible; migration will be retried on next unlock.
-            System.Diagnostics.Debug.WriteLine($"KDF migration warning: {kdfEx.Message}");
+            _logger.LogWarning(kdfEx, "KDF-migratie mislukt voor {DbPath}", dbPath);
         }
 
         return true;
@@ -111,6 +114,13 @@ public class MasterPasswordService : IMasterPasswordService
         _currentPasswordBytes = Encoding.UTF8.GetBytes(password);
         return Task.CompletedTask;
     }
+
+    /// <summary>
+    /// Executes KDF migration. Protected virtual to allow overriding in unit tests
+    /// without requiring a real SQLCipher database connection.
+    /// </summary>
+    protected virtual Task ExecuteKdfMigrationAsync(string dbPath, string password)
+        => _kdfService.EnsureTargetKdfAsync(dbPath, password);
 
     public void Lock()
     {
