@@ -5,7 +5,7 @@
   "feature_name": null,
   "status": "SPRINT_ACTIVE",
   "current_phase": "FASE-5",
-  "current_agent": "implementation-agent",
+  "current_agent": "pr-review-agent",
   "current_sprint": "SP-11",
   "github_project_name": "Lumio Workitems",
   "github_repo_url": "https://github.com/RobertAgterhuis/Lumio",
@@ -30,18 +30,26 @@
     "sprint_id": "SP-11",
     "milestone_number": 8,
     "github_issues": [
-      {"id": "SP-11-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/88"},
-      {"id": "SP-11-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/89"},
-      {"id": "SP-11-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/90"},
-      {"id": "SP-11-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/91"}
+      {"id": "SP-11-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/88", "status": "implemented"},
+      {"id": "SP-11-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/89", "status": "implemented"},
+      {"id": "SP-11-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/90", "status": "implemented"},
+      {"id": "SP-11-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/91", "status": "implemented"}
     ],
+    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/92",
+    "pull_request_number": 92,
+    "branch": "feature/SP-11-beveiliging-ci-hygiene",
     "dor_cleared": true,
-    "sprint_gate_date": "2026-03-02T00:00:00Z"
+    "sprint_gate_date": "2026-03-02T00:00:00Z",
+    "implementation_status": "PR_OPEN",
+    "test_results": {
+      "backend": {"passed": 274, "failed": 0},
+      "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96}
+    }
   },
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-02T01:00:00Z",
+  "last_updated": "2026-03-02T02:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
