@@ -292,11 +292,12 @@ jobs:
           # Parse line-rate from Cobertura XML (attribute on root <coverage> element)
           LINE_RATE=$(grep -oP '(?<=line-rate=")[0-9.]+' "$COVERAGE_XML" | head -1)
           PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.1f")
-          echo "API scoped coverage (Validators): ${PCT}%"
-          echo "::notice::API test coverage scoped (line-rate): ${PCT}% — target ≥50%"
-          # SP-3-T008: Threshold raised to 50% (scoped to Validators layer — 99.8% achieved).
-          # Expand scope to Services+Rules in SP-6 once service tests added (roadmap).
-          THRESHOLD=50
+          echo "API scoped coverage (Services + Validators, excl. Pdf/Video): ${PCT}%"
+          echo "::notice::API test coverage scoped (line-rate): ${PCT}% — target ≥70%"
+          # SP-3-T008: Threshold raised to 70% (SP-8-R005: scope expanded to Services+Validators,
+          # excl. PDF generators and VideoStorageService. Measured: ~72.2%).
+          # Roadmap: raise to 80% once AuditLogRotatieService, EncryptionService, ProfileService tests added.
+          THRESHOLD=70
           INT_PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.0f")
           if [ "$INT_PCT" -lt "$THRESHOLD" ]; then
             echo "::error::GUARD-008: Scoped API coverage ${PCT}% is below the ≥${THRESHOLD}% minimum."
