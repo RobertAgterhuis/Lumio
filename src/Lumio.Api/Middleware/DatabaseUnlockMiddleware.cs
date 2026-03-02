@@ -8,12 +8,12 @@ public class DatabaseUnlockMiddleware
 
     private static readonly string[] AllowedPrefixes =
     [
-        "/api/auth/",
-        "/api/profielen",
-        "/api/backup/restore",
+        "/api/v1/auth/",
+        "/api/v1/profielen",
+        "/api/v1/backup/restore",
         "/swagger",
         // SP-10-COR-001: endpoint is openbaar — erfgenamen moeten de drempel weten vóór ontgrendeling
-        "/api/shamir/drempel"
+        "/api/v1/shamir/drempel"
     ];
 
     /// <summary>
@@ -22,12 +22,12 @@ public class DatabaseUnlockMiddleware
     /// </summary>
     private static readonly string[] ReadOnlyAllowedPrefixes =
     [
-        "/api/auth/",
-        "/api/export/",
-        "/api/status",
-        "/api/afhandeling",
-        "/api/profielen",
-        "/api/backup/restore",
+        "/api/v1/auth/",
+        "/api/v1/export/",
+        "/api/v1/status",
+        "/api/v1/afhandeling",
+        "/api/v1/profielen",
+        "/api/v1/backup/restore",
         "/swagger"
     ];
 
