@@ -24,7 +24,7 @@ export default defineConfig({
 
   // Serve the Next.js static export out/ directory during tests
   webServer: {
-    command: "npx serve ./out --listen 3001 --no-clipboard",
+    command: "npx http-server ./out --port 3001 --silent",
     port: 3001,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
