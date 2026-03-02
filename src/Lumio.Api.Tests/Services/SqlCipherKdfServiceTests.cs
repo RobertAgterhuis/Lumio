@@ -12,6 +12,7 @@ namespace Lumio.Api.Tests.Services;
 /// KdfIntegration region below. They require write access to Temp and the native
 /// SQLCipher library (available via SQLitePCLRaw.bundle_e_sqlcipher transitive dep).
 /// </summary>
+[Collection("SqlCipher")] // Serialize with other SQLCipher integration tests — prevents ClearAllPools interference
 public class SqlCipherKdfServiceTests
 {
     // ── Constants verification ────────────────────────────────────────────────
