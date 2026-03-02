@@ -27,7 +27,6 @@
     <PackageReference Include="RulesEngine" Version="5.0.6" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.1" />
     <PackageReference Include="SecretSharingDotNet" Version="0.14.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />

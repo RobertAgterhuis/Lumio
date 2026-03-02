@@ -258,6 +258,18 @@ jobs:
       - name: Restore
         run: dotnet restore
 
+      - name: Security — NuGet vulnerability scan (SP-8-R004)
+        shell: bash
+        run: |
+          # Fail CI when any Critical or High CVE is present in direct or transitive deps.
+          OUTPUT=$(dotnet list package --vulnerable --include-transitive 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -qiE "^\s*>.*Critical|^\s*>.*High"; then
+            echo "::error::GUARD-013: Critical or High NuGet vulnerability detected. Upgrade or remove the affected package."
+            exit 1
+          fi
+          echo "✓ GUARD-013: No Critical or High NuGet vulnerabilities found."
+
       - name: Build
         run: dotnet build --no-restore --configuration Release -warnaserror
 
