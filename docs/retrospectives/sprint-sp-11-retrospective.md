@@ -40,6 +40,14 @@
    `Lumio.Api.exe` wordt gelocked door `start-dev.ps1`; `dotnet build` faalt dan met "cannot copy app host".  
    **Workaround:** `--no-self-contained` of `-p:UseAppHost=false` bij CI-achtige lokale builds.
 
+3. **LESSON_CANDIDATE: Middleware whitelists meeveranderen bij route-versioning (post-merge fix)**  
+   `DatabaseUnlockMiddleware.AllowedPrefixes` bevatte hardcoded `/api/` paden. Na de versioning naar `/api/v1/` matchen bestaande profielen niet meer — frontend toonde ten onrechte "maak uw eerste profiel aan".  
+   **Actie:** Bij elke wijziging van route-prefixen altijd `DatabaseUnlockMiddleware` en andere middleware met hardcoded paden opnemen in de impactanalyse. (Commit: `4fe34a8`)
+
+4. **LESSON_CANDIDATE: BackgroundService werkt op in-memory DB zonder profiel (post-merge fix)**  
+   `AuditLogRotatieService` start 15 seconden na opstart en query't `AuditLog` — ook als er geen actief profiel is en de `LumioDbContext` op een schema-loze `:memory:` database werkt. Resultaat: `no such table: AuditLog` in de opstartlog.  
+   **Actie:** BackgroundServices die EF Core gebruiken moeten `IMasterPasswordService.IsUnlocked` controleren vóór elke DB-operatie. (Commit: `7f851e7`)
+
 ---
 
 ## Technische schuld (nieuw gesignaleerd)
@@ -63,6 +71,7 @@
 
 - Branch `feature/SP-11-beveiliging-ci-hygiene` gemerged in `main` (squash, `ea03027`)
 - Issues #88, #89, #90, #91 gesloten
+- Post-merge fixes: `AuditLogRotatieService` guard (`7f851e7`), `DatabaseUnlockMiddleware` v1-paden (`4fe34a8`)
 - `docs/metrics/sprint-SP-11-kpi.json` aangemaakt
 - `docs/metrics/velocity-log.json` aangemaakt
 - Technische manuals bijgewerkt (NL + EN: api, beveiliging, deployment)
