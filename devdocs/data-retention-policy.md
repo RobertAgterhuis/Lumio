@@ -76,7 +76,7 @@ Verwijdering van de `Eigenaar`-entiteit resulteert in volledige verwijdering van
 | Beperking verwerking | Art. 18 | Lokale opslag — gebruiker controleert de database |
 | Bezwaar | Art. 21 | n.v.t. — verwerkingsgrond is toestemming, geen gerechtvaardigd belang |
 
-> **ACTIE (TODO):** Voeg een explicit `DELETE /api/profiel` endpoint toe in een volgende sprint dat alle eigenaar-data (inclusief bestanden) verwijdert en de database restet. Dit is vereist voor volledig AVG art. 17 compliance.
+> ✅ **GEÏMPLEMENTEERD (2026-03-02):** `DELETE /api/auth/account` is beschikbaar in `AuthController`. Het endpoint vereist re-authenticatie met het huidige wachtwoord, logt de verwijdering in AuditLog vóór delete, en verwijdert via `ProfileService.DeleteProfile()` alle eigenaar-data en de database-file. Volledig AVG art. 17 compliant. Bron: `src/Lumio.Api/Controllers/AuthController.cs`.
 
 ---
 

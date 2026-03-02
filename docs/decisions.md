@@ -42,6 +42,8 @@
 |----|-----------|-------|-----------|-------------|-------|
 | DEC-101 | HOOG | Alle sprints | Chromatic wordt **niet** gebruikt voor visuele regressietests | Het project maakt geen gebruik van Chromatic. De CI-job (`chromatic`) moet worden uitgeschakeld (`if: false`). `chromatic.config.json` blijft als skelet bewaard maar wordt niet geconfigureerd. `CHROMATIC_PROJECT_TOKEN` hoeft niet ingesteld te worden. | 2026-03-02 |
 | DEC-102 | HOOG | Alle sprints | CodeQL SAST wordt **niet** uitgevoerd | GitHub Advanced Security / Code Scanning is niet ingeschakeld voor deze repository. De CodeQL-job (`codeql.yml`) wordt overgeslagen via `if: false` zodat de check als "Skipped" verschijnt in plaats van ❌ FAILURE. Opnieuw activeren door `if: false` te verwijderen zodra Code Scanning wordt ingeschakeld. | 2026-03-02 |
+| DEC-103 | HOOG | SP-8 / Fase 2 | Swagger UI wordt **alleen** in development-modus geactiveerd | REEVALUATE FASE-2 (SEC-001): Swagger UI is zonder `IsDevelopment()`-guard beschikbaar in productie. Besluit: wrap `app.UseSwagger()` + `app.UseSwaggerUI()` in `if (app.Environment.IsDevelopment())`. Tracked als story SP-8-R001. GUARD-011 toegevoegd. | 2026-03-02 |
+| DEC-104 | HOOG | SP-8 / Fase 2 | AuditLog-rotatie (90 dagen) moet geïmplementeerd worden als IHostedService | REEVALUATE FASE-2 (SEC-005): de AVG art. 5 opslagbeperking van 90 dagen voor AuditLog entries is gedocumenteerd maar niet technisch afgedwongen. Besluit: implementeer `AuditLogRotatieService : BackgroundService` in SP-8. Tracked als story SP-8-R002. | 2026-03-02 |
 
 ---
 
