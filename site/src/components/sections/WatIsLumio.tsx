@@ -35,8 +35,11 @@ export default function WatIsLumio() {
             </ul>
           </div>
 
-          {/* Illustration placeholder */}
-          <div className="rounded-2xl overflow-hidden bg-(--color-primary-50) border border-primary-100 aspect-4/3 flex items-center justify-center">
+          {/* Illustration placeholder — purely decorative, hidden from assistive technology */}
+          <div
+            className="rounded-2xl overflow-hidden bg-(--color-primary-50) border border-primary-100 aspect-4/3 flex items-center justify-center"
+            aria-hidden="true"
+          >
             <div className="text-center text-primary-500 p-8">
               <svg className="w-24 h-24 mx-auto mb-4 opacity-40" fill="none" viewBox="0 0 96 96" stroke="currentColor" strokeWidth="1.5">
                 <rect x="16" y="12" width="64" height="72" rx="6" />
@@ -44,7 +47,6 @@ export default function WatIsLumio() {
                 <line x1="28" y1="48" x2="68" y2="48" />
                 <line x1="28" y1="60" x2="52" y2="60" />
               </svg>
-              <p className="text-sm font-medium opacity-60">App screenshot</p>
             </div>
           </div>
         </div>

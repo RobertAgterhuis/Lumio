@@ -27,6 +27,7 @@ public class ExportDataController : ControllerBase
     public async Task<IActionResult> ExportJson()
     {
         var bytes = await _exportData.BuildJsonExportAsync();
+        if (bytes is null) return Problem("Export failed: could not generate JSON export.", statusCode: 500);
         await _audit.LogAsync("Export", "export", null, "json");
         return File(bytes, "application/json", $"lumio-export-{DateTime.Now:yyyy-MM-dd}.json");
     }
@@ -36,6 +37,7 @@ public class ExportDataController : ControllerBase
     public async Task<IActionResult> ExportXml()
     {
         var bytes = await _exportData.BuildXmlExportAsync();
+        if (bytes is null) return Problem("Export failed: could not generate XML export.", statusCode: 500);
         await _audit.LogAsync("Export", "export", null, "xml");
         return File(bytes, "application/xml", $"lumio-export-{DateTime.Now:yyyy-MM-dd}.xml");
     }
@@ -45,6 +47,7 @@ public class ExportDataController : ControllerBase
     public async Task<IActionResult> ExportNuv()
     {
         var bytes = await _nuv.BuildNuvXmlAsync();
+        if (bytes is null) return Problem("Export failed: could not generate NUV XML export.", statusCode: 500);
         await _audit.LogAsync("Export", "export", null, "nuv");
         return File(bytes, "application/xml", $"lumio-nuv-{DateTime.Now:yyyy-MM-dd}.xml");
     }

@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import DOMPurify from "dompurify";
+import type { Config as DOMPurifyConfig } from "dompurify";
 import { cn } from "@/lib/utils";
 
 interface SafeHtmlProps {
@@ -9,10 +10,10 @@ interface SafeHtmlProps {
   className?: string;
   as?: keyof React.JSX.IntrinsicElements;
   /** DOMPurify configuration overrides */
-  purifyConfig?: DOMPurify.Config;
+  purifyConfig?: DOMPurifyConfig;
 }
 
-const DEFAULT_CONFIG: DOMPurify.Config = {
+const DEFAULT_CONFIG: DOMPurifyConfig = {
   ALLOWED_TAGS: [
     "p", "br", "strong", "em", "b", "i", "u", "s",
     "h1", "h2", "h3", "h4", "h5", "h6",
