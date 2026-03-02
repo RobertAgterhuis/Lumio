@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Services;
@@ -15,12 +16,21 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/erfgenamen")]
 public class ErfgenamenController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly IErfgenaamRepository _erfgenaamRepo;
+    private readonly IEigenaarRepository _eigenaarRepo;
+    private readonly LumioDbContext _db;  // retained for complex aggregate queries (BerekenErfbelasting)
     private readonly IErfbelastingService _erfbelastingService;
     private readonly IAuditService _audit;
 
-    public ErfgenamenController(LumioDbContext db, IErfbelastingService erfbelastingService, IAuditService audit)
+    public ErfgenamenController(
+        IErfgenaamRepository erfgenaamRepo,
+        IEigenaarRepository eigenaarRepo,
+        LumioDbContext db,
+        IErfbelastingService erfbelastingService,
+        IAuditService audit)
     {
+        _erfgenaamRepo = erfgenaamRepo;
+        _eigenaarRepo = eigenaarRepo;
         _db = db;
         _erfbelastingService = erfbelastingService;
         _audit = audit;
@@ -29,14 +39,14 @@ public class ErfgenamenController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<ErfgenaamResponse>>> GetAll()
     {
-        var items = await _db.Erfgenamen.OrderBy(e => e.Achternaam).ToListAsync();
+        var items = await _erfgenaamRepo.GetAllByNameAsync();
         return Ok(items.Adapt<List<ErfgenaamResponse>>());
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ErfgenaamResponse>> GetById(Guid id)
     {
-        var item = await _db.Erfgenamen.FindAsync(id);
+        var item = await _erfgenaamRepo.FindAsync(id);
         if (item is null) return NotFound();
         return Ok(item.Adapt<ErfgenaamResponse>());
     }
@@ -44,14 +54,14 @@ public class ErfgenamenController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ErfgenaamResponse>> Create([FromBody] ErfgenaamUpsertRequest request)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = request.Adapt<Erfgenaam>();
         item.EigenaarId = eigenaar.Id;
-        _db.Erfgenamen.Add(item);
-        await _db.SaveChangesAsync();
+        await _erfgenaamRepo.AddAsync(item);
+        await _erfgenaamRepo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Erfgenaam", item.Id);
         return CreatedAtAction(nameof(GetById), new { id = item.Id }, item.Adapt<ErfgenaamResponse>());
     }
@@ -59,11 +69,11 @@ public class ErfgenamenController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<ErfgenaamResponse>> Update(Guid id, [FromBody] ErfgenaamUpsertRequest request)
     {
-        var item = await _db.Erfgenamen.FindAsync(id);
+        var item = await _erfgenaamRepo.FindAsync(id);
         if (item is null) return NotFound();
 
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _erfgenaamRepo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "Erfgenaam", id);
         return Ok(item.Adapt<ErfgenaamResponse>());
     }
@@ -71,15 +81,12 @@ public class ErfgenamenController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var item = await _db.Erfgenamen.FindAsync(id);
+        var item = await _erfgenaamRepo.FindAsync(id);
         if (item is null) return NotFound();
 
-        // S3-34: cascade-delete gekoppelde toewijzingen
-        var toewijzingen = _db.ErfgenaamToewijzingen.Where(t => t.ErfgenaamId == id);
-        _db.ErfgenaamToewijzingen.RemoveRange(toewijzingen);
-
-        _db.Erfgenamen.Remove(item);
-        await _db.SaveChangesAsync();
+        // S3-34: cascade-delete gekoppelde toewijzingen — encapsulated in RemoveAsync
+        await _erfgenaamRepo.RemoveAsync(item);
+        await _erfgenaamRepo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Erfgenaam", id);
         return NoContent();
     }

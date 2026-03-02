@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Lumio.Api.Data;
 using Lumio.Api.Logging;
+using Lumio.Api.Repositories;
 using Serilog;
 using Serilog.Events;
 using Lumio.Api.Middleware;
@@ -107,6 +108,10 @@ builder.Services.AddScoped<IZipExportService, ZipExportService>();
 builder.Services.AddScoped<INuvExportService, NuvExportService>();
 builder.Services.AddScoped<IHtmlExportService, HtmlExportService>();
 builder.Services.AddScoped<IEncryptedBackupService, EncryptedBackupService>();
+
+// ── Application Layer: Repository abstractions (SP-12-004) ──
+builder.Services.AddScoped<IEigenaarRepository, EfEigenaarRepository>();
+builder.Services.AddScoped<IErfgenaamRepository, EfErfgenaamRepository>();
 
 // EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>

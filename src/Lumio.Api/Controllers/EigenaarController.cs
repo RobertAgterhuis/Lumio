@@ -1,12 +1,11 @@
-using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
@@ -15,14 +14,14 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/eigenaar")]
 public class EigenaarController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly IEigenaarRepository _eigenaarRepo;
     private readonly LimietenOptions _limieten;
     private readonly IProfileService _profileService;
     private readonly IAuditService _audit;
 
-    public EigenaarController(LumioDbContext db, IOptions<LimietenOptions> limieten, IProfileService profileService, IAuditService audit)
+    public EigenaarController(IEigenaarRepository eigenaarRepo, IOptions<LimietenOptions> limieten, IProfileService profileService, IAuditService audit)
     {
-        _db = db;
+        _eigenaarRepo = eigenaarRepo;
         _limieten = limieten.Value;
         _profileService = profileService;
         _audit = audit;
@@ -31,7 +30,7 @@ public class EigenaarController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<EigenaarResponse>> Get()
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return NotFound(new { error = "Eigenaar profiel nog niet aangemaakt." });
 
@@ -41,13 +40,13 @@ public class EigenaarController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<EigenaarResponse>> Create([FromBody] EigenaarUpsertRequest request)
     {
-        var existing = await _db.Eigenaren.FirstOrDefaultAsync();
+        var existing = await _eigenaarRepo.FindAsync();
         if (existing is not null)
             return BadRequest(new { error = "Eigenaar profiel bestaat al. Gebruik PUT om te wijzigen." });
 
         var eigenaar = request.Adapt<Eigenaar>();
-        _db.Eigenaren.Add(eigenaar);
-        await _db.SaveChangesAsync();
+        await _eigenaarRepo.AddAsync(eigenaar);
+        await _eigenaarRepo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Eigenaar", eigenaar.Id);
 
         return CreatedAtAction(nameof(Get), eigenaar.Adapt<EigenaarResponse>());
@@ -56,12 +55,12 @@ public class EigenaarController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<EigenaarResponse>> Update([FromBody] EigenaarUpsertRequest request)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return NotFound(new { error = "Eigenaar profiel nog niet aangemaakt." });
 
         request.Adapt(eigenaar);
-        await _db.SaveChangesAsync();
+        await _eigenaarRepo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "Eigenaar", eigenaar.Id);
 
         return Ok(eigenaar.Adapt<EigenaarResponse>());
@@ -72,7 +71,7 @@ public class EigenaarController : ControllerBase
     [HttpGet("foto")]
     public async Task<IActionResult> GetFoto()
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar?.ProfielFoto is null)
             return NotFound(new { error = "Geen profielfoto gevonden." });
 
@@ -83,7 +82,7 @@ public class EigenaarController : ControllerBase
     [RequestSizeLimit(10_485_760)] // 10 MB (compile-time upper bound)
     public async Task<IActionResult> UploadFoto([FromForm] IFormFile bestand)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
@@ -99,7 +98,7 @@ public class EigenaarController : ControllerBase
         eigenaar.ProfielFoto = ms.ToArray();
         eigenaar.ProfielFotoContentType = bestand.ContentType;
         eigenaar.ProfielFotoNaam = bestand.FileName;
-        await _db.SaveChangesAsync();
+        await _eigenaarRepo.CommitAsync();
 
         // Save a small thumbnail in profiles.json (available before DB unlock)
         var thumbnailBase64 = $"data:{bestand.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
@@ -112,14 +111,14 @@ public class EigenaarController : ControllerBase
     [HttpDelete("foto")]
     public async Task<IActionResult> DeleteFoto()
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return NotFound(new { error = "Eigenaar profiel niet gevonden." });
 
         eigenaar.ProfielFoto = null;
         eigenaar.ProfielFotoContentType = null;
         eigenaar.ProfielFotoNaam = null;
-        await _db.SaveChangesAsync();
+        await _eigenaarRepo.CommitAsync();
 
         // Clear thumbnail from profiles.json
         _profileService.UpdateActiveProfileThumbnail(null);
@@ -132,14 +131,14 @@ public class EigenaarController : ControllerBase
     [HttpPost("onboarding-voltooid")]
     public async Task<IActionResult> OnboardingVoltooid()
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return Ok(new { onboardingVoltooid = false });
 
         if (!eigenaar.OnboardingVoltooid)
         {
             eigenaar.OnboardingVoltooid = true;
-            await _db.SaveChangesAsync();
+            await _eigenaarRepo.CommitAsync();
             await _audit.LogAsync("Onboarding voltooid", "Eigenaar", eigenaar.Id);
         }
         return Ok(new { onboardingVoltooid = eigenaar.OnboardingVoltooid });
@@ -149,7 +148,7 @@ public class EigenaarController : ControllerBase
     [HttpGet("onboarding-status")]
     public async Task<IActionResult> GetOnboardingStatus()
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null) return Ok(new { onboardingVoltooid = false });
         return Ok(new { onboardingVoltooid = eigenaar.OnboardingVoltooid });
     }
