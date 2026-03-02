@@ -48,6 +48,10 @@
    `AuditLogRotatieService` start 15 seconden na opstart en query't `AuditLog` — ook als er geen actief profiel is en de `LumioDbContext` op een schema-loze `:memory:` database werkt. Resultaat: `no such table: AuditLog` in de opstartlog.  
    **Actie:** BackgroundServices die EF Core gebruiken moeten `IMasterPasswordService.IsUnlocked` controleren vóór elke DB-operatie. (Commit: `7f851e7`)
 
+5. **LESSON_CANDIDATE: Verplichte labels toekennen bij aanmaken van GitHub Issues**  
+   Issues #93–#97 (SP-12) zijn aangemaakt zonder labels — `sprint:SP-12`, type-label (`code`, `analysis`, `infra`) en prioriteit ontbreken. De GitHub Integration Agent moet bij elk issue minimaal `sprint:[ID]` en een type-label toekennen via de API.  
+   **Actie:** GitHub Integration Agent protocol uitbreiden: vóór aanmaken issues controleren of de vereiste labels bestaan (aanmaken indien absent), en elk issue bij creatie van minimaal `sprint:[ID]` + type-label voorzien.
+
 ---
 
 ## Technische schuld (nieuw gesignaleerd)
