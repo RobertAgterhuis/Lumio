@@ -5,12 +5,12 @@
   "feature_name": null,
   "status": "SPRINT_ACTIVE",
   "current_phase": "FASE-5",
-  "current_agent": "pr-review-agent",
-  "current_sprint": "SP-11",
+  "current_agent": "implementation-agent",
+  "current_sprint": "SP-12",
   "github_project_name": "Lumio Workitems",
   "github_repo_url": "https://github.com/RobertAgterhuis/Lumio",
   "canva_api_token": "",
-  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11"],
+  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11", "SPRINT_COMPLETE_SP-11", "PRE_SPRINT_GATE_SP-12"],
   "completed_agents": [
     "25-onboarding-agent",
     "05-software-architect",
@@ -27,20 +27,21 @@
     "27-github-integration-agent"
   ],
   "active_sprint": {
-    "sprint_id": "SP-11",
-    "milestone_number": 8,
+    "sprint_id": "SP-12",
+    "milestone_number": 9,
     "github_issues": [
-      {"id": "SP-11-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/88", "status": "implemented"},
-      {"id": "SP-11-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/89", "status": "implemented"},
-      {"id": "SP-11-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/90", "status": "implemented"},
-      {"id": "SP-11-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/91", "status": "implemented"}
+      {"id": "SP-12-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/93", "status": "open"},
+      {"id": "SP-12-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/94", "status": "open"},
+      {"id": "SP-12-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/95", "status": "open"},
+      {"id": "SP-12-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/96", "status": "open"},
+      {"id": "SP-12-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/97", "status": "open"}
     ],
-    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/92",
-    "pull_request_number": 92,
-    "branch": "feature/SP-11-beveiliging-ci-hygiene",
+    "pull_request_url": null,
+    "pull_request_number": null,
+    "branch": "feature/SP-12-kwaliteit-governance",
     "dor_cleared": true,
     "sprint_gate_date": "2026-03-02T00:00:00Z",
-    "implementation_status": "PR_OPEN",
+    "implementation_status": "IN_PROGRESS",
     "test_results": {
       "backend": {"passed": 274, "failed": 0},
       "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96}
@@ -49,7 +50,7 @@
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-02T02:00:00Z",
+  "last_updated": "2026-03-02T10:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
