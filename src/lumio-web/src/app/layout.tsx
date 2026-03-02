@@ -32,15 +32,14 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning className={dmSans.variable}>
       <head>
+{/* T-007 (GAP-SEC-04): 'unsafe-inline' removed from script-src — theme script is now external (/theme-init.js) */}
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://app.posthog.com https://us.i.posthog.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
+          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://app.posthog.com https://us.i.posthog.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("lumio-theme");if(t==="dark"||(t==null&&window.matchMedia("(prefers-color-scheme:dark)").matches)){document.documentElement.classList.add("dark")}if(localStorage.getItem("lumio-grote-tekst")==="true"){document.documentElement.classList.add("grote-tekst")}}catch(e){}})();`,
-          }}
-        />
+        {/* T-007: Synchronous external script — no async/defer keeps FOUC absent, no unsafe-inline needed */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="/theme-init.js" />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         {/* SC 2.4.1 — skip navigation link: visually hidden until focused by keyboard */}

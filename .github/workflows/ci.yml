@@ -15,7 +15,6 @@ jobs:
   frontend:
     name: Frontend (lint / typecheck / test / build)
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     defaults:
       run:
         working-directory: src/lumio-web
@@ -53,7 +52,6 @@ jobs:
   site:
     name: Site (typecheck / build)
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     defaults:
       run:
         working-directory: site
@@ -84,7 +82,6 @@ jobs:
   chromatic:
     name: Visual Regression (Chromatic)
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     continue-on-error: true # SP-5-001: non-blocking until CHROMATIC_PROJECT_TOKEN is set
     defaults:
       run:
@@ -118,7 +115,6 @@ jobs:
   icon-guard:
     name: Icon guard (no replaced Lucide icons)
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     steps:
       - uses: actions/checkout@v4
 
@@ -178,7 +174,6 @@ jobs:
   e2e:
     name: E2E smoke tests (Playwright / static site)
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     needs: [site]
     defaults:
       run:
@@ -218,7 +213,6 @@ jobs:
   a11y:
     name: Accessibility (Storybook / axe-core)
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     needs: [frontend]
     defaults:
       run:
@@ -252,7 +246,6 @@ jobs:
   backend:
     name: Backend (build)
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     defaults:
       run:
         working-directory: src/Lumio.Api
@@ -288,11 +281,11 @@ jobs:
           # Parse line-rate from Cobertura XML (attribute on root <coverage> element)
           LINE_RATE=$(grep -oP '(?<=line-rate=")[0-9.]+' "$COVERAGE_XML" | head -1)
           PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.1f")
-          echo "API scoped coverage (Services/Validators/Rules): ${PCT}%"
-          echo "::notice::API test coverage scoped (line-rate): ${PCT}% — target ≥30%"
-          # SP-9-001: Threshold lowered from 50% to 30% (scoped to Services+Validators+Rules).
-          # Full-project 50% gate re-instated once controller tests added (roadmap Q3-2025).
-          THRESHOLD=30
+          echo "API scoped coverage (Validators): ${PCT}%"
+          echo "::notice::API test coverage scoped (line-rate): ${PCT}% — target ≥50%"
+          # SP-3-T008: Threshold raised to 50% (scoped to Validators layer — 99.8% achieved).
+          # Expand scope to Services+Rules in SP-6 once service tests added (roadmap).
+          THRESHOLD=50
           INT_PCT=$(echo "$LINE_RATE * 100" | bc -l | xargs printf "%.0f")
           if [ "$INT_PCT" -lt "$THRESHOLD" ]; then
             echo "::error::GUARD-008: Scoped API coverage ${PCT}% is below the ≥${THRESHOLD}% minimum."
@@ -362,7 +355,6 @@ jobs:
   whitelabel-validate:
     name: Whitelabel config schema validation
     runs-on: ubuntu-latest
-    if: false  # DISABLED until further notice
     steps:
       - uses: actions/checkout@v4
 
