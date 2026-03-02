@@ -76,13 +76,12 @@ jobs:
         run: npm audit --audit-level=high --omit=dev
 
   # ── Chromatic Visual Regression ──────────────────────────────────────
-  # SP-5-001: Visual regression testing via Chromatic.
-  # Requires: CHROMATIC_PROJECT_TOKEN secret + real projectId in chromatic.config.json.
-  # continue-on-error: true — CI passes even without the token configured.
+  # DEC-101: Chromatic wordt niet gebruikt. Job uitgeschakeld op 2026-03-02.
+  # Zie docs/decisions.md voor motivatie.
   chromatic:
     name: Visual Regression (Chromatic)
     runs-on: ubuntu-latest
-    continue-on-error: true # SP-5-001: non-blocking until CHROMATIC_PROJECT_TOKEN is set
+    if: false # DEC-101: Chromatic niet in gebruik — job permanent uitgeschakeld
     defaults:
       run:
         working-directory: src/lumio-web
