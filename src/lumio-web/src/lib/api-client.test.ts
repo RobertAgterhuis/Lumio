@@ -106,7 +106,11 @@ describe("api-client", () => {
         )
       );
 
-      const err = await api.get("/api/test").catch((e) => e);
+      const err = (await api.get("/api/test").catch((e: unknown) => e)) as {
+        status: number;
+        lockoutRemainingSeconds: number;
+        detail: string;
+      };
       expect(err.status).toBe(429);
       expect(err.lockoutRemainingSeconds).toBe(600);
       expect(err.detail).toBe("Te veel pogingen.");
@@ -117,7 +121,10 @@ describe("api-client", () => {
         new Response(JSON.stringify({ error: "Too many requests." }), { status: 429 })
       );
 
-      const err = await api.get("/api/test").catch((e) => e);
+      const err = (await api.get("/api/test").catch((e: unknown) => e)) as {
+        status: number;
+        lockoutRemainingSeconds: number;
+      };
       expect(err.status).toBe(429);
       expect(err.lockoutRemainingSeconds).toBe(0);
     });
