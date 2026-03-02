@@ -15,14 +15,16 @@
     "build": "tsc",
     "build:icons": "node scripts/build-icons.mjs",
     "package": "tsc && electron-builder --dir",
-    "start": "electron ."
+    "start": "electron .",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/node": "^25.3.3",
     "electron": "^40.6.1",
     "electron-builder": "^26.0.12",
     "sharp": "^0.34.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "get-port": "^7.1.0"

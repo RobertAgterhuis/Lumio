@@ -43,6 +43,20 @@ contextBridge.exposeInMainWorld("lumio", {
   /** Returns the Electron app version string (e.g. "1.0.0"). */
   getAppVersion: (): Promise<string> =>
     ipcRenderer.invoke("get-app-version"),
+  /**
+   * SP-12-002: Session timeout.
+   * Registers a callback that fires when the inactivity timeout expires and the
+   * main process requests the app to lock. The renderer should call the lock API.
+   */
+  onSessionLock: (callback: () => void): void => {
+    ipcRenderer.on("session-lock", () => callback());
+  },
+  /** Returns the current session timeout in minutes (default 15, range 5-60). */
+  getSessionTimeoutMinutes: (): Promise<number> =>
+    ipcRenderer.invoke("get-session-timeout-minutes"),
+  /** Sets the session timeout in minutes. Clamped to [5, 60]. */
+  setSessionTimeoutMinutes: (minutes: number): Promise<void> =>
+    ipcRenderer.invoke("set-session-timeout-minutes", minutes),
 });
 
 /**
