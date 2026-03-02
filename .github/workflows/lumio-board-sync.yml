@@ -1,12 +1,7 @@
 name: Lumio Board Sync + Secret Scan
 
+# Board Sync disabled until further notice (billing/spending limit — 2026-03-02)
 on:
-  push:
-    branches: [main, develop, "Feature/**", "feature/**"]
-  pull_request:
-    branches: [main, develop]
-  issues:
-    types: [opened, edited, closed, reopened, labeled, unlabeled, assigned]
   workflow_dispatch:
 
 env:

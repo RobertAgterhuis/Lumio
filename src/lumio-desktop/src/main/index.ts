@@ -1,7 +1,7 @@
 // DO-2-003: crash handler — must be first import so uncaughtException is captured
 // from the very start of the process lifecycle.
 import "./crash";
-import { app, globalShortcut, ipcMain, Menu, nativeTheme, session, shell } from "electron";
+import { app, globalShortcut, ipcMain, Menu, nativeTheme, powerMonitor, session, shell } from "electron";
 import * as path from "path";
 import { startBackend, stopBackend } from "./sidecar";
 import { createMainWindow, getMainWindow, applyTitleBarOverlay } from "./window";
@@ -12,6 +12,7 @@ import { buildApplicationMenu } from "./menu";
 import { showSplash, closeSplash, showSplashError } from "./splash";
 import { createTray, destroyTray } from "./tray";
 import { setupThemeSync } from "./theme";
+import { SessionTimeoutManager } from "./session-timeout";
 import {
   loadWhitelabelConfig,
   applyWhitelabelCSS,
@@ -205,6 +206,24 @@ app.whenReady().then(async () => {
     ipcMain.handle("get-app-version", () => app.getVersion());
     // =========================================================================
 
+    // === SP-12-002: Session timeout ==========================================
+    // Auto-lock after configurable inactivity period (default 15 min, range 5-60 min).
+    const sessionMgr = new SessionTimeoutManager({
+      getSystemIdleTimeMs: () => powerMonitor.getSystemIdleTime() * 1000,
+      onTimeout: () => {
+        const win = getMainWindow();
+        win?.webContents.send("session-lock");
+        console.log("[lumio] Session timeout: locking application");
+      },
+    });
+
+    ipcMain.handle("get-session-timeout-minutes", () => sessionMgr.getTimeoutMinutes());
+    ipcMain.handle("set-session-timeout-minutes", (_event: unknown, minutes: number) => {
+      if (typeof minutes !== "number" || !Number.isFinite(minutes)) return;
+      sessionMgr.setTimeoutMs(Math.round(minutes) * 60_000);
+    });
+    // =========================================================================
+
     // Register IPC handlers before creating window
     registerAutoBackupHandlers();
 
@@ -217,6 +236,8 @@ app.whenReady().then(async () => {
     // Create the main window and show it after the first paint,
     // closing the splash just before the main window appears.
     const mainWin = createMainWindow();
+    sessionMgr.start();
+    console.log(`[lumio] Session timeout active: ${sessionMgr.getTimeoutMinutes()} min`);
 
     // Register F12 and Ctrl+Shift+I to open DevTools for diagnostics.
     // globalShortcut is the only way to intercept these keys in a packaged app
