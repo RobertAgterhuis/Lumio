@@ -15,6 +15,7 @@ import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
 import { KeyRound, Plus, Trash2, Loader2, Unlock } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function HeirUnlockForm() {
   const { setUnlocked, setReadOnly, setProfileSelected } = useAuthStore();
@@ -71,6 +72,11 @@ export function HeirUnlockForm() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          <Alert variant="info">
+            <AlertDescription>
+              {t("instructie")}
+            </AlertDescription>
+          </Alert>
           <div className="space-y-3">
             {shares.map((share, i) => (
               <div key={i} className="flex gap-2">

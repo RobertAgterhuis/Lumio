@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
-import { Shield } from "lucide-react";
+import { Shield, Eye, EyeOff } from "lucide-react";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -19,6 +19,8 @@ export function SetupForm() {
   const [avgConsent, setAvgConsent] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const { setUnlocked, setFirstRun } = useAuthStore();
   const t = useTranslations("auth.setup");
 
@@ -68,28 +70,50 @@ export function SetupForm() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="password">{t("wachtwoord")}</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={t("wachtwoordPlaceholder")}
-              required
-              autoFocus
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t("wachtwoordPlaceholder")}
+                required
+                autoFocus
+                className="pr-10"
+              />
+              <button
+                type="button"
+                aria-label={showPassword ? t("verbergWachtwoord") : t("toonWachtwoord")}
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
             <PasswordStrengthMeter password={password} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="confirm">{t("bevestig")}</Label>
-            <Input
-              id="confirm"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder={t("bevestigPlaceholder")}
-              required
-            />
+            <div className="relative">
+              <Input
+                id="confirm"
+                type={showConfirm ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder={t("bevestigPlaceholder")}
+                required
+                className="pr-10"
+              />
+              <button
+                type="button"
+                aria-label={showConfirm ? t("verbergWachtwoord") : t("toonWachtwoord")}
+                onClick={() => setShowConfirm((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
 
           {error && (

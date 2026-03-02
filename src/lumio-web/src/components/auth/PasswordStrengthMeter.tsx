@@ -65,7 +65,14 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
     <div className="space-y-2">
       {/* Strength bar */}
       <div className="flex items-center gap-2">
-        <div className="flex flex-1 gap-1">
+        <div
+          className="flex flex-1 gap-1"
+          role="progressbar"
+          aria-valuenow={strength.score}
+          aria-valuemin={0}
+          aria-valuemax={4}
+          aria-label={t(STRENGTH_LABEL_KEYS[strength.score])}
+        >
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}

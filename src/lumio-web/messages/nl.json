@@ -39,7 +39,9 @@
       "foutMinimaal": "Wachtwoord moet minimaal 8 tekens bevatten.",
       "foutOvereenkomst": "Wachtwoorden komen niet overeen.",
       "foutSetup": "Setup mislukt",
-      "wachtwoordWaarschuwing": "Bewaar uw wachtwoord, noodcodes en herstelcodes op een veilige plek. Verlies van uw wachtwoord betekent verlies van toegang tot al uw Lumio-gegevens."
+      "wachtwoordWaarschuwing": "Bewaar uw wachtwoord, noodcodes en herstelcodes op een veilige plek. Verlies van uw wachtwoord betekent verlies van toegang tot al uw Lumio-gegevens.",
+      "toonWachtwoord": "Wachtwoord tonen",
+      "verbergWachtwoord": "Wachtwoord verbergen"
     },
     "ontgrendel": {
       "titel": "Lumio Ontgrendelen",
@@ -56,6 +58,7 @@
       "codeLabel": "Code {nummer}",
       "codePlaceholder": "Plak hier de noodcode...",
       "codeToevoegen": "Nog een code toevoegen",
+      "instructie": "Voer hieronder uw noodcodes in. U heeft minimaal het door de eigenaar ingestelde aantal codes nodig om toegang te krijgen.",
       "minimaalCodes": "Minimaal 2 noodcodes zijn vereist.",
       "reconstructieMislukt": "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd.",
       "bezig": "Reconstrueren...",
