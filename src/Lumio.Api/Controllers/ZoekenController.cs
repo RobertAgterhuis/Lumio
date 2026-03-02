@@ -30,7 +30,8 @@ public class ZoekenController : ControllerBase
         var resultaat = new ZoekResultaat();
 
         // Erfgenamen
-        var erfgenamen = await _db.Erfgenamen.ToListAsync();
+        // SP-9: Defensieve cap — voorkomt memory-issue bij grote datasets (DEV-001)
+        var erfgenamen = await _db.Erfgenamen.Take(500).ToListAsync();
         resultaat.Erfgenamen = erfgenamen
             .Where(e => Contains(e.Voornaam, query) || Contains(e.Achternaam, query) ||
                         Contains(e.Relatie, query) || Contains(e.Email, query) ||
@@ -39,7 +40,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Noodcontacten
-        var noodcontacten = await _db.Noodcontacten.ToListAsync();
+        var noodcontacten = await _db.Noodcontacten.Take(500).ToListAsync();
         resultaat.Noodcontacten = noodcontacten
             .Where(n => Contains(n.Naam, query) || Contains(n.Rol, query) ||
                         Contains(n.Telefoon, query) || Contains(n.Email, query) ||
@@ -48,7 +49,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Digitale accounts
-        var accounts = await _db.DigitaleAccounts.ToListAsync();
+        var accounts = await _db.DigitaleAccounts.Take(500).ToListAsync();
         resultaat.DigitaleAccounts = accounts
             .Where(a => Contains(a.PlatformNaam, query) || Contains(a.Gebruikersnaam, query) ||
                         Contains(a.EmailAdres, query) || Contains(a.Url, query) ||
@@ -58,7 +59,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Wachtwoorden (zoek NIET op het wachtwoord zelf)
-        var wachtwoorden = await _db.Wachtwoorden.ToListAsync();
+        var wachtwoorden = await _db.Wachtwoorden.Take(500).ToListAsync();
         resultaat.Wachtwoorden = wachtwoorden
             .Where(w => Contains(w.Naam, query) || Contains(w.Gebruikersnaam, query) ||
                         Contains(w.Url, query) || Contains(w.Notities, query))
@@ -67,7 +68,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Crypto wallets
-        var crypto = await _db.CryptoWallets.ToListAsync();
+        var crypto = await _db.CryptoWallets.Take(500).ToListAsync();
         resultaat.CryptoWallets = crypto
             .Where(c => Contains(c.WalletNaam, query) || Contains(c.CryptoType, query) ||
                         Contains(c.Exchange, query) || Contains(c.WalletAdres, query) ||
@@ -77,7 +78,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Bezittingen
-        var bezittingen = await _db.FysiekeBezittingen.ToListAsync();
+        var bezittingen = await _db.FysiekeBezittingen.Take(500).ToListAsync();
         resultaat.Bezittingen = bezittingen
             .Where(b => Contains(b.Omschrijving, query) || Contains(b.Categorie, query) ||
                         Contains(b.Locatie, query) || Contains(b.Notities, query))
@@ -86,7 +87,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Bankrekeningen
-        var bankrekeningen = await _db.Bankrekeningen.ToListAsync();
+        var bankrekeningen = await _db.Bankrekeningen.Take(500).ToListAsync();
         resultaat.Bankrekeningen = bankrekeningen
             .Where(b => Contains(b.BankNaam, query) || Contains(b.IBAN, query) ||
                         Contains(b.RekeningType, query) || Contains(b.Notities, query))
@@ -95,7 +96,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Verzekeringen
-        var verzekeringen = await _db.Verzekeringen.ToListAsync();
+        var verzekeringen = await _db.Verzekeringen.Take(500).ToListAsync();
         resultaat.Verzekeringen = verzekeringen
             .Where(v => Contains(v.Verzekeraar, query) || Contains(v.PolisNummer, query) ||
                         Contains(v.Type, query) || Contains(v.Notities, query))
@@ -104,7 +105,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Schulden
-        var schulden = await _db.Schulden.ToListAsync();
+        var schulden = await _db.Schulden.Take(500).ToListAsync();
         resultaat.Schulden = schulden
             .Where(s => Contains(s.Schuldeiser, query) || Contains(s.Type, query) ||
                         Contains(s.Referentie, query) || Contains(s.Notities, query))
@@ -113,7 +114,7 @@ public class ZoekenController : ControllerBase
             .ToList();
 
         // Documenten
-        var documenten = await _db.Documenten.ToListAsync();
+        var documenten = await _db.Documenten.Take(500).ToListAsync();
         resultaat.Documenten = documenten
             .Where(d => Contains(d.Naam, query) || Contains(d.Categorie.ToString(), query) ||
                         Contains(d.BestandsNaam, query) || Contains(d.Notities, query))

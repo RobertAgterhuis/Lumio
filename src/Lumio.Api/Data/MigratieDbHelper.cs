@@ -1,7 +1,7 @@
 using Lumio.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lumio.Api.Controllers;
+namespace Lumio.Api.Data;
 
 /// <summary>
 /// Internal helper for database migration housekeeping.
