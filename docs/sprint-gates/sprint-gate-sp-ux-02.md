@@ -2,7 +2,7 @@
 
 **Sprint ID:** SP-UX-02  
 **Branch:** `feature/sp-ux-02-heir-experience`  
-**Status:** REVIEW_PENDING — CI + Chromatic baseline acceptance required  
+**Status:** COMPLETED ✅ — PR #71 merged (47bd971), CI green, issues #72/#74/#75/#76 gesloten  
 **Datum start:** 2026-03-02  
 **PR:** #71
 
@@ -60,29 +60,29 @@
 ## Acceptatiecriteria
 
 ### UX-007 — HeirUnlockForm verbeterde foutmelding
-- [ ] Bij mislukte reconstructie: Alert variant `destructive` getoond (geen plain `<p>`)
-- [ ] Alert bevat titel + 3 actionable stappen
-- [ ] Stap 3 verwijst naar contact opnemen met een andere erfgenaam
-- [ ] i18n-sleutels aanwezig in nl.json + en.json
+- [x] Bij mislukte reconstructie: Alert variant `danger` getoond (geen plain `<p>`)
+- [x] Alert bevat titel + 3 actionable stappen
+- [x] Stap 3 verwijst naar contact opnemen met een andere erfgenaam
+- [x] i18n-sleutels aanwezig in nl.json + en.json
 
 ### UX-008 — UnlockForm uitleg vergeten wachtwoord
-- [ ] Sectie "Wachtwoord vergeten?" zichtbaar op de ontgrendelscherm
-- [ ] Tekst: onomkeerbaar-karakter van wachtwoordverlies uitgelegd
-- [ ] Altijd zichtbaar (niet alleen na fout)
-- [ ] i18n-sleutels aanwezig in nl.json + en.json
+- [x] Sectie "Wachtwoord vergeten?" zichtbaar op de ontgrendelscherm
+- [x] Tekst: onomkeerbaar-karakter van wachtwoordverlies uitgelegd
+- [x] Altijd zichtbaar (niet alleen na fout)
+- [x] i18n-sleutels aanwezig in nl.json + en.json
 
 ### UX-009 — HeirUnlockForm intro-scherm
-- [ ] Stap 1 (intro): titel + beschrijving + 3-stappen uitleg + "Noodcodes invoeren" knop
-- [ ] Stap 2 (codes): bestaand formulier
-- [ ] Geen hardcoded aantallen codes in intro (LL-005)
-- [ ] "← Ander profiel" beschikbaar op beide stappen
-- [ ] i18n-sleutels aanwezig in nl.json + en.json
+- [x] Stap 1 (intro): titel + beschrijving + 3-stappen uitleg + "Noodcodes invoeren" knop
+- [x] Stap 2 (codes): bestaand formulier
+- [x] Geen hardcoded aantallen codes in intro (LL-005)
+- [x] "← Ander profiel" beschikbaar op beide stappen
+- [x] i18n-sleutels aanwezig in nl.json + en.json
 
 ### UX-010 — Brute-force lockout duur in UI
-- [ ] Bij 429-respons: resterende lockout-duur zichtbaar in foutmelding
-- [ ] Weergave in minuten (afgerond naar boven)
-- [ ] `api-client.ts`: 429 onderschept vóór `!res.ok`, `lockoutRemainingSeconds` doorgegeven
-- [ ] i18n-sleutels aanwezig in nl.json + en.json (ICU plural)
-- [ ] Geen hardcoded "15 minuten" in de frontend
+- [x] Bij 429-respons: resterende lockout-duur zichtbaar in foutmelding
+- [x] Weergave in minuten (afgerond naar boven)
+- [x] `api-client.ts`: 429 onderschept vóór `!res.ok`, `lockoutRemainingSeconds` doorgegeven
+- [x] i18n-sleutels aanwezig in nl.json + en.json (ICU plural)
+- [x] Geen hardcoded "15 minuten" in de frontend
 
 ---

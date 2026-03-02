@@ -5,7 +5,7 @@
   "feature_name": null,
   "github_project_name": "Lumio Workitems",
   "initiated_at": "2026-03-02T07:24:37Z",
-  "last_updated": "2026-03-02T08:45:00Z",
+  "last_updated": "2026-03-02T09:20:00Z",
 
   "_notes": [
     "REFRESH ONBOARDING uitgevoerd op 2026-03-02.",
@@ -108,13 +108,16 @@
         "_note": "VERIFIED: PR #70 squash-merged, HEAD 23dd5fb"
       },
       "SP-UX-02": {
-        "status": "REVIEW_PENDING",
+        "status": "COMPLETED",
         "gate_file": "docs/sprint-gates/sprint-gate-sp-ux-02.md",
         "pr_number": 71,
-        "pr_merged": false,
+        "pr_merged": true,
+        "merge_commit": "47bd971",
         "stories": ["UX-007", "UX-008", "UX-009", "UX-010"],
         "issues": { "UX-007": 72, "UX-008": 76, "UX-009": 74, "UX-010": 75 },
-        "_note": "PR #71 open — CI + Chromatic baseline required"
+        "kpi_file": "docs/metrics/sprint-SP-UX-02-kpi.json",
+        "retrospective_file": "docs/retrospectives/sprint-sp-ux-02-retrospective.md",
+        "_note": "PR #71 squash-merged 2026-03-02, all issues closed, DEC-101 Chromatic disabled"
       },
       "SP-UX-03": {
         "status": "PLANNED",

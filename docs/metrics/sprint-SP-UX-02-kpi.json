@@ -1,0 +1,80 @@
+{
+  "sprint_id": "SP-UX-02",
+  "gemeten_op": "2026-03-02T09:15:00Z",
+  "merge_commit": "47bd971",
+  "pr": "#71",
+  "samenvatting": {
+    "on_track": 3,
+    "at_risk": 1,
+    "off_track": 0,
+    "insufficient_data": 1
+  },
+  "kpis": [
+    {
+      "kpi_id": "KPI-UX-001",
+      "sprint_id": "SP-UX-02",
+      "naam": "Story delivery rate SP-UX-02",
+      "gemeten_waarde": 100.0,
+      "meetdatum": "2026-03-02",
+      "bron": "Stories UX-007, UX-008, UX-009, UX-010 — PR #71 merged, issues #72/#74/#75/#76 gesloten",
+      "status": "ON_TRACK",
+      "afwijking_pct": 0.0,
+      "toelichting": "Alle 4 stories (7 SP) opgeleverd en gemerged. UX-007: HeirUnlockForm Alert danger + stappenplan. UX-008: UnlockForm wachtwoord-vergeten sectie. UX-009: HeirUnlockForm intro-scherm Shamir 3-staps uitleg. UX-010: api-client 429-interceptie + lockout duur in UI."
+    },
+    {
+      "kpi_id": "KPI-QUAL-002",
+      "sprint_id": "SP-UX-02",
+      "naam": "Frontend unit coverage lib/stores (≥70% threshold)",
+      "gemeten_waarde": null,
+      "meetdatum": "2026-03-02",
+      "bron": "CI run 22566781979 — npm run test:coverage (vitest run --project unit --coverage) — PASSED threshold ≥70%",
+      "status": "ON_TRACK",
+      "afwijking_pct": null,
+      "toelichting": "CI coverage enforcement PASSED op alle vier metrics (statements/branches/functions/lines ≥70%). Exacte percentages niet uitgelezen vanuit CI log; lokale run (vitest run --coverage incl. storybook) toont 74% stmts / 71.65% branch — verschil door inclusie storybook project in lokale run. Drie nieuwe tests toegevoegd voor 429-pad in api-client.ts (TC: TS18046 strict-mode fix vereist 2 iteraties)."
+    },
+    {
+      "kpi_id": "KPI-OPS-001",
+      "sprint_id": "SP-UX-02",
+      "naam": "CI pipeline first-run pass rate (code-wijzigingen)",
+      "gemeten_waarde": 33.3,
+      "meetdatum": "2026-03-02",
+      "bron": "GitHub Actions: run 22566214528 ❌ (coverage gap), run 22566539910 ❌ (TS18046), run 22566781979 ✅",
+      "status": "AT_RISK",
+      "afwijking_pct": -66.7,
+      "toelichting": "Twee CI-herhalingen nodig voor definitief groen. Root causes: (1) coverage-pad voor 429-code niet meegenomen in eerste testcommit — analyse was op basis van verouderd regelnummer uit conversation summary; (2) TypeScript strict-mode verschil tussen lokale Vitest en CI tsc --noEmit voor catch-binding type. Lesson candidate: test coverage lokaal verifiëren met dezelfde scope als CI (vitest run --project unit --coverage)."
+    },
+    {
+      "kpi_id": "KPI-UX-002",
+      "sprint_id": "SP-UX-02",
+      "naam": "Accessibility regressie (axe-core via Storybook a11y)",
+      "gemeten_waarde": 0,
+      "meetdatum": "2026-03-02",
+      "bron": "CI run 22566781979 — CI/Accessibility (Storybook) ✅ — geen nieuwe a11y violations",
+      "status": "ON_TRACK",
+      "afwijking_pct": 0.0,
+      "toelichting": "Storybook a11y check (axe-core) PASSED. Nul nieuwe accessibility violations geïntroduceerd door SP-UX-02 wijzigingen."
+    },
+    {
+      "kpi_id": "KPI-SEC-003",
+      "sprint_id": "SP-UX-02",
+      "naam": "Secret scan (TruffleHog / Gitleaks)",
+      "gemeten_waarde": 0,
+      "meetdatum": "2026-03-02",
+      "bron": "CI — Lumio Board Sync + Secret Scan ✅ (run 22566781979, 22566781978)",
+      "status": "ON_TRACK",
+      "afwijking_pct": 0.0,
+      "toelichting": "Nul secrets gedetecteerd in PR diff of commit history. Secret scan PASSED op alle runs."
+    },
+    {
+      "kpi_id": "KPI-I18N-001",
+      "sprint_id": "SP-UX-02",
+      "naam": "i18n pariteit NL/EN (LL-002 compliance)",
+      "gemeten_waarde": null,
+      "meetdatum": "2026-03-02",
+      "bron": "INSUFFICIENT_DATA: geen geautomatiseerde i18n-pariteitscheck in CI — handmatige inspectie nl.json + en.json uitgevoerd door Implementation Agent",
+      "status": "INSUFFICIENT_DATA",
+      "afwijking_pct": null,
+      "toelichting": "14 nieuwe i18n-sleutels simultaan toegevoegd in nl.json en en.json conform LL-002. Handmatige verificatie door agent: alle sleutels in auth.erfgenaam (introTitel/introBeschrijving/introHoeWerktHet/introStap1-3/introStarten/reconstructieMisluktTitel/reconstructieMisluktStap1-3) en auth.ontgrendel (wachtwoordVergetenTitel/wachtwoordVergetenTekst/geblokkerd) aanwezig in beide talen. Geautomatiseerde CI-check ontbreekt — aanbeveling: voeg i18n-pariteitsscript toe als test-stap."
+    }
+  ]
+}

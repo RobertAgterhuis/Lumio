@@ -69,12 +69,45 @@
         { "id": "LC-SP4-003", "summary": "next lint CLI verwijderd in Next.js 16 zonder deprecation warning \u2014 major upgrades moeten CI scripts valideren als onderdeel van de upgrade PR" },
         { "id": "LC-SP4-004", "summary": "TruffleHog base: main faalt wanneer base == head \u2014 altijd github.event.before gebruiken als base op push events (was LL-003, nu definitief opgelost)" }
       ]
+    },
+    {
+      "id": "SP-UX-01",
+      "name": "Accessibility Baseline",
+      "phase": "Fase 3 \u2014 UX",
+      "stories_planned": 6,
+      "stories_delivered": 6,
+      "stories": ["UX-001", "UX-002", "UX-003", "UX-004", "UX-005", "UX-006"],
+      "issues": ["#64", "#65", "#66", "#67", "#68", "(batch)"],
+      "pr": "#70",
+      "merged_date": "2026-03-02",
+      "velocity_pct": 100,
+      "lessons_learned": [
+        { "id": "LL-SP-UX-01-001", "summary": "Alert component gebruikt variant='danger', niet 'destructive' \u2014 altijd Alert broncode controleren voor het juiste variant-attribuut" }
+      ]
+    },
+    {
+      "id": "SP-UX-02",
+      "name": "Heir Experience & Foutafhandeling",
+      "phase": "Fase 3 \u2014 UX",
+      "stories_planned": 4,
+      "stories_delivered": 4,
+      "stories": ["UX-007", "UX-008", "UX-009", "UX-010"],
+      "issues": ["#72", "#74", "#75", "#76"],
+      "pr": "#71",
+      "merge_commit": "47bd971",
+      "merged_date": "2026-03-02",
+      "velocity_pct": 100,
+      "notes": "DEC-101: Chromatic CI job disabled. 2 CI iterations needed: coverage scope mismatch (vitest unit vs. full) + TS18046 strict catch binding.",
+      "lessons_learned": [
+        { "id": "LL-SP-UX-02-001", "summary": "Lokale coverage-scope matcht CI niet: gebruik npm run test:coverage (vitest run --project unit --coverage) v\u00f3\u00f3r push, niet vitest run --coverage (includeert storybook project)" },
+        { "id": "LL-SP-UX-02-002", "summary": "catch (e) => e met property access geeft TS18046 in strict tsc --noEmit, terwijl Vitest runtime het accepteert \u2014 gebruik (e: unknown) => e) as { prop: type } cast-patroon" }
+      ]
     }
   ],
   "cumulative": {
-    "total_stories_planned": 10,
-    "total_stories_delivered": 10,
+    "total_stories_planned": 20,
+    "total_stories_delivered": 20,
     "overall_velocity_pct": 100,
-    "sprints_completed": 4
+    "sprints_completed": 6
   }
 }
