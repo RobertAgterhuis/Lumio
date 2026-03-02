@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.FuneralWishes;
 using Lumio.Api.Dtos.FuneralWishes;
+using Lumio.Api.Repositories;
 using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,15 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/uitvaart")]
 public class UitvaartController : ControllerBase
 {
+    private readonly IUitvaartRepository _uitvaartRepo;
+    private readonly IEigenaarRepository _eigenaarRepo;
     private readonly LumioDbContext _db;
     private readonly IAuditService _audit;
 
-    public UitvaartController(LumioDbContext db, IAuditService audit)
+    public UitvaartController(IUitvaartRepository uitvaartRepo, IEigenaarRepository eigenaarRepo, LumioDbContext db, IAuditService audit)
     {
+        _uitvaartRepo = uitvaartRepo;
+        _eigenaarRepo = eigenaarRepo;
         _db = db;
         _audit = audit;
     }
@@ -24,7 +29,7 @@ public class UitvaartController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<UitvaartWensenResponse>> Get()
     {
-        var item = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        var item = await _uitvaartRepo.FindAsync();
         if (item is null) return NotFound();
         return Ok(item.Adapt<UitvaartWensenResponse>());
     }
@@ -32,23 +37,23 @@ public class UitvaartController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<UitvaartWensenResponse>> Upsert([FromBody] UitvaartWensenUpsertRequest request)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
-        var item = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        var item = await _uitvaartRepo.FindAsync();
         if (item is null)
         {
             item = request.Adapt<Domain.FuneralWishes.UitvaartWensen>();
             item.EigenaarId = eigenaar.Id;
-            _db.UitvaartWensen.Add(item);
+            await _uitvaartRepo.AddAsync(item);
         }
         else
         {
             request.Adapt(item);
         }
 
-        await _db.SaveChangesAsync();
+        await _uitvaartRepo.CommitAsync();
         await _audit.LogAsync("Opgeslagen", "UitvaartWens", item.Id);
         return Ok(item.Adapt<UitvaartWensenResponse>());
     }
@@ -56,7 +61,7 @@ public class UitvaartController : ControllerBase
     [HttpGet("details")]
     public async Task<ActionResult<List<CeremonieDetailResponse>>> GetDetails()
     {
-        var uitvaart = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        var uitvaart = await _uitvaartRepo.FindAsync();
         if (uitvaart is null) return Ok(new List<CeremonieDetailResponse>());
 
         var items = await _db.CeremonieDetails
@@ -69,7 +74,7 @@ public class UitvaartController : ControllerBase
     [HttpPost("details")]
     public async Task<ActionResult<CeremonieDetailResponse>> CreateDetail([FromBody] CeremonieDetailUpsertRequest request)
     {
-        var uitvaart = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        var uitvaart = await _uitvaartRepo.FindAsync();
         if (uitvaart is null)
             return BadRequest(new { error = "Maak eerst uitvaartwensen aan." });
 
@@ -110,7 +115,7 @@ public class UitvaartController : ControllerBase
     [HttpGet("genodigden")]
     public async Task<ActionResult<List<UitvaartGenodigdeResponse>>> GetGenodigden()
     {
-        var uitvaart = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        var uitvaart = await _uitvaartRepo.FindAsync();
         if (uitvaart is null) return Ok(new List<UitvaartGenodigdeResponse>());
 
         var items = await _db.UitvaartGenodigden
@@ -123,7 +128,7 @@ public class UitvaartController : ControllerBase
     [HttpPost("genodigden")]
     public async Task<ActionResult<UitvaartGenodigdeResponse>> CreateGenodigde([FromBody] UitvaartGenodigdeUpsertRequest request)
     {
-        var uitvaart = await _db.UitvaartWensen.FirstOrDefaultAsync();
+        var uitvaart = await _uitvaartRepo.FindAsync();
         if (uitvaart is null)
             return BadRequest(new { error = "Maak eerst uitvaartwensen aan." });
 

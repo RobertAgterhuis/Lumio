@@ -113,6 +113,12 @@ builder.Services.AddScoped<IEncryptedBackupService, EncryptedBackupService>();
 builder.Services.AddScoped<IEigenaarRepository, EfEigenaarRepository>();
 builder.Services.AddScoped<IErfgenaamRepository, EfErfgenaamRepository>();
 
+// ── Application Layer: Repository abstractions (SP-13-003) ──
+builder.Services.AddScoped<INoodcontactRepository, EfNoodcontactRepository>();
+builder.Services.AddScoped<INotitieRepository, EfNotitieRepository>();
+builder.Services.AddScoped<IWilsverklaringRepository, EfWilsverklaringRepository>();
+builder.Services.AddScoped<IUitvaartRepository, EfUitvaartRepository>();
+
 // EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
 {
