@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { StepList } from "@/components/help/StepList";
-import "@/styles/help-prose.css";
 
 const meta = {
   title: "Help/StepList",

@@ -306,7 +306,7 @@ jobs:
         run: |
           # Enforce GUARD-002: IMasterPasswordService must not expose string? CurrentPassword.
           # grep exits 1 (no match = clean) which we invert with || true, then fail on match.
-          if grep -r --include="*.cs" "string? CurrentPassword" src/Lumio.Api/ 2>/dev/null; then
+          if grep -r --include="*.cs" "string? CurrentPassword" . 2>/dev/null; then
             echo "::error::GUARD-002 violated: 'string? CurrentPassword' found in C# sources."
             echo "The master password must not be stored or exposed as a managed string."
             echo "See docs/guardrails/03-security-guardrails.md GUARD-002."
@@ -328,7 +328,7 @@ jobs:
 
           FAILED=0
           WARNINGS=0
-          for f in src/Lumio.Api/Controllers/*.cs; do
+          for f in Controllers/*.cs; do
             name=$(basename "$f")
             lines=$(wc -l < "$f")
             if [ "$lines" -gt 200 ]; then

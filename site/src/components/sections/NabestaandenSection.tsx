@@ -84,12 +84,12 @@ export default function NabestaandenSection() {
                 className="flex gap-4 p-5 rounded-xl bg-white/10 border border-white/10"
               >
                 <div className="shrink-0 flex flex-col items-center gap-2">
-                  <span className="text-xs font-bold text-white/40 tabular-nums">{step}</span>
-                  <Icon className="w-5 h-5 text-white/70" strokeWidth={1.5} />
+                  <span className="text-xs font-bold text-white/80 tabular-nums">{step}</span>
+                  <Icon className="w-5 h-5 text-white/80" strokeWidth={1.5} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-white mb-1">{title}</h3>
-                  <p className="text-sm text-white/70 leading-relaxed">{body}</p>
+                  <p className="text-sm text-white/85 leading-relaxed">{body}</p>
                 </div>
               </div>
             ))}

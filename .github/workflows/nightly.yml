@@ -1,0 +1,155 @@
+# T-010 (GAP-DEVOPS-02): Staging / acceptance omgeving — nightly desktop build
+#
+# Voor een USB-portable desktopapp bestaat "staging" uit een automatische
+# development build bij elke merge naar main. Testers kunnen het artifact
+# downloaden, uitpakken naar een USB-stick of testmachine, en nieuwe features
+# accepteren vóór een officiële tagged release (zie release.yml).
+#
+# Runs on: windows-latest (vereist voor win-x64 .NET self-contained publish)
+# Artifact: lumio-nightly-{sha7}-win-x64.zip (30 dagen beschikbaar)
+# Download: GitHub Actions → workflow run → Artifacts
+
+name: Nightly Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-${{ github.ref }}
+  cancel-in-progress: true   # Nieuwe push annuleert lopende nightly build
+
+jobs:
+  nightly:
+    name: Nightly build (Windows x64 — staging artifact)
+    runs-on: windows-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. .NET 10 setup ─────────────────────────────────────────────────────
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      # ── 3. Node 22 setup ─────────────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # ── 4. npm cache: lumio-web ───────────────────────────────────────────────
+      - name: Cache npm (lumio-web)
+        uses: actions/cache@v5
+        with:
+          path: src/lumio-web/node_modules
+          key: npm-web-${{ runner.os }}-${{ hashFiles('src/lumio-web/package-lock.json') }}
+          restore-keys: npm-web-${{ runner.os }}-
+
+      # ── 5. npm cache: lumio-desktop ───────────────────────────────────────────
+      - name: Cache npm (lumio-desktop)
+        uses: actions/cache@v5
+        with:
+          path: src/lumio-desktop/node_modules
+          key: npm-desktop-${{ runner.os }}-${{ hashFiles('src/lumio-desktop/package-lock.json') }}
+          restore-keys: npm-desktop-${{ runner.os }}-
+
+      # ── 6. Electron prebuilt cache ────────────────────────────────────────────
+      - name: Cache Electron prebuilt
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~\AppData\Local\electron\Cache
+            ~\AppData\Local\electron-builder\Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('src/lumio-desktop/package-lock.json') }}
+          restore-keys: electron-${{ runner.os }}-
+
+      # ── 7. Install dependencies ───────────────────────────────────────────────
+      - name: npm ci (lumio-web)
+        run: npm ci
+        working-directory: src/lumio-web
+
+      - name: npm ci (lumio-desktop)
+        run: npm ci
+        working-directory: src/lumio-desktop
+
+      # ── 8. Build .NET backend (win-x64 self-contained) ────────────────────────
+      - name: Build .NET backend
+        run: |
+          dotnet publish src/Lumio.Api/Lumio.Api.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            --output dist/backend `
+            /p:PublishSingleFile=false `
+            /p:PublishTrimmed=false
+        shell: pwsh
+
+      # ── 9. Build Next.js frontend (static export) ─────────────────────────────
+      - name: Build Next.js frontend
+        run: npx next build
+        working-directory: src/lumio-web
+        env:
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+
+      - name: Copy frontend to dist
+        shell: pwsh
+        run: |
+          if (Test-Path dist/frontend) { Remove-Item -Recurse -Force dist/frontend }
+          Copy-Item -Recurse src/lumio-web/out dist/frontend
+
+      # ── 10. Compile & package Electron shell ──────────────────────────────────
+      - name: TypeScript compile (lumio-desktop)
+        run: npx tsc
+        working-directory: src/lumio-desktop
+
+      - name: Package Electron (dir target — USB-portable)
+        run: npx electron-builder --dir --config electron-builder.yml
+        working-directory: src/lumio-desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'   # Nightly builds worden niet gesigned
+
+      # ── 11. Zip the distributable ─────────────────────────────────────────────
+      - name: Create nightly archive
+        shell: pwsh
+        run: |
+          $sha = "${{ github.sha }}".Substring(0, 7)
+          $zipName = "lumio-nightly-${sha}-win-x64.zip"
+          Compress-Archive -Path dist/Lumio/* -DestinationPath $zipName -Force
+          echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
+
+      # ── 12. Upload nightly artifact (staging build — 30 dagen beschikbaar) ────
+      - name: Upload nightly artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: lumio-nightly-${{ github.sha }}
+          path: ${{ env.ZIP_NAME }}
+          retention-days: 30
+
+      # ── 13. Annotatie in workflow summary ─────────────────────────────────────
+      - name: Build summary
+        shell: pwsh
+        run: |
+          $sha = "${{ github.sha }}".Substring(0, 7)
+          $summary = @"
+          ## Nightly Build — $sha
+
+          | | |
+          |---|---|
+          | **Commit** | ${{ github.sha }} |
+          | **Branch** | ${{ github.ref_name }} |
+          | **Artifact** | ``${{ env.ZIP_NAME }}`` |
+          | **Retentie** | 30 dagen |
+
+          ### Gebruiksinstructies (staging / acceptatietest)
+          1. Download het artifact via **Actions → deze workflow run → Artifacts**
+          2. Pak het zip-bestand uit naar een map (of USB-stick)
+          3. Start ``Lumio.exe`` uit de uitgepakte map
+          4. Meld bevindingen via GitHub Issues met label ``staging-feedback``
+          "@
+          $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append

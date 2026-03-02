@@ -3,9 +3,11 @@ interface SectionHeadingProps {
   title: string;
   subtitle?: string;
   centered?: boolean;
+  /** Override the h2 text colour — use \"text-white\" when placed on a dark background */
+  titleClassName?: string;
 }
 
-export default function SectionHeading({ badge, title, subtitle, centered = false }: SectionHeadingProps) {
+export default function SectionHeading({ badge, title, subtitle, centered = false, titleClassName }: SectionHeadingProps) {
   const align = centered ? "text-center items-center" : "text-left items-start";
 
   return (
@@ -15,7 +17,7 @@ export default function SectionHeading({ badge, title, subtitle, centered = fals
           {badge}
         </span>
       )}
-      <h2 className="font-display text-3xl md:text-4xl text-(--color-neutral-900) leading-tight">
+      <h2 className={`font-display text-3xl md:text-4xl leading-tight ${titleClassName ?? "text-(--color-neutral-900)"}`}>
         {title}
       </h2>
       {subtitle && (

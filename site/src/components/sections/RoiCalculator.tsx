@@ -57,7 +57,7 @@ export default function RoiCalculator() {
             {/* Aantal medewerkers */}
             <div>
               <div className="flex justify-between items-baseline mb-2">
-                <label className="text-sm font-semibold text-(--color-neutral-900)">
+                <label htmlFor="roi-medewerkers" className="text-sm font-semibold text-(--color-neutral-900)">
                   Aantal medewerkers
                 </label>
                 <span className="font-display text-lg text-primary-700 tabular-nums">
@@ -65,6 +65,7 @@ export default function RoiCalculator() {
                 </span>
               </div>
               <input
+                id="roi-medewerkers"
                 type="range"
                 min={5}
                 max={500}
@@ -73,7 +74,7 @@ export default function RoiCalculator() {
                 onChange={(e) => setAantalMedewerkers(Number(e.target.value))}
                 className="w-full accent-primary-700"
               />
-              <div className="flex justify-between text-xs text-neutral-400 mt-1">
+              <div className="flex justify-between text-xs text-neutral-500 mt-1" aria-hidden="true">
                 <span>5</span><span>500</span>
               </div>
             </div>
@@ -81,7 +82,7 @@ export default function RoiCalculator() {
             {/* Gemiddeld jaarsalaris */}
             <div>
               <div className="flex justify-between items-baseline mb-2">
-                <label className="text-sm font-semibold text-(--color-neutral-900)">
+                <label htmlFor="roi-salaris" className="text-sm font-semibold text-(--color-neutral-900)">
                   Gemiddeld bruto jaarsalaris
                 </label>
                 <span className="font-display text-lg text-primary-700 tabular-nums">
@@ -89,6 +90,7 @@ export default function RoiCalculator() {
                 </span>
               </div>
               <input
+                id="roi-salaris"
                 type="range"
                 min={25_000}
                 max={120_000}
@@ -97,7 +99,7 @@ export default function RoiCalculator() {
                 onChange={(e) => setGemiddeldSalaris(Number(e.target.value))}
                 className="w-full accent-primary-700"
               />
-              <div className="flex justify-between text-xs text-neutral-400 mt-1">
+              <div className="flex justify-between text-xs text-neutral-500 mt-1" aria-hidden="true">
                 <span>€25k</span><span>€120k</span>
               </div>
             </div>
@@ -130,13 +132,13 @@ export default function RoiCalculator() {
             <div className="grid sm:grid-cols-2 gap-4">
               {/* Jaarlijkse besparing */}
               <div className="bg-sage-100 border border-sage-600/30 rounded-xl p-5">
-                <p className="text-xs font-semibold text-sage-600 uppercase tracking-widest mb-1">
+                <p className="text-xs font-semibold text-sage-800 uppercase tracking-widest mb-1">
                   Jaarlijkse besparing
                 </p>
                 <p className="font-display text-2xl text-(--color-neutral-900) mb-0.5">
                   {FORMAT_EUR(roi.jaarlijkseBesparing)}
                 </p>
-                <p className="text-xs text-neutral-500">productiviteits­herstel</p>
+                <p className="text-xs text-neutral-600">productiviteits­her­stel</p>
               </div>
 
               {/* Terugverdientijd */}
@@ -168,13 +170,13 @@ export default function RoiCalculator() {
                 <span
                   className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${
                     roi.wkrPassend
-                      ? "bg-sage-100 text-sage-600"
+                      ? "bg-sage-100 text-sage-800"
                       : "bg-orange-100 text-orange-700"
                   }`}
                 >
                   {roi.wkrPassend ? "✓ Ja" : "⚠ Controleer"}
                 </span>
-                <p className="text-xs text-neutral-400 mt-1">
+                <p className="text-xs text-neutral-500 mt-1">
                   {roi.wkrPercentage}% van uw loonsom
                 </p>
               </div>

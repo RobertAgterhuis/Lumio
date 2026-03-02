@@ -22,10 +22,11 @@ export default function SchaalTabel() {
 
         {/* Calculator */}
         <div className="bg-(--color-primary-50) rounded-2xl p-8 border border-primary-100 mb-12 max-w-2xl">
-          <label className="block text-sm font-semibold text-(--color-neutral-900) mb-2">
+          <label htmlFor="schaal-loonsom" className="block text-sm font-semibold text-(--color-neutral-900) mb-2">
             Totale loonsom (exclusief btw)
           </label>
           <input
+            id="schaal-loonsom"
             type="range"
             min={100000}
             max={5000000}

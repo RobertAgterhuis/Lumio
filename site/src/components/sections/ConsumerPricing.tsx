@@ -44,7 +44,7 @@ export default function ConsumerPricing() {
                 Koop Lumio nu — €{PRICE_PER_USER}
               </Button>
 
-              <p className="text-center text-xs text-neutral-400 mt-4">
+              <p className="text-center text-xs text-neutral-500 mt-4">
                 Je ontvangt de licentie en downloadlink per e-mail.
               </p>
             </div>

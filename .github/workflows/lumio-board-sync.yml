@@ -27,11 +27,16 @@ jobs:
           fetch-depth: 0
 
       - name: Run TruffleHog OSS
+        # Only run on push/PR triggers — issues and workflow_dispatch have no commit range to scan.
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
+          # For pushes: scan from the commit before the push (github.event.before) to the new HEAD.
+          # For PRs: scan from the PR base SHA to the PR head SHA.
+          # This avoids BASE==HEAD errors that occur when base: main resolves to the same commit as HEAD.
+          base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
           extra_args: >
             --debug
             --only-verified
