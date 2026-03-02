@@ -30,11 +30,11 @@
     "sprint_id": "SP-12",
     "milestone_number": 9,
     "github_issues": [
-      {"id": "SP-12-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/93", "status": "open"},
-      {"id": "SP-12-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/94", "status": "open"},
+      {"id": "SP-12-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/93", "status": "closed", "commit": "e1736e6"},
+      {"id": "SP-12-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/94", "status": "closed", "commit": "447f18c"},
       {"id": "SP-12-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/95", "status": "open"},
       {"id": "SP-12-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/96", "status": "open"},
-      {"id": "SP-12-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/97", "status": "open"}
+      {"id": "SP-12-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/97", "status": "closed", "commit": "9ae2707"}
     ],
     "pull_request_url": null,
     "pull_request_number": null,
@@ -43,14 +43,15 @@
     "sprint_gate_date": "2026-03-02T00:00:00Z",
     "implementation_status": "IN_PROGRESS",
     "test_results": {
-      "backend": {"passed": 274, "failed": 0},
-      "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96}
+      "backend": {"passed": 290, "failed": 0},
+      "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96},
+      "desktop": {"passed": 6, "failed": 0}
     }
   },
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-02T10:00:00Z",
+  "last_updated": "2026-03-02T19:45:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
