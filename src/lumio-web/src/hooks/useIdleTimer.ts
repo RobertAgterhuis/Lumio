@@ -30,6 +30,7 @@ export function useIdleTimer(onLock: () => void): IdleTimerState {
   const lockTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const countdownRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const onLockRef = useRef(onLock);
+  // eslint-disable-next-line react-hooks/refs -- intentional ref update during render to track latest callback
   onLockRef.current = onLock;
 
   const clearAllTimers = useCallback(() => {

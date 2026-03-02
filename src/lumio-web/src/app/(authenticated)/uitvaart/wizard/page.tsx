@@ -82,6 +82,7 @@ export default function UitvaartWizardPage() {
   // Populate form when data loads
   useEffect(() => {
     if (existingData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setForm({
         voorkeurType: existingData.voorkeurType ?? "",
         begraafplaats: existingData.begraafplaats ?? "",

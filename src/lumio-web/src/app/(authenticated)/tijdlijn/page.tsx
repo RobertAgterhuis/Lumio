@@ -136,7 +136,6 @@ export default function TijdlijnPage() {
   // S6-20: Mark tijdlijn as viewed on load
   useEffect(() => {
     void api.post("/api/status/tijdlijn-bekeken").catch(() => void 0);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Maps stap key → fetched domain data

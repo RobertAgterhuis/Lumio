@@ -97,6 +97,7 @@ export function ShamirDialog({
   // Reset state when dialog closes
   useEffect(() => {
     if (!open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStep(1);
       setCopiedSet(new Set());
     }
@@ -105,6 +106,7 @@ export function ShamirDialog({
   // Advance to step 4 when shares are freshly generated
   useEffect(() => {
     if (generatedShares) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStep(4);
     }
   }, [generatedShares]);

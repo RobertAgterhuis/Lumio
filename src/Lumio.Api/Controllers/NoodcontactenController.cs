@@ -1,10 +1,9 @@
-using Lumio.Api.Data;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Repositories;
 using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Lumio.Api.Controllers;
@@ -13,26 +12,28 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/noodcontacten")]
 public class NoodcontactenController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly INoodcontactRepository _noodcontactRepo;
+    private readonly IEigenaarRepository _eigenaarRepo;
     private readonly IAuditService _audit;
 
-    public NoodcontactenController(LumioDbContext db, IAuditService audit)
+    public NoodcontactenController(INoodcontactRepository noodcontactRepo, IEigenaarRepository eigenaarRepo, IAuditService audit)
     {
-        _db = db;
+        _noodcontactRepo = noodcontactRepo;
+        _eigenaarRepo = eigenaarRepo;
         _audit = audit;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<NoodcontactResponse>>> GetAll()
     {
-        var items = await _db.Noodcontacten.OrderBy(n => n.Naam).ToListAsync();
+        var items = await _noodcontactRepo.GetAllByNameAsync();
         return Ok(items.Adapt<List<NoodcontactResponse>>());
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<NoodcontactResponse>> GetById(Guid id)
     {
-        var item = await _db.Noodcontacten.FindAsync(id);
+        var item = await _noodcontactRepo.FindByIdAsync(id);
         if (item is null) return NotFound();
         return Ok(item.Adapt<NoodcontactResponse>());
     }
@@ -40,14 +41,14 @@ public class NoodcontactenController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<NoodcontactResponse>> Create([FromBody] NoodcontactUpsertRequest request)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = request.Adapt<Noodcontact>();
         item.EigenaarId = eigenaar.Id;
-        _db.Noodcontacten.Add(item);
-        await _db.SaveChangesAsync();
+        await _noodcontactRepo.AddAsync(item);
+        await _noodcontactRepo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Noodcontact", item.Id);
         return CreatedAtAction(nameof(GetById), new { id = item.Id }, item.Adapt<NoodcontactResponse>());
     }
@@ -55,11 +56,11 @@ public class NoodcontactenController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<NoodcontactResponse>> Update(Guid id, [FromBody] NoodcontactUpsertRequest request)
     {
-        var item = await _db.Noodcontacten.FindAsync(id);
+        var item = await _noodcontactRepo.FindByIdAsync(id);
         if (item is null) return NotFound();
 
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _noodcontactRepo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "Noodcontact", id);
         return Ok(item.Adapt<NoodcontactResponse>());
     }
@@ -67,11 +68,11 @@ public class NoodcontactenController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var item = await _db.Noodcontacten.FindAsync(id);
+        var item = await _noodcontactRepo.FindByIdAsync(id);
         if (item is null) return NotFound();
 
-        _db.Noodcontacten.Remove(item);
-        await _db.SaveChangesAsync();
+        await _noodcontactRepo.RemoveAsync(item);
+        await _noodcontactRepo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Noodcontact", id);
         return NoContent();
     }
@@ -84,10 +85,7 @@ public class NoodcontactenController : ControllerBase
     [HttpGet("gedeeld/export")]
     public async Task<IActionResult> ExportGedeeld()
     {
-        var gedeeld = await _db.Noodcontacten
-            .Where(n => n.IsGedeeld)
-            .OrderBy(n => n.Naam)
-            .ToListAsync();
+        var gedeeld = await _noodcontactRepo.GetGedeeldByNameAsync();
 
         var dtos = gedeeld.Select(n => new GedeeldNoodcontactDto(
             n.Naam, n.Relatie, n.Telefoon, n.Email,
@@ -114,11 +112,11 @@ public class NoodcontactenController : ControllerBase
     [HttpPost("gedeeld/import")]
     public async Task<IActionResult> ImportGedeeld([FromBody] List<GedeeldNoodcontactDto> contacten)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
-        var bestaand = await _db.Noodcontacten.ToListAsync();
+        var bestaand = await _noodcontactRepo.GetAllByNameAsync();
         var toegevoegd = 0;
         var overgeslagen = 0;
 
@@ -137,7 +135,7 @@ public class NoodcontactenController : ControllerBase
                 continue;
             }
 
-            var item = new Noodcontact
+            await _noodcontactRepo.AddAsync(new Noodcontact
             {
                 EigenaarId = eigenaar.Id,
                 Naam = dto.Naam,
@@ -150,12 +148,11 @@ public class NoodcontactenController : ControllerBase
                 Rol = dto.Rol,
                 Instructies = dto.Instructies,
                 IsGedeeld = true
-            };
-            _db.Noodcontacten.Add(item);
+            });
             toegevoegd++;
         }
 
-        await _db.SaveChangesAsync();
+        await _noodcontactRepo.CommitAsync();
 
         return Ok(new { toegevoegd, overgeslagen });
     }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -128,9 +129,11 @@ export function ProfileSelector({ onProfileSelected }: ProfileSelectorProps) {
                 className="group flex w-full items-center gap-3 rounded-lg border border-border p-3 text-left transition-colors hover:bg-primary hover:border-primary disabled:opacity-50"
               >
                 {profile.fotoThumbnail ? (
-                  <img
+                  <Image
                     src={profile.fotoThumbnail}
                     alt={profile.naam}
+                    width={40}
+                    height={40}
                     className="h-10 w-10 rounded-full object-cover shrink-0"
                   />
                 ) : (

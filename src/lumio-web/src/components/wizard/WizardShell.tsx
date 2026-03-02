@@ -53,6 +53,7 @@ export function WizardShell({
     if (initialStep !== currentStep) {
       setCurrentStepInternal(initialStep);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- currentStep is managed by this effect; adding it would cause infinite loop
   }, [initialStep]);
 
   const setCurrentStep = (step: number) => {

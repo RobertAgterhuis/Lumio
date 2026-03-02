@@ -377,7 +377,6 @@ export default function VideoboodschappenPage() {
             <DialogTitle>{playingItem.titel}</DialogTitle>
           </DialogHeader>
           <div className="overflow-y-auto">
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video
               key={playingItem.id}
               src={getApiUrl(`/api/videoboodschappen/${playingItem.id}/stream`)}

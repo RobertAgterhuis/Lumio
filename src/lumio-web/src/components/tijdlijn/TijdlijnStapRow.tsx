@@ -74,7 +74,6 @@ export function TijdlijnStapRow({
   const isCompleted = isLinked && domainHasData && domainConfig!.isCompleted(domainData);
 
   // Adapter so getSamenvatting can call t() without knowing the full type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tStr = (key: string, values?: any) => t(key as never, values) as unknown as string;
 
   return (

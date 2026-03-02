@@ -17,6 +17,7 @@ import { toast } from "@/stores/toastStore";
 import { useAuthStore } from "@/stores/authStore";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { HelpButton } from "@/components/help/HelpButton";
 import { WerkgeverCard } from "@/components/werkgever/WerkgeverCard";
 
@@ -304,9 +305,11 @@ export default function EigenaarPage() {
                   <Camera className="h-10 w-10 text-muted-foreground/50" />
                 )}
                 {fotoUrl && (
-                  <img
+                  <Image
                     src={fotoUrl}
                     alt={t("foto.alt")}
+                    width={112}
+                    height={112}
                     className={cn("h-full w-full object-cover", !fotoLoaded && "hidden")}
                     onLoad={() => setFotoLoaded(true)}
                     onError={() => setFotoLoaded(false)}

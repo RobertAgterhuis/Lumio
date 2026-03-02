@@ -85,6 +85,7 @@ export function VideoboodschapDialog({
 
   // Q-21: Reset form when editing prop changes (prevents stale formdata)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setForm(
       editing
         ? {

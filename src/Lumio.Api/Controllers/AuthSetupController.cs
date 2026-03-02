@@ -81,9 +81,6 @@ public class AuthSetupController : ControllerBase
         // (3) Apply all migrations (creates schema + __EFMigrationsHistory)
         await db.Database.MigrateAsync();
 
-        // Ensure new columns are present even if migration had SQLite FK issues
-        await MigratieDbHelper.EnsureSchuldKolommenAsync(db);
-
         // GAP-SEC-01: KDF migratie — brengt de nieuwe DB naar PBKDF2-SHA512 ±312 000 iteraties.
         // Loopt na MigrateAsync zodat het DB-bestand zeker bestaat.
         if (_profileService.ActiveDbPath is { } dbPath)

@@ -106,10 +106,10 @@ export default function TestamentWizardPage() {
       });
     } else if (savedFormData && Object.keys(savedFormData).length > 0) {
       // No existing data but we have saved progress
-      setForm({
-        ...form,
-        ...(savedFormData as typeof form),
-      });
+      setForm((prev) => ({
+        ...prev,
+        ...(savedFormData as typeof prev),
+      }));
     }
   }, [existingData, savedFormData]);
 

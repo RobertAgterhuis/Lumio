@@ -99,7 +99,7 @@ public class AuthController : ControllerBase
         {
             using var scope = serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<LumioDbContext>();
-            await MigratieDbHelper.EnsureMigratedAsync(db);
+            await db.Database.MigrateAsync();
         }
 
         await _audit.LogAsync("Ontgrendeld", details: $"Profiel: {_profileService.ActiveProfile?.Naam}");

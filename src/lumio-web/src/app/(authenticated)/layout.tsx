@@ -53,7 +53,7 @@ export default function AuthenticatedLayout({
     if (activeProfile?.id) {
       initForUser(activeProfile.id);
     }
-  }, [activeProfile?.id]);
+  }, [activeProfile?.id, initForUser]);
 
   useEffect(() => {
     if (isUnlocked) {
@@ -95,6 +95,7 @@ export default function AuthenticatedLayout({
       })
       .catch((err) => { console.error("Auth check failed:", err); router.replace("/"); })
       .finally(() => setChecking(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only check
   }, []);
 
   useEffect(() => {

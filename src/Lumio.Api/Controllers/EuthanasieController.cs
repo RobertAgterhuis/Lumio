@@ -1,6 +1,7 @@
 using Lumio.Api.Data;
 using Lumio.Api.Domain.EuthanasiaDirective;
 using Lumio.Api.Dtos.EuthanasiaDirective;
+using Lumio.Api.Repositories;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,14 +12,21 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/euthanasie")]
 public class EuthanasieController : ControllerBase
 {
+    private readonly IWilsverklaringRepository _wilsverklaringRepo;
+    private readonly IEigenaarRepository _eigenaarRepo;
     private readonly LumioDbContext _db;
 
-    public EuthanasieController(LumioDbContext db) => _db = db;
+    public EuthanasieController(IWilsverklaringRepository wilsverklaringRepo, IEigenaarRepository eigenaarRepo, LumioDbContext db)
+    {
+        _wilsverklaringRepo = wilsverklaringRepo;
+        _eigenaarRepo = eigenaarRepo;
+        _db = db;
+    }
 
     [HttpGet]
     public async Task<ActionResult<WilsverklaringResponse>> Get()
     {
-        var item = await _db.Wilsverklaringen.FirstOrDefaultAsync();
+        var item = await _wilsverklaringRepo.FindAsync();
         if (item is null) return NotFound();
         return Ok(item.Adapt<WilsverklaringResponse>());
     }
@@ -26,30 +34,30 @@ public class EuthanasieController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<WilsverklaringResponse>> Upsert([FromBody] WilsverklaringUpsertRequest request)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
-        var item = await _db.Wilsverklaringen.FirstOrDefaultAsync();
+        var item = await _wilsverklaringRepo.FindAsync();
         if (item is null)
         {
             item = request.Adapt<WilsverklaringEuthanasie>();
             item.EigenaarId = eigenaar.Id;
-            _db.Wilsverklaringen.Add(item);
+            await _wilsverklaringRepo.AddAsync(item);
         }
         else
         {
             request.Adapt(item);
         }
 
-        await _db.SaveChangesAsync();
+        await _wilsverklaringRepo.CommitAsync();
         return Ok(item.Adapt<WilsverklaringResponse>());
     }
 
     [HttpGet("voorwaarden")]
     public async Task<ActionResult<List<VoorwaardeResponse>>> GetVoorwaarden()
     {
-        var wilsverklaring = await _db.Wilsverklaringen.FirstOrDefaultAsync();
+        var wilsverklaring = await _wilsverklaringRepo.FindAsync();
         if (wilsverklaring is null) return Ok(new List<VoorwaardeResponse>());
 
         var items = await _db.EuthanasieVoorwaarden
@@ -61,7 +69,7 @@ public class EuthanasieController : ControllerBase
     [HttpPost("voorwaarden")]
     public async Task<ActionResult<VoorwaardeResponse>> CreateVoorwaarde([FromBody] VoorwaardeUpsertRequest request)
     {
-        var wilsverklaring = await _db.Wilsverklaringen.FirstOrDefaultAsync();
+        var wilsverklaring = await _wilsverklaringRepo.FindAsync();
         if (wilsverklaring is null)
             return BadRequest(new { error = "Maak eerst een wilsverklaring aan." });
 

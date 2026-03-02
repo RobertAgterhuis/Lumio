@@ -1,6 +1,6 @@
 # ADR-001: EnsureSchuldKolommenAsync — tijdelijke DDL-brug voor pre-migratie databases
 
-**Status:** ACCEPTED  
+**Status:** RESOLVED — MigratieDbHelper verwijderd in SP-13-001. Alle actieve databases hebben EF-migraties doorlopen.  
 **Datum:** 2026-03-02  
 **Auteur:** SP-9 / DATA-003 (REEVALUATE FASE-2)  
 **Eigenaar:** Software Architect

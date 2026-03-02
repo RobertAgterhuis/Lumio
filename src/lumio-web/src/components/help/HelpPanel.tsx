@@ -68,6 +68,7 @@ export function HelpPanel() {
 
   // Collapse ToC when switching chapters
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTocOpen(false);
   }, [activeChapterSlug]);
 

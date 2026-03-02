@@ -56,6 +56,7 @@ export function BackupStatusWidget({ onHasContent }: { onHasContent?: (v: boolea
     if (!stored) {
       // First ever visit: record today's date and hide the widget all day
       localStorage.setItem(key, today);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsFirstRun(true);
     } else {
       // Show the widget starting the day after first use

@@ -48,7 +48,6 @@ export function SafeHtml({
     [purifyConfig]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- DOMPurify Config type mismatch (PARSER_MEDIA_TYPE: string vs DOMParserSupportedType)
   const sanitized = useMemo(
     () => DOMPurify.sanitize(html, config as any),
     [html, config]

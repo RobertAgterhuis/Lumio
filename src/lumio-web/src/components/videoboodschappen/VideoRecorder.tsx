@@ -244,7 +244,6 @@ export function VideoRecorder({
     return (
       <div className="space-y-3">
         {/* Server-streamed playback — same mechanism as confirmed-working post-save player */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           key={previewTempId}
           src={previewSrc}
@@ -277,7 +276,6 @@ export function VideoRecorder({
     const remaining = maxDurationSeconds - elapsed;
     return (
       <div className="space-y-3">
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           ref={liveVideoRef}
           playsInline

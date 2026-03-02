@@ -43,6 +43,7 @@ export function PasswordChangeCard() {
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form watch() is incompatible with React Compiler; intentional skip
   const nieuwWachtwoord = watch("nieuwWachtwoord");
 
   const onSubmit = async (data: PasswordChangeForm) => {
