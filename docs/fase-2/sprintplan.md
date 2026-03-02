@@ -125,7 +125,7 @@ MigratieDbHelper verwijderd, crash reporting geconfigureerd (na DPO-review), App
 | Story ID | Beschrijving | Type | Team | Acceptatiecriteria | Story Points | Afhankelijkheden | Blocker | Risico |
 |----------|-------------|------|------|-------------------|--------------|-----------------|---------|--------|
 | SP-13-001 | MigratieDbHelper verwijderen + ADR-001 sluiten | CODE | Dev | Geen `MigratieDbHelper` in codebase; ADR-001 status RESOLVED; CI groen | 3 | SP-12 (Application layer context) | NONE | Midden — DB-compatibiliteit |
-| SP-13-002 | Crash reporting (Sentry/equivalent) met opt-in consent implementeren | CODE | Dev | Crash reporting actief met user opt-in UI; DPO goedkeuring gedocumenteerd; DPIA bijgewerkt | 8 | DPO review GO | EXTERN: DPO review (eigenaar: DPO; escalatie: verschuif naar SP-14) | Midden |
+| SP-13-002 | → **Verplaatst naar SP-15-003** — pricing plan beslissing + DPO-toets vereist vóór productie | - | - | - | - | - | → SP-15-003 | - |
 | SP-13-003 | Application Layer fase 2: IRepository voor 4 extra bounded contexts | CODE | Dev | ≥6 controllers refactored naar IRepository-patroon; unit-tests groen | 8 | SP-12-004 | NONE | Hoog |
 | SP-13-004 | Controller-tests batch 3: testament, videoboodschappen, donor (≥5 controllers) | CODE | Dev | ≥5 nieuwe controller testbestanden; CI groen | 5 | SP-12-005 | NONE | Laag |
 | SP-13-005 | ESLint design-token violations afmaken (resterende ≤74 → 0) | CODE | Dev | `npm run lint` 0 errors; CI lint-gate volledig groen | 3 | SP-12-001 | NONE | Laag |
@@ -134,7 +134,7 @@ MigratieDbHelper verwijderd, crash reporting geconfigureerd (na DPO-review), App
 
 | Blocker ID | Type | Omschrijving | Eigenaar | Verwachte Oplossing | Escalatie |
 |------------|------|-------------|---------|--------------------|----|
-| BLK-13-001 | EXTERN | DPO review voor crash reporting (GDPR bijzondere categorieën) | DPO | Voor SP-13 start | Verschuif SP-13-002 naar SP-14 |
+| BLK-13-001 | EXTERN | Pricing plan beslissing (Sentry) + DPO-toets crash reporting | PO/DPO | Vóór SP-15 start | Story is verplaatst naar SP-15-003 |
 
 ### Definition of Done SP-13
 - [ ] MigratieDbHelper afwezig in codebase
@@ -171,6 +171,7 @@ Next.js statische export gemigreerd naar SSR; nonce-based CSP actief; `unsafe-in
 |----------|-------------|------|------|-------------------|--------------|-----------------|---------|--------|
 | SP-15-001 | Next.js SSR-migratie: `output:"export"` verwijderen, nonce-based CSP inschakelen | CODE | Dev | CSP bevat geen `unsafe-inline`; alle pagina's renderbaar; E2E groen; Electron renderer werkt | 13 | SP-14-001 spike | NONE | Hoog — grootste architectuurwijziging in roadmap |
 | SP-15-002 | Pentest bevindingen verwerken (naar aanleiding van SP-14-002) | CODE | Dev | Alle kritieke + hoge pentest-bevindingen opgelost; rapport bijgewerkt | 8 | SP-14-002 | NONE | UNCERTAIN: scope afhankelijk van pentest-uitkomst |
+| SP-15-003 | Crash reporting (Sentry Developer gratis tier) met opt-in consent implementeren | CODE | Dev | Crash reporting actief met opt-in UI; pricing plan vastgesteld en gedocumenteerd; DPIA v1.2 DPO-toets goedgekeurd; BLK-13-001 opgelost | 8 | SP-14 gereed; pricing plan beslissing (PO); DPO GO | EXTERN: pricing plan beslissing (eigenaar: PO) + DPO-toets DPIA v1.2 (eigenaar: DPO) | Midden |
 
 ### Blocker Register SP-14
 
@@ -222,7 +223,7 @@ Next.js statische export gemigreerd naar SSR; nonce-based CSP actief; `unsafe-in
 | REC-DEV-002 | P2 | SP-12-001, SP-13-005 | SP-12–13 |
 | REC-DEVOPS-001 | P1 | SP-11-002 | SP-11 |
 | REC-DEVOPS-002 | P1 | SP-11-001 | SP-11 |
-| REC-DEVOPS-003 | P2 | SP-13-002 | SP-13 |
+| REC-DEVOPS-003 | P2 | SP-15-003 (verplaatst van SP-13-002) | SP-15 |
 | REC-SEC-001 | P2 | SP-14-001 | SP-14 |
 | REC-SEC-002 | P1 | SP-11-001 (gedeeld) | SP-11 |
 | REC-SEC-003 | P1 | SP-12-002 | SP-12 |
@@ -240,7 +241,7 @@ Next.js statische export gemigreerd naar SSR; nonce-based CSP actief; `unsafe-in
 | Blocker ID | Sprint | Type | Omschrijving | Eigenaar | Escalatie voor |
 |------------|--------|------|-------------|---------|----------------|
 | BLK-11-001 | SP-11 | EXTERN | EV certificate aanvraag | PO | Einde SP-11 |
-| BLK-13-001 | SP-13 | EXTERN | DPO review crash reporting | DPO | Start SP-13 |
+| BLK-13-001 | SP-15 | EXTERN | Pricing plan beslissing (Sentry) + DPO-toets crash reporting | PO/DPO | Start SP-15 |
 | BLK-14-001 | SP-14 | EXTERN | Pentest-leverancier | PO | Einde SP-14 |
 
 ---

@@ -49,7 +49,7 @@
     "milestone_number": 10,
     "github_issues": [
       {"id": "SP-13-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/99", "status": "closed", "commit": "528b009"},
-      {"id": "SP-13-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/100", "status": "open", "blocker": "EXTERN:DPO"},
+      {"id": "SP-13-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/100", "status": "open", "blocker": "VERPLAATST:SP-15-003", "note": "Verplaatst naar SP-15-003 — pricing plan beslissing (PO) + DPO-toets DPIA v1.2 vereist voor productie"},
       {"id": "SP-13-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/102", "status": "closed", "commit": "4cbcf69"},
       {"id": "SP-13-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/103", "status": "closed", "commit": "82aa011"},
       {"id": "SP-13-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/104", "status": "closed", "commit": "5a28a56"}
@@ -69,7 +69,7 @@
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-02T23:00:00Z",
+  "last_updated": "2026-03-02T23:30:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
