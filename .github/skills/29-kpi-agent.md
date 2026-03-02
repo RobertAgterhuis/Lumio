@@ -175,6 +175,8 @@ Aanbeveling: [concrete actie]
 
 De Orchestrator neemt `KPI_ALERT` items op in de Sprint Gate context voor de volgende sprint en injecteert ze als prioriteit in de relevante fase-agent (bijv. `OFF_TRACK` security KPI → Security Architect context).
 
+**Bij `OFF_TRACK` voor 2+ opeenvolgende sprints: schrijf verplicht een `LESSON_CANDIDATE`** naar `docs/retrospectives/lessons-learned.md` conform RULE ORC-22 (type: `KPI_MISS`, categorie: `VELOCITY` of `BLOCKER` afhankelijk van de KPI). Vermeld het aantal opeenvolgende sprints en de trend in de beschrijving.
+
 ---
 
 ## HANDOFF CHECKLIST
@@ -187,6 +189,7 @@ De Orchestrator neemt `KPI_ALERT` items op in de Sprint Gate context voor de vol
 - [ ] sprint-[SP-N]-kpi.json weggeschreven (immutable)
 - [ ] kpi-trend.md cumulatief bijgewerkt
 - [ ] KPI_ALERT items gerapporteerd aan Orchestrator voor OFF_TRACK KPIs
+- [ ] LESSON_CANDIDATE geschreven bij OFF_TRACK voor 2+ opeenvolgende sprints (of NIET VAN TOEPASSING)
 - [ ] Klaar voor volgende stap (Documentation Agent)
 ```
 

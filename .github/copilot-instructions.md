@@ -71,6 +71,13 @@ Op commando (elk moment):
 Op commando (elk moment, onafhankelijk van lopende cycli):
   FEATURE [naam]: [beschrijving] → Feature Agent → volledige cyclus (Fase 1–4 + Synthesis + Sprintplan + Fase 5)
   Output: Workitems\[FEATURENAAM]\ (geïsoleerde werkmap per feature, eigen sprint IDs, eigen Sprint Gate)
+
+Noodprotocol (critieke productiefouten):
+  HOTFIX [beschrijving] → Orchestrator valideert urgentie → Sprint Gate BYPASS → Implementation → Test (verkorte regressie) → PR/Review (secret scan verplicht) → merge → KPI → Documentation → GitHub Integration → Retrospective
+  Sprint ID: HOTFIX-[N]; LESSON_CANDIDATE verplicht; BESLOTEN item in decisions.md als er structural constraints uit volgen
+
+Onboarding onderhoud:
+  REFRESH ONBOARDING → Onboarding Agent (alleen Stap 3+4: scan + tooling) → update onboarding-output.md (intake-antwoorden intact)
 ```
 
 ---

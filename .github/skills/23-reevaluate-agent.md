@@ -166,6 +166,30 @@ Activeer na voltooiing:
 
 Bij `FAILED`: herstel conform de feedback, herhaal validatie.
 
+### Stap 7b: Strategische bevindingen vastleggen in `docs/decisions.md` (VERPLICHT)
+
+Na Critic + Risk PASSED: analyseer het Re-evaluation Report op bevindingen die permanente gedragsconstraints impliceren voor toekomstige agents of sprints. Schrijf elk zo’n item als nieuw `BESLOTEN` entry naar `docs/decisions.md`.
+
+Triggers — schrijf een `BESLOTEN` item wanneer de reevaluatie uitwijst:
+- Een aanbeveling (REC-NNN) is structureel achterhaald of onjuist gebleken → agents mogen er niet meer op bouwen
+- Een architectuurkeuze is als onhoudbaar beoordeeld → Implementation Agent mag deze niet voortzetten
+- Een feature of story-reeks is gestopt → agents mogen hier geen werk op plannen
+- Een compliance- of securitybevinding vereist proceswijziging → constraint voor alle Fase 5 agents
+
+Verplicht formaat (conform `docs/decisions.md` sjabloon):
+```markdown
+### DEC-[NNN] — Reevaluate: [korte omschrijving]
+- **Status:** BESLOTEN
+- **Datum:** [ISO 8601]
+- **Scope:** [sprint-IDs, fase of ‘Alle sprints’]
+- **Bevinding:** [concrete vaststelling uit het Re-evaluation Report — geen vage omschrijvingen]
+- **Gevolg voor agents:** [welke agents mogen wat niet meer doen?]
+- **Gerefereerd rapport:** Re-evaluation Report v[N+1] — [datum]
+- **Besloten door:** Reevaluate Agent (gevalideerd door Critic + Risk Agent)
+```
+
+Als er geen constraints zijn: documenteer expliciet `GEEN_BESLOTEN_ITEMS: geen structurele constraints gedetecteerd in deze reevaluatie`.
+
 ---
 
 ### Stap 8: Re-evaluation Report samenstellen
@@ -229,6 +253,7 @@ De Reevaluate Agent is aanbevolen bij:
 - [ ] Aanbeveling-Delta is gesynchroniseerd met de bevindingsdelta
 - [ ] Critic Agent: PASSED
 - [ ] Risk Agent: PASSED
+- [ ] Strategische bevindingen verwerkt in docs/decisions.md als BESLOTEN items (of GEEN_BESLOTEN_ITEMS gedocumenteerd)
 - [ ] Re-evaluation Report is compleet en machine-leesbaar
 - [ ] Versiegeschiedenis is bijgewerkt
 - [ ] Output is aangeleverd aan Orchestrator voor Sprint Gate beslissing

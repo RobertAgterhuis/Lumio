@@ -32,6 +32,31 @@ Elk departmentsrapport is volledig zelfstandig leesbaar en bevat een verplichte 
 
 ---
 
+## Vereisten
+
+### Verplicht
+
+| Vereiste | Toelichting |
+|----------|-------------|
+| **GitHub account** | Met toegang tot de repository die geaudit wordt. De GitHub Integration Agent maakt een Kanban-project aan en publiceert alle stories als Issues. |
+| **GitHub Copilot** | Agent-functionaliteit vereist een actief Copilot-abonnement (Individual, Business of Enterprise). |
+| **VS Code** | De agents draaien als Copilot Agents in de VS Code editor. |
+| **Git** | Lokale Git-installatie voor codebase-toegang en history-analyse door de Onboarding Agent. |
+| **Leestoegang tot de codebase** | De te auditen software moet lokaal beschikbaar of gecloned zijn. Zonder codebase-toegang kan de Onboarding Agent niet starten. |
+
+### Optioneel
+
+| Vereiste | Waarvoor | Zonder dit... |
+|----------|----------|---------------|
+| **Canva Connect API token** | Brand & Assets Agent (Agent 30) maakt automatisch een brand kit aan, genereert assets en exporteert design tokens via de Canva API. | Wordt overgeslagen (`SKIPPED_NO_TOKEN`); de Storybook Agent leidt tokens zelf af uit de Brand Strategist output. |
+| **Node.js ≥ 18** | Storybook Agent (Agent 31) installeert en start een lokale Storybook-omgeving. | Storybook-stap mislukt; markeer als `TOOLING_GAP` in de Onboarding Output — Fase 1–4 worden niet geblokkeerd. |
+| **TruffleHog** | PR/Review Agent gebruikt TruffleHog voor secret scanning als merge-gate. | Secret scan stap wordt overgeslagen; PR/Review Agent meldt `TOOL_UNAVAILABLE: TruffleHog` en escaleert. |
+| **Stakeholder documentatie** | Business requirements, user research, brand guidelines — versterkt de kwaliteit van alle fase-outputs. | Agents markeren ontbrekende items als `INSUFFICIENT_DATA:` en gaan door met wat beschikbaar is. |
+
+> **Canva API:** De Canva Connect API voor brand kit-functionaliteit is momenteel invite-only. Vraag toegang aan via [developer.canva.com](https://developer.canva.com). Dit is volledig optioneel — het systeem werkt ook zonder.
+
+---
+
 ## Hoe gebruik je dit team?
 
 ### Stap 1 — Start een audit
@@ -47,6 +72,10 @@ Kies de gewenste scope:
 | `AUDIT MARKETING [project]` | Alleen Fase 4 (Brand & Marketing) → `eindrapport-marketing.md` |
 | `AUDIT [DISC1] [DISC2] [project]` | **Combinatie-audit:** 2 (of 3) disciplines in één sessie via één Onboarding intake — bijv. `AUDIT TECHNIEK UX MijnProject`. Disciplines worden altijd in canonieke volgorde uitgevoerd. Levert beide departmentsrapporten op. |
 | `AUDIT SYNTHESIS` | Samenvoegen van meerdere eerdere partiele audits tot gecombineerd rapport |
+| `FEATURE [naam]: [beschrijving]` | Geïsoleerde cyclus (Fase 1–5) voor één nieuwe feature. Output in `Workitems/[FEATURENAAM]/`. |
+| `REEVALUATE [scope]` | Herbeoordeelt een eerder onderdeel (bijv. na een grote technische wijziging). Genereert een Re-evaluation Report en injecteert impacts in de lopende Sprint Gate. |
+| `HOTFIX [beschrijving]` | **Noodprotocol** voor kritieke productiefouten. Bypassed de Sprint Gate; doorloopt een verkorte cyclus (Implementation → Test → PR/Review → merge). Sprint ID: `HOTFIX-[N]`. Genereert altijd een LESSON_CANDIDATE. |
+| `REFRESH ONBOARDING` | Herloopt de codebase-scan en tooling-verificatie zonder nieuwe intakevragen. Nuttig na grote technische wijzigingen of na 5+ sprints. |
 
 De **Onboarding Agent** stelt een reeks intakevragen (doelgroep, technische stack, GitHub project naam, etc.) en legt de antwoorden vast in `docs/session/session-state.json`. Bij een gedeeltelijke audit worden alleen de vragen gesteld die relevant zijn voor de opgegeven discipline. Daarna neemt de **Orchestrator** het over en stuurt alle fases aan.
 

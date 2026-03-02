@@ -63,6 +63,90 @@ Fase 5 (per sprint):
 5. Synthesis produceert uitsluitend de departmentsrapporten voor de opgegeven disciplines. Master Rapport en Cross-Team Blocker Matrix worden pas geproduceerd als alle 4 disciplines beschikbaar zijn.
 6. `session-state.json` bevat `audit_scope: ["DISC1", "DISC2"]` en `cycle_type: "COMBO_AUDIT"`.
 
+**RULE ORC-21:** Elke bewuste revert van een breaking change MOET worden gedocumenteerd in `docs/decisions.md` als een nieuw `BESLOTEN` item. Dit geldt ongeacht welke agent de revert uitvoert of detecteert (PR/Review Agent, Implementation Agent, Orchestrator zelf).
+
+**Definitie breaking change:** Een wijziging is een breaking change als zij één of meer van het volgende veroorzaakt:
+- Bestaande publieke API-contracten, endpoints of interface-signaturen worden incompatibel aangepast
+- Bestaande tests die vóór de wijziging slaagden, falen erna
+- Bestaande data of user flows worden onbruikbaar of inconsistent
+- Een externe afhankelijkheid wordt verwijderd of vervangen op een manier die consumers breekt
+- Databaseschema-wijzigingen zonder migratie die bestaande records corrupt of onleesbaar maakt
+Een additive change die nieuw gedrag toevoegt zonder bestaand gedrag aan te tasten is **geen** breaking change.
+
+Verplicht formaat:
+```markdown
+### DEC-[NNN] — Revert: [korte omschrijving]
+- **Status:** BESLOTEN
+- **Datum:** [ISO 8601]
+- **Scope:** [sprint-ID of fase]
+- **Reden:** [waarom de breaking change is teruggedraaid — GEEN vage omschrijvingen]
+- **Gerefereerde story/PR:** [SP-N-NNN / PR-URL]
+- **Gevolg voor toekomstige sprints:** [wat mogen agents NIET opnieuw introduceren?]
+- **Besloten door:** [agent-naam of gebruiker]
+```
+
+Dit item MOET door de Orchestrator worden meegenomen als harde constraint bij alle relevante agents in volgende sprints, identiek aan elk ander `BESLOTEN` item.
+
+**RULE ORC-22:** Significant mid-sprint events MOETEN direct worden vastgelegd als `LESSON_CANDIDATE` in `docs/retrospectives/lessons-learned.md`, ongeacht of de sprint nog loopt. De Retrospective Agent formaliseert alle kandidaten aan het einde van de sprint.
+
+De volgende events triggeren verplicht een `LESSON_CANDIDATE`:
+| Event | Triggerende agent |
+|-------|------------------|
+| `PERSISTENT_FAILURE` (test 3× gefaald na retour) | Test Agent |
+| `CRITICAL_FINDING` (security of dataprobleem tijdens testen) | Test Agent |
+| `SECURITY_VIOLATION` (sec-review VIOLATION) | PR/Review Agent |
+| Revert van een breaking change | PR/Review Agent |
+| `OFF_TRACK` KPI voor 2+ opeenvolgende sprints | KPI Agent |
+
+Verplicht formaat (append onderaan `lessons-learned.md`):
+```markdown
+## LESSON_CANDIDATE — [Sprint ID] — [Agent] — [datum]
+- **Type:** PERSISTENT_FAILURE | CRITICAL_FINDING | SECURITY_VIOLATION | KPI_MISS | REVERT
+- **Beschrijving:** [concreet wat er is misgegaan of geleerd — geen vage omschrijvingen]
+- **Categorie:** BLOCKER | KWALITEIT | VELOCITY | SCHATTING
+- **Aanbevolen actie voor volgende sprint:** [concrete instructie]
+- **Status:** CANDIDATE — te formaliseren door Retrospective Agent
+```
+
+De Orchestrator controleert bij elke Sprint Gate of `lessons-learned.md` openstaande `LESSON_CANDIDATE` items bevat en injecteert de aanbevolen actie als context voor de relevante agents.
+
+**RULE ORC-23: HOTFIX protocol**
+Een `HOTFIX [beschrijving]` commando start een verkorte noodcyclus buiten de normale sprint-structuur. Gebruik uitsluitend wanneer een kritiek productiefout onmiddellijk herstel vereist.
+
+HOTFIX-uitvoeringsvolgorde:
+```
+HOTFIX [beschrijving]
+  → Orchestrator valideert: is dit werkelijk kritiek? (CRITICAL_FINDING of productie-incident?)
+  → Sprint Gate BYPASS — Definition of Ready check overgeslagen; Orchestrator documenteert dit expliciet
+  → Implementation Agent (scope: uitsluitend de hotfix — geen extra werk)
+  → Test Agent (verkorte test: minimaal de gerepareerde functionaliteit + direct aangrenzende regressie)
+  → PR/Review Agent (secret scan VERPLICHT; revert-detectie VERPLICHT)
+  → Orchestrator: merge na APPROVED
+  → KPI Agent: meting indien meetbaar
+  → Documentation Agent: update bij gebruikerszichtbare wijziging
+  → GitHub Integration Agent: betrokken Issue bijwerken
+  → Retrospective Agent: schrijft sprint-[HOTFIX-N]-retrospective.md
+  → LESSON_CANDIDATE verplicht: elke hotfix genereert automatisch een LESSON_CANDIDATE (type: BLOCKER)
+```
+
+HOTFIX bookkeeping (verplicht):
+- Sprint ID: `HOTFIX-[N]` (apart genummerd van reguliere sprints)
+- Vastgelegd in `docs/retrospectives/velocity-log.json` als aparte entry met `"type": "HOTFIX"`
+- Een `BESLOTEN` item in `docs/decisions.md` als de hotfix een structural constraint impliceert (conform RULE ORC-21)
+- Orchestrator informeert de lopende reguliere sprint (indien aanwezig) over impact en eventuele noodzakelijke story-aanpassingen
+
+**RULE ORC-24: Onboarding refresh**
+De Onboarding Output en session-state.json kunnen verouderen naarmate de codebase evolueert. De Orchestrator triggert een **Onboarding Refresh** — een oppervlaktescan conform Stap 3 van de Onboarding Agent, zonder nieuwe intake-vragen — in de volgende situaties:
+1. Na een `REEVALUATE` waarbij de delta-scan significante codewijzigingen rapporteert (nieuw/verdwenen bestanden > 10% van de codebase)
+2. Na 5 of meer opeenvolgende sprints zonder herbeoordeling
+3. Op expliciet commando `REFRESH ONBOARDING`
+
+Een Onboarding Refresh:
+- Herloopt Stap 3 (Codebase Scan) en Stap 4 (Tooling Verificatie) van de Onboarding Agent
+- Overschrijft uitsluitend de scanvelden in `docs/onboarding/onboarding-output.md`; intake-antwoorden blijven intact
+- Werkt `last_updated` bij in `session-state.json`
+- Blokkeert de lopende sprint NIET
+
 ### Bij Brand & Assets Agent handoff:
 1. Controleer status: `COMPLETE` / `PARTIAL` / `SKIPPED_NO_TOKEN`
 2. Bij `SKIPPED_NO_TOKEN`: documenteer in Orchestrator Log; instrueer Storybook Agent om tokens zelf af te leiden uit Fase 4 output; **Storybook Agent wordt altijd geactiveerd**

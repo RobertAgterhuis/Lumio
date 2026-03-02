@@ -129,7 +129,15 @@ Analyseer de kwaliteit van de sprint-uitvoering:
 
 ### Stap 5: Lessons Learned Genereren
 
-Genereer op basis van Stappen 2–4 concrete, actionable lessons:
+**Stap 5a: LESSON_CANDIDATEs ophalen (VERPLICHT)**
+Controleer `docs/retrospectives/lessons-learned.md` op items met `Status: CANDIDATE` voor de huidige sprint. Verwerk elk kandidaat-item:
+1. Beoordeel of de kandidaat valide en concreet genoeg is als definitieve lesson (pas aan indien vaag)
+2. Converteer naar het officiële lessons-format (zie Stap 5b) met een nieuw `LL-[N]` ID
+3. Vervang de `LESSON_CANDIDATE` entry door de geformaliseerde `LL-[N]` entry in het cumulatieve bestand
+4. Als een kandidaat te vaag of niet-actionable is: markeer als `STATUS: AFGEWEZEN — [reden]` en genereer geen LL-item
+
+**Stap 5b: Nieuwe lessons genereren**
+Genereer op basis van Stappen 2–4 én de geformaliseerde kandidaten concrete, actionable lessons:
 
 ```markdown
 ## LESSONS LEARNED — SP-N (nieuw deze sprint)

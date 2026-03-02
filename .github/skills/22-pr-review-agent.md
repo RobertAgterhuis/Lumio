@@ -56,6 +56,7 @@ Doorloop per gewijzigd bestand (IMPL-OUTPUT-A):
 - Auth checks intact? (IMPL-GUARD-18)
 - Geen PII in logs? (IMPL-GUARD-19)
 - Documenteer: `SEC-REVIEW: COMPLIANT / VIOLATION [beschrijving + vereiste herstelactie]`
+- Bij `VIOLATION`: schrijf verplicht een `LESSON_CANDIDATE` naar `docs/retrospectives/lessons-learned.md` conform RULE ORC-22 (type: `SECURITY_VIOLATION`, categorie: `KWALITEIT`).
 
 **2c. Kwaliteitscheck**
 - Code-stijl consistent met de codebase?
@@ -67,7 +68,17 @@ Doorloop per gewijzigd bestand (IMPL-OUTPUT-A):
 - Elke code-wijziging traceerbaar naar story-ID en aanbeveling-referentie?
 - Documenteer: `TRACE-REVIEW: COMPLETE / MISSING [wat ontbreekt]`
 
-**VERBOD:** PR aanmaken bij een `VIOLATION` in de Security Review zonder herstelactie.
+**2e. Revert detectie (VERPLICHT)**
+Controleer of de PR een bewuste revert of terugdraaiing van eerder gemerged werk bevat:
+- Is er een `git revert`, handmatige terugdraaiing, of verwijdering van eerder geïmplementeerde functionaliteit aanwezig?
+- Als **JA**:
+  1. Documenteer als `REVERT-DETECTED: [beschrijving van wat teruggedraaid is en waarom]`
+  2. Schrijf verplicht een nieuw `BESLOTEN` item naar `docs/decisions.md` conform RULE ORC-21 (Orchestrator skill, `00-orchestrator.md`)
+  3. Voeg `revert_documented: true` toe aan het Sprint Completion Report JSON onder de betreffende story
+  4. Meldt dit expliciet in de PR-beschrijving onder een sectie `### Reverts`
+- Als **NEE**: documenteer `REVERT-CHECK: GEEN REVERTS GEDETECTEERD`
+
+**VERBOD:** Een PR met een bewuste revert mergen zonder bijbehorend `BESLOTEN` item in `docs/decisions.md`.
 
 ### Stap 3: Sprint Completion Report Finaliseren
 
@@ -170,6 +181,7 @@ PR MERGE CHECKLIST: SP-N
 - [ ] PR beschrijving volledig ingevuld
 - [ ] Alle INTERN-blockers opgelost (of geëscaleerd)
 - [ ] Orchestrator Log bijgewerkt
+- [ ] Revert check uitgevoerd — bewuste reverts gedocumenteerd in docs/decisions.md (of GEEN REVERTS GEDETECTEERD)
 ```
 
 ### Stap 6: Orchestrator Rapportage
@@ -215,7 +227,7 @@ Gebruik KPI_MISS bij elke KPI die na de sprint niet is gehaald — NOOIT verberg
 - [ ] KPI meting aanwezig (of MEASUREMENT_IMPOSSIBLE geëscaleerd)
 - [ ] Orchestrator Log bijgewerkt
 - [ ] Geen CRITICAL_FINDING onopgelost
-- [ ] Alle 4 deliverables zijn geproduceerd conform het contract
+- [ ] Revert check uitgevoerd — bewuste reverts gedocumenteerd in docs/decisions.md als BESLOTEN item (of GEEN REVERTS GEDETECTEERD)- [ ] LESSON_CANDIDATE geschreven bij SECURITY_VIOLATION of revert (of GEEN VAN BEIDE GEDETECTEERD)- [ ] Alle 4 deliverables zijn geproduceerd conform het contract
 ```
 
 **EEN HANDOFF MET EEN NIET-AANGEVINKTE CHECKBOX IS ONGELDIG.**

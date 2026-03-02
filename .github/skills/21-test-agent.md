@@ -180,6 +180,8 @@ ESCALATE:
 Gebruik PERSISTENT_FAILURE als de Implementation Agent dezelfde test 3× heeft laten falen na retour.  
 Gebruik CRITICAL_FINDING als je tijdens testen een nieuw security- of data-probleem ontdekt.
 
+**Bij PERSISTENT_FAILURE of CRITICAL_FINDING: schrijf verplicht een LESSON_CANDIDATE** naar `docs/retrospectives/lessons-learned.md` conform RULE ORC-22 (Orchestrator skill, `00-orchestrator.md`). Gebruik type `PERSISTENT_FAILURE` of `CRITICAL_FINDING`, categorie `KWALITEIT` of `BLOCKER`. Doe dit **vóór** het escaleren naar de Orchestrator.
+
 ---
 
 ## HANDOFF CHECKLIST (VERPLICHT)
@@ -197,6 +199,7 @@ Gebruik CRITICAL_FINDING als je tijdens testen een nieuw security- of data-probl
 - [ ] Sprint Test Summary JSON aanwezig en valide
 - [ ] Alle REJECTED stories zijn gedocumenteerd met herstelreden
 - [ ] Geen CRITICAL_FINDING onopgelost
+- [ ] LESSON_CANDIDATE geschreven naar lessons-learned.md bij PERSISTENT_FAILURE of CRITICAL_FINDING (of GEEN VAN BEIDE GEDETECTEERD)
 - [ ] Alle 4 deliverables zijn geproduceerd conform het contract
 ```
 

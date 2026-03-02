@@ -43,6 +43,9 @@ Controleer voor elke story VOORDAT je begint:
 3. **Architectuurinput aanwezig?** → Fase 2 output: tech stack, architectuurpatronen, bestandsstructuur, naamgevingsconventies
 4. **Guardrails geladen?** → `docs/guardrails/00-global.md` + `docs/guardrails/02-architecture.md` + `docs/guardrails/03-security.md` + `docs/guardrails/06-implementation-guardrails.md`
 5. **Codebase toegankelijk?** → Lees- en schrijftoegang tot de repository
+6. **`docs/decisions.md` geladen?** → Lees alle items met status `BESLOTEN`. Elk `BESLOTEN` item is een **harde constraint** — je mag geen code schrijven die daarmee in strijd is. Documenteer: `DECISIONS_LOADED: [aantal BESLOTEN items] — constraints actief: [korte opsomming]`
+7. **`docs/retrospectives/lessons-learned.md` geladen?** → Lees de top-3 meest urgente actieve lessons. Pas de aanbevolen acties toe in je implementatieplan. Documenteer: `LESSONS_LOADED: [LL-IDs actief]`
+8. **Security handoff context geladen?** → Als `docs/security/security-handoff-context.md` bestaat: lees alle `IMPL-CONSTRAINT` items. Dit zijn door de Security Architect vastgestelde beveiligingsvereisten die bij elke story gecontroleerd moeten worden (zie Stap 5). Documenteer: `SECURITY_CONTEXT_LOADED: [aantal constraints]`
 
 **HALT bij ontbrekende input:** documenteer `INSUFFICIENT_DATA: [wat ontbreekt]`, escaleer naar Orchestrator, start NIET.
 

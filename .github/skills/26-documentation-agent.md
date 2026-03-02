@@ -9,6 +9,8 @@ De Documentation Agent is de **verplichte laatste stap** van elke sprint-iterati
 
 **Trigger:** Automatisch geactiveerd door de Orchestrator nadat PR/Review Agent een Sprint Completion Report met status `APPROVED` heeft afgeleverd voor een sprint met minimaal één `CODE`- of `INFRA`-story.
 
+**Revert-trigger:** Als het Sprint Completion Report één of meer stories bevat met `revert_documented: true`, voert de Documentation Agent éérst een revert-pass uit (zie Stap 0b) vóór de normale sprint-verwerking.
+
 ---
 
 ## UNIVERSELE AGENT-REGELS
@@ -168,6 +170,17 @@ Vereiste input van: [specialist agent conform routingtabel hieronder]
 7. Ga daarna verder met Stap 1 voor de sprint-specifieke updates
 
 **Als er geen DOC_MISSING items zijn:** documenteer `DOC_MISSING scan: GEEN ontbrekende hoofdstukken` en ga direct door naar Stap 1.
+
+### Stap 0b: Revert-pass (ALLEEN bij `revert_documented: true` in Sprint Completion Report)
+
+1. Verzamel alle stories uit het Sprint Completion Report met `revert_documented: true`
+2. Zoek per gerenverte story: welke documentatiewijzigingen heeft de Documentation Agent in een eerdere sprint aangebracht op basis van die story?
+3. Draai die wijzigingen terug:
+   - Verwijder of herformuleer toegevoegde secties die beschrijven wat teruggedraaid is
+   - Herstel de vorige toestand van het betrokken hoofdstuk op basis van de git history of het Sprint Completion Report van de betreffende oorspronkelijke sprint
+   - Als de oorspronkelijke toestand niet reconstrueerbaar is: markeer de sectie als `> ⚠️ DOCUMENTATIE TERUGGEDRAAID — inhoud vereist handmatige review` en escaleer naar Orchestrator
+4. Documenteer: `DOC_REVERT: [story-ID] — [welke hoofdstukken/secties aangepast]`
+5. **VERBOD:** Functionele beschrijving van teruggedraaide code laten staan in de user of technical manual.
 
 #### Specialist Routingtabel (voor Orchestrator)
 

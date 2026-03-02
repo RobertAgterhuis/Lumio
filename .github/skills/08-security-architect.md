@@ -79,6 +79,35 @@ Per bevinding: CVSS v3.1 score (als CVE beschikbaar) of Laag/Midden/Hoog/Kritiek
 ### Stap 9: Zelfcontrole
 Extra check: is elke bevinding herleidbaar naar een concreet artefact?
 
+### Stap 9b: Security Handoff Context Produceren (VERPLICHT)
+
+Schrijf `docs/security/security-handoff-context.md`. Dit bestand is de **brug tussen Fase 2 bevindingen en Fase 5 implementatie**. De Implementation Agent laadt het verplicht bij elke story (Stap 1 item 8).
+
+Schrijf per bevinding met prioriteit Hoog of Kritiek die implementatie raakt een `IMPL-CONSTRAINT`:
+
+```markdown
+# Security Handoff Context
+_Gegenereerd door Security Architect op [datum] — v[N]_
+_Bijwerken bij elke REEVALUATE of HOTFIX die security-bevindingen wijzigt._
+
+## IMPL-CONSTRAINTs
+
+### IMPL-CONSTRAINT-[NNN]
+- **Afgeleid van:** [GAP-NNN / RISK-NNN / FINDING-ID]
+- **Scope:** [component, endpoint, module of ‘geheel systeem’]
+- **Vereiste:** [concrete, testbare implementatieregel — begin met werkwoord: 'Moet', 'Mag niet', 'Vereist']
+- **Verificatie:** [hoe de Implementation / Test Agent naleving aantoont]
+- **Guardrail referentie:** [IMPL-GUARD-XX indien van toepassing]
+```
+
+Voorbeelden van geldige constraints:
+- `Mag niet: SQL-queries construeren via string-concatenatie — gebruik uitsluitend parameterized queries (OWASP A03)`
+- `Moet: JWT tokens valideren op expiry én signature bij elk beveiligd endpoint (IAM gap)`
+- `Vereist: secrets via environment variables of vault — NOOIT hardcoded (IMPL-GUARD-09)`
+
+**VERBOD:** Een `IMPL-CONSTRAINT` zonder aantoonbare bronbevinding (GAP/RISK ID).
+**VERBOD:** Een constraint die niet testbaar of verifieerbaar is.
+
 ---
 
 ## VERPLICHTE UITVOERING – AANBEVELINGEN PRODUCEREN
@@ -262,6 +291,7 @@ Controleer overlap met de bestaande guardrails in `docs/guardrails/`. Documentee
 - [ ] Alle bevindingen gescoord (CVSS of prioriteit)
 - [ ] CRITICAL_FINDING items gemarkeerd en geëscaleerd
 - [ ] JSON export aanwezig en valide
+- [ ] `docs/security/security-handoff-context.md` aanwezig met IMPL-CONSTRAINTs voor alle Hoog/Kritiek bevindingen
 - [ ] Zelfcontrole uitgevoerd
 - [ ] Aanbevelingen: elke aanbeveling verwijst naar GAP/RISK analyse-bevinding
 - [ ] Aanbevelingen: alle impact-velden gevuld of als INSUFFICIENT_DATA: gemarkeerd
