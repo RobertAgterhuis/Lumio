@@ -73,6 +73,7 @@ Schrijf de velocity ook weg naar `velocity-log.json`:
   "sprints": [
     {
       "sprint_id": "SP-N",
+      "type": "SPRINT | HOTFIX",
       "planned_points": 0,
       "realized_points": 0,
       "velocity_ratio": 0.0,

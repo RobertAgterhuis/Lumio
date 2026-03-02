@@ -38,15 +38,15 @@ Sensitive fields (such as stored passwords in the password vault) are additional
 ## Authentication Flow
 
 ```
-1. Select profile (api/auth/selecteer-profiel)
+1. Select profile (api/v1/auth/selecteer-profiel)
    └── Loads profile metadata, database remains locked
 
-2. Unlock (api/auth/ontgrendel)
+2. Unlock (api/v1/auth/ontgrendel)
    ├── Password goes to MasterPasswordService (in-memory)
    ├── SQLCipher opens database with PRAGMA key
    └── All API endpoints become available
 
-3. Lock (api/auth/vergrendel)
+3. Lock (api/v1/auth/vergrendel)
    ├── MasterPasswordService clears password from memory
    ├── Database connection is closed
    └── DatabaseUnlockMiddleware blocks requests (423)
@@ -210,6 +210,27 @@ ipcMain.handle("set-auto-backup-config", async (_, config: unknown) => {
 | `contextIsolation` | `true` | Isolate preload scripts from web content |
 | `nodeIntegration` | `false` | Prevent renderer access to Node.js |
 | `sandbox` | `true` | Enable Chromium sandbox |
+
+## CI — Secret Scan (TruffleHog)
+
+Every PR and push to `main` is scanned for leaked credentials via TruffleHog:
+
+- **Version:** `trufflesecurity/trufflehog@v3.93.6` (exact pin)
+- **Mode:** `--only-verified` — only provably valid secrets trigger a failure
+- **Blocking:** the `secret-scan` job is the first job in the CI pipeline; all other jobs (`frontend`, `backend`, etc.) depend on it via `needs: [secret-scan]`
+- **Merge gate:** a failed `secret-scan` automatically blocks merge via branch protection
+
+## Analytics — PostHog
+
+Lumio uses PostHog for marketing-site analytics. Configuration (SP-11-003):
+
+| Parameter | Value |
+|-----------|-------|
+| Host | `https://eu.i.posthog.com` (EU datacenter) |
+| Fallback | EU host when `NEXT_PUBLIC_POSTHOG_HOST` is not set |
+| CSP `connect-src` | Only `https://eu.i.posthog.com` allowed |
+
+> **GDPR note:** Data in the EU datacenter is subject to European law. No US endpoints are permitted in the CSP.
 
 ### API Exposure via contextBridge
 

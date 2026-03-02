@@ -1,0 +1,18 @@
+{
+  "log": [
+    {
+      "sprint_id": "SP-11",
+      "sprint_name": "Beveiligingsfundament & CI Hygiene",
+      "date": "2026-03-02",
+      "stories_planned": 4,
+      "stories_completed": 4,
+      "completion_rate_pct": 100,
+      "backend_tests": 274,
+      "frontend_tests": 153,
+      "coverage_pct": 71.96,
+      "ci_passed": true,
+      "pr_number": 92,
+      "notes": "Alle 4 stories geland. TruffleHog pinnen naar specifieke semver vereist (geen major-version alias)."
+    }
+  ]
+}

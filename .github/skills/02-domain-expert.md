@@ -171,14 +171,17 @@ Per sprint:
 
 ### Stap H: Zelfcontrole Sprintplan
 1. Zijn alle stories gebaseerd op aanbevelingen (REC-NNN)?
-2. Heeft elke story een team-toewijzing?
-3. Heeft elke story minimaal één acceptatiecriterium?
-4. Heeft elke story een Blocker-veld (ook NONE is expliciet)?
-5. Zijn alle EXTERN-blockers voorzien van eigenaar + escalatieroute?
-6. Zijn parallelle tracks geïdentificeerd per sprint?
-7. Zijn aannames gedocumenteerd — geen fictieve capaciteit of team-samenstelling?
-8. Zijn sprint KPI's SMART?
-9. Zijn CODE/INFRA-stories vrij van cross-track blockers (DESIGN/CONTENT/ANALYSIS)?
+2. **Heeft elke P1-aanbeveling minstens één story?** Bouw een traceability-tabel: lijst alle REC-NNN met prioriteit P1 of P2 op en controleer per REC of er een story bestaat met `Aanbeveling-referentie: REC-NNN`. Ontbreekt een P1-aanbeveling zonder story: `MISSING_STORY: REC-NNN` — BLOKKEREND voor handoff.
+3. Heeft elke story een team-toewijzing?
+4. Heeft elke story minimaal één acceptatiecriterium?
+5. Heeft elke story een Blocker-veld (ook NONE is expliciet)?
+6. Zijn alle EXTERN-blockers voorzien van eigenaar + escalatieroute?
+7. Zijn parallelle tracks geïdentificeerd per sprint?
+8. Zijn aannames gedocumenteerd — geen fictieve capaciteit of team-samenstelling?
+9. Zijn sprint KPI's SMART?
+10. Zijn CODE/INFRA-stories vrij van cross-track blockers (DESIGN/CONTENT/ANALYSIS)?
+
+**VERBOD:** Handoff doorgeven zolang er een P1-aanbeveling is zonder minstens één story met bijbehorende `Aanbeveling-referentie`.
 
 ---
 
@@ -257,6 +260,7 @@ Je analyseert NIET:
 - [ ] Aanbevelingen: alle meetcriteria zijn SMART
 - [ ] Sprintplan: aannames (team, capaciteit, randvoorwaarden) gedocumenteerd
 - [ ] Sprintplan: alle stories hebben minimaal 1 acceptatiecriterium
+- [ ] **Sprintplan: alle P1 en P2 aanbevelingen hebben minstens één story (traceability-tabel aanwezig — MISSING_STORY items blokkeren handoff)**
 - [ ] Guardrails: alle guardrails zijn testbaar geformuleerd
 - [ ] Guardrails: alle guardrails hebben schending-actie én verificatiemethode
 - [ ] Guardrails: alle guardrails verwijzen naar GAP/RISK analyse-bevinding

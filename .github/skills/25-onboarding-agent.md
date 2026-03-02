@@ -174,7 +174,7 @@ Maak de initiële session state aan conform `docs/contracts/session-state-contra
 ```json
 {
   "session_id": "[UUID of timestamp-gebaseerde ID]",
-  "cycle_type": "FULL_AUDIT | PARTIAL_AUDIT | COMBO_AUDIT | FEATURE | REEVALUATE",
+  "cycle_type": "FULL_AUDIT | PARTIAL_AUDIT | COMBO_AUDIT | FEATURE | REEVALUATE | HOTFIX | REFRESH",
   "audit_scope": ["BUSINESS", "TECHNIEK", "UX", "MARKETING"],
   "feature_name": null,
   "status": "ONBOARDING_COMPLETE",
@@ -205,6 +205,8 @@ Maak de initiële session state aan conform `docs/contracts/session-state-contra
 | `AUDIT [DISC1] [DISC2] [DISC3] [project]` | `COMBO_AUDIT` | `["DISC1", "DISC2", "DISC3"]` |
 | `FEATURE [naam]` | `FEATURE` | `["BUSINESS", "TECHNIEK", "UX", "MARKETING"]` |
 | `REEVALUATE [scope]` | `REEVALUATE` | `[[scope]]` |
+| `HOTFIX [beschrijving]` | `HOTFIX` | `["TECHNIEK"]` |
+| `REFRESH ONBOARDING` | `REFRESH` | `[]` |
 
 > **`audit_scope` is altijd in canonieke volgorde:** BUSINESS → TECHNIEK → UX → MARKETING.
 
@@ -214,6 +216,8 @@ Lees het getypeerde commando vóór Stap 2 en stel de scope vast:
 2. Meerdere disciplines (`AUDIT TECHNIEK UX project`) → `cycle_type: COMBO_AUDIT`; intake gecombineerd voor alle opgegeven disciplines.
 3. Geen discipline (`AUDIT project`) → `cycle_type: FULL_AUDIT`; volledige intake.
 4. Volgorde in het commando is irrelevant — canonieke volgorde wordt altijd gehanteerd.
+5. `HOTFIX [beschrijving]` → `cycle_type: HOTFIX`; **Onboarding Agent wordt NIET opnieuw gestart** — bestaande Onboarding Output blijft geldig; Orchestrator gaat direct naar Sprint Gate BYPASS (RULE ORC-23).
+6. `REFRESH ONBOARDING` → `cycle_type: REFRESH`; Onboarding Agent voert **uitsluitend Stap 3 en Stap 4** opnieuw uit (codebase scan + tooling verificatie); intake-antwoorden uit Stap 2 blijven ongewijzigd.
 
 Sla op: `docs/session/session-state.json`
 

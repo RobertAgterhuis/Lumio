@@ -44,68 +44,68 @@ The backend is a .NET 10 Web API running on Kestrel. Self-contained publishing â
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `AuthController` | `api/auth` | `GET status`, `POST selecteer-profiel`, `POST setup`, `POST ontgrendel`, `POST vergrendel`, `POST wachtwoord`, `DELETE account`, `POST ontgrendel-erfgenaam` |
-| `ProfileController` | `api/profielen` | `GET` (list), `POST` (new), `DELETE {id}` |
+| `AuthController` | `api/v1/auth` | `GET status`, `POST selecteer-profiel`, `POST setup`, `POST ontgrendel`, `POST vergrendel`, `POST wachtwoord`, `DELETE account`, `POST ontgrendel-erfgenaam` |
+| `ProfileController` | `api/v1/profielen` | `GET` (list), `POST` (new), `DELETE {id}` |
 
 ### Personal Data
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `EigenaarController` | `api/eigenaar` | `GET`, `POST`, `PUT`, `GET/POST/DELETE foto` |
+| `EigenaarController` | `api/v1/eigenaar` | `GET`, `POST`, `PUT`, `GET/POST/DELETE foto` |
 
 ### Heirs & Assignments
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `ErfgenamenController` | `api/erfgenamen` | CRUD, `GET erfbelasting` |
-| `ToewijzingenController` | `api/toewijzingen` | CRUD, `GET erfgenaam/{id}` |
-| `ShamirController` | `api/shamir` | `POST genereer`, `POST reconstrueer`, `POST reconstrueer-en-ontgrendel` |
+| `ErfgenamenController` | `api/v1/erfgenamen` | CRUD, `GET erfbelasting` |
+| `ToewijzingenController` | `api/v1/toewijzingen` | CRUD, `GET erfgenaam/{id}` |
+| `ShamirController` | `api/v1/shamir` | `POST genereer`, `POST reconstrueer`, `POST reconstrueer-en-ontgrendel` |
 
 ### Advance Directives
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `TestamentController` | `api/testament` | `GET/PUT`, beneficiaries CRUD, executors CRUD, snapshots CRUD + compare, `GET legitimaire-portie-check`, `GET juridische-check` |
-| `EuthanasieController` | `api/euthanasie` | `GET/PUT`, conditions CRUD |
-| `DonorController` | `api/donor` | `GET/PUT`, organ choices CRUD |
+| `TestamentController` | `api/v1/testament` | `GET/PUT`, beneficiaries CRUD, executors CRUD, snapshots CRUD + compare, `GET legitimaire-portie-check`, `GET juridische-check` |
+| `EuthanasieController` | `api/v1/euthanasie` | `GET/PUT`, conditions CRUD |
+| `DonorController` | `api/v1/donor` | `GET/PUT`, organ choices CRUD |
 
 ### Assets & Finances
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `DigitaalBezitController` | `api/digitaal-bezit` | accounts CRUD, passwords CRUD + `ontsluitel` + `importeren`, crypto CRUD |
-| `BoedelController` | `api/boedel` | `GET samenvatting`, possessions/bank accounts/insurance/debts CRUD |
+| `DigitaalBezitController` | `api/v1/digitaal-bezit` | accounts CRUD, passwords CRUD + `ontsluitel` + `importeren`, crypto CRUD |
+| `BoedelController` | `api/v1/boedel` | `GET samenvatting`, possessions/bank accounts/insurance/debts CRUD |
 
 ### Funeral
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `UitvaartController` | `api/uitvaart` | `GET/PUT`, details CRUD, guests CRUD |
+| `UitvaartController` | `api/v1/uitvaart` | `GET/PUT`, details CRUD, guests CRUD |
 
 ### Documents & Export
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `DocumentenController` | `api/documenten` | `GET`, `GET {id}`, `GET {id}/versies`, `POST uploaden`, `GET {id}/download`, `DELETE {id}`, `DELETE {id}/alle-versies` |
-| `ExportController` | `api/export` | POST per section (testament, euthanasie, donor, digitaal-bezit, boedel, uitvaart, documenten, compleet, noodkaart, testament-concept, wilsverklaring, noodprocedure, boedelbeschrijving, executeur-rapport, notaris, erfgenaam/{id}), `GET delen/{id}`, `POST alles`, `GET json/xml/nuv`, CSV exports |
+| `DocumentenController` | `api/v1/documenten` | `GET`, `GET {id}`, `GET {id}/versies`, `POST uploaden`, `GET {id}/download`, `DELETE {id}`, `DELETE {id}/alle-versies` |
+| `ExportController` | `api/v1/export` | POST per section (testament, euthanasie, donor, digitaal-bezit, boedel, uitvaart, documenten, compleet, noodkaart, testament-concept, wilsverklaring, noodprocedure, boedelbeschrijving, executeur-rapport, notaris, erfgenaam/{id}), `GET delen/{id}`, `POST alles`, `GET json/xml/nuv`, CSV exports |
 
 ### Status & Monitoring
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `StatusController` | `api/status` | `GET`, `GET compleetheid`, `GET compleetheid/granulair`, `GET meldingen`, `GET actualisatie`, `POST actualisatie/{domein}`, `POST actualisatie/alles`, `GET statistieken`, `GET snapshot`, `GET suggesties`, `POST tijdlijn-bekeken` |
-| `BackupController` | `api/backup` | `GET` (download), `POST restore` |
-| `AuditLogController` | `api/audit-log` | `GET`, `POST` |
+| `StatusController` | `api/v1/status` | `GET`, `GET compleetheid`, `GET compleetheid/granulair`, `GET meldingen`, `GET actualisatie`, `POST actualisatie/{domein}`, `POST actualisatie/alles`, `GET statistieken`, `GET snapshot`, `GET suggesties`, `POST tijdlijn-bekeken` |
+| `BackupController` | `api/v1/backup` | `GET` (download), `POST restore` |
+| `AuditLogController` | `api/v1/audit-log` | `GET`, `POST` |
 
 ### Other
 
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
-| `AfhandelingController` | `api/afhandeling` | Settlement items for heirs |
-| `NotitiesController` | `api/notities` | `GET`, `GET/PUT/DELETE {sectie}` |
-| `ZoekenController` | `api/zoeken` | `GET` (global search) |
-| `NoodcontactenController` | `api/noodcontacten` | CRUD, `GET gedeeld/export`, `POST gedeeld/import` |
-| `VideoboodschappenController` | `api/videoboodschappen` | `GET` (list), `POST uploaden`, `GET {id}/stream`, `PUT {id}`, `DELETE {id}`, `GET limiet` |
+| `AfhandelingController` | `api/v1/afhandeling` | Settlement items for heirs |
+| `NotitiesController` | `api/v1/notities` | `GET`, `GET/PUT/DELETE {sectie}` |
+| `ZoekenController` | `api/v1/zoeken` | `GET` (global search) |
+| `NoodcontactenController` | `api/v1/noodcontacten` | CRUD, `GET gedeeld/export`, `POST gedeeld/import` |
+| `VideoboodschappenController` | `api/v1/videoboodschappen` | `GET` (list), `POST uploaden`, `GET {id}/stream`, `PUT {id}`, `DELETE {id}`, `GET limiet` |
 
 ## Middleware Detail
 

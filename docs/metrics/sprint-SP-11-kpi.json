@@ -1,0 +1,74 @@
+{
+  "sprint_id": "SP-11",
+  "sprint_name": "Beveiligingsfundament & CI Hygiene",
+  "milestone_number": 8,
+  "period": {
+    "start": "2026-03-02",
+    "end": "2026-03-02"
+  },
+  "pull_request": {
+    "number": 92,
+    "url": "https://github.com/RobertAgterhuis/Lumio/pull/92",
+    "merge_sha": "ea03027649c7c454e242596cb77ffbd1969a5613",
+    "merged_at": "2026-03-02"
+  },
+  "stories": [
+    {
+      "id": "SP-11-001",
+      "title": "TruffleHog als blokkerende CI-stap",
+      "issue": 88,
+      "status": "DONE",
+      "story_points": null
+    },
+    {
+      "id": "SP-11-003",
+      "title": "PostHog EU datacenter",
+      "issue": 89,
+      "status": "DONE",
+      "story_points": null
+    },
+    {
+      "id": "SP-11-004",
+      "title": "API versioning /api/v1/",
+      "issue": 90,
+      "status": "DONE",
+      "story_points": null
+    },
+    {
+      "id": "SP-11-005",
+      "title": "Controller-tests batch 1",
+      "issue": 91,
+      "status": "DONE",
+      "story_points": null
+    }
+  ],
+  "velocity": {
+    "stories_planned": 4,
+    "stories_completed": 4,
+    "stories_blocked": 0,
+    "completion_rate_pct": 100
+  },
+  "test_quality": {
+    "backend_tests_passed": 274,
+    "backend_tests_failed": 0,
+    "frontend_tests_passed": 153,
+    "frontend_tests_failed": 0,
+    "frontend_coverage_pct": 71.96,
+    "coverage_gate_pct": 70,
+    "coverage_gate_passed": true
+  },
+  "ci": {
+    "secret_scan": "PASSED",
+    "trufflehog_version": "v3.93.6",
+    "all_checks_passed": true
+  },
+  "security_improvements": [
+    "TruffleHog @v3.93.6 gated CI — verified-secrets-only scan op elke PR/push",
+    "PostHog host geforceerd naar EU-datacenter (eu.i.posthog.com) — CSP bijgewerkt",
+    "Alle 34 API-routes versioned naar /api/v1/"
+  ],
+  "open_items": [],
+  "lesson_candidates": [
+    "LESSON_CANDIDATE: trufflesecurity/trufflehog publiceert geen major-version alias tags (v3); altijd expliciete semver pinnen (v3.x.y)"
+  ]
+}

@@ -89,6 +89,7 @@ Maak de volgende labels aan in de repository (aanmaken als niet bestaand, kleur 
 | `priority: medium` | `#fbca04` | Gemiddelde prioriteit |
 | `priority: low` | `#0e8a16` | Lage prioriteit |
 | `sprint: SP-N` | `#c2e0c6` | Per sprint één label — vervang N door sprintnummer |
+| `sprint: HOTFIX-N` | `#f97316` | Per hotfix-sprint één label — vervang N door hotfixnummer |
 | `status: blocked` | `#e11d48` | Story heeft een actieve blocker |
 | `audit-generated` | `#eeeeee` | Alle door dit systeem gegenereerde issues |
 
@@ -136,7 +137,7 @@ _Gegenereerd door Multi-Agent Audit Systeem — Sprint Gate: [datum]_
 **Labels per issue:**
 - `type: [story_type lowercase]`
 - `priority: [prioriteit lowercase]`
-- `sprint: SP-N`
+- `sprint: SP-N` (reguliere sprint) of `sprint: HOTFIX-N` (HOTFIX sprint conform RULE ORC-23)
 - `audit-generated`
 - `status: blocked` (alleen als story een actieve blocker heeft)
 

@@ -46,6 +46,8 @@ Per agent-output, controleer tegen het relevante output-contract:
 - [ ] Capaciteitsaannames gedocumenteerd
 - [ ] Alle stories hebben acceptatiecriteria
 - [ ] Definition of Done aanwezig per sprint
+- [ ] **P1/P2 traceability gecontroleerd:** bouw een matrix — alle REC-NNN met prioriteit P1 of P2 uit de aanbevelingen-output × aanwezige `Aanbeveling-referentie`-waarden in het sprintplan. Elke P1-aanbeveling zonder gedekte story = `INCOMPLETE: sprintplan – ontbrekende story voor REC-NNN` — dit is een **NEEDS_REVISION** oordeel, niet een waarschuwing.
+- [ ] **Code-dekkingsrapport aanwezig (Senior Developer):** `CODE_SAMPLING_COVERAGE` gedocumenteerd ≥ 60% voor entry points + business logic; lager = `INCOMPLETE: Senior Developer – onvoldoende codebase dekking`
 
 **Guardrails contract** (`guardrails-output-contract.md`):
 - [ ] Alle guardrails testbaar geformuleerd

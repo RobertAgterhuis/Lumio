@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.35% </span>
+                <span class="strong">68.65% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/62</span>
+                <span class='fraction'>46/67</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.83% </span>
+                <span class="strong">69.23% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>34/48</span>
+                <span class='fraction'>36/52</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.33% </span>
+                <span class="strong">56.25% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>8/15</span>
+                <span class='fraction'>9/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.68% </span>
+                <span class="strong">73.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>42/57</span>
+                <span class='fraction'>44/60</span>
             </div>
         
             
@@ -219,10 +219,32 @@
 <a name='L154'></a><a href='#L154'>154</a>
 <a name='L155'></a><a href='#L155'>155</a>
 <a name='L156'></a><a href='#L156'>156</a>
-<a name='L157'></a><a href='#L157'>157</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -380,9 +402,20 @@
 // For standalone dev, set NEXT_PUBLIC_API_URL=http://127.0.0.1:5123
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 &nbsp;
+/**
+ * SP-11-004: Canonicalise an API path to the versioned prefix.
+ * "/api/foo" → "/api/v1/foo"
+ * Already-versioned paths ("/api/v1/...") are passed through unchanged.
+ */
+function v1(path: string): string {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (path.startsWith("/api/v")) <span class="cstat-no" title="statement not covered" >return path; // already versioned</span>
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (path.startsWith("/api/")) return "/api/v1/" + path.slice("/api/".length);
+<span class="cstat-no" title="statement not covered" >  return path;</span>
+}
+&nbsp;
 /** Returns the full URL for an API path, respecting NEXT_PUBLIC_API_URL. */
 export function <span class="fstat-no" title="function not covered" >getApiUrl(p</span>ath: string): string {
-<span class="cstat-no" title="statement not covered" >  return `${API_BASE}${path}`;</span>
+<span class="cstat-no" title="statement not covered" >  return `${API_BASE}${v1(path)}`;</span>
 }
 &nbsp;
 import { ApiError } from "./api-error";
@@ -409,7 +442,7 @@ async function request&lt;T&gt;(
   const timeoutId = setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ontroller.abort(), R</span>EQUEST_TIMEOUT_MS);
 &nbsp;
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`${API_BASE}${v1(path)}`, {
       ...options,
       signal: controller.signal,
       headers: {
@@ -483,7 +516,7 @@ export const api = {
     const timeoutId = setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ontroller.abort(), R</span>EQUEST_TIMEOUT_MS);
 &nbsp;
     try {
-      const res = await fetch(`${API_BASE}${path}`, {
+      const res = await fetch(`${API_BASE}${v1(path)}`, {
         method: options?.method ?? "GET",
         signal: controller.signal,
         headers: {
@@ -538,7 +571,7 @@ export async function <span class="fstat-no" title="function not covered" >downl
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-03-02T08:27:56.755Z
+                at 2026-03-02T16:02:21.115Z
             </div>
         <script src="../prettify.js"></script>
         <script>

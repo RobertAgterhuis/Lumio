@@ -26,6 +26,18 @@ Inventariseer de volledige codebase structuur:
 - Externe dependencies (libraries, third-party services)
 - Deployment topologie (als beschikbaar)
 
+**Verplicht te lezen bestanden (vóór enige architectuuruitspraak):**
+
+| Bestandstype | Eis |
+|---|---|
+| Entry points (main, index, app, server, bootstrap) | Volledig lezen — altijd |
+| Dependency manifests (package.json, pom.xml, requirements.txt, go.mod etc.) | Volledig lezen — altijd |
+| Configuratiebestanden (config/, .env.example, application.yml/properties) | Volledig lezen — templates/voorbeeldbestanden; NOOIT secrets |
+| Service-interfaces / API-definities (routes, controllers, OpenAPI, GraphQL schema) | Minimaal 80% lezen |
+| Infrastructuurbestanden (Dockerfile, docker-compose, k8s manifests, CI/CD workflows) | Volledig lezen indien aanwezig |
+
+**VERBOD:** Een architectuurpatroon benoemen zonder de relevante entry points en service-interfaces daadwerkelijk te hebben gelezen.
+
 **Bronvereiste:** Elk item herleidbaar naar een concreet bestand, directory, of config.
 
 ### Stap 2: Architectuurpatroon Herkenning
@@ -185,14 +197,17 @@ Per sprint:
 
 ### Stap H: Zelfcontrole Sprintplan
 1. Zijn alle stories gebaseerd op aanbevelingen (REC-NNN)?
-2. Heeft elke story een team-toewijzing?
-3. Heeft elke story minimaal één acceptatiecriterium?
-4. Heeft elke story een Blocker-veld (ook NONE is expliciet)?
-5. Zijn alle EXTERN-blockers voorzien van eigenaar + escalatieroute?
-6. Zijn parallelle tracks geïdentificeerd per sprint?
-7. Zijn aannames gedocumenteerd — geen fictieve capaciteit of team-samenstelling?
-8. Zijn sprint KPI's SMART?
-9. Zijn CODE/INFRA-stories vrij van cross-track blockers (DESIGN/CONTENT/ANALYSIS)?
+2. **Heeft elke P1-aanbeveling minstens één story?** Bouw een traceability-tabel: lijst alle REC-NNN met prioriteit P1 of P2 op en controleer per REC of er een story bestaat met `Aanbeveling-referentie: REC-NNN`. Ontbreekt een P1-aanbeveling zonder story: `MISSING_STORY: REC-NNN` — BLOKKEREND voor handoff.
+3. Heeft elke story een team-toewijzing?
+4. Heeft elke story minimaal één acceptatiecriterium?
+5. Heeft elke story een Blocker-veld (ook NONE is expliciet)?
+6. Zijn alle EXTERN-blockers voorzien van eigenaar + escalatieroute?
+7. Zijn parallelle tracks geïdentificeerd per sprint?
+8. Zijn aannames gedocumenteerd — geen fictieve capaciteit of team-samenstelling?
+9. Zijn sprint KPI's SMART?
+10. Zijn CODE/INFRA-stories vrij van cross-track blockers (DESIGN/CONTENT/ANALYSIS)?
+
+**VERBOD:** Handoff doorgeven zolang er een P1-aanbeveling is zonder minstens één story met bijbehorende `Aanbeveling-referentie`.
 
 ---
 
@@ -251,6 +266,7 @@ Controleer overlap met de bestaande guardrails in `docs/guardrails/`. Documentee
 ```
 ## HANDOFF CHECKLIST – Software Architect – [Datum]
 - [ ] Codebase inventarisatie volledig gedocumenteerd
+- [ ] **Verplichte bestanden daadwerkelijk gelezen:** entry points, dependency manifests, configuraties, service-interfaces (100% voor verplichte categorieën conform Stap 1)
 - [ ] Architectuurpatroon onderbouwd met artefacten
 - [ ] DDD analyse compleet (alle principes beoordeeld)
 - [ ] Tech debt score onderbouwd per dimensie
@@ -265,6 +281,7 @@ Controleer overlap met de bestaande guardrails in `docs/guardrails/`. Documentee
 - [ ] Aanbevelingen: alle meetcriteria zijn SMART
 - [ ] Sprintplan: aannames (team, capaciteit, randvoorwaarden) gedocumenteerd
 - [ ] Sprintplan: alle stories hebben minimaal 1 acceptatiecriterium
+- [ ] **Sprintplan: alle P1 en P2 aanbevelingen hebben minstens één story (traceability-tabel aanwezig — MISSING_STORY items blokkeren handoff)**
 - [ ] Guardrails: alle guardrails zijn testbaar geformuleerd
 - [ ] Guardrails: alle guardrails hebben schending-actie én verificatiemethode
 - [ ] Guardrails: alle guardrails verwijzen naar GAP/RISK analyse-bevinding

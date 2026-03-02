@@ -212,3 +212,35 @@ dist/Lumio/
 | Linux x64 | `linux-x64` | Supported |
 
 > **Note**: No code signing is currently applied. `publish: null` in electron-builder — there is no auto-update mechanism.
+
+## Continuous Integration (GitHub Actions)
+
+### CI pipeline (ci.yml)
+
+Trigger: push to `main` or a PR targeting `main`.
+
+| Job | Tool | Purpose |
+|-----|------|---------|
+| `secret-scan` | TruffleHog v3.93.6 | Scans diff for leaked secrets — **blocks all other jobs** |
+| `frontend` | Vitest, ESLint, Storybook | Tests, linting, a11y |
+| `site` | Next.js, Playwright | Marketing site smoke + a11y |
+| `icon-guard` | PowerShell | SVG license check |
+| `backend` | dotnet build + test | .NET build + xunit tests |
+| `whitelabel-validate` | PowerShell | Whitelabel manifest check |
+
+> All jobs except `secret-scan` are gated with `needs: [secret-scan]` — if a secret is detected, no other job runs.
+
+### Secret Scan — TruffleHog
+
+TruffleHog scans the diff between `base` and `head` for **verified secrets only**:
+
+```yaml
+- uses: trufflesecurity/trufflehog@v3.93.6
+  with:
+    path: ./
+    base: <PR base SHA or previous push commit>
+    head: <PR head SHA or current commit>
+    extra_args: --only-verified
+```
+
+A build fails immediately if a verified secret is found — the merge is blocked.

@@ -190,6 +190,13 @@ Verplicht formaat (conform `docs/decisions.md` sjabloon):
 
 Als er geen constraints zijn: documenteer expliciet `GEEN_BESLOTEN_ITEMS: geen structurele constraints gedetecteerd in deze reevaluatie`.
 
+### Stap 7c: Security Handoff Context bijwerken (CONDITIONEEL)
+Controleer of de reevaluatie bevindingen bevat die security-gerelateerd zijn en de implementatie raken:
+
+- Als de reevaluatie **nieuwe of gewijzigde security-bevindingen** oplevert met prioriteit Hoog of Kritiek: voeg een `SECURITY_REFRESH_REQUIRED`-markering toe aan het Re-evaluation Report en escaleer naar de Orchestrator met de instructie om de Security Architect (Agent 08) `docs/security/security-handoff-context.md` te laten bijwerken vóór de eerstvolgende Sprint Gate.
+- Vermeld in het Re-evaluation Report expliciet: `SECURITY_HANDOFF_STATUS: BIJGEWERKT_VEREIST — [omschrijving gewijzigde bevindingen]` of `SECURITY_HANDOFF_STATUS: GEEN_WIJZIGING`.
+- Als `SECURITY_REFRESH_REQUIRED` aanwezig is: de Orchestrator **blokkeert de volgende Sprint Gate** totdat de Security Architect de `security-handoff-context.md` heeft bijgewerkt en de HANDOFF checklist van Agent 08 opnieuw is aangevinkt.
+
 ---
 
 ### Stap 8: Re-evaluation Report samenstellen
@@ -254,6 +261,8 @@ De Reevaluate Agent is aanbevolen bij:
 - [ ] Critic Agent: PASSED
 - [ ] Risk Agent: PASSED
 - [ ] Strategische bevindingen verwerkt in docs/decisions.md als BESLOTEN items (of GEEN_BESLOTEN_ITEMS gedocumenteerd)
+- [ ] SECURITY_HANDOFF_STATUS gedocumenteerd in Re-evaluation Report (BIJGEWERKT_VEREIST of GEEN_WIJZIGING)
+- [ ] Als SECURITY_REFRESH_REQUIRED: escalatie naar Orchestrator aangemaakt (Sprint Gate blokkerend)
 - [ ] Re-evaluation Report is compleet en machine-leesbaar
 - [ ] Versiegeschiedenis is bijgewerkt
 - [ ] Output is aangeleverd aan Orchestrator voor Sprint Gate beslissing

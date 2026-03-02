@@ -38,15 +38,15 @@ Gevoelige velden (zoals opgeslagen wachtwoorden in de wachtwoordkluis) worden ex
 ## Authenticatiestroom
 
 ```
-1. Profiel selecteren (api/auth/selecteer-profiel)
+1. Profiel selecteren (api/v1/auth/selecteer-profiel)
    └── Laadt profielmetadata, database blijft vergrendeld
 
-2. Ontgrendelen (api/auth/ontgrendel)
+2. Ontgrendelen (api/v1/auth/ontgrendel)
    ├── Wachtwoord gaat naar MasterPasswordService (in-memory)
    ├── SQLCipher opent database met PRAGMA key
    └── Alle API-endpoints worden beschikbaar
 
-3. Vergrendelen (api/auth/vergrendel)
+3. Vergrendelen (api/v1/auth/vergrendel)
    ├── MasterPasswordService wist wachtwoord uit geheugen
    ├── Database-connectie wordt gesloten
    └── DatabaseUnlockMiddleware blokkeert requests (423)
@@ -210,6 +210,27 @@ ipcMain.handle("set-auto-backup-config", async (_, config: unknown) => {
 | `contextIsolation` | `true` | Isoleer preload-scripts van webcontent |
 | `nodeIntegration` | `false` | Voorkom renderer-toegang tot Node.js |
 | `sandbox` | `true` | Schakel Chromium sandbox in |
+
+## CI — Secret Scan (TruffleHog)
+
+Elke PR en push naar `main` wordt gescand op gelekte credentials via TruffleHog:
+
+- **Versie:** `trufflesecurity/trufflehog@v3.93.6` (exact gepind)
+- **Modus:** `--only-verified` — alleen aantoonbaar geldige secrets triggeren een fout
+- **Blokkering:** de job `secret-scan` is de eerste job in de CI-pipeline; alle andere jobs (`frontend`, `backend`, etc.) zijn afhankelijk via `needs: [secret-scan]`
+- **Merge-blokkade:** een mislukte `secret-scan` blokkeert automatisch de merge via branch protection
+
+## Analytics — PostHog
+
+Voor marketingsite-analytics gebruikt Lumio PostHog. Configuratie (SP-11-003):
+
+| Parameter | Waarde |
+|-----------|--------|
+| Host | `https://eu.i.posthog.com` (EU-datacenter) |
+| Fallback | EU-host als `NEXT_PUBLIC_POSTHOG_HOST` niet is ingesteld |
+| CSP `connect-src` | Alleen `https://eu.i.posthog.com` toegestaan |
+
+> **AVG-noot:** Gegevens in het EU-datacenter zijn onderworpen aan Europees recht. Geen US-endpoints zijn toegestaan in de CSP.
 
 ### API-blootstelling via contextBridge
 

@@ -25,7 +25,20 @@ Documenteer je analyse-strategie VOORDAT je begint:
 - Hoe werd de selectie gemaakt? (kritieke paden, meest gewijzigde files, core business logic)
 - Wat is de dekking van je analyse (%)? Wees eerlijk.
 
-**Verbod:** Geen kwaliteitsuitpraken op basis van bestandsnamen, READMEs, of indirecte indicatoren. Alleen op basis van daadwerkelijk gelezen code.
+**Minimum dekkingsvereiste (VERPLICHT):**
+
+| Categorie | Minimum te lezen |
+|-----------|------------------|
+| Entry points (main, index, app, server) | 100% — altijd volledig lezen |
+| Core business logic (services, domain, use-cases) | Minimaal 80% van de bestanden |
+| Configuratiebestanden (env-templates, config/) | 100% — altijd volledig lezen |
+| API-routes / controllers / handlers | Minimaal 80% van de bestanden |
+| Overige bestanden (utils, helpers, tests) | Representatieve steekproef, minimaal 40% |
+
+**HALT bij onderdekking:** Als de kernmodules (business logic + entry points + routes) niet voor minimaal 80% leesbaar of toegankelijk zijn → documenteer `INSUFFICIENT_COVERAGE: [reden]` en escaleer naar Orchestrator. Start GEEN analyse totdat de Orchestrator toestemming geeft voor een lagere dekking én de beperkte scope expliciet vastlegt.
+
+**Verbod:** Geen kwaliteitsuitspraken op basis van bestandsnamen, READMEs, of indirecte indicatoren. Alleen op basis van daadwerkelijk gelezen code.
+**Verbod:** Een analyse-dekking rapporteren die hoger is dan daadwerkelijk gerealiseerd.
 
 ### Stap 2: SOLID Analyse
 Per S-O-L-I-D principe:
@@ -174,14 +187,17 @@ Per sprint:
 
 ### Stap H: Zelfcontrole Sprintplan
 1. Zijn alle stories gebaseerd op aanbevelingen (REC-NNN)?
-2. Heeft elke story een team-toewijzing?
-3. Heeft elke story minimaal één acceptatiecriterium?
-4. Heeft elke story een Blocker-veld (ook NONE is expliciet)?
-5. Zijn alle EXTERN-blockers voorzien van eigenaar + escalatieroute?
-6. Zijn parallelle tracks geïdentificeerd per sprint?
-7. Zijn aannames gedocumenteerd — geen fictieve capaciteit of team-samenstelling?
-8. Zijn sprint KPI's SMART?
-9. Zijn CODE/INFRA-stories vrij van cross-track blockers (DESIGN/CONTENT/ANALYSIS)?
+2. **Heeft elke P1-aanbeveling minstens één story?** Bouw een traceability-tabel: lijst alle REC-NNN met prioriteit P1 of P2 op en controleer per REC of er een story bestaat met `Aanbeveling-referentie: REC-NNN`. Ontbreekt een P1-aanbeveling zonder story: `MISSING_STORY: REC-NNN` — BLOKKEREND voor handoff.
+3. Heeft elke story een team-toewijzing?
+4. Heeft elke story minimaal één acceptatiecriterium?
+5. Heeft elke story een Blocker-veld (ook NONE is expliciet)?
+6. Zijn alle EXTERN-blockers voorzien van eigenaar + escalatieroute?
+7. Zijn parallelle tracks geïdentificeerd per sprint?
+8. Zijn aannames gedocumenteerd — geen fictieve capaciteit of team-samenstelling?
+9. Zijn sprint KPI's SMART?
+10. Zijn CODE/INFRA-stories vrij van cross-track blockers (DESIGN/CONTENT/ANALYSIS)?
+
+**VERBOD:** Handoff doorgeven zolang er een P1-aanbeveling is zonder minstens één story met bijbehorende `Aanbeveling-referentie`.
 
 ---
 
@@ -239,6 +255,7 @@ Controleer overlap met de bestaande guardrails in `docs/guardrails/`. Documentee
 ```
 ## HANDOFF CHECKLIST – Senior Developer – [Datum]
 - [ ] Code sampling strategie gedocumenteerd
+- [ ] **Code sampling dekking ≥60% voor entry points + business logic** (of `INSUFFICIENT_COVERAGE:` + Orchestrator-escalatie gedocumenteerd)
 - [ ] SOLID analyse compleet (alle 5 principes beoordeeld)
 - [ ] Design patterns / anti-patterns gedocumenteerd met bronverwijzingen
 - [ ] Test coverage gedocumenteerd (of INSUFFICIENT_DATA:)
@@ -253,6 +270,7 @@ Controleer overlap met de bestaande guardrails in `docs/guardrails/`. Documentee
 - [ ] Aanbevelingen: alle meetcriteria zijn SMART
 - [ ] Sprintplan: aannames (team, capaciteit, randvoorwaarden) gedocumenteerd
 - [ ] Sprintplan: alle stories hebben minimaal 1 acceptatiecriterium
+- [ ] **Sprintplan: alle P1 en P2 aanbevelingen hebben minstens één story (traceability-tabel aanwezig — MISSING_STORY items blokkeren handoff)**
 - [ ] Guardrails: alle guardrails zijn testbaar geformuleerd
 - [ ] Guardrails: alle guardrails hebben schending-actie én verificatiemethode
 - [ ] Guardrails: alle guardrails verwijzen naar GAP/RISK analyse-bevinding

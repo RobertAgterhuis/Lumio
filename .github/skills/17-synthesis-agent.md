@@ -48,6 +48,13 @@ Als de Orchestrator aangeeft dat de modus `PARTIAL` is, werk je met de beschikba
 
 ## VERPLICHTE UITVOERING
 
+### Stap 0: Besluitenregister laden (VERPLICHT)
+Laad `docs/decisions.md` vóór enige inhoudelijke analyse. Dit bestand bevat `BESLOTEN` items die **harde constraints** zijn voor alle aanbevelingen en roadmap-items die de Synthesis Agent produceert.
+
+- Als `docs/decisions.md` bestaat: verwerk elk `BESLOTEN` item als niet-onderhandelbare guardrail. Produceer GEEN aanbeveling of roadmap-item dat een BESLOTEN item weerspreekt of negeert.
+- Als een aanbeveling uit de fase-output botst met een BESLOTEN item: markeer de aanbeveling als `GEBLOKKEERD_DOOR: DEC-[NNN]` en licht toe waarom.
+- Als `docs/decisions.md` niet bestaat: documenteer `GEEN_BESLOTEN_ITEMS: bestand niet aanwezig` en ga door.
+
 ### Stap 1: Input Volledigheidscontrole
 Documenteer expliciet welke agent-outputs beschikbaar zijn.  
 Ontbrekende outputs = blokkerend.
@@ -200,10 +207,12 @@ Verifieer:
 3. Is elke BLOKKEREND afhankelijkheid uit Stap 8 terug te vinden in het departmentsrapport van de vragende partij?
 4. Zijn alle open items gedocumenteerd en gerouteerd?
 5. Bevat ieder departmentsrapport een expliciete uitspraak in sectie 5 (ook als er geen blockers zijn)?
+6. Zijn alle aanbevelingen en roadmap-items getoetst aan `docs/decisions.md`? Geen enkele aanbeveling mag een BESLOTEN item weerspreken — markeer conflicten als `GEBLOKKEERD_DOOR: DEC-[NNN]`.
 
 ---
 
 ## DEFINITION OF DONE (SYNTHESE)
+- [ ] `docs/decisions.md` geladen als guardrail (Stap 0) — alle aanbevelingen getoetst of bestand afwezig gedocumenteerd
 - [ ] `docs/synthesis/eindrapport-master.md` aanwezig (Executive Summary, Heatmap, Risk Matrix, Roadmap, Guardrails, KPIs, Open Items)
 - [ ] `docs/synthesis/eindrapport-business.md` aanwezig en compleet (secties 1–8)
 - [ ] `docs/synthesis/eindrapport-techniek.md` aanwezig en compleet (secties 1–8)
