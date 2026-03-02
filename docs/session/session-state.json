@@ -6,11 +6,11 @@
   "status": "SPRINT_ACTIVE",
   "current_phase": "FASE-5",
   "current_agent": "implementation-agent",
-  "current_sprint": "SP-13",
+  "current_sprint": "SP-14",
   "github_project_name": "Lumio Workitems",
   "github_repo_url": "https://github.com/RobertAgterhuis/Lumio",
   "canva_api_token": "",
-  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11", "SPRINT_COMPLETE_SP-11", "PRE_SPRINT_GATE_SP-12", "SPRINT_COMPLETE_SP-12", "PRE_SPRINT_GATE_SP-13"],
+  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11", "SPRINT_COMPLETE_SP-11", "PRE_SPRINT_GATE_SP-12", "SPRINT_COMPLETE_SP-12", "PRE_SPRINT_GATE_SP-13", "SPRINT_COMPLETE_SP-13", "PRE_SPRINT_GATE_SP-14"],
   "completed_agents": [
     "25-onboarding-agent",
     "05-software-architect",
@@ -42,24 +42,39 @@
         {"id": "SP-12-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/96", "status": "closed", "commit": "b6f9576"},
         {"id": "SP-12-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/97", "status": "closed", "commit": "9ae2707"}
       ]
+    },
+    {
+      "sprint_id": "SP-13",
+      "milestone_number": 10,
+      "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/105",
+      "pull_request_number": 105,
+      "branch": "feature/SP-13-schuld-afbetaling-observability",
+      "implementation_status": "COMPLETE",
+      "test_results": {"backend": {"passed": 376, "failed": 0}, "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96}, "desktop": {"passed": 6, "failed": 0}},
+      "github_issues": [
+        {"id": "SP-13-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/99", "status": "closed", "commit": "528b009"},
+        {"id": "SP-13-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/100", "status": "open", "blocker": "VERPLAATST:SP-15-003", "note": "Verplaatst naar SP-15-003 — pricing plan beslissing (PO) + DPO-toets DPIA v1.2 vereist voor productie"},
+        {"id": "SP-13-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/102", "status": "closed", "commit": "4cbcf69"},
+        {"id": "SP-13-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/103", "status": "closed", "commit": "82aa011"},
+        {"id": "SP-13-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/104", "status": "closed", "commit": "5a28a56"}
+      ]
     }
   ],
   "active_sprint": {
-    "sprint_id": "SP-13",
-    "milestone_number": 10,
+    "sprint_id": "SP-14",
+    "milestone_number": 11,
     "github_issues": [
-      {"id": "SP-13-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/99", "status": "closed", "commit": "528b009"},
-      {"id": "SP-13-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/100", "status": "open", "blocker": "VERPLAATST:SP-15-003", "note": "Verplaatst naar SP-15-003 — pricing plan beslissing (PO) + DPO-toets DPIA v1.2 vereist voor productie"},
-      {"id": "SP-13-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/102", "status": "closed", "commit": "4cbcf69"},
-      {"id": "SP-13-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/103", "status": "closed", "commit": "82aa011"},
-      {"id": "SP-13-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/104", "status": "closed", "commit": "5a28a56"}
+      {"id": "SP-14-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/106", "status": "closed", "note": "VERVALLEN — DEC-106"},
+      {"id": "SP-14-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/107", "status": "open", "blocker": "EXTERN:DEC-202"},
+      {"id": "SP-14-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/108", "status": "open"},
+      {"id": "SP-14-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/109", "status": "open"}
     ],
-    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/105",
-    "pull_request_number": 105,
-    "branch": "feature/SP-13-schuld-afbetaling-observability",
+    "pull_request_url": null,
+    "pull_request_number": null,
+    "branch": "feature/SP-14-application-layer-release",
     "dor_cleared": true,
-    "sprint_gate_date": "2026-03-02T21:30:00Z",
-    "implementation_status": "COMPLETE",
+    "sprint_gate_date": "2026-03-02T23:45:00Z",
+    "implementation_status": "IN_PROGRESS",
     "test_results": {
       "backend": {"passed": 376, "failed": 0},
       "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96},
@@ -69,7 +84,7 @@
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-02T23:30:00Z",
+  "last_updated": "2026-03-02T23:45:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
