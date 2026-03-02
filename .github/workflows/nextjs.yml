@@ -86,6 +86,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    # Requires GitHub Pages to be enabled: Settings → Pages → Source: GitHub Actions.
+    # Non-blocking until the repo owner completes that one-time setup.
+    continue-on-error: true
     needs: build
     steps:
       - name: Deploy to GitHub Pages
