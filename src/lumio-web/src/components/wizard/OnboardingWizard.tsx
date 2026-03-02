@@ -131,6 +131,8 @@ export function OnboardingWizard() {
     const getFocusable = () => Array.from(modal.querySelectorAll<HTMLElement>(FOCUSABLE));
     getFocusable()[0]?.focus();
     const handleKeyDown = (e: KeyboardEvent) => {
+      // SC 2.1.2: Escape sluit het modal zonder stale-closure risico (setVisible is stabiel als useState-setter)
+      if (e.key === "Escape") { setVisible(false); return; }
       if (e.key !== "Tab") return;
       const els = getFocusable();
       if (els.length === 0) { e.preventDefault(); return; }
@@ -217,7 +219,7 @@ export function OnboardingWizard() {
             size="sm"
             className="h-8 w-8 p-0"
             onClick={handleComplete}
-            title={t("sluiten")}
+            aria-label={t("sluiten")}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -233,7 +235,14 @@ export function OnboardingWizard() {
               {Math.round((completedCount / stappen.length) * 100)}%
             </span>
           </div>
-          <div className="mt-2 h-2 rounded-full bg-muted">
+          <div
+            className="mt-2 h-2 rounded-full bg-muted"
+            role="progressbar"
+            aria-valuenow={completedCount}
+            aria-valuemin={0}
+            aria-valuemax={stappen.length}
+            aria-label={t("voortgang")}
+          >
             <div
               className="h-full rounded-full bg-primary transition-all duration-500"
               style={{ width: `${(completedCount / stappen.length) * 100}%` }}
