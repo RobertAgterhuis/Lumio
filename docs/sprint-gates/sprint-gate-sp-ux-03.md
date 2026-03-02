@@ -2,7 +2,7 @@
 
 **Sprint ID:** SP-UX-03  
 **Branch:** `feature/sp-ux-03-terminology-ia-design`  
-**Status:** IN_PROGRESS  
+**Status:** COMPLETED  
 **Datum start:** 2026-03-02  
 **PR:** (te bepalen)
 

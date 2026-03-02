@@ -104,10 +104,26 @@
       ]
     }
   ],
+    {
+      "id": "SP-UX-03",
+      "name": "Terminologie, IA & Design System",
+      "phase": "Fase 3 \u2014 UX",
+      "stories_planned": 3,
+      "stories_delivered": 3,
+      "stories": ["UX-011", "UX-012", "UX-013"],
+      "issues": ["#78", "#79", "#80"],
+      "pr": "#77",
+      "merged_date": null,
+      "velocity_pct": 100,
+      "lessons_learned": [
+        { "id": "LL-SP-UX-03-001", "summary": "gh pr create --body met speciale tekens faalt in PowerShell \u2014 gebruik --body-file met tijdelijk markdown bestand" }
+      ]
+    }
+  ],
   "cumulative": {
-    "total_stories_planned": 20,
-    "total_stories_delivered": 20,
+    "total_stories_planned": 23,
+    "total_stories_delivered": 23,
     "overall_velocity_pct": 100,
-    "sprints_completed": 6
+    "sprints_completed": 7
   }
 }

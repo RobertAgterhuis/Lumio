@@ -5,7 +5,7 @@
   "feature_name": null,
   "github_project_name": "Lumio Workitems",
   "initiated_at": "2026-03-02T07:24:37Z",
-  "last_updated": "2026-03-02T09:20:00Z",
+  "last_updated": "2026-03-02T09:50:00Z",
 
   "_notes": [
     "REFRESH ONBOARDING uitgevoerd op 2026-03-02.",
@@ -120,10 +120,15 @@
         "_note": "PR #71 squash-merged 2026-03-02, all issues closed, DEC-101 Chromatic disabled"
       },
       "SP-UX-03": {
-        "status": "PLANNED",
-        "gate_file": null,
+        "status": "COMPLETED",
+        "gate_file": "docs/sprint-gates/sprint-gate-sp-ux-03.md",
+        "pr_number": 77,
         "pr_merged": false,
-        "_note": "Gepland o.b.v. UX eindrapport"
+        "stories": ["UX-011", "UX-012", "UX-013"],
+        "issues": { "UX-011": 78, "UX-012": 79, "UX-013": 80 },
+        "kpi_file": "docs/metrics/sprint-SP-UX-03-kpi.json",
+        "retrospective_file": "docs/retrospectives/sprint-sp-ux-03-retrospective.md",
+        "_note": "PR #77 open (not yet merged). All 3 stories IMPLEMENTED. TS clean, 153 tests passed."
       }
     }
   },
