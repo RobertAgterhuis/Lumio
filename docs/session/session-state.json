@@ -36,8 +36,8 @@
       {"id": "SP-12-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/96", "status": "closed", "commit": "b6f9576"},
       {"id": "SP-12-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/97", "status": "closed", "commit": "9ae2707"}
     ],
-    "pull_request_url": null,
-    "pull_request_number": null,
+    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/98",
+    "pull_request_number": 98,
     "branch": "feature/SP-12-kwaliteit-governance",
     "dor_cleared": true,
     "sprint_gate_date": "2026-03-02T00:00:00Z",
