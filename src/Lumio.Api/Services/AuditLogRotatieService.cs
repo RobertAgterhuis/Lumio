@@ -1,4 +1,5 @@
 using Lumio.Api.Data;
+using Lumio.Api.Services.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lumio.Api.Services;
@@ -58,6 +59,16 @@ public class AuditLogRotatieService : BackgroundService
         try
         {
             using var scope = _serviceProvider.CreateScope();
+
+            // Sla rotatie over als geen profiel actief is — LumioDbContext gebruikt dan een
+            // in-memory database zonder schema, wat zou resulteren in "no such table: AuditLog".
+            var passwordService = scope.ServiceProvider.GetRequiredService<IMasterPasswordService>();
+            if (!passwordService.IsUnlocked)
+            {
+                _logger.LogDebug("AuditLog-rotatie: geen actief profiel, rotatie overgeslagen.");
+                return;
+            }
+
             var db = scope.ServiceProvider.GetRequiredService<LumioDbContext>();
 
             var grens = DateTime.UtcNow.AddDays(-_retentieDagen);
