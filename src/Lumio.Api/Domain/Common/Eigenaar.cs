@@ -67,6 +67,10 @@ public class Eigenaar : BaseEntity
     // S6-22: Onboarding wizard status
     public bool OnboardingVoltooid { get; set; } = false;
 
+    // SP-9: Shamir drempel — het bij generatie ingestelde aantal codes dat benodigd is voor ontsleuteling.
+    // Null betekent: nog geen shares gegenereerd; frontend valt terug op ShamirMinDrempel uit configuratie.
+    public int? ShamirDrempel { get; set; }
+
     [System.ComponentModel.DataAnnotations.Schema.NotMapped]
     public bool HeeftProfielFoto => ProfielFoto is not null;
 }
