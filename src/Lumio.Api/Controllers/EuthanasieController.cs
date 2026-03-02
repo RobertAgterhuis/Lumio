@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/euthanasie")]
+[Route("api/v1/euthanasie")]
 public class EuthanasieController : ControllerBase
 {
     private readonly LumioDbContext _db;

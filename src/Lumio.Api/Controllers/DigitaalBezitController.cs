@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/digitaal-bezit")]
+[Route("api/v1/digitaal-bezit")]
 public class DigitaalBezitController : ControllerBase
 {
     private readonly LumioDbContext _db;

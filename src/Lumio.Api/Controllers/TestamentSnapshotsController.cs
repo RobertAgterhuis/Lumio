@@ -12,7 +12,7 @@ using Microsoft.Extensions.Localization;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/testament/snapshots")]
+[Route("api/v1/testament/snapshots")]
 public class TestamentSnapshotsController : ControllerBase
 {
     private readonly LumioDbContext _db;

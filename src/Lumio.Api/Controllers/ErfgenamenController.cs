@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/erfgenamen")]
+[Route("api/v1/erfgenamen")]
 public class ErfgenamenController : ControllerBase
 {
     private readonly LumioDbContext _db;

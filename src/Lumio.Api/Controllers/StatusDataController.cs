@@ -15,7 +15,7 @@ namespace Lumio.Api.Controllers;
 /// Extracted from StatusController (SP-7-004 / GUARD-010 refactoring).
 /// </summary>
 [ApiController]
-[Route("api/status")]
+[Route("api/v1/status")]
 public class StatusDataController : ControllerBase
 {
     private readonly IStringLocalizer<StatusController> L;

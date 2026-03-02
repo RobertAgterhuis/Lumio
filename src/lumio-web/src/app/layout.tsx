@@ -42,7 +42,7 @@ export default async function RootLayout({
         */}
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://app.posthog.com https://us.i.posthog.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://eu.i.posthog.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
         />
         {/* T-007: Synchronous external script — no async/defer keeps FOUC absent, no unsafe-inline needed */}
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}

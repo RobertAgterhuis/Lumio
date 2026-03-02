@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/donor")]
+[Route("api/v1/donor")]
 public class DonorController : ControllerBase
 {
     private readonly LumioDbContext _db;

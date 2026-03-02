@@ -9,7 +9,7 @@ using Microsoft.Extensions.Localization;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/afhandeling")]
+[Route("api/v1/afhandeling")]
 public class AfhandelingController : ControllerBase
 {
     private readonly LumioDbContext _db;

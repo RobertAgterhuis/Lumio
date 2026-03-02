@@ -7,7 +7,7 @@ using Microsoft.Data.Sqlite;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/backup")]
+[Route("api/v1/backup")]
 public class BackupController : ControllerBase
 {
     private readonly IMasterPasswordService _passwordService;

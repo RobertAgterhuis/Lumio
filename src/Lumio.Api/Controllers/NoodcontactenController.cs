@@ -10,7 +10,7 @@ using System.Text.Json;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/noodcontacten")]
+[Route("api/v1/noodcontacten")]
 public class NoodcontactenController : ControllerBase
 {
     private readonly LumioDbContext _db;

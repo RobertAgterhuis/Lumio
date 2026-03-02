@@ -15,7 +15,7 @@ namespace Lumio.Api.Controllers;
 /// Extracted from DocumentenController (SP-7-004 / GUARD-010).
 /// </summary>
 [ApiController]
-[Route("api/documenten")]
+[Route("api/v1/documenten")]
 public class DocumentenBestandenController : ControllerBase
 {
     private readonly LumioDbContext _db;

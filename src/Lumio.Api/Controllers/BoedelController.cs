@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/boedel")]
+[Route("api/v1/boedel")]
 public class BoedelController : ControllerBase
 {
     private readonly LumioDbContext _db;

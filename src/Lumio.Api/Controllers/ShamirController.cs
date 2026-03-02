@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/shamir")]
+[Route("api/v1/shamir")]
 public class ShamirController : ControllerBase
 {
     private readonly IShamirService _shamirService;

@@ -29,7 +29,7 @@ jobs:
       - name: Run TruffleHog OSS
         # Only run on push/PR triggers — issues and workflow_dispatch have no commit range to scan.
         if: github.event_name == 'push' || github.event_name == 'pull_request'
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@v3
         with:
           path: ./
           # For pushes: scan from the commit before the push (github.event.before) to the new HEAD.

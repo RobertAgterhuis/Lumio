@@ -20,7 +20,8 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
 
 const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://app.posthog.com";
+// SP-11-003: default to EU datacenter — no data leaves EER unless NEXT_PUBLIC_POSTHOG_HOST overrides this.
+const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com";
 
 function PostHogInit() {
   useEffect(() => {

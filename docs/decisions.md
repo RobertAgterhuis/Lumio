@@ -32,7 +32,7 @@
 
 | ID | Prioriteit | Scope | Vraag | Jouw antwoord | Datum |
 |----|-----------|-------|-------|---------------|-------|
-| DEC-001 | HOOG | — | *(Voeg hier een open vraag toe)* | | |
+| — | — | — | Geen open vragen | — | — |
 
 ---
 
@@ -40,15 +40,11 @@
 
 | ID | Prioriteit | Scope | Beslissing | Toelichting | Datum |
 |----|-----------|-------|-----------|-------------|-------|
-| DEC-101 | HOOG | Alle sprints | Chromatic wordt **niet** gebruikt voor visuele regressietests | Het project maakt geen gebruik van Chromatic. De CI-job (`chromatic`) moet worden uitgeschakeld (`if: false`). `chromatic.config.json` blijft als skelet bewaard maar wordt niet geconfigureerd. `CHROMATIC_PROJECT_TOKEN` hoeft niet ingesteld te worden. | 2026-03-02 |
-| DEC-102 | HOOG | Alle sprints | CodeQL SAST wordt **niet** uitgevoerd | GitHub Advanced Security / Code Scanning is niet ingeschakeld voor deze repository. De CodeQL-job (`codeql.yml`) wordt overgeslagen via `if: false` zodat de check als "Skipped" verschijnt in plaats van ❌ FAILURE. Opnieuw activeren door `if: false` te verwijderen zodra Code Scanning wordt ingeschakeld. | 2026-03-02 |
-| DEC-103 | HOOG | SP-8 / Fase 2 | Swagger UI wordt **alleen** in development-modus geactiveerd | REEVALUATE FASE-2 (SEC-001): Swagger UI is zonder `IsDevelopment()`-guard beschikbaar in productie. Besluit: wrap `app.UseSwagger()` + `app.UseSwaggerUI()` in `if (app.Environment.IsDevelopment())`. Tracked als story SP-8-R001. GUARD-011 toegevoegd. | 2026-03-02 |
-| DEC-104 | HOOG | SP-8 / Fase 2 | AuditLog-rotatie (90 dagen) moet geïmplementeerd worden als IHostedService | REEVALUATE FASE-2 (SEC-005): de AVG art. 5 opslagbeperking van 90 dagen voor AuditLog entries is gedocumenteerd maar niet technisch afgedwongen. Besluit: implementeer `AuditLogRotatieService : BackgroundService` in SP-8. Tracked als story SP-8-R002. | 2026-03-02 |
-| DEC-105 | ~~KRITIEK~~ | SP-8 / Fase 3 | ✅ GEÏMPLEMENTEERD — OnboardingWizard focus-trap Escape-handler + aria-label | Commit `6a04cf2` (SP-8-UX-001): Escape-key handler (`setVisible(false)`, geen stale-closure), `title` → `aria-label` op sluiten-knop. SC 2.1.1 + 2.1.2 gesloten. Oorspronkelijke focus-trap `useEffect` was al aanwezig — alleen Escape ontbrak. | 2026-03-02 |
-| DEC-107 | HOOG | Alle sprints | Elke story wordt geïmplementeerd op een **feature branch**, nooit direct op `main` | Branchconventie: `feature/SP-{N}-{STORY-ID}-{korte-beschrijving}`. Na afronding: PR aanmaken → CI groen → squash merge naar `main`. Rechtstreekse commits op `main` zijn uitsluitend toegestaan voor hotfixes (HOTFIX-protocol) en ééndelige doc-fixes zonder code. Agent-initiaal: gebruik `git checkout -b feature/...` vóór de eerste code-edit van elke story. | 2026-03-02 |
-| DEC-108 | LAAG | SP-9 / Fase 2 | BruteForce in-memory state is een **aanvaard risico** | REEVALUATE FASE-2 (SEC-002): `BruteForceService` gebruikt een `ConcurrentDictionary` in geheugen. Na een API-herstart wordt de teller gereset, waardoor een aanvaller theoretisch een nieuwe pogingenreeks kan starten. Besluit: acceptabel risico omdat (a) de primaire beveiligingslaag AES-256 SQLCipher-encryptie van de database is — een herstart vereist daarvoor altijd opnieuw het masterpassword, (b) een herstart vereist fysieke toegang tot c.q. beheerdersrechten op de server, en (c) het alternatief (Redis/distributed cache) is disproportioneel voor de huidige deployment-schaal. Geen actie vereist. | 2026-03-02 |
-| DEC-109 | HOOG | SP-9 / SP-10 | SP-9-UX-001 is **gedeeltelijk** geïmplementeerd — `GET /api/shamir/drempel` mist `AllowedPrefixes`-entry | REEVALUATE v2 (NEW-ARCH-001): `DatabaseUnlockMiddleware.AllowedPrefixes` bevat `/api/shamir/drempel` niet → endpoint retourneert 423 in vergrendelde staat → `HeirUnlockForm` valt terug op hardcoded threshold=2. SP-9-UX-001 mag **niet** als volledig-compleet worden gemarkeerd. Correctie: story SP-10-COR-001 (voeg `/api/shamir/drempel` toe aan `AllowedPrefixes`). Implementation Agent mag SP-9-UX-001 niet als afgedaan beschouwen totdat SP-10-COR-001 gemerged is. | 2026-03-02 |
-| DEC-110 | HOOG | Alle sprints | Bij elke nieuwe EF-migratie: `MigratieDbHelper.newMigrations` HashSet **verplicht bijwerken** | REEVALUATE v2 (NEW-DATA-001): `MigratieDbHelper.cs` bevat een handmatig-onderhouden `newMigrations` HashSet. `SP9_ShamirDrempel` is er niet in opgenomen → pre-migratie databases (EnsureCreated-bootstrap) krijgen de `ShamirDrempel`-kolom nooit → crash bij `GET /api/shamir/drempel` + `POST /api/shamir/genereer`. Regel voor alle Implementation Agents: **elke EF-migratie die wordt toegevoegd, vereist een gelijktijdige update van de `newMigrations` HashSet in `MigratieDbHelper.cs`**. Correctie: story SP-10-COR-002. | 2026-03-02 |
+| DEC-101 | HOOG | Alle sprints, CI/CD | Chromatic visual regression uitgeschakeld | Bewuste keuze (DEC-101 gedocumenteerd in `chromatic.config.json`); mag NIET blokkerend zijn voor andere sprints; alternatief visual regression tooling optioneel na v1.0 | 2026-03-02 |
+| DEC-102 | HOOG | Alle sprints | Geen nieuwe PostHog-implementatie; bestaand gebruik toegestaan | Geen nieuwe PostHog events of uitbreidingen implementeren. Bestaand `lumio_activated` event mag blijven. REC-UX-004 (`lumio_partial_activation`) is GECANCELD (VERVALLEN). SP-UX-01-005 is VERVALLEN. | 2026-03-02 |
+| DEC-103 | HOOG | Alle sprints | Feature branch strategie: maximaal 1 actieve feature branch naast main | Altijd Squash Merge naar main voordat een nieuwe feature branch wordt aangemaakt. Naast main is op elk moment maximaal 1 actieve feature branch aanwezig. | 2026-03-02 |
+| DEC-104 | HOOG | Alle sprints, CI/CD | Main branch beschermd via GitHub Ruleset "ProtectLumio" | PRs vanuit feature branches naar main zijn toegestaan; directe pushes naar main zijn geblokkeerd. Als protection ruleset afwezig is, opnieuw instellen vóór merge. | 2026-03-02 |
+| DEC-105 | HOOG | Fase 2/3, Security | `unsafe-inline` in CSP is een harde architectuurconstraint (SECURITY_FLAG: GAP-ARCH-002) | Next.js static export (`output: "export"`) injecteert inline hydration scripts bij build. Verwijdering breekt de applicatie. `unsafe-inline` MOET blijven totdat volledige SSR-migratie (SP-15+) compleet is. Gedocumenteerd in `src/lumio-web/src/app/layout.tsx` L38-44. | 2026-03-02 |
 
 ---
 
@@ -56,19 +52,8 @@
 
 | ID | Status | Scope | Onderwerp | Reden | Datum |
 |----|--------|-------|-----------|-------|-------|
-| DEC-106 | VERVALLEN | SP-8 / Fase 3 | IdleWarningDialog `<DialogContent>`-wrapper | FALSE POSITIVE: `dialog.tsx` is een custom component waarbij `Dialog` zelf `role="dialog"`, `aria-modal`, focus-trap en backdrop bevat. `DialogContent` bestaat niet in deze codebase. Het bestaande patroon (`DialogHeader` + `DialogFooter` als directe children van `Dialog`) was correct. | 2026-03-02 |
-
----
-
-## Lessons Learned
-
-> Ervaringen uit sprints die het agent-gedrag permanent beïnvloeden.  
-> Elke entry is een LESSON_CANDIDATE die is gepromoveerd tot vaste gedragsregel.
-
-| LL-ID | Sprint | Titel | Bevinding | Gedragsregel voor agents |
-|-------|--------|-------|-----------|-------------------------|
-| LL-001 | SP-8 | Feature branch workflow | Eerste 4 SP-8-commits landden direct op `main` omdat de branchinstructie niet in een besluit was vastgelegd. Na correctie (DEC-107) werkt het team met feature branches vanaf SP-8-R002. | Controleer vóór de eerste `replace_string_in_file` van een story: zit ik op de juiste feature branch? Zo niet: `git checkout -b feature/...` first. |
-| LL-002 | SP-8 | i18n dual-file typesafety | `ErrorBoundary.tsx` importeert `nl/shared.json` + `en/shared.json` met `Record<string, typeof nlShared>` — beide bestanden moeten structureel identiek zijn. Een key toevoegen aan `nl/shared.json` maar vergeten in `en/shared.json` veroorzaakt `TS2719` in CI. | Bij elke toevoeging aan `messages/nl/shared.json`: controleer onmiddellijk of dezelfde key op de zelfde positie in `messages/en/shared.json` staat. Hetzelfde geldt in omgekeerde richting. |
+| DEC-201 | UITGESTELD | SP-11, DevOps | EV Code Signing Certificate aanvraag | Uitgesteld totdat development team gereed is; mag NIET blokkerend zijn voor andere sprints. SP-11-002 wordt niet geblokkeerd door het ontbreken van cert; GitHub URL: https://github.com/RobertAgterhuis/Lumio | 2026-03-02 |
+| DEC-202 | UITGESTELD | SP-14, Security | Penetratietest | Niet blokkerend. Wordt pas aangevraagd en uitgevoerd aan het einde van de ontwikkelcyclus indien van toepassing. SP-14-002 heeft geen v1.0 release gate meer. | 2026-03-02 |
 
 ---
 

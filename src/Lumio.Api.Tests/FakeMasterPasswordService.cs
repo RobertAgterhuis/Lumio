@@ -15,13 +15,16 @@ public sealed class FakeMasterPasswordService : IMasterPasswordService
     /// <summary>Controls what <see cref="VerifyPasswordAsync"/> returns.</summary>
     public bool VerifyResult { get; set; } = true;
 
+    /// <summary>Controls what <see cref="UnlockAsync"/> returns. Defaults to true (success).</summary>
+    public bool UnlockResult { get; set; } = true;
+
     /// <summary>Set to true after <see cref="Lock"/> is called.</summary>
     public bool WasLocked { get; private set; }
 
     public void UsePassword(PasswordConsumer use) =>
         throw new NotSupportedException("UsePassword not supported in fake.");
 
-    public Task<bool> UnlockAsync(string password) => Task.FromResult(true);
+    public Task<bool> UnlockAsync(string password) => Task.FromResult(UnlockResult);
 
     public Task<bool> VerifyPasswordAsync(string password) => Task.FromResult(VerifyResult);
 

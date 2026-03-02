@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/testament")]
+[Route("api/v1/testament")]
 public class TestamentController : ControllerBase
 {
     private readonly LumioDbContext _db;

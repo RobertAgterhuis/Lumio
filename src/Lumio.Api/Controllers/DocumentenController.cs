@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/documenten")]
+[Route("api/v1/documenten")]
 public class DocumentenController : ControllerBase
 {
     private readonly LumioDbContext _db;

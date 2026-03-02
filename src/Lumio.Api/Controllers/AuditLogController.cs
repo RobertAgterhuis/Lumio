@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/audit-log")]
+[Route("api/v1/audit-log")]
 public class AuditLogController : ControllerBase
 {
     private readonly LumioDbContext _db;

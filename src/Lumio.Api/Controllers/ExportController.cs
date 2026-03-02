@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/export")]
+[Route("api/v1/export")]
 public class ExportController : ControllerBase
 {
     private readonly ILumioPdfService _pdfService;

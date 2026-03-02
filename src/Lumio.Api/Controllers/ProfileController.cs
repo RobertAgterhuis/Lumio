@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/profielen")]
+[Route("api/v1/profielen")]
 public class ProfileController : ControllerBase
 {
     private readonly IProfileService _profileService;

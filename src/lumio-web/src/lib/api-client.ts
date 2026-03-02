@@ -3,9 +3,20 @@
 // For standalone dev, set NEXT_PUBLIC_API_URL=http://127.0.0.1:5123
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
+/**
+ * SP-11-004: Canonicalise an API path to the versioned prefix.
+ * "/api/foo" → "/api/v1/foo"
+ * Already-versioned paths ("/api/v1/...") are passed through unchanged.
+ */
+function v1(path: string): string {
+  if (path.startsWith("/api/v")) return path; // already versioned
+  if (path.startsWith("/api/")) return "/api/v1/" + path.slice("/api/".length);
+  return path;
+}
+
 /** Returns the full URL for an API path, respecting NEXT_PUBLIC_API_URL. */
 export function getApiUrl(path: string): string {
-  return `${API_BASE}${path}`;
+  return `${API_BASE}${v1(path)}`;
 }
 
 import { ApiError } from "./api-error";
@@ -32,7 +43,7 @@ async function request<T>(
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(`${API_BASE}${v1(path)}`, {
       ...options,
       signal: controller.signal,
       headers: {
@@ -106,7 +117,7 @@ export const api = {
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
-      const res = await fetch(`${API_BASE}${path}`, {
+      const res = await fetch(`${API_BASE}${v1(path)}`, {
         method: options?.method ?? "GET",
         signal: controller.signal,
         headers: {

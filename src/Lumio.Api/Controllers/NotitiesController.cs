@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/notities")]
+[Route("api/v1/notities")]
 public class NotitiesController(LumioDbContext db) : ControllerBase
 {
     /// <summary>Alle notities voor de eigenaar.</summary>

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/toewijzingen")]
+[Route("api/v1/toewijzingen")]
 public class ToewijzingenController : ControllerBase
 {
     private readonly LumioDbContext _db;

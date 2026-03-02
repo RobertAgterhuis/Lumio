@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/export")]
+[Route("api/v1/export")]
 public class ExportDataController : ControllerBase
 {
     private readonly IExportDataService _exportData;

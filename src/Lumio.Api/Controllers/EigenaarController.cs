@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/eigenaar")]
+[Route("api/v1/eigenaar")]
 public class EigenaarController : ControllerBase
 {
     private readonly LumioDbContext _db;

@@ -8,7 +8,7 @@ namespace Lumio.Api.Controllers;
 /// Encrypted-backup endpoints (S4-07 – Maand 11 – Backup + Data governance).
 /// </summary>
 [ApiController]
-[Route("api/export/backup")]
+[Route("api/v1/export/backup")]
 public sealed class ExportBackupController : ControllerBase
 {
     private readonly IEncryptedBackupService _backup;

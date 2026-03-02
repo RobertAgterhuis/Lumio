@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/export/csv")]
+[Route("api/v1/export/csv")]
 public class ExportCsvController : ControllerBase
 {
     private readonly LumioDbContext _db;
