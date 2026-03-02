@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "session_id": "2026-03-02T07:24:37Z",
+  "cycle_type": "FULL_AUDIT",
+  "feature_name": null,
+  "github_project_name": "Lumio Workitems",
+  "initiated_at": "2026-03-02T07:24:37Z",
+  "last_updated": "2026-03-02T07:24:37Z",
+
+  "_notes": [
+    "REFRESH ONBOARDING uitgevoerd op 2026-03-02.",
+    "initiated_at is de datum van deze REFRESH — oorspronkelijke auditdatum UNCERTAIN (geen archief beschikbaar).",
+    "completed_phases: FASE-1 en FASE-2 zijn UNCERTAIN — basis is conversatiecontext, niet geverifieerd via bestandssysteem.",
+    "FASE-3 (UX) is VERIFIED via docs/synthesis/eindrapport-ux.md + git log cb1f53f.",
+    "Sprint gates SP-1 t/m SP-4 aanwezig; koppeling aan specifieke fase UNCERTAIN.",
+    "SP-UX-01 COMPLETED: sprint gate aanwezig + PR #70 squash-merged HEAD 23dd5fb."
+  ],
+
+  "status": "FASE-5",
+  "current_phase": "FASE-5",
+  "current_agent": null,
+
+  "completed_phases": [
+    "ONBOARDING",
+    "FASE-1",
+    "FASE-2",
+    "FASE-3"
+  ],
+
+  "completed_agents": [
+    "25-onboarding-agent"
+  ],
+
+  "phase_outputs": {
+    "onboarding": "docs/onboarding/onboarding-output.md",
+    "fase-1": {
+      "01": null,
+      "02": null,
+      "03": null,
+      "04": null,
+      "critic_risk": null,
+      "_note": "UNCERTAIN: FASE-1 outputs niet geverifieerd op bestandssysteem"
+    },
+    "fase-2": {
+      "05": null,
+      "06": null,
+      "07": null,
+      "08": null,
+      "09": null,
+      "critic_risk": null,
+      "_note": "UNCERTAIN: FASE-2 outputs niet geverifieerd op bestandssysteem"
+    },
+    "fase-3": {
+      "10": null,
+      "11": null,
+      "12": null,
+      "13": null,
+      "critic_risk": null,
+      "synthesis": "docs/synthesis/eindrapport-ux.md",
+      "_note": "Synthesis VERIFIED via docs/synthesis/eindrapport-ux.md (git log cb1f53f). Individuele agent outputs niet geverifieerd."
+    },
+    "fase-4": {
+      "14": null,
+      "15": null,
+      "16": null,
+      "critic_risk": null,
+      "_note": "FASE-4 nog niet gestart of outputs niet aanwezig op bestandssysteem"
+    },
+    "synthesis": "docs/synthesis/eindrapport-ux.md",
+    "sprintplan": null
+  },
+
+  "sprint_backlog": {
+    "path": "docs/sprint-gates/",
+    "total_sprints": 7,
+    "sprint_statuses": {
+      "SP-1": {
+        "status": "COMPLETED",
+        "gate_file": "docs/sprint-gates/sprint-gate-sp-1.md",
+        "pr_merged": true,
+        "_note": "UNCERTAIN: inhoud sprint gate niet geverifieerd"
+      },
+      "SP-2": {
+        "status": "COMPLETED",
+        "gate_file": "docs/sprint-gates/sprint-gate-sp-2.md",
+        "pr_merged": true,
+        "_note": "UNCERTAIN: inhoud sprint gate niet geverifieerd"
+      },
+      "SP-3": {
+        "status": "COMPLETED",
+        "gate_file": "docs/sprint-gates/sprint-gate-sp-3.md",
+        "pr_merged": true,
+        "_note": "UNCERTAIN: inhoud sprint gate niet geverifieerd"
+      },
+      "SP-4": {
+        "status": "COMPLETED",
+        "gate_file": "docs/sprint-gates/sprint-gate-sp-4.md",
+        "pr_merged": true,
+        "_note": "UNCERTAIN: inhoud sprint gate niet geverifieerd"
+      },
+      "SP-UX-01": {
+        "status": "COMPLETED",
+        "gate_file": "docs/sprint-gates/sprint-gate-sp-ux-01.md",
+        "pr_number": 70,
+        "pr_merged": true,
+        "merge_commit": "1eda031",
+        "stories": ["UX-001", "UX-002", "UX-003", "UX-004", "UX-005", "UX-006"],
+        "_note": "VERIFIED: PR #70 squash-merged, HEAD 23dd5fb"
+      },
+      "SP-UX-02": {
+        "status": "PLANNED",
+        "gate_file": null,
+        "pr_merged": false,
+        "_note": "Gepland o.b.v. UX eindrapport (git log cb1f53f mentions SP-UX-01/02/03)"
+      },
+      "SP-UX-03": {
+        "status": "PLANNED",
+        "gate_file": null,
+        "pr_merged": false,
+        "_note": "Gepland o.b.v. UX eindrapport"
+      }
+    }
+  },
+
+  "open_human_escalations": [],
+
+  "insufficient_data_items": [
+    {
+      "id": "INSUF-001",
+      "agent": "25-onboarding-agent",
+      "item": "FASE-1 (Business) individuele agent output bestanden niet aangetroffen in docs/fase-1/",
+      "impact": "Onzeker of Business Analyst, Domain Expert, Sales Strategist en Financial Analyst outputs volledig zijn; completed_phases bevat FASE-1 o.b.v. eerdere conversatiecontext",
+      "status": "OPEN"
+    },
+    {
+      "id": "INSUF-002",
+      "agent": "25-onboarding-agent",
+      "item": "FASE-2 (Techniek) individuele agent output bestanden niet aangetroffen in docs/fase-2/",
+      "impact": "Onzeker of Software Architect, Senior Developer, DevOps, Security en Data Architect outputs volledig zijn; completed_phases bevat FASE-2 o.b.v. eerdere conversatiecontext",
+      "status": "OPEN"
+    },
+    {
+      "id": "INSUF-003",
+      "agent": "25-onboarding-agent",
+      "item": "Sprint gate inhoud SP-1 t/m SP-4 niet geverifieerd (bestandsinhoud niet gelezen)",
+      "impact": "Sprint koppeling aan specifieke fase en disciplines onzeker",
+      "status": "OPEN"
+    },
+    {
+      "id": "INSUF-004",
+      "agent": "25-onboarding-agent",
+      "item": "FASE-4 (Marketing) status onbekend — geen synthesis document aangetroffen",
+      "impact": "Onduidelijk of FASE-4 gestart, voltooid of nog gepland is",
+      "status": "OPEN"
+    }
+  ],
+
+  "tooling_gaps": [],
+
+  "blockers": []
+}
