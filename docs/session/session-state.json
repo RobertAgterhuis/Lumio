@@ -32,8 +32,8 @@
     "github_issues": [
       {"id": "SP-12-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/93", "status": "closed", "commit": "e1736e6"},
       {"id": "SP-12-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/94", "status": "closed", "commit": "447f18c"},
-      {"id": "SP-12-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/95", "status": "open"},
-      {"id": "SP-12-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/96", "status": "open"},
+      {"id": "SP-12-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/95", "status": "closed", "commit": "f908921"},
+      {"id": "SP-12-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/96", "status": "closed", "commit": "b6f9576"},
       {"id": "SP-12-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/97", "status": "closed", "commit": "9ae2707"}
     ],
     "pull_request_url": null,
@@ -41,9 +41,9 @@
     "branch": "feature/SP-12-kwaliteit-governance",
     "dor_cleared": true,
     "sprint_gate_date": "2026-03-02T00:00:00Z",
-    "implementation_status": "IN_PROGRESS",
+    "implementation_status": "COMPLETE",
     "test_results": {
-      "backend": {"passed": 290, "failed": 0},
+      "backend": {"passed": 302, "failed": 0},
       "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96},
       "desktop": {"passed": 6, "failed": 0}
     }
@@ -51,7 +51,7 @@
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-02T19:45:00Z",
+  "last_updated": "2026-03-02T21:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
