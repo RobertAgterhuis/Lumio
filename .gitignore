@@ -54,4 +54,8 @@ desktop.ini
 /analyse/
 /analysis/
 
+# .NET test results and coverage (local only)
+src/Lumio.Api.Tests/TestResults*/
 
+# Storybook debug log
+src/lumio-web/debug-storybook.log

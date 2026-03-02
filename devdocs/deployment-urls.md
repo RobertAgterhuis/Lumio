@@ -56,3 +56,74 @@ Domein `lumio-legacy.nl` is geregistreerd. Resterende acties:
 6. "Enforce HTTPS" activeren na certificaat-uitrol
 
 Na stap 4–6 is `https://www.lumio-legacy.nl` live en kan Google Search Console worden ingesteld.
+
+---
+
+## Desktop Distributable (src/lumio-desktop/)
+
+Lumio is een **USB-portable desktopapplicatie**. Er is geen server-deployment; distributie gaat via ZIP-bestand op USB-stick of directe download.
+
+### Omgevingen
+
+| Omgeving | Type | Workflow | Beschikbaar |
+|----------|------|----------|-------------|
+| **Staging / acceptatietest** | CI artifact (nightly build) | `.github/workflows/nightly.yml` | Bij elke push naar `main` — 30 dagen |
+| **Productierelease** | GitHub Release + ZIP asset | `.github/workflows/release.yml` | Bij versietag `v*.*.*` — permanent |
+
+---
+
+### Staging build downloaden (acceptatietest)
+
+1. Ga naar **[Actions → Nightly Build](https://github.com/RobertAgterhuis/Lumio/actions/workflows/nightly.yml)**
+2. Klik op de meest recente geslaagde workflow-run
+3. Scroll naar **Artifacts** onderaan de pagina
+4. Download `lumio-nightly-{sha}-win-x64.zip`
+5. Pak uit naar een map of USB-stick
+6. Start `win-unpacked\Lumio.exe`
+
+> Nightly artifacts zijn 30 dagen beschikbaar. Meld bevindingen via GitHub Issues met label `staging-feedback`.
+
+**URL-patroon:**  
+`https://github.com/RobertAgterhuis/Lumio/actions/workflows/nightly.yml`
+
+---
+
+### Productierelease downloaden
+
+1. Ga naar **[Releases](https://github.com/RobertAgterhuis/Lumio/releases)**
+2. Klik op de gewenste versie (bijv. `v1.0.0`)
+3. Download `lumio-v1.0.0-win-x64.zip`
+4. Pak uit naar een map of USB-stick
+5. Start `win-unpacked\Lumio.exe`
+
+**URL-patroon:**  
+`https://github.com/RobertAgterhuis/Lumio/releases/tag/v{versie}`
+
+---
+
+### Nieuwe versie uitbrengen
+
+```bash
+# 1. Zorg dat alle wijzigingen in main zijn gemerged
+# 2. Maak een versietag aan (semantic versioning)
+git tag v1.0.0
+git push origin v1.0.0
+# 3. release.yml triggert automatisch → GitHub Release wordt aangemaakt
+```
+
+De workflow:
+- Bouwt backend (.NET 10, win-x64 self-contained)
+- Bouwt frontend (Next.js static export)
+- Pakt Electron shell in (`electron-builder --dir`)
+- Zipped de volledige distributable als `lumio-{tag}-win-x64.zip`
+- Publiceert GitHub Release met auto-gegenereerde changelog
+
+**Optioneel code-signing:** voeg `CSC_LINK` (base64-geëncodeerde `.p12`) en `CSC_KEY_PASSWORD` toe als GitHub Secrets (Settings → Secrets and variables → Actions). Ontbreken ze, dan slaagt de build alsnog (USB-portable gebruik vereist geen OS-certificaat).
+
+---
+
+### STATUS: PIPELINE ACTIEF
+
+- ✅ `nightly.yml` — actief bij elke push naar `main`
+- ✅ `release.yml` — actief bij versietags `v*.*.*`
+- ⏳ Eerste release: maak tag `v0.1.0` aan wanneer SP-4 gemerged is

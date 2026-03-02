@@ -1,0 +1,169 @@
+# T-009 (GAP-DEVOPS-01 / GUARD-DEVOPS-01): Geautomatiseerde desktop release pipeline
+#
+# Triggert op versietags (v*.*.*). Bouwt de volledige Lumio USB-portable
+# distributable (backend + frontend + Electron shell) op een Windows runner
+# en publiceert het als een GitHub Release met auto-gegenereerde changelog.
+#
+# Optioneel code-signing: als de secrets CSC_LINK en CSC_KEY_PASSWORD aanwezig
+# zijn, ondertekent electron-builder de executables automatisch. Ontbreken ze,
+# dan slaagt de build alsnog (USB-portable use case, geen Store-distributie).
+#
+# Vereiste repo-instellingen:
+#   Settings → Actions → General → Workflow permissions → "Read and write"
+#   (of: voeg de `permissions: contents: write` sectie hieronder handmatig toe)
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v0.1.0)'
+        required: true
+
+permissions:
+  contents: write   # Vereist voor gh release create
+
+jobs:
+  release:
+    name: Build & publish release (Windows x64)
+    runs-on: windows-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Vereist voor auto-changelog (alle commit history)
+
+      # ── 2. .NET 10 setup ─────────────────────────────────────────────────────
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      # ── 3. Node 22 setup ─────────────────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # ── 4. npm cache: lumio-web ───────────────────────────────────────────────
+      - name: Cache npm (lumio-web)
+        uses: actions/cache@v5
+        with:
+          path: src/lumio-web/node_modules
+          key: npm-web-${{ runner.os }}-${{ hashFiles('src/lumio-web/package-lock.json') }}
+          restore-keys: npm-web-${{ runner.os }}-
+
+      # ── 5. npm cache: lumio-desktop ───────────────────────────────────────────
+      - name: Cache npm (lumio-desktop)
+        uses: actions/cache@v5
+        with:
+          path: src/lumio-desktop/node_modules
+          key: npm-desktop-${{ runner.os }}-${{ hashFiles('src/lumio-desktop/package-lock.json') }}
+          restore-keys: npm-desktop-${{ runner.os }}-
+
+      # ── 6. Electron prebuilt cache ────────────────────────────────────────────
+      - name: Cache Electron prebuilt
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~\AppData\Local\electron\Cache
+            ~\AppData\Local\electron-builder\Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('src/lumio-desktop/package-lock.json') }}
+          restore-keys: electron-${{ runner.os }}-
+
+      # ── 7. Install dependencies ───────────────────────────────────────────────
+      - name: npm ci (lumio-web)
+        run: npm ci
+        working-directory: src/lumio-web
+
+      - name: npm ci (lumio-desktop)
+        run: npm ci
+        working-directory: src/lumio-desktop
+
+      # ── 8. Build .NET backend (win-x64 self-contained) ────────────────────────
+      - name: Build .NET backend
+        run: |
+          dotnet publish src/Lumio.Api/Lumio.Api.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            --output dist/backend `
+            /p:PublishSingleFile=false `
+            /p:PublishTrimmed=false
+        shell: pwsh
+
+      # ── 9. Build Next.js frontend (static export) ─────────────────────────────
+      - name: Build Next.js frontend
+        run: npx next build
+        working-directory: src/lumio-web
+        env:
+          # PostHog is optional — build succeeds without the key (analytics disabled)
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+
+      - name: Copy frontend to dist
+        shell: pwsh
+        run: |
+          if (Test-Path dist/frontend) { Remove-Item -Recurse -Force dist/frontend }
+          Copy-Item -Recurse src/lumio-web/out dist/frontend
+
+      # ── 10. Compile & package Electron shell ──────────────────────────────────
+      - name: TypeScript compile (lumio-desktop)
+        run: npx tsc
+        working-directory: src/lumio-desktop
+
+      - name: Package Electron (dir target — USB-portable)
+        run: npx electron-builder --dir --config electron-builder.yml
+        working-directory: src/lumio-desktop
+        env:
+          # Disable code-signing auto-discovery; sign only when CSC_LINK secret is set.
+          # Without a certificate the build still succeeds (USB-portable distribution).
+          CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.CSC_LINK != '' && 'true' || 'false' }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+
+      # ── 11. Determine tag name ────────────────────────────────────────────────
+      - name: Determine release tag
+        id: tag
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            echo "name=${{ github.event.inputs.tag }}" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "name=${{ github.ref_name }}" >> $env:GITHUB_OUTPUT
+          }
+
+      # ── 12. Zip the distributable ─────────────────────────────────────────────
+      - name: Create release archive
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.tag.outputs.name }}"
+          $zipName = "lumio-${tag}-win-x64.zip"
+          Compress-Archive -Path dist/Lumio/* -DestinationPath $zipName -Force
+          echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
+
+      # ── 13. Publish GitHub Release ────────────────────────────────────────────
+      - name: Create GitHub Release
+        run: |
+          gh release create ${{ steps.tag.outputs.name }} `
+            "${{ env.ZIP_NAME }}" `
+            --title "Lumio ${{ steps.tag.outputs.name }}" `
+            --generate-notes `
+            --verify-tag
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      # ── 14. Upload artifact (also keeps as Actions artifact for 30 days) ──────
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: lumio-${{ steps.tag.outputs.name }}-win-x64
+          path: ${{ env.ZIP_NAME }}
+          retention-days: 30
