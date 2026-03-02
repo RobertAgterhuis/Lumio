@@ -11,7 +11,9 @@ public class DatabaseUnlockMiddleware
         "/api/auth/",
         "/api/profielen",
         "/api/backup/restore",
-        "/swagger"
+        "/swagger",
+        // SP-10-COR-001: endpoint is openbaar — erfgenamen moeten de drempel weten vóór ontgrendeling
+        "/api/shamir/drempel"
     ];
 
     /// <summary>
