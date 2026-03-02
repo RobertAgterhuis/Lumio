@@ -20,14 +20,16 @@
 ## Wat beter kan
 
 1. **gh pr create --body in PowerShell** — backticks en speciale tekens in inline body veroorzaken parsing fouten in PowerShell. Oplossing: altijd `--body-file` gebruiken met een tijdelijk markdown bestand
+2. **TruffleHog `--fail` dubbel** — TruffleHog action-script voegt `--fail` intern al toe aan de docker run command. Onze `extra_args: --fail` zorgde voor de fout `flag cannot be repeated`. Fix: `--fail` weggooien uit `extra_args` (commit `c500fb0`).
 
 ---
 
 ## Lessons Learned (kandidaten)
 
 | ID | Vastgesteld | Omschrijving |
-|----|------------|--------------|
+|----|------------|-------------|
 | LL-SP-UX-03-001 | Nieuw | `gh pr create --body` met speciale tekens faalt in PowerShell — gebruik `--body-file` met tijdelijk markdown bestand |
+| LL-SP-UX-03-002 | Nieuw | TruffleHog action-script voegt `--fail` intern al toe aan docker run — nooit `--fail` via `extra_args` doorgeven bij `trufflesecurity/trufflehog@main` |
 
 ---
 

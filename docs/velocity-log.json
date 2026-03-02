@@ -116,7 +116,8 @@
       "merged_date": null,
       "velocity_pct": 100,
       "lessons_learned": [
-        { "id": "LL-SP-UX-03-001", "summary": "gh pr create --body met speciale tekens faalt in PowerShell \u2014 gebruik --body-file met tijdelijk markdown bestand" }
+        { "id": "LL-SP-UX-03-001", "summary": "gh pr create --body met speciale tekens faalt in PowerShell \u2014 gebruik --body-file met tijdelijk markdown bestand" },
+        { "id": "LL-SP-UX-03-002", "summary": "TruffleHog action-script voegt --fail intern al toe aan de docker run command \u2014 --fail in extra_args leidt tot 'flag cannot be repeated' fout. Nooit --fail via extra_args doorgeven bij trufflesecurity/trufflehog@main" }
       ]
     }
   ],
