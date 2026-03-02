@@ -1020,7 +1020,7 @@
     "beschrijving": "Uw wensen conform de WGBO",
     "opslaanMislukt": "Opslaan mislukt.",
     "bewerken": "Bewerken",
-    "wizardStarten": "Wizard starten",
+    "wizardStarten": "Invullen starten",
     "annuleren": "Annuleren",
     "opslaan": "Opslaan",
     "ja": "Ja",
@@ -1861,7 +1861,8 @@
       "wensen": "Wensen",
       "bezittingen": "Bezittingen",
       "personen": "Personen",
-      "hulpmiddelen": "Hulpmiddelen"
+      "hulpmiddelen": "Hulpmiddelen",
+      "beheer": "Beheer"
     },
     "voortgang": "{aantalIngevuld} van {totaal} secties ingevuld",
     "voortgangAria": "Voortgang nalatenschap: {percentage}% ingevuld"
@@ -2147,7 +2148,7 @@
   "wizard": {
     "welkom": "Welkom bij Lumio",
     "doorloop": "Doorloop deze stappen om uw nalatenschap in te richten",
-    "sluiten": "Wizard sluiten",
+    "sluiten": "Sluiten",
     "voltooid": "{voltooid} van {totaal} voltooid",
     "laterInvullen": "Later invullen",
     "nietMeerTonen": "Niet meer tonen",
@@ -2199,7 +2200,7 @@
     "titel": "Testament",
     "beschrijving": "Testamentaire informatie conform BW Boek 4",
     "bewerken": "Bewerken",
-    "wizardStarten": "Wizard Starten",
+    "wizardStarten": "Invullen starten",
     "opslaanMislukt": "Opslaan mislukt.",
     "verwijderenMislukt": "Verwijderen mislukt.",
     "disclaimer": "<strong>Let op:</strong> De informatie in Lumio is een persoonlijk overzicht. Een notarieel testament is alleen rechtsgeldig als het door een notaris is opgesteld en ondertekend (BW Boek 4, art. 4:94 e.v.). Raadpleeg altijd uw notaris voor officiële vastlegging.",
@@ -2730,7 +2731,7 @@
     "opslaanMislukt": "Opslaan mislukt.",
     "verwijderenMislukt": "Verwijderen mislukt.",
     "bewerken": "Bewerken",
-    "wizardStarten": "Wizard starten",
+    "wizardStarten": "Invullen starten",
     "annuleren": "Annuleren",
     "opslaan": "Opslaan",
     "toevoegen": "Toevoegen",

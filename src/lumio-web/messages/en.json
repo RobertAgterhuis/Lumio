@@ -1020,7 +1020,7 @@
     "beschrijving": "Your wishes under the WGBO (Dutch Medical Treatment Contracts Act)",
     "opslaanMislukt": "Save failed.",
     "bewerken": "Edit",
-    "wizardStarten": "Start wizard",
+    "wizardStarten": "Start filling in",
     "annuleren": "Cancel",
     "opslaan": "Save",
     "ja": "Yes",
@@ -1861,7 +1861,8 @@
       "wensen": "Wishes",
       "bezittingen": "Assets",
       "personen": "People",
-      "hulpmiddelen": "Tools"
+      "hulpmiddelen": "Tools",
+      "beheer": "Management"
     },
     "voortgang": "{aantalIngevuld} of {totaal} sections completed",
     "voortgangAria": "Legacy progress: {percentage}% completed"
@@ -2147,7 +2148,7 @@
   "wizard": {
     "welkom": "Welcome to Lumio",
     "doorloop": "Complete these steps to set up your legacy",
-    "sluiten": "Close wizard",
+    "sluiten": "Close",
     "voltooid": "{voltooid} of {totaal} completed",
     "laterInvullen": "Fill in later",
     "nietMeerTonen": "Do not show again",
@@ -2199,7 +2200,7 @@
     "titel": "Will",
     "beschrijving": "Testamentary information pursuant to Civil Code Book 4 (BW Boek 4)",
     "bewerken": "Edit",
-    "wizardStarten": "Start Wizard",
+    "wizardStarten": "Start filling in",
     "opslaanMislukt": "Save failed.",
     "verwijderenMislukt": "Delete failed.",
     "disclaimer": "<strong>Note:</strong> The information in Lumio is a personal overview. A notarial will is only legally valid when drawn up and signed by a notary (Civil Code Book 4, art. 4:94 et seq.). Always consult your notary for official registration.",
@@ -2730,7 +2731,7 @@
     "opslaanMislukt": "Save failed.",
     "verwijderenMislukt": "Delete failed.",
     "bewerken": "Edit",
-    "wizardStarten": "Start wizard",
+    "wizardStarten": "Start filling in",
     "annuleren": "Cancel",
     "opslaan": "Save",
     "toevoegen": "Add",
