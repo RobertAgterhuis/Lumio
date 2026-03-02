@@ -38,9 +38,12 @@ internal static class MigratieDbHelper
                 )");
 
             // Mark all non-new migrations as already applied so Migrate() only runs new ones
+            // SP-10-COR-002: voeg elke nieuwe migratie hier toe zodat pre-EnsureCreated databases
+            // de kolommen ook aangemaakt krijgen (zie DEC-110 + adr-001-schulden-schema-brug.md).
             var newMigrations = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "20260224151055_AddSchuldBezitLink"
+                "20260224151055_AddSchuldBezitLink",
+                "20260302113751_SP9_ShamirDrempel"
             };
             foreach (var migrationId in db.Database.GetMigrations().Where(m => !newMigrations.Contains(m)))
             {
@@ -58,6 +61,7 @@ internal static class MigratieDbHelper
 
     internal static async Task EnsureSchuldKolommenAsync(LumioDbContext db)
     {
+        // Schulden — BezitId + LeaseMaatschappij (migratie 20260224151055_AddSchuldBezitLink)
         try
         {
             await db.Database.ExecuteSqlRawAsync("SELECT \"BezitId\" FROM \"Schulden\" LIMIT 0");
@@ -69,6 +73,18 @@ internal static class MigratieDbHelper
             await db.Database.ExecuteSqlRawAsync("ALTER TABLE \"Schulden\" ADD COLUMN \"BezitId\" TEXT NULL");
             await db.Database.ExecuteSqlRawAsync("ALTER TABLE \"Schulden\" ADD COLUMN \"LeaseMaatschappij\" TEXT NULL");
             await db.Database.ExecuteSqlRawAsync("CREATE INDEX IF NOT EXISTS \"IX_Schulden_BezitId\" ON \"Schulden\" (\"BezitId\")");
+        }
+
+        // SP-10-COR-002: Eigenaren — ShamirDrempel (migratie 20260302113751_SP9_ShamirDrempel)
+        // Belt-and-suspenders voor pre-migratie databases conform ADR-001.
+        try
+        {
+            await db.Database.ExecuteSqlRawAsync("SELECT \"ShamirDrempel\" FROM \"Eigenaren\" LIMIT 0");
+            // Column exists — nothing to do
+        }
+        catch
+        {
+            await db.Database.ExecuteSqlRawAsync("ALTER TABLE \"Eigenaren\" ADD COLUMN \"ShamirDrempel\" INTEGER NULL");
         }
     }
 }
