@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "description": "Sprint velocity log — stories planned vs. delivered per sprint",
+  "sprints": [
+    {
+      "id": "SP-1",
+      "name": "Security Critical",
+      "phase": "Fase 2 — Techniek",
+      "stories_planned": 4,
+      "stories_delivered": 4,
+      "stories": ["T-001", "T-002", "T-003", "T-004"],
+      "issues": ["#11", "#12", "#13", "#14"],
+      "pr": "#41",
+      "merged_date": "2026-03-01",
+      "velocity_pct": 100
+    },
+    {
+      "id": "SP-2",
+      "name": "Data Integrity",
+      "phase": "Fase 2 — Techniek",
+      "stories_planned": 2,
+      "stories_delivered": 2,
+      "stories": ["T-005", "T-006"],
+      "issues": ["#15", "#16"],
+      "pr": "#43",
+      "merged_date": "2026-03-01",
+      "velocity_pct": 100
+    },
+    {
+      "id": "SP-3",
+      "name": "Security & CI Hardening",
+      "phase": "Fase 2 — Techniek",
+      "stories_planned": 2,
+      "stories_delivered": 2,
+      "stories": ["T-007", "T-008"],
+      "issues": ["#17", "#18"],
+      "pr": "#56",
+      "merged_date": "2026-03-01",
+      "velocity_pct": 100
+    },
+    {
+      "id": "SP-4",
+      "name": "DevOps",
+      "phase": "Fase 2 — Techniek",
+      "stories_planned": 2,
+      "stories_delivered": 2,
+      "stories": ["T-009", "T-010"],
+      "issues": ["#19", "#20"],
+      "pr": "#59",
+      "tag": "v0.1.0",
+      "merged_date": "2026-03-02",
+      "velocity_pct": 100,
+      "notes": "14 pre-existing CI failures fixed as part of this sprint. First desktop release (v0.1.0) published."
+    }
+  ],
+  "cumulative": {
+    "total_stories_planned": 10,
+    "total_stories_delivered": 10,
+    "overall_velocity_pct": 100,
+    "sprints_completed": 4
+  }
+}
