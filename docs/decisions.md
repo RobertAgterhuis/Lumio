@@ -45,6 +45,7 @@
 | DEC-103 | HOOG | SP-8 / Fase 2 | Swagger UI wordt **alleen** in development-modus geactiveerd | REEVALUATE FASE-2 (SEC-001): Swagger UI is zonder `IsDevelopment()`-guard beschikbaar in productie. Besluit: wrap `app.UseSwagger()` + `app.UseSwaggerUI()` in `if (app.Environment.IsDevelopment())`. Tracked als story SP-8-R001. GUARD-011 toegevoegd. | 2026-03-02 |
 | DEC-104 | HOOG | SP-8 / Fase 2 | AuditLog-rotatie (90 dagen) moet geïmplementeerd worden als IHostedService | REEVALUATE FASE-2 (SEC-005): de AVG art. 5 opslagbeperking van 90 dagen voor AuditLog entries is gedocumenteerd maar niet technisch afgedwongen. Besluit: implementeer `AuditLogRotatieService : BackgroundService` in SP-8. Tracked als story SP-8-R002. | 2026-03-02 |
 | DEC-105 | ~~KRITIEK~~ | SP-8 / Fase 3 | ✅ GEÏMPLEMENTEERD — OnboardingWizard focus-trap Escape-handler + aria-label | Commit `6a04cf2` (SP-8-UX-001): Escape-key handler (`setVisible(false)`, geen stale-closure), `title` → `aria-label` op sluiten-knop. SC 2.1.1 + 2.1.2 gesloten. Oorspronkelijke focus-trap `useEffect` was al aanwezig — alleen Escape ontbrak. | 2026-03-02 |
+| DEC-107 | HOOG | Alle sprints | Elke story wordt geïmplementeerd op een **feature branch**, nooit direct op `main` | Branchconventie: `feature/SP-{N}-{STORY-ID}-{korte-beschrijving}`. Na afronding: PR aanmaken → CI groen → squash merge naar `main`. Rechtstreekse commits op `main` zijn uitsluitend toegestaan voor hotfixes (HOTFIX-protocol) en ééndelige doc-fixes zonder code. Agent-initiaal: gebruik `git checkout -b feature/...` vóór de eerste code-edit van elke story. | 2026-03-02 |
 
 ---
 
@@ -53,6 +54,18 @@
 | ID | Status | Scope | Onderwerp | Reden | Datum |
 |----|--------|-------|-----------|-------|-------|
 | DEC-106 | VERVALLEN | SP-8 / Fase 3 | IdleWarningDialog `<DialogContent>`-wrapper | FALSE POSITIVE: `dialog.tsx` is een custom component waarbij `Dialog` zelf `role="dialog"`, `aria-modal`, focus-trap en backdrop bevat. `DialogContent` bestaat niet in deze codebase. Het bestaande patroon (`DialogHeader` + `DialogFooter` als directe children van `Dialog`) was correct. | 2026-03-02 |
+
+---
+
+## Lessons Learned
+
+> Ervaringen uit sprints die het agent-gedrag permanent beïnvloeden.  
+> Elke entry is een LESSON_CANDIDATE die is gepromoveerd tot vaste gedragsregel.
+
+| LL-ID | Sprint | Titel | Bevinding | Gedragsregel voor agents |
+|-------|--------|-------|-----------|-------------------------|
+| LL-001 | SP-8 | Feature branch workflow | Eerste 4 SP-8-commits landden direct op `main` omdat de branchinstructie niet in een besluit was vastgelegd. Na correctie (DEC-107) werkt het team met feature branches vanaf SP-8-R002. | Controleer vóór de eerste `replace_string_in_file` van een story: zit ik op de juiste feature branch? Zo niet: `git checkout -b feature/...` first. |
+| LL-002 | SP-8 | i18n dual-file typesafety | `ErrorBoundary.tsx` importeert `nl/shared.json` + `en/shared.json` met `Record<string, typeof nlShared>` — beide bestanden moeten structureel identiek zijn. Een key toevoegen aan `nl/shared.json` maar vergeten in `en/shared.json` veroorzaakt `TS2719` in CI. | Bij elke toevoeging aan `messages/nl/shared.json`: controleer onmiddellijk of dezelfde key op de zelfde positie in `messages/en/shared.json` staat. Hetzelfde geldt in omgekeerde richting. |
 
 ---
 
