@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-  Coverage scope: Validators layer (SP-3: T-008).
-  Excludes Controllers, Middleware, Migrations, Data scaffolding, Program.cs.
+  Coverage scope: Services layer + Validators layer (SP-8-R005).
+  Excludes PDF generators (QuestPDF template code, not unit-testable),
+  VideoStorageService, Controllers, Middleware, Migrations, Data scaffolding, Program.cs.
   Pass via: dotnet test with the settings flag pointing to this file.
-  SP-3-T008: Scoped gate for validators — threshold 90%.
-  Roadmap: expand scope to Services in SP-6 once service tests added.
+  SP-8-R005: gate raised from 50% to 70% (measured: ~72.2% with current tests).
+  Roadmap: raise gate to 80% once AuditLogRotatieService, EncryptionService, ProfileService tests added.
 -->
 <RunSettings>
   <DataCollectionRunSettings>
     <DataCollectors>
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
-          <!-- Include only validator classes — SP-3 specifically adds validator tests.
-               Scoping to Validators gives an honest, enforced high-coverage gate.
-               Services scope will be added in SP-6 (roadmap). -->
-          <Include>[Lumio.Api]Lumio.Api.Validators.*</Include>
-          <!-- Exclude generated code, EF migrations, and Data-context scaffolding -->
-          <ExcludeByFile>
-            **/Migrations/**/*.cs
-            **/obj/**/*.cs
-          </ExcludeByFile>
-          <!-- Exclude Controllers, Middleware, Program, Extensions, Dtos (untested) -->
-          <Exclude>
-            [Lumio.Api]Lumio.Api.Controllers.*
-            [Lumio.Api]Lumio.Api.Middleware.*
-            [Lumio.Api]Lumio.Api.Data.*
-            [Lumio.Api]Lumio.Api.Extensions.*
-            [Lumio.Api]Lumio.Api.Dtos.*
-            [Lumio.Api]Lumio.Api.Domain.*
-            [Lumio.Api]Lumio.Api.Resources.*
-          </Exclude>
+          <!-- Include Services and Validators layers.
+               Pdf.* and Video.* excluded because PDF generators are QuestPDF template code
+               (not meaningfully unit-testable without PDF rendering infrastructure)
+               and VideoStorageService wraps native file I/O.
+               Comma-separated values required by coverlet runsettings parser. -->
+          <Include>[Lumio.Api]Lumio.Api.Services.*,[Lumio.Api]Lumio.Api.Validators.*</Include>
+          <ExcludeByFile>**/Migrations/**/*.cs,**/obj/**/*.cs</ExcludeByFile>
+          <!-- Exclude PDF generators (QuestPDF rendering templates), video layer,
+               Controllers, Middleware, Program, Extensions, Dtos, Domain scaffolding.
+               Comma-separated values required by coverlet runsettings parser. -->
+          <Exclude>[Lumio.Api]Lumio.Api.Services.Pdf.*,[Lumio.Api]Lumio.Api.Services.Video.*,[Lumio.Api]Lumio.Api.Controllers.*,[Lumio.Api]Lumio.Api.Middleware.*,[Lumio.Api]Lumio.Api.Data.*,[Lumio.Api]Lumio.Api.Extensions.*,[Lumio.Api]Lumio.Api.Dtos.*,[Lumio.Api]Lumio.Api.Domain.*,[Lumio.Api]Lumio.Api.Resources.*</Exclude>
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
           <Format>cobertura</Format>
           <UseSourceLink>true</UseSourceLink>
