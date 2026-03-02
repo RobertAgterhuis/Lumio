@@ -15,7 +15,7 @@
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint src",
     "generate-api": "openapi-ts",
     "test": "vitest run --project unit",
     "test:coverage": "vitest run --project unit --coverage",
@@ -81,6 +81,7 @@
   "devDependencies": {
     "@axe-core/react": "^4.11.1",
     "@chromatic-com/storybook": "^5.0.1",
+    "@eslint/compat": "^2.0.2",
     "@hey-api/client-fetch": "^0.13.1",
     "@hey-api/openapi-ts": "^0.93.1",
     "@next/bundle-analyzer": "^16.1.6",
