@@ -14,6 +14,7 @@ namespace Lumio.Api.Tests.Services;
 /// Note: The outer unlock path requires a real SQLCipher database connection.
 /// The KDF migration path is isolated via a protected virtual override (testability seam).
 /// </summary>
+[Collection("SqlCipher")] // Serialize with SqlCipherKdfServiceTests — prevents ClearAllPools / PRAGMA interference
 public class MasterPasswordServiceLoggingTests
 {
     private const string TestPassword = "lumio-logging-test-pw";
