@@ -54,8 +54,8 @@
       {"id": "SP-13-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/103", "status": "closed", "commit": "82aa011"},
       {"id": "SP-13-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/104", "status": "closed", "commit": "5a28a56"}
     ],
-    "pull_request_url": null,
-    "pull_request_number": null,
+    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/105",
+    "pull_request_number": 105,
     "branch": "feature/SP-13-schuld-afbetaling-observability",
     "dor_cleared": true,
     "sprint_gate_date": "2026-03-02T21:30:00Z",
