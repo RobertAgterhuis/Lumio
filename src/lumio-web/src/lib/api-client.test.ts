@@ -51,7 +51,7 @@ describe("api-client", () => {
 
       expect(fetch).toHaveBeenCalledOnce();
       const [url, opts] = vi.mocked(fetch).mock.calls[0];
-      expect(url).toBe("/api/test");
+      expect(url).toBe("/api/v1/test"); // SP-11-004: path is transparently versioned by v1()
       // Accept-Language should be present (nl or en depending on localStorage state)
       expect((opts?.headers as Record<string, string>)["Accept-Language"]).toBeDefined();
       expect(result).toEqual(mockResponse);

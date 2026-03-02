@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/werkgever")]
+[Route("api/v1/werkgever")]
 public class WerkgeverController : ControllerBase
 {
     private readonly LumioDbContext _db;

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/zoeken")]
+[Route("api/v1/zoeken")]
 public class ZoekenController : ControllerBase
 {
     private readonly LumioDbContext _db;

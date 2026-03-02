@@ -9,7 +9,7 @@ using Microsoft.Extensions.Localization;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/testament")]
+[Route("api/v1/testament")]
 public class TestamentJuridischeCheckController : ControllerBase
 {
     private readonly LumioDbContext _db;

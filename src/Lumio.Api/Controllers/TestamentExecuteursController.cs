@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/testament/executeurs")]
+[Route("api/v1/testament/executeurs")]
 public class TestamentExecuteursController : ControllerBase
 {
     private readonly LumioDbContext _db;

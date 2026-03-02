@@ -11,9 +11,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ── SP-11-001: Secret Scan (TruffleHog) — BLOCKING ────────────────
+  # Runs as the first job so no other job proceeds when verified secrets
+  # are detected. Uses a pinned version (v3) — never @main or @latest.
+  secret-scan:
+    name: Secret Scan (TruffleHog)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run TruffleHog — only verified secrets (pinned v3.93.6)
+        uses: trufflesecurity/trufflehog@v3.93.6
+        with:
+          path: ./
+          base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          extra_args: --only-verified
+
   # ── Frontend ───────────────────────────────────────────────────────
   frontend:
     name: Frontend (lint / typecheck / test / build)
+    needs: [secret-scan]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -51,6 +74,7 @@ jobs:
   # ── Marketing website ──────────────────────────────────────────────
   site:
     name: Site (typecheck / build)
+    needs: [secret-scan]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -113,6 +137,7 @@ jobs:
   # component files are allowed to reference these names.
   icon-guard:
     name: Icon guard (no replaced Lucide icons)
+    needs: [secret-scan]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -244,6 +269,7 @@ jobs:
   # ── Backend ────────────────────────────────────────────────────────
   backend:
     name: Backend (build)
+    needs: [secret-scan]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -366,6 +392,7 @@ jobs:
   # ── Whitelabel Schema Validation ──────────────────────────────────
   whitelabel-validate:
     name: Whitelabel config schema validation
+    needs: [secret-scan]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

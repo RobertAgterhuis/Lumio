@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Lumio.Api.Controllers;
 
 [ApiController]
-[Route("api/videoboodschappen")]
+[Route("api/v1/videoboodschappen")]
 public class VideoboodschappenController(
     LumioDbContext db,
     IOptions<LimietenOptions> limieten,

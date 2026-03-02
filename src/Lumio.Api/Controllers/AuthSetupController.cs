@@ -14,7 +14,7 @@ namespace Lumio.Api.Controllers;
 /// Extracted from AuthController (SP-7-004 / GUARD-010 refactoring).
 /// </summary>
 [ApiController]
-[Route("api/auth")]
+[Route("api/v1/auth")]
 public class AuthSetupController : ControllerBase
 {
     private readonly IMasterPasswordService _passwordService;
