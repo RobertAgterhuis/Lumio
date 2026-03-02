@@ -89,6 +89,11 @@ const navGroups: NavGroup[] = [
       { href: "/tijdlijn", labelKey: "tijdlijnOverlijden", lumioIcon: "tijdlijn" as LumioIconName },
       { href: "/videoboodschappen", labelKey: "videoboodschappen", icon: Video },
       { href: "/export", labelKey: "exporteren", icon: Download },
+    ],
+  },
+  {
+    labelKey: "groep.beheer",
+    items: [
       { href: "/audit-log", labelKey: "activiteitenlog", icon: ClipboardList },
       { href: "/instellingen", labelKey: "instellingen", icon: Settings },
       { href: "/help", labelKey: "handleiding", icon: BookOpen },

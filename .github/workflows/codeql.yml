@@ -18,11 +18,11 @@ jobs:
   analyze:
     name: CodeQL (${{ matrix.language }})
     runs-on: ubuntu-latest
-    # CodeQL SARIF upload requires GitHub Code Scanning to be enabled in
-    # repository Settings → Security → Code scanning → Set up → CodeQL.
-    # Without it the "Perform CodeQL Analysis" step exits with an error.
-    # continue-on-error: true makes this non-blocking (like Chromatic) until
-    # the repository owner enables GitHub Advanced Security / Code Scanning.
+    # DEC-102: CodeQL is intentionally disabled — GitHub Advanced Security /
+    # Code Scanning is not enabled for this repository. Skip the job entirely
+    # (if: false) so it shows as "Skipped" rather than failing on every PR.
+    # Re-enable by removing the if: false line when Code Scanning is activated.
+    if: false
     continue-on-error: true
     permissions:
       actions: read
