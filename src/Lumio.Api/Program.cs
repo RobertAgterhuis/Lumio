@@ -94,6 +94,8 @@ builder.Services.AddScoped<ErfgenaamGenerator>();
 builder.Services.AddScoped<ExecuteurRapportGenerator>();
 builder.Services.AddScoped<NotarisGenerator>();
 builder.Services.AddSingleton<IAuditService, AuditService>();
+// DEC-104 / AVG art. 5(1)(e): dagelijkse rotatie van AuditLog-entries ouder dan 90 dagen
+builder.Services.AddHostedService<AuditLogRotatieService>();
 // T-006: Registered via interface for compensating-transaction testability
 builder.Services.AddSingleton<Lumio.Api.Services.Video.IVideoStorageService, Lumio.Api.Services.Video.VideoStorageService>();
 
