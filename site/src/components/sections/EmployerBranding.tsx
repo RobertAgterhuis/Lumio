@@ -17,6 +17,7 @@ export default function EmployerBranding() {
             <SectionHeading
               badge="Employer branding"
               title="Laat zien dat u om uw mensen geeft"
+              titleClassName="text-white"
             />
             <p className="text-white/80 leading-relaxed mb-6">
               De arbeidsmarkt is krap. Medewerkers kiezen steeds meer voor werkgevers
