@@ -2,9 +2,9 @@
 
 **Sprint ID:** SP-UX-02  
 **Branch:** `feature/sp-ux-02-heir-experience`  
-**Status:** IN_PROGRESS  
+**Status:** REVIEW_PENDING — CI + Chromatic baseline acceptance required  
 **Datum start:** 2026-03-02  
-**PR:** TBD
+**PR:** #71
 
 ---
 
