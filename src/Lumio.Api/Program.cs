@@ -241,8 +241,12 @@ app.UseSerilogRequestLogging(opts =>
 });
 // ─────────────────────────────────────────────────────────────────────
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// SEC-001 / DEC-103: Swagger UI alleen in development — voorkomt API-schema-exposure in productie (GUARD-011)
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 
