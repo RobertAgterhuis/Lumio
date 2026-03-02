@@ -50,7 +50,10 @@
       "wachtwoordPlaceholder": "Enter your password",
       "bezig": "Unlocking...",
       "ontgrendelen": "Unlock",
-      "mislukt": "Unlock failed"
+      "mislukt": "Unlock failed",
+      "wachtwoordVergetenTitel": "Forgot your password?",
+      "wachtwoordVergetenTekst": "Access to your Lumio archive cannot be restored without the password. This is a deliberate security choice to protect your data.",
+      "geblokkerd": "Too many failed attempts. Please try again in {minuten, plural, one {1 minute} other {# minutes}}."
     },
     "erfgenaam": {
       "titel": "Heir Access",
@@ -63,7 +66,18 @@
       "reconstructieMislukt": "Reconstruction failed. Please verify that you have entered enough valid emergency codes.",
       "bezig": "Reconstructing...",
       "ontgrendelen": "Unlock with emergency codes",
-      "anderProfiel": "← Choose a different profile"
+      "anderProfiel": "← Choose a different profile",
+      "introTitel": "Heir access",
+      "introBeschrijving": "To access this Lumio archive you need emergency codes. The owner has securely split their master password using the Shamir method.",
+      "introHoeWerktHet": "How does it work?",
+      "introStap1": "Collect the required number of emergency codes from the designated heirs.",
+      "introStap2": "Enter each code separately on the next screen.",
+      "introStap3": "Once enough codes are entered, the archive will be unlocked.",
+      "introStarten": "Enter emergency codes",
+      "reconstructieMisluktTitel": "Reconstruction failed",
+      "reconstructieMisluktStap1": "Check that you have entered the correct number of emergency codes.",
+      "reconstructieMisluktStap2": "Verify that each code has been copied completely and correctly.",
+      "reconstructieMisluktStap3": "Contact another designated heir for the missing code."
     },
     "wachtwoordsterkte": {
       "zeerZwak": "Very weak",

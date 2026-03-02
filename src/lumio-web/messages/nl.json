@@ -50,7 +50,10 @@
       "wachtwoordPlaceholder": "Voer uw wachtwoord in",
       "bezig": "Ontgrendelen...",
       "ontgrendelen": "Ontgrendelen",
-      "mislukt": "Ontgrendelen mislukt"
+      "mislukt": "Ontgrendelen mislukt",
+      "wachtwoordVergetenTitel": "Wachtwoord vergeten?",
+      "wachtwoordVergetenTekst": "Toegang tot uw Lumio-dossier kan niet worden hersteld zonder het wachtwoord. Dit is een bewuste beveiligingskeuze om uw gegevens te beschermen.",
+      "geblokkerd": "Te veel mislukte pogingen. Probeer het opnieuw over {minuten, plural, one {1 minuut} other {# minuten}}."
     },
     "erfgenaam": {
       "titel": "Erfgenaam Toegang",
@@ -63,7 +66,18 @@
       "reconstructieMislukt": "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd.",
       "bezig": "Reconstrueren...",
       "ontgrendelen": "Ontgrendelen met noodcodes",
-      "anderProfiel": "← Ander profiel kiezen"
+      "anderProfiel": "← Ander profiel kiezen",
+      "introTitel": "Toegang als erfgenaam",
+      "introBeschrijving": "Om toegang te krijgen tot dit Lumio-dossier heeft u noodcodes nodig. De eigenaar heeft zijn hoofdwachtwoord veilig opgesplitst met de Shamir-methode.",
+      "introHoeWerktHet": "Hoe werkt het?",
+      "introStap1": "Verzamel het benodigde aantal noodcodes van de aangewezen erfgenamen.",
+      "introStap2": "Voer elke code afzonderlijk in op het volgende scherm.",
+      "introStap3": "Wanneer voldoende codes zijn ingevoerd, wordt het dossier ontsloten.",
+      "introStarten": "Noodcodes invoeren",
+      "reconstructieMisluktTitel": "Reconstructie mislukt",
+      "reconstructieMisluktStap1": "Controleer of u het juiste aantal noodcodes heeft ingevoerd.",
+      "reconstructieMisluktStap2": "Controleer of elke code volledig en correct is overgenomen.",
+      "reconstructieMisluktStap3": "Neem contact op met een andere aangewezen erfgenaam voor de ontbrekende code."
     },
     "wachtwoordsterkte": {
       "zeerZwak": "Zeer zwak",

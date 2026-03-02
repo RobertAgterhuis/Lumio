@@ -40,7 +40,7 @@
 
 | ID | Prioriteit | Scope | Beslissing | Toelichting | Datum |
 |----|-----------|-------|-----------|-------------|-------|
-| DEC-100 | — | — | *(Voeg hier een genomen besluit toe)* | | |
+| DEC-101 | HOOG | Alle sprints | Chromatic wordt **niet** gebruikt voor visuele regressietests | Het project maakt geen gebruik van Chromatic. De CI-job (`chromatic`) moet worden uitgeschakeld (`if: false`). `chromatic.config.json` blijft als skelet bewaard maar wordt niet geconfigureerd. `CHROMATIC_PROJECT_TOKEN` hoeft niet ingesteld te worden. | 2026-03-02 |
 
 ---
 

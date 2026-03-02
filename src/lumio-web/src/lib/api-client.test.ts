@@ -98,6 +98,37 @@ describe("api-client", () => {
       await expect(api.get("/api/test")).rejects.toThrow("LOCKED");
     });
 
+    it("throws ApiError with lockoutRemainingSeconds for 429 status", async () => {
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ error: "Te veel pogingen.", lockoutRemainingSeconds: 600 }),
+          { status: 429 }
+        )
+      );
+
+      const err = (await api.get("/api/test").catch((e: unknown) => e)) as {
+        status: number;
+        lockoutRemainingSeconds: number;
+        detail: string;
+      };
+      expect(err.status).toBe(429);
+      expect(err.lockoutRemainingSeconds).toBe(600);
+      expect(err.detail).toBe("Te veel pogingen.");
+    });
+
+    it("defaults lockoutRemainingSeconds to 0 when absent in 429 body", async () => {
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: "Too many requests." }), { status: 429 })
+      );
+
+      const err = (await api.get("/api/test").catch((e: unknown) => e)) as {
+        status: number;
+        lockoutRemainingSeconds: number;
+      };
+      expect(err.status).toBe(429);
+      expect(err.lockoutRemainingSeconds).toBe(0);
+    });
+
     it("throws HTTP error for non-ok responses", async () => {
       vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
         new Response(JSON.stringify({ error: "Not found" }), { status: 404 })
