@@ -1,6 +1,7 @@
 using Lumio.Api.Controllers;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Testament;
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Results;
@@ -18,12 +19,17 @@ public sealed class TestamentControllerTests
 {
     // ── helpers ────────────────────────────────────────────────────────────────
 
-    private static TestamentController MakeController(Lumio.Api.Data.LumioDbContext? db = null) =>
-        new(
-            db ?? TestDbFactory.Create(),
+    private static TestamentController MakeController(Lumio.Api.Data.LumioDbContext? db = null)
+    {
+        var ctx = db ?? TestDbFactory.Create();
+        return new TestamentController(
+            new EfTestamentRepository(ctx),
+            new EfTestamentSnapshotRepository(ctx),
+            new EfTestamentJuridischeCheckRepository(ctx),
             Options.Create(new ErfbelastingOptions()),
             new FakeLegitimairePortieServiceForTestament(),
             new FakeAuditService());
+    }
 
     private static TestamentInfoUpsertRequest MinimalRequest(
         string? type = "Notarieel",
@@ -61,7 +67,13 @@ public sealed class TestamentControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new TestamentController(db, Options.Create(new ErfbelastingOptions()), new FakeLegitimairePortieServiceForTestament(), new FakeAuditService());
+        var ctrl = new TestamentController(
+            new EfTestamentRepository(db),
+            new EfTestamentSnapshotRepository(db),
+            new EfTestamentJuridischeCheckRepository(db),
+            Options.Create(new ErfbelastingOptions()),
+            new FakeLegitimairePortieServiceForTestament(),
+            new FakeAuditService());
         await ctrl.Upsert(MinimalRequest());
 
         var result = await ctrl.Get();
@@ -87,7 +99,13 @@ public sealed class TestamentControllerTests
         var db = TestDbFactory.Create();
         // Eigenaar geboren in 1970 — testament datum mag niet voor 1970 liggen
         await SeedEigenaar(db, geboortedatum: new DateOnly(1970, 1, 1));
-        var ctrl = new TestamentController(db, Options.Create(new ErfbelastingOptions()), new FakeLegitimairePortieServiceForTestament(), new FakeAuditService());
+        var ctrl = new TestamentController(
+            new EfTestamentRepository(db),
+            new EfTestamentSnapshotRepository(db),
+            new EfTestamentJuridischeCheckRepository(db),
+            Options.Create(new ErfbelastingOptions()),
+            new FakeLegitimairePortieServiceForTestament(),
+            new FakeAuditService());
 
         var result = await ctrl.Upsert(MinimalRequest(datum: new DateOnly(1965, 1, 1)));
 
@@ -99,7 +117,13 @@ public sealed class TestamentControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new TestamentController(db, Options.Create(new ErfbelastingOptions()), new FakeLegitimairePortieServiceForTestament(), new FakeAuditService());
+        var ctrl = new TestamentController(
+            new EfTestamentRepository(db),
+            new EfTestamentSnapshotRepository(db),
+            new EfTestamentJuridischeCheckRepository(db),
+            Options.Create(new ErfbelastingOptions()),
+            new FakeLegitimairePortieServiceForTestament(),
+            new FakeAuditService());
 
         var result = await ctrl.Upsert(MinimalRequest("Notarieel"));
 
@@ -113,7 +137,13 @@ public sealed class TestamentControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new TestamentController(db, Options.Create(new ErfbelastingOptions()), new FakeLegitimairePortieServiceForTestament(), new FakeAuditService());
+        var ctrl = new TestamentController(
+            new EfTestamentRepository(db),
+            new EfTestamentSnapshotRepository(db),
+            new EfTestamentJuridischeCheckRepository(db),
+            Options.Create(new ErfbelastingOptions()),
+            new FakeLegitimairePortieServiceForTestament(),
+            new FakeAuditService());
 
         await ctrl.Upsert(MinimalRequest("Notarieel"));
         var result = await ctrl.Upsert(MinimalRequest("Onderhands"));
@@ -128,7 +158,13 @@ public sealed class TestamentControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new TestamentController(db, Options.Create(new ErfbelastingOptions()), new FakeLegitimairePortieServiceForTestament(), new FakeAuditService());
+        var ctrl = new TestamentController(
+            new EfTestamentRepository(db),
+            new EfTestamentSnapshotRepository(db),
+            new EfTestamentJuridischeCheckRepository(db),
+            Options.Create(new ErfbelastingOptions()),
+            new FakeLegitimairePortieServiceForTestament(),
+            new FakeAuditService());
 
         await ctrl.Upsert(MinimalRequest("Notarieel"));
         await ctrl.Upsert(MinimalRequest("Onderhands")); // type change → auto-snapshot
@@ -157,7 +193,13 @@ public sealed class TestamentControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new TestamentController(db, Options.Create(new ErfbelastingOptions()), new FakeLegitimairePortieServiceForTestament(), new FakeAuditService());
+        var ctrl = new TestamentController(
+            new EfTestamentRepository(db),
+            new EfTestamentSnapshotRepository(db),
+            new EfTestamentJuridischeCheckRepository(db),
+            Options.Create(new ErfbelastingOptions()),
+            new FakeLegitimairePortieServiceForTestament(),
+            new FakeAuditService());
         await ctrl.Upsert(MinimalRequest());
 
         var result = await ctrl.LegitimairePortieCheck();
@@ -186,3 +228,4 @@ sealed class FakeLegitimairePortieServiceForTestament : ILegitimairePortieServic
             RegelVersie = "test-fake",
         };
 }
+

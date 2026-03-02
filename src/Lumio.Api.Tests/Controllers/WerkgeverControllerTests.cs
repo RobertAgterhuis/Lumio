@@ -1,6 +1,7 @@
 using Lumio.Api.Controllers;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lumio.Api.Tests.Controllers;
@@ -14,7 +15,7 @@ public sealed class WerkgeverControllerTests
     // ── helpers ────────────────────────────────────────────────────────────────
 
     private static WerkgeverController MakeController() =>
-        new(TestDbFactory.Create(), new FakeAuditService());
+        new(new EfWerkgeverRepository(TestDbFactory.Create()), new FakeAuditService());
 
     private static WerkgeverUpsertRequest MinimalRequest(string naam = "Testbedrijf BV") =>
         new(naam, null, null, null, null, null, null, null, null, null, false, null, null, null, null, null, null, null, null, null, null);
@@ -46,7 +47,7 @@ public sealed class WerkgeverControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new WerkgeverController(db, new FakeAuditService());
+        var ctrl = new WerkgeverController(new EfWerkgeverRepository(db), new FakeAuditService());
         await ctrl.Create(MinimalRequest("Bedrijf A"));
         await ctrl.Create(MinimalRequest("Bedrijf B"));
 
@@ -72,7 +73,7 @@ public sealed class WerkgeverControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new WerkgeverController(db, new FakeAuditService());
+        var ctrl = new WerkgeverController(new EfWerkgeverRepository(db), new FakeAuditService());
         var created = (CreatedAtActionResult)(await ctrl.Create(MinimalRequest())).Result!;
         var response = (WerkgeverResponse)created.Value!;
 
@@ -98,7 +99,7 @@ public sealed class WerkgeverControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new WerkgeverController(db, new FakeAuditService());
+        var ctrl = new WerkgeverController(new EfWerkgeverRepository(db), new FakeAuditService());
 
         var result = await ctrl.Create(MinimalRequest());
 
@@ -120,7 +121,7 @@ public sealed class WerkgeverControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new WerkgeverController(db, new FakeAuditService());
+        var ctrl = new WerkgeverController(new EfWerkgeverRepository(db), new FakeAuditService());
         var created = (CreatedAtActionResult)(await ctrl.Create(MinimalRequest("Oud Naam"))).Result!;
         var id = ((WerkgeverResponse)created.Value!).Id;
 
@@ -146,7 +147,7 @@ public sealed class WerkgeverControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new WerkgeverController(db, new FakeAuditService());
+        var ctrl = new WerkgeverController(new EfWerkgeverRepository(db), new FakeAuditService());
         var created = (CreatedAtActionResult)(await ctrl.Create(MinimalRequest())).Result!;
         var id = ((WerkgeverResponse)created.Value!).Id;
 

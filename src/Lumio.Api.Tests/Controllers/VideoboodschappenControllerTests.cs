@@ -1,6 +1,7 @@
 using Lumio.Api.Controllers;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Domain.VideoMessages;
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -37,7 +38,7 @@ public class VideoboodschappenControllerTests
     {
         storage ??= new FakeVideoStorageService();
         var limieten = Options.Create(new LimietenOptions());
-        return new VideoboodschappenController(db, limieten, storage);
+        return new VideoboodschappenController(new EfVideoboodschapRepository(db), limieten, storage);
     }
 
     // ── TC-01: Succes ───────────────────────────────────────────────────

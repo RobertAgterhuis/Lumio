@@ -1,12 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Lumio.Api.Data;
 using Lumio.Api.Domain.Testament;
 using Lumio.Api.Dtos.Testament;
+using Lumio.Api.Repositories;
 using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace Lumio.Api.Controllers;
@@ -15,16 +14,19 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/testament/snapshots")]
 public class TestamentSnapshotsController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly ITestamentSnapshotRepository _snapshots;
+    private readonly ITestamentJuridischeCheckRepository _checkRepo;
     private readonly IAuditService _audit;
     private readonly IStringLocalizer<TestamentSnapshotsController> L;
 
     public TestamentSnapshotsController(
-        LumioDbContext db,
+        ITestamentSnapshotRepository snapshots,
+        ITestamentJuridischeCheckRepository checkRepo,
         IAuditService audit,
         IStringLocalizer<TestamentSnapshotsController> localizer)
     {
-        _db = db;
+        _snapshots = snapshots;
+        _checkRepo = checkRepo;
         _audit = audit;
         L = localizer;
     }
@@ -32,51 +34,38 @@ public class TestamentSnapshotsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<TestamentSnapshotResponse>>> GetSnapshots()
     {
-        var testament = await _db.Testamenten.FirstOrDefaultAsync();
-        if (testament is null) return Ok(new List<TestamentSnapshotResponse>());
+        var check = await _checkRepo.GetCheckDataAsync();
+        if (check.Testament is null) return Ok(new List<TestamentSnapshotResponse>());
 
-        var items = await _db.TestamentSnapshots
-            .Where(s => s.TestamentInfoId == testament.Id)
-            .OrderByDescending(s => s.Versie)
-            .ToListAsync();
+        var items = await _snapshots.GetAllAsync(check.Testament.Id);
         return Ok(items.Adapt<List<TestamentSnapshotResponse>>());
     }
 
     [HttpPost]
     public async Task<ActionResult<TestamentSnapshotResponse>> CreateSnapshot([FromBody] TestamentSnapshotCreateRequest request)
     {
-        var testament = await _db.Testamenten.FirstOrDefaultAsync();
-        if (testament is null) return BadRequest(new { error = "Maak eerst testament informatie aan." });
-
-        var begunstigden = await _db.Begunstigden
-            .Where(b => b.TestamentInfoId == testament.Id)
-            .ToListAsync();
-
-        var executeurs = await _db.Executeurs
-            .Where(e => e.TestamentInfoId == testament.Id)
-            .ToListAsync();
+        var check = await _checkRepo.GetCheckDataAsync();
+        if (check.Testament is null) return BadRequest(new { error = "Maak eerst testament informatie aan." });
 
         var snapshotData = new
         {
-            testament = testament.Adapt<TestamentInfoResponse>(),
-            begunstigden = begunstigden.Adapt<List<BegunstigdeResponse>>(),
-            executeurs = executeurs.Adapt<List<ExecuteurResponse>>(),
+            testament = check.Testament.Adapt<TestamentInfoResponse>(),
+            begunstigden = check.Begunstigden.Adapt<List<BegunstigdeResponse>>(),
+            executeurs = check.Executeurs.Adapt<List<ExecuteurResponse>>(),
         };
 
-        var maxVersie = await _db.TestamentSnapshots
-            .Where(s => s.TestamentInfoId == testament.Id)
-            .MaxAsync(s => (int?)s.Versie) ?? 0;
+        var maxVersie = await _snapshots.GetMaxVersieAsync(check.Testament.Id);
 
         var snapshot = new TestamentSnapshot
         {
-            TestamentInfoId = testament.Id,
+            TestamentInfoId = check.Testament.Id,
             Versie = maxVersie + 1,
             Notitie = request.Notitie,
             SnapshotJson = JsonSerializer.Serialize(snapshotData, new JsonSerializerOptions { WriteIndented = false }),
         };
 
-        _db.TestamentSnapshots.Add(snapshot);
-        await _db.SaveChangesAsync();
+        await _snapshots.AddAsync(snapshot);
+        await _snapshots.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "TestamentSnapshot", snapshot.Id);
         return Created($"/api/testament/snapshots/{snapshot.Id}", snapshot.Adapt<TestamentSnapshotResponse>());
     }
@@ -84,7 +73,7 @@ public class TestamentSnapshotsController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<TestamentSnapshotDetailResponse>> GetSnapshot(Guid id)
     {
-        var item = await _db.TestamentSnapshots.FindAsync(id);
+        var item = await _snapshots.FindByIdAsync(id);
         if (item is null) return NotFound();
         return Ok(item.Adapt<TestamentSnapshotDetailResponse>());
     }
@@ -93,8 +82,8 @@ public class TestamentSnapshotsController : ControllerBase
     public async Task<ActionResult<TestamentVergelijkingResponse>> VergelijkSnapshots(
         [FromQuery] Guid versie1Id, [FromQuery] Guid versie2Id)
     {
-        var snap1 = await _db.TestamentSnapshots.FindAsync(versie1Id);
-        var snap2 = await _db.TestamentSnapshots.FindAsync(versie2Id);
+        var snap1 = await _snapshots.FindByIdAsync(versie1Id);
+        var snap2 = await _snapshots.FindByIdAsync(versie2Id);
         if (snap1 is null || snap2 is null) return NotFound();
 
         var json1 = JsonNode.Parse(snap1.SnapshotJson);
@@ -151,7 +140,7 @@ public class TestamentSnapshotsController : ControllerBase
                 verschillen.Add(new TestamentVerschil(
                     L["BeneficiaryLabel", naam].Value,
                     L["NoneValue"].Value,
-                    $"{naam} ({rel2}) — {pct2}%"));
+                    $"{naam} ({rel2}) --- {pct2}%"));
             }
             else if (!inB2)
             {
@@ -159,7 +148,7 @@ public class TestamentSnapshotsController : ControllerBase
                 var rel1 = node1?["relatie"]?.ToString() ?? "";
                 verschillen.Add(new TestamentVerschil(
                     L["BeneficiaryLabel", naam].Value,
-                    $"{naam} ({rel1}) — {pct1}%",
+                    $"{naam} ({rel1}) --- {pct1}%",
                     L["NoneValue"].Value));
             }
             else
@@ -172,8 +161,8 @@ public class TestamentSnapshotsController : ControllerBase
                 {
                     verschillen.Add(new TestamentVerschil(
                         L["BeneficiaryLabel", naam].Value,
-                        $"{naam} ({rel1}) — {pct1}%",
-                        $"{naam} ({rel2}) — {pct2}%"));
+                        $"{naam} ({rel1}) --- {pct1}%",
+                        $"{naam} ({rel2}) --- {pct2}%"));
                 }
             }
         }
@@ -187,11 +176,11 @@ public class TestamentSnapshotsController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteSnapshot(Guid id)
     {
-        var item = await _db.TestamentSnapshots.FindAsync(id);
+        var item = await _snapshots.FindByIdAsync(id);
         if (item is null) return NotFound();
 
-        _db.TestamentSnapshots.Remove(item);
-        await _db.SaveChangesAsync();
+        await _snapshots.RemoveAsync(item);
+        await _snapshots.CommitAsync();
         await _audit.LogAsync("Verwijderd", "TestamentSnapshot", id);
         return NoContent();
     }

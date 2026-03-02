@@ -1,11 +1,10 @@
-using Lumio.Api.Data;
 using Lumio.Api.Domain.Documents;
 using Lumio.Api.Dtos.Documents;
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
@@ -18,13 +17,16 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/documenten")]
 public class DocumentenBestandenController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly IDocumentBestandRepository _repo;
     private readonly LimietenOptions _limieten;
     private readonly IAuditService _audit;
 
-    public DocumentenBestandenController(LumioDbContext db, IOptions<LimietenOptions> limieten, IAuditService audit)
+    public DocumentenBestandenController(
+        IDocumentBestandRepository repo,
+        IOptions<LimietenOptions> limieten,
+        IAuditService audit)
     {
-        _db = db;
+        _repo = repo;
         _limieten = limieten.Value;
         _audit = audit;
     }
@@ -44,8 +46,8 @@ public class DocumentenBestandenController : ControllerBase
         if (bestand is null)
             return BadRequest(new { error = "Geen bestand opgegeven." });
 
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         if (bestand.Length > _limieten.DocumentMaxBytes)
             return BadRequest(new { error = $"Bestand is te groot. Maximum is {_limieten.DocumentMaxBytes / 1_048_576} MB." });
@@ -56,17 +58,14 @@ public class DocumentenBestandenController : ControllerBase
         var content = encryption.EncryptBytes(rawContent);
 
         // Check if a document with the same name already exists → create new version
-        var existing = await _db.Documenten
-            .Where(d => d.Naam == naam && d.EigenaarId == eigenaar.Id)
-            .OrderByDescending(d => d.Versie)
-            .FirstOrDefaultAsync();
+        var existing = await _repo.FindLatestByNaamAsync(naam, eigenaarId.Value);
 
         var documentGroepId = existing?.DocumentGroepId ?? Guid.NewGuid();
         var versie = (existing?.Versie ?? 0) + 1;
 
         var item = new PersoonlijkDocument
         {
-            EigenaarId = eigenaar.Id,
+            EigenaarId = eigenaarId.Value,
             Naam = naam,
             Categorie = Enum.TryParse<DocumentCategorie>(categorie, ignoreCase: true, out var parsedCat)
                 ? parsedCat
@@ -81,12 +80,11 @@ public class DocumentenBestandenController : ControllerBase
             Versie = versie
         };
 
-        _db.Documenten.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Document", item.Id, naam);
 
-        var aantalVersies = await _db.Documenten
-            .CountAsync(d => d.DocumentGroepId == documentGroepId);
+        var aantalVersies = await _repo.GetAantalVersiesAsync(documentGroepId);
 
         return Created($"/api/documenten/{item.Id}", new DocumentResponse(
             item.Id, item.Naam, item.Categorie.ToString(), item.BestandsNaam, item.ContentType,
@@ -100,7 +98,7 @@ public class DocumentenBestandenController : ControllerBase
         Guid id,
         [FromServices] IEncryptionService encryption)
     {
-        var item = await _db.Documenten.FindAsync(id);
+        var item = await _repo.FindByIdAsync(id);
         if (item is null) return NotFound();
 
         await _audit.LogAsync("DocumentGedownload", "Document", id, item.BestandsNaam);

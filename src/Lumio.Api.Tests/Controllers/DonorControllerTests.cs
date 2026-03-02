@@ -1,6 +1,7 @@
 using Lumio.Api.Controllers;
 using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.DonorRegistration;
+using Lumio.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lumio.Api.Tests.Controllers;
@@ -14,7 +15,7 @@ public sealed class DonorControllerTests
     // ── helpers ────────────────────────────────────────────────────────────────
 
     private static DonorController MakeController() =>
-        new(TestDbFactory.Create(), new FakeAuditService());
+        new(new EfDonorRepository(TestDbFactory.Create()), new FakeAuditService());
 
     private static DonorRegistratieUpsertRequest MinimalRequest() =>
         new("JaAlleOrganen", false, null, null, null, null, null);
@@ -44,7 +45,7 @@ public sealed class DonorControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new DonorController(db, new FakeAuditService());
+        var ctrl = new DonorController(new EfDonorRepository(db), new FakeAuditService());
         await ctrl.Upsert(MinimalRequest());
 
         var result = await ctrl.Get();
@@ -69,7 +70,7 @@ public sealed class DonorControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new DonorController(db, new FakeAuditService());
+        var ctrl = new DonorController(new EfDonorRepository(db), new FakeAuditService());
 
         var result = await ctrl.Upsert(MinimalRequest());
 
@@ -83,7 +84,7 @@ public sealed class DonorControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new DonorController(db, new FakeAuditService());
+        var ctrl = new DonorController(new EfDonorRepository(db), new FakeAuditService());
 
         // Eerste aanmaak
         await ctrl.Upsert(MinimalRequest());
@@ -115,7 +116,7 @@ public sealed class DonorControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new DonorController(db, new FakeAuditService());
+        var ctrl = new DonorController(new EfDonorRepository(db), new FakeAuditService());
         await ctrl.Upsert(MinimalRequest());
 
         var result = await ctrl.GetOrgaanKeuzes();
@@ -142,7 +143,7 @@ public sealed class DonorControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new DonorController(db, new FakeAuditService());
+        var ctrl = new DonorController(new EfDonorRepository(db), new FakeAuditService());
         await ctrl.Upsert(MinimalRequest());
 
         var result = await ctrl.CreateOrgaanKeuze(new OrgaanKeuzeUpsertRequest("Hart", true, null));
@@ -167,7 +168,7 @@ public sealed class DonorControllerTests
     {
         var db = TestDbFactory.Create();
         await SeedEigenaar(db);
-        var ctrl = new DonorController(db, new FakeAuditService());
+        var ctrl = new DonorController(new EfDonorRepository(db), new FakeAuditService());
         await ctrl.Upsert(MinimalRequest());
 
         var keuzes = new List<OrgaanKeuzeUpsertRequest>

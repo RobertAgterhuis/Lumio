@@ -1,9 +1,8 @@
-using Lumio.Api.Data;
-using Lumio.Api.Domain.Common;
+﻿using Lumio.Api.Domain.Common;
 using Lumio.Api.Dtos.Common;
+using Lumio.Api.Repositories;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace Lumio.Api.Controllers;
@@ -12,46 +11,30 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/afhandeling")]
 public class AfhandelingController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly IAfhandelingRepository _repo;
     private readonly IStringLocalizer<AfhandelingController> L;
 
-    public AfhandelingController(LumioDbContext db, IStringLocalizer<AfhandelingController> localizer)
+    public AfhandelingController(IAfhandelingRepository repo, IStringLocalizer<AfhandelingController> localizer)
     {
-        _db = db;
+        _repo = repo;
         L = localizer;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<AfhandelingsItemDto>>> GetAll([FromQuery] string? domein = null)
     {
-        var query = _db.AfhandelingsItems.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(domein))
-            query = query.Where(a => a.Domein == domein);
-
-        var items = await query
-            .OrderBy(a => a.Domein)
-            .ThenBy(a => a.AangemaaktOp)
-            .Select(a => new AfhandelingsItemDto(
-                a.Id,
-                a.Domein,
-                a.EntityId,
-                a.Label,
-                a.Status.ToString(),
-                a.Notitie,
-                a.AfgehandeldOp,
-                a.AangemaaktOp,
-                a.GewijzigdOp
-            ))
-            .ToListAsync();
-
-        return Ok(items);
+        var items = await _repo.GetAllAsync(domein);
+        return Ok(items.Select(a => new AfhandelingsItemDto(
+            a.Id, a.Domein, a.EntityId, a.Label,
+            a.Status.ToString(), a.Notitie,
+            a.AfgehandeldOp, a.AangemaaktOp, a.GewijzigdOp
+        )).ToList());
     }
 
     [HttpGet("samenvatting")]
     public async Task<IActionResult> GetSamenvatting()
     {
-        var items = await _db.AfhandelingsItems.ToListAsync();
+        var items = await _repo.GetAllAsync();
 
         var perDomein = items
             .GroupBy(a => a.Domein)
@@ -87,26 +70,20 @@ public class AfhandelingController : ControllerBase
             Status = AfhandelingsStatus.Open
         };
 
-        _db.AfhandelingsItems.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
 
         return Created($"/api/afhandeling/{item.Id}", new AfhandelingsItemDto(
-            item.Id,
-            item.Domein,
-            item.EntityId,
-            item.Label,
-            item.Status.ToString(),
-            item.Notitie,
-            item.AfgehandeldOp,
-            item.AangemaaktOp,
-            item.GewijzigdOp
+            item.Id, item.Domein, item.EntityId, item.Label,
+            item.Status.ToString(), item.Notitie,
+            item.AfgehandeldOp, item.AangemaaktOp, item.GewijzigdOp
         ));
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] AfhandelingsItemUpdateRequest request)
     {
-        var item = await _db.AfhandelingsItems.FindAsync(id);
+        var item = await _repo.FindByIdAsync(id);
         if (item is null)
             return NotFound(new { error = "Afhandelingsitem niet gevonden." });
 
@@ -121,89 +98,65 @@ public class AfhandelingController : ControllerBase
         else if (status != AfhandelingsStatus.Afgehandeld)
             item.AfgehandeldOp = null;
 
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
 
         return Ok(new AfhandelingsItemDto(
-            item.Id,
-            item.Domein,
-            item.EntityId,
-            item.Label,
-            item.Status.ToString(),
-            item.Notitie,
-            item.AfgehandeldOp,
-            item.AangemaaktOp,
-            item.GewijzigdOp
+            item.Id, item.Domein, item.EntityId, item.Label,
+            item.Status.ToString(), item.Notitie,
+            item.AfgehandeldOp, item.AangemaaktOp, item.GewijzigdOp
         ));
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, [FromServices] IMasterPasswordService passwordService)
     {
-        // S2-03: Block deletion in read-only (erfgenaam) mode
         if (passwordService.IsReadOnly)
             return StatusCode(403, new { error = "Verwijderen is niet toegestaan in alleen-lezen modus (erfgenaam-toegang)." });
 
-        var item = await _db.AfhandelingsItems.FindAsync(id);
+        var item = await _repo.FindByIdAsync(id);
         if (item is null)
             return NotFound(new { error = "Afhandelingsitem niet gevonden." });
 
-        _db.AfhandelingsItems.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
 
         return NoContent();
     }
 
-    /// <summary>
-    /// Initialize standard tracking items for all domains that have data.
-    /// Called once when heirs first access the system.
-    /// </summary>
     [HttpPost("initialiseer")]
     public async Task<IActionResult> Initialiseer()
     {
-        // Don't re-initialize if items already exist
-        if (await _db.AfhandelingsItems.AnyAsync())
+        if (await _repo.AnyAsync())
             return Ok(new { bericht = L["AlreadyInitialized"].Value, aangemaakt = 0 });
 
+        var bronnen = await _repo.GetBronnenStatusAsync();
         var items = new List<AfhandelingsItem>();
 
-        // Check each domain and create tracking items for domains that have data
-        if (await _db.Noodcontacten.AnyAsync())
+        if (bronnen.HeeftNoodcontacten)
             items.Add(new AfhandelingsItem { Domein = "noodcontacten", Label = L["LabelNotifyEmergencyContacts"].Value });
-
-        if (await _db.UitvaartWensen.AnyAsync())
+        if (bronnen.HeeftUitvaartWensen)
             items.Add(new AfhandelingsItem { Domein = "uitvaart", Label = L["LabelArrangeFuneral"].Value });
-
-        if (await _db.DonorRegistraties.AnyAsync())
+        if (bronnen.HeeftDonorRegistratie)
             items.Add(new AfhandelingsItem { Domein = "donor", Label = L["LabelCheckDonor"].Value });
-
-        if (await _db.Wilsverklaringen.AnyAsync())
+        if (bronnen.HeeftWilsverklaring)
             items.Add(new AfhandelingsItem { Domein = "euthanasie", Label = L["LabelViewLivingWill"].Value });
-
-        if (await _db.Testamenten.AnyAsync())
+        if (bronnen.HeeftTestament)
             items.Add(new AfhandelingsItem { Domein = "testament", Label = L["LabelViewTestament"].Value });
-
-        if (await _db.Erfgenamen.AnyAsync())
+        if (bronnen.HeeftErfgenamen)
             items.Add(new AfhandelingsItem { Domein = "erfgenamen", Label = L["LabelNotifyHeirs"].Value });
-
-        if (await _db.Documenten.AnyAsync())
+        if (bronnen.HeeftDocumenten)
             items.Add(new AfhandelingsItem { Domein = "documenten", Label = L["LabelCollectDocuments"].Value });
-
-        if (await _db.FysiekeBezittingen.AnyAsync() || await _db.Bankrekeningen.AnyAsync()
-            || await _db.Verzekeringen.AnyAsync() || await _db.Schulden.AnyAsync())
+        if (bronnen.HeeftBoedel)
             items.Add(new AfhandelingsItem { Domein = "boedel", Label = L["LabelSettleEstate"].Value });
-
-        if (await _db.DigitaleAccounts.AnyAsync() || await _db.Wachtwoorden.AnyAsync()
-            || await _db.CryptoWallets.AnyAsync())
+        if (bronnen.HeeftDigitaalBezit)
             items.Add(new AfhandelingsItem { Domein = "digitaal-bezit", Label = L["LabelSettleDigitalAssets"].Value });
-
-        if (await _db.Eigenaren.AnyAsync())
+        if (bronnen.HeeftEigenaar)
             items.Add(new AfhandelingsItem { Domein = "eigenaar", Label = L["LabelPersonalData"].Value });
 
-        // Always add export item
         items.Add(new AfhandelingsItem { Domein = "export", Label = L["LabelExportDossier"].Value });
 
-        _db.AfhandelingsItems.AddRange(items);
-        await _db.SaveChangesAsync();
+        await _repo.AddRangeAsync(items);
+        await _repo.CommitAsync();
 
         return Ok(new { bericht = L["Initialized"].Value, aangemaakt = items.Count });
     }

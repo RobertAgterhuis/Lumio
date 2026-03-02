@@ -1,9 +1,9 @@
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules;
 using Lumio.Api.Rules.Services;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace Lumio.Api.Controllers;
@@ -102,42 +102,38 @@ public class StatusController : ControllerBase
 
     /// <summary>Gedetailleerde statistieken voor het dashboard.</summary>
     [HttpGet("statistieken")]
-    public async Task<IActionResult> GetStatistieken([FromServices] Lumio.Api.Data.LumioDbContext db)
+    public async Task<IActionResult> GetStatistieken([FromServices] IStatistiekenRepository repo)
     {
-        var erfgenamen = await db.Erfgenamen.CountAsync();
-        var noodcontacten = await db.Noodcontacten.CountAsync();
-        var documenten = await db.Documenten.CountAsync();
-        var accounts = await db.DigitaleAccounts.CountAsync();
-        var wachtwoorden = await db.Wachtwoorden.CountAsync();
-        var wallets = await db.CryptoWallets.CountAsync();
-        var bezittingen = await db.FysiekeBezittingen.CountAsync();
-        var bankrekeningen = await db.Bankrekeningen.CountAsync();
-        var verzekeringen = await db.Verzekeringen.CountAsync();
-        var schulden = await db.Schulden.CountAsync();
-
-        var totaalBezittingen = await db.FysiekeBezittingen.SumAsync(f => f.GeschatteWaarde ?? 0m);
-        var totaalSaldi = await db.Bankrekeningen.SumAsync(b => b.Saldo ?? 0m);
-        var totaalVerzekeringen = await db.Verzekeringen.SumAsync(v => v.VerzekerdBedrag ?? 0m);
-        var totaalVerzekeringenMetBegunstigde = await db.Verzekeringen
-            .Where(v => !string.IsNullOrEmpty(v.Begunstigde))
-            .SumAsync(v => v.VerzekerdBedrag ?? 0m);
-        var totaalSchulden = await db.Schulden.SumAsync(s => s.Bedrag);
+        var data = await repo.GetAsync();
         var (_, nettoNalatenschap) = NalatenschapHelper.Bereken(
-            totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden, totaalVerzekeringenMetBegunstigde);
+            data.TotaalBezittingen, data.TotaalSaldi, data.TotaalVerzekeringen,
+            data.TotaalSchulden, data.TotaalVerzekeringenMetBegunstigde);
 
         return Ok(new
         {
-            erfgenamen,
-            noodcontacten,
-            documenten,
-            digitaalBezit = new { accounts, wachtwoorden, wallets, totaal = accounts + wachtwoorden + wallets },
-            boedel = new { bezittingen, bankrekeningen, verzekeringen, schulden },
+            erfgenamen = data.Erfgenamen,
+            noodcontacten = data.Noodcontacten,
+            documenten = data.Documenten,
+            digitaalBezit = new
+            {
+                accounts = data.Accounts,
+                wachtwoorden = data.Wachtwoorden,
+                wallets = data.Wallets,
+                totaal = data.Accounts + data.Wachtwoorden + data.Wallets,
+            },
+            boedel = new
+            {
+                bezittingen = data.Bezittingen,
+                bankrekeningen = data.Bankrekeningen,
+                verzekeringen = data.Verzekeringen,
+                schulden = data.Schulden,
+            },
             financieel = new
             {
-                totaalBezittingen,
-                totaalSaldi,
-                totaalVerzekeringen,
-                totaalSchulden,
+                totaalBezittingen = data.TotaalBezittingen,
+                totaalSaldi = data.TotaalSaldi,
+                totaalVerzekeringen = data.TotaalVerzekeringen,
+                totaalSchulden = data.TotaalSchulden,
                 nettoNalatenschap,
             },
         });
