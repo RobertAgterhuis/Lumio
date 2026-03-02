@@ -45,6 +45,14 @@ async function request<T>(
       throw new Error("LOCKED");
     }
 
+    if (res.status === 429) {
+      const body: Record<string, unknown> = await res.json().catch(() => ({}));
+      const detail = typeof body.error === "string" ? body.error : "Te veel pogingen.";
+      const seconds = typeof body.lockoutRemainingSeconds === "number" ? body.lockoutRemainingSeconds : 0;
+      const err = new ApiError({ status: 429, detail });
+      throw Object.assign(err, { lockoutRemainingSeconds: seconds });
+    }
+
     if (!res.ok) {
       throw await ApiError.fromResponse(res);
     }

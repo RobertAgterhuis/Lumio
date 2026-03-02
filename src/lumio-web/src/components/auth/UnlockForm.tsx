@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { api } from "@/lib/api-client";
+import { api, ApiError } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { Lock, Eye, EyeOff, Info } from "lucide-react";
 
 export function UnlockForm() {
   const [password, setPassword] = useState("");
@@ -27,7 +27,15 @@ export function UnlockForm() {
       await api.post("/api/auth/ontgrendel", { wachtwoord: password });
       setUnlocked(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("mislukt"));
+      if (err instanceof ApiError && err.status === 429) {
+        const seconds = (err as ApiError & { lockoutRemainingSeconds?: number }).lockoutRemainingSeconds ?? 0;
+        const minutes = Math.max(1, Math.ceil(seconds / 60));
+        setError(t("geblokkerd", { minuten: minutes }));
+      } else if (err instanceof ApiError) {
+        setError(err.detail || t("mislukt"));
+      } else {
+        setError(err instanceof Error ? err.message : t("mislukt"));
+      }
     } finally {
       setLoading(false);
     }
@@ -76,6 +84,13 @@ export function UnlockForm() {
             {loading ? t("bezig") : t("ontgrendelen")}
           </Button>
         </form>
+        <div className="mt-4 rounded-md border border-border/50 bg-muted/30 p-3 flex gap-2">
+          <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+          <div>
+            <p className="text-xs font-medium text-muted-foreground">{t("wachtwoordVergetenTitel")}</p>
+            <p className="text-xs text-muted-foreground/80 mt-0.5">{t("wachtwoordVergetenTekst")}</p>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
