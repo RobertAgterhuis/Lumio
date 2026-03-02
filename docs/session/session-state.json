@@ -69,7 +69,7 @@
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-02T22:45:00Z",
+  "last_updated": "2026-03-02T23:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
@@ -81,6 +81,7 @@
     "RESOLVED: technical-manual/NL — 13 bestanden aanwezig (01-architectuur.md t/m README.md)",
     "RESOLVED: technical-manual/EN — 13 bestanden aanwezig (01-architecture.md t/m README.md)",
     "RESOLVED: SECURITY_FLAG GAP-ARCH-002 — unsafe-inline is harde constraint (DEC-105)",
+    "RESOLVED: REC-SEC-001 SSR-migratie nonce-based CSP — geen migratie, geaccepteerd risico (DEC-106)",
     "RESOLVED: EV-certificaat uitgesteld (DEC-201)",
     "RESOLVED: Penetratietest niet blokkerend (DEC-202)",
     "RESOLVED: Feature branch strategie vastgesteld (DEC-103)",
