@@ -2,10 +2,9 @@
 
 **Sprint ID:** SP-UX-01  
 **Branch:** `feature/sp-ux-01-accessibility`  
-**Status:** IN_PROGRESS  
+**Status:** REVIEW_PENDING — Chromatic baseline acceptance required  
 **Datum start:** 2026-03-02  
-**Velocity:** 7.5 SP  
-**Bron:** `docs/synthesis/eindrapport-ux.md` (GAP-UX-01, 03, 04, 05, 06, 08 + RP-ACC-001..005)
+**PR:** #70
 
 ---
 
