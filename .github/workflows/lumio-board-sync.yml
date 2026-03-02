@@ -37,10 +37,11 @@ jobs:
           # This avoids BASE==HEAD errors that occur when base: main resolves to the same commit as HEAD.
           base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
           head: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          # --fail is a native `with:` input in trufflehog@main; do NOT repeat it in extra_args
+          fail: true
           extra_args: >
             --debug
             --only-verified
-            --fail
         continue-on-error: false
 
       - name: Upload TruffleHog SARIF (if available)
