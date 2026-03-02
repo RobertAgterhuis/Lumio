@@ -1,10 +1,9 @@
-using Lumio.Api.Data;
 using Lumio.Api.Domain.DonorRegistration;
 using Lumio.Api.Dtos.DonorRegistration;
+using Lumio.Api.Repositories;
 using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Lumio.Api.Controllers;
 
@@ -12,24 +11,22 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/donor")]
 public class DonorController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly IDonorRepository _repo;
     private readonly IAuditService _audit;
 
-    public DonorController(LumioDbContext db, IAuditService audit)
+    public DonorController(IDonorRepository repo, IAuditService audit)
     {
-        _db = db;
+        _repo = repo;
         _audit = audit;
     }
 
     [HttpGet]
     public async Task<ActionResult<DonorRegistratieResponse>> Get()
     {
-        var item = await _db.DonorRegistraties.FirstOrDefaultAsync();
+        var item = await _repo.FindDonorRegistratieAsync();
         if (item is null) return NotFound();
 
-        var orgaanKeuzes = await _db.OrgaanKeuzes
-            .Where(o => o.DonorRegistratieId == item.Id)
-            .ToListAsync();
+        var orgaanKeuzes = await _repo.GetAlleOrgaanKeuzesAsync(item.Id);
 
         var response = new DonorRegistratieResponse(
             item.Id,
@@ -50,23 +47,23 @@ public class DonorController : ControllerBase
     [HttpPut]
     public async Task<ActionResult<DonorRegistratieResponse>> Upsert([FromBody] DonorRegistratieUpsertRequest request)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null)
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
-        var item = await _db.DonorRegistraties.FirstOrDefaultAsync();
+        var item = await _repo.FindDonorRegistratieAsync();
         if (item is null)
         {
             item = request.Adapt<DonorRegistratie>();
-            item.EigenaarId = eigenaar.Id;
-            _db.DonorRegistraties.Add(item);
+            item.EigenaarId = eigenaarId.Value;
+            await _repo.AddAsync(item);
         }
         else
         {
             request.Adapt(item);
         }
 
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Opgeslagen", "DonorRegistratie", item.Id);
 
         var response = new DonorRegistratieResponse(
@@ -88,26 +85,24 @@ public class DonorController : ControllerBase
     [HttpGet("orgaankeuzes")]
     public async Task<ActionResult<List<OrgaanKeuzeResponse>>> GetOrgaanKeuzes()
     {
-        var donor = await _db.DonorRegistraties.FirstOrDefaultAsync();
+        var donor = await _repo.FindDonorRegistratieAsync();
         if (donor is null) return Ok(new List<OrgaanKeuzeResponse>());
 
-        var items = await _db.OrgaanKeuzes
-            .Where(o => o.DonorRegistratieId == donor.Id)
-            .ToListAsync();
+        var items = await _repo.GetAlleOrgaanKeuzesAsync(donor.Id);
         return Ok(items.Adapt<List<OrgaanKeuzeResponse>>());
     }
 
     [HttpPost("orgaankeuzes")]
     public async Task<ActionResult<OrgaanKeuzeResponse>> CreateOrgaanKeuze([FromBody] OrgaanKeuzeUpsertRequest request)
     {
-        var donor = await _db.DonorRegistraties.FirstOrDefaultAsync();
+        var donor = await _repo.FindDonorRegistratieAsync();
         if (donor is null)
             return BadRequest(new { error = "Maak eerst donor registratie aan." });
 
         var item = request.Adapt<OrgaanKeuze>();
         item.DonorRegistratieId = donor.Id;
-        _db.OrgaanKeuzes.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddOrgaanKeuzeAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "OrgaanKeuze", item.Id);
         return Created($"/api/donor/orgaankeuzes/{item.Id}", item.Adapt<OrgaanKeuzeResponse>());
     }
@@ -115,11 +110,11 @@ public class DonorController : ControllerBase
     [HttpPut("orgaankeuzes/{id:guid}")]
     public async Task<ActionResult<OrgaanKeuzeResponse>> UpdateOrgaanKeuze(Guid id, [FromBody] OrgaanKeuzeUpsertRequest request)
     {
-        var item = await _db.OrgaanKeuzes.FindAsync(id);
+        var item = await _repo.FindOrgaanKeuzeByIdAsync(id);
         if (item is null) return NotFound();
 
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "OrgaanKeuze", id);
         return Ok(item.Adapt<OrgaanKeuzeResponse>());
     }
@@ -127,11 +122,11 @@ public class DonorController : ControllerBase
     [HttpDelete("orgaankeuzes/{id:guid}")]
     public async Task<IActionResult> DeleteOrgaanKeuze(Guid id)
     {
-        var item = await _db.OrgaanKeuzes.FindAsync(id);
+        var item = await _repo.FindOrgaanKeuzeByIdAsync(id);
         if (item is null) return NotFound();
 
-        _db.OrgaanKeuzes.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveOrgaanKeuzeAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "OrgaanKeuze", id);
         return NoContent();
     }
@@ -140,35 +135,11 @@ public class DonorController : ControllerBase
     public async Task<ActionResult<List<OrgaanKeuzeResponse>>> BatchUpdateOrgaanKeuzes(
         [FromBody] List<OrgaanKeuzeUpsertRequest> keuzes)
     {
-        var donor = await _db.DonorRegistraties.FirstOrDefaultAsync();
+        var donor = await _repo.FindDonorRegistratieAsync();
         if (donor is null)
             return BadRequest(new { error = "Maak eerst een donor registratie aan." });
 
-        using var transaction = await _db.Database.BeginTransactionAsync();
-        try
-        {
-            var bestaande = _db.OrgaanKeuzes.Where(o => o.DonorRegistratieId == donor.Id);
-            _db.OrgaanKeuzes.RemoveRange(bestaande);
-
-            foreach (var k in keuzes)
-            {
-                var item = k.Adapt<OrgaanKeuze>();
-                item.DonorRegistratieId = donor.Id;
-                _db.OrgaanKeuzes.Add(item);
-            }
-
-            await _db.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            var result = await _db.OrgaanKeuzes
-                .Where(o => o.DonorRegistratieId == donor.Id)
-                .ToListAsync();
-            return Ok(result.Adapt<List<OrgaanKeuzeResponse>>());
-        }
-        catch
-        {
-            await transaction.RollbackAsync();
-            throw;
-        }
+        var result = await _repo.BatchUpdateOrgaanKeuzesAsync(donor.Id, keuzes.Adapt<List<OrgaanKeuze>>());
+        return Ok(result.Adapt<List<OrgaanKeuzeResponse>>());
     }
 }

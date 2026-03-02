@@ -1,11 +1,10 @@
-using Lumio.Api.Data;
-using Lumio.Api.Domain.DigitalEstate;
+﻿using Lumio.Api.Domain.DigitalEstate;
 using Lumio.Api.Dtos.DigitalEstate;
+using Lumio.Api.Repositories;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Lumio.Api.Controllers;
 
@@ -13,12 +12,12 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/digitaal-bezit")]
 public class DigitaalBezitController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly IDigitaalBezitRepository _repo;
     private readonly IAuditService _audit;
 
-    public DigitaalBezitController(LumioDbContext db, IAuditService audit)
+    public DigitaalBezitController(IDigitaalBezitRepository repo, IAuditService audit)
     {
-        _db = db;
+        _repo = repo;
         _audit = audit;
     }
 
@@ -27,20 +26,22 @@ public class DigitaalBezitController : ControllerBase
     [HttpGet("accounts")]
     public async Task<ActionResult<List<DigitaalAccountResponse>>> GetAccounts()
     {
-        var items = await _db.DigitaleAccounts.OrderBy(a => a.PlatformNaam).ToListAsync();
-        return Ok(items.Adapt<List<DigitaalAccountResponse>>());
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return Ok(new List<DigitaalAccountResponse>());
+        var items = await _repo.GetAccountsAsync(eigenaarId.Value);
+        return Ok(items.OrderBy(a => a.PlatformNaam).Adapt<List<DigitaalAccountResponse>>());
     }
 
     [HttpPost("accounts")]
     public async Task<ActionResult<DigitaalAccountResponse>> CreateAccount([FromBody] DigitaalAccountUpsertRequest request)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = request.Adapt<DigitaalAccount>();
-        item.EigenaarId = eigenaar.Id;
-        _db.DigitaleAccounts.Add(item);
-        await _db.SaveChangesAsync();
+        item.EigenaarId = eigenaarId.Value;
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "DigitaalAccount", item.Id);
         return Created($"/api/digitaal-bezit/accounts/{item.Id}", item.Adapt<DigitaalAccountResponse>());
     }
@@ -48,11 +49,11 @@ public class DigitaalBezitController : ControllerBase
     [HttpPut("accounts/{id:guid}")]
     public async Task<ActionResult<DigitaalAccountResponse>> UpdateAccount(Guid id, [FromBody] DigitaalAccountUpsertRequest request)
     {
-        var item = await _db.DigitaleAccounts.FindAsync(id);
+        var item = await _repo.FindAccountAsync(id);
         if (item is null) return NotFound();
 
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "DigitaalAccount", id);
         return Ok(item.Adapt<DigitaalAccountResponse>());
     }
@@ -60,11 +61,11 @@ public class DigitaalBezitController : ControllerBase
     [HttpDelete("accounts/{id:guid}")]
     public async Task<IActionResult> DeleteAccount(Guid id)
     {
-        var item = await _db.DigitaleAccounts.FindAsync(id);
+        var item = await _repo.FindAccountAsync(id);
         if (item is null) return NotFound();
 
-        _db.DigitaleAccounts.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "DigitaalAccount", id);
         return NoContent();
     }
@@ -74,8 +75,10 @@ public class DigitaalBezitController : ControllerBase
     [HttpGet("wachtwoorden")]
     public async Task<ActionResult<List<WachtwoordEntryResponse>>> GetWachtwoorden()
     {
-        var items = await _db.Wachtwoorden.OrderBy(w => w.Naam).ToListAsync();
-        var result = items.Select(item => new WachtwoordEntryResponse(
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return Ok(new List<WachtwoordEntryResponse>());
+        var items = await _repo.GetWachtwoordenAsync(eigenaarId.Value);
+        var result = items.OrderBy(w => w.Naam).Select(item => new WachtwoordEntryResponse(
             item.Id,
             item.Naam,
             item.Gebruikersnaam,
@@ -91,12 +94,12 @@ public class DigitaalBezitController : ControllerBase
         [FromBody] WachtwoordEntryCreateRequest request,
         [FromServices] IEncryptionService encryption)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = new WachtwoordEntry
         {
-            EigenaarId = eigenaar.Id,
+            EigenaarId = eigenaarId.Value,
             Naam = request.Naam,
             Gebruikersnaam = request.Gebruikersnaam,
             EncryptedWachtwoord = encryption.Encrypt(request.Wachtwoord),
@@ -104,8 +107,8 @@ public class DigitaalBezitController : ControllerBase
             Notities = request.Notities
         };
 
-        _db.Wachtwoorden.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Wachtwoord", item.Id);
         return Created($"/api/digitaal-bezit/wachtwoorden/{item.Id}", item.Adapt<WachtwoordEntryResponse>());
     }
@@ -115,7 +118,7 @@ public class DigitaalBezitController : ControllerBase
         Guid id,
         [FromServices] IEncryptionService encryption)
     {
-        var item = await _db.Wachtwoorden.FindAsync(id);
+        var item = await _repo.FindWachtwoordAsync(id);
         if (item is null) return NotFound();
 
         var decrypted = encryption.Decrypt(item.EncryptedWachtwoord);
@@ -131,7 +134,7 @@ public class DigitaalBezitController : ControllerBase
         [FromBody] WachtwoordEntryUpdateRequest request,
         [FromServices] IEncryptionService encryption)
     {
-        var item = await _db.Wachtwoorden.FindAsync(id);
+        var item = await _repo.FindWachtwoordAsync(id);
         if (item is null) return NotFound();
 
         item.Naam = request.Naam;
@@ -142,7 +145,7 @@ public class DigitaalBezitController : ControllerBase
         if (!string.IsNullOrEmpty(request.NieuwWachtwoord))
             item.EncryptedWachtwoord = encryption.Encrypt(request.NieuwWachtwoord);
 
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "Wachtwoord", id);
         return Ok(item.Adapt<WachtwoordEntryResponse>());
     }
@@ -150,26 +153,26 @@ public class DigitaalBezitController : ControllerBase
     [HttpDelete("wachtwoorden/{id:guid}")]
     public async Task<IActionResult> DeleteWachtwoord(Guid id)
     {
-        var item = await _db.Wachtwoorden.FindAsync(id);
+        var item = await _repo.FindWachtwoordAsync(id);
         if (item is null) return NotFound();
 
-        _db.Wachtwoorden.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Wachtwoord", id);
         return NoContent();
     }
 
-    [RequestSizeLimit(5_242_880)] // S7-08: max 5 MB
+    [RequestSizeLimit(5_242_880)]
     [HttpPost("wachtwoorden/importeren")]
     public async Task<IActionResult> ImporterenWachtwoorden(
         IFormFile bestand,
         [FromServices] IEncryptionService encryption)
     {
         if (bestand is null || bestand.Length == 0)
-            return BadRequest(new { error = "Geen bestand geüpload." });
+            return BadRequest(new { error = "Geen bestand geupload." });
 
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null)
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         using var reader = new StreamReader(bestand.OpenReadStream());
@@ -177,10 +180,8 @@ public class DigitaalBezitController : ControllerBase
         if (string.IsNullOrWhiteSpace(headerLine))
             return BadRequest(new { error = "CSV-bestand is leeg." });
 
-        // Parse header — normalize to lowercase
         var headers = ParseCsvLine(headerLine).Select(h => h.Trim().ToLowerInvariant()).ToList();
 
-        // Auto-detect column mapping (supports 1Password, Bitwarden, LastPass, KeePass, Chrome)
         int ColIndex(params string[] candidates) =>
             candidates.Select(c => headers.IndexOf(c)).FirstOrDefault(i => i >= 0, -1);
 
@@ -212,11 +213,11 @@ public class DigitaalBezitController : ControllerBase
                 var url = GetField(fields, urlIdx);
                 var notes = GetField(fields, notesIdx);
 
-                if (string.IsNullOrWhiteSpace(pass)) continue; // Skip empty passwords
+                if (string.IsNullOrWhiteSpace(pass)) continue;
 
                 var entry = new WachtwoordEntry
                 {
-                    EigenaarId = eigenaar.Id,
+                    EigenaarId = eigenaarId.Value,
                     Naam = naam,
                     Gebruikersnaam = user,
                     EncryptedWachtwoord = encryption.Encrypt(pass),
@@ -224,7 +225,7 @@ public class DigitaalBezitController : ControllerBase
                     Notities = notes
                 };
 
-                _db.Wachtwoorden.Add(entry);
+                await _repo.AddAsync(entry);
                 imported++;
             }
             catch
@@ -234,7 +235,7 @@ public class DigitaalBezitController : ControllerBase
         }
 
         if (imported > 0)
-            await _db.SaveChangesAsync();
+            await _repo.CommitAsync();
 
         return Ok(new { geimporteerd = imported, fouten = errors.Count, details = errors.Take(10) });
     }
@@ -258,7 +259,7 @@ public class DigitaalBezitController : ControllerBase
                     if (i + 1 < line.Length && line[i + 1] == '"')
                     {
                         current.Append('"');
-                        i++; // skip escaped quote
+                        i++;
                     }
                     else
                     {
@@ -296,8 +297,10 @@ public class DigitaalBezitController : ControllerBase
     [HttpGet("crypto")]
     public async Task<ActionResult<List<CryptoWalletResponse>>> GetCryptoWallets()
     {
-        var items = await _db.CryptoWallets.OrderBy(c => c.WalletNaam).ToListAsync();
-        return Ok(items.Adapt<List<CryptoWalletResponse>>());
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return Ok(new List<CryptoWalletResponse>());
+        var items = await _repo.GetCryptoWalletsAsync(eigenaarId.Value);
+        return Ok(items.OrderBy(c => c.WalletNaam).Adapt<List<CryptoWalletResponse>>());
     }
 
     [HttpPost("crypto")]
@@ -305,12 +308,12 @@ public class DigitaalBezitController : ControllerBase
         [FromBody] CryptoWalletUpsertRequest request,
         [FromServices] IEncryptionService encryption)
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = new CryptoWallet
         {
-            EigenaarId = eigenaar.Id,
+            EigenaarId = eigenaarId.Value,
             WalletNaam = request.WalletNaam,
             CryptoType = request.CryptoType,
             WalletAdres = request.WalletAdres,
@@ -319,8 +322,8 @@ public class DigitaalBezitController : ControllerBase
             Notities = request.Notities
         };
 
-        _db.CryptoWallets.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "CryptoWallet", item.Id);
         return Created($"/api/digitaal-bezit/crypto/{item.Id}", item.Adapt<CryptoWalletResponse>());
     }
@@ -331,7 +334,7 @@ public class DigitaalBezitController : ControllerBase
         [FromBody] CryptoWalletUpsertRequest request,
         [FromServices] IEncryptionService encryption)
     {
-        var item = await _db.CryptoWallets.FindAsync(id);
+        var item = await _repo.FindCryptoWalletAsync(id);
         if (item is null) return NotFound();
 
         item.WalletNaam = request.WalletNaam;
@@ -343,7 +346,7 @@ public class DigitaalBezitController : ControllerBase
         if (!string.IsNullOrEmpty(request.SeedPhrase))
             item.EncryptedSeedPhrase = encryption.Encrypt(request.SeedPhrase);
 
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "CryptoWallet", id);
         return Ok(item.Adapt<CryptoWalletResponse>());
     }
@@ -353,7 +356,7 @@ public class DigitaalBezitController : ControllerBase
         Guid id,
         [FromServices] IEncryptionService encryption)
     {
-        var item = await _db.CryptoWallets.FindAsync(id);
+        var item = await _repo.FindCryptoWalletAsync(id);
         if (item is null) return NotFound();
         if (item.EncryptedSeedPhrase is null)
             return BadRequest(new { error = "Geen seed phrase opgeslagen voor deze wallet." });
@@ -366,11 +369,11 @@ public class DigitaalBezitController : ControllerBase
     [HttpDelete("crypto/{id:guid}")]
     public async Task<IActionResult> DeleteCryptoWallet(Guid id)
     {
-        var item = await _db.CryptoWallets.FindAsync(id);
+        var item = await _repo.FindCryptoWalletAsync(id);
         if (item is null) return NotFound();
 
-        _db.CryptoWallets.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "CryptoWallet", id);
         return NoContent();
     }

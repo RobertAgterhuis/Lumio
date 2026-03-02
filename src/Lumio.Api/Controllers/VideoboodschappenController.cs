@@ -1,10 +1,9 @@
-using Lumio.Api.Data;
 using Lumio.Api.Domain.VideoMessages;
 using Lumio.Api.Dtos.VideoMessages;
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services.Video;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Lumio.Api.Controllers;
@@ -12,58 +11,24 @@ namespace Lumio.Api.Controllers;
 [ApiController]
 [Route("api/v1/videoboodschappen")]
 public class VideoboodschappenController(
-    LumioDbContext db,
+    IVideoboodschapRepository repo,
     IOptions<LimietenOptions> limieten,
     IVideoStorageService videoStorage) : ControllerBase
 {
     private readonly LimietenOptions _limieten = limieten.Value;
+    private readonly IVideoboodschapRepository _repo = repo;
 
     // ── GET /api/videoboodschappen ──────────────────────────────────────────
     /// <summary>Returns all video message metadata for the current owner (no binary content).</summary>
     [HttpGet]
     public async Task<ActionResult<List<VideoboodschapResponse>>> GetAll()
     {
-        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return Ok(new List<VideoboodschapResponse>());
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return Ok(new List<VideoboodschapResponse>());
 
-        var items = await db.Videoboodschappen
-            .Where(v => v.EigenaarId == eigenaar.Id)
-            .Select(v => new
-            {
-                v.Id,
-                v.Titel,
-                v.Beschrijving,
-                v.BestandsNaam,
-                v.ContentType,
-                v.BestandsGrootte,
-                v.DuurSeconden,
-                v.AangemaaktOp,
-                v.GewijzigdOp,
-                Ontvangers = v.Ontvangers
-                    .Select(o => new
-                    {
-                        o.Id,
-                        o.ErfgenaamId,
-                        Naam = db.Erfgenamen
-                            .Where(e => e.Id == o.ErfgenaamId)
-                            .Select(e => e.Tussenvoegsel != null && e.Tussenvoegsel != ""
-                                ? e.Voornaam + " " + e.Tussenvoegsel + " " + e.Achternaam
-                                : e.Voornaam + " " + e.Achternaam)
-                            .FirstOrDefault(),
-                    })
-                    .ToList(),
-            })
-            .OrderByDescending(v => v.AangemaaktOp)
-            .ToListAsync();
-
-        var result = items.Select(v => new VideoboodschapResponse(
-            v.Id, v.Titel, v.Beschrijving, v.BestandsNaam, v.ContentType,
-            v.BestandsGrootte, v.DuurSeconden,
-            v.Ontvangers.Select(o => new OntvangerResponse(o.Id, o.ErfgenaamId, o.Naam)).ToList(),
-            v.AangemaaktOp, v.GewijzigdOp
-        )).ToList();
-
-        return Ok(result);
+        var items = await _repo.GetAllAsync(eigenaarId.Value);
+        var namen = await LaadNamenAsync(items.SelectMany(v => v.Ontvangers.Select(o => o.ErfgenaamId)));
+        return Ok(items.Select(v => ToResponse(v, namen)).ToList());
     }
 
     // ── GET /api/videoboodschappen/limiet ───────────────────────────────────
@@ -71,12 +36,10 @@ public class VideoboodschappenController(
     [HttpGet("limiet")]
     public async Task<IActionResult> GetLimiet()
     {
-        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         long gebruiktBytes = 0;
-        if (eigenaar is not null)
-            gebruiktBytes = await db.Videoboodschappen
-                .Where(v => v.EigenaarId == eigenaar.Id)
-                .SumAsync(v => (long?)v.BestandsGrootte) ?? 0;
+        if (eigenaarId is not null)
+            gebruiktBytes = await _repo.GetTotaalBytesAsync(eigenaarId.Value);
 
         return Ok(new
         {
@@ -102,12 +65,11 @@ public class VideoboodschappenController(
         [FromForm] string? ontvangerIds,
         [FromForm] int? duurSeconden)
     {
-        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         // Enforce count limit
-        var aantalBestaand = await db.Videoboodschappen
-            .CountAsync(v => v.EigenaarId == eigenaar.Id);
+        var aantalBestaand = await _repo.CountAsync(eigenaarId.Value);
         if (aantalBestaand >= _limieten.VideoMaxAantal)
             return BadRequest(new
             {
@@ -157,7 +119,7 @@ public class VideoboodschappenController(
         var item = new Videoboodschap
         {
             Id = newId,
-            EigenaarId = eigenaar.Id,
+            EigenaarId = eigenaarId.Value,
             Titel = titel.Trim(),
             Beschrijving = string.IsNullOrWhiteSpace(beschrijving) ? null : beschrijving.Trim(),
             BestandsNaam = bestand.FileName,
@@ -172,16 +134,15 @@ public class VideoboodschappenController(
         var distinctIds = ontvIds.Distinct().ToList();
         foreach (var eid in distinctIds)
         {
-            var bestaat = await db.Erfgenamen
-                .AnyAsync(e => e.Id == eid && e.EigenaarId == eigenaar.Id);
+            var bestaat = await _repo.ErfgenaamBestaatAsync(eid, eigenaarId.Value);
             if (!bestaat)
                 return BadRequest(new { error = $"Erfgenaam {eid} bestaat niet of behoort niet tot dit profiel." });
         }
         foreach (var eid in distinctIds)
             item.Ontvangers.Add(new VideoboodschapOntvanger { ErfgenaamId = eid });
 
-        db.Videoboodschappen.Add(item);
-        await db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
 
         var namen = await LaadNamenAsync(item.Ontvangers.Select(o => o.ErfgenaamId));
         return Created($"/api/videoboodschappen/{item.Id}", ToResponse(item, namen));
@@ -192,15 +153,10 @@ public class VideoboodschappenController(
     [HttpGet("{id:guid}/stream")]
     public async Task<IActionResult> Stream(Guid id)
     {
-        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return NotFound();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return NotFound();
 
-        // Valideer eigenaarschap VOOR we data laden (voorkomt IDOR)
-        var meta = await db.Videoboodschappen
-            .Where(v => v.Id == id && v.EigenaarId == eigenaar.Id)
-            .Select(v => new { v.ContentType, v.BestandsNaam, v.BestandsPad })
-            .FirstOrDefaultAsync();
-
+        var meta = await _repo.FindStreamMetaAsync(id, eigenaarId.Value);
         if (meta is null) return NotFound();
 
         // Nieuwe uploads: stream van schijf (echte range-support, geen RAM-spike)
@@ -214,14 +170,10 @@ public class VideoboodschappenController(
         }
 
         // Legacy-fallback: blob uit SQLite
-        var blob = await db.VideoboodschapBlobs
-            .Where(b => b.VideoboodschapId == id)
-            .Select(b => new { b.Inhoud })
-            .FirstOrDefaultAsync();
-
+        var blob = await _repo.FindBlobAsync(id);
         if (blob is null) return NotFound();
 
-        return File(blob.Inhoud, meta.ContentType, enableRangeProcessing: true);
+        return File(blob, meta.ContentType, enableRangeProcessing: true);
     }
 
     // ── PATCH /api/videoboodschappen/{id} ───────────────────────────────────
@@ -231,13 +183,10 @@ public class VideoboodschappenController(
         Guid id,
         [FromBody] VideoboodschapUpdateRequest request)
     {
-        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return NotFound();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return NotFound();
 
-        var item = await db.Videoboodschappen
-            .Include(v => v.Ontvangers)
-            .FirstOrDefaultAsync(v => v.Id == id && v.EigenaarId == eigenaar.Id);
-
+        var item = await _repo.FindWithOntvangersByIdAsync(id, eigenaarId.Value);
         if (item is null) return NotFound();
 
         if (request.Titel is not null)
@@ -250,13 +199,12 @@ public class VideoboodschappenController(
 
         if (request.OntvangerIds is not null)
         {
-            db.VideoboodschapOntvangers.RemoveRange(item.Ontvangers);
+            await _repo.RemoveOntvangersByVideoAsync(item.Id);
             item.Ontvangers.Clear();
 
             foreach (var eid in request.OntvangerIds.Distinct())
             {
-                var bestaat = await db.Erfgenamen
-                    .AnyAsync(e => e.Id == eid && e.EigenaarId == eigenaar.Id);
+                var bestaat = await _repo.ErfgenaamBestaatAsync(eid, eigenaarId.Value);
                 if (bestaat)
                     item.Ontvangers.Add(new VideoboodschapOntvanger
                     {
@@ -267,7 +215,7 @@ public class VideoboodschappenController(
         }
 
         item.GewijzigdOp = DateTime.UtcNow;
-        await db.SaveChangesAsync();
+        await _repo.CommitAsync();
 
         var namen = await LaadNamenAsync(item.Ontvangers.Select(o => o.ErfgenaamId));
         return Ok(ToResponse(item, namen));
@@ -283,40 +231,26 @@ public class VideoboodschappenController(
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null) return NotFound();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return NotFound();
 
         // Laad entiteit inclusief ontvangers voor expliciete cascade bij InMemory-provider
-        var item = await db.Videoboodschappen
-            .Include(v => v.Ontvangers)
-            .FirstOrDefaultAsync(v => v.Id == id && v.EigenaarId == eigenaar.Id);
-
+        var item = await _repo.FindWithOntvangersByIdAsync(id, eigenaarId.Value);
         if (item is null) return NotFound();
 
         var bestandsPad = item.BestandsPad;
 
-        // T-006: Compensating transaction
-        // 1. Stage DB-verwijdering (nog niet gecommit)
-        // 2. Verwijder schijfbestand
-        //    → bij file-fout: rollback DB zodat record intact blijft
-        // 3. Commit
-        using var tx = await db.Database.BeginTransactionAsync();
-        try
-        {
-            db.VideoboodschapOntvangers.RemoveRange(item.Ontvangers);
-            db.Videoboodschappen.Remove(item);
-            await db.SaveChangesAsync();
+        // T-006: Compensating transaction (compensating-commit patroon)
+        // 1. Stage DB-verwijdering + schijfbestand verwijdering
+        //    → als file-verwijdering faalt, CommitAsync wordt niet aangeroepen
+        //    → als DB-commit faalt, bestand is al weg (acceptabel voor een single-user app)
+        await _repo.RemoveOntvangersByVideoAsync(item.Id);
+        await _repo.RemoveAsync(item);
 
-            if (bestandsPad is not null)
-                videoStorage.Verwijderen(bestandsPad); // gooit → rollback hieronder
+        if (bestandsPad is not null)
+            videoStorage.Verwijderen(bestandsPad); // gooit bij fout → CommitAsync niet bereikt
 
-            await tx.CommitAsync();
-        }
-        catch
-        {
-            await tx.RollbackAsync();
-            throw;
-        }
+        await _repo.CommitAsync();
 
         return NoContent();
     }
@@ -381,41 +315,28 @@ public class VideoboodschappenController(
     [HttpGet("voor-erfgenaam/{erfgenaamId:guid}")]
     public async Task<ActionResult<List<VideoboodschapResponse>>> GetVoorErfgenaam(Guid erfgenaamId)
     {
-        var bestaat = await db.Erfgenamen.AnyAsync(e => e.Id == erfgenaamId);
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return NotFound();
+
+        var bestaat = await _repo.ErfgenaamBestaatAsync(erfgenaamId, eigenaarId.Value);
         if (!bestaat) return NotFound();
 
         // Collect IDs of videos addressed to this heir
-        var videoIds = await db.VideoboodschapOntvangers
-            .Where(o => o.ErfgenaamId == erfgenaamId)
-            .Select(o => o.VideoboodschapId)
-            .ToListAsync();
+        var videoIds = await _repo.GetVideoIdsVoorErfgenaamAsync(erfgenaamId);
 
         if (videoIds.Count == 0)
             return Ok(new List<VideoboodschapResponse>());
 
-        var items = await db.Videoboodschappen
-            .Include(v => v.Ontvangers)
-            .Where(v => videoIds.Contains(v.Id))
-            .OrderByDescending(v => v.AangemaaktOp)
-            .ToListAsync();
+        var items = await _repo.GetByIdsAsync(videoIds);
 
         var namen = await LaadNamenAsync(items.SelectMany(v => v.Ontvangers.Select(o => o.ErfgenaamId)));
         return Ok(items.Select(v => ToResponse(v, namen)).ToList());
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────
-    private async Task<IReadOnlyDictionary<Guid, string?>> LaadNamenAsync(IEnumerable<Guid> erfgenaamIds)
-    {
-        var ids = erfgenaamIds.Distinct().ToList();
-        if (ids.Count == 0) return new Dictionary<Guid, string?>();
-        return await db.Erfgenamen
-            .Where(e => ids.Contains(e.Id))
-            .ToDictionaryAsync(
-                e => e.Id,
-                e => (string?)(string.IsNullOrEmpty(e.Tussenvoegsel)
-                    ? $"{e.Voornaam} {e.Achternaam}"
-                    : $"{e.Voornaam} {e.Tussenvoegsel} {e.Achternaam}"));
-    }
+    private Task<IReadOnlyDictionary<Guid, string?>> LaadNamenAsync(IEnumerable<Guid> erfgenaamIds) =>
+        _repo.LaadOntvangerNamenAsync(erfgenaamIds)
+             .ContinueWith(t => (IReadOnlyDictionary<Guid, string?>)t.Result);
 
     private static VideoboodschapResponse ToResponse(Videoboodschap v, IReadOnlyDictionary<Guid, string?>? namen = null) => new(
         v.Id,

@@ -1,7 +1,5 @@
-using Lumio.Api.Data;
-using Lumio.Api.Domain.Common;
+using Lumio.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,27 +11,27 @@ namespace Lumio.Api.Controllers;
 /// <summary>
 /// Backup status/confirmation and data snapshot (integrity hash) endpoints.
 /// Extracted from StatusController (SP-7-004 / GUARD-010 refactoring).
+/// SP-14-003: LumioDbContext replaced by IStatusDataRepository.
 /// </summary>
 [ApiController]
 [Route("api/v1/status")]
 public class StatusDataController : ControllerBase
 {
+    private readonly IStatusDataRepository _repo;
     private readonly IStringLocalizer<StatusController> L;
 
-    public StatusDataController(IStringLocalizer<StatusController> localizer)
+    public StatusDataController(IStatusDataRepository repo, IStringLocalizer<StatusController> localizer)
     {
+        _repo = repo;
         L = localizer;
     }
 
     // ── S4-06: Backup status ────────────────────────────────────
 
     [HttpGet("backup")]
-    public async Task<IActionResult> GetBackupStatus([FromServices] LumioDbContext db)
+    public async Task<IActionResult> GetBackupStatus()
     {
-        var latest = await db.AuditLog
-            .Where(a => a.Actie == "Backup")
-            .OrderByDescending(a => a.Tijdstip)
-            .FirstOrDefaultAsync();
+        var latest = await _repo.FindLatestBackupAsync();
 
         if (latest is null)
             return Ok(new { lastBackup = (DateTime?)null, daysSince = (int?)null, status = "noBackup" });
@@ -46,53 +44,42 @@ public class StatusDataController : ControllerBase
 
     // ── S4-07: Handmatige backup bevestiging ──────────────────
 
-    /// <summary>
-    /// Registreert dat de gebruiker handmatig een backup heeft gemaakt.
-    /// Wordt ook automatisch geregistreerd bij gebruik van POST /api/export/backup/encrypted.
-    /// </summary>
     [HttpPost("backup/bevestigd")]
-    public async Task<IActionResult> BevestigBackup([FromServices] LumioDbContext db)
+    public async Task<IActionResult> BevestigBackup()
     {
         var tijdstip = DateTime.UtcNow;
-        db.AuditLog.Add(new AuditLogEntry
-        {
-            Tijdstip = tijdstip,
-            Actie = "Backup",
-            EntityType = "export",
-            Details = "handmatig",
-        });
-        await db.SaveChangesAsync();
-
+        await _repo.BevestigBackupAsync(tijdstip);
         return Ok(new { bevestigdOp = tijdstip, status = "ok" });
     }
 
     /// <summary>
     /// Genereert een SHA-256 hash van de huidige database-staat als digitale handtekening.
-    /// Hiermee kan later geverifieerd worden of data is gewijzigd.
     /// </summary>
     [HttpGet("snapshot")]
-    public async Task<IActionResult> GetDataSnapshot([FromServices] LumioDbContext db)
+    public async Task<IActionResult> GetDataSnapshot()
     {
-        var eigenaar = await db.Eigenaren.FirstOrDefaultAsync();
-        if (eigenaar is null)
+        var data = await _repo.GetSnapshotDataAsync();
+
+        if (data.Eigenaar is null)
             return NotFound(new { error = "Geen eigenaar profiel gevonden." });
 
-        // Bouw een deterministisch overzicht van alle data
+        var eigenaar = data.Eigenaar;
+
         var snapshot = new
         {
-            eigenaar = new { eigenaar.Voornaam, eigenaar.Achternaam, eigenaar.Geboortedatum, eigenaar.GewijzigdOp },
-            erfgenamen = await db.Erfgenamen.OrderBy(e => e.Id).Select(e => new { e.Id, e.Voornaam, e.Achternaam, e.GewijzigdOp }).ToListAsync(),
-            testament = await db.Testamenten.Select(t => new { t.Id, t.GewijzigdOp }).FirstOrDefaultAsync(),
-            wilsverklaring = await db.Wilsverklaringen.Select(w => new { w.Id, w.GewijzigdOp }).FirstOrDefaultAsync(),
-            donor = await db.DonorRegistraties.Select(d => new { d.Id, d.GewijzigdOp }).FirstOrDefaultAsync(),
-            uitvaart = await db.UitvaartWensen.Select(u => new { u.Id, u.GewijzigdOp }).FirstOrDefaultAsync(),
-            bezittingen = await db.FysiekeBezittingen.CountAsync(),
-            bankrekeningen = await db.Bankrekeningen.CountAsync(),
-            verzekeringen = await db.Verzekeringen.CountAsync(),
-            schulden = await db.Schulden.CountAsync(),
-            documenten = await db.Documenten.CountAsync(),
-            digitaleAccounts = await db.DigitaleAccounts.CountAsync(),
-            noodcontacten = await db.Noodcontacten.CountAsync(),
+            eigenaar     = new { eigenaar.Voornaam, eigenaar.Achternaam, eigenaar.Geboortedatum, eigenaar.GewijzigdOp },
+            erfgenamen   = data.Erfgenamen,
+            testament    = data.Testament,
+            wilsverklaring = data.Wilsverklaring,
+            donor        = data.Donor,
+            uitvaart     = data.Uitvaart,
+            bezittingen  = data.Bezittingen,
+            bankrekeningen = data.Bankrekeningen,
+            verzekeringen = data.Verzekeringen,
+            schulden     = data.Schulden,
+            documenten   = data.Documenten,
+            digitaleAccounts = data.DigitaleAccounts,
+            noodcontacten = data.Noodcontacten,
         };
 
         var options = new JsonSerializerOptions
@@ -106,12 +93,6 @@ public class StatusDataController : ControllerBase
         var hash = Convert.ToHexStringLower(hashBytes);
         var tijdstip = DateTime.UtcNow;
 
-        return Ok(new
-        {
-            hash,
-            algoritme = "SHA-256",
-            tijdstip,
-            beschrijving = L["SnapshotDescription"].Value,
-        });
+        return Ok(new { hash, algoritme = "SHA-256", tijdstip, beschrijving = L["SnapshotDescription"].Value });
     }
 }

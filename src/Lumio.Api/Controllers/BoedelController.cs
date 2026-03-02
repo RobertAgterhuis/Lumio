@@ -1,11 +1,10 @@
-using Lumio.Api.Data;
-using Lumio.Api.Domain.AssetRegistry;
+﻿using Lumio.Api.Domain.AssetRegistry;
 using Lumio.Api.Dtos.AssetRegistry;
+using Lumio.Api.Repositories;
 using Lumio.Api.Rules;
 using Lumio.Api.Services;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Lumio.Api.Controllers;
 
@@ -13,34 +12,28 @@ namespace Lumio.Api.Controllers;
 [Route("api/v1/boedel")]
 public class BoedelController : ControllerBase
 {
-    private readonly LumioDbContext _db;
+    private readonly IBoedelRepository _repo;
     private readonly IAuditService _audit;
 
-    public BoedelController(LumioDbContext db, IAuditService audit)
+    public BoedelController(IBoedelRepository repo, IAuditService audit)
     {
-        _db = db;
+        _repo = repo;
         _audit = audit;
     }
 
-    private async Task<Guid?> GetEigenaarId()
-    {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        return eigenaar?.Id;
-    }
-
-    // --- Financieel Samenvatting (P-M3) ---
+    // --- Samenvatting ---
 
     [HttpGet("samenvatting")]
     public async Task<IActionResult> GetSamenvatting()
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return NotFound(new { error = "Geen eigenaar profiel gevonden." });
         var eid = eigenaarId.Value;
 
-        var bezittingen = await _db.FysiekeBezittingen.Where(f => f.EigenaarId == eid).ToListAsync();
-        var rekeningen = await _db.Bankrekeningen.Where(b => b.EigenaarId == eid).ToListAsync();
-        var verzekeringen = await _db.Verzekeringen.Where(v => v.EigenaarId == eid).ToListAsync();
-        var schulden = await _db.Schulden.Where(s => s.EigenaarId == eid).ToListAsync();
+        var bezittingen = await _repo.GetFysiekeBezittingenAsync(eid);
+        var rekeningen = await _repo.GetBankrekeningenAsync(eid);
+        var verzekeringen = await _repo.GetVerzekeringenAsync(eid);
+        var schulden = await _repo.GetSchuldenAsync(eid);
 
         var totaalBezittingen = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
         var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
@@ -72,24 +65,20 @@ public class BoedelController : ControllerBase
     [HttpGet("bezittingen")]
     public async Task<ActionResult<List<FysiekBezitResponse>>> GetBezittingen()
     {
-        var items = await _db.FysiekeBezittingen
-            .Include(f => f.LinkedSchulden)
-            .Include(f => f.BestemdeErfgenaam)
-            .OrderBy(f => f.Categorie)
-            .ToListAsync();
+        var items = await _repo.GetBezittingenWithNavigationAsync();
         return Ok(items.Select(ToBezitResponse).ToList());
     }
 
     [HttpPost("bezittingen")]
     public async Task<ActionResult<FysiekBezitResponse>> CreateBezit([FromBody] FysiekBezitUpsertRequest request)
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = request.Adapt<FysiekBezit>();
         item.EigenaarId = eigenaarId.Value;
-        _db.FysiekeBezittingen.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "FysiekBezit", item.Id);
         return Created($"/api/boedel/bezittingen/{item.Id}", ToBezitResponse(item));
     }
@@ -97,13 +86,10 @@ public class BoedelController : ControllerBase
     [HttpPut("bezittingen/{id:guid}")]
     public async Task<ActionResult<FysiekBezitResponse>> UpdateBezit(Guid id, [FromBody] FysiekBezitUpsertRequest request)
     {
-        var item = await _db.FysiekeBezittingen
-            .Include(f => f.LinkedSchulden)
-            .Include(f => f.BestemdeErfgenaam)
-            .FirstOrDefaultAsync(f => f.Id == id);
+        var item = await _repo.FindBezitWithNavigationAsync(id);
         if (item is null) return NotFound();
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "FysiekBezit", id);
         return Ok(ToBezitResponse(item));
     }
@@ -111,10 +97,10 @@ public class BoedelController : ControllerBase
     [HttpDelete("bezittingen/{id:guid}")]
     public async Task<IActionResult> DeleteBezit(Guid id)
     {
-        var item = await _db.FysiekeBezittingen.FindAsync(id);
+        var item = await _repo.FindFysiekBezitAsync(id);
         if (item is null) return NotFound();
-        _db.FysiekeBezittingen.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "FysiekBezit", id);
         return NoContent();
     }
@@ -138,20 +124,22 @@ public class BoedelController : ControllerBase
     [HttpGet("bankrekeningen")]
     public async Task<ActionResult<List<BankrekeningResponse>>> GetBankrekeningen()
     {
-        var items = await _db.Bankrekeningen.OrderBy(b => b.BankNaam).ToListAsync();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return Ok(new List<BankrekeningResponse>());
+        var items = await _repo.GetBankrekeningenAsync(eigenaarId.Value);
         return Ok(items.Adapt<List<BankrekeningResponse>>());
     }
 
     [HttpPost("bankrekeningen")]
     public async Task<ActionResult<BankrekeningResponse>> CreateBankrekening([FromBody] BankrekeningUpsertRequest request)
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = request.Adapt<Bankrekening>();
         item.EigenaarId = eigenaarId.Value;
-        _db.Bankrekeningen.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Bankrekening", item.Id);
         return Created($"/api/boedel/bankrekeningen/{item.Id}", item.Adapt<BankrekeningResponse>());
     }
@@ -159,10 +147,10 @@ public class BoedelController : ControllerBase
     [HttpPut("bankrekeningen/{id:guid}")]
     public async Task<ActionResult<BankrekeningResponse>> UpdateBankrekening(Guid id, [FromBody] BankrekeningUpsertRequest request)
     {
-        var item = await _db.Bankrekeningen.FindAsync(id);
+        var item = await _repo.FindBankrekeningAsync(id);
         if (item is null) return NotFound();
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "Bankrekening", id);
         return Ok(item.Adapt<BankrekeningResponse>());
     }
@@ -170,10 +158,10 @@ public class BoedelController : ControllerBase
     [HttpDelete("bankrekeningen/{id:guid}")]
     public async Task<IActionResult> DeleteBankrekening(Guid id)
     {
-        var item = await _db.Bankrekeningen.FindAsync(id);
+        var item = await _repo.FindBankrekeningAsync(id);
         if (item is null) return NotFound();
-        _db.Bankrekeningen.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Bankrekening", id);
         return NoContent();
     }
@@ -183,20 +171,22 @@ public class BoedelController : ControllerBase
     [HttpGet("verzekeringen")]
     public async Task<ActionResult<List<VerzekeringResponse>>> GetVerzekeringen()
     {
-        var items = await _db.Verzekeringen.OrderBy(v => v.Verzekeraar).ToListAsync();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return Ok(new List<VerzekeringResponse>());
+        var items = await _repo.GetVerzekeringenAsync(eigenaarId.Value);
         return Ok(items.Adapt<List<VerzekeringResponse>>());
     }
 
     [HttpPost("verzekeringen")]
     public async Task<ActionResult<VerzekeringResponse>> CreateVerzekering([FromBody] VerzekeringUpsertRequest request)
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = request.Adapt<Verzekering>();
         item.EigenaarId = eigenaarId.Value;
-        _db.Verzekeringen.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Verzekering", item.Id);
         return Created($"/api/boedel/verzekeringen/{item.Id}", item.Adapt<VerzekeringResponse>());
     }
@@ -204,10 +194,10 @@ public class BoedelController : ControllerBase
     [HttpPut("verzekeringen/{id:guid}")]
     public async Task<ActionResult<VerzekeringResponse>> UpdateVerzekering(Guid id, [FromBody] VerzekeringUpsertRequest request)
     {
-        var item = await _db.Verzekeringen.FindAsync(id);
+        var item = await _repo.FindVerzekeringAsync(id);
         if (item is null) return NotFound();
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "Verzekering", id);
         return Ok(item.Adapt<VerzekeringResponse>());
     }
@@ -215,10 +205,10 @@ public class BoedelController : ControllerBase
     [HttpDelete("verzekeringen/{id:guid}")]
     public async Task<IActionResult> DeleteVerzekering(Guid id)
     {
-        var item = await _db.Verzekeringen.FindAsync(id);
+        var item = await _repo.FindVerzekeringAsync(id);
         if (item is null) return NotFound();
-        _db.Verzekeringen.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Verzekering", id);
         return NoContent();
     }
@@ -228,14 +218,10 @@ public class BoedelController : ControllerBase
     [HttpGet("schulden")]
     public async Task<ActionResult<List<SchuldResponse>>> GetSchulden()
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return NotFound(new { error = "Geen eigenaar profiel gevonden." });
 
-        var items = await _db.Schulden
-            .Include(s => s.Bezit)
-            .Where(s => s.EigenaarId == eigenaarId.Value)
-            .OrderBy(s => s.Schuldeiser)
-            .ToListAsync();
+        var items = await _repo.GetSchuldenWithBezitAsync(eigenaarId.Value);
         return Ok(items.Select(s => ToSchuldResponse(s)).ToList());
     }
 
@@ -244,24 +230,20 @@ public class BoedelController : ControllerBase
     [HttpGet("bezittingen/{bezitId:guid}/schulden")]
     public async Task<ActionResult<List<SchuldResponse>>> GetBezitSchulden(Guid bezitId)
     {
-        var bezit = await _db.FysiekeBezittingen.FindAsync(bezitId);
+        var bezit = await _repo.FindFysiekBezitAsync(bezitId);
         if (bezit is null) return NotFound();
 
-        var items = await _db.Schulden
-            .Include(s => s.Bezit)
-            .Where(s => s.BezitId == bezitId)
-            .OrderBy(s => s.Schuldeiser)
-            .ToListAsync();
+        var items = await _repo.GetSchuldenByBezitIdAsync(bezitId);
         return Ok(items.Select(s => ToSchuldResponse(s)).ToList());
     }
 
     [HttpPost("bezittingen/{bezitId:guid}/schulden")]
     public async Task<ActionResult<SchuldResponse>> CreateBezitSchuld(Guid bezitId, [FromBody] BezitSchuldUpsertRequest request)
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
-        var bezit = await _db.FysiekeBezittingen.FindAsync(bezitId);
+        var bezit = await _repo.FindFysiekBezitAsync(bezitId);
         if (bezit is null) return NotFound(new { error = "Bezitting niet gevonden." });
 
         var schuld = new Schuld
@@ -276,10 +258,9 @@ public class BoedelController : ControllerBase
             Rentepercentage = request.Rentepercentage,
             Einddatum = request.Einddatum,
         };
-        _db.Schulden.Add(schuld);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(schuld);
+        await _repo.CommitAsync();
 
-        // Reload with navigation for response
         schuld.Bezit = bezit;
         await _audit.LogAsync("Aangemaakt", "Schuld", schuld.Id);
         return Created($"/api/boedel/bezittingen/{bezitId}/schulden/{schuld.Id}", ToSchuldResponse(schuld));
@@ -288,24 +269,24 @@ public class BoedelController : ControllerBase
     [HttpDelete("bezittingen/{bezitId:guid}/schulden/{schuldId:guid}")]
     public async Task<IActionResult> DeleteBezitSchuld(Guid bezitId, Guid schuldId)
     {
-        var schuld = await _db.Schulden.FirstOrDefaultAsync(s => s.Id == schuldId && s.BezitId == bezitId);
+        var schuld = await _repo.FindSchuldByIdAndBezitIdAsync(schuldId, bezitId);
         if (schuld is null) return NotFound();
-        _db.Schulden.Remove(schuld);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(schuld);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Schuld", schuldId);
         return NoContent();
     }
 
-    // S7-05: Atomische batch-aanmaak om sequential API-calls te vermijden
+    // S7-05: Atomische batch-aanmaak
     [HttpPost("bezittingen/{bezitId:guid}/schulden/batch")]
     public async Task<ActionResult<List<SchuldResponse>>> CreateBezitSchuldenBatch(
         Guid bezitId,
         [FromBody] List<BezitSchuldUpsertRequest> requests)
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
-        var bezit = await _db.FysiekeBezittingen.FindAsync(bezitId);
+        var bezit = await _repo.FindFysiekBezitAsync(bezitId);
         if (bezit is null) return NotFound(new { error = "Bezitting niet gevonden." });
 
         if (requests.Count == 0) return Ok(new List<SchuldResponse>());
@@ -323,10 +304,7 @@ public class BoedelController : ControllerBase
             Einddatum = r.Einddatum,
         }).ToList();
 
-        using var tx = await _db.Database.BeginTransactionAsync();
-        _db.Schulden.AddRange(schulden);
-        await _db.SaveChangesAsync();
-        await tx.CommitAsync();
+        await _repo.BatchCreateSchuldenAsync(schulden);
 
         foreach (var s in schulden) { s.Bezit = bezit; }
         await _audit.LogAsync("Aangemaakt", "Schuld (batch)", schulden[0].Id);
@@ -347,13 +325,13 @@ public class BoedelController : ControllerBase
     [HttpPost("schulden")]
     public async Task<ActionResult<SchuldResponse>> CreateSchuld([FromBody] SchuldUpsertRequest request)
     {
-        var eigenaarId = await GetEigenaarId();
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
         var item = request.Adapt<Schuld>();
         item.EigenaarId = eigenaarId.Value;
-        _db.Schulden.Add(item);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Aangemaakt", "Schuld", item.Id);
         return Created($"/api/boedel/schulden/{item.Id}", ToSchuldResponse(item));
     }
@@ -361,10 +339,10 @@ public class BoedelController : ControllerBase
     [HttpPut("schulden/{id:guid}")]
     public async Task<ActionResult<SchuldResponse>> UpdateSchuld(Guid id, [FromBody] SchuldUpsertRequest request)
     {
-        var item = await _db.Schulden.FindAsync(id);
+        var item = await _repo.FindSchuldAsync(id);
         if (item is null) return NotFound();
         request.Adapt(item);
-        await _db.SaveChangesAsync();
+        await _repo.CommitAsync();
         await _audit.LogAsync("Gewijzigd", "Schuld", id);
         return Ok(ToSchuldResponse(item));
     }
@@ -372,10 +350,10 @@ public class BoedelController : ControllerBase
     [HttpDelete("schulden/{id:guid}")]
     public async Task<IActionResult> DeleteSchuld(Guid id)
     {
-        var item = await _db.Schulden.FindAsync(id);
+        var item = await _repo.FindSchuldAsync(id);
         if (item is null) return NotFound();
-        _db.Schulden.Remove(item);
-        await _db.SaveChangesAsync();
+        await _repo.RemoveAsync(item);
+        await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Schuld", id);
         return NoContent();
     }

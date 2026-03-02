@@ -119,6 +119,27 @@ builder.Services.AddScoped<INotitieRepository, EfNotitieRepository>();
 builder.Services.AddScoped<IWilsverklaringRepository, EfWilsverklaringRepository>();
 builder.Services.AddScoped<IUitvaartRepository, EfUitvaartRepository>();
 
+// ── Application Layer: Repository abstractions (SP-14-003) ──
+builder.Services.AddScoped<IWerkgeverRepository, EfWerkgeverRepository>();
+builder.Services.AddScoped<IDonorRepository, EfDonorRepository>();
+builder.Services.AddScoped<ITestamentRepository, EfTestamentRepository>();
+builder.Services.AddScoped<ITestamentBegunstigdeRepository, EfTestamentBegunstigdeRepository>();
+builder.Services.AddScoped<ITestamentExecuteurRepository, EfTestamentExecuteurRepository>();
+builder.Services.AddScoped<ITestamentSnapshotRepository, EfTestamentSnapshotRepository>();
+builder.Services.AddScoped<ITestamentJuridischeCheckRepository, EfTestamentJuridischeCheckRepository>();
+builder.Services.AddScoped<IBoedelRepository, EfBoedelRepository>();
+builder.Services.AddScoped<IDigitaalBezitRepository, EfDigitaalBezitRepository>();
+builder.Services.AddScoped<IAfhandelingRepository, EfAfhandelingRepository>();
+builder.Services.AddScoped<IToewijzingRepository, EfToewijzingRepository>();
+builder.Services.AddScoped<IAuditLogRepository, EfAuditLogRepository>();
+builder.Services.AddScoped<IZoekenRepository, EfZoekenRepository>();
+builder.Services.AddScoped<IDocumentRepository, EfDocumentRepository>();
+builder.Services.AddScoped<IDocumentBestandRepository, EfDocumentBestandRepository>();
+builder.Services.AddScoped<IVideoboodschapRepository, EfVideoboodschapRepository>();
+builder.Services.AddScoped<IStatusDataRepository, EfStatusDataRepository>();
+builder.Services.AddScoped<IStatusActualisatieRepository, EfStatusActualisatieRepository>();
+builder.Services.AddScoped<IStatistiekenRepository, EfStatistiekenRepository>();
+
 // EF Core with SQLCipher — dynamic DB path based on active profile
 builder.Services.AddDbContext<LumioDbContext>((serviceProvider, options) =>
 {

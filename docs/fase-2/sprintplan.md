@@ -154,7 +154,7 @@ Application Layer voltooid (≥80% controllers), controller-testcoverage ≥80%.
 
 | Story ID | Beschrijving | Type | Team | Acceptatiecriteria | Story Points | Afhankelijkheden | Blocker | Risico |
 |----------|-------------|------|------|-------------------|--------------|-----------------|---------|--------|
-| SP-14-001 | Next.js SSR-migratie SPIKE: onderzoek machbaarheid nonce-based CSP in Electron | ANALYSIS | Dev | Proof-of-concept aanwezig; haalbaarheidsrapport in `docs/security/csp-ssr-spike.md` | 3 | SP-13 stabiel | NONE | Laag — spike, geen productiewijziging |
+| SP-14-001 | ~~Next.js SSR-migratie SPIKE~~ **VERVALLEN (DEC-106)** — geen SSR-migratie; unsafe-inline geaccepteerd risico | ANALYSIS | Dev | N/A — VERVALLEN | 0 | - | VERVALLEN: DEC-106 | - |
 | SP-14-002 | Pentest plannen + uitvoeren (gericht: masterpassword, Shamir, LocalOriginValidation) | ANALYSIS | Extern/Dev | Pentest-rapport aanwezig in `docs/security/`; bevindingen geprioriteerd | 5 | - | **DEC-202: NIET blokkerend.** Wordt pas aan einde van dev-cyclus aangevraagd indien van toepassing. Geen v1.0 release gate. | Laag |
 | SP-14-003 | Application Layer fase 3: alle resterende controllers tot ≥80% | CODE | Dev | ≥28/34 controllers via IRepository; LumioDbContext niet meer direct in nieuwe controllers | 8 | SP-13-003 | NONE | Midden |
 | SP-14-004 | Controller-tests batch 4: resterende controllers tot ≥80% | CODE | Dev | ≥27/34 controller testbestanden; CI groen | 8 | SP-13-004 | NONE | Laag |
@@ -169,7 +169,7 @@ Next.js statische export gemigreerd naar SSR; nonce-based CSP actief; `unsafe-in
 
 | Story ID | Beschrijving | Type | Team | Acceptatiecriteria | Story Points | Afhankelijkheden | Blocker | Risico |
 |----------|-------------|------|------|-------------------|--------------|-----------------|---------|--------|
-| SP-15-001 | Next.js SSR-migratie: `output:"export"` verwijderen, nonce-based CSP inschakelen | CODE | Dev | CSP bevat geen `unsafe-inline`; alle pagina's renderbaar; E2E groen; Electron renderer werkt | 13 | SP-14-001 spike | NONE | Hoog — grootste architectuurwijziging in roadmap |
+| SP-15-001 | ~~Next.js SSR-migratie~~ **VERVALLEN (DEC-106)** — unsafe-inline geaccepteerd risico voor Electron/lokale setup | CODE | Dev | N/A — VERVALLEN | 0 | - | VERVALLEN: DEC-106 | - |
 | SP-15-002 | Pentest bevindingen verwerken (naar aanleiding van SP-14-002) | CODE | Dev | Alle kritieke + hoge pentest-bevindingen opgelost; rapport bijgewerkt | 8 | SP-14-002 | NONE | UNCERTAIN: scope afhankelijk van pentest-uitkomst |
 | SP-15-003 | Crash reporting (Sentry Developer gratis tier) met opt-in consent implementeren | CODE | Dev | Crash reporting actief met opt-in UI; pricing plan vastgesteld en gedocumenteerd; DPIA v1.2 DPO-toets goedgekeurd; BLK-13-001 opgelost | 8 | SP-14 gereed; pricing plan beslissing (PO); DPO GO | EXTERN: pricing plan beslissing (eigenaar: PO) + DPO-toets DPIA v1.2 (eigenaar: DPO) | Midden |
 
@@ -183,16 +183,16 @@ Next.js statische export gemigreerd naar SSR; nonce-based CSP actief; `unsafe-in
 
 | KPI | Baseline | Target | Meetmethode |
 |-----|----------|--------|-------------|
-| CSP unsafe-inline | Aanwezig | Afwezig | CSP-evaluator |
-| Controller-testcoverage | ≥50% | ≥80% | bestandscount |
-| Application Layer dekking | ~20% | ≥80% | code review |
-| Pentest rapport | Nee | Ja | bestandscheck |
+| ~~CSP unsafe-inline~~ | ~~Aanwezig~~ | ~~Afwezig~~ | VERVALLEN (DEC-106) |
+| Controller-testcoverage | 59% (20/34) | ≥80% (27/34) | bestandscount |
+| Application Layer dekking | 18% (6/34) | ≥82% (28/34) | bestandscount |
+| Pentest rapport | Nee | Nee (DEC-202: niet blokkerend) | N/A SP-14 |
 
 ### Definition of Done SP-14
-- [ ] CSP zonder unsafe-inline in productie-build
-- [ ] Pentest-rapport aanwezig of release-gate actief
-- [ ] Application Layer ≥80% controllers
-- [ ] Controller-testcoverage ≥80%
+- [x] ~~CSP zonder unsafe-inline~~ VERVALLEN (DEC-106) — unsafe-inline geaccepteerd risico
+- [x] ~~Pentest-rapport~~ EXTERN (DEC-202) — niet blokkerend voor v1.0; gepland na dev-cyclus
+- [ ] Application Layer ≥28/34 controllers via IRepository
+- [ ] Controller-testcoverage ≥27/34 testbestanden
 - [ ] CI volledig groen
 
 ---
