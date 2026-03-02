@@ -73,6 +73,7 @@ export default function DonorFormulierPage() {
 
   useEffect(() => {
     if (donorData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setForm({
         keuze: donorData.keuze ?? "",
         isGeregistreerdBijDonorregister:
@@ -92,6 +93,7 @@ export default function DonorFormulierPage() {
     if (Array.isArray(orgaanData) && orgaanData.length > 0) {
       const mapped: Record<string, boolean> = {};
       for (const item of orgaanData) mapped[item.orgaan] = item.welDoneren;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOrgaanKeuzes(mapped);
     }
   }, [orgaanData]);

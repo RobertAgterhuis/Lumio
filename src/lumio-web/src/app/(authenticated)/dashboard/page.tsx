@@ -204,7 +204,7 @@ export default function DashboardPage() {
   const { data: actualisatieData, refetch: refetchActualisatie } = useDomainQuery<{ domeinen: ActualisatieDomein[]; herinneringNodig: boolean }>("status/actualisatie", { staleTime: 0 });
 
   useEffect(() => {
-    if (profileFetched && compleetheitFetched) setIsInitializing(false);
+    if (profileFetched && compleetheitFetched) setIsInitializing(false); // eslint-disable-line react-hooks/set-state-in-effect
   }, [profileFetched, compleetheitFetched]);
   const actualisatie = actualisatieData?.domeinen ?? [];
   const aanbevolenDomein = compleetheid?.domeinen.find((d) => !d.ingevuld)?.domein ?? null;
@@ -245,6 +245,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const key = `lumio_juridisch_begrepen`;
     if (!localStorage.getItem(key)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowJuridisch(true);
     }
   }, []);

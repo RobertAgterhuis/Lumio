@@ -93,6 +93,7 @@ export default function InstellingenPage() {
   useEffect(() => {
     if (!isDraggingRef.current) {
       const links = resolveOrder(instellingenVolgordeLinks, DEFAULT_LINKS);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setColLinks(links);
       setColRechts(resolveOrder(instellingenVolgordeRechts, DEFAULT_RECHTS, links));
     }

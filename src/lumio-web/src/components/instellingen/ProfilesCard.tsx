@@ -53,6 +53,7 @@ export function ProfilesCard({ onDeleteRequest }: ProfilesCardProps) {
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- react-hook-form watch() is incompatible with React Compiler; intentional skip
   const selectedRelatie = watch("relatie");
 
   const onSubmit = async (data: ProfileCreateForm) => {

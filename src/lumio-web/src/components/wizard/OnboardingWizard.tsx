@@ -92,6 +92,7 @@ export function OnboardingWizard() {
     }
     const completed = localStorage.getItem(storageKey);
     if (completed === "true") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(false);
     }
     setLocalStorageChecked(true);
@@ -113,6 +114,7 @@ export function OnboardingWizard() {
           activatie_reden: "onboarding_wizard_compleet",
         });
       }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(false);
     } else {
       const completed = localStorage.getItem(storageKey);

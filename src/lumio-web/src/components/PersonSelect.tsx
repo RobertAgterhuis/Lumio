@@ -183,6 +183,7 @@ export function PersonSelect({
   // Once loading completes: if the current value doesn't match any known person, switch to manual entry
   useEffect(() => {
     if (!isLoading && value && !persons.some((p) => p.naam === value)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMode("manual");
     }
   }, [isLoading]); // eslint-disable-line react-hooks/exhaustive-deps

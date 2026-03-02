@@ -67,7 +67,7 @@ export default function HomePage() {
       }
     };
     checkStatus();
-  }, [setUnlocked, setFirstRun, setLoading, setProfiles, setActiveProfile, setProfileSelected, setProfileNeedsSetup]);
+  }, [setUnlocked, setFirstRun, setLoading, setProfiles, setActiveProfile, setProfileSelected, setProfileNeedsSetup, setReadOnly]);
 
   useEffect(() => {
     if (isUnlocked) {

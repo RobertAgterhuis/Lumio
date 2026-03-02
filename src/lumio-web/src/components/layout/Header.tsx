@@ -9,6 +9,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useTheme } from "@/hooks/useTheme";
 import { useTranslations } from "next-intl";
 import { Lock, Search, UserCircle, Moon, Sun, HelpCircle } from "lucide-react";
+import Image from "next/image";
 import { NotificationsDropdown } from "./NotificationsDropdown";
 import { useHelpStore } from "@/stores/helpStore";
 import { getChapterForRoute, helpChapters } from "@/content/help-chapters";
@@ -69,13 +70,12 @@ export function Header() {
 
   // Fetch profile photo when authenticated, or when the photo is updated elsewhere
   useEffect(() => {
-    if (!activeProfile) { setFotoUrl(null); return; }
+    if (!activeProfile) { setFotoUrl(null); return; } // eslint-disable-line react-hooks/set-state-in-effect
     api.get<{ heeftProfielFoto?: boolean }>("/api/eigenaar")
       .then((data) => {
         setFotoUrl(data.heeftProfielFoto ? `${API_BASE}/api/eigenaar/foto?t=${Date.now()}` : null);
       })
       .catch((err) => console.error("Failed to load profile:", err));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeProfile, profileFotoVersion]);
 
   const handleLock = async () => {
@@ -105,7 +105,6 @@ export function Header() {
 
   return (
     <>
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <header
         className="flex h-16 items-center justify-between border-b border-border bg-primary px-6 text-primary-foreground"
         style={{ WebkitAppRegion: "drag" } as any}
@@ -113,9 +112,11 @@ export function Header() {
         {activeProfile ? (
           <div className="flex items-center gap-2 text-sm text-primary-foreground/80">
             {fotoUrl ? (
-              <img
+              <Image
                 src={fotoUrl}
                 alt={activeProfile.naam}
+                width={24}
+                height={24}
                 className="h-6 w-6 rounded-full object-cover"
               />
             ) : (
@@ -126,7 +127,6 @@ export function Header() {
         ) : (
           <div />
         )}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <div className="flex items-center gap-2" style={{ WebkitAppRegion: "no-drag" } as any}>
           <Button
             variant="ghost"

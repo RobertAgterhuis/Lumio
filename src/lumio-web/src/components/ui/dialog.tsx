@@ -23,6 +23,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   const previousActiveElement = React.useRef<Element | null>(null);
   // Store onOpenChange in a ref to avoid re-running focus effect when callback changes
   const onOpenChangeRef = React.useRef(onOpenChange);
+  // eslint-disable-next-line react-hooks/refs -- intentional ref update during render to track latest callback
   onOpenChangeRef.current = onOpenChange;
 
   // Animation state: keep mounted during exit animation

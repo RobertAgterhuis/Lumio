@@ -4,7 +4,6 @@
  * Used by TijdlijnStapRow to show completion badges, summaries, and deep links.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TijdlijnTranslateFn = (key: string, values?: any) => string;
 
 export interface TijdlijnStapConfig {

@@ -82,6 +82,7 @@ export function StatistiekenWidget({ onHasContent }: StatistiekenWidgetProps) {
       stats.noodcontacten > 0 ||
       hasFinancieelLocal;
     onHasContent?.(hasAny);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- onHasContent changes on each parent render; adding it would cause infinite loop
   }, [stats]);
 
   if (!stats) return null;
