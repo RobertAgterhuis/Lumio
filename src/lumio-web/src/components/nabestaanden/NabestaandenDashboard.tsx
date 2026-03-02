@@ -367,10 +367,10 @@ export function NabestaandenDashboard() {
         const items = stappenplan.filter((s) => s.fase === fase);
 
         return (
-          <div key={fase} className="space-y-3">
+          <section key={fase} aria-labelledby={`fase-heading-${fase}`} className="space-y-3">
             <div className="flex items-center gap-2">
               <FaseIcon className={`h-5 w-5 ${config.color}`} />
-              <h2 className={`text-lg font-semibold ${config.color}`}>
+              <h2 id={`fase-heading-${fase}`} className={`text-lg font-semibold ${config.color}`}>
                 {t(`fases.${fase}`)}
               </h2>
             </div>
@@ -512,7 +512,7 @@ export function NabestaandenDashboard() {
                 );
               })}
             </div>
-          </div>
+          </section>
         );
       })}
     </div>

@@ -209,7 +209,7 @@ export function Sidebar() {
                       ) : null}
                       <span className="flex-1">{label}</span>
                       {isCompleted && (
-                        <CheckCircle2 className="h-4 w-4 text-success" aria-label="Completed" />
+                        <CheckCircle2 className="h-4 w-4 text-success" aria-label="Voltooid" />
                       )}
                     </Link>
                   );

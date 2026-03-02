@@ -39,7 +39,9 @@
       "foutMinimaal": "Password must contain at least 8 characters.",
       "foutOvereenkomst": "Passwords do not match.",
       "foutSetup": "Setup failed",
-      "wachtwoordWaarschuwing": "Store your password, emergency codes, and recovery codes in a safe place. Losing your password means losing access to all your Lumio data."
+      "wachtwoordWaarschuwing": "Store your password, emergency codes, and recovery codes in a safe place. Losing your password means losing access to all your Lumio data.",
+      "toonWachtwoord": "Show password",
+      "verbergWachtwoord": "Hide password"
     },
     "ontgrendel": {
       "titel": "Unlock Lumio",
@@ -56,6 +58,7 @@
       "codeLabel": "Code {nummer}",
       "codePlaceholder": "Paste the emergency code here...",
       "codeToevoegen": "Add another code",
+      "instructie": "Enter your emergency codes below. You need at least the number of codes set by the owner to gain access.",
       "minimaalCodes": "At least 2 emergency codes are required.",
       "reconstructieMislukt": "Reconstruction failed. Please verify that you have entered enough valid emergency codes.",
       "bezig": "Reconstructing...",

@@ -52,6 +52,8 @@ export function OnboardingWizard() {
   const [localStorageChecked, setLocalStorageChecked] = useState(false);
   // Session-level ref: prevents wizard re-showing after user navigates via it
   const sessionDismissedRef = useRef(false);
+  // UX-001: ref for focus-trap
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   // Load data with React Query
   const { data: eigenaar, isLoading: loadingEigenaar } = useDomainQuery<{ id?: string } | null>("eigenaar");
@@ -120,6 +122,30 @@ export function OnboardingWizard() {
     }
   }, [localStorageChecked, loading, stapStatus, storageKey]);
 
+  // UX-001: Focus-trap — keep keyboard focus inside modal (WCAG 2.1.1, 2.1.2)
+  useEffect(() => {
+    if (!visible) return;
+    const modal = modalRef.current;
+    if (!modal) return;
+    const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const getFocusable = () => Array.from(modal.querySelectorAll<HTMLElement>(FOCUSABLE));
+    getFocusable()[0]?.focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const els = getFocusable();
+      if (els.length === 0) { e.preventDefault(); return; }
+      const first = els[0];
+      const last = els[els.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [visible]);
+
   const dismissForSession = () => {
     if (!storageKey) return;
     const sessionKey = `${storageKey}_session`;
@@ -166,7 +192,13 @@ export function OnboardingWizard() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="mx-4 w-full max-w-2xl rounded-xl border border-border bg-background shadow-2xl">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="onboarding-wizard-title"
+        className="mx-4 w-full max-w-2xl rounded-xl border border-border bg-background shadow-2xl"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div className="flex items-center gap-3">
@@ -174,7 +206,7 @@ export function OnboardingWizard() {
               <Sparkles className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold">{t("welkom")}</h2>
+              <h2 id="onboarding-wizard-title" className="text-lg font-semibold">{t("welkom")}</h2>
               <p className="text-sm text-muted-foreground">
                 {t("doorloop")}
               </p>
