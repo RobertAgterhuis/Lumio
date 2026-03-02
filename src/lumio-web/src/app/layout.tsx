@@ -32,10 +32,17 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning className={dmSans.variable}>
       <head>
-{/* T-007 (GAP-SEC-04): 'unsafe-inline' removed from script-src — theme script is now external (/theme-init.js) */}
+{/*
+          CSP NOTE: Next.js with `output: "export"` (static) injects inline hydration scripts at build time.
+          A nonce-based or hash-based strict CSP requires a server runtime (middleware), which is unavailable
+          here. 'unsafe-inline' is therefore retained for script-src. All other directives enforce meaningful
+          restrictions: connect-src limits exfiltration, frame-ancestors prevents clickjacking,
+          object-src/base-uri prevent plugin and base-tag injection.
+          TODO: migrate to SSR (remove output:"export") to enable nonce-based strict CSP.
+        */}
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://app.posthog.com https://us.i.posthog.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://app.posthog.com https://us.i.posthog.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
         />
         {/* T-007: Synchronous external script — no async/defer keeps FOUC absent, no unsafe-inline needed */}
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
