@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +25,19 @@ export function HeirUnlockForm() {
   const [shares, setShares] = useState<string[]>([""]);
   const [error, setError] = useState<string | null>(null);
   const [reconstructing, setReconstructing] = useState(false);
+  // SP-9: Shamir-drempel dynamisch ophalen van de server (was hardcoded 2).
+  // Default 2 = ShamirMinDrempel — wordt direct overschreven door de API-respons.
+  const [threshold, setThreshold] = useState(2);
   const t = useTranslations("auth.erfgenaam");
+
+  useEffect(() => {
+    api
+      .get<{ drempel: number }>("/api/shamir/drempel")
+      .then((data) => setThreshold(data.drempel))
+      .catch(() => {
+        // Valt terug op de initiële default (2 = ShamirMinDrempel).
+      });
+  }, []);
 
   const addShare = () => setShares((s) => [...s, ""]);
 
@@ -38,8 +50,8 @@ export function HeirUnlockForm() {
   const handleReconstruct = async () => {
     setError(null);
     const validShares = shares.filter((s) => s.trim().length > 0);
-    if (validShares.length < 2) {
-      setError(t("minimaalCodes"));
+    if (validShares.length < threshold) {
+      setError(t("minimaalCodes", { drempel: threshold }));
       return;
     }
 
@@ -90,7 +102,7 @@ export function HeirUnlockForm() {
               <ol className="space-y-2 text-sm text-muted-foreground list-none">
                 <li className="flex gap-2">
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent">1</span>
-                  {t("introStap1")}
+                  {t("introStap1", { drempel: threshold })}
                 </li>
                 <li className="flex gap-2">
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/20 text-xs font-semibold text-accent">2</span>
@@ -129,7 +141,7 @@ export function HeirUnlockForm() {
           <div className="space-y-4">
             <Alert variant="info">
               <AlertDescription>
-                {t("instructie")}
+                {t("instructie", { drempel: threshold })}
               </AlertDescription>
             </Alert>
             <div className="space-y-3">

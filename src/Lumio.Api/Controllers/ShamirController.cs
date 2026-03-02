@@ -61,6 +61,12 @@ public class ShamirController : ControllerBase
             erfgenamen[i].HeeftShareOntvangen = true;
             erfgenamen[i].ShareUitgegevenOp = DateTime.UtcNow;
         }
+
+        // SP-9: Sla de gebruikte drempel op zodat erfgenamen deze kunnen opvragen vóór ontsleuteling.
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        if (eigenaar is not null)
+            eigenaar.ShamirDrempel = request.Drempel;
+
         await _db.SaveChangesAsync();
 
         var response = new GenereerSharesResponse(
@@ -110,5 +116,18 @@ public class ShamirController : ControllerBase
         {
             return BadRequest(new { error = "Kan geheim niet reconstrueren met de gegeven delen." });
         }
+    }
+
+    /// <summary>
+    /// SP-9: Retourneert de Shamir-drempel die bij de laatste share-generatie is ingesteld.
+    /// Valt terug op ShamirMinDrempel uit configuratie als er nog geen shares zijn gegenereerd.
+    /// Openbaar toegankelijk: erfgenamen moeten dit weten vóór ontsleuteling.
+    /// </summary>
+    [HttpGet("drempel")]
+    public async Task<IActionResult> GetDrempel()
+    {
+        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
+        var drempel = eigenaar?.ShamirDrempel ?? _limieten.ShamirMinDrempel;
+        return Ok(new { drempel });
     }
 }
