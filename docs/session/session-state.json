@@ -3,14 +3,14 @@
   "cycle_type": "COMBO_AUDIT",
   "audit_scope": ["TECHNIEK", "UX"],
   "feature_name": null,
-  "status": "SPRINT_ACTIVE",
+  "status": "AWAITING_NEXT_SPRINT",
   "current_phase": "FASE-5",
   "current_agent": "implementation-agent",
-  "current_sprint": "SP-UX-03",
+  "current_sprint": null,
   "github_project_name": "Lumio Workitems",
   "github_repo_url": "https://github.com/RobertAgterhuis/Lumio",
   "canva_api_token": "",
-  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11", "SPRINT_COMPLETE_SP-11", "PRE_SPRINT_GATE_SP-12", "SPRINT_COMPLETE_SP-12", "PRE_SPRINT_GATE_SP-13", "SPRINT_COMPLETE_SP-13", "PRE_SPRINT_GATE_SP-14", "SPRINT_COMPLETE_SP-14", "SPRINT_COMPLETE_SP-UX-01", "SPRINT_COMPLETE_SP-UX-02"],
+  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11", "SPRINT_COMPLETE_SP-11", "PRE_SPRINT_GATE_SP-12", "SPRINT_COMPLETE_SP-12", "PRE_SPRINT_GATE_SP-13", "SPRINT_COMPLETE_SP-13", "PRE_SPRINT_GATE_SP-14", "SPRINT_COMPLETE_SP-14", "SPRINT_COMPLETE_SP-UX-01", "SPRINT_COMPLETE_SP-UX-02", "SPRINT_COMPLETE_SP-UX-03"],
   "completed_agents": [
     "25-onboarding-agent",
     "05-software-architect",
@@ -112,31 +112,30 @@
         {"id": "SP-UX-02-006", "url": "https://github.com/RobertAgterhuis/Lumio/issues/125", "status": "closed", "commit": "df49322"},
         {"id": "SP-UX-02-007", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "note": "ANALYSIS — carry-over naar SP-UX-03"}
       ]
+    },
+    {
+      "sprint_id": "SP-UX-03",
+      "sprint_name": "Kwaliteitsverbetering & A11y Voltooiing",
+      "milestone_number": 14,
+      "implementation_status": "COMPLETE",
+      "pull_request_number": 130,
+      "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/130",
+      "merge_sha": "65fb381",
+      "merged_at": "2026-03-05",
+      "github_issues": [
+        {"id": "SP-UX-03-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/128", "status": "closed", "commit": "2b52d00"},
+        {"id": "SP-UX-03-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/129", "status": "closed", "commit": "747eb8c"},
+        {"id": "SP-UX-03-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/123", "status": "open", "note": "VERPLAATST naar SP-UX-04 (milestone 15)"},
+        {"id": "SP-UX-03-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/124", "status": "open", "note": "VERPLAATST naar SP-UX-04 (milestone 15)"},
+        {"id": "SP-UX-03-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "note": "VERPLAATST naar SP-UX-04 (milestone 15)"}
+      ]
     }
   ],
-  "active_sprint": {
-    "sprint_id": "SP-UX-03",
-    "sprint_name": "Kwaliteitsverbetering & A11y Voltooiing",
-    "milestone_number": 14,
-    "branch": "feature/SP-UX-03-kwaliteitsverbetering-a11y-voltooiing",
-    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/130",
-    "pull_request_number": 130,
-    "dor_cleared": true,
-    "sprint_gate_date": "2026-03-10T00:00:00Z",
-    "implementation_status": "IN_PROGRESS",
-    "test_results": null,
-    "github_issues": [
-      {"id": "SP-UX-03-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/128", "status": "closed", "type": "CODE", "sp": 2, "commit": "2b52d00"},
-      {"id": "SP-UX-03-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/129", "status": "closed", "type": "CODE", "sp": 3, "commit": "747eb8c", "note": "carry-over van SP-UX-02-006 heading-audit"},
-      {"id": "SP-UX-03-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/123", "status": "open", "type": "ANALYSIS", "sp": 2, "note": "VERPLAATST naar SP-UX-04 (milestone 15)"},
-      {"id": "SP-UX-03-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/124", "status": "open", "type": "ANALYSIS", "sp": 3, "note": "VERPLAATST naar SP-UX-04 (milestone 15)"},
-      {"id": "SP-UX-03-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "type": "ANALYSIS", "sp": 5, "note": "VERPLAATST naar SP-UX-04 (milestone 15)"}
-    ]
-  },
+  "active_sprint": null,
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-3/sprintplan.md",
-  "last_updated": "2026-03-05T11:00:00Z",
+  "last_updated": "2026-03-05T12:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
