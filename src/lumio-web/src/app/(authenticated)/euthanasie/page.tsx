@@ -199,7 +199,7 @@ export default function EuthanasiePage() {
             <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <ScrollText className="h-5 w-5 text-sage shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t("wilsverklaringCard.titel")}</h3>
+                <h2 className="text-sm font-semibold text-sage leading-tight">{t("wilsverklaringCard.titel")}</h2>
               </div>
               <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
             </div>
@@ -236,7 +236,7 @@ export default function EuthanasiePage() {
             <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <Stethoscope className="h-5 w-5 text-sage shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t("contactCard.titel")}</h3>
+                <h2 className="text-sm font-semibold text-sage leading-tight">{t("contactCard.titel")}</h2>
               </div>
               <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
             </div>
@@ -302,7 +302,7 @@ export default function EuthanasiePage() {
             <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <ShieldCheck className="h-5 w-5 text-sage shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t("clausulesCard.titel")}</h3>
+                <h2 className="text-sm font-semibold text-sage leading-tight">{t("clausulesCard.titel")}</h2>
               </div>
               <Button variant="ghost" size="sm" onClick={openEdit}><Pencil className="h-4 w-4 text-sage" /></Button>
             </div>

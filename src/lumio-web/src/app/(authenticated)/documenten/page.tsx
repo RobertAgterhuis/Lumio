@@ -279,9 +279,9 @@ export default function DocumentenPage() {
           <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
             <FileText className="h-5 w-5 text-sage shrink-0" />
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-sage leading-tight">
+              <h2 className="text-sm font-semibold text-sage leading-tight">
                 {t("opgeslagenDocumenten", { aantal: documenten.length })}
-              </h3>
+              </h2>
             </div>
           </div>
           <CardContent className="pt-5">

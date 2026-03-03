@@ -245,7 +245,7 @@ export default function ErfgenamenPage() {
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
             <Users className="h-5 w-5 text-primary shrink-0" />
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-primary leading-tight">{t("aantal", { aantal: state.erfgenamen.length })}</h3>
+              <h2 className="text-sm font-semibold text-primary leading-tight">{t("aantal", { aantal: state.erfgenamen.length })}</h2>
             </div>
           </div>
           <CardContent className="pt-5">

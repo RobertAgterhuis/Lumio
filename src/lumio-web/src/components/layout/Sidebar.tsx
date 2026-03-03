@@ -130,7 +130,7 @@ export function Sidebar() {
           <LumioLogoIcon size={28} />
           {!sidebarCollapsed && (
             <>
-              <h1 className="flex-1 text-xl font-bold text-primary">Lumio</h1>
+              <p className="flex-1 text-xl font-bold text-primary">Lumio</p>
               <button
                 onClick={toggleSidebar}
                 aria-label="Navigatiemenu verbergen"

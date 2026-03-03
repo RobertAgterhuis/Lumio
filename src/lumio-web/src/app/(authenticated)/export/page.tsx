@@ -165,7 +165,7 @@ export default function ExportPage() {
         <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
           <Download className="h-5 w-5 text-sage shrink-0" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-sage leading-tight">{t("compleetOverzicht")}</h3>
+            <h2 className="text-sm font-semibold text-sage leading-tight">{t("compleetOverzicht")}</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{t("compleetBeschrijving")}</p>
           </div>
         </div>
@@ -203,7 +203,7 @@ export default function ExportPage() {
         <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
           <FileJson className="h-5 w-5 text-sage shrink-0" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-sage leading-tight">{t("gestructureerdeExport")}</h3>
+            <h2 className="text-sm font-semibold text-sage leading-tight">{t("gestructureerdeExport")}</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{t("gestructureerdeBeschrijving")}</p>
           </div>
         </div>
@@ -239,7 +239,7 @@ export default function ExportPage() {
         <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
           <Sheet className="h-5 w-5 text-sage shrink-0" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-sage leading-tight">{t("csvExport")}</h3>
+            <h2 className="text-sm font-semibold text-sage leading-tight">{t("csvExport")}</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{t("csvBeschrijving")}</p>
           </div>
         </div>
@@ -267,7 +267,7 @@ export default function ExportPage() {
         <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
           <Flower2 className="h-5 w-5 text-sage shrink-0" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-sage leading-tight">{t("nuvExport")}</h3>
+            <h2 className="text-sm font-semibold text-sage leading-tight">{t("nuvExport")}</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{t("nuvBeschrijving")}</p>
           </div>
         </div>
@@ -303,7 +303,7 @@ export default function ExportPage() {
           <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
             <Users className="h-5 w-5 text-sage shrink-0" />
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-sage leading-tight">{t("deelMetErfgenaam")}</h3>
+              <h2 className="text-sm font-semibold text-sage leading-tight">{t("deelMetErfgenaam")}</h2>
               <p className="text-xs text-muted-foreground mt-0.5">{t("deelMetErfgenaamBeschrijving")}</p>
             </div>
           </div>
@@ -348,7 +348,7 @@ export default function ExportPage() {
                 ) : LucideOptIcon ? (
                   <LucideOptIcon className="h-4 w-4 text-sage shrink-0" />
                 ) : null}
-                <h3 className="text-sm font-semibold text-sage leading-tight flex-1">{t(`opties.${opt.key}`)}</h3>
+                <h2 className="text-sm font-semibold text-sage leading-tight flex-1">{t(`opties.${opt.key}`)}</h2>
                 {heeftData === false && (
                   <span className="text-xs text-muted-foreground bg-black/5 dark:bg-white/10 rounded px-1.5 py-0.5 shrink-0">
                     {t("geenData")}

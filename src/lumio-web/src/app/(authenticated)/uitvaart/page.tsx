@@ -123,7 +123,7 @@ export default function UitvaartPage() {
               <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
                 <LumioIcon name="uitvaart" className="h-5 w-5 text-sage shrink-0" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-sage leading-tight">{t("uitvaartCard.titel")}</h3>
+                  <h2 className="text-sm font-semibold text-sage leading-tight">{t("uitvaartCard.titel")}</h2>
                 </div>
                 <Button variant="ghost" size="sm" onClick={openUitvaartEdit}>
                   <Pencil className="h-4 w-4 text-sage" />
@@ -185,7 +185,7 @@ export default function UitvaartPage() {
               <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
                 <Music className="h-5 w-5 text-sage shrink-0" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-sage leading-tight">{t("ceremonieCard.titel")}</h3>
+                  <h2 className="text-sm font-semibold text-sage leading-tight">{t("ceremonieCard.titel")}</h2>
                 </div>
                 <Button variant="ghost" size="sm" onClick={openUitvaartEdit}>
                   <Pencil className="h-4 w-4 text-sage" />
@@ -244,7 +244,7 @@ export default function UitvaartPage() {
             <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <MapPin className="h-5 w-5 text-sage shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t("locatieCard.titel")}</h3>
+                <h2 className="text-sm font-semibold text-sage leading-tight">{t("locatieCard.titel")}</h2>
               </div>
               <Button variant="ghost" size="sm" onClick={openLocatieEdit}>
                 <Pencil className="h-4 w-4 text-sage" />
@@ -286,7 +286,7 @@ export default function UitvaartPage() {
             <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <ListOrdered className="h-5 w-5 text-sage shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t("verloop.titel")}</h3>
+                <h2 className="text-sm font-semibold text-sage leading-tight">{t("verloop.titel")}</h2>
               </div>
               <Button size="sm" onClick={() => openDetailDialog()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
@@ -320,7 +320,7 @@ export default function UitvaartPage() {
             <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <Users className="h-5 w-5 text-sage shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t("genodigden.titel")}</h3>
+                <h2 className="text-sm font-semibold text-sage leading-tight">{t("genodigden.titel")}</h2>
               </div>
               <Badge variant="secondary">{genodigden.length}</Badge>
               <Button size="sm" onClick={() => openGenDialog()}>

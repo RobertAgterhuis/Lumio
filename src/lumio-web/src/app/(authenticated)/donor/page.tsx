@@ -95,7 +95,7 @@ export default function DonorPage() {
             <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <HeartHandshake className="h-5 w-5 text-success shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-success leading-tight">{t("keuzeCard.titel")}</h3>
+                <h2 className="text-sm font-semibold text-success leading-tight">{t("keuzeCard.titel")}</h2>
               </div>
             </div>
             <CardContent className="pt-5 space-y-2 text-sm">
@@ -139,7 +139,7 @@ export default function DonorPage() {
               <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
                 <Activity className="h-5 w-5 text-success shrink-0" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-success leading-tight">{t("orgaanCard.titel")}</h3>
+                  <h2 className="text-sm font-semibold text-success leading-tight">{t("orgaanCard.titel")}</h2>
                 </div>
               </div>
               <CardContent className="pt-5">
