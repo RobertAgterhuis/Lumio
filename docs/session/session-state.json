@@ -107,8 +107,8 @@
       {"id": "SP-UX-02-006", "url": "https://github.com/RobertAgterhuis/Lumio/issues/125", "status": "closed", "commit": "df49322"},
       {"id": "SP-UX-02-007", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "note": "ANALYSIS — onboarding usability-test; geen code"}
     ],
-    "pull_request_url": null,
-    "pull_request_number": null,
+    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/127",
+    "pull_request_number": 127,
     "branch": "feature/SP-UX-02-onboarding-optimalisatie-nabestaanden",
     "dor_cleared": true,
     "sprint_gate_date": "2026-03-04T00:00:00Z",
