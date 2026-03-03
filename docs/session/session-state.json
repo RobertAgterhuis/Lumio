@@ -3,10 +3,10 @@
   "cycle_type": "COMBO_AUDIT",
   "audit_scope": ["TECHNIEK", "UX"],
   "feature_name": null,
-  "status": "AWAITING_NEXT_SPRINT",
+  "status": "SPRINT_ACTIVE",
   "current_phase": "FASE-5",
   "current_agent": "implementation-agent",
-  "current_sprint": null,
+  "current_sprint": "SP-UX-03",
   "github_project_name": "Lumio Workitems",
   "github_repo_url": "https://github.com/RobertAgterhuis/Lumio",
   "canva_api_token": "",
@@ -114,11 +114,29 @@
       ]
     }
   ],
-  "active_sprint": null,
+  "active_sprint": {
+    "sprint_id": "SP-UX-03",
+    "sprint_name": "Kwaliteitsverbetering & A11y Voltooiing",
+    "milestone_number": 14,
+    "branch": "feature/SP-UX-03-kwaliteitsverbetering-a11y-voltooiing",
+    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/130",
+    "pull_request_number": 130,
+    "dor_cleared": true,
+    "sprint_gate_date": "2026-03-10T00:00:00Z",
+    "implementation_status": "IN_PROGRESS",
+    "test_results": null,
+    "github_issues": [
+      {"id": "SP-UX-03-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/128", "status": "closed", "type": "CODE", "sp": 2, "commit": "2b52d00"},
+      {"id": "SP-UX-03-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/129", "status": "closed", "type": "CODE", "sp": 3, "commit": "747eb8c", "note": "carry-over van SP-UX-02-006 heading-audit"},
+      {"id": "SP-UX-03-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/123", "status": "open", "type": "ANALYSIS", "sp": 2, "note": "VERPLAATST naar SP-UX-04 (milestone 15)"},
+      {"id": "SP-UX-03-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/124", "status": "open", "type": "ANALYSIS", "sp": 3, "note": "VERPLAATST naar SP-UX-04 (milestone 15)"},
+      {"id": "SP-UX-03-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "type": "ANALYSIS", "sp": 5, "note": "VERPLAATST naar SP-UX-04 (milestone 15)"}
+    ]
+  },
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-3/sprintplan.md",
-  "last_updated": "2026-03-03T12:00:00Z",
+  "last_updated": "2026-03-05T11:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",

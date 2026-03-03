@@ -118,7 +118,7 @@ export default function NoodcontactenPage() {
         <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
           <Phone className="h-5 w-5 text-primary shrink-0" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-primary leading-tight">{t("contactenTitel", { aantal: contacten.length })}</h3>
+            <h2 className="text-sm font-semibold text-primary leading-tight">{t("contactenTitel", { aantal: contacten.length })}</h2>
           </div>
           <div className="flex gap-2">
             <NoodkaartQR contacten={contacten} />

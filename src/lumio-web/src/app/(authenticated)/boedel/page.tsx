@@ -117,7 +117,7 @@ export default function BoedelPage() {
             <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <Home className="h-5 w-5 text-success shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-success leading-tight">{t("bezittingen.titel")}</h3>
+                <h2 className="text-sm font-semibold text-success leading-tight">{t("bezittingen.titel")}</h2>
               </div>
               <Button size="sm" onClick={() => openBezit()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
@@ -149,7 +149,7 @@ export default function BoedelPage() {
             <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <Landmark className="h-5 w-5 text-success shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-success leading-tight">{t("rekeningen.titel")}</h3>
+                <h2 className="text-sm font-semibold text-success leading-tight">{t("rekeningen.titel")}</h2>
               </div>
               <Button size="sm" onClick={() => openRekening()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
@@ -181,7 +181,7 @@ export default function BoedelPage() {
             <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <ShieldCheck className="h-5 w-5 text-success shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-success leading-tight">{t("verzekeringen.titel")}</h3>
+                <h2 className="text-sm font-semibold text-success leading-tight">{t("verzekeringen.titel")}</h2>
               </div>
               <Button size="sm" onClick={() => openVerzekering()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}
@@ -213,7 +213,7 @@ export default function BoedelPage() {
             <div className="bg-success-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
               <TrendingDown className="h-5 w-5 text-success shrink-0" />
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-success leading-tight">{t("schulden.titel")}</h3>
+                <h2 className="text-sm font-semibold text-success leading-tight">{t("schulden.titel")}</h2>
               </div>
               <Button size="sm" onClick={() => openSchuld()}>
                 <Plus className="h-4 w-4 mr-1" /> {t("toevoegen")}

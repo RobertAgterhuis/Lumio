@@ -84,7 +84,7 @@
 
 | Component | Regel | Huidig niveau | Aanbeveling | Status |
 |---|---|---|---|---|
-| `Sidebar.tsx:133` | App-branding "Lumio" | h1 | Gebruik `<p>` of `<span>` | ⚠️ OPEN (OUT_OF_SCOPE voor SP-UX-02-006) |
+| `Sidebar.tsx:133` | App-branding "Lumio" | h1 | Gebruik `<p>` of `<span>` | ✅ GEFIXED (SP-UX-03-002, DEC-107) |
 | `Sidebar.tsx:150` | Navigatiegroepen | h2 (inside `<nav>`) | h2 is OK binnen nav-sectioning | ✅ OK |
 
 **Bevinding:** De Sidebar rendert `<h1>Lumio</h1>` als app-branding. Elke authenticated pagina bevat daardoor twee h1-elementen (sidebar + pagina-content). Dit schendt de `page-has-heading-one` best-practice (niet hetezlfde als `heading-order`). Actie vereist als apart issue.
@@ -108,14 +108,14 @@ De volgende patronen zijn ook gevonden in andere pagina's maar vallen buiten de 
 
 | Pagina | Schending | Aanbeveling |
 |---|---|---|
-| `boedel/page.tsx` | h1 → h3 | h3 → h2 |
-| `donor/page.tsx` | h1 → h3 | h3 → h2 |
-| `documenten/page.tsx` | h1 → h3 | h3 → h2 |
-| `erfgenamen/page.tsx` | h1 → h3 | h3 → h2 |
-| `euthanasie/page.tsx` | h1 → h3 | h3 → h2 |
-| `export/page.tsx` | h1 → h3 | h3 → h2 |
-| `noodcontacten/page.tsx` | h1 → h3 | h3 → h2 |
-| `uitvaart/page.tsx` | h1 → h3 | h3 → h2 |
+| `boedel/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
+| `donor/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
+| `documenten/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
+| `erfgenamen/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
+| `euthanasie/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
+| `export/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
+| `noodcontacten/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
+| `uitvaart/page.tsx` | h1 → h3 | h3 → h2 | ✅ GEFIXED (SP-UX-03-002) |
 
 **Aanbeveling:** Aanmaken van SP-UX-03 story "Heading-hiërarchie systeembrede fix" voor alle resterende pagina's. Schatting: 1–2 SP.
 

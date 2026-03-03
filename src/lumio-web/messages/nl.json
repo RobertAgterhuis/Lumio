@@ -2202,6 +2202,10 @@
       "volgende": "Volgende",
       "voortgangHersteld": "Uw voortgang is hersteld. U bent bij stap {stap}.",
       "opnieuwBeginnen": "Opnieuw beginnen"
+    },
+    "dossierVolledigBanner": {
+      "titel": "Dossier volledig",
+      "beschrijving": "Alle 7 stappen zijn voltooid. Uw nalatenschap is volledig ingericht."
     }
   },
   "testament": {
