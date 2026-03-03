@@ -17,21 +17,23 @@ import {
 } from "lucide-react";
 import { OnboardingWizardModal } from "./OnboardingWizardModal";
 
-interface OnboardingStap {
+export interface OnboardingStap {
   id: string;
   stapKey: string;
   icon: React.ElementType;
   href: string;
 }
 
-const stappen: OnboardingStap[] = [
+export const stappen: OnboardingStap[] = [
   { id: "profiel", stapKey: "profiel", icon: User, href: "/eigenaar" },
   { id: "noodcontacten", stapKey: "noodcontacten", icon: Phone, href: "/noodcontacten" },
   { id: "testament", stapKey: "testament", icon: ScrollText, href: "/testament" },
-  { id: "uitvaart", stapKey: "uitvaart", icon: Church, href: "/uitvaart" },
   { id: "erfgenamen", stapKey: "erfgenamen", icon: Users, href: "/erfgenamen" },
   // SP-S2-001 / SP-UX-01-002: Shamir-stap — informeer erfgenamen; icon gewijzigd naar UserCheck (REC-UXDESIGN-001)
   { id: "sleutels", stapKey: "sleutels", icon: UserCheck, href: "/erfgenamen" },
+  // SP-UX-02-001: Uitvaart verplaatst naar positie 6 (na erfgenamen + sleutels) — REC-UX-003, REC-UXDESIGN-004
+  // Rationale: uitvaartwensen zijn emotioneel zwaar; laattijdig in wizard = minder drop-off
+  { id: "uitvaart", stapKey: "uitvaart", icon: Church, href: "/uitvaart" },
   { id: "backup", stapKey: "backup", icon: Download, href: "/instellingen" },
 ];
 
