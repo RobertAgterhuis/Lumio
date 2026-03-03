@@ -10,7 +10,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
 import { Lock, Eye, EyeOff, Info } from "lucide-react";
 
-export function UnlockForm() {
+export function UnlockForm({ onHeirMode }: { onHeirMode?: () => void }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,7 +45,7 @@ export function UnlockForm() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-          <Lock className="h-8 w-8 text-primary" />
+          <Lock aria-hidden="true" className="h-8 w-8 text-primary" />
         </div>
         <CardTitle>{t("titel")}</CardTitle>
         <CardDescription>
@@ -69,9 +69,10 @@ export function UnlockForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? t("wachtwoordVerbergen") : t("wachtwoordTonen")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? <EyeOff aria-hidden="true" className="h-4 w-4" /> : <Eye aria-hidden="true" className="h-4 w-4" />}
               </button>
             </div>
           </div>
@@ -83,9 +84,21 @@ export function UnlockForm() {
           <Button type="submit" className="w-full" disabled={loading || !password}>
             {loading ? t("bezig") : t("ontgrendelen")}
           </Button>
+
+          {/* SP-UX-01-004: Nabestaanden entry-point — REC-UX-002 + REC-UXDESIGN-003 */}
+          {onHeirMode && (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={onHeirMode}
+            >
+              {t("erfgenaamKnop")}
+            </Button>
+          )}
         </form>
         <div className="mt-4 rounded-md border border-border/50 bg-muted/30 p-3 flex gap-2">
-          <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+          <Info aria-hidden="true" className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
           <div>
             <p className="text-xs font-medium text-muted-foreground">{t("wachtwoordVergetenTitel")}</p>
             <p className="text-xs text-muted-foreground/80 mt-0.5">{t("wachtwoordVergetenTekst")}</p>

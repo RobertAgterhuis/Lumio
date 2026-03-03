@@ -9,6 +9,7 @@ import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { IdleWarningDialog } from "@/components/layout/IdleWarningDialog";
 import { ShortcutsDialog } from "@/components/layout/ShortcutsDialog";
 import { OnboardingWizard } from "@/components/wizard/OnboardingWizard";
+import { WizardReturnBadge } from "@/components/wizard/WizardReturnBadge";
 import { useAuthStore, type Profile } from "@/stores/authStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
@@ -147,6 +148,8 @@ export default function AuthenticatedLayout({
       <ShortcutsDialog />
       <HelpPanel />
       {!isReadOnly && <OnboardingWizard />}
+      {/* SP-UX-01-003: return badge shown on wizard-step pages opened via the wizard */}
+      {!isReadOnly && <WizardReturnBadge />}
     </div>
   );
 }

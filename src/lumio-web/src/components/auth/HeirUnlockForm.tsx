@@ -88,7 +88,7 @@ export function HeirUnlockForm() {
         <Card className="w-full max-w-lg">
           <CardHeader className="text-center">
             <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
-              <KeyRound className="h-6 w-6 text-accent" />
+              <KeyRound aria-hidden="true" className="h-6 w-6 text-accent" />
             </div>
             <CardTitle>{t("introTitel")}</CardTitle>
             <CardDescription>{t("introBeschrijving")}</CardDescription>
@@ -96,7 +96,7 @@ export function HeirUnlockForm() {
           <CardContent className="space-y-4">
             <div className="rounded-md border bg-muted/40 p-4 space-y-3">
               <p className="text-sm font-medium flex items-center gap-2">
-                <Info className="h-4 w-4 text-accent shrink-0" />
+                <Info aria-hidden="true" className="h-4 w-4 text-accent shrink-0" />
                 {t("introHoeWerktHet")}
               </p>
               <ol className="space-y-2 text-sm text-muted-foreground list-none">
@@ -115,7 +115,7 @@ export function HeirUnlockForm() {
               </ol>
             </div>
             <Button className="w-full" onClick={() => setStep("codes")}>
-              <Unlock className="h-4 w-4 mr-2" />
+              <Unlock aria-hidden="true" className="h-4 w-4 mr-2" />
               {t("introStarten")}
             </Button>
           </CardContent>
@@ -130,7 +130,7 @@ export function HeirUnlockForm() {
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
-            <KeyRound className="h-6 w-6 text-accent" />
+            <KeyRound aria-hidden="true" className="h-6 w-6 text-accent" />
           </div>
           <CardTitle>{t("titel")}</CardTitle>
           <CardDescription>
@@ -162,8 +162,9 @@ export function HeirUnlockForm() {
                       size="sm"
                       className="mt-6"
                       onClick={() => removeShare(i)}
+                      aria-label={t("codeVerwijderen", { nummer: i + 1 })}
                     >
-                      <Trash2 className="h-4 w-4 text-danger" />
+                      <Trash2 aria-hidden="true" className="h-4 w-4 text-danger" />
                     </Button>
                   )}
                 </div>
@@ -176,7 +177,7 @@ export function HeirUnlockForm() {
               onClick={addShare}
               className="w-full"
             >
-              <Plus className="h-4 w-4 mr-2" /> {t("codeToevoegen")}
+              <Plus aria-hidden="true" className="h-4 w-4 mr-2" /> {t("codeToevoegen")}
             </Button>
 
             {error && (
@@ -212,12 +213,12 @@ export function HeirUnlockForm() {
             >
               {reconstructing ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 aria-hidden="true" className="h-4 w-4 mr-2 animate-spin" />
                   {t("bezig")}
                 </>
               ) : (
                 <>
-                  <Unlock className="h-4 w-4 mr-2" />
+                  <Unlock aria-hidden="true" className="h-4 w-4 mr-2" />
                   {t("ontgrendelen")}
                 </>
               )}

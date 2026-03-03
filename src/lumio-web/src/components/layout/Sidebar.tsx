@@ -136,7 +136,7 @@ export function Sidebar() {
                 aria-label="Navigatiemenu verbergen"
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
-                <PanelLeftClose className="h-4 w-4" />
+                <PanelLeftClose aria-hidden="true" className="h-4 w-4" />
               </button>
             </>
           )}
@@ -179,7 +179,7 @@ export function Sidebar() {
                             {item.lumioIcon ? (
                               <LumioIcon name={item.lumioIcon} size="sm" />
                             ) : Icon ? (
-                              <Icon className="h-4 w-4" />
+                              <Icon aria-hidden="true" className="h-4 w-4" />
                             ) : null}
                           </Link>
                         </TooltipTrigger>
@@ -187,7 +187,7 @@ export function Sidebar() {
                           <div className="flex items-center gap-2">
                             {label}
                             {isCompleted && (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                              <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5 text-success" />
                             )}
                           </div>
                         </TooltipContent>
@@ -210,7 +210,7 @@ export function Sidebar() {
                       {item.lumioIcon ? (
                         <LumioIcon name={item.lumioIcon} size="sm" />
                       ) : Icon ? (
-                        <Icon className="h-4 w-4" />
+                        <Icon aria-hidden="true" className="h-4 w-4" />
                       ) : null}
                       <span className="flex-1">{label}</span>
                       {isCompleted && (
@@ -263,10 +263,10 @@ export function Sidebar() {
             )}
           >
             {sidebarCollapsed ? (
-              <PanelLeftOpen className="h-4 w-4" />
+              <PanelLeftOpen aria-hidden="true" className="h-4 w-4" />
             ) : (
               <>
-                <PanelLeftClose className="h-4 w-4" />
+                <PanelLeftClose aria-hidden="true" className="h-4 w-4" />
                 <span>Verberg menu</span>
               </>
             )}

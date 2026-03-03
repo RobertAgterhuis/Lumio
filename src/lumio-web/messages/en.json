@@ -53,7 +53,10 @@
       "mislukt": "Unlock failed",
       "wachtwoordVergetenTitel": "Forgot your password?",
       "wachtwoordVergetenTekst": "Access to your Lumio archive cannot be restored without the password. This is a deliberate security choice to protect your data.",
-      "geblokkerd": "Too many failed attempts. Please try again in {minuten, plural, one {1 minute} other {# minutes}}."
+      "geblokkerd": "Too many failed attempts. Please try again in {minuten, plural, one {1 minute} other {# minutes}}.",
+      "erfgenaamKnop": "I don't have a password — I am an heir",
+      "wachtwoordTonen": "Show password",
+      "wachtwoordVerbergen": "Hide password"
     },
     "erfgenaam": {
       "titel": "Heir Access",
@@ -61,6 +64,7 @@
       "codeLabel": "Code {nummer}",
       "codePlaceholder": "Paste the emergency code here...",
       "codeToevoegen": "Add another code",
+      "codeVerwijderen": "Remove code {nummer}",
       "instructie": "Enter your emergency codes below. You need at least the number of codes set by the owner to gain access.",
       "minimaalCodes": "At least 2 emergency codes are required.",
       "reconstructieMislukt": "Reconstruction failed. Please verify that you have entered enough valid emergency codes.",
@@ -2154,6 +2158,8 @@
     "laterInvullen": "Fill in later",
     "nietMeerTonen": "Do not show again",
     "afronden": "Finish",
+    "terugkeerBadge": "Continue with wizard →",
+    "terugkeerBadgeAria": "Resume wizard",
     "stappen": {
       "profiel": {
         "titel": "My Profile",
@@ -2176,8 +2182,8 @@
         "beschrijving": "Register your heirs and optionally distribute emergency codes."
       },
       "sleutels": {
-        "titel": "Distribute Keys",
-        "beschrijving": "Distribute your security keys via Shamir Secret Sharing with your heirs."
+        "titel": "Inform Heirs",
+        "beschrijving": "Inform your heirs about their emergency codes so they can access your data after you pass away."
       },
       "backup": {
         "titel": "Create Backup",
