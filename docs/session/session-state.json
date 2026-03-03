@@ -50,9 +50,10 @@
   "phase4_validation_path": "BusinessDocs/Phase4-Marketing/phase4-critic-risk-validation.md",
   "synthesis_path": "docs/synthesis/final-report-master.md",
   "sprint_backlog_path": "docs/synthesis/final-report-master.md",
-  "active_sprint": "SP-UX-04",
-  "sprint_goal": "A11y Storybook Completion & Copy Quality",
-  "sprint_branch": "feature/sprint-ux-04-a11y-storybook-copy",
+  "active_sprint": "UI-WALKTHROUGH",
+  "sprint_goal": "UI-walkthrough door PO vóór UAT — bevindingen opnemen en direct fixen",
+  "sprint_branch": "feature/UI-walkthrough",
+  "previous_sprint": "SP-UX-04",
   "sp_ux04_status": "IMPLEMENTATION_DONE — user-test items moved to SP-UT-01",
   "next_planned_sprints": [
     {
