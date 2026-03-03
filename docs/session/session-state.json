@@ -123,7 +123,7 @@
     "INSUFFICIENT_DATA: B2C/B2B audience priority — Q-MKT-B-004 OPEN",
     "INSUFFICIENT_DATA: Payment integration status / provider decision — Q-MKT-CRO-001 OPEN",
     "INSUFFICIENT_DATA: Search Console organic data — Q-MKT-G-001 OPEN",
-    "INSUFFICIENT_DATA: Plausible analytics data baseline — Q-MKT-G-002 OPEN"
+    "INSUFFICIENT_DATA: Plausible analytics data baseline — Q-MKT-G-002 OPEN — SUPERSEDED: platform replaced by Azure Application Insights (DEC-113)"
   ],
   "questionnaire_answer_summary": {
     "total_questions": 60,
@@ -176,12 +176,12 @@
   "phase4_critical_risks": [
     "RISK-MKT-001: B2C purchase CTA is mailto fallback — no automated checkout — CRITICAL — BLOCKING-P4-001",
     "RISK-MKT-006: No revenue automation + no revenue model (SYS-RISK-001) — CRITICAL",
-    "RISK-MKT-002: Analytics blackout (Plausible removed DEC-109, PostHog blocked DEC-102, no replacement) — CRITICAL (upgraded v3) — DEC-113 OPEN_VRAAG must be answered to unblock — BLOCKING-P4-003",
+    "RISK-MKT-002: Analytics blackout — RESOLVED_BY_DECISION: DEC-113 (Azure Application Insights) — DEC-114 implementation constraints set — UNBLOCKED — SP-3 analytics stories now plannable",
     "RISK-MKT-003: Testimonial consent — PARTIALLY_RESOLVED (per-card disclaimer + anonymization notice added SP-MKT-01; formal consent registry still needed) — Q-MKT-B-003 OPEN",
     "GAP-BRAND-001: Domain lumio-legacy.nl — legacy association undermines B2C positioning — HIGH",
     "CRITICAL_MISALIGNMENT-001: Brand promise vs 7-step wizard complexity — HIGH"
   ],
-  "reevaluation_v3_decisions": ["DEC-111", "DEC-112", "DEC-113"],
+  "reevaluation_v3_decisions": ["DEC-111", "DEC-112", "DEC-113", "DEC-114"],
   "sys_risk_002_status": "ACCEPTED_RISK (see DEC-112)",
   "sp_04_005_status": "CANCELLED_SUPERSEDED (see DEC-111)",
   "sp_mkt_01_status": "MERGED_SQUASH — commit d1a8c2f on main"
