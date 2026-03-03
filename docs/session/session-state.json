@@ -77,10 +77,10 @@
     "SP-1-013": 148, "SP-1-014": 149, "SP-1-015": 150, "SP-1-016": 151,
     "SP-1-017": 152
   },
-  "last_updated": "2026-03-04T10:00:00Z",
-  "reevaluation_version": "v2",
-  "last_reevaluation": "2026-03-03T00:00:00Z",
-  "reevaluation_report_path": "docs/synthesis/reevaluation-report-v2-20260303.md",
+  "last_updated": "2026-03-04T11:00:00Z",
+  "reevaluation_version": "v3",
+  "last_reevaluation": "2026-03-04T11:00:00Z",
+  "reevaluation_report_path": "docs/synthesis/reevaluation-report-v3-20260303.md",
   "security_handoff_status": "UP_TO_DATE",
   "security_handoff_note": "docs/security/security-handoff-context.md created and up to date. BUG-SHAMIR-001 documented, AllowedPrefixes whitelist rationale explained, REC-SEC-005 regression test reference added. Resolved 2026-03-03.",
   "open_human_escalations": [],
@@ -176,9 +176,13 @@
   "phase4_critical_risks": [
     "RISK-MKT-001: B2C purchase CTA is mailto fallback — no automated checkout — CRITICAL — BLOCKING-P4-001",
     "RISK-MKT-006: No revenue automation + no revenue model (SYS-RISK-001) — CRITICAL",
-    "RISK-MKT-002: Analytics blindness — EXP-003 blind, no Plausible custom goals — HIGH — BLOCKING-P4-003",
-    "RISK-MKT-003: Testimonial consent unconfirmed — legal exposure risk — HIGH — BLOCKING-P4-002",
+    "RISK-MKT-002: Analytics blackout (Plausible removed DEC-109, PostHog blocked DEC-102, no replacement) — CRITICAL (upgraded v3) — DEC-113 OPEN_VRAAG must be answered to unblock — BLOCKING-P4-003",
+    "RISK-MKT-003: Testimonial consent — PARTIALLY_RESOLVED (per-card disclaimer + anonymization notice added SP-MKT-01; formal consent registry still needed) — Q-MKT-B-003 OPEN",
     "GAP-BRAND-001: Domain lumio-legacy.nl — legacy association undermines B2C positioning — HIGH",
     "CRITICAL_MISALIGNMENT-001: Brand promise vs 7-step wizard complexity — HIGH"
-  ]
+  ],
+  "reevaluation_v3_decisions": ["DEC-111", "DEC-112", "DEC-113"],
+  "sys_risk_002_status": "ACCEPTED_RISK (see DEC-112)",
+  "sp_04_005_status": "CANCELLED_SUPERSEDED (see DEC-111)",
+  "sp_mkt_01_status": "MERGED_SQUASH — commit d1a8c2f on main"
 }
