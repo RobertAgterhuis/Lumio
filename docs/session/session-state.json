@@ -6,7 +6,7 @@
   "status": "SPRINT_ACTIVE",
   "current_phase": "FASE-5",
   "current_agent": "implementation-agent",
-  "current_sprint": "SP-UX-01",
+  "current_sprint": "SP-UX-02",
   "github_project_name": "Lumio Workitems",
   "github_repo_url": "https://github.com/RobertAgterhuis/Lumio",
   "canva_api_token": "",
@@ -73,38 +73,52 @@
         {"id": "SP-14-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/108", "status": "closed"},
         {"id": "SP-14-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/109", "status": "closed"}
       ]
+    },
+    {
+      "sprint_id": "SP-UX-01",
+      "milestone_number": 12,
+      "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/119",
+      "pull_request_number": 119,
+      "branch": "feature/SP-UX-01-ux-a11y-fundament",
+      "implementation_status": "COMPLETE",
+      "test_results": {"backend": {"passed": 409, "failed": 0}, "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96}, "desktop": {"passed": 6, "failed": 0}},
+      "github_issues": [
+        {"id": "SP-UX-01-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/111", "status": "closed", "commit": "fd7decc"},
+        {"id": "SP-UX-01-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/112", "status": "closed", "commit": "fd7decc"},
+        {"id": "SP-UX-01-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/113", "status": "closed", "commit": "fd7decc"},
+        {"id": "SP-UX-01-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/114", "status": "closed", "commit": "fd7decc"},
+        {"id": "SP-UX-01-005", "url": null, "status": "VERVALLEN", "note": "DEC-102 — geen nieuwe PostHog events"},
+        {"id": "SP-UX-01-006", "url": "https://github.com/RobertAgterhuis/Lumio/issues/115", "status": "closed", "commit": "fd7decc"},
+        {"id": "SP-UX-01-007", "url": "https://github.com/RobertAgterhuis/Lumio/issues/116", "status": "closed", "commit": "fd7decc"},
+        {"id": "SP-UX-01-008", "url": "https://github.com/RobertAgterhuis/Lumio/issues/117", "status": "closed", "commit": "fd7decc"},
+        {"id": "SP-UX-01-009", "url": "https://github.com/RobertAgterhuis/Lumio/issues/118", "status": "closed", "commit": "fd7decc"}
+      ]
     }
   ],
   "active_sprint": {
-    "sprint_id": "SP-UX-01",
-    "milestone_number": 12,
+    "sprint_id": "SP-UX-02",
+    "milestone_number": 13,
     "github_issues": [
-      {"id": "SP-UX-01-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/111", "status": "closed", "commit": "fd7decc"},
-      {"id": "SP-UX-01-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/112", "status": "closed", "commit": "fd7decc"},
-      {"id": "SP-UX-01-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/113", "status": "closed", "commit": "fd7decc"},
-      {"id": "SP-UX-01-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/114", "status": "closed", "commit": "fd7decc"},
-      {"id": "SP-UX-01-005", "url": null, "status": "VERVALLEN", "note": "DEC-102 — geen nieuwe PostHog events"},
-      {"id": "SP-UX-01-006", "url": "https://github.com/RobertAgterhuis/Lumio/issues/115", "status": "closed", "commit": "fd7decc"},
-      {"id": "SP-UX-01-007", "url": "https://github.com/RobertAgterhuis/Lumio/issues/116", "status": "closed", "commit": "fd7decc"},
-      {"id": "SP-UX-01-008", "url": "https://github.com/RobertAgterhuis/Lumio/issues/117", "status": "closed", "commit": "fd7decc"},
-      {"id": "SP-UX-01-009", "url": "https://github.com/RobertAgterhuis/Lumio/issues/118", "status": "closed", "commit": "fd7decc"}
+      {"id": "SP-UX-02-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/120", "status": "closed", "commit": "08de2a3"},
+      {"id": "SP-UX-02-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/121", "status": "closed", "commit": "5ffd68a"},
+      {"id": "SP-UX-02-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/122", "status": "closed", "commit": "cf3d738"},
+      {"id": "SP-UX-02-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/123", "status": "open", "note": "ANALYSIS — videoboodschappen caption-support analyse; geen code"},
+      {"id": "SP-UX-02-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/124", "status": "open", "note": "ANALYSIS — handmatige screen reader test NVDA/VoiceOver; geen code"},
+      {"id": "SP-UX-02-006", "url": "https://github.com/RobertAgterhuis/Lumio/issues/125", "status": "closed", "commit": "df49322"},
+      {"id": "SP-UX-02-007", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "note": "ANALYSIS — onboarding usability-test; geen code"}
     ],
     "pull_request_url": null,
     "pull_request_number": null,
-    "branch": "feature/SP-UX-01-ux-a11y-fundament",
+    "branch": "feature/SP-UX-02-onboarding-optimalisatie-nabestaanden",
     "dor_cleared": true,
-    "sprint_gate_date": "2026-03-02T00:00:00Z",
-    "implementation_status": "COMPLETE",
-    "test_results": {
-      "backend": {"passed": 409, "failed": 0},
-      "frontend": {"passed": 153, "failed": 0, "coverage_pct": 71.96},
-      "desktop": {"passed": 6, "failed": 0}
-    }
+    "sprint_gate_date": "2026-03-04T00:00:00Z",
+    "implementation_status": "CODE_COMPLETE",
+    "test_results": null
   },
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
-  "sprint_backlog_path": "docs/fase-2/sprintplan.md",
-  "last_updated": "2026-03-03T00:00:00Z",
+  "sprint_backlog_path": "docs/fase-3/sprintplan.md",
+  "last_updated": "2026-03-04T00:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
