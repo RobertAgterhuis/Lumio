@@ -57,6 +57,22 @@ Lumio vergrendelt automatisch na een periode van inactiviteit. Vlak voor het ver
 
 De vergrendelingstijd is instelbaar via Instellingen (standaard: 5 minuten).
 
+## Onboarding Wizard
+
+Bij een nieuw profiel begeleidt de **onboarding wizard** u stap voor stap bij het invullen van uw gegevens:
+
+| Stap | Onderwerp |
+|------|----------|
+| 1 | Profiel — naam en persoonsgegevens |
+| 2 | Noodcontacten — wie te bellen bij nood |
+| 3 | Testament — uw testamentaire wensen |
+| 4 | Erfgenamen — wie toegang krijgt via Shamir-codes |
+| 5 | Sleutels — digitale accounts en wachtwoorden |
+| 6 | Uitvaart — uw uitvaartvoorkeur en -wensen |
+| 7 | Backup — uw Lumio-gegevens veiligstellen |
+
+U kunt de wizard op elk moment onderbreken en later verder gaan via het dashboard.
+
 ## Sneltoetsen
 
 | Toets | Actie |

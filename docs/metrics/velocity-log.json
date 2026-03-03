@@ -13,6 +13,23 @@
       "ci_passed": true,
       "pr_number": 92,
       "notes": "Alle 4 stories geland. TruffleHog pinnen naar specifieke semver vereist (geen major-version alias)."
+    },
+    {
+      "sprint_id": "SP-UX-02",
+      "sprint_name": "Onboarding Optimalisatie & Nabestaanden Tooling",
+      "date": "2026-03-03",
+      "stories_planned_code": 4,
+      "stories_completed_code": 4,
+      "stories_planned_analysis": 3,
+      "stories_completed_analysis": 0,
+      "completion_rate_code_pct": 100,
+      "backend_tests": 409,
+      "frontend_tests": 354,
+      "coverage_pct": null,
+      "ci_passed": null,
+      "pr_number": 127,
+      "notes": "Alle 4 code stories geland (001 wizard, 002 PDF, 003 Storybook, 006 a11y). 3 ANALYSIS stories open (#123, #124, #126). PR #127 open — awaiting review/merge."
     }
   ]
 }
+

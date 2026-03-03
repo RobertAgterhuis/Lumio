@@ -22,6 +22,7 @@ public interface ILumioPdfService
     Task<byte[]> GenerateErfgenaamPdf(Guid erfgenaamId);
     Task<byte[]> GenerateExecuteurRapportPdf();
     Task<byte[]> GenerateNotarisPdf();
+    Task<byte[]> GenerateNabestaandenInstructiePdf();
 }
 
 public class LumioPdfService : ILumioPdfService
@@ -43,6 +44,7 @@ public class LumioPdfService : ILumioPdfService
     private readonly ErfgenaamGenerator _erfgenaam;
     private readonly ExecuteurRapportGenerator _executeurRapport;
     private readonly NotarisGenerator _notaris;
+    private readonly NabestaandenInstructieGenerator _nabestaandenInstructie;
 
     public LumioPdfService(
         PdfDataLoader loader,
@@ -61,7 +63,8 @@ public class LumioPdfService : ILumioPdfService
         BoedelbeschrijvingGenerator boedelbeschrijving,
         ErfgenaamGenerator erfgenaam,
         ExecuteurRapportGenerator executeurRapport,
-        NotarisGenerator notaris)
+        NotarisGenerator notaris,
+        NabestaandenInstructieGenerator nabestaandenInstructie)
     {
         _loader = loader;
         _testament = testament;
@@ -80,6 +83,7 @@ public class LumioPdfService : ILumioPdfService
         _erfgenaam = erfgenaam;
         _executeurRapport = executeurRapport;
         _notaris = notaris;
+        _nabestaandenInstructie = nabestaandenInstructie;
     }
 
     // ── helpers ────────────────────────────────────────────────────────────────
@@ -107,6 +111,7 @@ public class LumioPdfService : ILumioPdfService
     public Task<byte[]> GenerateBoedelbeschrijvingPdf()  => All(_boedelbeschrijving);
     public Task<byte[]> GenerateExecuteurRapportPdf()    => All(_executeurRapport);
     public Task<byte[]> GenerateNotarisPdf()             => All(_notaris);
+    public Task<byte[]> GenerateNabestaandenInstructiePdf() => All(_nabestaandenInstructie);
 
     public async Task<byte[]> GenerateErfgenaamPdf(Guid erfgenaamId)
     {

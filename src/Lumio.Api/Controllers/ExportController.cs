@@ -160,6 +160,14 @@ public class ExportController : ControllerBase
         return File(pdf, "application/pdf", "lumio-notaris-dossier.pdf");
     }
 
+    [HttpGet("nabestaanden-instructie")]
+    public async Task<IActionResult> ExportNabestaandenInstructie()
+    {
+        var pdf = await _pdfService.GenerateNabestaandenInstructiePdf();
+        await _audit.LogAsync("Export", "export", null, "nabestaanden-instructie");
+        return File(pdf, "application/pdf", "lumio-nabestaanden-instructie.pdf");
+    }
+
     [HttpGet("erfgenaam/{erfgenaamId:guid}")]
     public async Task<IActionResult> ExportErfgenaam(Guid erfgenaamId, [FromServices] Data.LumioDbContext db)
     {

@@ -293,7 +293,7 @@ export default function EigenaarPage() {
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:bg-primary-100 dark:border-white/10">
             <LumioIcon name="profiel" size="md" className="text-primary shrink-0" />
             <div>
-              <h3 className="text-sm font-semibold text-primary leading-tight">{t("foto.titel")}</h3>
+              <h2 className="text-sm font-semibold text-primary leading-tight">{t("foto.titel")}</h2>
               <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("foto.beschrijving")}</p>
             </div>
           </div>
@@ -364,7 +364,7 @@ export default function EigenaarPage() {
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
             <User className="h-5 w-5 text-primary shrink-0" />
             <div>
-              <h3 className="text-sm font-semibold text-primary leading-tight">{t("persoon.titel")}</h3>
+              <h2 className="text-sm font-semibold text-primary leading-tight">{t("persoon.titel")}</h2>
               <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("persoon.beschrijving")}</p>
             </div>
           </div>
@@ -470,7 +470,7 @@ export default function EigenaarPage() {
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
             <Heart className="h-5 w-5 text-primary shrink-0" />
             <div>
-              <h3 className="text-sm font-semibold text-primary leading-tight">{t("burgerlijkeStaat.titel")}</h3>
+              <h2 className="text-sm font-semibold text-primary leading-tight">{t("burgerlijkeStaat.titel")}</h2>
               <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("burgerlijkeStaat.beschrijving")}</p>
             </div>
           </div>
@@ -525,7 +525,7 @@ export default function EigenaarPage() {
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
             <CreditCard className="h-5 w-5 text-primary shrink-0" />
             <div>
-              <h3 className="text-sm font-semibold text-primary leading-tight">{t("identificatie.titel")}</h3>
+              <h2 className="text-sm font-semibold text-primary leading-tight">{t("identificatie.titel")}</h2>
               <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("identificatie.beschrijving")}</p>
             </div>
           </div>
@@ -583,7 +583,7 @@ export default function EigenaarPage() {
           <div className="bg-primary-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
             <Scale className="h-5 w-5 text-primary shrink-0" />
             <div>
-              <h3 className="text-sm font-semibold text-primary leading-tight">{t("notaris.titel")}</h3>
+              <h2 className="text-sm font-semibold text-primary leading-tight">{t("notaris.titel")}</h2>
               <p className="text-xs text-primary/70 leading-tight mt-0.5">{t("notaris.beschrijving")}</p>
             </div>
           </div>

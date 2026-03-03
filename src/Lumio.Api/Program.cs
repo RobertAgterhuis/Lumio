@@ -94,6 +94,7 @@ builder.Services.AddScoped<BoedelbeschrijvingGenerator>();
 builder.Services.AddScoped<ErfgenaamGenerator>();
 builder.Services.AddScoped<ExecuteurRapportGenerator>();
 builder.Services.AddScoped<NotarisGenerator>();
+builder.Services.AddScoped<NabestaandenInstructieGenerator>();
 builder.Services.AddSingleton<IAuditService, AuditService>();
 // DEC-104 / AVG art. 5(1)(e): dagelijkse rotatie van AuditLog-entries ouder dan 90 dagen
 builder.Services.AddHostedService<AuditLogRotatieService>();

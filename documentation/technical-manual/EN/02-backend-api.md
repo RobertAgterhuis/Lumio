@@ -87,7 +87,7 @@ The backend is a .NET 10 Web API running on Kestrel. Self-contained publishing â
 | Controller | Route | Endpoints |
 |------------|-------|-----------|
 | `DocumentenController` | `api/v1/documenten` | `GET`, `GET {id}`, `GET {id}/versies`, `POST uploaden`, `GET {id}/download`, `DELETE {id}`, `DELETE {id}/alle-versies` |
-| `ExportController` | `api/v1/export` | POST per section (testament, euthanasie, donor, digitaal-bezit, boedel, uitvaart, documenten, compleet, noodkaart, testament-concept, wilsverklaring, noodprocedure, boedelbeschrijving, executeur-rapport, notaris, erfgenaam/{id}), `GET delen/{id}`, `POST alles`, `GET json/xml/nuv`, CSV exports |
+| `ExportController` | `api/v1/export` | POST per section (testament, euthanasie, donor, digitaal-bezit, boedel, uitvaart, documenten, compleet, noodkaart, testament-concept, wilsverklaring, noodprocedure, boedelbeschrijving, executeur-rapport, notaris, erfgenaam/{id}), `GET nabestaanden-instructie`, `GET delen/{id}`, `POST alles`, `GET json/xml/nuv`, CSV exports |
 
 ### Status & Monitoring
 

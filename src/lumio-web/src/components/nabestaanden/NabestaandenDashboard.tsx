@@ -204,6 +204,7 @@ export function NabestaandenDashboard() {
   const [notitieOpen, setNotitieOpen] = useState<Record<string, boolean>>({});
   const [notitieValues, setNotitieValues] = useState<Record<string, string>>({});
   const [zipDownloading, setZipDownloading] = useState(false);
+  const [instructieDownloading, setInstructieDownloading] = useState(false);
 
   useEffect(() => {
     api
@@ -265,6 +266,17 @@ export function NabestaandenDashboard() {
     }
   };
 
+  const handleInstructieDownload = async () => {
+    setInstructieDownloading(true);
+    try {
+      await downloadAndSave("/api/export/nabestaanden-instructie", "lumio-nabestaanden-instructie.pdf");
+    } catch {
+      // Silently fail
+    } finally {
+      setInstructieDownloading(false);
+    }
+  };
+
   const getDomeinStatus = (domein?: string): boolean | null => {
     if (!domein || !compleetheid) return null;
     const d = compleetheid.domeinen.find((x) => x.domein === domein);
@@ -317,6 +329,18 @@ export function NabestaandenDashboard() {
             <Archive className="h-4 w-4 mr-2" />
           )}
           {t("downloadZip")}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleInstructieDownload}
+          disabled={instructieDownloading}
+        >
+          {instructieDownloading ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <FileText className="h-4 w-4 mr-2" />
+          )}
+          {t("downloadInstructiekaartje")}
         </Button>
         <Link href="/noodcontacten">
           <Button variant="outline">

@@ -57,6 +57,22 @@ Lumio automatically locks after a period of inactivity. Just before locking, a w
 
 The lock timeout is configurable via Settings (default: 5 minutes).
 
+## Onboarding Wizard
+
+For a new profile, the **onboarding wizard** guides you step by step through entering your information:
+
+| Step | Topic |
+|------|-------|
+| 1 | Profile — name and personal details |
+| 2 | Emergency contacts — who to call in an emergency |
+| 3 | Will — your testamentary wishes |
+| 4 | Heirs — who gets access via Shamir codes |
+| 5 | Keys — digital accounts and passwords |
+| 6 | Funeral — your funeral preferences and wishes |
+| 7 | Backup — securing your Lumio data |
+
+You can pause the wizard at any time and continue later via the dashboard.
+
 ## Keyboard Shortcuts
 
 | Key | Action |

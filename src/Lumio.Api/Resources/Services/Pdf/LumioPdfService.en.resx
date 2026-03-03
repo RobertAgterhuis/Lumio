@@ -379,4 +379,20 @@
   <data name="Label_Uitvaartverzekering" xml:space="preserve"><value>Funeral insurance</value></data>
   <data name="Label_BudgetRichting" xml:space="preserve"><value>Budget range</value></data>
   <data name="Label_DatumOpgesteld" xml:space="preserve"><value>Date drafted</value></data>
+  <!-- SP-UX-02-002: Next-of-kin instruction card -->
+  <data name="Page_NabestaandenInstructie" xml:space="preserve"><value>Next-of-kin instruction card</value></data>
+  <data name="Text_NabestaandenInstructieIntro" xml:space="preserve"><value>This card contains immediately usable information for next-of-kin: who to call, where the digital keys are, and which steps to follow. This document does not contain personal ID numbers or medical data.</value></data>
+  <data name="Section_Stap2DigitaleSleutels" xml:space="preserve"><value>Step 2 — Collect digital keys</value></data>
+  <data name="Section_Stap3TeNemenStappen" xml:space="preserve"><value>Step 3 — Steps to take</value></data>
+  <data name="Section_Stap4BackupLocatie" xml:space="preserve"><value>Step 4 — Lumio backup location</value></data>
+  <data name="Label_ShamirDrempel" xml:space="preserve"><value>{0} of {1} key shares are needed to unlock Lumio.</value></data>
+  <data name="Text_StappenToelichting" xml:space="preserve"><value>Perform the following steps in the order listed.</value></data>
+  <data name="Text_StapNoodcontactenBellen" xml:space="preserve"><value>Contact the emergency contacts listed in step 1.</value></data>
+  <data name="Text_StapSleutelsBijElkaar" xml:space="preserve"><value>Collect the required key shares from the people listed in step 2.</value></data>
+  <data name="Text_StapLumioOpenen" xml:space="preserve"><value>Install or open Lumio Desktop and use the collected key shares to sign in.</value></data>
+  <data name="Text_StapGegevensRaadplegen" xml:space="preserve"><value>View the dashboard for wishes, documents and export options.</value></data>
+  <data name="Text_StapWensenUitvoeren" xml:space="preserve"><value>Follow the checklist in the next-of-kin dashboard to handle all matters.</value></data>
+  <data name="Text_BackupLocatieToelichting" xml:space="preserve"><value>The Lumio backup (encrypted file) may be stored in the following locations:</value></data>
+  <data name="Text_BackupLumioDesktop" xml:space="preserve"><value>Lumio Desktop on the deceased's computer (default export folder).</value></data>
+  <data name="Text_BackupExterneMedium" xml:space="preserve"><value>External hard drive or USB stick — ask the key holders for the location.</value></data>
 </root>

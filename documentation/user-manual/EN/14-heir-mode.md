@@ -62,6 +62,19 @@ In heir mode, 4 restrictions apply:
 
 Heirs can only **view** and **export** data.
 
+## Instruction Card Download
+
+The **Download instruction card** button in the heir dashboard generates a PDF (NL or EN) with immediately usable information:
+
+- **Emergency contacts** — names, phone numbers and email addresses
+- **Digital keys** — who holds Shamir key shares and how many are required
+- **Steps to take** — a numbered checklist to ensure nothing is missed
+- **Lumio backup location** — where the encrypted file is stored
+
+> **Privacy**: the instruction card deliberately contains **no** citizen service numbers (BSN) or medical data. It is intended as a practical overview, not a complete dossier.
+
+The file is saved as `lumio-nabestaanden-instructie.pdf`.
+
 ## Completeness Overview
 
 The heir dashboard shows a **completeness overview**: how much of the deceased's profile has been filled in. This helps heirs understand which information is available and where gaps exist.
