@@ -103,7 +103,7 @@
     "INSUFFICIENT_DATA: Number of active users / installs — not available from codebase",
     "INSUFFICIENT_DATA: Competitive analysis — Q-03-011 REQUIRED open (Q-03-010/012 optional, still open)",
     "INSUFFICIENT_DATA: KPI definitions — no kpi-definitions file found",
-    "INSUFFICIENT_DATA: Brand guidelines — no brand-guidelines.md found",
+    "RESOLVED: Brand guidelines — docs/brand/brand-guidelines.md aanwezig (v1.0 DRAFT, 226 regels, secties 1–6). Aangemaakt in SP-1-005 als onderdeel van BLOCKING-P3-002 oplossing. See also: BusinessDocs/OfficialDocuments/brand-brief.md (business summary, apart document).",
     "INSUFFICIENT_DATA: Financial model — Q-04-001 through Q-04-008 OPEN",
     "RESOLVED_BY_QUESTIONNAIRE: Q-05-001 — CI strategy: keep manual (workflow_dispatch) + invest in stronger pre-commit hooks as primary gate",
     "RESOLVED_BY_QUESTIONNAIRE: Q-05-002 — SSR migration: not planned; desktop-only focus beyond v1.0",
