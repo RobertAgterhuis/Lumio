@@ -35,7 +35,7 @@ export function HelpTooltip({ tekst, className }: HelpTooltipProps) {
         className="inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         aria-label={t("meerInformatie")}
       >
-        <Info className="h-4 w-4" />
+        <Info className="h-4 w-4" aria-hidden="true" />
       </button>
       {open && (
         <div className="absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-lg border border-border bg-popover p-3 text-xs text-popover-foreground shadow-lg">

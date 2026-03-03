@@ -82,7 +82,7 @@ function StatusBadge({
 
   return (
     <div className={cn(statusBadgeVariants({ status, showIcon }), className)} {...props}>
-      {showIcon && IconComponent && <IconComponent className="h-3 w-3" />}
+      {showIcon && IconComponent && <IconComponent className="h-3 w-3" aria-hidden="true" />}
       {children}
     </div>
   );

@@ -9,11 +9,11 @@
       "titel": "Profiel kiezen",
       "geenProfielen": "Maak uw eerste profiel aan om te beginnen.",
       "selecteer": "Selecteer een profiel om door te gaan.",
-      "selecterenMislukt": "Profiel selecteren mislukt",
+      "selecterenMislukt": "Profiel selecteren mislukt. Probeer het opnieuw.",
       "naam": "Naam",
       "naamPlaceholder": "Bijv. Jan, Mijn profiel",
       "relatie": "Relatie",
-      "aanmakenMislukt": "Profiel aanmaken mislukt",
+      "aanmakenMislukt": "Profiel aanmaken mislukt. Controleer of de naam al bestaat en probeer opnieuw.",
       "bezig": "Aanmaken...",
       "aanmaken": "Profiel aanmaken",
       "annuleren": "Annuleren",
@@ -32,11 +32,11 @@
       "bevestig": "Bevestig wachtwoord",
       "bevestigPlaceholder": "Herhaal uw wachtwoord",
       "bezig": "Database aanmaken...",
-      "aanmaken": "Database Aanmaken",
+      "aanmaken": "Database aanmaken",
       "disclaimer": "Uw gegevens worden versleuteld opgeslagen. Bewaar uw wachtwoord goed — zonder wachtwoord is de data niet toegankelijk.",
       "foutMinimaal": "Wachtwoord moet minimaal 8 tekens bevatten.",
       "foutOvereenkomst": "Wachtwoorden komen niet overeen.",
-      "foutSetup": "Setup mislukt",
+      "foutSetup": "Database aanmaken mislukt. Controleer schrijfrechten en probeer opnieuw.",
       "wachtwoordWaarschuwing": "Bewaar uw wachtwoord, noodcodes en herstelcodes op een veilige plek. Verlies van uw wachtwoord betekent verlies van toegang tot al uw Lumio-gegevens."
     },
     "ontgrendel": {
@@ -46,7 +46,7 @@
       "wachtwoordPlaceholder": "Voer uw wachtwoord in",
       "bezig": "Ontgrendelen...",
       "ontgrendelen": "Ontgrendelen",
-      "mislukt": "Ontgrendelen mislukt",
+      "mislukt": "Wachtwoord onjuist. Controleer uw wachtwoord en probeer opnieuw.",
       "wachtwoordVergetenTitel": "Wachtwoord vergeten?",
       "wachtwoordVergetenTekst": "Toegang tot uw Lumio-dossier kan niet worden hersteld zonder het wachtwoord. Dit is een bewuste beveiligingskeuze om uw gegevens te beschermen.",
       "geblokkerd": "Te veel mislukte pogingen. Probeer het opnieuw over {minuten, plural, one {1 minuut} other {# minuten}}.",
@@ -1817,7 +1817,8 @@
     "omTeOpenen": "om te openen",
     "meerInformatie": "Meer informatie",
     "meldingen": "Meldingen",
-    "sluiten": "Sluiten"
+    "sluiten": "Sluiten",
+    "gerelateerdeSectiesLabel": "Gerelateerde secties"
   },
   "nav": {
     "dashboard": "Dashboard",

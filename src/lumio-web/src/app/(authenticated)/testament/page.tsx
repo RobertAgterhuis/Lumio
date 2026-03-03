@@ -27,6 +27,26 @@ import {
   LegitimairePortieAlert,
 } from "@/components/testament";
 import { HelpButton } from "@/components/help/HelpButton";
+import {
+  RelatedModules,
+  type RelatedLink,
+} from "@/components/layout/RelatedModules";
+
+/** GAP-UX-009: cross-links shown on the Testament page */
+const TESTAMENT_RELATED: RelatedLink[] = [
+  {
+    href: "/erfgenamen",
+    labelKey: "erfgenamen",
+    reason: "Koppel erfgenamen aan uw testamentaire beschikkingen.",
+    icon: "erfgenamen",
+  },
+  {
+    href: "/uitvaart",
+    labelKey: "uitvaartwensen",
+    reason: "Leg ook uw uitvaartwensen vast naast uw testament.",
+    icon: "uitvaart",
+  },
+];
 
 export default function TestamentPage() {
   const t = useTranslations("testament");
@@ -297,6 +317,9 @@ export default function TestamentPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Related modules — GAP-UX-009 */}
+      <RelatedModules links={TESTAMENT_RELATED} />
 
       {/* Dialogs */}
       <ExecuteurDialog

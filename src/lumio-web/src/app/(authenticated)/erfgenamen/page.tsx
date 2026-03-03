@@ -22,6 +22,26 @@ import {
 import { useAuthStore } from "@/stores/authStore";
 import { HelpButton } from "@/components/help/HelpButton";
 import { HelpEmptyState } from "@/components/help/HelpEmptyState";
+import {
+  RelatedModules,
+  type RelatedLink,
+} from "@/components/layout/RelatedModules";
+
+/** GAP-UX-009: cross-links shown on the Erfgenamen page */
+const ERFGENAMEN_RELATED: RelatedLink[] = [
+  {
+    href: "/testament",
+    labelKey: "testament",
+    reason: "Leg uw wensen voor erfgenamen vast in een testament.",
+    icon: "testament",
+  },
+  {
+    href: "/boedel",
+    labelKey: "boedel",
+    reason: "Koppel bezittingen aan uw erfgenamen.",
+    icon: "boedel",
+  },
+];
 
 function displayName(e: Erfgenaam): string {
   return e.tussenvoegsel
@@ -277,6 +297,9 @@ export default function ErfgenamenPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Related modules — GAP-UX-009 */}
+      <RelatedModules links={ERFGENAMEN_RELATED} />
 
       <ErfgenaamDialog
         open={state.dialogOpen}

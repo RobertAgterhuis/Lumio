@@ -43,19 +43,19 @@ The most urgent action is to execute the Shamir UX test (protocol ready at `devd
 
 | Quarter | Item | Dependent on | KPI target |
 |---------|------|--------------|------------|
-| Q1 — Sprint 1 | BLOCKING-P3-001: Execute Shamir UX test (5 participants) | UX Lead scheduling | UX test complete; findings report produced |
+| **SP-UT-01** *(dedicated, parallel)* | **BLOCKING-P3-001: Execute Shamir UX retest** (5 participants) — isolated to own sprint so dev sprints are unblocked. Plan: `docs/synthesis/sprint-SP-UT-01-plan.md` | UX Lead scheduling + participant recruitment | UX test complete; findings report in `devdocs/shamir-ux-test-protocol.md`; RISK-UX-001 updated |
 | Q1 — Sprint 1 | BLOCKING-P3-002: Extract design tokens + axe contrast run | NONE | `docs/brand/design-tokens.json` produced |
 | Q1 — Sprint 1 | BLOCKING-P3-003: AVG consent text rewrite (B1/B2) | BLK-008: PO/Legal sign-off | Consent text ≤B2 readability level |
 | Q1 — Sprint 1 | REC-A11Y-001: Skip-to-main link | NONE | Keyboard navigation baseline |
 | Q1 — Sprint 1 | REC-A11Y-002: `<html lang>` attribute | NONE | Screen reader language fixed |
 | Q1 — Sprint 2 | REC-UX-001: Wizard autosave / progress persistence | BLK-007: session timeout spec (Q-08-001) | Zero timeout-induced data loss |
 | Q1 — Sprint 2 | REC-CONTENT-001: Post-activation success state | NONE | User not stranded after wizard |
-| Q1 — Sprint 2 | REC-CONTENT-002: Post-Shamir key distribution guidance | BLOCKING-P3-001 findings | Safety-critical copy in app |
-| Q2 — Sprint 5 | REC-UX-003/004: Shamir flow redesign (based on test findings) | BLOCKING-P3-001 complete | ≥80% task success rate in follow-up test |
+| Q1 — Sprint 2 | REC-CONTENT-002: Post-Shamir key distribution guidance | SP-UT-01 findings (see dedicated sprint plan) | Safety-critical copy in app |
+| Q2 — Sprint 5 | REC-UX-003/004: Shamir flow redesign (based on test findings) | SP-UT-01 complete (sp plan: `docs/synthesis/sprint-SP-UT-01-plan.md`) | ≥80% task success rate in follow-up test |
 | Q2 — Sprint 6 | REC-A11Y-003: Focus traps in modal dialogs | NONE | Keyboard modal navigation |
 | Q2 — Sprint 6 | REC-UI-001: Storybook coverage 17 → 20/25 | BLOCKING-P3-002 (design tokens) | 80% story coverage |
-| Q3 — Sprint 9 | REC-UX-002: Wizard redesign (≤5 steps / progressive) | BLOCKING-P3-001 + Q-UX-D-001 | Cognitive load ≤5/10 |
-| Q3 — Sprint 9 | REC-A11Y-004: axe Playwright tests (18 routes) | BLK-006: CI restored | ≤5 axe violations in CI |
+| Q3 — Sprint 9 | REC-UX-002: Wizard redesign (≤5 steps / progressive) | SP-UT-01 findings + Q-UX-D-001 | Cognitive load ≤5/10 |
+| **SP-UT-01** *(parallel)* | **SP-UT-01-003: Axe e2e test run** (18 routes) — isolated to user-test sprint. Results feed into `devdocs/axe-e2e-test-results.md` | Live API session available | Zero critical violations documented |
 | Q3 — Sprint 10 | REC-UI-001: Storybook coverage 20 → 25/25 | BLOCKING-P3-002 | 100% component coverage |
 | Q4 — Sprint 13 | REC-L10N-001: Formal EN locale review + translation workflow | NONE | EN locale QA passed |
 | Q4 — Sprint 13 | Dashboard visual density review (INSUFFICIENT_DATA: confirmed) | Usage data from Plausible | Widget prioritisation defined |
