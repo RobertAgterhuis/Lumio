@@ -1,6 +1,6 @@
 # Market Positioning — Lumio
 **Document type:** Official Document
-**Version:** v1 | Completeness: 45% | Status: DRAFT
+**Version:** v1.1 | Completeness: 55% | Status: DRAFT
 **Owner:** Growth Marketer (15) · Brand Strategist (14)
 **Last updated:** 2025-07-18
 **INSUFFICIENT_DATA items:** Competitor data (Q-MKT-B-001), organic traffic (Q-MKT-G-001, Q-MKT-G-002), revenue model (SYS-RISK-001 Phase 1), B2B lead volume (Q-MKT-CRO-002)
@@ -64,32 +64,52 @@ No formal market category or category name has been established by Lumio. This i
 
 ## 3. Competitive Landscape
 
-**INSUFFICIENT_DATA: competitor data** — Q-MKT-B-001 sent to client.
+**Status: RESOLVED_BY_QUESTIONNAIRE Q-03-010/011** — Afleidbaar uit site-content en founder marktkennis. Geen formele marktanalyse beschikbaar (UNCERTAIN). Q-MKT-B-001 (Phase 4 marketing questionnaire) kan aanvullende data leveren.
 
-### 3.1 Substitute Categories (qualitative hypothesis only)
-The following are hypothetical substitutes that prospects may use instead of Lumio:
+### 3.1 Substitute Categories
+Geen directe digitale concurrent in de Nederlandse markt die hetzelfde doet als Lumio. De volgende substituten worden door potentiële gebruikers ingezet:
 
-| Substitute | Why chosen instead | Lumio advantage |
-|---|---|---|
-| Paper binder / notary package | Familiar, no tech required | Not accessible offline digitally; not searchable by heirs |
-| Google Drive / Dropbox folder | Free, already in use | No structured format; cloud = privacy concern; no Shamir access control |
-| Password manager (1Password etc.) | Already owns passwords | No testament/wilsverklaring module; subscription model; cloud |
-| Notary digital vault | Legal professional backing | Expensive; locked to one provider; not self-managed |
-| Nothing (inaction) | Effort avoidance | Lumio addresses inertia with one-time low-effort setup |
+| Substituut | Waarom gekozen | Lumio voordeel | Lumio nadeel |
+|---|---|---|---|
+| Papieren map / notarispakket | Vertrouwd, geen technologie nodig | Niet digitaal doorzoekbaar; niet toegankelijk op afstand; erfgenamen weten niet waar te zoeken | Lumio vereist computer |
+| Google Drive / Dropbox map | Gratis, al in gebruik | Geen gestructureerd format; cloud = privacyrisico; geen Shamir-toegangscontrole; geen AVG-waarborgen voor gevoelige data | Lumio kost €125 |
+| Wachtwoordmanager (1Password, Bitwarden) | Al eigenaar van wachtwoorden | Geen testament/wilsverklaring-module; abonnementsmodel; cloud-afhankelijk; geen erfgenaamentoegang | Minder handig voor wachtwoordbeheer |
+| Notariële digitale kluis | Juridische backing, professioneel | Duur (jaarlijks); provider-lock-in; niet zelf te beheren; geen video/noodcontacten | Beperktere scope |
+| Niets doen (inactiviteit) | Moeite vermijden | Lumio verlaagt drempel met éénmalige setup | Concurreert met uitstelgedrag |
 
-**Confidence level on all above:** UNCERTAIN — without competitor analysis this is assumption-based.
-**Source:** Phase 4 analysis GAP-BRAND-003; no competitor names confirmed in codebase or documentation.
+**Confidence level:** UNCERTAIN — geen formele marktanalyse uitgevoerd. Gebaseerd op site-positionering en founder-marktkennis (Q-03-010/011 ANSWERED 2026-03-03).
+**Source:** `site/src/lib/constants.ts` L64–69, L150–162; `BusinessDocs/Phase1-Business/Questionnaires/03-sales-strategist-questionnaire.md` Q-03-010/011.
 
 ### 3.2 Competitive Differentiation Axes
 
-| Axis | Lumio position | Notes |
-|---|---|---|
-| Storage model | 100% offline | Differentiator vs cloud competitors |
-| Privacy | No data leaves device | Differentiator vs cloud |
-| Pricing | One-time €125 | Differentiator vs subscription |
-| Feature completeness | Testament + passwords + video + Shamir | INSUFFICIENT_DATA: competitor scope |
-| B2B benefit angle | WKR-passend employer benefit | INSUFFICIENT_DATA: B2B competitor landscape |
-| Platform | Windows + macOS desktop app | Limitation vs. web-based alternatives |
+| As | Lumio positie | Voordeel t.o.v. substituten | Bron |
+|---|---|---|---|
+| Opslagmodel | 100% offline, lokale SQLite | Enige optie zonder cloud-afhankelijkheid | `constants.ts` L150 |
+| Privacy | Geen data verlaat het apparaat | Google Drive/Dropbox: cloud; notariskluis: provider-server | `constants.ts` L150 |
+| Prijs | Éénmalig €125 | 1Password: €36/jaar; notariskluis: €50–200/jaar | `constants.ts` L161–162 |
+| Erfgenaamentoegang | Shamir secret sharing (cryptografisch) | Geen alternatief biedt wiskundige erfgenaamentoegang | `constants.ts` L67 |
+| Documentvolledigheid | Testament + wilsverklaring + donorregistratie + digitale nalatenschap + video + noodcontacten | Geen enkel alternatief combineert alle NL-documenttypen | `product/page.tsx` features |
+| B2B benefit angle | WKR-passend werkgeversvoordeel | Geen directe concurrent in NL employee benefits markt | Phase 1 sales analyse |
+| Platform | Windows + macOS desktop app | Beperking t.o.v. web-alternatieven; voordeel: geen browser-kwetsbaarheden | `technical-overview.md` |
+
+### 3.3 Vergelijkingspagina (backlog)
+
+**Story: SP-4-COMP-001** — `BACKLOG` — *Lumio vs. alternatieven vergelijkingspagina op `site/`*
+
+Een `/vergelijking` of `/waarom-lumio` pagina met een overzichtstabel (Lumio vs. Google Drive, 1Password, notariskluis, niets doen) heeft drie commerciële doelen:
+1. **SEO** — rankt op queries als "digitale kluis nalatenschap vergelijking", "lumio vs google drive testament"
+2. **Conversie** — lost de overweging "ik heb al Google Drive" op zonder dat een verkoper nodig is
+3. **Positionering** — maakt Lumio's unieke combinatie van offline + Shamir + volledigheid concreet zichtbaar
+
+| Gegeven | Waarde |
+|---|---|
+| Story ID | SP-4-COMP-001 |
+| Type | CODE (Next.js pagina) + CONTENT (vergelijkingstekst) |
+| Effort | ~1.5–2 dagen (dev + copy) |
+| Prioriteit | P2 — na SP-3 (App Insights live zodat conversie-impact meetbaar is) |
+| Afhankelijkheid | App Insights live (SP-3-003) voor meetbaarheid; geen harde blocker |
+| Bronnen | Section 3.1 + 3.2 boven; Q-03-011 antwoord |
+| Status | BACKLOG — inplannen in SP-4 |
 
 ---
 
@@ -164,7 +184,7 @@ This document is **45% complete**. The following sections require answers to ope
 
 | Section | Missing data | Questionnaire |
 |---|---|---|
-| Competitive landscape (Section 3.1, 3.2) | Competitor names, pricing, axes | Q-MKT-B-001 |
+| Competitive landscape (Section 3.1, 3.2) | PARTIALLY RESOLVED via Q-03-010/011 (site-afleiding). Formele marktanalyse nog open: Q-MKT-B-001 | Q-MKT-B-001 (optioneel voor verdieping) |
 | KPI baselines (Section 6) | Plausible + Search Console data | Q-MKT-G-001, Q-MKT-G-002 |
 | Segment priority (Section 2.3) | B2B vs B2C primary | Q-MKT-B-004 |
 | Revenue model (Section 5.1 paid) | Revenue targets, CAC/LTV | SYS-RISK-001 (Phase 1) |

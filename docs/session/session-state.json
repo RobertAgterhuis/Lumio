@@ -101,7 +101,7 @@
     "RESOLVED_BY_QUESTIONNAIRE: Q-03-005 — User research: none exist",
     "RESOLVED_BY_QUESTIONNAIRE: Q-03-006/007/008/009 — Acquisition: word of mouth + LinkedIn + Facebook; launch date: end Q3 2026; marketing budget: €0; no signed B2B agreements",
     "INSUFFICIENT_DATA: Number of active users / installs — not available from codebase",
-    "INSUFFICIENT_DATA: Competitive analysis — Q-03-011 REQUIRED open (Q-03-010/012 optional, still open)",
+    "RESOLVED_BY_QUESTIONNAIRE: Q-03-010/011/012 — Differentiators: (1) 100% offline/geen cloud; (2) éénmalig €125/geen abonnement; (3) Shamir erfgenaamentoegang; (4) volledige NL documentatiemodules. Geen directe digitale concurrent in NL markt. Substituten: papieren map, Google Drive, 1Password, notariskluis. Bron: site/src/lib/constants.ts + founder marktkennis. UNCERTAIN: geen formele marktanalyse.",
     "INSUFFICIENT_DATA: KPI definitions — no kpi-definitions file found",
     "RESOLVED: Brand guidelines — docs/brand/brand-guidelines.md aanwezig (v1.0 DRAFT, 226 regels, secties 1–6). Aangemaakt in SP-1-005 als onderdeel van BLOCKING-P3-002 oplossing. See also: BusinessDocs/OfficialDocuments/brand-brief.md (business summary, apart document).",
     "INSUFFICIENT_DATA: Financial model — Q-04-001 through Q-04-008 OPEN",
@@ -138,11 +138,11 @@
   ],
   "questionnaire_answer_summary": {
     "total_questions": 60,
-    "answered": 24,
-    "open": 36,
-    "coverage_pct": 40.0,
-    "required_open": 27,
-    "optional_open": 9,
+    "answered": 27,
+    "open": 33,
+    "coverage_pct": 45.0,
+    "required_open": 26,
+    "optional_open": 7,
     "questionnaire_files": [
       "BusinessDocs/Phase1-Business/Questionnaires/01-business-analyst-questionnaire.md",
       "BusinessDocs/Phase1-Business/Questionnaires/03-sales-strategist-questionnaire.md",
@@ -168,7 +168,7 @@
     "ux-design-brief.md": { "version": "v1", "completeness_pct": 60, "status": "DRAFT" },
     "content-strategy-brief.md": { "version": "v1", "completeness_pct": 55, "status": "DRAFT" },
     "brand-brief.md": { "version": "v1", "completeness_pct": 55, "status": "DRAFT" },
-    "market-positioning.md": { "version": "v1", "completeness_pct": 45, "status": "DRAFT" }
+    "market-positioning.md": { "version": "v1.1", "completeness_pct": 55, "status": "DRAFT" }
   },
   "phase1_critical_risks": [
     "COMPLIANCE_RISK-003: Euthanasiewens lacks legal disclaimer — LAUNCH BLOCKER — SP-BIZ-01-004",
