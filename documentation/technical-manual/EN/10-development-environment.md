@@ -106,7 +106,7 @@ vitest.config.ts
 └── Setup: .storybook/vitest.setup.ts
 ```
 
-There is no separate `playwright.config.ts` — Playwright runs via Vitest browser mode.
+> **Note (SP-2):** `src/lumio-web` now also has a dedicated `playwright.config.ts` for accessibility e2e tests. See [Playwright E2E Axe Tests](#playwright-e2e-axe-tests-lumio-web) below.
 
 ### Running Tests
 
@@ -116,6 +116,45 @@ npx vitest run           # All tests, single run
 npx vitest --watch       # Watch mode
 npx vitest --coverage    # With code coverage
 ```
+
+### Playwright E2E Axe Tests (lumio-web)
+
+Added in SP-2 (GAP-A11Y-006). Runs WCAG 2.1 AA axe checks against all 17 authenticated routes using a real browser and a live API session.
+
+**Prerequisites — all three must be running before starting the test suite:**
+
+| Requirement | Command | Notes |
+|---|---|---|
+| ASP.NET Core API | `cd src/Lumio.Api && dotnet run` | Must be on the port configured in `NEXT_PUBLIC_API_URL` (default `http://localhost:5000`) |
+| lumio-web dev server | `cd src/lumio-web && npm run dev` | Must be reachable on `http://localhost:3000` |
+| PIN env var | `$env:LUMIO_TEST_PASSWORD = "<pin>"` | The numeric PIN used to unlock a profile in the app |
+
+**Running the tests:**
+
+```powershell
+# Set the PIN (replace 1234 with the actual profile PIN)
+$env:LUMIO_TEST_PASSWORD = "1234"
+
+# Run all e2e axe tests
+cd src/lumio-web
+npm run test:e2e
+
+# Open the HTML report after a run
+npm run test:e2e:report
+```
+
+**How it works:**
+
+The test suite has three Playwright projects that run in order:
+
+1. **`setup`** (`e2e/auth.setup.ts`) — navigates to `/`, selects the first profile card, fills `LUMIO_TEST_PASSWORD` into the PIN field, submits the form, waits for redirect to `/dashboard`, then saves the ASP.NET Core session cookie to `e2e/auth.json`.
+2. **`public`** (`e2e/a11y-public.spec.ts`) — axe test of the root login screen (no session required).
+3. **`authenticated`** (`e2e/a11y-authenticated.spec.ts`) — loads `e2e/auth.json` as `storageState`, navigates each of the 17 authenticated routes, runs axe with `wcag2a / wcag2aa / wcag21aa` tags, and throws on any critical or serious violations.
+
+**Routes tested (authenticated):**
+`/dashboard`, `/boedel`, `/digitaal-bezit`, `/documenten`, `/donor`, `/eigenaar`, `/erfgenamen`, `/euthanasie`, `/export`, `/help`, `/instellingen`, `/noodcontacten`, `/testament`, `/tijdlijn`, `/uitvaart`, `/videoboodschappen`, `/audit-log`
+
+**Security note:** `e2e/auth.json` contains a live session cookie. It is excluded from git via `src/lumio-web/e2e/.gitignore` and must never be committed.
 
 ## TypeScript
 

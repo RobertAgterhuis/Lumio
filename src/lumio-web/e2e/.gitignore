@@ -1,0 +1,7 @@
+# auth.json contains the saved ASP.NET Core session cookie from the setup project.
+# It is sensitive (active session token) and must never be committed.
+# Generated automatically by e2e/auth.setup.ts — re-run after session expires.
+auth.json
+
+# Playwright HTML report (generated artifacts, not source)
+playwright-report/

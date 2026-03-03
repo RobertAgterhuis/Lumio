@@ -16,11 +16,36 @@ export const metadata: Metadata = {
   description:
     "Koop Lumio voor jezelf. Regel je testament, wilsverklaring, wachtwoorden en noodcontacten " +
     "op één veilige, offline plek. €125 eenmalig, geen abonnement.",
+  // SP-2-001: explicit B2C OG for /voor-jezelf
+  openGraph: {
+    title: "Lumio voor jezelf — €125 eenmalig, alles geregeld",
+    description:
+      "Testament, wilsverklaring, noodcontacten en digitale bezittingen veilig offline bijhouden. " +
+      "Eenmalig €125, geen abonnement, geen cloud.",
+    url: "https://www.lumio-legacy.nl/voor-jezelf",
+  },
+};
+
+// SP-2-002: WebPage JSON-LD for /voor-jezelf
+const voorJezelfJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Voor jezelf — Lumio persoonlijke licentie",
+  url: "https://www.lumio-legacy.nl/voor-jezelf",
+  description:
+    "Koop Lumio voor jezelf. €125 eenmalig. Veilige offline opslag van testament, wilsverklaring en noodgegevens.",
+  inLanguage: "nl-NL",
+  isPartOf: { "@type": "WebSite", name: "Lumio", url: "https://www.lumio-legacy.nl" },
 };
 
 export default function VoorJezelfPage() {
   return (
     <>
+      {/* SP-2-002: WebPage JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(voorJezelfJsonLd) }}
+      />
       <ConsumerHero />
       <ConsumerBenefits />
       <ConsumerHoeWerktHet />

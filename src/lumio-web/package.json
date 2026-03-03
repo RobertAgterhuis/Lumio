@@ -21,6 +21,8 @@
     "test": "vitest run --project unit",
     "test:coverage": "vitest run --project unit --coverage",
     "test:storybook": "vitest run --project storybook",
+    "test:e2e": "playwright test --config playwright.config.ts",
+    "test:e2e:report": "playwright show-report e2e/playwright-report",
     "test:watch": "vitest --project unit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -80,12 +82,14 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@axe-core/react": "^4.11.1",
     "@chromatic-com/storybook": "^5.0.1",
     "@eslint/compat": "^2.0.2",
     "@hey-api/client-fetch": "^0.13.1",
     "@hey-api/openapi-ts": "^0.93.1",
     "@next/bundle-analyzer": "^16.1.6",
+    "@playwright/test": "^1.58.2",
     "@size-limit/file": "^12.0.0",
     "@size-limit/preset-app": "^12.0.0",
     "@storybook/addon-a11y": "^10.2.13",

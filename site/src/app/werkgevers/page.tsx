@@ -13,11 +13,35 @@ export const metadata: Metadata = {
   description:
     "Lumio als werkgeversvoordeel: WKR-passend, €125 per medewerker, geen implementatiekosten. " +
     "Lees de businesscase voor HR en finance.",
+  // SP-2-001: explicit B2B OG for /werkgevers
+  openGraph: {
+    title: "Lumio voor werkgevers — WKR-passend benefit €125 p.p.",
+    description:
+      "Bied medewerkers rust en overzicht bij life events. WKR-passend, geen implementatieproject, €125 per medewerker.",
+    url: "https://www.lumio-legacy.nl/werkgevers",
+  },
+};
+
+// SP-2-002: WebPage JSON-LD for /werkgevers
+const werkgeversJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Voor werkgevers – Lumio als benefit",
+  url: "https://www.lumio-legacy.nl/werkgevers",
+  description:
+    "Lumio als WKR-passend werkgeversvoordeel. €125 per medewerker, geen implementatiekosten.",
+  inLanguage: "nl-NL",
+  isPartOf: { "@type": "WebSite", name: "Lumio", url: "https://www.lumio-legacy.nl" },
 };
 
 export default function WerkgeversPage() {
   return (
     <>
+      {/* SP-2-002: WebPage JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(werkgeversJsonLd) }}
+      />
       {/* Page hero */}
       <section className="py-16 bg-primary-700 text-white">
         <Container>

@@ -106,7 +106,7 @@ vitest.config.ts
 └── Setup: .storybook/vitest.setup.ts
 ```
 
-Er is geen aparte `playwright.config.ts` — Playwright draait via Vitest browser-mode.
+> **Opmerking (SP-2):** `src/lumio-web` heeft nu ook een eigen `playwright.config.ts` voor toegankelijkheids-e2e-tests. Zie [Playwright E2E Axe Tests](#playwright-e2e-axe-tests-lumio-web) hieronder.
 
 ### Tests Uitvoeren
 
@@ -116,6 +116,45 @@ npx vitest run           # Alle tests eenmalig
 npx vitest --watch       # Watch-mode
 npx vitest --coverage    # Met code coverage
 ```
+
+### Playwright E2E Axe Tests (lumio-web)
+
+Toegevoegd in SP-2 (GAP-A11Y-006). Voert WCAG 2.1 AA axe-controles uit op alle 17 geauthenticeerde routes via een echte browser met een actieve API-sessie.
+
+**Vereisten — alle drie moeten actief zijn voordat de testsuite wordt gestart:**
+
+| Vereiste | Commando | Toelichting |
+|---|---|---|
+| ASP.NET Core API | `cd src/Lumio.Api && dotnet run` | Moet draaien op de poort ingesteld in `NEXT_PUBLIC_API_URL` (standaard `http://localhost:5000`) |
+| lumio-web dev server | `cd src/lumio-web && npm run dev` | Moet bereikbaar zijn op `http://localhost:3000` |
+| PIN-omgevingsvariabele | `$env:LUMIO_TEST_PASSWORD = "<pin>"` | De numerieke PIN waarmee een profiel in de app wordt ontgrendeld |
+
+**Tests uitvoeren:**
+
+```powershell
+# Stel de PIN in (vervang 1234 door de daadwerkelijke profiel-PIN)
+$env:LUMIO_TEST_PASSWORD = "1234"
+
+# Voer alle e2e axe-tests uit
+cd src/lumio-web
+npm run test:e2e
+
+# Open het HTML-rapport na een testrun
+npm run test:e2e:report
+```
+
+**Hoe het werkt:**
+
+De testsuite bestaat uit drie Playwright-projecten die in volgorde worden uitgevoerd:
+
+1. **`setup`** (`e2e/auth.setup.ts`) — navigeert naar `/`, selecteert de eerste profielkaart, vult `LUMIO_TEST_PASSWORD` in het PIN-veld in, verzendt het formulier, wacht op doorverwijzing naar `/dashboard`, en slaat daarna het ASP.NET Core-sessiecookie op in `e2e/auth.json`.
+2. **`public`** (`e2e/a11y-public.spec.ts`) — axe-test van het root-inlogscherm (geen sessie vereist).
+3. **`authenticated`** (`e2e/a11y-authenticated.spec.ts`) — laadt `e2e/auth.json` als `storageState`, navigeert naar elk van de 17 geauthenticeerde routes, voert axe uit met tags `wcag2a / wcag2aa / wcag21aa`, en gooit een fout bij kritieke of ernstige schendingen.
+
+**Geteste routes (geauthenticeerd):**
+`/dashboard`, `/boedel`, `/digitaal-bezit`, `/documenten`, `/donor`, `/eigenaar`, `/erfgenamen`, `/euthanasie`, `/export`, `/help`, `/instellingen`, `/noodcontacten`, `/testament`, `/tijdlijn`, `/uitvaart`, `/videoboodschappen`, `/audit-log`
+
+**Beveiligingsopmerking:** `e2e/auth.json` bevat een actief sessiecookie. Het bestand is uitgesloten van git via `src/lumio-web/e2e/.gitignore` en mag nooit worden gecommit.
 
 ## TypeScript
 

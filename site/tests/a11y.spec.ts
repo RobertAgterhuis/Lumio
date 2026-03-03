@@ -122,4 +122,71 @@ test.describe("Accessibility (axe-core / WCAG 2.1 AA)", () => {
 
     expect(blocking).toHaveLength(0);
   });
+
+  // SP-2-005 — extend coverage to remaining public pages (GAP-A11Y-006 partial: marketing site)
+  test("voor-jezelf page — 0 critical/serious violations", async ({ page }) => {
+    await page.goto("/voor-jezelf");
+    await page.waitForLoadState("networkidle");
+
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+
+    const blocking = results.violations.filter((v) =>
+      ["critical", "serious"].includes(v.impact ?? "")
+    );
+
+    if (blocking.length > 0) {
+      const summary = blocking
+        .map((v) => `  [${v.impact}] ${v.id}: ${v.description} (${v.nodes.length} node(s))`)
+        .join("\n");
+      throw new Error(`axe found ${blocking.length} critical/serious violation(s) on /voor-jezelf:\n${summary}`);
+    }
+
+    expect(blocking).toHaveLength(0);
+  });
+
+  test("contact page — 0 critical/serious violations", async ({ page }) => {
+    await page.goto("/contact");
+    await page.waitForLoadState("networkidle");
+
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+
+    const blocking = results.violations.filter((v) =>
+      ["critical", "serious"].includes(v.impact ?? "")
+    );
+
+    if (blocking.length > 0) {
+      const summary = blocking
+        .map((v) => `  [${v.impact}] ${v.id}: ${v.description} (${v.nodes.length} node(s))`)
+        .join("\n");
+      throw new Error(`axe found ${blocking.length} critical/serious violation(s) on /contact:\n${summary}`);
+    }
+
+    expect(blocking).toHaveLength(0);
+  });
+
+  test("demo page — 0 critical/serious violations", async ({ page }) => {
+    await page.goto("/demo");
+    await page.waitForLoadState("networkidle");
+
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      .analyze();
+
+    const blocking = results.violations.filter((v) =>
+      ["critical", "serious"].includes(v.impact ?? "")
+    );
+
+    if (blocking.length > 0) {
+      const summary = blocking
+        .map((v) => `  [${v.impact}] ${v.id}: ${v.description} (${v.nodes.length} node(s))`)
+        .join("\n");
+      throw new Error(`axe found ${blocking.length} critical/serious violation(s) on /demo:\n${summary}`);
+    }
+
+    expect(blocking).toHaveLength(0);
+  });
 });

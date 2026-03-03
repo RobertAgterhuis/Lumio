@@ -21,7 +21,9 @@ public sealed class ShamirControllerTests
     {
         var db = TestDbFactory.Create();
         return new ShamirController(
-            shamir ?? new FakeShamirService(),            pwd ?? new FakeMasterPasswordService(),
+            shamir ?? new FakeShamirService(),
+            pwd ?? new FakeMasterPasswordService(),
+            new FakeProfileService(),
             db,
             Options.Create(limieten ?? new LimietenOptions()));
     }
@@ -103,13 +105,13 @@ public sealed class ShamirControllerTests
     // ── GetDrempel ─────────────────────────────────────────────────────────────
 
     [Fact]
-    public async Task GetDrempel_WhenGeenEigenaar_ReturnsConfigMinDrempel()
+    public void GetDrempel_WhenGeenEigenaar_ReturnsConfigMinDrempel()
     {
         // Arrange — empty DB, limieten.ShamirMinDrempel = 2 (default)
         var ctrl = MakeController();
 
         // Act
-        var result = await ctrl.GetDrempel();
+        var result = ctrl.GetDrempel();
 
         // Assert — returns the configured minimum
         var ok = Assert.IsType<OkObjectResult>(result);

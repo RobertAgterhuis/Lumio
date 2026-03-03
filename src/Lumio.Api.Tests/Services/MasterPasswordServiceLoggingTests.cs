@@ -136,6 +136,7 @@ public class MasterPasswordServiceLoggingTests
         public Profile CreateProfile(string naam, string relatie) => new() { Naam = naam, Relatie = relatie };
         public void DeleteProfile(Guid profileId) { }
         public void UpdateActiveProfileThumbnail(string? base64Thumbnail) { }
+        public void UpdateShamirDrempel(Guid profileId, int drempel) { }
     }
 
     /// <summary>

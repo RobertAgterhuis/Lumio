@@ -41,4 +41,5 @@ public sealed class FakeProfileService : IProfileService
         _profiles.RemoveAll(p => p.Id == profileId);
 
     public void UpdateActiveProfileThumbnail(string? base64Thumbnail) { }
+    public void UpdateShamirDrempel(Guid profileId, int drempel) { }
 }

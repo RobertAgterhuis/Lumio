@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   description:
     "Ontdek alle functies van Lumio: testament, wilsverklaring, donorregistratie, digitale bezittingen, " +
     "videoboodschappen en meer. 100% offline, privacyveilig.",
+  // SP-2-001: explicit OG for /product
+  openGraph: {
+    title: "Alle functies van Lumio — 100% offline en privacyveilig",
+    description:
+      "Testament, wilsverklaring, donorregistratie, digitale bezittingen en videoboodschappen op één veilige plek.",
+    url: "https://www.lumio-legacy.nl/product",
+  },
 };
 
 export default function ProductPage() {

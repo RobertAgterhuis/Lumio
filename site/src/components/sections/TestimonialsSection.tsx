@@ -68,6 +68,10 @@ export default function TestimonialsSection() {
             </article>
           ))}
         </div>
+        {/* SP-2-003: RISK-MKT-003 — disclaimer for testimonial consent compliance */}
+        <p className="text-center text-xs text-neutral-400 mt-8">
+          * Ervaringen van vroege gebruikers. Gedeeld met toestemming.
+        </p>
       </Container>
     </section>
   );

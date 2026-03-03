@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   title: "Prijzen – Lumio voor particulieren & werkgevers",
   description:
     "Lumio kost €125 eenmalig — voor jezelf of voor je medewerkers. Geen abonnement, geen verborgen kosten.",
+  // SP-2-001: explicit OG for /prijzen
+  openGraph: {
+    title: "Lumio €125 eenmalig — geen abonnement, geen verborgen kosten",
+    description:
+      "Transparante prijzen voor particulieren en werkgevers. €125 per gebruiker, schaalvoordelen bij grotere teams.",
+    url: "https://www.lumio-legacy.nl/prijzen",
+  },
 };
 
 const FEATURED_TIERS = [10, 25, 50, 100];

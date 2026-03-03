@@ -98,4 +98,5 @@ file sealed class FakeProfileServiceWithDbPath : Lumio.Api.Services.Security.IPr
         new() { Id = Guid.NewGuid(), Naam = naam, Relatie = relatie };
     public void DeleteProfile(Guid profileId) { }
     public void UpdateActiveProfileThumbnail(string? base64Thumbnail) { }
+    public void UpdateShamirDrempel(Guid profileId, int drempel) { }
 }

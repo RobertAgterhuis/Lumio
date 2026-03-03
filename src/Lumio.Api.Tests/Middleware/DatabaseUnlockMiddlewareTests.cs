@@ -156,6 +156,7 @@ public class DatabaseUnlockMiddlewareTests
         public Profile CreateProfile(string naam, string relatie) => throw new NotImplementedException();
         public void DeleteProfile(Guid profileId) { }
         public void UpdateActiveProfileThumbnail(string? base64Thumbnail) { }
+        public void UpdateShamirDrempel(Guid profileId, int drempel) { }
     }
 
     private sealed class ActiveProfileService : IProfileService
@@ -173,5 +174,6 @@ public class DatabaseUnlockMiddlewareTests
         public Profile CreateProfile(string naam, string relatie) => _profile;
         public void DeleteProfile(Guid profileId) { }
         public void UpdateActiveProfileThumbnail(string? base64Thumbnail) { }
+        public void UpdateShamirDrempel(Guid profileId, int drempel) { }
     }
 }

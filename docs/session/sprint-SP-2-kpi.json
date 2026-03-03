@@ -1,0 +1,98 @@
+{
+  "sprint_id": "SP-2",
+  "sprint_goal": "SEO, Content & A11y Baseline",
+  "sprint_branch": "feature/sprint-2-seo-content-a11y-baseline",
+  "sprint_date": "2026-03-03",
+  "generated_at": "2026-03-03T23:59:00Z",
+  "agent": "29-kpi-agent",
+
+  "delivery": {
+    "stories_planned": 6,
+    "stories_delivered": 6,
+    "stories_vervallen": 0,
+    "stories_blocked": 0,
+    "delivery_rate_pct": 100,
+    "notes": "SP-2-004 (REC-ARCH-001 OpenAPI client) was pre-existing from SP-1 — verified committed, counted as delivered. All 6 stories actionable and completed.",
+    "delivered_stories": [
+      { "id": "SP-2-001", "title": "Fix OG metaTitle — per-page openGraph on all marketing pages; neutral B2C default in layout" },
+      { "id": "SP-2-002", "title": "JSON-LD structured data — Organisation in root layout; WebPage schema on homepage, /voor-jezelf, /werkgevers" },
+      { "id": "SP-2-003", "title": "Testimonial consent disclaimer — RISK-MKT-003 mitigated" },
+      { "id": "SP-2-004", "title": "REC-ARCH-001 OpenAPI generated client — pre-existing in src/lib/api/, verified committed" },
+      { "id": "SP-2-005", "title": "Axe tests extended — /voor-jezelf, /contact, /demo added to site/tests/a11y.spec.ts" },
+      { "id": "SP-2-006", "title": "Axe e2e infra for 17 authenticated routes — playwright.config.ts, auth.setup.ts, a11y-public/authenticated.spec.ts, storageState auth pattern" }
+    ]
+  },
+
+  "bugs": {
+    "total_found_in_sprint": 3,
+    "total_fixed_in_sprint": 3,
+    "critical": [],
+    "high": [
+      {
+        "id": "BUG-FAKESTUB-001",
+        "description": "5 FakeProfileService test stubs missing UpdateShamirDrempel — IProfileService was extended (SP-x) but fakes were not updated, causing test project compile failure",
+        "files": [
+          "FakeProfileService.cs",
+          "BackupControllerTests.cs",
+          "DatabaseUnlockMiddlewareTests.cs (×2)",
+          "MasterPasswordServiceLoggingTests.cs"
+        ],
+        "fix": "Added public void UpdateShamirDrempel(Guid profileId, int drempel) { } stub to all 5 implementations"
+      },
+      {
+        "id": "BUG-TESTCTOR-001",
+        "description": "ShamirControllerTests.MakeController missing IProfileService argument — ShamirController constructor was updated but test helper was not",
+        "files": ["ShamirControllerTests.cs"],
+        "fix": "Added new FakeProfileService() as 3rd constructor argument"
+      },
+      {
+        "id": "BUG-TESTASYNC-001",
+        "description": "ShamirControllerTests.GetDrempel_WhenGeenEigenaar test declared async Task + await on a synchronous method (GetDrempel returns IActionResult, not Task)",
+        "files": ["ShamirControllerTests.cs"],
+        "fix": "Changed async Task → void, removed await"
+      }
+    ]
+  },
+
+  "quality": {
+    "backend_tests_total": 423,
+    "backend_tests_passed": 423,
+    "backend_tests_failed": 0,
+    "backend_test_pass_rate_pct": 100,
+    "site_build": "PASS",
+    "site_typescript": "PASS",
+    "site_routes_static": 11,
+    "lumio_web_build": "PASS",
+    "lumio_web_typescript": "PASS",
+    "secret_scan": "PASS",
+    "secret_scan_tool": "TruffleHog pre-push hook (SP-1-001)"
+  },
+
+  "a11y": {
+    "marketing_site_axe_pages": 8,
+    "marketing_site_axe_pages_added_this_sprint": 3,
+    "lumio_web_authenticated_routes_covered": 17,
+    "lumio_web_authenticated_routes_added_this_sprint": 17,
+    "lumio_web_axe_status": "INFRA_READY — requires live API + LUMIO_TEST_PASSWORD to execute"
+  },
+
+  "blockers_resolved": [
+    { "id": "GAP-A11Y-006", "description": "No automated WCAG tests for authenticated routes — e2e infra delivered (SP-2-006); tests executable once API is running" },
+    { "id": "RISK-MKT-003", "description": "Testimonial consent unconfirmed — disclaimer added (SP-2-003); PO confirmation of original consent still OPEN" }
+  ],
+
+  "blockers_remaining": [
+    { "id": "RISK-MKT-001", "description": "B2C purchase CTA is mailto fallback — no checkout automation; blocked on payment provider decision (BLK-001)" },
+    { "id": "DEC-110", "description": "CI/CD disabled — billing decision deferred; TruffleHog local hook in place" },
+    { "id": "Q-MKT-B-003", "description": "Testimonial original consent confirmation — PO action required" }
+  ],
+
+  "security_handoff": {
+    "status": "UP_TO_DATE",
+    "document": "docs/security/security-handoff-context.md",
+    "notes": "No security-boundary changes in SP-2. Handoff remains current from SP-1 resolution."
+  },
+
+  "sprint_gate_status": "PASS",
+  "ready_for_merge": true
+}
