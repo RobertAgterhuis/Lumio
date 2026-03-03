@@ -379,4 +379,20 @@
   <data name="Label_Uitvaartverzekering" xml:space="preserve"><value>Uitvaartverzekering</value></data>
   <data name="Label_BudgetRichting" xml:space="preserve"><value>Budgetrichting</value></data>
   <data name="Label_DatumOpgesteld" xml:space="preserve"><value>Datum opgesteld</value></data>
+  <!-- SP-UX-02-002: Nabestaanden instructiekaartje -->
+  <data name="Page_NabestaandenInstructie" xml:space="preserve"><value>Instructiekaartje voor nabestaanden</value></data>
+  <data name="Text_NabestaandenInstructieIntro" xml:space="preserve"><value>Dit kaartje bevat de direct bruikbare informatie voor nabestaanden: wie te bellen, waar de digitale sleutels zijn en welke stappen te volgen. Dit document bevat geen persoonsnummers of medische gegevens.</value></data>
+  <data name="Section_Stap2DigitaleSleutels" xml:space="preserve"><value>Stap 2 — Digitale sleutels ophalen</value></data>
+  <data name="Section_Stap3TeNemenStappen" xml:space="preserve"><value>Stap 3 — Te nemen stappen</value></data>
+  <data name="Section_Stap4BackupLocatie" xml:space="preserve"><value>Stap 4 — Lumio backup locatie</value></data>
+  <data name="Label_ShamirDrempel" xml:space="preserve"><value>Er zijn {0} van de {1} sleuteldelen nodig om Lumio te ontgrendelen.</value></data>
+  <data name="Text_StappenToelichting" xml:space="preserve"><value>Voer de volgende stappen uit in de aangegeven volgorde.</value></data>
+  <data name="Text_StapNoodcontactenBellen" xml:space="preserve"><value>Neem contact op met de noodcontactpersonen uit stap 1.</value></data>
+  <data name="Text_StapSleutelsBijElkaar" xml:space="preserve"><value>Verzamel de benodigde sleuteldelen van de personen uit stap 2.</value></data>
+  <data name="Text_StapLumioOpenen" xml:space="preserve"><value>Installeer of open Lumio Desktop en gebruik de verzamelde sleuteldelen om in te loggen.</value></data>
+  <data name="Text_StapGegevensRaadplegen" xml:space="preserve"><value>Raadpleeg het dashboard voor wensen, documenten en exportmogelijkheden.</value></data>
+  <data name="Text_StapWensenUitvoeren" xml:space="preserve"><value>Volg de stappenlijst in het nabestaanden-dashboard om alle zaken af te handelen.</value></data>
+  <data name="Text_BackupLocatieToelichting" xml:space="preserve"><value>De Lumio-backup (versleuteld bestand) kan op de volgende plaatsen staan:</value></data>
+  <data name="Text_BackupLumioDesktop" xml:space="preserve"><value>Lumio Desktop op de computer van de overledene (standaard exportmap).</value></data>
+  <data name="Text_BackupExterneMedium" xml:space="preserve"><value>Externe schijf of USB-stick — vraag de sleuteldelers naar de locatie.</value></data>
 </root>
