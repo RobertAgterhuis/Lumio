@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
-  DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -156,28 +155,26 @@ export function SetupForm() {
 
           {/* AVG privacy modal */}
           <Dialog open={avgModalOpen} onOpenChange={setAvgModalOpen}>
-            <DialogContent className="max-w-lg">
-              <DialogHeader>
-                <DialogTitle>{t("avgModalTitel")}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
-                <p>{t("avgModalP1")}</p>
-                <p>{t("avgModalP2")}</p>
-                <p>{t("avgModalP3")}</p>
-                <p>{t("avgModalP4")}</p>
-                <p className="text-xs border-t pt-3">{t("avgModalVerantwoordelijke")}</p>
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    setAvgConsent(true);
-                    setAvgModalOpen(false);
-                  }}
-                >
-                  {t("avgModalSluiten")}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t("avgModalTitel")}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 text-sm text-muted-foreground leading-relaxed overflow-y-auto">
+              <p>{t("avgModalP1")}</p>
+              <p>{t("avgModalP2")}</p>
+              <p>{t("avgModalP3")}</p>
+              <p>{t("avgModalP4")}</p>
+              <p className="text-xs border-t pt-3">{t("avgModalVerantwoordelijke")}</p>
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={() => {
+                  setAvgConsent(true);
+                  setAvgModalOpen(false);
+                }}
+              >
+                {t("avgModalSluiten")}
+              </Button>
+            </DialogFooter>
           </Dialog>
 
           <Alert variant="warning">
