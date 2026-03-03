@@ -22,6 +22,7 @@ import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, Chev
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { toast } from "@/stores/toastStore";
 import { HelpButton } from "@/components/help/HelpButton";
 import { HelpEmptyState } from "@/components/help/HelpEmptyState";
@@ -257,9 +258,9 @@ export default function DocumentenPage() {
 
       <DomainStatusBanner domein="documenten" />
 
-      <div className="rounded-lg border border-info bg-info-100 p-4">
-        <p className="text-sm text-info">{t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
-      </div>
+      <PageBanner id="documenten-letop" variant="info">
+        {t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}
+      </PageBanner>
 
       {(error || uploadError) && (
         <div className="rounded-lg border border-danger bg-danger-100 p-3">

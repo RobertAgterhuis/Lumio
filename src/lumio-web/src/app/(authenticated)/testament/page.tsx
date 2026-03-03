@@ -12,6 +12,7 @@ import { LumioIcon } from "@/components/ui/lumio-icon";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { useTranslations } from "next-intl";
 import {
   useTestament,
@@ -133,11 +134,9 @@ export default function TestamentPage() {
 
       <DomainStatusBanner domein="testament" />
 
-      <div className="rounded-lg border border-secure bg-secure-100 p-4">
-        <p className="text-sm text-secure">
-          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
-        </p>
-      </div>
+      <PageBanner id="testament-notaris-disclaimer" variant="secure">
+        {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+      </PageBanner>
 
       {testament ? (
         <>

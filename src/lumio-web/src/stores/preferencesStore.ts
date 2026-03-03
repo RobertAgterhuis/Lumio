@@ -23,6 +23,7 @@ export interface DashboardPreferences {
   showAanbevolen: boolean;
   showVerloopdatum: boolean;
   sidebarCollapsed: boolean;
+  dismissedBanners: string[];
 }
 
 export type BooleanPreferenceKey = {
@@ -43,6 +44,8 @@ interface PreferencesState extends DashboardPreferences {
   setInstellingenVolgordeRechts: (order: string[]) => void;
   resetDashboard: () => void;
   toggleSidebar: () => void;
+  dismissBanner: (id: string) => void;
+  resetDismissedBanners: () => void;
 }
 
 /* ── Defaults ─────────────────────────────────────────────── */
@@ -57,11 +60,12 @@ const dashboardDefaults: DashboardPreferences = {
   sectieVolgorde: [],
   instellingenVolgordeLinks: [],
   instellingenVolgordeRechts: [],
-  showMeldingen: true,
+  showMeldingen: false,
   showBackup: true,
   showAanbevolen: true,
   showVerloopdatum: true,
   sidebarCollapsed: false,
+  dismissedBanners: [],
 };
 
 /* ── Persistence helpers ──────────────────────────────────── */
@@ -93,6 +97,7 @@ function save(state: PreferencesState) {
       showAanbevolen: state.showAanbevolen,
       showVerloopdatum: state.showVerloopdatum,
       sidebarCollapsed: state.sidebarCollapsed,
+      dismissedBanners: state.dismissedBanners,
     };
     localStorage.setItem(storageKey(state._profileId), JSON.stringify(persisted));
   } catch {
@@ -154,6 +159,18 @@ export const usePreferencesStore = create<PreferencesState>((set, get) => ({
 
   toggleSidebar: () => {
     set({ sidebarCollapsed: !get().sidebarCollapsed });
+    save(get());
+  },
+
+  dismissBanner: (id) => {
+    const current = get().dismissedBanners;
+    if (current.includes(id)) return;
+    set({ dismissedBanners: [...current, id] });
+    save(get());
+  },
+
+  resetDismissedBanners: () => {
+    set({ dismissedBanners: [] });
     save(get());
   },
 }));

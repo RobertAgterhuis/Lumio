@@ -245,13 +245,20 @@ export function DashboardWeergaveCard() {
             ))}
           </div>
         </div>
-        <div className="pt-2">
+        <div className="pt-2 flex gap-2 flex-wrap">
           <Button
             variant="outline"
             size="sm"
             onClick={() => usePreferencesStore.getState().resetDashboard()}
           >
             {t("dashboardWeergave.allesHerstellen")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => usePreferencesStore.getState().resetDismissedBanners()}
+          >
+            {t("dashboardWeergave.meldingenHerstellen")}
           </Button>
         </div>
       </CardContent>

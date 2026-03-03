@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { HelpButton } from "@/components/help/HelpButton";
 import { WerkgeverCard } from "@/components/werkgever/WerkgeverCard";
+import { PageBanner } from "@/components/layout/PageBanner";
 
 interface Eigenaar {
   id: string;
@@ -265,6 +266,9 @@ export default function EigenaarPage() {
 
   return (
     <div className="space-y-6">
+      <PageBanner id="eigenaar-profiel-aanmaken" show={!exists && !loading}>
+        <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
+      </PageBanner>
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <User className="h-8 w-8 text-primary" />
@@ -278,14 +282,6 @@ export default function EigenaarPage() {
       </div>
 
       <DomainStatusBanner domein="eigenaar" />
-
-      {!exists && (
-        <div className="rounded-lg border border-warning bg-warning-100 p-4">
-          <p className="text-sm text-warning">
-            <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
-          </p>
-        </div>
-      )}
 
       {exists && (
         <Card className="overflow-hidden">

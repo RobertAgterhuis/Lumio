@@ -1340,7 +1340,8 @@
       "backup": "Backup status",
       "aanbevolen": "Recommended next step",
       "verloopdatum": "Document expiry dates",
-      "allesHerstellen": "Show all"
+      "allesHerstellen": "Show all",
+      "meldingenHerstellen": "Reset dismissed notifications"
     },
     "taal": {
       "titel": "Language",

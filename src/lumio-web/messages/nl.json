@@ -1340,7 +1340,8 @@
       "backup": "Back-up status",
       "aanbevolen": "Aanbevolen volgende stap",
       "verloopdatum": "Verloopdatum documenten",
-      "allesHerstellen": "Alles weer tonen"
+      "allesHerstellen": "Alles weer tonen",
+      "meldingenHerstellen": "Verborgen meldingen herstellen"
     },
     "taal": {
       "titel": "Taal",

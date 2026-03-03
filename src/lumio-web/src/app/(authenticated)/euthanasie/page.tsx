@@ -19,6 +19,7 @@ import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { PersonSelect } from "@/components/PersonSelect";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { HelpButton } from "@/components/help/HelpButton";
 import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
 
@@ -174,11 +175,9 @@ export default function EuthanasiePage() {
 
       <DomainStatusBanner domein="euthanasie" />
 
-      <div className="rounded-lg border border-secure bg-secure-100 p-4">
-        <p className="text-sm text-secure">
-          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
-        </p>
-      </div>
+      <PageBanner id="euthanasie-disclaimer" variant="secure">
+        {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+      </PageBanner>
 
       {!data ? (
         <Card>

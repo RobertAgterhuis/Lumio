@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { ErfbelastingCalculator } from "@/components/erfgenamen/ErfbelastingCalculator";
@@ -242,11 +243,9 @@ export default function ErfgenamenPage() {
       />
 
       {/* M4-4: Inform users that editing erfgenaam data does not auto-sync linked forms */}
-      <div className="rounded-lg border border-info bg-info-100 p-4">
-        <p className="text-sm text-info">
-          <strong>{t("synclinkMeldingLabel")}</strong> {t("synclinkMelding")}
-        </p>
-      </div>
+      <PageBanner id="erfgenamen-syncmelding" variant="info">
+        <strong>{t("synclinkMeldingLabel")}</strong> {t("synclinkMelding")}
+      </PageBanner>
 
       {state.erfgenamen.length > 0 && <ErfbelastingCalculator />}
 

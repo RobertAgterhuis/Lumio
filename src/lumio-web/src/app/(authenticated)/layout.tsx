@@ -134,6 +134,8 @@ export default function AuthenticatedLayout({
             </AlertDescription>
           </Alert>
         )}
+        {/* Portal target for PageBanner — same visual position as the read-only banner */}
+        <div id="page-banner-portal" className="shrink-0" />
         <ErrorBoundary>
           <main id="authenticated-main" tabIndex={-1} className="flex-1 overflow-y-auto p-6 outline-none">
             {children}
