@@ -3,14 +3,14 @@
   "cycle_type": "COMBO_AUDIT",
   "audit_scope": ["TECHNIEK", "UX"],
   "feature_name": null,
-  "status": "SPRINT_ACTIVE",
+  "status": "AWAITING_NEXT_SPRINT",
   "current_phase": "FASE-5",
   "current_agent": "implementation-agent",
-  "current_sprint": "SP-UX-02",
+  "current_sprint": null,
   "github_project_name": "Lumio Workitems",
   "github_repo_url": "https://github.com/RobertAgterhuis/Lumio",
   "canva_api_token": "",
-  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11", "SPRINT_COMPLETE_SP-11", "PRE_SPRINT_GATE_SP-12", "SPRINT_COMPLETE_SP-12", "PRE_SPRINT_GATE_SP-13", "SPRINT_COMPLETE_SP-13", "PRE_SPRINT_GATE_SP-14", "SPRINT_COMPLETE_SP-14", "SPRINT_COMPLETE_SP-UX-01"],
+  "completed_phases": ["FASE-2", "FASE-3", "SYNTHESIS_PARTIAL", "PRE_SPRINT_GATE_SP-11", "SPRINT_COMPLETE_SP-11", "PRE_SPRINT_GATE_SP-12", "SPRINT_COMPLETE_SP-12", "PRE_SPRINT_GATE_SP-13", "SPRINT_COMPLETE_SP-13", "PRE_SPRINT_GATE_SP-14", "SPRINT_COMPLETE_SP-14", "SPRINT_COMPLETE_SP-UX-01", "SPRINT_COMPLETE_SP-UX-02"],
   "completed_agents": [
     "25-onboarding-agent",
     "05-software-architect",
@@ -93,32 +93,32 @@
         {"id": "SP-UX-01-008", "url": "https://github.com/RobertAgterhuis/Lumio/issues/117", "status": "closed", "commit": "fd7decc"},
         {"id": "SP-UX-01-009", "url": "https://github.com/RobertAgterhuis/Lumio/issues/118", "status": "closed", "commit": "fd7decc"}
       ]
+    },
+    {
+      "sprint_id": "SP-UX-02",
+      "sprint_name": "Onboarding Optimalisatie & Nabestaanden Tooling",
+      "milestone_number": 13,
+      "implementation_status": "COMPLETE",
+      "pull_request_number": 127,
+      "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/127",
+      "merge_sha": "88a4dae",
+      "merged_at": "2026-03-03",
+      "github_issues": [
+        {"id": "SP-UX-02-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/120", "status": "closed", "commit": "08de2a3"},
+        {"id": "SP-UX-02-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/121", "status": "closed", "commit": "5ffd68a"},
+        {"id": "SP-UX-02-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/122", "status": "closed", "commit": "cf3d738"},
+        {"id": "SP-UX-02-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/123", "status": "open", "note": "ANALYSIS — carry-over naar SP-UX-03"},
+        {"id": "SP-UX-02-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/124", "status": "open", "note": "ANALYSIS — carry-over naar SP-UX-03"},
+        {"id": "SP-UX-02-006", "url": "https://github.com/RobertAgterhuis/Lumio/issues/125", "status": "closed", "commit": "df49322"},
+        {"id": "SP-UX-02-007", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "note": "ANALYSIS — carry-over naar SP-UX-03"}
+      ]
     }
   ],
-  "active_sprint": {
-    "sprint_id": "SP-UX-02",
-    "milestone_number": 13,
-    "github_issues": [
-      {"id": "SP-UX-02-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/120", "status": "closed", "commit": "08de2a3"},
-      {"id": "SP-UX-02-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/121", "status": "closed", "commit": "5ffd68a"},
-      {"id": "SP-UX-02-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/122", "status": "closed", "commit": "cf3d738"},
-      {"id": "SP-UX-02-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/123", "status": "open", "note": "ANALYSIS — videoboodschappen caption-support analyse; geen code"},
-      {"id": "SP-UX-02-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/124", "status": "open", "note": "ANALYSIS — handmatige screen reader test NVDA/VoiceOver; geen code"},
-      {"id": "SP-UX-02-006", "url": "https://github.com/RobertAgterhuis/Lumio/issues/125", "status": "closed", "commit": "df49322"},
-      {"id": "SP-UX-02-007", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "note": "ANALYSIS — onboarding usability-test; geen code"}
-    ],
-    "pull_request_url": "https://github.com/RobertAgterhuis/Lumio/pull/127",
-    "pull_request_number": 127,
-    "branch": "feature/SP-UX-02-onboarding-optimalisatie-nabestaanden",
-    "dor_cleared": true,
-    "sprint_gate_date": "2026-03-04T00:00:00Z",
-    "implementation_status": "RETROSPECTIVE_COMPLETE",
-    "test_results": {"backend": 409, "frontend": 354, "status": "ALL_PASS"}
-  },
+  "active_sprint": null,
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-3/sprintplan.md",
-  "last_updated": "2026-03-03T00:00:00Z",
+  "last_updated": "2026-03-03T12:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",

@@ -26,7 +26,7 @@
       "backend_tests": 409,
       "frontend_tests": 354,
       "coverage_pct": null,
-      "ci_passed": null,
+      "ci_passed": true,
       "pr_number": 127,
       "notes": "Alle 4 code stories geland (001 wizard, 002 PDF, 003 Storybook, 006 a11y). 3 ANALYSIS stories open (#123, #124, #126). PR #127 open — awaiting review/merge."
     }

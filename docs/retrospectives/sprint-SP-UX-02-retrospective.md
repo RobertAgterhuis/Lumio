@@ -2,7 +2,7 @@
 
 **Sprint ID:** SP-UX-02  
 **Datum:** 2026-03-03  
-**PR:** [#127](https://github.com/RobertAgterhuis/Lumio/pull/127) — open  
+**PR:** [#127](https://github.com/RobertAgterhuis/Lumio/pull/127) — gemerged `88a4dae`  
 **Agent:** Sprint Retrospective Agent (skill 28)
 
 ---
@@ -78,7 +78,7 @@
 
 ## Status bij afsluiting
 
-- Branch `feature/SP-UX-02-onboarding-optimalisatie-nabestaanden` — PR [#127](https://github.com/RobertAgterhuis/Lumio/pull/127) open
+- Branch `feature/SP-UX-02-onboarding-optimalisatie-nabestaanden` gemerged in `main` (squash, `88a4dae`)
 - Issues #120, #121, #122, #125 gesloten
 - Issues #123, #124, #126 open (ANALYSIS — geen code)
 - Test gate: 409 backend + 354 frontend = 763 tests, 0 failures
@@ -86,7 +86,7 @@
 - `docs/metrics/velocity-log.json` bijgewerkt
 - Gebruikershandleiding bijgewerkt (NL + EN: 01-aan-de-slag, 14-nabestaanden)
 - Technische handleiding bijgewerkt (NL + EN: 02-backend-api)
-- `session-state.json` → `SPRINT_COMPLETE_SP-UX-02` (na merge)
+- `session-state.json` → `AWAITING_NEXT_SPRINT`, `active_sprint: null`
 
 ---
 
