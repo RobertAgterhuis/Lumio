@@ -35,7 +35,17 @@ const preview: Preview = {
     },
 
     a11y: {
+      // SP-UX-02-006: heading-order geconfigureerd als best-practice check.
+      // 'test: "todo"' zorgt dat violations zichtbaar zijn maar niet blokkeren
+      // totdat alle story-varianten volledig a11y-clean zijn.
+      // heading-order is expliciet ingeschakeld zodat  axe het ook test
+      // (standaard zit het in 'best-practice', niet in 'wcag2aa').
       test: "todo",
+      config: {
+        rules: [
+          { id: "heading-order", enabled: true },
+        ],
+      },
     },
 
     layout: "centered",
