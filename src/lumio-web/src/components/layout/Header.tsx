@@ -120,7 +120,7 @@ export function Header() {
                 className="h-6 w-6 rounded-full object-cover"
               />
             ) : (
-              <UserCircle className="h-4 w-4" />
+              <UserCircle aria-hidden="true" className="h-4 w-4" />
             )}
             <span>{activeProfile.naam}</span>
           </div>
@@ -134,7 +134,7 @@ export function Header() {
             onClick={toggleSearch}
             className="gap-2 border border-primary-foreground/25 text-primary-foreground hover:bg-primary-foreground/10"
           >
-            <Search className="h-4 w-4" />
+            <Search aria-hidden="true" className="h-4 w-4" />
             <span className="hidden sm:inline">{t("zoeken")}</span>
             <kbd className="ml-1 hidden rounded border border-primary-foreground/25 bg-primary-foreground/10 px-1.5 py-0.5 text-xs sm:inline-block">
               Ctrl+K
@@ -151,7 +151,7 @@ export function Header() {
             title={t("hulp")}
             className="text-primary-foreground hover:bg-primary-foreground/10"
           >
-            <HelpCircle className="h-4 w-4" />
+            <HelpCircle aria-hidden="true" className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
@@ -161,9 +161,9 @@ export function Header() {
             className="text-primary-foreground hover:bg-primary-foreground/10"
           >
             {theme === "dark" ? (
-              <Sun className="h-4 w-4" />
+              <Sun aria-hidden="true" className="h-4 w-4" />
             ) : (
-              <Moon className="h-4 w-4" />
+              <Moon aria-hidden="true" className="h-4 w-4" />
             )}
           </Button>
           <Button
@@ -172,7 +172,7 @@ export function Header() {
             onClick={handleLock}
             className="gap-2 text-primary-foreground hover:bg-primary-foreground/10"
           >
-            <Lock className="h-4 w-4" />
+            <Lock aria-hidden="true" className="h-4 w-4" />
             {t("vergrendelen")}
           </Button>
         </div>

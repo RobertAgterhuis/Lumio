@@ -118,16 +118,8 @@ export default function HomePage() {
       ) : heirMode ? (
         <HeirUnlockForm />
       ) : (
-        <UnlockForm />
-      )}
-
-      {showUnlock && !heirMode && (
-        <button
-          onClick={() => setHeirMode((m) => !m)}
-          className="mt-4 text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline"
-        >
-          {t("erfgenaamLink")}
-        </button>
+        // SP-UX-01-004: pass onHeirMode so card shows secondary heir entry-point button
+        <UnlockForm onHeirMode={() => setHeirMode(true)} />
       )}
 
       {showUnlock && heirMode && (

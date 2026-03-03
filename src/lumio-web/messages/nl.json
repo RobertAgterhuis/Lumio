@@ -53,7 +53,10 @@
       "mislukt": "Ontgrendelen mislukt",
       "wachtwoordVergetenTitel": "Wachtwoord vergeten?",
       "wachtwoordVergetenTekst": "Toegang tot uw Lumio-dossier kan niet worden hersteld zonder het wachtwoord. Dit is een bewuste beveiligingskeuze om uw gegevens te beschermen.",
-      "geblokkerd": "Te veel mislukte pogingen. Probeer het opnieuw over {minuten, plural, one {1 minuut} other {# minuten}}."
+      "geblokkerd": "Te veel mislukte pogingen. Probeer het opnieuw over {minuten, plural, one {1 minuut} other {# minuten}}.",
+      "erfgenaamKnop": "Ik heb geen wachtwoord — ik ben een erfgenaam",
+      "wachtwoordTonen": "Wachtwoord tonen",
+      "wachtwoordVerbergen": "Wachtwoord verbergen"
     },
     "erfgenaam": {
       "titel": "Erfgenaam Toegang",
@@ -61,6 +64,7 @@
       "codeLabel": "Code {nummer}",
       "codePlaceholder": "Plak hier de noodcode...",
       "codeToevoegen": "Nog een code toevoegen",
+      "codeVerwijderen": "Code {nummer} verwijderen",
       "instructie": "Voer hieronder uw noodcodes in. U heeft minimaal het door de eigenaar ingestelde aantal codes nodig om toegang te krijgen.",
       "minimaalCodes": "Minimaal 2 noodcodes zijn vereist.",
       "reconstructieMislukt": "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd.",
@@ -2149,10 +2153,13 @@
     "welkom": "Welkom bij Lumio",
     "doorloop": "Doorloop deze stappen om uw nalatenschap in te richten",
     "sluiten": "Sluiten",
+    "voortgang": "Voortgang onboarding",
     "voltooid": "{voltooid} van {totaal} voltooid",
     "laterInvullen": "Later invullen",
     "nietMeerTonen": "Niet meer tonen",
     "afronden": "Afronden",
+    "terugkeerBadge": "Ga verder met wizard →",
+    "terugkeerBadgeAria": "Wizard hervatten",
     "stappen": {
       "profiel": {
         "titel": "Mijn Profiel",
@@ -2175,8 +2182,8 @@
         "beschrijving": "Registreer uw erfgenamen en verdeel eventueel noodcodes."
       },
       "sleutels": {
-        "titel": "Sleutels verdelen",
-        "beschrijving": "Verdeel uw beveiligingssleutels via Shamir Secret Sharing met uw erfgenamen."
+        "titel": "Erfgenamen informeren",
+        "beschrijving": "Informeer uw erfgenamen over hun noodcodes zodat zij bij overlijden toegang hebben."
       },
       "backup": {
         "titel": "Backup maken",

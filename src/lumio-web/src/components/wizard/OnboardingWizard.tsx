@@ -2,13 +2,9 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { useDomainQuery } from "@/hooks";
 import { useAuthStore } from "@/stores/authStore";
 import { api } from "@/lib/api-client";
-import { useTranslations } from "next-intl";
 import posthog from "posthog-js";
 import {
   User,
@@ -17,12 +13,9 @@ import {
   Church,
   Download,
   Users,
-  KeyRound,
-  ChevronRight,
-  Check,
-  Sparkles,
-  X,
+  UserCheck,
 } from "lucide-react";
+import { OnboardingWizardModal } from "./OnboardingWizardModal";
 
 interface OnboardingStap {
   id: string;
@@ -37,14 +30,13 @@ const stappen: OnboardingStap[] = [
   { id: "testament", stapKey: "testament", icon: ScrollText, href: "/testament" },
   { id: "uitvaart", stapKey: "uitvaart", icon: Church, href: "/uitvaart" },
   { id: "erfgenamen", stapKey: "erfgenamen", icon: Users, href: "/erfgenamen" },
-  // SP-S2-001: Shamir Secret Sharing stap — verdeel sleutels met erfgenamen
-  { id: "sleutels", stapKey: "sleutels", icon: KeyRound, href: "/erfgenamen" },
+  // SP-S2-001 / SP-UX-01-002: Shamir-stap — informeer erfgenamen; icon gewijzigd naar UserCheck (REC-UXDESIGN-001)
+  { id: "sleutels", stapKey: "sleutels", icon: UserCheck, href: "/erfgenamen" },
   { id: "backup", stapKey: "backup", icon: Download, href: "/instellingen" },
 ];
 
 export function OnboardingWizard() {
   const router = useRouter();
-  const t = useTranslations("wizard");
   const { activeProfile } = useAuthStore();
   // S2-05: Profile-bound localStorage key — always per-user, never falls back to shared key
   const storageKey = activeProfile?.id ? `lumio_onboarding_${activeProfile.id}_completed` : null;
@@ -52,8 +44,6 @@ export function OnboardingWizard() {
   const [localStorageChecked, setLocalStorageChecked] = useState(false);
   // Session-level ref: prevents wizard re-showing after user navigates via it
   const sessionDismissedRef = useRef(false);
-  // UX-001: ref for focus-trap
-  const modalRef = useRef<HTMLDivElement | null>(null);
 
   // Load data with React Query
   const { data: eigenaar, isLoading: loadingEigenaar } = useDomainQuery<{ id?: string } | null>("eigenaar");
@@ -124,32 +114,6 @@ export function OnboardingWizard() {
     }
   }, [localStorageChecked, loading, stapStatus, storageKey]);
 
-  // UX-001: Focus-trap — keep keyboard focus inside modal (WCAG 2.1.1, 2.1.2)
-  useEffect(() => {
-    if (!visible) return;
-    const modal = modalRef.current;
-    if (!modal) return;
-    const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    const getFocusable = () => Array.from(modal.querySelectorAll<HTMLElement>(FOCUSABLE));
-    getFocusable()[0]?.focus();
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // SC 2.1.2: Escape sluit het modal zonder stale-closure risico (setVisible is stabiel als useState-setter)
-      if (e.key === "Escape") { setVisible(false); return; }
-      if (e.key !== "Tab") return;
-      const els = getFocusable();
-      if (els.length === 0) { e.preventDefault(); return; }
-      const first = els[0];
-      const last = els[els.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
-      } else {
-        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [visible]);
-
   const dismissForSession = () => {
     if (!storageKey) return;
     const sessionKey = `${storageKey}_session`;
@@ -187,146 +151,37 @@ export function OnboardingWizard() {
   const handleNavigate = (href: string) => {
     dismissForSession();
     setVisible(false);
-    router.push(href);
+    // SP-UX-01-003: append ?vanWizard=true so destination page can show a return badge (REC-UXDESIGN-002)
+    const separator = href.includes("?") ? "&" : "?";
+    router.push(`${href}${separator}vanWizard=true`);
   };
+
+  // SP-UX-01-003: allow WizardReturnBadge (on any wizard-step page) to reopen the wizard
+  useEffect(() => {
+    const handleReopen = () => {
+      if (!storageKey) return;
+      // Clear session-dismissed signal so wizard is allowed to show again
+      const sessionKey = `${storageKey}_session`;
+      sessionStorage.removeItem(sessionKey);
+      sessionDismissedRef.current = false;
+      setVisible(true);
+    };
+    window.addEventListener("lumio:wizard:reopen", handleReopen);
+    return () => window.removeEventListener("lumio:wizard:reopen", handleReopen);
+  }, [storageKey]);
 
   const completedCount = stappen.filter((s) => stapStatus[s.id as keyof typeof stapStatus]).length;
 
   if (loading || !localStorageChecked || !visible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div
-        ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="onboarding-wizard-title"
-        className="mx-4 w-full max-w-2xl rounded-xl border border-border bg-background shadow-2xl"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-              <Sparkles className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h2 id="onboarding-wizard-title" className="text-lg font-semibold">{t("welkom")}</h2>
-              <p className="text-sm text-muted-foreground">
-                {t("doorloop")}
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
-            onClick={handleComplete}
-            aria-label={t("sluiten")}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Progress */}
-        <div className="px-6 pt-4">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              {t("voltooid", { voltooid: completedCount, totaal: stappen.length })}
-            </span>
-            <span className="font-medium text-primary">
-              {Math.round((completedCount / stappen.length) * 100)}%
-            </span>
-          </div>
-          <div
-            className="mt-2 h-2 rounded-full bg-muted"
-            role="progressbar"
-            aria-valuenow={completedCount}
-            aria-valuemin={0}
-            aria-valuemax={stappen.length}
-            aria-label={t("voortgang")}
-          >
-            <div
-              className="h-full rounded-full bg-primary transition-all duration-500"
-              style={{ width: `${(completedCount / stappen.length) * 100}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Steps */}
-        <div className="px-6 py-4 space-y-2">
-          {stappen.map((stap) => {
-            const isDone = stapStatus[stap.id as keyof typeof stapStatus];
-            const Icon = stap.icon;
-            return (
-              <Card
-                key={stap.id}
-                className={cn(
-                  "cursor-pointer transition-colors hover:bg-muted/50",
-                  isDone && "bg-success-100 border-success"
-                )}
-                onClick={() => !isDone && handleNavigate(stap.href)}
-              >
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div
-                    className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                      isDone
-                        ? "bg-success-100 text-success"
-                        : "bg-muted text-muted-foreground"
-                    )}
-                  >
-                    {isDone ? (
-                      <Check className="h-5 w-5" />
-                    ) : (
-                      <Icon className="h-5 w-5" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={cn(
-                        "text-sm font-medium",
-                        isDone && "text-success"
-                      )}
-                    >
-                      {t(`stappen.${stap.stapKey}.titel`)}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {t(`stappen.${stap.stapKey}.beschrijving`)}
-                    </p>
-                  </div>
-                  {!isDone && (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between border-t border-border px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={handleComplete}>
-              {t("laterInvullen")}
-            </Button>
-            {completedCount < stappen.length && (
-              <button
-                type="button"
-                onClick={handleDontShowAgain}
-                className="text-sm font-bold text-muted-foreground underline-offset-2 hover:underline hover:text-foreground transition-colors"
-              >
-                {t("nietMeerTonen")}
-              </button>
-            )}
-          </div>
-          {completedCount === stappen.length && (
-            <Button onClick={handleComplete}>
-              <Check className="h-4 w-4 mr-2" />
-              {t("afronden")}
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
+    <OnboardingWizardModal
+      stappen={stappen}
+      stapStatus={stapStatus}
+      completedCount={completedCount}
+      onNavigate={handleNavigate}
+      onClose={handleComplete}
+      onDontShowAgain={handleDontShowAgain}
+    />
   );
 }
