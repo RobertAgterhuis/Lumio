@@ -189,10 +189,6 @@ export function SetupForm() {
           <Button type="submit" className="w-full" disabled={loading || !avgConsent}>
             {loading ? t("bezig") : t("aanmaken")}
           </Button>
-
-          <p className="text-xs text-muted-foreground text-center">
-            {t("disclaimer")}
-          </p>
         </form>
       </CardContent>
     </Card>
