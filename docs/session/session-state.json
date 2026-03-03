@@ -126,8 +126,8 @@
     "implementation_status": "IN_PROGRESS",
     "test_results": null,
     "github_issues": [
-      {"id": "SP-UX-03-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/128", "status": "open", "type": "CODE", "sp": 2},
-      {"id": "SP-UX-03-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/129", "status": "open", "type": "CODE", "sp": 3, "note": "carry-over van SP-UX-02-006 heading-audit"},
+      {"id": "SP-UX-03-001", "url": "https://github.com/RobertAgterhuis/Lumio/issues/128", "status": "closed", "type": "CODE", "sp": 2, "commit": "2b52d00"},
+      {"id": "SP-UX-03-002", "url": "https://github.com/RobertAgterhuis/Lumio/issues/129", "status": "closed", "type": "CODE", "sp": 3, "commit": "747eb8c", "note": "carry-over van SP-UX-02-006 heading-audit"},
       {"id": "SP-UX-03-003", "url": "https://github.com/RobertAgterhuis/Lumio/issues/123", "status": "open", "type": "ANALYSIS", "sp": 2, "note": "carry-over SP-UX-02-004"},
       {"id": "SP-UX-03-004", "url": "https://github.com/RobertAgterhuis/Lumio/issues/124", "status": "open", "type": "ANALYSIS", "sp": 3, "note": "carry-over SP-UX-02-005"},
       {"id": "SP-UX-03-005", "url": "https://github.com/RobertAgterhuis/Lumio/issues/126", "status": "open", "type": "ANALYSIS", "sp": 5, "note": "carry-over SP-UX-02-007"}
@@ -136,7 +136,7 @@
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-3/sprintplan.md",
-  "last_updated": "2026-03-05T09:00:00Z",
+  "last_updated": "2026-03-05T10:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
