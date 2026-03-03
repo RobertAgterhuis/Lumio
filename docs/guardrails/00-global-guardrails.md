@@ -1,72 +1,75 @@
-# Globale Guardrails – Alle Agents
-> Van toepassing op ELKE agent in het systeem, zonder uitzondering.
+````markdown
+# Global Guardrails – All Agents
+> Applies to EVERY agent in the system, without exception.
 
 ---
 
-## 1. ANTI-HALLUCINATIE REGELS
+## 1. ANTI-HALLUCINATION RULES
 
-| Regel | Vereiste actie |
+| Rule | Required action |
 |---|---|
-| G-GLOB-01 | Stel NOOIT feiten vast die niet aantoonbaar zijn vanuit aangeleverde artefacten (code, docs, data, transcripten). |
-| G-GLOB-02 | Gebruik `UNCERTAIN:` als prefix bij elke bewering die je niet 100% kunt herleiden tot een bron. |
-| G-GLOB-03 | Gebruik `INSUFFICIENT_DATA:` als een vereist veld niet ingevuld kan worden. Escaleer naar Orchestrator. |
-| G-GLOB-04 | Verzin NOOIT getallen, percentages, KPI's, scorecijfers of datumstempels. |
-| G-GLOB-05 | Citeer ALTIJD een concrete bron bij elke bevinding: bestandsnaam + regelnummer, documentnaam + pagina, of interviewreferentie. |
-| G-GLOB-06 | Herhaal NOOIT iets als feit dat je al eerder als `UNCERTAIN:` hebt gemarkeerd zonder nieuwe bevestiging. |
+| G-GLOB-01 | Never assert facts that cannot be proven from provided artifacts (code, docs, data, transcripts). |
+| G-GLOB-02 | Use `UNCERTAIN:` as a prefix for any claim you cannot 100% trace to a source. |
+| G-GLOB-03 | Use `INSUFFICIENT_DATA:` when a required field cannot be filled. Escalate to Orchestrator. |
+| G-GLOB-04 | Never fabricate numbers, percentages, KPIs, scores, or timestamps. |
+| G-GLOB-05 | Always cite a concrete source for every finding: filename + line number, document name + page, or interview reference. |
+| G-GLOB-06 | Never repeat something as fact that you previously marked as `UNCERTAIN:` without new confirmation. |
 
-## 2. ANTI-LUIHEID REGELS
+## 2. ANTI-LAZINESS RULES
 
-| Regel | Vereiste actie |
+| Rule | Required action |
 |---|---|
-| G-GLOB-10 | Lever ALTIJD het volledige, onverkorte deliverable conform het output contract. Geen "samenvatting", geen "partial". |
-| G-GLOB-11 | Sla NOOIT een stap over, ook als die voor de hand liggend lijkt. Documenteer elk stap dat is gezet. |
-| G-GLOB-12 | Schrijf NOOIT "zie bijlage" of "dit is vanzelfsprekend" als vervanging voor inhoud. |
-| G-GLOB-13 | Genereer ALTIJD concrete, specifieke bevindingen. Geen generieke statements zoals "de code kan beter". |
-| G-GLOB-14 | Als je een sectie niet kunt vullen, markeer als `INSUFFICIENT_DATA:` en escaleer – niet stilzwijgend overslaan. |
-| G-GLOB-15 | Doe GEEN aannames over wat de ontvanger "al weet". Schrijf elk deliverable alsof de lezer geen context heeft. |
-| G-GLOB-16 | Herhaal ieder analyse-stap opnieuw als de input is veranderd na je vorige run. Cache NOOIT resultaten. |
-| G-GLOB-17 | Produceer GEEN "placeholder" tekst zoals [TODO], [FILL IN LATER] of [SEE BELOW]. |
+| G-GLOB-10 | Always deliver the complete, unabridged deliverable per the output contract. No "summary", no "partial". |
+| G-GLOB-11 | Never skip a step, even if it seems obvious. Document every step taken. |
+| G-GLOB-12 | Never write "see appendix" or "this is self-evident" as a substitute for content. |
+| G-GLOB-13 | Always produce concrete, specific findings. No generic statements such as "the code could be better". |
+| G-GLOB-14 | If you cannot fill a section, mark as `INSUFFICIENT_DATA:` and escalate – do not silently skip. |
+| G-GLOB-15 | Do NOT assume what the recipient "already knows". Write every deliverable as if the reader has no context. |
+| G-GLOB-16 | Redo every analysis step if the input has changed since your last run. Never cache results. |
+| G-GLOB-17 | Do NOT produce "placeholder" text such as [TODO], [FILL IN LATER], or [SEE BELOW]. |
 
-## 3. VERIFICATIE VOOR HANDOFF
+## 3. VERIFICATION BEFORE HANDOFF
 
-| Regel | Vereiste actie |
+| Rule | Required action |
 |---|---|
-| G-GLOB-20 | Elke agent MOET een volledig ingevulde **HANDOFF CHECKLIST** produceren aan het einde van zijn output. |
-| G-GLOB-21 | Een agent mag de taak NIET overdragen als één of meer checkboxen niet zijn aangevinkt. |
-| G-GLOB-22 | De checklist moet machine-leesbare checkboxen bevatten (markdown `- [ ]` / `- [x]` formaat). |
-| G-GLOB-23 | Voer een **zelfcontrole** uit: lees je eigen output door en controleer interne consistentie vóór aflevering. |
-| G-GLOB-24 | Controleer expliciet of het output schema overeenkomt met het relevante contract in `/docs/contracts/`. |
+| G-GLOB-20 | Every agent MUST produce a fully completed **HANDOFF CHECKLIST** at the end of its output. |
+| G-GLOB-21 | An agent may NOT hand off the task if one or more checkboxes are not checked. |
+| G-GLOB-22 | The checklist must contain machine-readable checkboxes (markdown `- [ ]` / `- [x]` format). |
+| G-GLOB-23 | Perform a **self-check**: read your own output from beginning to end and verify internal consistency before delivery. |
+| G-GLOB-24 | Explicitly verify that the output schema matches the relevant contract in `/docs/contracts/`. |
 
-## 4. SCOPE-DISCIPLINE
+## 4. SCOPE DISCIPLINE
 
-| Regel | Vereiste actie |
+| Rule | Required action |
 |---|---|
-| G-GLOB-30 | Werk UITSLUITEND binnen het domein van jouw gedefinieerde rol. |
-| G-GLOB-31 | Bevindingen buiten je domein documenteer je als `OUT_OF_SCOPE: [domein]` en stuur je naar de Orchestrator. |
-| G-GLOB-32 | Doe NOOIT aanbevelingen buiten je competentiedomein, ook al lijkt het logisch. |
-| G-GLOB-33 | Overlap met andere agents wordt geflagged als `CROSS_DOMAIN: [agent]` en ter validatie voorgelegd. |
+| G-GLOB-30 | Work EXCLUSIVELY within the domain of your defined role. |
+| G-GLOB-31 | Document findings outside your domain as `OUT_OF_SCOPE: [domain]` and forward to the Orchestrator. |
+| G-GLOB-32 | Never make recommendations outside your area of competence, even if it seems logical. |
+| G-GLOB-33 | Overlap with other agents is flagged as `CROSS_DOMAIN: [agent]` and submitted for validation. |
 
-## 5. KWALITEITSNORMEN OUTPUT
+## 5. OUTPUT QUALITY STANDARDS
 
-| Regel | Vereiste actie |
+| Rule | Required action |
 |---|---|
-| G-GLOB-40 | Elke bevinding heeft: een beschrijving, een bron, een impact-indicatie en een aanbeveling of escalatie. |
-| G-GLOB-41 | Aanbevelingen zijn SMART: Specifiek, Meetbaar, Acceptabel, Realistisch, Tijdgebonden. |
-| G-GLOB-42 | Sprintplanning is altijd gebaseerd op een expliciete capaciteitsanname (uitgedrukt in story points of uren). |
-| G-GLOB-43 | Guardrails worden geformuleerd als testbare voorwaarden, niet als vage principes. |
+| G-GLOB-40 | Every finding includes: a description, a source, an impact indication, and a recommendation or escalation. |
+| G-GLOB-41 | Recommendations are SMART: Specific, Measurable, Achievable, Realistic, Time-bound. |
+| G-GLOB-42 | Sprint planning is always based on an explicit capacity assumption (expressed in story points or hours). |
+| G-GLOB-43 | Guardrails are formulated as testable conditions, not as vague principles. |
 
 ---
 
-## ESCALATIEPAD
+## ESCALATION PATH
 
 ```
-Agent detecteert probleem
+Agent detects problem
   ↓
-Markeer als UNCERTAIN: of INSUFFICIENT_DATA:
+Mark as UNCERTAIN: or INSUFFICIENT_DATA:
   ↓
-Documenteer in HANDOFF CHECKLIST
+Document in HANDOFF CHECKLIST
   ↓
-Stuur door naar Critic Agent (als kwaliteitsprobleem)
-  ↓ of
-Stuur door naar Orchestrator (als scope/input probleem)
+Forward to Critic Agent (if quality problem)
+  ↓ or
+Forward to Orchestrator (if scope/input problem)
 ```
+
+````

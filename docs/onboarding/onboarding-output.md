@@ -1,213 +1,224 @@
-# Onboarding Output — COMBO_AUDIT TECHNIEK + UX
-> Agent 25 — Onboarding Agent  
-> Datum: 2026-03-02  
-> Sessie: COMBO-AUDIT-20260302-TECHNIEK-UX  
-> Scope: TECHNIEK (Fase 2) → UX (Fase 3) — canonieke volgorde
+# Onboarding Output — Lumio
+> Agent: Onboarding Agent (25) | Cycle: FULL_AUDIT | Date: 2026-03-03 | Session ID: lumio-audit-20260303-001
 
 ---
 
-## INPUT INVENTARISATIE
+## Step 0: Questionnaire Pre-scan
+
+**Result:** `NO_PRIOR_QUESTIONNAIRES` — `BusinessDocs/` directory does not exist. No prior questionnaire answers found.
+**Action:** Proceeding without questionnaire context injection. `questionnaire_answer_summary` initialized to zero.
+
+---
+
+## INPUT INVENTORY
 
 ### Codebase
 
-| Parameter | Waarde |
-|-----------|--------|
-| Pad | `d:\repositories\Lumio` |
-| Primaire talen | TypeScript 5.9.3 (frontend) · C# / .NET 10 (backend) |
-| Geschatte omvang | 616 source bestanden (.ts/.tsx/.cs excl. node_modules/bin/obj/.next/storybook-static) |
-| Branch | `feature/SP-10-COR-001-002-shamir-drempel-fix` |
-| Commit (HEAD) | `d8809675f43039f2ff52f5f1e24d78e6f55d1797` |
-| Main commit | `43eda8b` — "docs: REEVALUATE TECHNIEK UX v2 — NEW-ARCH-001, NEW-DATA-001, DEC-109, DEC-110" |
-| Build-status | UNCERTAIN: niet geverifieerd via CI-log; CI-pipeline aanwezig in `.github/workflows/ci.yml` |
+| Field | Value |
+|-------|-------|
+| Path | `d:\repositories\Lumio` |
+| Primary languages | TypeScript (frontend + Electron), C# (.NET 10, API), SQL (SQLite/SQLCipher migrations) |
+| Estimated size | ~937 source files (excl. node_modules, .git, storybook-static, bin/obj, .next, out, dist, coverage) |
+| Branch / commit | `main` — HEAD: `09fcfaf` — "chore(sprint): finaliseer SP-UX-03 — SPRINT_COMPLETE, active_sprint null" |
+| Build status | UNKNOWN — CI disabled since 2026-03-02 (spending limit); `ci.yml` set to `workflow_dispatch` only |
 
-### Documentatie
+### Documentation
 
-| Type | Aanwezig | Pad / Bron |
-|------|----------|-----------|
-| README | Ja | `README.md` (NL + EN + Whitelabel sectie) |
-| Architectuurdocumenten (ADR) | Ja | `devdocs/adr-001-schulden-schema-brug.md`, `devdocs/adr-004-localhost-api-boundary.md` |
-| API-specificatie | Ja (OpenAPI) | Gegenereerd via Swashbuckle; `openapi-ts.config.ts` aanwezig voor codegen |
-| Testdocumentatie | Gedeeltelijk | UX testprotocol: `devdocs/shamir-ux-test-protocol.md` |
-| Runbooks / Operationele docs | Ja | `devdocs/deployment-urls.md`, `devdocs/database-migrations.md` |
-| Data Retention Policy | Ja | `devdocs/data-retention-policy.md` |
-| DPIA | Ja | `devdocs/dpia-bijzondere-categorieen.md` |
-| Analytics documentatie | Ja | `devdocs/posthog-analytics.md` |
-| Activatiedefinitie | Ja | `devdocs/activation-definition.md` |
-| User manual (NL) | Nee (map leeg) | `documentation/user-manual/NL/` |
-| User manual (EN) | Nee (map leeg) | `documentation/user-manual/EN/` |
-| Technical manual (NL) | Nee (map leeg) | `documentation/technical-manual/NL/` |
-| Technical manual (EN) | Nee (map leeg) | `documentation/technical-manual/EN/` |
+| Type | Present | Path / Source |
+|------|---------|---------------|
+| README | Yes | `README.md` |
+| Architecture documents | Yes (partial) | `devdocs/adr-001-schulden-schema-brug.md`, `devdocs/adr-004-localhost-api-boundary.md` |
+| API specification | INSUFFICIENT_DATA: | No OpenAPI spec file found at root; `openapi-ts.config.ts` suggests generated client exists |
+| Test documentation | Yes (partial) | `devdocs/shamir-ux-test-protocol.md` |
+| Runbooks / Operational docs | Yes (partial) | `devdocs/deployment-urls.md`, `devdocs/database-migrations.md`, `devdocs/data-retention-policy.md` |
+| DPIA / Privacy | Yes | `devdocs/dpia-bijzondere-categorieen.md` |
+| Analytics | Yes | `devdocs/posthog-analytics.md` |
+| Activation definition | Yes | `devdocs/activation-definition.md` |
+| User manual | Yes (partial) | `documentation/user-manual/EN/`, `documentation/user-manual/NL/` |
+| Technical manual | Yes (partial) | `documentation/technical-manual/EN/`, `documentation/technical-manual/NL/` |
+| Sprint decisions | Yes | `docs/decisions.md` |
+| UX heading audit | Yes | `devdocs/heading-hierarchie-audit-sp-ux-02-006.md` |
 
 ### Stakeholder Input
 
-| Type | Aanwezig | Bron |
-|------|----------|------|
-| Business requirements | INSUFFICIENT_DATA: | Niet aangetroffen als apart document |
-| User research | Gedeeltelijk | `devdocs/shamir-ux-test-protocol.md` beschrijft een formeel testprotocol (nog niet uitgevoerd) |
-| Eerdere auditresultaten | Impliciet | Git-history bevat referenties naar REEVALUATE TECHNIEK UX v1 en v2; geen expliciete audit-output bestanden aangetroffen in `docs/` |
-| KPI-definities | Gedeeltelijk | `devdocs/activation-definition.md` (activatieratio), `devdocs/posthog-analytics.md` |
-| Brand guidelines | INSUFFICIENT_DATA: | Niet aangetroffen |
+| Type | Present | Source |
+|------|---------|--------|
+| Business requirements | No | `INSUFFICIENT_DATA: no requirements document found` |
+| User research | No | `INSUFFICIENT_DATA: no user research document found` |
+| Previous audit results | No | `INSUFFICIENT_DATA: first full audit cycle` |
+| KPI definitions | No | `INSUFFICIENT_DATA: no kpi-definitions.md found (sprint KPIs referenced in decisions.md)` |
+| Brand guidelines | No | `INSUFFICIENT_DATA: no brand-guidelines.md found; Storybook foundations (colors, typography, spacing, motion, borders, z-index) partially represent the design system` |
 
-### GitHub Projectconfiguratie
+### Tooling
 
-| Parameter | Waarde |
-|-----------|--------|
-| GitHub repository URL | INSUFFICIENT_DATA: niet aangeleverd door gebruiker |
-| GitHub project naam | **Lumio Workitems** (opgegeven door gebruiker) |
-| GitHub organisatie / account | INSUFFICIENT_DATA: niet aantoonbaar uit lokale codebase |
+| Tool | Available | Version | Category |
+|------|-----------|---------|----------|
+| Git (read-only) | Yes | 2.48.1.windows.1 | A |
+| File system (read) | Yes | - | A |
+| File system (write) | Yes | - | B |
+| dotnet CLI | Yes | 10.0.103 | C |
+| Node.js | Yes | v22.14.0 | C |
+| npm | Yes | 10.9.2 | C |
+| Vitest (frontend unit tests) | Yes | package.json: `vitest ^3.2.4` | C |
+| xunit / dotnet test (API tests) | Yes | `src/Lumio.Api.Tests/` present | C |
+| Playwright (e2e / a11y) | Yes | `site/playwright.config.ts` present | C |
+| ESLint (frontend linter) | Yes | `eslint.config.mjs` present | C |
+| Storybook | Yes | `storybook-static/` + `.storybook/` | D |
+| TruffleHog (secret scan) | TOOL_UNAVAILABLE | CI only (GitHub Actions — disabled) | C |
+| Canva Connect API | TOOL_UNAVAILABLE | SKIPPED_NO_TOKEN (user choice) | D |
+| Chromatic | AVAILABLE | `chromatic.config.json` present; requires GitHub token | D |
+
+### GitHub Project Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| GitHub repository URL | `https://github.com/RobertAgterhuis/Lumio.git` |
+| GitHub project name | **Lumio Board** |
+| GitHub organization / account | `RobertAgterhuis` |
 
 ---
 
-## VALIDATIESTATUS
+## Step 2: Minimum Input Validation
 
-| Input | Verplicht | Status |
-|-------|-----------|--------|
-| Codebase toegankelijk (lees) | JA | ✓ |
-| Minimaal één documentatiebron | JA | ✓ |
-| Doel van de audit beschreven | JA | ✓ — COMBO_AUDIT TECHNIEK + UX op Lumio |
-| GitHub project naam | JA | ✓ — "Lumio Workitems" |
-| Git-history beschikbaar | AANBEVOLEN | ✓ |
-| Stakeholder business requirements | AANBEVOLEN | INSUFFICIENT_DATA: — downstream agents gewaarschuwd |
+| Input | Required | Status |
+|-------|----------|--------|
+| Codebase accessible (read) | YES | ✓ |
+| At least one documentation source | YES | ✓ (README + devdocs + decisions.md) |
+| Audit objective described | YES | ✓ (README: offline-first Electron digital estate app) |
+| GitHub project name | YES | ✓ (`Lumio Board`) |
+| Git history available | RECOMMENDED | ✓ (branch `main`, full history readable) |
+| Stakeholder business requirements | RECOMMENDED | ✗ — `INSUFFICIENT_DATA: no business requirements document` |
+
+**Validation result:** PASSED — no ONBOARDING_BLOCKED items. All REQUIRED items satisfied.
+Note: Missing stakeholder business requirements documented as `INSUFFICIENT_DATA:` — downstream Phase 1 agents are informed.
 
 ---
 
-## CODEBASE SCAN SAMENVATTING
+## CODEBASE SCAN SUMMARY
 
-- **Primaire taal (frontend):** TypeScript 5.9.3
-- **Primaire taal (backend):** C#, target .NET 10
+- **Primary language:** TypeScript (Next.js 15 frontend + Electron 40 shell), C# (.NET 10 ASP.NET Core API)
 - **Frameworks:**
-  - Frontend: Next.js 16.1.6 · React 19.2.4 · Tailwind CSS 4.x · Zustand 5 · TanStack React Query 5 · React Hook Form 7 · Zod 4 · Radix UI (slot + tooltip) · DND Kit · next-intl 4 · PostHog JS · Storybook 10 · Vitest 4 · Playwright 1.58
-  - Desktop: Electron (electron-builder.yml aanwezig in `src/lumio-desktop/`)
-  - Backend: ASP.NET Core 10 · EF Core 10 · SQLite/SQLCipher · Serilog · FluentValidation · Mapster · QuestPDF · RulesEngine · SecretSharingDotNet · Swashbuckle
-
-- **Applicatiearchitectuur:**
+  - Frontend: Next.js 15, React 19, Tailwind CSS v4, Radix UI, React Hook Form, Zod, next-intl, Zustand, dnd-kit, Storybook 8, Vitest
+  - Desktop shell: Electron 40, electron-builder 26, TypeScript
+  - Backend API: ASP.NET Core (.NET 10), Entity Framework Core (SQLite/SQLCipher), FluentValidation, Serilog, QuestPDF, SQLCipher
+  - Testing: Vitest (unit + storybook), Playwright (e2e / a11y), xunit (.NET)
+  - CI/CD: GitHub Actions (7 workflows: `ci.yml`, `codeql.yml`, `deploy-site.yml`, `lumio-board-sync.yml`, `nextjs.yml`, `nightly.yml`, `release.yml`)
+- **Directory structure (top-2):**
   ```
-  Electron shell (lumio-desktop)
-      └── Embedded .NET 10 API (Lumio.Api) — bindt op 127.0.0.1:5123
-      └── Gehost Next.js webapp (lumio-web) — renderert in Electron renderer-process
+  Lumio/
+  ├── data/                   # Runtime data (profiles, logs, videos)
+  ├── devdocs/                # Developer-facing ADRs and operational docs
+  ├── dist/                   # Build outputs (desktop installer)
+  ├── docs/                   # Audit system documents (contracts, guardrails, decisions)
+  ├── documentation/          # User manual + technical manual (EN + NL)
+  ├── site/                   # Marketing/info site (Next.js, Playwright e2e)
+  ├── src/
+  │   ├── lumio-desktop/      # Electron shell (TypeScript)
+  │   ├── lumio-web/          # Next.js frontend (TypeScript, Storybook)
+  │   └── Lumio.Api/          # ASP.NET Core API (C#, .NET 10)
+  │   └── Lumio.Api.Tests/    # API unit tests (xunit)
+  ├── tools/                  # Build scripts, whitelabel config
+  ├── start-dev.ps1           # Dev environment launcher
+  └── lumio.slnx              # .NET solution file
   ```
-  Lokale communication via HTTP naar localhost API. Geen cloud-afhankelijkheden in de app zelf.
-
-- **Mapstructuur (top-2):**
-  ```
-  src/
-    Lumio.Api/           .NET 10 API (Controllers, Data, Domain, Dtos, Services, Migrations, Rules, Validators)
-    Lumio.Api.Tests/     .NET testproject (31 CS bestanden)
-    lumio-desktop/       Electron shell (src/main/, src/preload/)
-    lumio-web/           Next.js 16 webapp
-      src/
-        app/             Next.js App Router (authenticated route group)
-        components/      UI componenten (ui/, security/, help/, layout/, auth/, …)
-        content/         Statische (markdown?) content
-        hooks/           Custom React hooks
-        i18n/            Internationalisation configuratie
-        lib/             Utility functies, API client, schemas
-        stores/          Zustand state stores
-        stories/         Storybook root stories
-        styles/          Globale CSS
-        types/           TypeScript type definities
-  data/
-    profiles.json        Lokale data (testprofiel?)
-    videos/temp/
-  devdocs/               ADRs, technische beslisdocumenten
-  documentation/         User manuals + Technical manuals (mappen aanwezig, inhoud leeg)
-  site/                  Marketing website (Next.js statische export, lumio-legacy.nl)
-  tools/                 Build scripts + Whitelabel configuratie
-  .github/
-    workflows/           CI, CodeQL, release, nightly, Chromatic, board-sync, deploy-site
-    skills/              Agent skill files
-  ```
-
-- **CI/CD aanwezig:** Ja — GitHub Actions
-  - `ci.yml` — lint / typecheck / unit tests (coverage ≥70%) / build / npm audit
-  - `codeql.yml` — security scanning
-  - `release.yml` — release workflow
-  - `nightly.yml` — nightly build
-  - `nextjs.yml` — Next.js build
-  - `chromatic.yml` → `chromatic.config.json` — visuele regressietesting
-  - `lumio-board-sync.yml` — GitHub project bord synchronisatie
-  - `deploy-site.yml` — marketing site deployen naar GitHub Pages
-
-- **Tests aanwezig:** Ja
-  - Frontend unit tests: Vitest (12 testbestanden in `src/lumio-web/src/`)
-  - Frontend Storybook tests: Vitest `storybook` project
-  - Backend unit/integratietests: .NET testproject `Lumio.Api.Tests/` (31 bestanden)
-  - E2E tests: Playwright (`site/tests/`, incl. `a11y.spec.ts` en `smoke.spec.ts`)
-  - Coverage gate frontend: ≥70% voor lib/ en stores/ (afdwongen in CI)
-
-- **Technische schuldindicatoren:**
-  - 1 TODO (`src/lumio-web/src/app/layout.tsx:41` — "TODO: migrate to SSR (remove output:\"export\") to enable nonce-based strict CSP")
-  - 0 FIXMEs
-  - 0 HACs
-  
-- **Opvallende bevindingen (scope-overdracht):**
-  - `OUT_OF_SCOPE: TECHNIEK` — SQLCipher-database versleuteling aanwezig (SECurity Agent)
-  - `OUT_OF_SCOPE: TECHNIEK` — DPIA document aanwezig (`devdocs/dpia-bijzondere-categorieen.md`) — verwijzing naar Data Architect + Security Architect
-  - `OUT_OF_SCOPE: TECHNIEK` — `MigratieDbHelper.EnsureSchuldKolommenAsync` (ADR-001) is tijdelijke DDL-brug — openstaand cleanup-item
-  - `OUT_OF_SCOPE: UX` — `devdocs/shamir-ux-test-protocol.md` beschrijft een formeel UX-testprotocol dat nog niet is uitgevoerd — directe input voor UX Researcher
+- **CI/CD present:** Yes — GitHub Actions (`ci.yml`) — **CURRENTLY DISABLED** (`workflow_dispatch` only; comment: "CI disabled until further notice (billing/spending limit — 2026-03-02)")
+- **Tests present:** Yes
+  - Vitest unit tests (`src/lumio-web/`)
+  - Vitest Storybook interaction tests
+  - Playwright e2e + a11y tests (`site/tests/`)
+  - xunit API tests (`src/Lumio.Api.Tests/`)
+- **Technical debt indicators:** 1 TODO (source: `src/lumio-web/src/app/layout.tsx` — "TODO: migrate to SSR (remove output:'export') to enable nonce-based strict CSP"), 0 FIXMEs, 0 HACKs
+- **Notable findings:**
+  - Project is bilingual (Dutch/English) — `next-intl` used for i18n; `messages/` directory in lumio-web
+  - Whitelabel corporate distribution supported (`tools/whitelabel/`)
+  - SQLCipher used for local encrypted SQLite database (privacy-first, offline-first)
+  - Shamir's Secret Sharing implemented for heir access (`devdocs/shamir-ux-test-protocol.md`)
+  - PostHog analytics documented (`devdocs/posthog-analytics.md`)
+  - DPIA filed for special categories of data (`devdocs/dpia-bijzondere-categorieen.md`)
+  - Sprint history visible in `docs/decisions.md` — completed sprints: SP-01 through SP-UX-03
+  - Storybook foundations (colors, typography, spacing, motion, borders, z-index) serve as partial design system
+  - Open TODO: CSP hardening (nonce-based strict CSP blocked by static export mode)
 
 ---
 
-## TOOLING STATUS RAPPORT
+## TOOLING STATUS REPORT
 
-| Tool | Status | Versie | Categorie | Blokkeert |
-|------|--------|--------|-----------|-----------|
-| Bestandssysteem (lees) | BESCHIKBAAR | — | A | Fase 1–4 + Fase 5 |
-| Bestandssysteem (schrijf) | BESCHIKBAAR | — | B | Alle fasen |
-| Git (read-only) | BESCHIKBAAR | 2.48.1.windows.1 | A | — |
-| Node.js | BESCHIKBAAR | v22.14.0 | C | Fase 5 (frontend build) |
-| npm | BESCHIKBAAR | 10.9.2 | C | Fase 5 (frontend packages) |
-| .NET SDK | BESCHIKBAAR | 10.0.103 | C | Fase 5 (backend build/test) |
-| Vitest | BESCHIKBAAR | ^4.0.18 (package.json) | C | Fase 5 (frontend tests) |
-| Playwright | BESCHIKBAAR | ^1.58.2 (package.json) | C | Fase 5 (E2E tests) |
-| ESLint | BESCHIKBAAR | ^10.0.2 (package.json) | C | Fase 5 (lint) |
-| Storybook | BESCHIKBAAR | ^10.2.10 (package.json) | C | Fase 5 (component tests) |
-| TruffleHog | TOOL_UNAVAILABLE | — | D | Fase 5 (secret scan merge-gate) |
+| Tool | Status | Version | Category | Blocks |
+|------|--------|---------|----------|--------|
+| File system (read) | AVAILABLE | - | A | — |
+| Git (read-only) | AVAILABLE | 2.48.1.windows.1 | A | — |
+| File system (write) | AVAILABLE | - | B | — |
+| dotnet CLI | AVAILABLE | 10.0.103 | C | — |
+| Node.js | AVAILABLE | v22.14.0 | C | — |
+| npm | AVAILABLE | 10.9.2 | C | — |
+| Vitest | AVAILABLE | ~3.2.4 | C | — |
+| dotnet test (xunit) | AVAILABLE | .NET 10 integrated | C | — |
+| Playwright | AVAILABLE | see playwright.config.ts | C | — |
+| ESLint | AVAILABLE | see eslint.config.mjs | C | — |
+| electron-builder | AVAILABLE | ^26.0.12 | C | Phase 5 packaging |
+| TruffleHog secret scan | TOOL_UNAVAILABLE | CI disabled | C | Phase 5 PR/Review |
+| Canva Connect API | TOOL_UNAVAILABLE | SKIPPED_NO_TOKEN | D | — |
 
-### TOOLING_GAP items (blokkeert Fase 5 — NIET Fase 1–4)
+### TOOLING_GAP items (block Phase 5 only)
 
-- `TOOLING_GAP: TruffleHog` — niet aanwezig op het lokale systeem. De PR/Review Agent zal de secret scan stap overslaan en `TOOL_UNAVAILABLE: TruffleHog` rapporteren bij elke PR. Escaleer naar gebruiker vóór start van Fase 5.
+| Gap | Phase 5 implication |
+|-----|---------------------|
+| `TOOLING_GAP: TruffleHog` — CI disabled since 2026-03-02 | Secret scan in Phase 5 PR/Review Agent must be run locally via CLI or CI must be re-enabled before Phase 5 |
 
----
-
-## OPENSTAANDE INSUFFICIENT_DATA ITEMS
-
-De volgende items zijn niet beschikbaar en worden als context meegegeven aan downstream agents:
-
-| ID | Item | Impact |
-|----|------|--------|
-| ID-001 | Geen user research documenten aangetroffen buiten het Shamir UX testprotocol | UX Researcher heeft beperkte empirische input — valt terug op codebase + testprotocol |
-| ID-002 | User manual NL/EN — mappen leeg | Documentation Agent kan geen bestaande manual bijwerken; moet van scratch |
-| ID-003 | Technical manual NL/EN — mappen leeg | Idem |
-| ID-004 | GitHub repository URL niet aangeleverd | GitHub Integration Agent kan issues niet automatisch publiceren zonder URL |
-| ID-005 | Business requirements niet aangetroffen als apart document | Fase 2 agents redeneren vanuit README + codebase |
-| ID-006 | Brand guidelines niet aangetroffen | Relevant bij toekomstige MARKETING audit; buiten huidige scope |
-| ID-007 | KPI-baseline buiten activatieratio niet gedocumenteerd | KPI Agent heeft beperkte referentiepunten |
+**RECOMMENDATION:** Re-enable GitHub Actions (`ci.yml` trigger: push/PR) before Phase 5 begins. Current billing limit must be resolved.
 
 ---
 
-## AANBEVOLEN AANVULLENDE INPUT
+## OPEN INSUFFICIENT_DATA ITEMS (for downstream agents)
 
-De volgende aanvullingen zouden de kwaliteit van de Fase 2 en Fase 3 analyse significant verbeteren:
+| ID | Item | Phase |
+|----|------|-------|
+| ID-ONB-01 | Business revenue model / pricing strategy | Phase 1 |
+| ID-ONB-02 | Number of active users / installs / adoption metrics | Phase 1 |
+| ID-ONB-03 | Competitive analysis / market positioning | Phase 1 |
+| ID-ONB-04 | KPI definitions (business and product) | Phase 1 |
+| ID-ONB-05 | Stakeholder business requirements document | Phase 1 |
+| ID-ONB-06 | User research / usability test results | Phase 3 |
+| ID-ONB-07 | Brand guidelines (formal document) | Phase 4 |
+| ID-ONB-08 | CI/CD pipeline currently disabled — build status UNKNOWN | Phase 2 |
+| ID-ONB-09 | OpenAPI specification file location (may be dynamically generated) | Phase 2 |
 
-1. **GitHub repository URL** — voor de GitHub Integration Agent (Issues publiceren op "Lumio Workitems")
-2. **Eerdere auditresultaten** — git-history vermeldt REEVALUATE TECHNIEK UX v1 en v2; als deze bestanden bestaan, graag aanwijzen voor injectie als context bij Fase 2 en 3 agents
-3. **Gebruikerstestresultaten Shamir UX** — het testprotocol (`devdocs/shamir-ux-test-protocol.md`) is gedocumenteerd maar resultaten ontbreken; uitvoering vóór UX Researcher analyse verhoogt nauwkeurigheid aanzienlijk
-4. **Productroadmap** — helpt de Software Architect bij het prioriteren van architectuurschulden
-5. **Bekende bugrapportages / klachten** — versterkt de UX Researcher analyse
+---
+
+## RECOMMENDED ADDITIONAL INPUT
+
+The following documents, if provided before the relevant phase starts, would significantly improve analysis quality:
+
+1. **Business/pricing document** — covers revenue model, pricing tiers, B2B vs B2C split, whitelabel commercial terms
+2. **User personas and/or research reports** — to ground UX recommendations in validated user data
+3. **Formal brand guidelines** — color palette rationale, typography choices, tone of voice guide
+4. **KPI dashboard or definitions file** — business metrics, activation targets, retention goals
+5. **Re-enabled CI** — allows Phase 2 (DevOps) and Phase 5 agents to verify build/test status live
+
+These are RECOMMENDED — they do NOT block the audit cycle from proceeding.
 
 ---
 
 ## HANDOFF CHECKLIST — Onboarding Agent
 
-- [x] Input Inventarisatie volledig ingevuld (geen lege rijen zonder markering)
-- [x] Minimale input validatie geslaagd (alle VERPLICHT items ✓)
-- [x] ONBOARDING_BLOCKED items: geen — cyclus kan starten
-- [x] Codebase Scan Samenvatting aanwezig
-- [x] Geen secrets / credentials gelezen of gelogd
-- [x] `GITHUB_PROJECT_NAME` opgevraagd bij gebruiker en opgeslagen in session state: "Lumio Workitems"
-- [x] Tooling verificatie uitgevoerd conform tooling-contract.md
-- [x] TOOLING_GAP items gedocumenteerd (TruffleHog — blokkeert Fase 5, niet Fase 1–4)
-- [x] Session State aangemaakt op `docs/session/session-state.json`
-- [x] Onboarding Output Document aanwezig op `docs/onboarding/onboarding-output.md`
-- [x] Status: **ONBOARDING_COMPLETE** — klaar voor Fase 2 (Software Architect)
+- [x] Step 0 complete: questionnaire answer scan performed (`NO_PRIOR_QUESTIONNAIRES`)
+- [x] Questionnaire Agent answer loading workflow: NOT NEEDED (no prior questionnaires)
+- [x] `questionnaire_answer_summary` written to session-state.json
+- [x] Input Inventory fully filled in (all empty rows marked with `INSUFFICIENT_DATA:`)
+- [x] Minimum input validation passed (all REQUIRED items ✓)
+- [x] ONBOARDING_BLOCKED items: NONE
+- [x] Codebase Scan Summary present
+- [x] No secrets / credentials read or logged
+- [x] `GITHUB_PROJECT_NAME` requested from user and saved in session state (`Lumio Board`)
+- [x] `canva_api_token` saved in session state (`""` — SKIP)
+- [x] Tooling verification performed per tooling-contract.md
+- [x] TOOLING_GAP items documented: `TruffleHog` (CI disabled) — blocks Phase 5 PR/Review secret scan
+- [x] Session State created at `docs/session/session-state.json`
+- [x] Onboarding Output Document present at `docs/onboarding/onboarding-output.md`
+- [x] Status: **ONBOARDING_COMPLETE** — ready for Phase 1
+
+---
+
+> **Handoff to Orchestrator:** ONBOARDING_COMPLETE. No ONBOARDING_BLOCKED items. Phase 1 may start immediately.
+> Next agent: **01-business-analyst**
+> All INSUFFICIENT_DATA items (ID-ONB-01 through ID-ONB-09) passed as context.

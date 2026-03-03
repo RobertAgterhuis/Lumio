@@ -43,4 +43,9 @@ public interface IProfileService
 
     /// <summary>Update the active profile's photo thumbnail (stored in profiles.json).</summary>
     void UpdateActiveProfileThumbnail(string? base64Thumbnail);
+
+    /// <summary>
+    /// Persist the Shamir threshold to profiles.json so it can be read by heirs before DB unlock.
+    /// </summary>
+    void UpdateShamirDrempel(Guid profileId, int drempel);
 }

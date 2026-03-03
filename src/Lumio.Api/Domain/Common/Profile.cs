@@ -18,4 +18,11 @@ public class Profile
     /// Stored in profiles.json so it's available before DB unlock.
     /// </summary>
     public string? FotoThumbnail { get; set; }
+
+    /// <summary>
+    /// The Shamir threshold (minimum number of shares required to reconstruct).
+    /// Stored in profiles.json (unencrypted) so heirs can read it before DB unlock.
+    /// The threshold value itself is not sensitive — it is operationally necessary for heirs.
+    /// </summary>
+    public int? ShamirDrempel { get; set; }
 }

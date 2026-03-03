@@ -13,7 +13,11 @@ public class DatabaseUnlockMiddleware
         "/api/v1/backup/restore",
         "/swagger",
         // SP-10-COR-001: endpoint is openbaar — erfgenamen moeten de drempel weten vóór ontgrendeling
-        "/api/v1/shamir/drempel"
+        "/api/v1/shamir/drempel",
+        // BUG-SHAMIR-001 fix: het ontgrendelingsendpoint moet bereikbaar zijn VOORDAT de DB ontgrendeld is —
+        // de erfgenaam kan per definitie niet inloggen als de middleware al een 423 retourneert.
+        // Veilig: het endpoint valideert de ingevoerde shares zelf via Shamir-reconstructie + PBKDF2-vergelijking.
+        "/api/v1/shamir/reconstrueer-en-ontgrendel"
     ];
 
     /// <summary>

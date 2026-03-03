@@ -17,6 +17,7 @@ interface ErfgenaamItemProps {
   onShare: () => void;
   onAssignAsset: () => void;
   onDeleteToewijzing: (id: string) => void;
+  isReadOnly?: boolean;
   translations: {
     relatie: (key: string) => string;
     entityType: (key: string) => string;
@@ -41,6 +42,7 @@ export function ErfgenaamItem({
   onShare,
   onAssignAsset,
   onDeleteToewijzing,
+  isReadOnly = false,
   translations,
 }: ErfgenaamItemProps) {
   const { relatie, entityType, geenBezittingen, toewijzenKnop, toegewezenBezittingen, bezitToewijzen, pdfDownloaden, deelOverzicht } = translations;
@@ -69,14 +71,16 @@ export function ErfgenaamItem({
               Share
             </Badge>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onAssignAsset}
-            title={bezitToewijzen}
-          >
-            <Package className="h-3 w-3" />
-          </Button>
+          {!isReadOnly && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onAssignAsset}
+              title={bezitToewijzen}
+            >
+              <Package className="h-3 w-3" />
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -93,20 +97,24 @@ export function ErfgenaamItem({
           >
             <Share2 className="h-3 w-3" />
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onEdit}
-          >
-            <Pencil className="h-3 w-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onDelete}
-          >
-            <Trash2 className="h-3 w-3 text-danger" />
-          </Button>
+          {!isReadOnly && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onEdit}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onDelete}
+              >
+                <Trash2 className="h-3 w-3 text-danger" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
       {isExpanded && (
@@ -114,12 +122,14 @@ export function ErfgenaamItem({
           {toewijzingen.length === 0 ? (
             <p className="text-xs text-muted-foreground italic">
               {geenBezittingen}{" "}
-              <button
-                className="underline text-primary"
-                onClick={onAssignAsset}
-              >
-                {toewijzenKnop}
-              </button>
+              {!isReadOnly && (
+                <button
+                  className="underline text-primary"
+                  onClick={onAssignAsset}
+                >
+                  {toewijzenKnop}
+                </button>
+              )}
             </p>
           ) : (
             <div className="space-y-2">
@@ -136,13 +146,15 @@ export function ErfgenaamItem({
                       {tw.instructies && ` — ${tw.instructies}`}
                     </p>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDeleteToewijzing(tw.id)}
-                  >
-                    <Trash2 className="h-3 w-3 text-danger" />
-                  </Button>
+                  {!isReadOnly && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDeleteToewijzing(tw.id)}
+                    >
+                      <Trash2 className="h-3 w-3 text-danger" />
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>

@@ -47,6 +47,7 @@ interface ShamirDialogProps {
     stap4Titel: string;
     stap4NogTeKopieren: (n: number) => string;
     stap4AlleGekopieerd: string;
+    stap4CodeFormaat: string;
     volgende: string;
     vorige: string;
     stapIndicator: (huidig: number, totaal: number) => string;
@@ -336,6 +337,9 @@ export function ShamirDialog({
                   <code className="block w-full break-all rounded bg-muted p-2 font-mono text-xs">
                     {share.waarde}
                   </code>
+                  <p className="text-xs text-muted-foreground">
+                    {t.stap4CodeFormaat}
+                  </p>
                 </div>
               ))}
             </div>

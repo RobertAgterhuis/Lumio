@@ -1,52 +1,53 @@
-# Architectuur Guardrails – Fase 2 Agents
-> Van toepassing op: Software Architect, Senior Developer, DevOps Engineer, Security Architect, Data Architect
+```markdown
+# Architecture Guardrails – Phase 2 Agents
+> Applies to: Software Architect, Senior Developer, DevOps Engineer, Security Architect, Data Architect, Legal Counsel
 
 ---
 
-## DOMEIN: TECHNIEK & ARCHITECTUUR
+## DOMAIN: TECHNOLOGY & ARCHITECTURE
 
-### G-ARCH-01 – Domain-Driven Design Verplicht
-**Regel:** Architectuurbevindingen en aanbevelingen MOETEN worden geëvalueerd in de context van DDD-principes (Bounded Contexts, Aggregates, Domain Events).  
-**Bronvereiste:** Elke architectuurclaim moet herleidbaar zijn naar een concreet artefact: code, diagram, of ADR.
+### G-ARCH-01 – Domain-Driven Design Mandatory
+**Rule:** Architecture findings and recommendations MUST be evaluated in the context of DDD principles (Bounded Contexts, Aggregates, Domain Events).  
+**Source requirement:** Every architecture claim must be traceable to a concrete artifact: code, diagram, or ADR.
 
 ### G-ARCH-02 – Infrastructure as Code Only
-**Regel:** Infra-aanbevelingen mogen UITSLUITEND betrekking hebben op IaC-gebaseerde oplossingen. Manual provisioning wordt als anti-pattern gedocumenteerd.  
-**Verificatie:** Controleer of bestaande infra beschreven is in IaC (Terraform, Bicep, Pulumi, CloudFormation). Zo niet: markeer als technische schuld.
+**Rule:** Infrastructure recommendations may ONLY relate to IaC-based solutions. Manual provisioning is documented as an anti-pattern.  
+**Verification:** Verify whether existing infrastructure is described in IaC (Terraform, Bicep, Pulumi, CloudFormation). If not: mark as technical debt.
 
 ### G-ARCH-03 – No Shared Mutable State
-**Regel:** Architectuurpatronen die shared mutable state introduceren worden altijd geflagged als high-risk, met expliciete motivatie en mitigatiestrategie.
+**Rule:** Architecture patterns that introduce shared mutable state are always flagged as high-risk, with explicit motivation and mitigation strategy.
 
-### G-ARCH-04 – Tech Debt Score Onderbouwing
-**Regel:** De tech-debt score (0–100) mag NOOIT worden ingeschat zonder expliciete criteria.  
-**Criteria vereist:** Elke scoredimensie (coupling, testbaarheid, documentatie, modulariteit, security) moet apart beoordeeld worden.  
-**Verbod:** Gebruik geen "gut feeling" scores.
+### G-ARCH-04 – Tech Debt Score Substantiation
+**Rule:** The tech-debt score (0–100) may NEVER be estimated without explicit criteria.  
+**Criteria required:** Each score dimension (coupling, testability, documentation, modularity, security) must be assessed separately.  
+**Prohibition:** Do not use "gut feeling" scores.
 
-### G-ARCH-05 – CI/CD Maturity Verplicht Gedocumenteerd
-**Regel:** DevOps Engineer documenteert ALTIJD de huidige CI/CD-volwassenheid op basis van aangeleverde pipeline-configuraties, niet op basis van mondelinge beschrijvingen.  
-**Maturity levels:** Level 0 (geen CI/CD) t/m Level 5 (volledig geautomatiseerd, zelfherstellend).
+### G-ARCH-05 – CI/CD Maturity Mandatory Documentation
+**Rule:** DevOps Engineer ALWAYS documents the current CI/CD maturity based on provided pipeline configurations, not on verbal descriptions.  
+**Maturity levels:** Level 0 (no CI/CD) through Level 5 (fully automated, self-healing).
 
 ### G-ARCH-06 – Observability Coverage
-**Regel:** De analyse van beschikbare observability (metrics, logs, traces, alerts) is VERPLICHT. Ontbrekende dimensies worden als gap geregistreerd.
+**Rule:** Analysis of available observability (metrics, logs, traces, alerts) is MANDATORY. Missing dimensions are registered as a gap.
 
-### G-ARCH-07 – Code Kwaliteit Verificatie
-**Regel:** Senior Developer baseert kwaliteitsuitspraken UITSLUITEND op daadwerkelijk geanalyseerde code.  
-**Verbod:** Geen kwaliteitsuitspraken op basis van bestandsnamen, projectstructuur, of README-beschrijvingen.  
-**Minimale analyse:** SOLID-principes, coupling, cohesion, testdekking (op basis van testbestanden of coverage-rapportages).
+### G-ARCH-07 – Code Quality Verification
+**Rule:** Senior Developer bases quality statements EXCLUSIVELY on actually analyzed code.  
+**Prohibition:** No quality statements based on filenames, project structure, or README descriptions.  
+**Minimum analysis:** SOLID principles, coupling, cohesion, test coverage (based on test files or coverage reports).
 
-### G-ARCH-08 – Data Lineage Gedocumenteerd
-**Regel:** Data Architect documenteert ALTIJD de bron-naar-bestemming lineage voor de primaire datadomeinen.  
-**Verbod:** Geen data-aanbevelingen zonder volledig beeld van het bestaande datamodel.
+### G-ARCH-08 – Data Lineage Documented
+**Rule:** Data Architect ALWAYS documents the source-to-destination lineage for the primary data domains.  
+**Prohibition:** No data recommendations without a complete picture of the existing data model.
 
-### G-ARCH-09 – Scalability Claim Onderbouwing
-**Regel:** Elke scalability-bewering (bijv. "dit systeem schaalt niet goed") MOET onderbouwd worden met:  
-- Concrete observatie (code, config, of meetdata)  
-- Verwacht gedrag onder verhoogde load  
-- Impact als de schaalbaarheidsvraag zich voordoet
+### G-ARCH-09 – Scalability Claim Substantiation
+**Rule:** Every scalability claim (e.g. "this system does not scale well") MUST be substantiated with:  
+- Concrete observation (code, config, or measurement data)  
+- Expected behavior under increased load  
+- Impact if the scalability constraint occurs
 
 ---
 
-## FASE 2 HANDOFF VEREISTEN
-Output is een gecombineerd JSON/Markdown document met:
+## PHASE 2 HANDOFF REQUIREMENTS
+Output is a combined JSON/Markdown document with:
 - `architecture_gaps[]`
 - `tech_debt_score{dimensions: {}, total: 0-100}`
 - `scalability_risks[]`
@@ -55,4 +56,6 @@ Output is een gecombineerd JSON/Markdown document met:
 - `observability_gaps[]`
 - `data_lineage_map{}`
 
-Elke ontbrekende sectie blokkeert de start van Fase 3.
+Any missing section blocks the start of Phase 3.
+
+```

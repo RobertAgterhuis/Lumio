@@ -104,6 +104,7 @@ const TRANSLATIONS = {
   stap4NogTeKopieren: (n: number) =>
     `${n} ${n === 1 ? "code nog te kopiëren" : "codes nog te kopiëren"}`,
   stap4AlleGekopieerd: "✓ Alle codes gekopieerd",
+  stap4CodeFormaat: "Geef de volledige code door inclusief het cijfer vóór het streepje (bijv. 01-XXXX). Het getal is vereist voor het samenstellen van het wachtwoord.",
   volgende: "Volgende",
   vorige: "Vorige",
   stapIndicator: (huidig: number, totaal: number) => `Stap ${huidig} van ${totaal}`,

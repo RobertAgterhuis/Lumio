@@ -9,6 +9,7 @@
     "verwijderenMislukt": "Verwijderen mislukt.",
     "ja": "Ja",
     "nee": "Nee",
+    "disclaimer": "<strong>Let op:</strong> Een rechtsgeldig testament vereist een <strong>notaris</strong>. Dit document is geen juridisch bindend testament, maar een persoonlijk overzicht voor uw nabestaanden.",
     "legitimairePortie": {
       "titel": "Mogelijke schending legitimaire portie",
       "beschrijving": "Op basis van {aantalKinderen, plural, one {# kind} other {# kinderen}}{heeftPartner, select, true { en een partner} other {}} bedraagt de minimale legitimaire portie per kind {percentage}% van de nalatenschap (BW Boek 4, art. 4:63-4:69).",

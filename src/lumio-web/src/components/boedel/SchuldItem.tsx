@@ -14,8 +14,12 @@ interface SchuldItemProps {
 
 export function SchuldItem({ schuld, onEdit, onDelete }: SchuldItemProps) {
   const t = useTranslations("boedel");
+  const tEnum = useTranslations("enums");
   const locale = useLocale();
   const currencyLocale = locale === "en" ? "en-NL" : "nl-NL";
+  function toCamelCase(s: string): string {
+    return s.split(" ").map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join("");
+  }
 
   return (
     <div className="flex items-center justify-between rounded-md border p-3">
@@ -25,7 +29,7 @@ export function SchuldItem({ schuld, onEdit, onDelete }: SchuldItemProps) {
         </Badge>
         <div>
           <p className="text-sm font-medium">{schuld.schuldeiser}</p>
-          <p className="text-xs text-muted-foreground">{schuld.type}{schuld.referentie ? ` — ${schuld.referentie}` : ""}</p>
+          <p className="text-xs text-muted-foreground">{tEnum(`schuldType.${toCamelCase(schuld.type)}` as Parameters<typeof tEnum>[0])}{schuld.referentie ? ` — ${schuld.referentie}` : ""}</p>
           {schuld.bezitNaam && (
             <Badge variant="outline" className="mt-1 gap-1 text-xs">
               <Home className="h-3 w-3" />

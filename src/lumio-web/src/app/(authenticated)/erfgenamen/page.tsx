@@ -156,6 +156,7 @@ export default function ErfgenamenPage() {
     stap4Titel: t("shamir.stap4Titel"),
     stap4NogTeKopieren: (n: number) => t("shamir.stap4NogTeKopieren", { n }),
     stap4AlleGekopieerd: t("shamir.stap4AlleGekopieerd"),
+    stap4CodeFormaat: t("shamir.stap4CodeFormaat"),
     volgende: t("shamir.volgende"),
     vorige: t("shamir.vorige"),
     stapIndicator: (huidig: number, totaal: number) => t("shamir.stapIndicator", { huidig, totaal }),
@@ -201,9 +202,11 @@ export default function ErfgenamenPage() {
               <KeyRound className="h-4 w-4 mr-2" /> {t("noodcodesVerdelen")}
             </Button>
           )}
-          <Button onClick={() => state.openDialog()}>
-            <Plus className="h-4 w-4 mr-2" /> {t("toevoegen")}
-          </Button>
+          {!isReadOnly && (
+            <Button onClick={() => state.openDialog()}>
+              <Plus className="h-4 w-4 mr-2" /> {t("toevoegen")}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -266,6 +269,7 @@ export default function ErfgenamenPage() {
                   onShare={() => state.handleDeelMetErfgenaam(e.id, e.voornaam)}
                   onAssignAsset={() => state.openToewijzingDialog(e.id)}
                   onDeleteToewijzing={state.handleDeleteToewijzing}
+                  isReadOnly={isReadOnly}
                   translations={itemTranslations}
                 />
               ))}

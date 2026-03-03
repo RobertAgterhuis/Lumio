@@ -26,6 +26,7 @@ sealed class FakePdfService : ILumioPdfService
     public Task<byte[]> GenerateErfgenaamPdf(Guid id)   => Task.FromResult(new byte[] { 0x25, 0x50, 0x44, 0x46 });
     public Task<byte[]> GenerateExecuteurRapportPdf()    => Task.FromResult(new byte[] { 0x25, 0x50, 0x44, 0x46 });
     public Task<byte[]> GenerateNotarisPdf()             => Task.FromResult(new byte[] { 0x25, 0x50, 0x44, 0x46 });
+    public Task<byte[]> GenerateNabestaandenInstructiePdf() => Task.FromResult(new byte[] { 0x25, 0x50, 0x44, 0x46 });
 }
 
 sealed class FakeExportStatusService : IExportStatusService

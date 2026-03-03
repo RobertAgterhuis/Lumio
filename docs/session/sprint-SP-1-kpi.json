@@ -1,0 +1,105 @@
+{
+  "sprint_id": "SP-1",
+  "sprint_goal": "Stabilize, Unblock, Comply",
+  "sprint_branch": "feature/sprint-1-stabilize-unblock-comply",
+  "sprint_date": "2026-03-03",
+  "generated_at": "2026-03-03T23:59:00Z",
+  "agent": "29-kpi-agent",
+
+  "delivery": {
+    "stories_planned": 17,
+    "stories_delivered": 14,
+    "stories_vervallen": 3,
+    "stories_blocked": 0,
+    "delivery_rate_pct": 100,
+    "notes": "3 stories VERVALLEN by explicit decisions (DEC-109, DEC-110) — not failures. Effective delivery rate 100% of actionable scope.",
+    "vervallen_stories": [
+      { "id": "SP-1-002", "issue": 133, "reason": "DEC-110: no new CI checks until further notice (billing gate)" },
+      { "id": "SP-1-007", "issue": 142, "reason": "DEC-110: CI billing resolution blocked externally" },
+      { "id": "SP-1-017", "issue": 152, "reason": "DEC-109: Plausible.io removed from solution entirely (scope change)" }
+    ],
+    "delivered_stories": [
+      { "id": "SP-1-001", "issue": 140, "title": "TruffleHog pre-push secret scan hook" },
+      { "id": "SP-1-003", "issue": 138, "title": "Privacy policy page (/privacy) — AVG art. 13" },
+      { "id": "SP-1-004", "issue": 137, "title": "Euthanasie / testament / donor legal disclaimers" },
+      { "id": "SP-1-005", "issue": 132, "title": "Design tokens + brand guidelines (BLOCKING-P3-002)" },
+      { "id": "SP-1-006", "issue": 141, "title": "Audit log rotation automation (GDPR art. 5)" },
+      { "id": "SP-1-008", "issue": 143, "title": "Sidebar heading hierarchy fix (SP-UX-02-006 / DEC-107)" },
+      { "id": "SP-1-009", "issue": 144, "title": "Session timeout implementation" },
+      { "id": "SP-1-010", "issue": 145, "title": "Video encryption (filesystem, Q-09-001 resolved)" },
+      { "id": "SP-1-011", "issue": 146, "title": "AVG consent text rewrite B1-level (BLOCKING-P3-003)" },
+      { "id": "SP-1-012", "issue": 147, "title": "Revenue model documentation (DEC-112)" },
+      { "id": "SP-1-013", "issue": 148, "title": "Shamir UX fixes: drempel pre-unlock, code format hint, copy text" },
+      { "id": "SP-1-014", "issue": 149, "title": "PostHog removal from site/ (DEC-102 scope)" },
+      { "id": "SP-1-015", "issue": 150, "title": "OpenAPI client generation + swagger fix" },
+      { "id": "SP-1-016", "issue": 151, "title": "BUG-SHAMIR-001: AllowedPrefixes whitelist fix + REC-SEC-005 test" }
+    ]
+  },
+
+  "bugs": {
+    "total_found_in_sprint": 3,
+    "total_fixed_in_sprint": 3,
+    "critical": [
+      {
+        "id": "BUG-SHAMIR-001",
+        "description": "DatabaseUnlockMiddleware returned 423 for /api/v1/shamir/reconstrueer-en-ontgrendel — heirs could never unlock the vault",
+        "story": "SP-1-016",
+        "fix_commit": "2eb7982",
+        "regression_test": "DatabaseUnlockMiddlewareTests.LockedDatabase_AllowedPrefix_PassesThrough"
+      }
+    ],
+    "high": [
+      {
+        "id": "BUG-TRANSLATIONS-001",
+        "description": "Translation keys missing from runtime split message files (messages/nl|en/*.json) — prior edits went to unused monolithic messages/nl.json",
+        "story": "SP-1-013 follow-up",
+        "fix_commit": "7d89c10"
+      },
+      {
+        "id": "BUG-READONLY-001",
+        "description": "ErfgenaamItem edit/delete/assign buttons active in heir read-only mode — no isReadOnly prop",
+        "story": "SP-1-013 follow-up",
+        "fix_commit": "7d89c10"
+      }
+    ]
+  },
+
+  "quality": {
+    "backend_tests_total": 423,
+    "backend_tests_passed": 423,
+    "backend_tests_failed": 0,
+    "backend_test_pass_rate_pct": 100,
+    "middleware_whitelist_tests": 14,
+    "middleware_whitelist_pass_rate_pct": 100,
+    "frontend_build": "PASS",
+    "frontend_type_errors": 0,
+    "secret_scan": "PASS",
+    "secret_scan_tool": "TruffleHog pre-push hook (SP-1-001)"
+  },
+
+  "blockers_resolved": [
+    { "id": "BLOCKING-P3-001", "description": "Shamir heir unlock critical bug — FIXED BUG-SHAMIR-001" },
+    { "id": "BLOCKING-P3-002", "description": "Design tokens and brand guidelines missing — DELIVERED SP-1-005" },
+    { "id": "BLOCKING-P3-003", "description": "AVG consent text C1-level — REWRITTEN to B1 SP-1-011" },
+    { "id": "COMPLIANCE_RISK-003", "description": "Legal disclaimers for euthanasie/donor/testament — DELIVERED SP-1-004" },
+    { "id": "GAP-LEGAL-001", "description": "No privacy policy (AVG art. 13) — DELIVERED SP-1-003" },
+    { "id": "CGAP-004", "description": "Audit log rotation — DELIVERED SP-1-006" }
+  ],
+
+  "blockers_remaining": [
+    { "id": "SYS-RISK-002", "description": "CI/CD disabled — DEC-110 deferred; local TruffleHog hook in place" },
+    { "id": "RISK-MKT-001", "description": "B2C purchase CTA is mailto fallback — no checkout automation; SP-2+ scope" },
+    { "id": "RISK-MKT-003", "description": "Testimonial consent unconfirmed — Q-MKT-B-003 OPEN; PO action required" },
+    { "id": "GAP-A11Y-006", "description": "No automated WCAG tests for 18 authenticated routes — SP-2 scope" }
+  ],
+
+  "security_handoff": {
+    "status": "RESOLVED",
+    "document": "docs/security/security-handoff-context.md",
+    "was": "UPDATE_REQUIRED (DEC-108)",
+    "resolved_at": "2026-03-03T23:59:00Z"
+  },
+
+  "sprint_gate_status": "PASS",
+  "ready_for_merge": true
+}

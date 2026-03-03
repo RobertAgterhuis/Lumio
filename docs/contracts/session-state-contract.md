@@ -1,70 +1,75 @@
+````markdown
 # Contract: Session State
-> Versie 1.0 | Definieert hoe de Orchestrator en agents de voortgang bijhouden en een onderbroken cyclus hervatten
+> Version 1.0 | Defines how the Orchestrator and agents track progress and resume an interrupted cycle
 
 ---
 
-## DOEL
+## PURPOSE
 
-Dit contract definieert:
-1. Het formaat van de session state
-2. Hoe agents de state bijwerken
-3. Hoe een onderbroken sessie wordt gedetecteerd en hervat
-4. Hoe conflicten in state worden opgelost
-
----
-
-## SESSION STATE BESTAND
-
-**Locatie:** `docs/session/session-state.json`
-**Eigenaar:** Uitsluitend de Orchestrator schrijft naar dit bestand. Andere agents leveren state-updates **aan** de Orchestrator via hun HANDOFF CHECKLIST.
+This contract defines:
+1. The format of the session state
+2. How agents update the state
+3. How an interrupted session is detected and resumed
+4. How conflicts in state are resolved
 
 ---
 
-## VOLLEDIG JSON SCHEMA
+## SESSION STATE FILE
+
+**Location:** `docs/session/session-state.json`
+**Owner:** Only the Orchestrator writes to this file. Other agents submit state updates **to** the Orchestrator via their HANDOFF CHECKLIST.
+
+---
+
+## COMPLETE JSON SCHEMA
 
 ```json
 {
   "schema_version": "1.0",
-  "session_id": "string — UUID of [YYYY-MM-DD]T[HH-MM-SS]",
-  "cycle_type": "FULL_AUDIT | FEATURE | REEVALUATE",
+  "session_id": "string — UUID or [YYYY-MM-DD]T[HH-MM-SS]",
+  "cycle_type": "FULL_AUDIT | FEATURE | REEVALUATE | SCOPE_CHANGE",
   "feature_name": "string | null",
-  "github_project_name": "string | null — ingevuld tijdens Onboarding",
+  "github_project_name": "string | null — filled during Onboarding",
   "initiated_at": "ISO 8601",
   "last_updated": "ISO 8601",
 
-  "status": "ONBOARDING | FASE-1 | FASE-2 | FASE-3 | FASE-4 | SYNTHESIS | SPRINT_GATE | FASE-5 | REEVALUATE | COMPLETE | BLOCKED | AWAITING_HUMAN",
+  "status": "ONBOARDING | PHASE-1 | PHASE-2 | PHASE-3 | PHASE-4 | SYNTHESIS | SPRINT_GATE | PHASE-5 | REEVALUATE | COMPLETE | BLOCKED | AWAITING_HUMAN",
 
-  "current_phase": "ONBOARDING | FASE-1 | FASE-2 | FASE-3 | FASE-4 | SYNTHESIS | FASE-5 | null",
-  "current_agent": "string — agent bestandsnaam zonder extensie | null",
+  "current_phase": "ONBOARDING | PHASE-1 | PHASE-2 | PHASE-3 | PHASE-4 | SYNTHESIS | PHASE-5 | null",
+  "current_agent": "string — agent filename without extension | null",
 
-  "completed_phases": ["ONBOARDING", "FASE-1"],
+  "completed_phases": ["ONBOARDING", "PHASE-1"],
   "completed_agents": ["25-onboarding-agent", "01-business-analyst"],
 
   "phase_outputs": {
     "onboarding": "docs/onboarding/onboarding-output.md | null",
-    "fase-1": {
-      "01": "docs/fase-1/01-business-analyst.md | null",
-      "02": "docs/fase-1/02-domain-expert.md | null",
-      "03": "docs/fase-1/03-sales-strategist.md | null",
-      "04": "docs/fase-1/04-financial-analyst.md | null",
-      "critic_risk": "docs/fase-1/critic-risk-validatie.md | null"
+    "phase-1": {
+      "01": "docs/phase-1/01-business-analyst.md | null",
+      "02": "docs/phase-1/02-domain-expert.md | null",
+      "03": "docs/phase-1/03-sales-strategist.md | null",
+      "04": "docs/phase-1/04-financial-analyst.md | null",
+      "34": "docs/phase-1/34-product-manager.md | null",
+      "critic_risk": "docs/phase-1/critic-risk-validation.md | null"
     },
-    "fase-2": {
+    "phase-2": {
       "05": "null",
       "06": "null",
       "07": "null",
       "08": "null",
       "09": "null",
+      "33": "null",
       "critic_risk": "null"
     },
-    "fase-3": {
+    "phase-3": {
       "10": "null",
       "11": "null",
       "12": "null",
       "13": "null",
+      "32": "null",
+      "35": "null",
       "critic_risk": "null"
     },
-    "fase-4": {
+    "phase-4": {
       "14": "null",
       "15": "null",
       "16": "null",
@@ -83,10 +88,10 @@ Dit contract definieert:
   "open_human_escalations": [
     {
       "escalation_id": "ESC-001",
-      "raised_by": "agent naam",
+      "raised_by": "agent name",
       "raised_at": "ISO 8601",
       "type": "ONBOARDING_BLOCKED | TOOL_INSTALL_REQUEST | SPRINT_IMPACT_FLAG | SCOPE_DECISION | OTHER",
-      "question": "string — exacte vraag aan de gebruiker",
+      "question": "string — exact question to the user",
       "timeout_action": "PAUSE | CONTINUE_WITH_ASSUMPTION | HALT",
       "timeout_at": "ISO 8601 | null",
       "status": "OPEN | ANSWERED | TIMED_OUT",
@@ -99,8 +104,8 @@ Dit contract definieert:
     {
       "id": "INSUF-001",
       "agent": "string",
-      "item": "string — wat er ontbreekt",
-      "impact": "string — welke analyses hierdoor onzeker zijn",
+      "item": "string — what is missing",
+      "impact": "string — which analyses are uncertain as a result",
       "status": "OPEN | RESOLVED | ACCEPTED_AS_UNKNOWN"
     }
   ],
@@ -109,7 +114,7 @@ Dit contract definieert:
     {
       "tool": "string",
       "category": "C | D",
-      "blocks_phase": "FASE-5 | null",
+      "blocks_phase": "PHASE-5 | null",
       "status": "OPEN | RESOLVED"
     }
   ],
@@ -120,9 +125,35 @@ Dit contract definieert:
       "type": "INTERN | EXTERN | TOOLING | HUMAN_REQUIRED",
       "description": "string",
       "raised_by": "string",
-      "blocks": "string — wat er niet kan doorgaan",
+      "blocks": "string — what cannot proceed",
       "status": "OPEN | RESOLVED",
       "resolved_at": "ISO 8601 | null"
+    }
+  ],
+
+  "questionnaire_answer_summary": {
+    "total_questions": 0,
+    "answered": 0,
+    "open": 0,
+    "coverage_pct": 0,
+    "context_blocks_prepared": [],
+    "questionnaire_index_path": "BusinessDocs/questionnaire-index.md | null",
+    "last_loaded_at": "ISO 8601 | null"
+  },
+
+  "scope_change_history": [
+    {
+      "sc_id": "SC-1",
+      "dimension": "BUSINESS | TECH | UX | MARKETING | ALL",
+      "triggered_at": "ISO 8601",
+      "old_premise": "string",
+      "new_premise": "string",
+      "status": "IN_PROGRESS | RECONCILIATION | COMPLETE",
+      "report_path": "docs/synthesis/scope-change-1.md | null",
+      "tickets_on_hold": ["SP-N-NNN"],
+      "tickets_cancelled": [],
+      "tickets_requeued": [],
+      "brand_assets_reactivation_status": "NOT_APPLICABLE | PENDING | BRAND_ASSETS_WAITING | BRAND_ASSETS_PARTIAL | BRAND_ASSETS_COMPLETE | STORYBOOK_WAITING | STORYBOOK_PARTIAL | STORYBOOK_COMPLETE"
     }
   ]
 }
@@ -130,94 +161,98 @@ Dit contract definieert:
 
 ---
 
-## STATE MACHINE — GELDIGE OVERGANGEN
+## STATE MACHINE — VALID TRANSITIONS
 
 ```
 ONBOARDING
-  → FASE-1          (na ONBOARDING_COMPLETE)
-FASE-1
-  → FASE-2          (na Critic + Risk PASSED)
-FASE-2
-  → FASE-3          (na Critic + Risk PASSED)
-FASE-3
-  → FASE-4          (na Critic + Risk PASSED)
-FASE-4
-  → SYNTHESIS       (na Critic + Risk PASSED)
+  → PHASE-1          (after ONBOARDING_COMPLETE)
+PHASE-1
+  → PHASE-2          (after Critic + Risk PASSED)
+PHASE-2
+  → PHASE-3          (after Critic + Risk PASSED)
+PHASE-3
+  → PHASE-4          (after Critic + Risk PASSED)
+PHASE-4
+  → SYNTHESIS        (after Critic + Risk PASSED)
 SYNTHESIS
-  → SPRINT_GATE     (na Synthesis APPROVED)
+  → SPRINT_GATE      (after Synthesis APPROVED)
 SPRINT_GATE
-  → FASE-5          (na Sprint Gate keuze IMPLEMENTEER)
-  → SPRINT_GATE     (volgende sprint — iteratief)
-FASE-5
-  → SPRINT_GATE     (na Sprint Completion Report APPROVED)
-  → COMPLETE        (alle sprints COMPLETED of BACKLOG met gebruikersbeslissing)
+  → PHASE-5          (after Sprint Gate choice IMPLEMENT)
+  → SPRINT_GATE      (next sprint — iterative)
+PHASE-5
+  → SPRINT_GATE      (after Sprint Completion Report APPROVED)
+  → COMPLETE         (all sprints COMPLETED or BACKLOG with user decision)
 
-Elk status → AWAITING_HUMAN   (bij open human escalation)
-AWAITING_HUMAN → [vorige status]  (na antwoord ontvangen)
-Elk status → BLOCKED          (bij onoplosbaar blokker)
-BLOCKED → [vorige status]     (na blokker opgelost)
+Every status → AWAITING_HUMAN   (on open human escalation)
+AWAITING_HUMAN → [previous status]  (after answer received)
+Every status → BLOCKED          (on unresolvable blocker)
+BLOCKED → [previous status]     (after blocker resolved)
+Every status → SCOPE_CHANGE     (on SCOPE CHANGE command — Sprint Gate PAUSED for affected dimension)
+SCOPE_CHANGE → [previous status]   (after Sprint Gate Reconciliation APPROVED by user)
 ```
 
-**VERBOD:** Geen fase overslaan. Geen terugspringen naar een eerdere fase zonder expliciete `REEVALUATE` trigger.
+**PROHIBITION:** Do not skip any phase. Do not jump back to an earlier phase without an explicit `REEVALUATE` trigger.
 
 ---
 
-## SESSIE HERVATTEN NA ONDERBREKING
+## RESUMING SESSION AFTER INTERRUPTION
 
-### Detectie
-Bij elke nieuwe interactie controleert de Orchestrator:
-1. Bestaat `docs/session/session-state.json`?
-2. Is `status` iets anders dan `COMPLETE`?
+### Detection
+At every new interaction the Orchestrator checks:
+1. Does `docs/session/session-state.json` exist?
+2. Is `status` anything other than `COMPLETE`?
 
-→ Ja: **Resumable session gedetecteerd.** Presenteer aan gebruiker:
+→ Yes: **Resumable session detected.** Present to user:
 
 ```
-SESSIE HERVAT
+SESSION RESUMED
 Session ID: [id]
-Gestart: [datum]
-Laatste activiteit: [datum]
+Started: [date]
+Last activity: [date]
 Status: [status]
-Laatste agent: [agent]
-Open escalaties: [N]
+Last agent: [agent]
+Open escalations: [N]
 
-Kies:
-  [1] HERVAT — ga verder waar gestopt
-  [2] RESET — start nieuwe sessie (bestaande state wordt gearchiveerd)
+Choose:
+  [1] RESUME — continue from where stopped
+  [2] RESET — start new session (existing state is archived)
 ```
 
-### Bij HERVAT:
-- Laad alle `phase_outputs` die niet `null` zijn als context
-- Ga door vanaf `current_agent` in `current_phase`
-- Heropen alle `open_human_escalations` met status `OPEN` — bied ze opnieuw aan
-- Laad alle `insufficient_data_items` met status `OPEN` als context-warnings
+### On RESUME:
+- Load all `phase_outputs` that are not `null` as context
+- Continue from `current_agent` in `current_phase`
+- Reopen all `open_human_escalations` with status `OPEN` — re-present them
+- Load all `insufficient_data_items` with status `OPEN` as context-warnings
 
-### Bij RESET:
-- Hernoem huidige `session-state.json` naar `session-state-[session_id]-archived.json`
-- Initialiseer nieuwe session state via Onboarding Agent
+### On RESET:
+- Rename current `session-state.json` to `session-state-[session_id]-archived.json`
+- Initialize new session state via Onboarding Agent
 
 ---
 
-## STATE UPDATE PROTOCOL (VOOR AGENTS)
+## STATE UPDATE PROTOCOL (FOR AGENTS)
 
-Elke agent rapporteert aan het eind van zijn HANDOFF CHECKLIST:
+Every agent reports at the end of their HANDOFF CHECKLIST:
 
 ```markdown
 ## STATE UPDATE
-- Agent: [naam]
-- Output pad: [pad naar output bestand]
+- Agent: [name]
+- Output path: [path to output file]
 - Status: COMPLETE | PARTIAL | BLOCKED
-- Nieuwe INSUFFICIENT_DATA items: [lijst of GEEN]
-- Nieuwe open escalaties: [lijst of GEEN]
-- Volgende agent (suggestie): [naam]
+- New INSUFFICIENT_DATA items: [list or NONE]
+- New open escalations: [list or NONE]
+- Next agent (suggestion): [name]
 ```
 
-De Orchestrator verwerkt dit en schrijft de state update naar `session-state.json`.
+The Orchestrator processes this and writes the state update to `session-state.json`.
 
 ---
 
-## ARCHIVERING
+## ARCHIVING
 
-Na `COMPLETE`:
-- Hernoem `session-state.json` naar `session-state-[session_id]-complete.json`
-- Bewaar in `docs/session/archive/`
-- Voor feature-cycli: bewaar ook in `Workitems/[FEATURENAAM]/session/`
+After `COMPLETE`:
+- Rename `session-state.json` to `session-state-[session_id]-complete.json`
+- Store in `docs/session/archive/`
+- For feature cycles: also store in `Workitems/[FEATURENAME]/session/`
+
+````

@@ -1,4 +1,5 @@
 ﻿using Lumio.Api.Domain.DigitalEstate;
+using Lumio.Api.Dtos.Common;
 using Lumio.Api.Dtos.DigitalEstate;
 using Lumio.Api.Repositories;
 using Lumio.Api.Services;
@@ -164,10 +165,12 @@ public class DigitaalBezitController : ControllerBase
 
     [RequestSizeLimit(5_242_880)]
     [HttpPost("wachtwoorden/importeren")]
+    [Consumes("multipart/form-data")]
     public async Task<IActionResult> ImporterenWachtwoorden(
-        IFormFile bestand,
+        [FromForm] BestandUploadRequest request,
         [FromServices] IEncryptionService encryption)
     {
+        var bestand = request.Bestand;
         if (bestand is null || bestand.Length == 0)
             return BadRequest(new { error = "Geen bestand geupload." });
 

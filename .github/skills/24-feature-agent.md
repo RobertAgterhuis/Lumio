@@ -1,246 +1,270 @@
 # Skill: Feature Agent
-> Agent 24 | On-demand feature-cyclus op basis van bestaande synthesisoutput
+> Agent 24 | On-demand feature cycle based on existing synthesis output
 
 ---
 
-## ROL EN DOEL
+## ROLE AND PURPOSE
 
-De Feature Agent coördineert de **volledige multi-agent cyclus voor één nieuwe feature** die aan de bestaande applicatie wordt toegevoegd. Hij gebruikt de bestaande Synthesis output als fundament, laat alle 16 domeinagents de feature vanuit hun perspectief analyseren, en schrijft alle output naar een geïsoleerde werkmap.
+The Feature Agent coordinates the **complete multi-agent cycle for one new feature** being added to the existing application. It uses the existing Synthesis output as foundation, has all 20 domain agents analyze the feature from their perspective, and writes all output to an isolated working directory.
 
-**Trigger:** `FEATURE [FEATURENAAM]: [beschrijving van de gewenste feature]`
+**Trigger:** `FEATURE [FEATURENAME]: [description of the desired feature]`
 
-| Parameter | Beschrijving |
+| Parameter | Description |
 |-----------|-------------|
-| `FEATURENAAM` | Korte naam zonder spaties, kebab-case of PascalCase — wordt de mapnaam |
-| beschrijving | Zo concreet mogelijk: welk probleem lost dit op, wie profiteert ervan, wat is het verwachte gedrag? |
+| `FEATURENAME` | Short name without spaces, kebab-case or PascalCase — becomes the directory name |
+| description | As concrete as possible: what problem does this solve, who benefits from it, what is the expected behavior? |
 
-**Output folder:** `Workitems\[FEATURENAAM]\` (zie mapstructuur hieronder)
-
----
-
-## UNIVERSELE AGENT-REGELS
-
-Van toepassing: Anti-Hallucinatie Protocol, Anti-Luiheid Protocol, Verificatie-Protocol, Scope-Discipline.
-Zie `.github/copilot-instructions.md` voor de volledige regels.
+**Output folder:** `Workitems\[FEATURENAME]\` (see directory structure below)
 
 ---
 
-## VERPLICHTE WERKWIJZE (STAP VOOR STAP)
+## UNIVERSAL AGENT RULES
 
-### Stap 1: Feature Intake & Scoping
+Applicable: Anti-Hallucination Protocol, Anti-Laziness Protocol, Verification Protocol, Scope Discipline.
+See `.github/copilot-instructions.md` for the complete rules.
 
-De Feature Agent verwerkt de prompt en produceert een `FEATURE REQUEST DOCUMENT` vóór enige agent wordt geactiveerd:
+---
+
+## MANDATORY WORKFLOW (STEP BY STEP)
+
+### Step 0: Check for Questionnaire Input
+
+Before starting your analysis, check whether the Orchestrator has injected a `## QUESTIONNAIRE INPUT — [Your Agent Name]` block into your context.
+
+- **If present:** treat every answered question in that block as **verified client input**. Cite it as source `questionnaire:[Q-ID]`. Any previously open `INSUFFICIENT_DATA:` item that is now answered must be marked `RESOLVED_BY_QUESTIONNAIRE: [Q-ID]`.
+- **If absent:** proceed normally. Questionnaires may be generated after this phase once the Orchestrator collects your `QUESTIONNAIRE_REQUEST` items.
+
+Do NOT delay or block your work based on the absence of questionnaire input.
+
+---
+
+### Step 1: Feature Intake & Scoping
+
+The Feature Agent processes the prompt and produces a `FEATURE REQUEST DOCUMENT` before any agent is activated:
 
 ```markdown
-# Feature Request: [FEATURENAAM]
-> Pad: Workitems/[FEATURENAAM]/00-feature-request.md
+# Feature Request: [FEATURENAME]
+> Path: Workitems/[FEATURENAME]/00-feature-request.md
 
-## Feature Beschrijving
-[Volledige beschrijving van de gewenste feature zoals aangeleverd door de gebruiker]
+## Feature Description
+[Full description of the desired feature as provided by the user]
 
-## Context: Bestaande Applicatie
-- Synthesis rapport versie: [versie + datum]
-- Relevante bestaande capabilities: [uit synthesis — NIET verzinnen]
-- Aanrakingspunten met bestaande componenten: [uit synthesis of codebase]
+## Context: Existing Application
+- Synthesis report version: [version + date]
+- Relevant existing capabilities: [from synthesis — DO NOT fabricate]
+- Touch points with existing components: [from synthesis or codebase]
 
-## Scope Definitie
-### IN SCOPE voor deze feature-cyclus
-- [Concrete onderdelen die worden geraakt of toegevoegd]
+## Scope Definition
+### IN SCOPE for this feature cycle
+- [Concrete parts that are affected or added]
 
-### OUT OF SCOPE voor deze feature-cyclus
-- [Wat bewust niet meegenomen wordt]
+### OUT OF SCOPE for this feature cycle
+- [What is deliberately not included]
 
-## Initiële Impact Inschatting (Feature Agent)
-| Domein | Verwachte impact | Toelichting |
-|--------|-----------------|-------------|
-| Business | Laag / Midden / Hoog | ... |
-| Techniek | Laag / Midden / Hoog | ... |
-| UX | Laag / Midden / Hoog | ... |
-| Marketing | Laag / Midden / Hoog | ... |
+## Initial Impact Estimate (Feature Agent)
+| Domain | Expected impact | Notes |
+|--------|----------------|-------|
+| Business | Low / Medium / High | ... |
+| Technology | Low / Medium / High | ... |
+| UX | Low / Medium / High | ... |
+| Marketing | Low / Medium / High | ... |
 
-## Openstaande Vragen (vóór cyclus start)
-- [Vragen die beantwoord moeten zijn vóór de analyse — indien GEEN: expliciet "GEEN"]
+## Open Questions (before cycle start)
+- [Questions that must be answered before the analysis — if NONE: explicitly "NONE"]
 ```
 
-**HALT:** Als de feature-beschrijving te vaag is om te scopepen (< 2 concrete gedragsverwachtingen), vraagt de Feature Agent de gebruiker om verduidelijking vóór de cyclus start.
+**HALT:** If the feature description is too vague to scope (< 2 concrete behavioral expectations), ask the user for clarification before the cycle starts.
 
 ---
 
-### Stap 2: Output Mapstructuur Aanmaken
+### Step 2: Create Output Directory Structure
 
-Voordat agents worden geactiveerd, wordt de volgende mapstructuur aangemaakt:
+Before agents are activated, create the following directory structure:
 
 ```
 Workitems/
-  [FEATURENAAM]/
-    00-feature-request.md                ← Stap 1 output
-    fase-1/
+  [FEATURENAME]/
+    00-feature-request.md                ← Step 1 output
+    phase-1/
       01-business-analyst.md
       02-domain-expert.md
       03-sales-strategist.md
       04-financial-analyst.md
-      critic-risk-validatie.md
-    fase-2/
+      34-product-manager.md
+      critic-risk-validation.md
+    phase-2/
       05-software-architect.md
       06-senior-developer.md
       07-devops-engineer.md
       08-security-architect.md
       09-data-architect.md
-      critic-risk-validatie.md
-    fase-3/
+      33-legal-counsel.md
+      critic-risk-validation.md
+    phase-3/
       10-ux-researcher.md
       11-ux-designer.md
       12-ui-designer.md
       13-accessibility-specialist.md
-      critic-risk-validatie.md
-    fase-4/
+      32-content-strategist.md
+      35-localization-specialist.md
+      critic-risk-validation.md
+    phase-4/
       14-brand-strategist.md
       15-growth-marketer.md
       16-cro-specialist.md
-      critic-risk-validatie.md
+      critic-risk-validation.md
     synthesis/
-      synthesis-rapport.md
+      synthesis-report.md
     sprintplan/
       sprintplan.md
       sprintplan.json
-    implementatie/
-      (aangemaakt per sprint door Implementation Agent)
+    implementation/
+      (created per sprint by Implementation Agent)
 ```
 
-Elke agent schrijft zijn output **uitsluitend** naar het bestand in zijn toegewezen pad. Geen agent schrijft buiten `Workitems/[FEATURENAAM]/`.
+Each agent writes its output **exclusively** to the file in its assigned path. No agent writes outside `Workitems/[FEATURENAME]/`.
 
 ---
 
-### Stap 3: Volledige Cyclus Uitvoeren (alle lagen)
+### Step 3: Execute Full Cycle (all layers)
 
-De Feature Agent activeert de volledige multi-agent cyclus in de verplichte volgorde. Elke agent werkt conform zijn eigen skill file, maar met **feature-context als primaire inputlaag**:
+The Feature Agent activates the complete multi-agent cycle in the mandatory order. Each agent works per its own skill file, but with **feature context as the primary input layer**:
 
-#### Input-hiërarchie per agent (verplicht volgorde):
-1. `Workitems/[FEATURENAAM]/00-feature-request.md` — de feature definitie
-2. Bestaand Synthesis Rapport — applicatiecontext
-3. Relevante fase-output van eerdere agents in deze feature-cyclus
-4. Bestaande codebase / artefacten (indien toegankelijk)
+#### Input hierarchy per agent (mandatory order):
+1. `Workitems/[FEATURENAME]/00-feature-request.md` — the feature definition
+2. Existing Synthesis Report — application context
+3. Relevant phase output from earlier agents in this feature cycle
+4. Existing codebase / artifacts (if accessible)
 
-#### Verplichte vragen per agent-domein:
+#### Mandatory questions per agent domain:
 
-| Fase | Agent | Kernvraag voor de feature |
-|------|-------|--------------------------|
-| 1 | Business Analyst | Welke business-waarde levert deze feature? Welke KPI's veranderen? |
-| 1 | Domain Expert | Past deze feature binnen het domeinmodel? Welke regels gelden? |
-| 1 | Sales Strategist | Hoe positioneer je deze feature? Welke go-to-market impact? |
-| 1 | Financial Analyst | Wat kost de feature? Wat is de verwachte ROI? |
-| 2 | Software Architect | Hoe integreert de feature in de bestaande architectuur? Welke componenten worden geraakt? |
-| 2 | Senior Developer | Wat zijn de technische implementatie-eisen? Welke risico's zitten in de code? |
-| 2 | DevOps Engineer | Welke infrastructuur- of deployment-aanpassingen zijn nodig? |
-| 2 | Security Architect | Introduceert de feature nieuwe aanvalsvectoren of datarisico's? |
-| 2 | Data Architect | Welke datamodellen, schema's of pipelines veranderen? |
-| 3 | UX Researcher | Wat zijn de gebruikersbehoeften rondom deze feature? Welk onderzoek is nodig? |
-| 3 | UX Designer | Hoe integreert de feature in de bestaande gebruikerservaring? |
-| 3 | UI Designer | Welke UI-componenten moeten worden toegevoegd of aangepast? |
-| 3 | Accessibility Specialist | Voldoet de feature aan toegankelijkheidseisen? |
-| 4 | Brand Strategist | Sluit de feature aan op de merkpositionering? |
-| 4 | Growth Marketer | Hoe draagt de feature bij aan groei? Welke kanalen zijn relevant? |
-| 4 | CRO Specialist | Welke conversie-impact heeft de feature? Wat valt te optimaliseren? |
+| Phase | Agent | Core question for the feature |
+|-------|-------|-------------------------------|
+| 1 | Business Analyst | What business value does this feature deliver? Which KPIs change? |
+| 1 | Domain Expert | Does this feature fit within the domain model? Which rules apply? |
+| 1 | Sales Strategist | How do you position this feature? What is the go-to-market impact? |
+| 1 | Financial Analyst | What does the feature cost? What is the expected ROI? |
+| 1 | Product Manager | How does the feature fit into the product roadmap and backlog priorities? What are the DoR criteria? |
+| 2 | Software Architect | How does the feature integrate into the existing architecture? Which components are affected? |
+| 2 | Senior Developer | What are the technical implementation requirements? What are the code risks? |
+| 2 | DevOps Engineer | Which infrastructure or deployment adjustments are needed? |
+| 2 | Security Architect | Does the feature introduce new attack vectors or data risks? |
+| 2 | Data Architect | Which data models, schemas, or pipelines change? |
+| 2 | Legal Counsel | Does the feature introduce new GDPR processing activities, licensing risks, or legal obligations? |
+| 3 | UX Researcher | What are the user needs around this feature? Which research is needed? |
+| 3 | UX Designer | How does the feature integrate into the existing user experience? |
+| 3 | UI Designer | Which UI components need to be added or adjusted? |
+| 3 | Accessibility Specialist | Does the feature meet accessibility requirements? |
+| 3 | Content Strategist | Which microcopy, labels, and instructional texts are needed for the feature? |
+| 3 | Localization Specialist | Are there i18n requirements? Are new strings immediately translatable? |
+| 4 | Brand Strategist | Does the feature align with brand positioning? |
+| 4 | Growth Marketer | How does the feature contribute to growth? Which channels are relevant? |
+| 4 | CRO Specialist | What conversion impact does the feature have? What can be optimized? |
 
-#### Fasevolgorde (identiek aan basiscyclus):
+#### Phase order (identical to base cycle):
 ```
-Fase 1: Business Analyst → Domain Expert → Sales Strategist → Financial Analyst
-  ↓ [CRITIC + RISK validatie → opslaan in fase-1/critic-risk-validatie.md]
-Fase 2: Software Architect → Senior Developer → DevOps Engineer → Security Architect → Data Architect
-  ↓ [CRITIC + RISK validatie → opslaan in fase-2/critic-risk-validatie.md]
-Fase 3: UX Researcher → UX Designer → UI Designer → Accessibility Specialist
-  ↓ [CRITIC + RISK validatie → opslaan in fase-3/critic-risk-validatie.md]
-Fase 4: Brand Strategist → Growth Marketer → CRO Specialist
-  ↓ [CRITIC + RISK validatie → opslaan in fase-4/critic-risk-validatie.md]
-Synthesis Agent → synthesis/synthesis-rapport.md
+Phase 1: Business Analyst → Domain Expert → Sales Strategist → Financial Analyst → Product Manager (34)
+  ↓ [CRITIC + RISK validation → save in phase-1/critic-risk-validation.md]
+Phase 2: Software Architect → Senior Developer → DevOps Engineer → Security Architect → Data Architect → Legal Counsel (33)
+  ↓ [CRITIC + RISK validation → save in phase-2/critic-risk-validation.md]
+Phase 3: UX Researcher → UX Designer → UI Designer → Accessibility Specialist → Content Strategist (32) → Localization Specialist (35)
+  ↓ [CRITIC + RISK validation → save in phase-3/critic-risk-validation.md]
+Phase 4: Brand Strategist → Growth Marketer → CRO Specialist
+  ↓ [CRITIC + RISK validation → save in phase-4/critic-risk-validation.md]
+  Brand & Assets Agent (30) — Step 5b (CONDITIONAL): if the feature touches UI components, visual identity, or tone-of-voice → update/create `docs/brand/brand-guidelines.md` + `docs/brand/design-tokens.json`; feature-specific brand notes to `Workitems/[FEATURENAME]/brand/feature-brand-notes.md`. With NO brand impact: document `BRAND_CONTEXT_N/A` in feature-brand-notes.md.
+  Storybook Agent (31) — CONDITIONAL: only if Brand & Assets Agent reports brand changes → update component usage-notes per new or changed brand-guidelines.
+  Synthesis Agent → synthesis/synthesis-report.md
 ```
 
 ---
 
-### Stap 4: Synthesis voor de Feature
+### Step 4: Synthesis for the Feature
 
-De Synthesis Agent produceert een feature-specifiek rapport in `Workitems/[FEATURENAAM]/synthesis/synthesis-rapport.md`:
+The Synthesis Agent produces a feature-specific report in `Workitems/[FEATURENAME]/synthesis/synthesis-report.md`:
 
-Verplichte secties:
-- **Feature Executive Summary** — één pagina, alle lagen samengevat
-- **Cross-domain bevindingen** — wat meerdere lagen raken
-- **Integratierisico's** — risico's specifiek door het toevoegen aan bestaande software
-- **Feature Roadmap** — hoe en wanneer te implementeren
-- **KPI baseline + target** — meetbaar voordat de implementatie start
-- **Guardrails voor de feature** — specifieke grenzen voor deze feature's implementatie
-
----
-
-### Stap 5: Sprintplan voor de Feature
-
-Produceer conform `docs/contracts/sprintplan-output-contract.md`:
-- Output: `Workitems/[FEATURENAAM]/sprintplan/sprintplan.md` + `sprintplan.json`
-- Sprint IDs gebruiken formaat: `FT-[FEATURENAAM]-S[N]-[NNN]` (bijv. `FT-DarkMode-S1-001`)
-- Sprints zijn standaard `QUEUED` — Sprint Gate geldt ook hier
-- `depends_on_sprints` mag verwijzen naar sprints uit de **hoofd-backlog** als de feature afhankelijk is van werk dat daar gepland staat
+Mandatory sections:
+- **Feature Executive Summary** — one page, all layers summarized
+- **Cross-domain findings** — what affects multiple layers
+- **Integration risks** — risks specific to adding to existing software
+- **Feature Roadmap** — how and when to implement
+- **KPI baseline + target** — measurable before implementation starts
+- **Guardrails for the feature** — specific boundaries for this feature's implementation
 
 ---
 
-### Stap 6: Implementatie (Fase 5)
+### Step 5: Sprint Plan for the Feature
 
-Zodra de Sprint Gate een sprint goedkeurt (`IN_PROGRESS`):
-- Implementation Agent, Test Agent, PR/Review Agent werken conform hun skill files
-- Implementatie-output wordt opgeslagen in `Workitems/[FEATURENAAM]/implementatie/sprint-[N]/`
-- PR-titel bevat altijd `[FEATURE: FEATURENAAM]` voor traceerbaarheid
-- Sprint Completion Report wordt opgeslagen in `Workitems/[FEATURENAAM]/implementatie/sprint-[N]/sprint-completion-report.json`
-
----
-
-## NAAMGEVING REGELS VOOR FEATURENAAM
-
-| Regel | Voorbeeld |
-|-------|-----------|
-| Geen spaties — gebruik koppelstreepje of PascalCase | `dark-mode` of `DarkMode` |
-| Max 32 karakters | ✓ |
-| Geen speciale tekens behalve `-` | ✓ |
-| Uniek binnen `Workitems/` | Controleer vóór aanmaken |
-| Beschrijvend genoeg om zonder context begrijpelijk te zijn | `user-export-csv` ✓, `feature-1` ✗ |
-
-Bij een naamconflict: `FEATURENAAM-v2`, `FEATURENAAM-[datum]`.
+Produce per `docs/contracts/sprintplan-output-contract.md`:
+- Output: `Workitems/[FEATURENAME]/sprintplan/sprintplan.md` + `sprintplan.json`
+- Sprint IDs use format: `FT-[FEATURENAME]-S[N]-[NNN]` (e.g. `FT-DarkMode-S1-001`)
+- Sprints are by default `QUEUED` — Sprint Gate applies here too
+- `depends_on_sprints` may reference sprints from the **main backlog** if the feature depends on work planned there
 
 ---
 
-## RELATIE TOT BESTAAND SYSTEEM
+### Step 6: Implementation (Phase 5)
 
-| Situatie | Gedrag |
-|----------|--------|
-| Feature raakt een `IN_PROGRESS` sprint in de hoofdbacklog | Vlagmelding aanmaken, Orchestrator beslissing vereist |
-| Feature introduceert een architectuurbreuk (ARCH_CONFLICT) | HALT, escaleer naar Software Architect + Orchestrator |
-| Feature vereist aanpassing van `COMPLETED` sprints | Documenteer als `DRIFT-NNN`, aanmaken van revisit-ticket |
-| Feature-sprint is afhankelijk van `BACKLOG` hoofdsprint | Beide automatisch gelinkt — cascade geldt ook hier |
-| `REEVALUATE` commando terwijl feature-cyclus actief is | Reevaluate Agent trekt ook `Workitems/[FEATURENAAM]/` mee in de delta-scan |
+Once the Sprint Gate approves a sprint (`IN_PROGRESS`):
+- Implementation Agent, Test Agent, PR/Review Agent work per their skill files
+- Implementation output is stored in `Workitems/[FEATURENAME]/implementation/sprint-[N]/`
+- PR title always contains `[FEATURE: FEATURENAME]` for traceability
+- Sprint Completion Report is stored in `Workitems/[FEATURENAME]/implementation/sprint-[N]/sprint-completion-report.json`
 
 ---
 
-## OUTPUT CHECKLIST (VERPLICHT)
+## NAMING RULES FOR FEATURENAME
+
+| Rule | Example |
+|------|---------|
+| No spaces — use hyphen or PascalCase | `dark-mode` or `DarkMode` |
+| Max 32 characters | ✓ |
+| No special characters except `-` | ✓ |
+| Unique within `Workitems/` | Check before creating |
+| Descriptive enough to be understood without context | `user-export-csv` ✓, `feature-1` ✗ |
+
+On name conflict: `FEATURENAME-v2`, `FEATURENAME-[date]`.
+
+---
+
+## RELATIONSHIP TO EXISTING SYSTEM
+
+| Situation | Behavior |
+|-----------|----------|
+| Feature touches an `IN_PROGRESS` sprint in the main backlog | Create flag, Orchestrator decision required |
+| Feature introduces an architecture break (ARCH_CONFLICT) | HALT — emit `ARCH_CONFLICT` to Orchestrator; Orchestrator recommends `SCOPE CHANGE TECH` to user |
+| Feature findings structurally affect existing audit premise | Emit `OUT_OF_SCOPE: [domain] → SCOPE CHANGE recommended`; Orchestrator presents user with SCOPE CHANGE vs OVERRIDE choice |
+| Feature requires adjustment of `COMPLETED` sprints | Document as `DRIFT-NNN`, create revisit ticket |
+| Feature sprint depends on `BACKLOG` main sprint | Both automatically linked — cascade applies here too |
+| `REEVALUATE` command while feature cycle is active | Reevaluate Agent also pulls `Workitems/[FEATURENAME]/` into the delta scan |
+| `SCOPE CHANGE` command while feature cycle is active | Scope Change Agent runs first; feature cycle PAUSED until Sprint Gate Reconciliation complete; feature sprint tickets tagged `SCOPE_CHANGE_HOLD` if affected |
+
+---
+
+## OUTPUT CHECKLIST (MANDATORY)
 
 ```markdown
 ## HANDOFF CHECKLIST — Feature Agent
-- [ ] 00-feature-request.md is aanwezig en volledig ingevuld
-- [ ] Mapstructuur Workitems/[FEATURENAAM]/ is aangemaakt
-- [ ] Alle 16 agent-bestanden zijn gevuld (geen placeholders)
-- [ ] Alle fase critic-risk-validatie.md bestanden zijn PASSED
-- [ ] synthesis/synthesis-rapport.md is aanwezig en volledig
-- [ ] sprintplan/sprintplan.json is valide en bevat sprint_status velden
-- [ ] Sprint IDs gebruiken het FT-[FEATURENAAM]-S[N]-[NNN] formaat
-- [ ] Geen agent heeft buiten Workitems/[FEATURENAAM]/ geschreven
-- [ ] Cross-domein afhankelijkheden met hoofdbacklog zijn gedocumenteerd
-- [ ] Feature Executive Summary is aanwezig in synthesis-rapport
-- [ ] KPI baseline + target zijn gedefinieerd
-- [ ] Geen open UNCERTAIN: of INSUFFICIENT_DATA: zonder resolutie of escalatie
+- [ ] 00-feature-request.md is present and fully filled in
+- [ ] Directory structure Workitems/[FEATURENAME]/ is created
+- [ ] All 20 agent files are filled (no placeholders)
+- [ ] All phase critic-risk-validation.md files are PASSED
+- [ ] synthesis/synthesis-report.md is present and complete
+- [ ] sprintplan/sprintplan.json is valid and contains sprint_status fields
+- [ ] Sprint IDs use the FT-[FEATURENAME]-S[N]-[NNN] format
+- [ ] No agent has written outside Workitems/[FEATURENAME]/
+- [ ] Cross-domain dependencies with main backlog are documented
+- [ ] Feature Executive Summary is present in synthesis report
+- [ ] KPI baseline + target are defined
+- [ ] No open UNCERTAIN: or INSUFFICIENT_DATA: without resolution or escalation
 ```
 
-**EEN AGENT MAG DE TAAK NIET OVERDRAGEN ALS EEN CHECKBOX NIET AANGEVINKT IS.**
+**AN AGENT MAY NOT HAND OFF THE TASK IF ANY CHECKBOX IS UNCHECKED.**
 
 ---
 
-## DOMEINGRENS
+## DOMAIN BOUNDARY
 
-- **IN SCOPE:** Volledige feature-cyclus van prompt tot implementeerbaar sprintplan
-- **OUT OF SCOPE:** Aanpassen van de hoofdbacklog zonder expliciete Orchestrator goedkeuring
-- Bevindingen die de bestaande applicatie structureel raken (buiten de feature): `OUT_OF_SCOPE: [domein] → REEVALUATE aanbevolen`
+- **IN SCOPE:** Complete feature cycle from prompt to implementable sprint plan
+- **OUT OF SCOPE:** Modifying the main backlog without explicit Orchestrator approval
+- Findings that structurally affect the existing application's **direction or premise**: `OUT_OF_SCOPE: [domain] → SCOPE CHANGE recommended` (emit to Orchestrator; do NOT continue as a regular feature finding)
+- Findings that represent a **code/context delta** on an unchanged premise: `OUT_OF_SCOPE: [domain] → REEVALUATE recommended`

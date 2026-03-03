@@ -34,14 +34,10 @@
       "bezig": "Creating database...",
       "aanmaken": "Create Database",
       "disclaimer": "Your data is stored encrypted. Keep your password safe — without it, your data cannot be accessed.",
-      "avgConsent": "I understand that Lumio processes special categories of personal data (including health data, advance directives and donor registration) pursuant to GDPR art.\u00a09(2)(a) — explicit consent of the data subject. This is a personal, offline archive solely for my own use and for my next of kin.",
-      "avgConsentFout": "Please confirm that you consent to the processing of special categories of personal data.",
       "foutMinimaal": "Password must contain at least 8 characters.",
       "foutOvereenkomst": "Passwords do not match.",
       "foutSetup": "Setup failed",
-      "wachtwoordWaarschuwing": "Store your password, emergency codes, and recovery codes in a safe place. Losing your password means losing access to all your Lumio data.",
-      "toonWachtwoord": "Show password",
-      "verbergWachtwoord": "Hide password"
+      "wachtwoordWaarschuwing": "Store your password, emergency codes, and recovery codes in a safe place. Losing your password means losing access to all your Lumio data."
     },
     "ontgrendel": {
       "titel": "Unlock Lumio",
@@ -64,9 +60,8 @@
       "codeLabel": "Code {nummer}",
       "codePlaceholder": "Paste the emergency code here...",
       "codeToevoegen": "Add another code",
-      "codeVerwijderen": "Remove code {nummer}",
-      "instructie": "Enter your emergency codes below. You need at least the number of codes set by the owner to gain access.",
-      "minimaalCodes": "At least 2 emergency codes are required.",
+      "instructie": "Enter your emergency codes below. You need at least {drempel} codes to gain access.",
+      "minimaalCodes": "At least {drempel} emergency codes are required.",
       "reconstructieMislukt": "Reconstruction failed. Please verify that you have entered enough valid emergency codes.",
       "bezig": "Reconstructing...",
       "ontgrendelen": "Unlock with emergency codes",
@@ -74,7 +69,7 @@
       "introTitel": "Heir access",
       "introBeschrijving": "To access this Lumio archive you need emergency codes. The owner has securely split their master password using the Shamir method.",
       "introHoeWerktHet": "How does it work?",
-      "introStap1": "Collect the required number of emergency codes from the designated heirs.",
+      "introStap1": "Collect at least {drempel} emergency codes from the designated heirs.",
       "introStap2": "Enter each code separately on the next screen.",
       "introStap3": "Once enough codes are entered, the archive will be unlocked.",
       "introStarten": "Enter emergency codes",
@@ -560,8 +555,8 @@
     "registratieStarten": "Start registration",
     "ja": "Yes",
     "nee": "No",
+    "disclaimer": "<strong>Please note:</strong> Your wish in Lumio does <strong>not replace official registration</strong> in the Dutch Donor Register. Only a registration at <link>donorregister.nl</link> is legally binding.",
     "tip": "<strong>Tip:</strong> Also register your choice officially with the Donor Register at donorregister.nl. The information here is for your next of kin.",
-    "disclaimer": "<strong>Note:</strong> The information you record here is a personal overview for your next of kin. Only an official registration at the Donor Register (donorregister.nl) is legally binding under the Donor Act (Donorwet).",
     "geenKeuze": "No donor choice recorded yet.",
     "keuzeCard": {
       "titel": "Choice",
@@ -642,9 +637,7 @@
       "relatiePlaceholder": "e.g. Partner, Son, Daughter",
       "telefoonLabel": "Phone number",
       "telefoonPlaceholder": "Phone number"
-    },
-    "bevestigenTitel": "Save donor registration",
-    "bevestigenBeschrijving": "You are about to save your donor preference. Please verify your choice is correct and that you have also officially registered with the Donor Register."
+    }
   },
   "eigenaar": {
     "titel": "My Profile",
@@ -885,7 +878,7 @@
       "titel": "Generate Emergency Codes",
       "beschrijving": "Split your master password into {aantal} unique emergency codes. Only when the minimum number of people (threshold) combine their code can the password be reconstructed.",
       "waarschuwing": "Warning:",
-      "waarschuwingTekst": "The emergency codes are NOT stored in Lumio. Record them carefully or print them. Lost codes cannot be recovered.",
+      "waarschuwingTekst": "The content of emergency codes is never stored by Lumio. Lumio only records which heirs have received their code. Record or print each code carefully. Lost codes cannot be recovered.",
       "wachtwoord": "Your master password",
       "wachtwoordPlaceholder": "Enter your Lumio master password",
       "drempel": "Threshold (minimum number of codes for reconstruction)",
@@ -907,13 +900,14 @@
       "stap1Bullet1": "One code alone is worthless — cooperation is required.",
       "stap1Bullet2": "You choose the minimum number (the threshold) required.",
       "stap1Bullet3": "Secure, even if one heir loses their code.",
-      "stap1Callout": "Emergency codes are NOT stored in Lumio. Write them down or print them and hand them personally to your heirs.",
+      "stap1Callout": "The secret code content is never stored by Lumio. Lumio only records which heirs have received their code. Write down or print each code and hand it personally to your heirs.",
       "stap2Titel": "Settings",
       "stap2ErfgenamenLabel": "Heirs who will receive an emergency code",
       "stap3Titel": "Security",
       "stap4Titel": "Distribute emergency codes",
       "stap4NogTeKopieren": "{n, plural, one {# code still to copy} other {# codes still to copy}}",
       "stap4AlleGekopieerd": "✓ All codes copied",
+      "stap4CodeFormaat": "Share the complete code including the number before the dash (e.g. 01-XXXX). The number prefix is required for password reconstruction.",
       "volgende": "Next",
       "vorige": "Back",
       "stapIndicator": "Step {huidig} of {totaal}"
@@ -953,8 +947,6 @@
     "introTekst": "Our condolences for your loss. This dashboard guides you step by step through handling the estate. Take your time — you don't have to do everything at once.",
     "gegevensInfo": "All data is available in read-only mode. Use the buttons below to track what you have already handled.",
     "exporteren": "Export all",
-    "downloadZip": "Download everything as ZIP",
-    "downloadInstructiekaartje": "Download instruction card",
     "noodcontactenBekijken": "View emergency contacts",
     "hulpTitel": "Need help?",
     "hulpTekst": "It's normal if this feels overwhelming. Start with the urgent matters at the top and work your way down calmly. You can always come back and continue where you left off. Seek help from a notary or funeral director if that feels right.",
@@ -1026,7 +1018,7 @@
     "beschrijving": "Your wishes under the WGBO (Dutch Medical Treatment Contracts Act)",
     "opslaanMislukt": "Save failed.",
     "bewerken": "Edit",
-    "wizardStarten": "Start filling in",
+    "wizardStarten": "Start wizard",
     "annuleren": "Cancel",
     "opslaan": "Save",
     "ja": "Yes",
@@ -1081,16 +1073,12 @@
       "dementieclausule": "Dementia clause",
       "toelichtingDementie": "Explanation dementia clause",
       "behandelverbod": "Treatment refusal",
-      "behandelverbodPlaceholder": "Which treatments do you wish to refuse?",
-      "bevestigenTitel": "Save advance directive",
-      "bevestigenBeschrijving": "You are about to save your advance directive. Please verify that your details are correct and complete before confirming."
+      "behandelverbodPlaceholder": "Which treatments do you wish to refuse?"
     }
   },
   "euthanasieWizard": {
     "titel": "Euthanasia Advance Directive",
     "laden": "Loading...",
-    "bevestigenTitel": "Save Advance Directive",
-    "bevestigenBeschrijving": "You are about to save your euthanasia advance directive. Please verify all details are correct and complete before confirming.",
     "keuze": {
       "titel": "Your Choice",
       "beschrijving": "Do you want to record an advance directive for euthanasia? This is in accordance with the Termination of Life on Request and Assisted Suicide Act (Wtl).",
@@ -1461,19 +1449,7 @@
       "bevestigPlaceholder": "Enter your password to confirm",
       "knop": "Permanently delete all data",
       "succes": "All data has been deleted. You will be redirected...",
-      "mislukt": "Deletion failed. Check your password.",
-      "dataMapNote": "Note: the 'data/' folder next to the application is not removed automatically when you uninstall. Delete this folder manually if you want to erase all data."
-    },
-    "aanbevelen": {
-      "titel": "Recommend Lumio",
-      "beschrijving": "Know someone who also wants to arrange their estate? Share Lumio with colleagues, friends or your employer.",
-      "tekst": "I use Lumio to digitally record my estate plan — offline, encrypted and completely private. More information at lumio-legacy.nl",
-      "emailOnderwerp": "Lumio — digitally arrange your estate",
-      "emailBodyPre": "Dear,\n\nI would like to recommend Lumio — a secure application for your digital estate.",
-      "emailBodyPost": "More information: https://www.lumio-legacy.nl\n\nKind regards",
-      "kopieren": "Copy referral text",
-      "gekopieerd": "Copied!",
-      "viaEmail": "Recommend via email"
+      "mislukt": "Deletion failed. Check your password."
     },
     "dialogen": {
       "herstel": {
@@ -1861,6 +1837,7 @@
     "activiteitenlog": "Activity Log",
     "instellingen": "Settings",
     "handleiding": "User Guide",
+    "privacyverklaring": "Privacy Policy",
     "navigatie": "Main navigation",
     "groep": {
       "overzicht": "Overview",
@@ -1870,8 +1847,8 @@
       "hulpmiddelen": "Tools",
       "beheer": "Management"
     },
-    "voortgang": "{aantalIngevuld} of {totaal} sections completed",
-    "voortgangAria": "Legacy progress: {percentage}% completed"
+    "voortgang": "{aantalIngevuld} of {totaal} sections filled in",
+    "voortgangAria": "Legacy progress: {percentage}% filled in"
   },
   "enums": {
     "burgerlijkeStaat": {
@@ -2148,20 +2125,17 @@
     "gaNaarExporteren": "Go to Export",
     "gaNaarActiviteitenlog": "Go to Activity Log",
     "gaNaarInstellingen": "Go to Settings",
-    "gaNaarHelp": "Go to Help",
-    "validatieNaamVerplicht": "Please enter your first and last name to continue."
+    "gaNaarHelp": "Go to Help"
   },
   "wizard": {
     "welkom": "Welcome to Lumio",
     "doorloop": "Complete these steps to set up your legacy",
-    "sluiten": "Close",
+    "sluiten": "Close wizard",
     "voortgang": "Onboarding progress",
     "voltooid": "{voltooid} of {totaal} completed",
     "laterInvullen": "Fill in later",
     "nietMeerTonen": "Do not show again",
     "afronden": "Finish",
-    "terugkeerBadge": "Continue with wizard →",
-    "terugkeerBadgeAria": "Resume wizard",
     "stappen": {
       "profiel": {
         "titel": "My Profile",
@@ -2183,10 +2157,6 @@
         "titel": "Heirs",
         "beschrijving": "Register your heirs and optionally distribute emergency codes."
       },
-      "sleutels": {
-        "titel": "Inform Heirs",
-        "beschrijving": "Inform your heirs about their emergency codes so they can access your data after you pass away."
-      },
       "backup": {
         "titel": "Create Backup",
         "beschrijving": "Create an initial backup to secure your data."
@@ -2202,10 +2172,6 @@
       "volgende": "Next",
       "voortgangHersteld": "Your progress has been restored. You are at step {stap}.",
       "opnieuwBeginnen": "Start over"
-    },
-    "dossierVolledigBanner": {
-      "titel": "Dossier complete",
-      "beschrijving": "All 7 steps are completed. Your legacy is fully set up."
     }
   },
   "testament": {
@@ -2213,12 +2179,12 @@
     "titel": "Will",
     "beschrijving": "Testamentary information pursuant to Civil Code Book 4 (BW Boek 4)",
     "bewerken": "Edit",
-    "wizardStarten": "Start filling in",
+    "wizardStarten": "Start Wizard",
     "opslaanMislukt": "Save failed.",
     "verwijderenMislukt": "Delete failed.",
-    "disclaimer": "<strong>Note:</strong> The information in Lumio is a personal overview. A notarial will is only legally valid when drawn up and signed by a notary (Civil Code Book 4, art. 4:94 et seq.). Always consult your notary for official registration.",
     "ja": "Yes",
     "nee": "No",
+    "disclaimer": "<strong>Please note:</strong> A legally valid will requires a <strong>notary</strong>. This document is not a legally binding will, but a personal overview for your next of kin.",
     "legitimairePortie": {
       "titel": "Possible violation of legitimate portion (legitimaire portie)",
       "beschrijving": "Based on {aantalKinderen, plural, one {# child} other {# children}}{heeftPartner, select, true { and a partner} other {}}, the minimum legitimate portion per child is {percentage}% of the estate (Civil Code Book 4, art. 4:63-4:69).",
@@ -2442,9 +2408,7 @@
       "summaryAlgemeneWensen": "General wishes:",
       "genereren": "Generating...",
       "downloadPdf": "Download draft will (PDF)"
-    },
-    "bevestigenTitel": "Save testament",
-    "bevestigenBeschrijving": "You are about to save your testament details. Please verify that all information is correct before confirming."
+    }
   },
   "personSelect": {
     "selecteer": "— Select existing person —",
@@ -2744,11 +2708,12 @@
     "opslaanMislukt": "Save failed.",
     "verwijderenMislukt": "Delete failed.",
     "bewerken": "Edit",
-    "wizardStarten": "Start filling in",
+    "wizardStarten": "Start wizard",
     "annuleren": "Cancel",
     "opslaan": "Save",
     "toevoegen": "Add",
     "geenWensen": "No funeral wishes recorded yet.",
+    "disclaimer": "<strong>Please note:</strong> Your funeral wishes are a personal guide for your next of kin and are not legally binding. Cost and insurance details are informational — consult your insurer or notary for your specific situation.",
     "ja": "Yes",
     "nee": "No",
     "uitvaartCard": {
@@ -2876,8 +2841,6 @@
   "uitvaartWizard": {
     "titel": "Funeral Wishes",
     "laden": "Loading...",
-    "bevestigenTitel": "Save Funeral Wishes",
-    "bevestigenBeschrijving": "You are about to save your funeral wishes. Please verify all details are correct before confirming.",
     "type": {
       "titel": "Type of Funeral",
       "beschrijving": "What is your preference for the funeral?",

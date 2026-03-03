@@ -224,6 +224,13 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "Offline digitale nalatenschap beheer — Lumio"
     });
+    // SP-1-004: IFormFile schema mapping — required for multipart/form-data endpoints
+    // Swashbuckle v10+ / Microsoft.OpenApi v2.x cannot auto-generate IFormFile schemas.
+    options.MapType<IFormFile>(() => new Microsoft.OpenApi.OpenApiSchema
+    {
+        Type = Microsoft.OpenApi.JsonSchemaType.String,
+        Format = "binary"
+    });
 });
 
 // Determine port from env or default

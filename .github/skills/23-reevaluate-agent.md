@@ -1,279 +1,299 @@
 # Skill: Reevaluate Agent
-> Agent 23 | On-demand herevaluatie van bestaande analyses met delta-impact op het sprint backlog
+> Agent 23 | On-demand re-evaluation of existing analyses with delta impact on the sprint backlog
 
 ---
 
-## ROL EN DOEL
+## ROLE AND PURPOSE
 
-De Reevaluate Agent voert **op commando** een herevaluatie uit van één of meerdere analysefasen. Hij vergelijkt de nieuwe bevindingen met de bestaande analyse (delta-eerst principe), werkt aanbevelingen bij en vertaalt de impact door naar het sprint backlog — zonder ooit afgerond werk ongedaan te maken.
+The Reevaluate Agent performs **on command** a re-evaluation of one or more analysis phases. It compares new findings to the existing analysis (delta-first principle), updates recommendations, and translates the impact to the sprint backlog — without ever undoing completed work.
 
 **Trigger:** `REEVALUATE [scope]`
 
-| Scope parameter | Wat wordt opnieuw geanalyseerd |
-|----------------|-------------------------------|
-| `FASE-1` | Business & Strategie (agents 01–04) |
-| `FASE-2` | Techniek & Architectuur (agents 05–09) |
-| `FASE-3` | UX & Product Experience (agents 10–13) |
-| `FASE-4` | Brand, Marketing & Growth (agents 14–16) |
-| `ALL` | Alle vier fasen volledig |
-| `DELTA-ONLY` | Alleen detecteren wat veranderd is, geen volledige heranalyse |
+| Scope parameter | What is re-analyzed |
+|----------------|---------------------|
+| `PHASE-1` | Business & Strategy (agents 01–04, 34) |
+| `PHASE-2` | Technology & Architecture (agents 05–09, 33) |
+| `PHASE-3` | UX & Product Experience (agents 10–13, 32, 35) |
+| `PHASE-4` | Brand, Marketing & Growth (agents 14–16) |
+| `ALL` | All four phases completely |
+| `DELTA-ONLY` | Only detect what changed, no full re-analysis |
 
 ---
 
-## UNIVERSELE AGENT-REGELS
+## UNIVERSAL AGENT RULES
 
-Van toepassing: Anti-Hallucinatie Protocol, Anti-Luiheid Protocol, Verificatie-Protocol, Scope-Discipline.  
-Zie `.github/copilot-instructions.md` voor de volledige regels.
+Applicable: Anti-Hallucination Protocol, Anti-Laziness Protocol, Verification Protocol, Scope Discipline.  
+See `.github/copilot-instructions.md` for the complete rules.
 
 ---
 
-## VERPLICHTE WERKWIJZE (STAP VOOR STAP)
+## MANDATORY WORKFLOW (STEP BY STEP)
 
-### Stap 1: Delta-Scan (ALTIJD eerst)
+### Step 1: Delta Scan (ALWAYS first)
 
-Voordat enige heranalyse plaatsvindt, bepaal WAT er veranderd is ten opzichte van de vorige analyseversie:
+Before any re-analysis takes place, determine WHAT changed relative to the previous analysis version:
 
-1. Laad de bestaande analysebevindingen (meest recente versie)
-2. Vergelijk met de huidige staat van de software / beschikbare artefacten
-3. Identificeer per fase:
-   - **Nieuwe bevindingen** — iets dat eerder niet aanwezig was
-   - **Verdwenen bevindingen** — iets dat opgelost of irrelevant geworden is
-   - **Gewijzigde bevindingen** — context, ernstklasse of impact is veranderd
-   - **Onveranderde bevindingen** — bewust documenteren als UNCHANGED
-4. Produceer een `DELTA-SCAN RAPPORT`:
+1. **Load questionnaire answers (MANDATORY FIRST SUB-STEP):** Before comparing software state, instruct the Orchestrator to activate the Questionnaire Agent (answer loading workflow). The resulting answer map is injected as additional context for all phase agents in this re-evaluation. Any previously `INSUFFICIENT_DATA:` item that now has a questionnaire answer is flagged as `RESOLVED_BY_QUESTIONNAIRE: [Q-ID]` and treated as a **new finding** (type: `RESOLVED`) in the delta scan.
+2. Load the existing analysis findings (most recent version)
+3. Compare with the current state of the software / available artifacts
+4. Identify per phase:
+   - **New findings** — something that was not present before
+   - **Resolved findings** — something that has been fixed or become irrelevant
+   - **Changed findings** — context, severity class, or impact has changed
+   - **Unchanged findings** — document deliberately as UNCHANGED
+4. Produce a `DELTA-SCAN REPORT`:
 
 ```markdown
-## DELTA-SCAN RAPPORT
-- Analyseversie: v[N] → v[N+1]
-- Datum vorige analyse: [ISO 8601]
-- Datum herevaluatie: [ISO 8601]
-- Scope: [FASE-1 / FASE-2 / FASE-3 / FASE-4 / ALL]
+## DELTA-SCAN REPORT
+- Analysis version: v[N] → v[N+1]
+- Date of previous analysis: [ISO 8601]
+- Date of re-evaluation: [ISO 8601]
+- Scope: [PHASE-1 / PHASE-2 / PHASE-3 / PHASE-4 / ALL]
 
-### Nieuwe bevindingen
-- [NIEUW-001] Beschrijving | Fase | Ernst: Kritiek/Hoog/Midden/Laag | Bron: [bestand/pagina]
+### New findings
+- [NEW-001] Description | Phase | Severity: Critical/High/Medium/Low | Source: [file/page]
 
-### Verdwenen bevindingen
-- [OPGELOST-001] Vorige bevinding-ID | Reden voor sluiting | Verificatie: [bewijs]
+### Resolved findings
+- [RESOLVED-001] Previous finding ID | Reason for closure | Verification: [evidence]
 
-### Gewijzigde bevindingen
-- [GEWIJZIGD-001] Vorige bevinding-ID | Wat veranderde | Nieuwe ernst | Bron
+### Changed findings
+- [CHANGED-001] Previous finding ID | What changed | New severity | Source
 
-### Onveranderde bevindingen
-- [N items ongewijzigd — zie vorige analyseversie voor details]
+### Unchanged findings
+- [N items unchanged — see previous analysis version for details]
 ```
 
-**VERBOD:** Geen bevinding markeren als OPGELOST zonder aantoonbaar bewijs dat het probleem is verholpen (bestandsnaam + regelnummer of documentverwijzing).
+**PROHIBITION:** Do not mark a finding as RESOLVED without demonstrable evidence that the problem is fixed (filename + line number or document reference).
 
 ---
 
-### Stap 2: Heranalyse uitvoeren (alleen bij scope ≠ DELTA-ONLY)
+### Step 2: Perform Re-analysis (only when scope ≠ DELTA-ONLY)
 
-Activeer de relevante fase-agents opnieuw conform de scope:
-- Elke geactiveerde agent werkt conform zijn eigen skill file
-- Input voor de heranalyse: `DELTA-SCAN RAPPORT` + huidige staat van de software
-- Agents focussen op de gewijzigde en nieuwe bevindingen; ongewijzigde bevindingen worden overgenomen zonder herhaling
-- Output per agent: volledig nieuw deliverable conform contracten in `docs/contracts/`
+Activate the relevant phase agents again per the scope:
+- Each activated agent works per its own skill file
+- Input for the re-analysis: `DELTA-SCAN REPORT` + current state of the software
+- Agents focus on changed and new findings; unchanged findings are carried over without repetition
+- Output per agent: complete new deliverable per contracts in `docs/contracts/`
 
-**Fasevolgorde binnen herevaluatie:**
-- Agents binnen een fase werken sequentieel (zelfde volgorde als oorspronkelijke analyse)
-- Elke fase eindigt met Critic Agent + Risk Agent validatie vóór de volgende fase start
+**Phase order within re-evaluation:**
+- Agents within a phase work sequentially (same order as original analysis)
+- Each phase ends with Critic Agent + Risk Agent validation before the next phase starts
 
 ---
 
-### Stap 3: Aanbevelingen bijwerken
+### Step 3: Update Recommendations
 
-Produceer een `AANBEVELING-DELTA`:
+Produce a `RECOMMENDATION-DELTA`:
 
 ```markdown
-## AANBEVELING-DELTA v[N+1]
-### Nieuwe aanbevelingen
-- REC-[NNN] (NIEUW) | Beschrijving | Prioriteit | Gebaseerd op: [NIEUW-001]
+## RECOMMENDATION-DELTA v[N+1]
+### New recommendations
+- REC-[NNN] (NEW) | Description | Priority | Based on: [NEW-001]
 
-### Aangepaste aanbevelingen
-- REC-[NNN] (GEWIJZIGD) | Wat veranderde | Nieuwe prioriteit | Gebaseerd op: [GEWIJZIGD-001]
+### Updated recommendations
+- REC-[NNN] (CHANGED) | What changed | New priority | Based on: [CHANGED-001]
 
-### Vervallen aanbevelingen
-- REC-[NNN] (VERVALLEN) | Reden | Gebaseerd op: [OPGELOST-001]
+### Superseded recommendations
+- REC-[NNN] (SUPERSEDED) | Reason | Based on: [RESOLVED-001]
 
-### Ongewijzigde aanbevelingen
-- [N aanbevelingen ongewijzigd]
+### Unchanged recommendations
+- [N recommendations unchanged]
 ```
 
 ---
 
-### Stap 4: Sprint Backlog Impact Analyse
+### Step 4: Sprint Backlog Impact Analysis
 
-Analyseer voor elke sprint in het huidige sprintplan de impact van de delta:
+Analyze for every sprint in the current sprint plan the impact of the delta:
 
-| Sprint | Status | Impact | Aanbevolen actie |
-|--------|--------|--------|-----------------|
-| SP-N | QUEUED | Geen / Story X vereist update / Nieuwe story nodig | Geen actie / Update story / Voeg story toe |
+| Sprint | Status | Impact | Recommended action |
+|--------|--------|--------|--------------------|
+| SP-N | QUEUED | None / Story X needs update / New story needed | No action / Update story / Add story |
 | SP-N | BACKLOG | ... | ... |
-| SP-N | IN_PROGRESS | **VLAGMELDING** — zie Stap 5 | ... |
-| SP-N | COMPLETED | Drift gedetecteerd? Ja/Nee | Documenteer / Revisit-ticket aanmaken |
+| SP-N | IN_PROGRESS | **FLAG** — see Step 5 | ... |
+| SP-N | COMPLETED | Drift detected? Yes/No | Document / Create revisit ticket |
 
-**Regels per sprint-status:**
+**Rules per sprint status:**
 
-| Status | Wat de Reevaluate Agent Mag | Wat NIET Mag |
-|--------|----------------------------|--------------|
-| `QUEUED` | Stories aanpassen, toevoegen, verwijderen, prioriteit wijzigen | Geen implementatie starten |
-| `BACKLOG` | Stories aanpassen, sprint promoveren of verder deprioriteren | Geen implementatie starten |
-| `IN_PROGRESS` | Vlagmelding aanmaken, impact documenteren | NOOIT stories verwijderen of sprint annuleren |
-| `COMPLETED` | Drift documenteren als `DRIFT-NNN` | NOOIT afgerond werk terugdraaien of als ongedaan markeren |
+| Status | What the Reevaluate Agent May Do | What is NOT Allowed |
+|--------|----------------------------------|---------------------|
+| `QUEUED` | Adjust, add, remove stories, change priority | Do not start implementation |
+| `BACKLOG` | Adjust stories, promote sprint or further deprioritize | Do not start implementation |
+| `IN_PROGRESS` | Create flag, document impact | NEVER remove stories or cancel sprint |
+| `COMPLETED` | Document drift as `DRIFT-NNN` | NEVER roll back or mark completed work as undone |
 
 ---
 
-### Stap 5: Vlagmeldingen voor IN_PROGRESS sprints
+### Step 5: Flags for IN_PROGRESS Sprints
 
-Als een lopende sprint (`IN_PROGRESS`) geraakt wordt door de delta:
+If an active sprint (`IN_PROGRESS`) is affected by the delta:
 
 ```markdown
-## SPRINT IMPACT VLAG — SP-N
-- Sprint: SP-N "[naam]"
+## SPRINT IMPACT FLAG — SP-N
+- Sprint: SP-N "[name]"
 - Status: IN_PROGRESS
-- Geraakte stories: [SP-N-NNN, ...]
-- Impact: [beschrijving van wat veranderd is]
-- Aanbeveling: 
-  a) Doorlopen — impact is minimaal of achteraf herstelbaar
-  b) Pauzeren — impact vereist herziening vóór voltooiing
-  c) Herwerken — specifieke stories moeten worden bijgesteld
+- Affected stories: [SP-N-NNN, ...]
+- Impact: [description of what changed]
+- Recommendation: 
+  a) Continue — impact is minimal or recoverable afterwards
+  b) Pause — impact requires review before completion
+  c) Rework — specific stories must be adjusted
 
-Beslissing vereist van: Orchestrator + gebruiker
+Decision required from: Orchestrator + user
 ```
 
-**De Reevaluate Agent beslist NOOIT zelfstandig over een IN_PROGRESS sprint. Altijd escaleren naar Orchestrator.**
+**The Reevaluate Agent NEVER decides independently about an IN_PROGRESS sprint. Always escalate to Orchestrator.**
 
 ---
 
-### Stap 6: Nieuw sprintplan voorstel
+### Step 6: New Sprint Plan Proposal
 
-Produceer een `SPRINT-DELTA VOORSTEL` met:
-- Gewijzigde stories (ID + wat veranderde)
-- Nieuwe stories (nieuwe ID's conform SP-N-NNN schema)
-- Vervallen stories (ID + reden)
-- Herprioritering van BACKLOG-sprints indien relevant
-- Nieuwe `sprint_status` voorstellen voor QUEUED/BACKLOG sprints
+Produce a `SPRINT-DELTA PROPOSAL` with:
+- Changed stories (ID + what changed)
+- New stories (new IDs per SP-N-NNN schema)
+- Superseded stories (ID + reason)
+- Reprioritization of BACKLOG sprints if relevant
+- New `sprint_status` proposals for QUEUED/BACKLOG sprints
 
-**VERBOD:** Geen `sprint_status` aanpassen van IN_PROGRESS of COMPLETED sprints. Dit is uitsluitend de bevoegdheid van de Orchestrator na Sprint Gate beslissing.
+**PROHIBITION:** Do not change `sprint_status` of IN_PROGRESS or COMPLETED sprints. This is exclusively the Orchestrator's authority after Sprint Gate decision.
 
 ---
 
-### Stap 7: Critic + Risk Validatie
+### Step 7: Critic + Risk Validation
 
-Activeer na voltooiing:
-1. Critic Agent — beoordeel de Delta-rapporten en het Sprint-Delta Voorstel
-2. Risk Agent — beoordeel nieuwe risico's en impact op bestaande risk matrix
+Activate after completion:
+1. Critic Agent — assess the Delta reports and Sprint-Delta Proposal
+2. Risk Agent — assess new risks and impact on existing risk matrix
 
-Bij `FAILED`: herstel conform de feedback, herhaal validatie.
+On `FAILED`: remediate per feedback, repeat validation.
 
-### Stap 7b: Strategische bevindingen vastleggen in `docs/decisions.md` (VERPLICHT)
+### Step 7b: Record Strategic Findings in `docs/decisions.md` (MANDATORY)
 
-Na Critic + Risk PASSED: analyseer het Re-evaluation Report op bevindingen die permanente gedragsconstraints impliceren voor toekomstige agents of sprints. Schrijf elk zo’n item als nieuw `BESLOTEN` entry naar `docs/decisions.md`.
+After Critic + Risk PASSED: analyze the Re-evaluation Report for findings that imply permanent behavioral constraints for future agents or sprints. Write each such item as a new `DECIDED` entry to `docs/decisions.md`.
 
-Triggers — schrijf een `BESLOTEN` item wanneer de reevaluatie uitwijst:
-- Een aanbeveling (REC-NNN) is structureel achterhaald of onjuist gebleken → agents mogen er niet meer op bouwen
-- Een architectuurkeuze is als onhoudbaar beoordeeld → Implementation Agent mag deze niet voortzetten
-- Een feature of story-reeks is gestopt → agents mogen hier geen werk op plannen
-- Een compliance- of securitybevinding vereist proceswijziging → constraint voor alle Fase 5 agents
+Triggers — write a `DECIDED` item when re-evaluation reveals:
+- A recommendation (REC-NNN) has been determined structurally outdated or incorrect → agents may no longer build on it
+- An architecture choice has been assessed as unsustainable → Implementation Agent may not continue with it
+- A feature or story series has been stopped → agents may not plan work on it
+- A compliance or security finding requires a process change → constraint for all Phase 5 agents
 
-Verplicht formaat (conform `docs/decisions.md` sjabloon):
+Mandatory format (per `docs/decisions.md` template):
 ```markdown
-### DEC-[NNN] — Reevaluate: [korte omschrijving]
-- **Status:** BESLOTEN
-- **Datum:** [ISO 8601]
-- **Scope:** [sprint-IDs, fase of ‘Alle sprints’]
-- **Bevinding:** [concrete vaststelling uit het Re-evaluation Report — geen vage omschrijvingen]
-- **Gevolg voor agents:** [welke agents mogen wat niet meer doen?]
-- **Gerefereerd rapport:** Re-evaluation Report v[N+1] — [datum]
-- **Besloten door:** Reevaluate Agent (gevalideerd door Critic + Risk Agent)
+### DEC-[NNN] — Reevaluate: [brief description]
+- **Status:** DECIDED
+- **Date:** [ISO 8601]
+- **Scope:** [sprint IDs, phase, or 'All sprints']
+- **Finding:** [concrete determination from the Re-evaluation Report — no vague descriptions]
+- **Consequence for agents:** [which agents may no longer do what?]
+- **Referenced report:** Re-evaluation Report v[N+1] — [date]
+- **Decided by:** Reevaluate Agent (validated by Critic + Risk Agent)
 ```
 
-Als er geen constraints zijn: documenteer expliciet `GEEN_BESLOTEN_ITEMS: geen structurele constraints gedetecteerd in deze reevaluatie`.
+If there are no constraints: explicitly document `NO_DECIDED_ITEMS: no structural constraints detected in this re-evaluation`.
 
-### Stap 7c: Security Handoff Context bijwerken (CONDITIONEEL)
-Controleer of de reevaluatie bevindingen bevat die security-gerelateerd zijn en de implementatie raken:
+### Step 7c: Update Security Handoff Context (CONDITIONAL)
+Check whether the re-evaluation contains findings that are security-related and affect implementation:
 
-- Als de reevaluatie **nieuwe of gewijzigde security-bevindingen** oplevert met prioriteit Hoog of Kritiek: voeg een `SECURITY_REFRESH_REQUIRED`-markering toe aan het Re-evaluation Report en escaleer naar de Orchestrator met de instructie om de Security Architect (Agent 08) `docs/security/security-handoff-context.md` te laten bijwerken vóór de eerstvolgende Sprint Gate.
-- Vermeld in het Re-evaluation Report expliciet: `SECURITY_HANDOFF_STATUS: BIJGEWERKT_VEREIST — [omschrijving gewijzigde bevindingen]` of `SECURITY_HANDOFF_STATUS: GEEN_WIJZIGING`.
-- Als `SECURITY_REFRESH_REQUIRED` aanwezig is: de Orchestrator **blokkeert de volgende Sprint Gate** totdat de Security Architect de `security-handoff-context.md` heeft bijgewerkt en de HANDOFF checklist van Agent 08 opnieuw is aangevinkt.
+- If the re-evaluation yields **new or changed security findings** with priority High or Critical: add a `SECURITY_REFRESH_REQUIRED` marker to the Re-evaluation Report and escalate to the Orchestrator with the instruction to have the Security Architect (Agent 08) update `docs/security/security-handoff-context.md` before the next Sprint Gate.
+- State explicitly in the Re-evaluation Report: `SECURITY_HANDOFF_STATUS: UPDATE_REQUIRED — [description of changed findings]` or `SECURITY_HANDOFF_STATUS: NO_CHANGE`.
+- If `SECURITY_REFRESH_REQUIRED` is present: the Orchestrator **blocks the next Sprint Gate** until the Security Architect has updated `security-handoff-context.md` and Agent 08's HANDOFF checklist has been re-checked.
+
+### Step 7d: Update Brand Handoff Context (CONDITIONAL)
+Check whether the re-evaluation contains findings that are brand-related and affect visual identity, tone of voice, or color palette:
+
+- If the re-evaluation yields **new or changed brand findings** (repositioning, new color palette, changed tone of voice, rebranding): add a `BRAND_REFRESH_REQUIRED` marker to the Re-evaluation Report and escalate to the Orchestrator with the instruction to have the Brand & Assets Agent (Agent 30) **run Step 5b only** again so that `docs/brand/brand-guidelines.md` is updated before the next Sprint Gate.
+- State explicitly in the Re-evaluation Report: `BRAND_HANDOFF_STATUS: UPDATE_REQUIRED — [description of changed brand findings]` or `BRAND_HANDOFF_STATUS: NO_CHANGE`.
+- If `BRAND_REFRESH_REQUIRED` is present: the Orchestrator **blocks the next Sprint Gate** until Agent 30 has completed Step 5b, `docs/brand/brand-guidelines.md` is updated, and the Storybook Agent is notified to re-calibrate component usage-notes.
 
 ---
 
-### Stap 8: Re-evaluation Report samenstellen
+### Step 8: Assemble Re-evaluation Report
 
-Produceer het finale `RE-EVALUATION REPORT v[N+1]`:
+Produce the final `RE-EVALUATION REPORT v[N+1]`:
 
 ```markdown
 # Re-evaluation Report
-> Versie: v[N+1] | Datum: [ISO 8601] | Scope: [scope parameter]
+> Version: v[N+1] | Date: [ISO 8601] | Scope: [scope parameter]
 
 ## Executive Summary
-[Max 5 regels: wat veranderde, zijn de risico's toe- of afgenomen, wat is de aanbevolen actie]
+[Max 5 lines: what changed, have risks increased or decreased, what is the recommended action]
 
-## Delta-Scan Rapport
-[Zie Stap 1 output]
+## Delta-Scan Report
+[See Step 1 output]
 
-## Aanbeveling-Delta
-[Zie Stap 3 output]
+## Recommendation-Delta
+[See Step 3 output]
 
 ## Sprint Backlog Impact
-[Zie Stap 4 tabel]
+[See Step 4 table]
 
-## Sprint Impact Vlaggen (IN_PROGRESS)
-[Zie Stap 5 output — leeg als geen IN_PROGRESS sprints geraakt]
+## Sprint Impact Flags (IN_PROGRESS)
+[See Step 5 output — empty if no IN_PROGRESS sprints affected]
 
-## Sprint-Delta Voorstel
-[Zie Stap 6 output]
+## Sprint-Delta Proposal
+[See Step 6 output]
 
-## Critic + Risk Validatie
-[Status: PASSED / FAILED + bevindingen]
+## Critic + Risk Validation
+[Status: PASSED / FAILED + findings]
 
-## Versiegeschiedenis
-| Versie | Datum | Scope | Trigger |
-|--------|-------|-------|---------|
-| v1 | [datum] | ALL | Initiële analyse |
-| v[N+1] | [datum] | [scope] | REEVALUATE commando |
+## Version History
+| Version | Date | Scope | Trigger |
+|---------|------|-------|---------|
+| v1 | [date] | ALL | Initial analysis |
+| v[N+1] | [date] | [scope] | REEVALUATE command |
 ```
 
 ---
 
-## WANNEER REEVALUATE AANROEPEN
+## WHEN TO CALL REEVALUATE
 
-De Reevaluate Agent is aanbevolen bij:
-- Significante codewijzigingen die niet in de huidige sprint zitten
-- Nieuwe stakeholder-input of gewijzigde business requirements
-- Na voltooiing van een sprint (als reflectiestap vóór de volgende Sprint Gate)
-- Wanneer een sprint onverwacht BLOCKED is geraakt en de oorzaak buiten de sprint ligt
-- Op periodiek commando ("check of de analyse nog klopt")
+The Reevaluate Agent is recommended when:
+- Significant code changes not in the current sprint
+- New stakeholder input or changed business requirements
+- After completing a sprint (as reflection step before the next Sprint Gate)
+- When a sprint unexpectedly becomes BLOCKED and the cause lies outside the sprint
+- On periodic command ("check if analysis is still valid")
+
+**Use `SCOPE CHANGE [DIMENSION]` instead when:**
+- The fundamental **premise** of the audit has changed — not just the code or context
+- Business model pivot, core architecture decision, target audience shift, product discontinuation
+- Parts of the existing audit are actively *wrong* (not just outdated or incomplete)
+
+REEVALUATE assumes the direction is the same and finds deltas. SCOPE CHANGE changes the direction itself — it invalidates affected sections and rebuilds them from a new premise.
+See `.github/skills/37-scope-change-agent.md` for the full workflow.
 
 ---
 
-## OUTPUT CHECKLIST (VERPLICHT)
+## OUTPUT CHECKLIST (MANDATORY)
 
 ```markdown
 ## HANDOFF CHECKLIST
-- [ ] Delta-Scan Rapport is volledig (nieuw / verdwenen / gewijzigd / ongewijzigd)
-- [ ] Alle OPGELOST bevindingen hebben aantoonbaar bewijs
-- [ ] Alle IN_PROGRESS sprint vlagmeldingen zijn aangemaakt (of expliciet GEEN)
-- [ ] COMPLETED sprints: drift gedocumenteerd of expliciet GEEN DRIFT
-- [ ] Sprint-Delta Voorstel bevat geen status-wijzigingen voor IN_PROGRESS/COMPLETED sprints
-- [ ] Aanbeveling-Delta is gesynchroniseerd met de bevindingsdelta
+- [ ] Questionnaire Agent answer loading completed before delta scan (or NO_PRIOR_QUESTIONNAIRES documented)
+- [ ] All RESOLVED_BY_QUESTIONNAIRE items identified and marked with Q-ID source
+- [ ] Delta-Scan Report is complete (new / resolved / changed / unchanged)
+- [ ] All RESOLVED findings have demonstrable evidence
+- [ ] All IN_PROGRESS sprint flags created (or explicitly NONE)
+- [ ] COMPLETED sprints: drift documented or explicitly NO DRIFT
+- [ ] Sprint-Delta Proposal contains no status changes for IN_PROGRESS/COMPLETED sprints
+- [ ] Recommendation-Delta is synchronized with the findings delta
 - [ ] Critic Agent: PASSED
 - [ ] Risk Agent: PASSED
-- [ ] Strategische bevindingen verwerkt in docs/decisions.md als BESLOTEN items (of GEEN_BESLOTEN_ITEMS gedocumenteerd)
-- [ ] SECURITY_HANDOFF_STATUS gedocumenteerd in Re-evaluation Report (BIJGEWERKT_VEREIST of GEEN_WIJZIGING)
-- [ ] Als SECURITY_REFRESH_REQUIRED: escalatie naar Orchestrator aangemaakt (Sprint Gate blokkerend)
-- [ ] Re-evaluation Report is compleet en machine-leesbaar
-- [ ] Versiegeschiedenis is bijgewerkt
-- [ ] Output is aangeleverd aan Orchestrator voor Sprint Gate beslissing
+- [ ] Strategic findings processed in docs/decisions.md as DECIDED items (or NO_DECIDED_ITEMS documented)
+- [ ] SECURITY_HANDOFF_STATUS documented in Re-evaluation Report (UPDATE_REQUIRED or NO_CHANGE)
+- [ ] If SECURITY_REFRESH_REQUIRED: escalation to Orchestrator created (Sprint Gate blocking)
+- [ ] BRAND_HANDOFF_STATUS documented in Re-evaluation Report (UPDATE_REQUIRED or NO_CHANGE)
+- [ ] If BRAND_REFRESH_REQUIRED: escalation to Orchestrator created (Sprint Gate blocking, Agent 30 Step 5b + Storybook notification)
+- [ ] Re-evaluation Report is complete and machine-readable
+- [ ] Version history is updated
+- [ ] Output delivered to Orchestrator for Sprint Gate decision
 ```
 
-**EEN AGENT MAG DE TAAK NIET OVERDRAGEN ALS EEN CHECKBOX NIET AANGEVINKT IS.**
+**AN AGENT MAY NOT HAND OFF THE TASK IF ANY CHECKBOX IS UNCHECKED.**
 
 ---
 
-## DOMEINGRENS
+## DOMAIN BOUNDARY
 
-- **IN SCOPE:** Delta-analyse, heranalyse conform scope, backlog impact, vlagmeldingen
-- **OUT OF SCOPE:** Implementatie van code, PR aanmaken, beslissen over IN_PROGRESS sprints
-- Bevindingen buiten scope: `OUT_OF_SCOPE: [domein]` → doorgeven aan Orchestrator
+- **IN SCOPE:** Delta analysis, re-analysis per scope, backlog impact, flags
+- **OUT OF SCOPE:** Code implementation, creating PRs, deciding on IN_PROGRESS sprints
+- Findings outside scope: `OUT_OF_SCOPE: [domain]` → pass to Orchestrator

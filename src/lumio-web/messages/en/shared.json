@@ -31,14 +31,18 @@
     "activiteitenlog": "Activity Log",
     "instellingen": "Settings",
     "handleiding": "User Guide",
+    "privacyverklaring": "Privacy Policy",
     "navigatie": "Main navigation",
     "groep": {
       "overzicht": "Overview",
       "wensen": "Wishes",
       "bezittingen": "Assets",
       "personen": "People",
-      "hulpmiddelen": "Tools"
-    }
+      "hulpmiddelen": "Tools",
+      "beheer": "Management"
+    },
+    "voortgang": "{aantalIngevuld} of {totaal} sections filled in",
+    "voortgangAria": "Legacy progress: {percentage}% filled in"
   },
   "enums": {
     "burgerlijkeStaat": {

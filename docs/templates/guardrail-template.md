@@ -1,106 +1,106 @@
 # Guardrail Template
-> Gebruik dit template voor de guardrail-deliverable van elke agent.
-> Zie `docs/contracts/guardrails-output-contract.md` voor de volledige eisen.
+> Use this template for the guardrail deliverable of each agent.
+> See `docs/contracts/guardrails-output-contract.md` for the full requirements.
 
 ---
 
 ```markdown
-# Guardrails – [DISCIPLINE INVULLEN] – [DATUM ISO 8601]
+# Guardrails – [FILL IN DISCIPLINE] – [DATE ISO 8601]
 
 ## Metadata
-- **Agent:** [naam]
-- **Fase:** [1 / 2 / 3 / 4]
-- **Gebaseerd op analyse:** [referentie naar analyse-document]
-- **Datum:** [YYYY-MM-DD]
+- **Agent:** [name]
+- **Phase:** [1 / 2 / 3 / 4]
+- **Based on analysis:** [reference to analysis document]
+- **Date:** [YYYY-MM-DD]
 
 ---
 
-> ⚠️ HERINNERING: Een guardrail is een TESTBARE, BINDENDE beslissingsregel.
-> Formuleer als verbod of verplichting. Begin met een werkwoord.
-> Elke guardrail MOET een schending-actie en verificatiemethode hebben.
+> ⚠️ REMINDER: A guardrail is a TESTABLE, BINDING decision rule.
+> Formulate as a prohibition or obligation. Start with a verb.
+> Every guardrail MUST have a violation action and verification method.
 >
-> NIET geldig: "Zorg voor goede codekwaliteit"
-> WEL geldig: "Code mag niet worden gemerged zonder code review door een senior (G-DISC-001)"
+> INVALID: "Ensure good code quality"
+> VALID: "Code must not be merged without code review by a senior (G-DISC-001)"
 
 ---
 
-## G-[DISC]-001 – [Guardrail titel]
+## G-[DISC]-001 – [Guardrail title]
 
 ### Scope
-- **Van toepassing op:** [welke agents / fasen / artefacten / beslissingen]
-- **Tijdshorizon:** [permanent / tot sprint N / review datum YYYY-MM-DD]
+- **Applies to:** [which agents / phases / artifacts / decisions]
+- **Time horizon:** [permanent / until sprint N / review date YYYY-MM-DD]
 
-### Regel
-> Begin met een werkwoord. Formuleer concreet en testbaar.
+### Rule
+> Start with a verb. Formulate concretely and testably.
 
-[Bijv: "Mag niet worden gemerged" / "Moet altijd bevatten" / "Vereist goedkeuring van" / "Is verboden tenzij"]
+[E.g.: "Must not be merged" / "Must always contain" / "Requires approval from" / "Is prohibited unless"]
 
-### Schending Actie
-> Wat gebeurt er concreet als deze guardrail wordt overtreden?
+### Violation Action
+> What happens concretely when this guardrail is violated?
 
-1. Markeer als `GUARDRAIL_VIOLATION: G-[DISC]-001`
-2. [Concrete vervolgactie – bijv. "Blokkeer handoff", "Escaleer naar Orchestrator", "Revert de wijziging"]
-3. [Herstelstap]
+1. Mark as `GUARDRAIL_VIOLATION: G-[DISC]-001`
+2. [Concrete follow-up action – e.g. "Block handoff", "Escalate to Orchestrator", "Revert the change"]
+3. [Remediation step]
 
 ### Rationale
-> Waarom is dit een guardrail? Verwijs naar een concrete bevinding.
+> Why is this a guardrail? Reference a concrete finding.
 
-**Gebaseerd op:** [RISK-NNN] / [GAP-NNN] / [CS-NNN]  
-[Beschrijving: welk risico of gap rechtvaardigt deze guardrail?]
+**Based on:** [RISK-NNN] / [GAP-NNN] / [CS-NNN]
+[Description: what risk or gap justifies this guardrail?]
 
-### Verificatiemethode
-> Hoe verifieer je of een artefact aan deze guardrail voldoet?
+### Verification Method
+> How do you verify whether an artifact complies with this guardrail?
 
-[Bijv: "Automated test in CI-pipeline", "Checklist-item in code review", "Handmatige audit bij sprint review", "Automated linting rule"]
+[E.g.: "Automated test in CI pipeline", "Checklist item in code review", "Manual audit at sprint review", "Automated linting rule"]
 
 ---
 
-## G-[DISC]-002 – [Guardrail titel]
+## G-[DISC]-002 – [Guardrail title]
 
 ### Scope
 [...]
 
-### Regel
+### Rule
 [...]
 
-### Schending Actie
+### Violation Action
 [...]
 
 ### Rationale
 [...]
 
-### Verificatiemethode
+### Verification Method
 [...]
 
 ---
 
 ## G-[DISC]-NNN – [...]
 
-[Herhaal bovenstaande structuur voor elke guardrail]
+[Repeat the above structure for each guardrail]
 
 ---
 
-## GUARDRAIL OVERZICHT
+## GUARDRAIL OVERVIEW
 
-| ID | Titel | Van toepassing op | Prioriteit | Verificatiemethode |
+| ID | Title | Applies to | Priority | Verification Method |
 |----|-------|------------------|------------|-------------------|
-| G-[DISC]-001 | [...] | [...] | Kritiek / Hoog / Midden | [...] |
+| G-[DISC]-001 | [...] | [...] | Critical / High / Medium | [...] |
 | G-[DISC]-002 | [...] | [...] | [...] | [...] |
 
 ---
 
 ## HANDOFF CHECKLIST
 
-- [ ] Alle guardrails zijn testbaar geformuleerd (begin met werkwoord, concrete conditie)
-- [ ] Alle guardrails hebben een expliciete schending-actie
-- [ ] Alle guardrails hebben een rationale met verwijzing naar een analyse-bevinding
-- [ ] Alle guardrails hebben een concrete verificatiemethode
-- [ ] Overzichtstabel is volledig en consistent met de individuele guardrails
-- [ ] Geen duplicaten met bestaande guardrails in `/docs/guardrails/`
-- [ ] JSON export aanwezig en syntactisch valide
-- [ ] Zelfcontrole uitgevoerd
+- [ ] All guardrails are formulated testably (start with verb, concrete condition)
+- [ ] All guardrails have an explicit violation action
+- [ ] All guardrails have a rationale referencing an analysis finding
+- [ ] All guardrails have a concrete verification method
+- [ ] Overview table is complete and consistent with individual guardrails
+- [ ] No duplicates with existing guardrails in `/docs/guardrails/`
+- [ ] JSON export present and syntactically valid
+- [ ] Self-review performed
 
-**STATUS: GEREED VOOR HANDOFF / GEBLOKKEERD**
+**STATUS: READY FOR HANDOFF / BLOCKED**
 
 ---
 

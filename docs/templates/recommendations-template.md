@@ -1,67 +1,67 @@
-# Aanbevelingen Template
-> Gebruik dit template voor de aanbevelingen-deliverable van elke agent.
-> Zie `docs/contracts/recommendations-output-contract.md` voor de volledige eisen.
+# Recommendations Template
+> Use this template for the recommendations deliverable of each agent.
+> See `docs/contracts/recommendations-output-contract.md` for the full requirements.
 
 ---
 
 ```markdown
-# Aanbevelingen – [DISCIPLINE INVULLEN] – [DATUM ISO 8601]
+# Recommendations – [FILL IN DISCIPLINE] – [DATE ISO 8601]
 
 ## Metadata
-- **Agent:** [naam]
-- **Fase:** [1 / 2 / 3 / 4]
-- **Gebaseerd op analyse:** [referentie naar analyse-document]
-- **Datum:** [YYYY-MM-DD]
+- **Agent:** [name]
+- **Phase:** [1 / 2 / 3 / 4]
+- **Based on analysis:** [reference to analysis document]
+- **Date:** [YYYY-MM-DD]
 
 ---
 
-## REC-001 – [Korte titel van de aanbeveling]
+## REC-001 – [Short title of the recommendation]
 
-### Probleem
-[Concrete beschrijving van het probleem dat deze aanbeveling oplost]  
-**Analyse referentie:** [GAP-NNN] en/of [RISK-NNN] en/of [CS-NNN]
+### Problem
+[Concrete description of the problem this recommendation solves]
+**Analysis reference:** [GAP-NNN] and/or [RISK-NNN] and/or [CS-NNN]
 
-### Oplossing
-[Concrete, specifieke oplossing. NIET generiek. NIET "verbeter X".]
+### Solution
+[Concrete, specific solution. NOT generic. NOT "improve X".]
 
-**Implementatie-aanpak:**
-1. **Stap 1:** [Wat, Hoe, Door wie, Wanneer]
-2. **Stap 2:** [...]
-3. **Stap 3:** [...]
+**Implementation approach:**
+1. **Step 1:** [What, How, By whom, When]
+2. **Step 2:** [...]
+3. **Step 3:** [...]
 
 ### Impact
 
-| Dimensie | Verwacht effect | Rationale / Databron |
+| Dimension | Expected effect | Rationale / Data source |
 |----------|----------------|---------------------|
-| Revenue | [bedrag / % / INSUFFICIENT_DATA:] | [onderbouwing – of reden voor INSUFFICIENT_DATA] |
-| Risk Reductie | [beschrijving + voor/na niveau] | [onderbouwing] |
-| Cost | [bedrag / % besparing / INSUFFICIENT_DATA:] | [onderbouwing] |
-| UX | [beschrijving] | [onderbouwing] |
+| Revenue | [amount / % / INSUFFICIENT_DATA:] | [substantiation – or reason for INSUFFICIENT_DATA] |
+| Risk Reduction | [description + before/after level] | [substantiation] |
+| Cost | [amount / % savings / INSUFFICIENT_DATA:] | [substantiation] |
+| UX | [description] | [substantiation] |
 
 ### Rationale
-[Theoretisch kader óf bewezen aanpak óf data die de keuze onderbouwt.  
-Verwijs naar frameworks, literatuur, of meetdata. GEEN "dit is best practice" zonder toelichting.]
+[Theoretical framework OR proven approach OR data that substantiates the choice.
+Reference frameworks, literature, or measurement data. NO "this is best practice" without explanation.]
 
-### Afhankelijkheden
-- **Vereist vóór uitvoering:** [andere aanbeveling ID / technische vereiste / externe factor]
-- **Geblokkeerd door:** [indien van toepassing – anders "geen"]
-- **Afhankelijk van output van:** [agent naam – indien van toepassing]
+### Dependencies
+- **Required before execution:** [other recommendation ID / technical requirement / external factor]
+- **Blocked by:** [if applicable – otherwise "none"]
+- **Dependent on output from:** [agent name – if applicable]
 
-### Risico van NIET uitvoeren
-[Wat zijn de concrete gevolgen als deze aanbeveling niet wordt geïmplementeerd?]
+### Risk of NOT implementing
+[What are the concrete consequences if this recommendation is not implemented?]
 
-### Meetcriterium
-- **KPI:** [specifieke, meetbare KPI]
-- **Baseline:** [huidige waarde of INSUFFICIENT_DATA:]
-- **Target:** [beoogde waarde na implementatie]
-- **Meetmethode:** [hoe en waar meten]
-- **Tijdshorizon:** [wanneer is het resultaat meetbaar – bijv. "na 1 sprint", "na 3 maanden"]
+### Measurement Criterion
+- **KPI:** [specific, measurable KPI]
+- **Baseline:** [current value or INSUFFICIENT_DATA:]
+- **Target:** [intended value after implementation]
+- **Measurement method:** [how and where to measure]
+- **Time horizon:** [when is the result measurable – e.g. "after 1 sprint", "after 3 months"]
 
 ---
 
-## REC-002 – [Korte titel]
+## REC-002 – [Short title]
 
-[Herhaal bovenstaande structuur]
+[Repeat the above structure]
 
 ---
 
@@ -71,38 +71,38 @@ Verwijs naar frameworks, literatuur, of meetdata. GEEN "dit is best practice" zo
 
 ---
 
-## PRIORITEITENMATRIX (VERPLICHT)
+## PRIORITY MATRIX (MANDATORY)
 
-> Sorteer op prioriteit. Motiveer elke Impact en Effort schatting.
+> Sort by priority. Justify every Impact and Effort estimate.
 
-| Aanbeveling ID | Beschrijving | Impact | Effort | Prioriteit | Gesuggereerde Sprint |
+| Recommendation ID | Description | Impact | Effort | Priority | Suggested Sprint |
 |----------------|-------------|--------|--------|------------|---------------------|
-| REC-001 | [...] | Hoog / Midden / Laag | Hoog / Midden / Laag | P1 / P2 / P3 | Sprint [N] |
+| REC-001 | [...] | High / Medium / Low | High / Medium / Low | P1 / P2 / P3 | Sprint [N] |
 
-**Impact rationale:**  
-- REC-001: [waarom Hoog/Midden/Laag impact]  
+**Impact rationale:**
+- REC-001: [why High/Medium/Low impact]
 - REC-002: [...]
 
-**Effort rationale:**  
-- REC-001: [waarom Hoog/Midden/Laag effort]  
+**Effort rationale:**
+- REC-001: [why High/Medium/Low effort]
 - REC-002: [...]
 
 ---
 
 ## HANDOFF CHECKLIST
 
-- [ ] Elke aanbeveling verwijst naar een analyse-bevinding (GAP/RISK/CS ID)
-- [ ] Geen lege impact-cellen (of expliciet INSUFFICIENT_DATA:)
-- [ ] Alle impacts hebben een rationale of databron
-- [ ] Alle meetcriteria zijn SMART (Specifiek, Meetbaar, Acceptabel, Realistisch, Tijdgebonden)
-- [ ] Afhankelijkheden zijn volledig gedocumenteerd
-- [ ] Prioriteitenmatrix is volledig ingevuld
-- [ ] Geen aanbevelingen buiten het competentiedomein van deze agent
-- [ ] JSON export aanwezig en syntactisch valide
-- [ ] Geen gegenereerde/geschatte impact-getallen zonder databron
-- [ ] Zelfcontrole uitgevoerd
+- [ ] Every recommendation references an analysis finding (GAP/RISK/CS ID)
+- [ ] No empty impact cells (or explicitly INSUFFICIENT_DATA:)
+- [ ] All impacts have a rationale or data source
+- [ ] All measurement criteria are SMART (Specific, Measurable, Achievable, Realistic, Time-bound)
+- [ ] Dependencies are fully documented
+- [ ] Priority matrix is fully completed
+- [ ] No recommendations outside the competence domain of this agent
+- [ ] JSON export present and syntactically valid
+- [ ] No generated/estimated impact figures without data source
+- [ ] Self-review performed
 
-**STATUS: GEREED VOOR HANDOFF / GEBLOKKEERD**
+**STATUS: READY FOR HANDOFF / BLOCKED**
 
 ---
 

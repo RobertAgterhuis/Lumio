@@ -14,17 +14,20 @@ public class ShamirController : ControllerBase
 {
     private readonly IShamirService _shamirService;
     private readonly IMasterPasswordService _masterPassword;
+    private readonly IProfileService _profileService;
     private readonly LumioDbContext _db;
     private readonly LimietenOptions _limieten;
 
     public ShamirController(
         IShamirService shamirService,
         IMasterPasswordService masterPassword,
+        IProfileService profileService,
         LumioDbContext db,
         IOptions<LimietenOptions> limieten)
     {
         _shamirService = shamirService;
         _masterPassword = masterPassword;
+        _profileService = profileService;
         _db = db;
         _limieten = limieten.Value;
     }
@@ -68,6 +71,11 @@ public class ShamirController : ControllerBase
             eigenaar.ShamirDrempel = request.Drempel;
 
         await _db.SaveChangesAsync();
+
+        // Also persist to profiles.json so GetDrempel() works before DB unlock (heir flow).
+        var activeProfile = _profileService.ActiveProfile;
+        if (activeProfile is not null)
+            _profileService.UpdateShamirDrempel(activeProfile.Id, request.Drempel);
 
         var response = new GenereerSharesResponse(
             result.Shares.Select(s => new ShareInfo(s.Index, s.Value)).ToList(),
@@ -120,14 +128,19 @@ public class ShamirController : ControllerBase
 
     /// <summary>
     /// SP-9: Retourneert de Shamir-drempel die bij de laatste share-generatie is ingesteld.
+    /// Leest primair uit profiles.json zodat erfgenamen dit kunnen opvragen vóór DB-ontsleuteling.
     /// Valt terug op ShamirMinDrempel uit configuratie als er nog geen shares zijn gegenereerd.
     /// Openbaar toegankelijk: erfgenamen moeten dit weten vóór ontsleuteling.
     /// </summary>
     [HttpGet("drempel")]
-    public async Task<IActionResult> GetDrempel()
+    public IActionResult GetDrempel()
     {
-        var eigenaar = await _db.Eigenaren.FirstOrDefaultAsync();
-        var drempel = eigenaar?.ShamirDrempel ?? _limieten.ShamirMinDrempel;
-        return Ok(new { drempel });
+        // Read from profiles.json first — available pre-unlock (heir flow).
+        var profileDrempel = _profileService.ActiveProfile?.ShamirDrempel;
+        if (profileDrempel.HasValue)
+            return Ok(new { drempel = profileDrempel.Value });
+
+        // Fallback to configuration minimum when no shares have been generated yet.
+        return Ok(new { drempel = _limieten.ShamirMinDrempel });
     }
 }

@@ -7,6 +7,7 @@
     "registratieStarten": "Start registration",
     "ja": "Yes",
     "nee": "No",
+    "disclaimer": "<strong>Please note:</strong> Your wish in Lumio does <strong>not replace official registration</strong> in the Dutch Donor Register. Only a registration at <link>donorregister.nl</link> is legally binding.",
     "tip": "<strong>Tip:</strong> Also register your choice officially with the Donor Register at donorregister.nl. The information here is for your next of kin.",
     "geenKeuze": "No donor choice recorded yet.",
     "keuzeCard": {

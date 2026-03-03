@@ -83,6 +83,15 @@ public class AuditLogRotatieService : BackgroundService
                 _logger.LogInformation(
                     "AuditLog-rotatie: {Aantal} entries verwijderd (ouder dan {Grens:yyyy-MM-dd}, retentie {Dagen} dagen).",
                     verwijderd, grens, _retentieDagen);
+
+                // SP-1-011 AC3: Rotatie-actie gelogd als meta-entry in auditlog
+                db.AuditLog.Add(new Domain.Common.AuditLogEntry
+                {
+                    Actie = "Rotatie",
+                    EntityType = "AuditLog",
+                    Details = $"{verwijderd} entr{(verwijderd == 1 ? "y" : "ies")} verwijderd (ouder dan {_retentieDagen} dagen, grens: {grens:yyyy-MM-dd})."
+                });
+                await db.SaveChangesAsync(cancellationToken);
             }
             else
             {

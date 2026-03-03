@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using Lumio.Api.Dtos.Backup;
 using Lumio.Api.Services;
 using Lumio.Api.Services.Security;
 using Microsoft.AspNetCore.Mvc;
@@ -72,10 +73,11 @@ public class BackupController : ControllerBase
     /// Locks the database after restore — user must re-authenticate.
     /// </summary>
     [HttpPost("restore")]
-    public async Task<IActionResult> RestoreBackup(
-        [FromForm] string wachtwoord,
-        [FromForm] IFormFile bestand)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> RestoreBackup([FromForm] RestoreBackupRequest request)
     {
+        var wachtwoord = request.Wachtwoord;
+        var bestand = request.Bestand;
         if (string.IsNullOrWhiteSpace(wachtwoord))
             return BadRequest(new { error = "Wachtwoord is verplicht." });
 

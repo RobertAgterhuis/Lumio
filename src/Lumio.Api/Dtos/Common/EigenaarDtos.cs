@@ -57,3 +57,13 @@ public record EigenaarUpsertRequest(
     string? LegitimatieNummer,
     DateOnly? LegitimatieDatumAfgifte,
     DateOnly? LegitimatieGeldigTot);
+
+/// <summary>
+/// Single-file multipart form model.
+/// Wrapper required so Swashbuckle can generate IFormFile schema (Swashbuckle v10+).
+/// </summary>
+public class BestandUploadRequest
+{
+    [System.ComponentModel.DataAnnotations.Required]
+    public IFormFile Bestand { get; set; } = null!;
+}

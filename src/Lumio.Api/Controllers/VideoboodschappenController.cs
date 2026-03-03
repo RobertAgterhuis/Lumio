@@ -1,4 +1,5 @@
 using Lumio.Api.Domain.VideoMessages;
+using Lumio.Api.Dtos.Common;
 using Lumio.Api.Dtos.VideoMessages;
 using Lumio.Api.Repositories;
 using Lumio.Api.Rules.Configuration;
@@ -58,13 +59,14 @@ public class VideoboodschappenController(
     [HttpPost("uploaden")]
     [RequestSizeLimit(104_857_600)]          // 100 MB hard cap at filter level
     [RequestFormLimits(MultipartBodyLengthLimit = 104_857_600)]
-    public async Task<ActionResult<VideoboodschapResponse>> Upload(
-        [FromForm] IFormFile bestand,
-        [FromForm] string titel,
-        [FromForm] string? beschrijving,
-        [FromForm] string? ontvangerIds,
-        [FromForm] int? duurSeconden)
+    [Consumes("multipart/form-data")]
+    public async Task<ActionResult<VideoboodschapResponse>> Upload([FromForm] VideoboodschapUploadRequest request)
     {
+        var bestand = request.Bestand;
+        var titel = request.Titel;
+        var beschrijving = request.Beschrijving;
+        var ontvangerIds = request.OntvangerIds;
+        var duurSeconden = request.DuurSeconden;
         var eigenaarId = await _repo.GetEigenaarIdAsync();
         if (eigenaarId is null) return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });
 
@@ -263,8 +265,10 @@ public class VideoboodschappenController(
     [HttpPost("preview")]
     [RequestSizeLimit(104_857_600)]
     [RequestFormLimits(MultipartBodyLengthLimit = 104_857_600)]
-    public async Task<IActionResult> UploadPreview([FromForm] IFormFile bestand)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadPreview([FromForm] BestandUploadRequest request)
     {
+        var bestand = request.Bestand;
         if (!bestand.ContentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
             return BadRequest(new { error = "Alleen videobestanden zijn toegestaan." });
 

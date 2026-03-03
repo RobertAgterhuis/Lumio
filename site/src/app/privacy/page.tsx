@@ -293,27 +293,28 @@ export default function PrivacyPage() {
           {/* 8. Cookies */}
           <Section title="8. Cookies en tracking">
             <p>
-              De marketingwebsite (lumio.app) gebruikt uitsluitend technisch noodzakelijke
-              cookies voor sessie- en taalvoorkeur. Er worden <strong>geen advertising- of
-              profilerende cookies</strong> geplaatst. De Lumio-applicatie zelf plaatst geen
-              cookies.
+              De marketingwebsite (lumio-legacy.nl) gebruikt <strong>geen analytics-,
+              advertising- of profilerende cookies</strong>. Er worden uitsluitend technisch
+              noodzakelijke cookies geplaatst (sessie- en taalvoorkeur).
+              Lumio gebruikt geen externe trackingdiensten op de marketingwebsite.
             </p>
             <p>
-              Lumio maakt gebruik van <strong>PostHog Analytics</strong> (EU-regio,
-              eu.i.posthog.com) voor geanonimiseerde gebruikstelemetrie op de marketingwebsite.
-              Dit betreft uitsluitend gedragspatronen — geen persoonsgegevens, geen
-              gezondheidsgegevens, geen sessie-opnames. Auto-capture en session recording zijn
-              uitgeschakeld. De volgende maatregelen zijn van kracht conform GUARD-006:
+              De Lumio-applicatie (desktop/web-app) maakt gebruik van{" "}
+              <strong>PostHog Analytics</strong> (EU-regio, eu.i.posthog.com) voor minimale,
+              geanonimiseerde gebruikstelemetrie. Dit betreft uitsluitend gedragspatronen — geen
+              persoonsgegevens, geen gezondheidsgegevens, geen sessie-opnames. De volgende
+              maatregelen zijn van kracht:
             </p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Alleen expliciete events (bijv. <code>lumio_activated</code>) — geen automatische paginaregistratie</li>
+              <li>Alleen één expliciet event (<code>lumio_activated</code>) — geen automatische paginaregistratie</li>
               <li>Gevoelige URL-paden (<code>/euthanasie</code>, <code>/testament</code>, etc.) worden geredigeerd vóór verzending</li>
               <li>Geen koppeling aan persoonlijke identificatoren (naam, e-mail, BSN)</li>
-              <li>Respects browser <strong>Do Not Track (DNT)</strong> instelling — analytics worden overgeslagen als DNT actief is</li>
+              <li>Auto-capture en session recording zijn uitgeschakeld</li>
+              <li>Browser <strong>Do Not Track (DNT)</strong> wordt gerespecteerd — analytics worden overgeslagen als DNT actief is</li>
             </ul>
             <p>
-              U kunt analytics uitschakelen door <strong>Do Not Track</strong> in uw browser in
-              te schakelen, of door een browser-extensie zoals uBlock Origin te gebruiken.
+              U kunt app-analytics uitschakelen door <strong>Do Not Track</strong> in uw browser
+              in te schakelen.
             </p>
           </Section>
 

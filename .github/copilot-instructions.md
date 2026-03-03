@@ -1,132 +1,152 @@
 # GitHub Copilot – Repository Instructions
-## Systeem: End-to-End Commercial Software Audit (Multi-Agent)
+## System: End-to-End Commercial Software Audit (Multi-Agent)
 
 ---
 
-## DOEL VAN DIT SYSTEEM
+## PURPOSE OF THIS SYSTEM
 
-Dit systeem voert een volledige, gestructureerde analyse uit van bestaande commerciële software over vier fasen:
+This system performs a complete, structured analysis of existing commercial software across four phases:
 
-1. **Fase 1 – Business & Strategie**
-2. **Fase 2 – Techniek & Architectuur**
-3. **Fase 3 – UX & Product Experience**
-4. **Fase 4 – Brand, Marketing & Growth**
+1. **Phase 1 – Business & Strategy**
+2. **Phase 2 – Technology & Architecture**
+3. **Phase 3 – UX & Product Experience**
+4. **Phase 4 – Brand, Marketing & Growth**
 
-Elke fase produceert vier deliverables per discipline:  
-**Analyse → Aanbevelingen → Sprintplan → Guardrails**
+Each phase produces four deliverables per discipline:  
+**Analysis → Recommendations → Sprint Plan → Guardrails**
 
 ---
 
-## HOE DIT SYSTEEM WERKT
+## HOW THIS SYSTEM WORKS
 
-Dit is een **multi-agent, sequentieel systeem**. Elke agent:
-- Heeft een vaste rol (zie `/docs/playbooks/commercial-software-audit-playbook.md`)
-- Werkt met een **output contract** (zie `/docs/contracts/`)
-- Moet voldoen aan **guardrails** (zie `/docs/guardrails/`)
-- Mag NIET starten zonder de output van de vorige fase als input
+This is a **multi-agent, sequential system**. Each agent:
+- Has a fixed role (see `/docs/playbooks/commercial-software-audit-playbook.md`)
+- Works within an **output contract** (see `/docs/contracts/`)
+- Must comply with **guardrails** (see `/docs/guardrails/`)
+- Must NOT start without the output of the previous phase as input
 
-### Fasevolgorde (VERPLICHT)
+### Phase Sequence (MANDATORY)
 ```
-Op commando of automatisch bij start nieuwe cyclus:
-  AUDIT [project] → Onboarding Agent → intake validatie → docs/onboarding/onboarding-output.md → Orchestrator (volledige scope: alle 4 fasen)
+On command or automatically at the start of a new cycle:
+  AUDIT [project] → Onboarding Agent → intake validation → docs/onboarding/onboarding-output.md → Orchestrator (full scope: all 4 phases)
 
-Gedeeltelijke audits (per discipline, onafhankelijk uitvoerbaar):
-  AUDIT BUSINESS [project]  → Onboarding (scope: business) → Fase 1 → Critic/Risk → Synthesis (PARTIAL) → eindrapport-business.md
-  AUDIT TECHNIEK [project]  → Onboarding (scope: techniek) → Fase 2 → Critic/Risk → Synthesis (PARTIAL) → eindrapport-techniek.md
-  AUDIT UX [project]        → Onboarding (scope: ux)       → Fase 3 → Critic/Risk → Synthesis (PARTIAL) → eindrapport-ux.md
-  AUDIT MARKETING [project] → Onboarding (scope: marketing) → Fase 4 → Critic/Risk → Synthesis (PARTIAL) → eindrapport-marketing.md
-  AUDIT SYNTHESIS           → Combineert alle beschikbare fase-outputs; Master Rapport + Cross-Team Blocker Matrix zodra alle 4 fasen aanwezig zijn
+Partial audits (per discipline, independently executable):
+  AUDIT BUSINESS [project]  → Onboarding (scope: business)   → Phase 1 → Critic/Risk → Synthesis (PARTIAL) → final-report-business.md
+  AUDIT TECH [project]      → Onboarding (scope: tech)       → Phase 2 → Critic/Risk → Synthesis (PARTIAL) → final-report-tech.md
+  AUDIT UX [project]        → Onboarding (scope: ux)         → Phase 3 → Critic/Risk → Synthesis (PARTIAL) → final-report-ux.md
+  AUDIT MARKETING [project] → Onboarding (scope: marketing)  → Phase 4 → Critic/Risk → Synthesis (PARTIAL) → final-report-marketing.md
+  AUDIT SYNTHESIS           → Combines all available phase outputs; Master Report + Cross-Team Blocker Matrix once all 4 phases are present
 
-Combinatie-audits (2 of 3 disciplines in één sessie, één Onboarding intake):
-  AUDIT [DISC1] [DISC2] [project]       → Onboarding (scope: gecombineerd) → Fase DISC1 → Critic/Risk → Fase DISC2 → Critic/Risk → [Brand+Storybook indien MARKETING] → Synthesis (COMBO_PARTIAL)
-  AUDIT [DISC1] [DISC2] [DISC3] [project] → idem voor 3 disciplines
-  Canonieke uitvoeringsvolgorde: BUSINESS → TECHNIEK → UX → MARKETING (ongeacht volgorde in commando)
-  Voorbeelden: AUDIT TECHNIEK UX project · AUDIT BUSINESS MARKETING project · AUDIT TECHNIEK UX MARKETING project
+Combination audits (2 or 3 disciplines in one session, single Onboarding intake):
+  AUDIT [DISC1] [DISC2] [project]         → Onboarding (scope: combined) → Phase DISC1 → Critic/Risk → Phase DISC2 → Critic/Risk → [Brand+Storybook if MARKETING] → Synthesis (COMBO_PARTIAL)
+  AUDIT [DISC1] [DISC2] [DISC3] [project] → same for 3 disciplines
+  Canonical execution order: BUSINESS → TECH → UX → MARKETING (regardless of order in command)
+  Examples: AUDIT TECH UX project · AUDIT BUSINESS MARKETING project · AUDIT TECH UX MARKETING project
 
 Orchestrator
-  ↓ [vereist: Onboarding Output COMPLETE inclusief session-state.json]
-Fase 1: Business Analyst → Domain Expert → Sales Strategist → Financial Analyst
-  ↓ [CRITIC + RISK validatie]
-Fase 2: Software Architect → Senior Developer → DevOps Engineer → Security Architect → Data Architect
-  ↓ [CRITIC + RISK validatie]
-Fase 3: UX Researcher → UX Designer → UI Designer → Accessibility Specialist
-  ↓ [CRITIC + RISK validatie]
-Fase 4: Brand Strategist → Growth Marketer → CRO Specialist
-  ↓ [CRITIC + RISK validatie]
+  ↓ [required: Onboarding Output COMPLETE including session-state.json]
+  ↓ [Questionnaire Agent: load existing answers from BusinessDocs/ → inject into phase-agent contexts]
+Phase 1: Business Analyst → Domain Expert → Sales Strategist → Financial Analyst → Product Manager (34)
+  ↓ [CRITIC + RISK validation]
+  ↓ [Questionnaire Agent: generate questionnaires for all INSUFFICIENT_DATA: items → BusinessDocs/Phase1-Business/Questionnaires/]
+  ↓ [Questionnaire Agent: update official documents → BusinessDocs/OfficialDocuments/ (product-vision.md, financial-model-overview.md)]
+Phase 2: Software Architect → Senior Developer → DevOps Engineer → Security Architect → Data Architect → Legal Counsel (33)
+  ↓ [CRITIC + RISK validation]
+  ↓ [Questionnaire Agent: generate questionnaires for all INSUFFICIENT_DATA: items → BusinessDocs/Phase2-Tech/Questionnaires/]
+  ↓ [Questionnaire Agent: update official documents → BusinessDocs/OfficialDocuments/ (technical-overview.md, legal-compliance-overview.md)]
+Phase 3: UX Researcher → UX Designer → UI Designer → Accessibility Specialist → Content Strategist (32) → Localization Specialist (35)
+  ↓ [CRITIC + RISK validation]
+  ↓ [Questionnaire Agent: generate questionnaires for all INSUFFICIENT_DATA: items → BusinessDocs/Phase3-UX/Questionnaires/]
+  ↓ [Questionnaire Agent: update official documents → BusinessDocs/OfficialDocuments/ (ux-design-brief.md, content-strategy-brief.md)]
+Phase 4: Brand Strategist → Growth Marketer → CRO Specialist
+  ↓ [CRITIC + RISK validation]
+  ↓ [Questionnaire Agent: generate questionnaires for all INSUFFICIENT_DATA: items → BusinessDocs/Phase4-Marketing/Questionnaires/]
+  ↓ [Questionnaire Agent: update official documents → BusinessDocs/OfficialDocuments/ (brand-brief.md, market-positioning.md)]
   Brand & Assets Agent (Canva) → design tokens + brand assets (`docs/brand/`)
   Storybook Agent → component library + a11y baseline (`docs/storybook/`)
-Synthesis Agent → Master Rapport + 4 Departmentsrapporten + Cross-Team Blocker Matrix (`docs/synthesis/`)
-  ↓ [Alle 6 synthesedocumenten APPROVED + BLOKKEREND items gekoppeld aan sprintplan]
-  GitHub Integration Agent → project `[GITHUB_PROJECT_NAME]` aanmaken/inrichten + alle stories als Issues publiceren
+Synthesis Agent → Master Report + 4 Department Reports + Cross-Team Blocker Matrix (`docs/synthesis/`)
+  ↓ [All 6 synthesis documents APPROVED + BLOCKING items linked to sprint plan]
+  GitHub Integration Agent → create/configure project `[GITHUB_PROJECT_NAME]` + publish all stories as Issues
   ↓
-Fase 5 (per sprint, herhaalbaar):
-  [Sprint Gate + Definition of Ready check + lessons-learned injectie]
+Phase 5 (per sprint, repeatable):
+  [Sprint Gate + Definition of Ready check + lessons-learned injection]
   Implementation Agent (parallel per story) → Test Agent → PR/Review Agent (incl. secret scan) → KPI Agent → Documentation Agent → GitHub Integration Agent (board update) → Retrospective Agent
-  ↓ [CRITIC + RISK validatie per sprint]
-  Volgende sprint
+  ↓ [CRITIC + RISK validation per sprint]
+  Next sprint
 
-Op commando (elk moment):
-  REEVALUATE [scope] → Reevaluate Agent → Critic + Risk validatie → Re-evaluation Report → Orchestrator (Sprint Gate voor IN_PROGRESS impacts)
+On command (any time):
+  REEVALUATE [scope] → Reevaluate Agent → Critic + Risk validation → Re-evaluation Report → Orchestrator (Sprint Gate for IN_PROGRESS impacts)
 
-Op commando (elk moment, onafhankelijk van lopende cycli):
-  FEATURE [naam]: [beschrijving] → Feature Agent → volledige cyclus (Fase 1–4 + Synthesis + Sprintplan + Fase 5)
-  Output: Workitems\[FEATURENAAM]\ (geïsoleerde werkmap per feature, eigen sprint IDs, eigen Sprint Gate)
+On command (any time, independent of running cycles):
+  FEATURE [name]: [description] → Feature Agent → full cycle (Phase 1–4 + Synthesis + Sprint Plan + Phase 5)
+  Output: Workitems\[FEATURENAME]\ (isolated workspace per feature, own sprint IDs, own Sprint Gate)
 
-Noodprotocol (critieke productiefouten):
-  HOTFIX [beschrijving] → Orchestrator valideert urgentie → Sprint Gate BYPASS → Implementation → Test (verkorte regressie) → PR/Review (secret scan verplicht) → merge → KPI → Documentation → GitHub Integration → Retrospective
-  Sprint ID: HOTFIX-[N]; LESSON_CANDIDATE verplicht; BESLOTEN item in decisions.md als er structural constraints uit volgen
+  SCOPE CHANGE [DIMENSION]: [description] → Scope Change Agent → backlog hold → invalidation marking → re-analysis (affected dimension only) → Critic + Risk → scope-change-delta → Sprint Gate reconciliation → Master Synthesis update
+  DIMENSION values: BUSINESS | TECH | UX | MARKETING | ALL
+  Use when: the fundamental premise/direction of the audit has changed (not just a delta) — e.g. business model pivot, core architecture change, target audience change
+  Output: docs/synthesis/scope-change-[N].md + updated sprint statuses
 
-Onboarding onderhoud:
-  REFRESH ONBOARDING → Onboarding Agent (alleen Stap 3+4: scan + tooling) → update onboarding-output.md (intake-antwoorden intact)
+Emergency protocol (critical production issues):
+  HOTFIX [description] → Orchestrator validates urgency → Sprint Gate BYPASS → Implementation → Test (abbreviated regression) → PR/Review (secret scan mandatory) → merge → KPI → Documentation → GitHub Integration → Retrospective
+  Sprint ID: HOTFIX-[N]; LESSON_CANDIDATE mandatory; DECIDED item in decisions.md if structural constraints result
+
+Onboarding maintenance:
+  REFRESH ONBOARDING → Onboarding Agent (steps 3+4 only: scan + tooling) → update onboarding-output.md (intake answers preserved)
 ```
 
 ---
 
-## UNIVERSELE AGENT-REGELS (GELDEN VOOR ALLE AGENTS)
+## UNIVERSAL AGENT RULES (APPLY TO ALL AGENTS)
 
-### ANTI-HALLUCINATIE PROTOCOL (VERPLICHT)
-1. **Stel NOOIT feiten vast die je niet kunt verifiëren** uit de aangeleverde input, code, documentatie of data.
-2. Gebruik het prefix `UNCERTAIN:` voor elke bewering waarbij je niet 100% zeker bent van de bron.
-3. Gebruik `INSUFFICIENT_DATA:` wanneer een vereist veld niet ingevuld kan worden op basis van beschikbare input.
-4. **Verzin NOOIT** metrics, percentages, KPI-waarden, scorecijfers of timestamps.
-5. **Citeer altijd de bron** van elke bevinding: bestandsnaam, regelnummer, documentpagina, of interviewtranscript.
-6. Als een tool of externe service niet beschikbaar is, escaleer naar de Orchestrator – doe GEEN aanname.
+### ANTI-HALLUCINATION PROTOCOL (MANDATORY)
+1. **Never assert facts you cannot verify** from the provided input, code, documentation, or data.
+2. Use the prefix `UNCERTAIN:` for any claim where you are not 100% certain of the source.
+3. Use `INSUFFICIENT_DATA:` when a required field cannot be filled based on available input.
+4. **Never fabricate** metrics, percentages, KPI values, scores, or timestamps.
+5. **Always cite the source** of every finding: filename, line number, document page, or interview transcript.
+6. If a tool or external service is unavailable, escalate to the Orchestrator — do NOT make assumptions.
 
-### ANTI-LUIHEID PROTOCOL (VERPLICHT)
-1. Lever ALTIJD het **volledige** deliverable conform het contract. Geen samenvattingen, geen partials.
-2. Sla NOOIT een stap over, ook als die "voor de hand liggend" lijkt.
-3. Schrijf NOOIT "zie bijlage" of "dit spreekt voor zich" als vervanging voor inhoud.
-4. Produceer ALTIJD concrete, specifieke bevindingen – GEEN generieke statements.
-5. Als een sectie leeg dreigt te worden: voer aanvullend onderzoek uit of markeer als `INSUFFICIENT_DATA:` + escaleer.
-6. Doe GEEN aannames over wat de gebruiker "waarschijnlijk al weet".
+### ANTI-LAZINESS PROTOCOL (MANDATORY)
+1. Always deliver the **complete** deliverable as defined by the contract. No summaries, no partials.
+2. Never skip a step, even if it seems "obvious".
+3. Never write "see appendix" or "this speaks for itself" as a substitute for content.
+4. Always produce concrete, specific findings — NO generic statements.
+5. If a section risks being empty: conduct additional research or mark as `INSUFFICIENT_DATA:` + escalate.
+6. Do NOT assume what the user "probably already knows".
 
-### VERIFICATIE-PROTOCOL (VERPLICHT VOOR HANDOFF)
-Elke agent MOET een **Handoff Checklist** produceren aan het eind van zijn output:
+### VERIFICATION PROTOCOL (MANDATORY BEFORE HANDOFF)
+Every agent MUST produce a **Handoff Checklist** at the end of its output:
 
 ```
 ## HANDOFF CHECKLIST
-- [ ] Alle verplichte secties zijn gevuld (niet leeg, niet placeholder)
-- [ ] Alle UNCERTAIN: items zijn gedocumenteerd en geëscaleerd
-- [ ] Alle INSUFFICIENT_DATA: items zijn gedocumenteerd en geëscaleerd
-- [ ] Output voldoet aan het contract in /docs/contracts/
-- [ ] Guardrails uit /docs/guardrails/ zijn gecontroleerd
-- [ ] Output is machine-leesbaar en klaar als input voor volgende agent
-- [ ] Geen tegenstrijdige uitspraken in dit document
-- [ ] Alle bevindingen hebben een bronvermelding
+- [ ] All required sections are filled (not empty, not placeholder)
+- [ ] All UNCERTAIN: items are documented and escalated
+- [ ] All INSUFFICIENT_DATA: items are documented and escalated
+- [ ] Output complies with the contract in /docs/contracts/
+- [ ] Guardrails from /docs/guardrails/ have been checked
+- [ ] Output is machine-readable and ready as input for the next agent
+- [ ] No contradictory statements in this document
+- [ ] All findings include a source reference
 ```
 
-**EEN AGENT MAG DE TAAK NIET OVERDRAGEN ALS EEN CHECKBOX NIET AANGEVINKT IS.**
+**AN AGENT MAY NOT HAND OFF THE TASK IF ANY CHECKBOX IS UNCHECKED.**
 
-### SCOPE-DISCIPLINE (VERPLICHT)
-1. Elke agent werkt UITSLUITEND binnen zijn gedefinieerde domein.
-2. Bevindingen buiten je domein worden gedocumenteerd als `OUT_OF_SCOPE: [domein]` en doorgegeven aan de Orchestrator.
-3. Nooit een aanbeveling doen buiten je competentiedomein.
+### QUESTIONNAIRE PROTOCOL (MANDATORY FOR ALL PHASE AGENTS)
+1. At the START of your work, check whether the Orchestrator has injected a `## QUESTIONNAIRE INPUT — [Your Agent Name]` block. If present, treat every answered question in that block as **verified client input** — cite it as source `questionnaire:[Q-ID]`.
+2. At the END of your analysis, compile all remaining `INSUFFICIENT_DATA:` items that cannot be resolved from code or documentation. Pass these items to the Orchestrator with the tag `QUESTIONNAIRE_REQUEST` so the Questionnaire Agent can generate customer-facing questions.
+3. **Never block your handoff** because of missing questionnaire answers — mark items `INSUFFICIENT_DATA:`, pass the `QUESTIONNAIRE_REQUEST`, and complete your handoff. The Questionnaire Agent runs after Critic + Risk validation, not before.
+4. When an answered questionnaire resolves a previously open `INSUFFICIENT_DATA:` item in a REEVALUATE cycle, mark the finding as `RESOLVED_BY_QUESTIONNAIRE: [Q-ID]` with the answer as source.
+
+### SCOPE DISCIPLINE (MANDATORY)
+1. Each agent operates EXCLUSIVELY within its defined domain.
+2. Findings outside your domain are documented as `OUT_OF_SCOPE: [domain]` and passed to the Orchestrator.
+3. Never make a recommendation outside your area of competence.
 
 ---
 
-## SKILLS REFERENTIE
+## SKILLS REFERENCE
 
-Elke agent heeft een dedicated skill file:
+Each agent has a dedicated skill file:
 
 | Agent | Skill file |
 |---|---|
@@ -147,6 +167,10 @@ Elke agent heeft een dedicated skill file:
 | Brand Strategist | `.github/skills/14-brand-strategist.md` |
 | Growth Marketer | `.github/skills/15-growth-marketer.md` |
 | CRO Specialist | `.github/skills/16-cro-specialist.md` |
+| Content Strategist / UX Writer | `.github/skills/32-content-strategist.md` |
+| Legal / Privacy Counsel | `.github/skills/33-legal-counsel.md` |
+| Product Manager | `.github/skills/34-product-manager.md` |
+| Localization Specialist | `.github/skills/35-localization-specialist.md` |
 | Synthesis Agent | `.github/skills/17-synthesis-agent.md` |
 | Critic Agent | `.github/skills/18-critic-agent.md` |
 | Risk Agent | `.github/skills/19-risk-agent.md` |
@@ -162,34 +186,40 @@ Elke agent heeft een dedicated skill file:
 | KPI/Metrics Agent | `.github/skills/29-kpi-agent.md` |
 | Brand & Assets Agent (Canva) | `.github/skills/30-brand-assets-agent.md` |
 | Storybook Agent | `.github/skills/31-storybook-agent.md` |
+| Questionnaire Agent | `.github/skills/36-questionnaire-agent.md` |
+| Scope Change Agent | `.github/skills/37-scope-change-agent.md` |
 
 ---
 
-## GUARDRAILS REFERENTIE
+## GUARDRAILS REFERENCE
 
 | Scope | Guardrail file |
 |---|---|
-| Globaal | `docs/guardrails/00-global-guardrails.md` |
+| Global | `docs/guardrails/00-global-guardrails.md` |
 | Business | `docs/guardrails/01-business-guardrails.md` |
-| Architectuur | `docs/guardrails/02-architecture-guardrails.md` |
+| Architecture | `docs/guardrails/02-architecture-guardrails.md` |
 | Security | `docs/guardrails/03-security-guardrails.md` |
 | UX | `docs/guardrails/04-ux-guardrails.md` |
 | Marketing | `docs/guardrails/05-marketing-guardrails.md` |
-| Implementatie | `docs/guardrails/06-implementation-guardrails.md` |
+| Implementation | `docs/guardrails/06-implementation-guardrails.md` |
+| Legal & Privacy | `docs/guardrails/07-legal-guardrails.md` |
+| Content & Localization | `docs/guardrails/08-content-guardrails.md` |
+| Questionnaire & Official Docs | `docs/guardrails/09-questionnaire-guardrails.md` |
 
 ---
 
-## CONTRACTS REFERENTIE
+## CONTRACTS REFERENCE
 
 | Contract | File |
 |---|---|
-| Analyse output | `docs/contracts/analysis-output-contract.md` |
-| Aanbevelingen output | `docs/contracts/recommendations-output-contract.md` |
-| Sprintplan output | `docs/contracts/sprintplan-output-contract.md` |
+| Analysis output | `docs/contracts/analysis-output-contract.md` |
+| Recommendations output | `docs/contracts/recommendations-output-contract.md` |
+| Sprint plan output | `docs/contracts/sprintplan-output-contract.md` |
 | Guardrails output | `docs/contracts/guardrails-output-contract.md` |
 | Agent Handoff | `docs/contracts/agent-handoff-contract.md` |
-| Implementatie output | `docs/contracts/implementation-output-contract.md` |
-| Feature Request | `Workitems/[FEATURENAAM]/00-feature-request.md` (gegenereerd per feature) |
+| Implementation output | `docs/contracts/implementation-output-contract.md` |
+| Questionnaire output | `docs/contracts/questionnaire-output-contract.md` |
+| Feature Request | `Workitems/[FEATURENAME]/00-feature-request.md` (generated per feature) |
 | Tooling | `docs/contracts/tooling-contract.md` |
 | Session State | `docs/contracts/session-state-contract.md` |
 | Human Escalation | `docs/contracts/human-escalation-protocol.md` |
@@ -198,21 +228,23 @@ Elke agent heeft een dedicated skill file:
 
 ## PLAYBOOK
 
-Volledig auditproces: `docs/playbooks/commercial-software-audit-playbook.md`
+Full audit process: `docs/playbooks/commercial-software-audit-playbook.md`
 
 ---
 
-## DEFINITION OF DONE (SYSTEEM-NIVEAU)
+## DEFINITION OF DONE (SYSTEM LEVEL)
 
-Het systeem is compleet wanneer:
-1. Alle vier analysefasen zijn doorlopen
-2. Alle Critic + Risk validaties zijn geslaagd
-3. De Synthesis Agent heeft de volgende documenten geproduceerd in `docs/synthesis/`:
-   - `eindrapport-master.md` (Executive Summary, Heatmap, Risk Matrix, Roadmap, Guardrails, KPIs, Open Items)
-   - `eindrapport-business.md`, `eindrapport-techniek.md`, `eindrapport-ux.md`, `eindrapport-marketing.md` (per-discipline, elk met blocker-sectie)
-   - `cross-team-blocker-matrix.md` (alle cross-team afhankelijkheden geclassificeerd als BLOKKEREND of ADVISEREND)
-4. Elk departmentsrapport bevat een expliciete uitspraak in sectie "Blockers vanuit andere teams" (ook als er geen blockers zijn)
-5. `docs/brand/design-tokens.json` aanwezig (of `SKIPPED_NO_TOKEN` gedocumenteerd)
-6. `docs/storybook/component-inventory.md` aanwezig met guardrail voor Implementation Agent
-7. Geen open `UNCERTAIN:` of `INSUFFICIENT_DATA:` items zonder resolutie
-6. (Fase 5) Per sprint: Sprint Completion Report APPROVED, alle stories IMPLEMENTED of BLOCKED met escalatie, secret scan PASSED, KPI rapport weggeschreven (`sprint-[SP-N]-kpi.json`), PR gemerged, alle vier manuals bijgewerkt (user-manual-nl.md, user-manual-en.md, technical-manual-nl.md, technical-manual-en.md), NL ↔ EN consistentiecheck PASSED, GitHub board bijgewerkt (alle geïmplementeerde issues gesloten), retrospective COMPLETE (`sprint-[SP-N]-retrospective.md`), `velocity-log.json` bijgewerkt
+The system is complete when:
+1. All four analysis phases have been completed
+2. All Critic + Risk validations have passed
+3. The Synthesis Agent has produced the following documents in `docs/synthesis/`:
+   - `final-report-master.md` (Executive Summary, Heatmap, Risk Matrix, Roadmap, Guardrails, KPIs, Open Items)
+   - `final-report-business.md`, `final-report-tech.md`, `final-report-ux.md`, `final-report-marketing.md` (per discipline, each with blocker section)
+   - `cross-team-blocker-matrix.md` (all cross-team dependencies classified as BLOCKING or ADVISORY)
+4. Each department report contains an explicit statement in the "Blockers from other teams" section (even if there are no blockers)
+5. `docs/brand/design-tokens.json` is present (or `SKIPPED_NO_TOKEN` documented) AND `docs/brand/brand-guidelines.md` is present with sections 1–6 (also when `SKIPPED_NO_TOKEN`)
+6. `docs/storybook/component-inventory.md` is present with guardrail for Implementation Agent
+7. No open `UNCERTAIN:` or `INSUFFICIENT_DATA:` items without resolution — unresolvable items have a corresponding question in `BusinessDocs/[PHASE]/Questionnaires/`
+8. `BusinessDocs/questionnaire-index.md` is present; all REQUIRED questions in all questionnaires are either ANSWERED or explicitly marked `DEFERRED` by the Orchestrator
+9. `BusinessDocs/OfficialDocuments/document-registry.md` is present; all 8 official documents exist (completeness may be < 100% when questionnaires are still open)
+10. (Phase 5) Per sprint: Sprint Completion Report APPROVED, all stories IMPLEMENTED or BLOCKED with escalation, secret scan PASSED, KPI report written (`sprint-[SP-N]-kpi.json`), PR merged, user-manual.md and technical-manual.md updated, GitHub board updated (all implemented issues closed), retrospective COMPLETE (`sprint-[SP-N]-retrospective.md`), `velocity-log.json` updated

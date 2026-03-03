@@ -14,6 +14,7 @@ interface RekeningItemProps {
 
 export function RekeningItem({ rekening, onEdit, onDelete }: RekeningItemProps) {
   const t = useTranslations("boedel");
+  const tEnum = useTranslations("enums");
   const locale = useLocale();
   const currencyLocale = locale === "en" ? "en-NL" : "nl-NL";
 
@@ -25,7 +26,7 @@ export function RekeningItem({ rekening, onEdit, onDelete }: RekeningItemProps) 
         </Badge>
         <div>
           <p className="text-sm font-medium">{rekening.bankNaam}</p>
-          <p className="text-xs text-muted-foreground">{rekening.rekeningType} — {rekening.iban}</p>
+          <p className="text-xs text-muted-foreground">{tEnum(`rekeningType.${rekening.rekeningType.toLowerCase()}` as Parameters<typeof tEnum>[0])} — {rekening.iban}</p>
         </div>
       </div>
       <div className="flex items-center gap-2">

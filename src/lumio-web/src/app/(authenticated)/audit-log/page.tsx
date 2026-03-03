@@ -227,7 +227,7 @@ export default function AuditLogPage() {
                         </p>
                         {entry.entityType && (
                           <p className="text-xs text-muted-foreground">
-                            {entry.entityType}
+                            {tEnum(`entityType.${entry.entityType}` as Parameters<typeof tEnum>[0])}
                             {entry.entityId ? ` — ${entry.entityId.slice(0, 8)}...` : ""}
                           </p>
                         )}

@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { CryptoWallet } from "./types";
 
 interface CryptoItemProps {
@@ -11,12 +12,13 @@ interface CryptoItemProps {
 }
 
 export function CryptoItem({ wallet, onEdit, onDelete }: CryptoItemProps) {
+  const tEnum = useTranslations("enums");
   return (
     <div className="flex items-center justify-between rounded-md border p-3">
       <div>
         <p className="font-medium text-sm">{wallet.walletNaam}</p>
         <p className="text-xs text-muted-foreground">
-          {wallet.cryptoType}
+          {tEnum(`cryptoType.${wallet.cryptoType.toLowerCase()}` as Parameters<typeof tEnum>[0])}
           {wallet.exchange && ` — ${wallet.exchange}`}
         </p>
       </div>

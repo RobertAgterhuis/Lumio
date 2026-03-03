@@ -34,14 +34,10 @@
       "bezig": "Database aanmaken...",
       "aanmaken": "Database Aanmaken",
       "disclaimer": "Uw gegevens worden versleuteld opgeslagen. Bewaar uw wachtwoord goed — zonder wachtwoord is de data niet toegankelijk.",
-      "avgConsent": "Ik begrijp dat Lumio bijzondere persoonsgegevens verwerkt (waaronder gezondheidsgegevens, wilsverklaringen en donorregistratie) conform AVG art.\u00a09 lid\u00a02(a) — uitdrukkelijke toestemming van de betrokkene. Dit is een persoonlijk, offline archief uitsluitend voor mijn eigen gebruik en voor mijn nabestaanden.",
-      "avgConsentFout": "Bevestig dat u akkoord gaat met de verwerking van bijzondere persoonsgegevens.",
       "foutMinimaal": "Wachtwoord moet minimaal 8 tekens bevatten.",
       "foutOvereenkomst": "Wachtwoorden komen niet overeen.",
       "foutSetup": "Setup mislukt",
-      "wachtwoordWaarschuwing": "Bewaar uw wachtwoord, noodcodes en herstelcodes op een veilige plek. Verlies van uw wachtwoord betekent verlies van toegang tot al uw Lumio-gegevens.",
-      "toonWachtwoord": "Wachtwoord tonen",
-      "verbergWachtwoord": "Wachtwoord verbergen"
+      "wachtwoordWaarschuwing": "Bewaar uw wachtwoord, noodcodes en herstelcodes op een veilige plek. Verlies van uw wachtwoord betekent verlies van toegang tot al uw Lumio-gegevens."
     },
     "ontgrendel": {
       "titel": "Lumio Ontgrendelen",
@@ -64,9 +60,8 @@
       "codeLabel": "Code {nummer}",
       "codePlaceholder": "Plak hier de noodcode...",
       "codeToevoegen": "Nog een code toevoegen",
-      "codeVerwijderen": "Code {nummer} verwijderen",
-      "instructie": "Voer hieronder uw noodcodes in. U heeft minimaal het door de eigenaar ingestelde aantal codes nodig om toegang te krijgen.",
-      "minimaalCodes": "Minimaal 2 noodcodes zijn vereist.",
+      "instructie": "Voer hieronder uw noodcodes in. U heeft minimaal {drempel} codes nodig om toegang te krijgen.",
+      "minimaalCodes": "Minimaal {drempel} noodcodes zijn vereist.",
       "reconstructieMislukt": "Reconstructie mislukt. Controleer of u genoeg geldige noodcodes heeft ingevoerd.",
       "bezig": "Reconstrueren...",
       "ontgrendelen": "Ontgrendelen met noodcodes",
@@ -74,7 +69,7 @@
       "introTitel": "Toegang als erfgenaam",
       "introBeschrijving": "Om toegang te krijgen tot dit Lumio-dossier heeft u noodcodes nodig. De eigenaar heeft zijn hoofdwachtwoord veilig opgesplitst met de Shamir-methode.",
       "introHoeWerktHet": "Hoe werkt het?",
-      "introStap1": "Verzamel het benodigde aantal noodcodes van de aangewezen erfgenamen.",
+      "introStap1": "Verzamel minimaal {drempel} noodcodes van de aangewezen erfgenamen.",
       "introStap2": "Voer elke code afzonderlijk in op het volgende scherm.",
       "introStap3": "Wanneer voldoende codes zijn ingevoerd, wordt het dossier ontsloten.",
       "introStarten": "Noodcodes invoeren",
@@ -560,8 +555,8 @@
     "registratieStarten": "Registratie starten",
     "ja": "Ja",
     "nee": "Nee",
+    "disclaimer": "<strong>Let op:</strong> Uw wens in Lumio vervangt <strong>geen officiële registratie</strong> in het Donorregister. Alleen een registratie bij <link>donorregister.nl</link> is juridisch bindend.",
     "tip": "<strong>Tip:</strong> Registreer uw keuze ook officieel bij het Donorregister via donorregister.nl. De informatie hier is voor uw nabestaanden.",
-    "disclaimer": "<strong>Let op:</strong> De informatie die u hier vastlegt is een persoonlijk overzicht voor uw nabestaanden. Alleen een officiële registratie bij het Donorregister (donorregister.nl) is juridisch bindend conform de Donorwet.",
     "geenKeuze": "Nog geen donorkeuze vastgelegd.",
     "keuzeCard": {
       "titel": "Keuze",
@@ -642,9 +637,7 @@
       "relatiePlaceholder": "bijv. Partner, Zoon, Dochter",
       "telefoonLabel": "Telefoonnummer",
       "telefoonPlaceholder": "06-12345678"
-    },
-    "bevestigenTitel": "Donorregistratie opslaan",
-    "bevestigenBeschrijving": "U staat op het punt uw donorkeuze op te slaan. Controleer of uw keuze correct is en of u deze ook officieel heeft geregistreerd bij het Donorregister."
+    }
   },
   "eigenaar": {
     "titel": "Mijn Profiel",
@@ -885,7 +878,7 @@
       "titel": "Noodcodes Genereren",
       "beschrijving": "Verdeel uw hoofdwachtwoord in {aantal} unieke noodcodes. Alleen wanneer het minimum aantal personen (drempel) hun code samenvoegt, kan het wachtwoord worden gereconstrueerd.",
       "waarschuwing": "Waarschuwing:",
-      "waarschuwingTekst": "De noodcodes worden NIET opgeslagen in Lumio. Noteer ze zorgvuldig of druk ze af. Verloren codes kunnen niet worden hersteld.",
+      "waarschuwingTekst": "De inhoud van de noodcodes wordt nooit opgeslagen door Lumio. Lumio registreert alleen welke erfgenamen hun code hebben ontvangen. Noteer of druk elke code zorgvuldig af. Verloren codes kunnen niet worden hersteld.",
       "wachtwoord": "Uw hoofdwachtwoord",
       "wachtwoordPlaceholder": "Voer uw Lumio hoofdwachtwoord in",
       "drempel": "Drempel (minimum aantal noodcodes voor reconstructie)",
@@ -907,13 +900,14 @@
       "stap1Bullet1": "Eén code alleen is waardeloos — samenwerking is vereist.",
       "stap1Bullet2": "U bepaalt het minimum aantal (de drempel) dat nodig is.",
       "stap1Bullet3": "Veilig, zelfs als één erfgenaam zijn code kwijt is.",
-      "stap1Callout": "De noodcodes worden NIET opgeslagen in Lumio. Noteer of druk ze af en geef ze persoonlijk aan uw erfgenamen.",
+      "stap1Callout": "De geheime code-inhoud wordt nooit door Lumio opgeslagen. Lumio registreert alleen welke erfgenamen hun code hebben ontvangen. Noteer of druk elke code af en geef ze persoonlijk aan uw erfgenamen.",
       "stap2Titel": "Instellingen",
       "stap2ErfgenamenLabel": "Erfgenamen die een noodcode ontvangen",
       "stap3Titel": "Beveiliging",
       "stap4Titel": "Verdeel de noodcodes",
       "stap4NogTeKopieren": "{n, plural, one {# code nog te kopiëren} other {# codes nog te kopiëren}}",
       "stap4AlleGekopieerd": "✓ Alle codes gekopieerd",
+      "stap4CodeFormaat": "Geef de volledige code door inclusief het cijfer vóór het streepje (bijv. 01-XXXX). Het getal is vereist voor het samenstellen van het wachtwoord.",
       "volgende": "Volgende",
       "vorige": "Vorige",
       "stapIndicator": "Stap {huidig} van {totaal}"
@@ -953,8 +947,6 @@
     "introTekst": "Gecondoleerd met uw verlies. Dit dashboard helpt u stap voor stap bij het afhandelen van de nalatenschap. Neem de tijd — u hoeft niet alles tegelijk te doen.",
     "gegevensInfo": "Alle gegevens zijn beschikbaar in alleen-lezen modus. Gebruik de knoppen hieronder om bij te houden wat u al heeft afgehandeld.",
     "exporteren": "Alles exporteren",
-    "downloadZip": "Alles downloaden als ZIP",
-    "downloadInstructiekaartje": "Instructiekaartje downloaden",
     "noodcontactenBekijken": "Noodcontacten bekijken",
     "hulpTitel": "Hulp nodig?",
     "hulpTekst": "Het is normaal als dit overweldigend voelt. Begin met de urgente zaken bovenaan en werk rustig naar beneden. U kunt altijd terugkomen en verder gaan waar u gebleven was. Schakel hulp in van een notaris of uitvaartverzorger als dat prettig voelt.",
@@ -1026,7 +1018,7 @@
     "beschrijving": "Uw wensen conform de WGBO",
     "opslaanMislukt": "Opslaan mislukt.",
     "bewerken": "Bewerken",
-    "wizardStarten": "Invullen starten",
+    "wizardStarten": "Wizard starten",
     "annuleren": "Annuleren",
     "opslaan": "Opslaan",
     "ja": "Ja",
@@ -1081,16 +1073,12 @@
       "dementieclausule": "Dementieclausule",
       "toelichtingDementie": "Toelichting dementieclausule",
       "behandelverbod": "Behandelverbod",
-      "behandelverbodPlaceholder": "Welke behandelingen wilt u weigeren?",
-      "bevestigenTitel": "Wilsverklaring opslaan",
-      "bevestigenBeschrijving": "U staat op het punt uw wilsverklaring te bewaren. Controleer of uw gegevens correct en volledig zijn voordat u bevestigt."
+      "behandelverbodPlaceholder": "Welke behandelingen wilt u weigeren?"
     }
   },
   "euthanasieWizard": {
     "titel": "Wilsverklaring Euthanasie",
     "laden": "Laden...",
-    "bevestigenTitel": "Wilsverklaring opslaan",
-    "bevestigenBeschrijving": "U staat op het punt uw wilsverklaring euthanasie op te slaan. Controleer of alle gegevens correct en volledig zijn voordat u bevestigt.",
     "keuze": {
       "titel": "Uw Keuze",
       "beschrijving": "Wilt u een wilsverklaring euthanasie vastleggen? Dit is conform de Wet toetsing levensbeëindiging (Wtl).",
@@ -1461,19 +1449,7 @@
       "bevestigPlaceholder": "Voer uw wachtwoord in ter bevestiging",
       "knop": "Alle gegevens permanent verwijderen",
       "succes": "Alle gegevens zijn verwijderd. U wordt doorgestuurd...",
-      "mislukt": "Verwijderen mislukt. Controleer uw wachtwoord.",
-      "dataMapNote": "Let op: de map 'data/' naast de applicatie wordt niet automatisch verwijderd bij deïnstallatie. Verwijder deze map handmatig als u alle gegevens wilt wissen."
-    },
-    "aanbevelen": {
-      "titel": "Lumio aanbevelen",
-      "beschrijving": "Ken iemand die ook zijn nalatenschap wil regelen? Deel Lumio met collega's, vrienden of uw werkgever.",
-      "tekst": "Ik gebruik Lumio om mijn nalatenschap digitaal vast te leggen — offline, versleuteld en volledig privé. Meer informatie op lumio-legacy.nl",
-      "emailOnderwerp": "Lumio — uw nalatenschap digitaal regelen",
-      "emailBodyPre": "Goedendag,\n\nIk wil u Lumio aanbevelen — een veilige applicatie voor uw digitale nalatenschap.",
-      "emailBodyPost": "Meer informatie: https://www.lumio-legacy.nl\n\nMet vriendelijke groet",
-      "kopieren": "Kopieer aanraadtekst",
-      "gekopieerd": "Gekopieerd!",
-      "viaEmail": "Aanbevelen via e-mail"
+      "mislukt": "Verwijderen mislukt. Controleer uw wachtwoord."
     },
     "dialogen": {
       "herstel": {
@@ -1861,6 +1837,7 @@
     "activiteitenlog": "Activiteitenlog",
     "instellingen": "Instellingen",
     "handleiding": "Handleiding",
+    "privacyverklaring": "Privacyverklaring",
     "navigatie": "Hoofdnavigatie",
     "groep": {
       "overzicht": "Overzicht",
@@ -2148,20 +2125,17 @@
     "gaNaarExporteren": "Ga naar Exporteren",
     "gaNaarActiviteitenlog": "Ga naar Activiteitenlog",
     "gaNaarInstellingen": "Ga naar Instellingen",
-    "gaNaarHelp": "Ga naar Help",
-    "validatieNaamVerplicht": "Vul uw voor- en achternaam in om verder te gaan."
+    "gaNaarHelp": "Ga naar Help"
   },
   "wizard": {
     "welkom": "Welkom bij Lumio",
     "doorloop": "Doorloop deze stappen om uw nalatenschap in te richten",
-    "sluiten": "Sluiten",
-    "voortgang": "Voortgang onboarding",
+    "sluiten": "Wizard sluiten",
+    "voortgang": "Onboarding voortgang",
     "voltooid": "{voltooid} van {totaal} voltooid",
     "laterInvullen": "Later invullen",
     "nietMeerTonen": "Niet meer tonen",
     "afronden": "Afronden",
-    "terugkeerBadge": "Ga verder met wizard →",
-    "terugkeerBadgeAria": "Wizard hervatten",
     "stappen": {
       "profiel": {
         "titel": "Mijn Profiel",
@@ -2183,10 +2157,6 @@
         "titel": "Erfgenamen",
         "beschrijving": "Registreer uw erfgenamen en verdeel eventueel noodcodes."
       },
-      "sleutels": {
-        "titel": "Erfgenamen informeren",
-        "beschrijving": "Informeer uw erfgenamen over hun noodcodes zodat zij bij overlijden toegang hebben."
-      },
       "backup": {
         "titel": "Backup maken",
         "beschrijving": "Maak een eerste backup om uw gegevens veilig te stellen."
@@ -2202,10 +2172,6 @@
       "volgende": "Volgende",
       "voortgangHersteld": "Uw voortgang is hersteld. U bent bij stap {stap}.",
       "opnieuwBeginnen": "Opnieuw beginnen"
-    },
-    "dossierVolledigBanner": {
-      "titel": "Dossier volledig",
-      "beschrijving": "Alle 7 stappen zijn voltooid. Uw nalatenschap is volledig ingericht."
     }
   },
   "testament": {
@@ -2213,12 +2179,12 @@
     "titel": "Testament",
     "beschrijving": "Testamentaire informatie conform BW Boek 4",
     "bewerken": "Bewerken",
-    "wizardStarten": "Invullen starten",
+    "wizardStarten": "Wizard Starten",
     "opslaanMislukt": "Opslaan mislukt.",
     "verwijderenMislukt": "Verwijderen mislukt.",
-    "disclaimer": "<strong>Let op:</strong> De informatie in Lumio is een persoonlijk overzicht. Een notarieel testament is alleen rechtsgeldig als het door een notaris is opgesteld en ondertekend (BW Boek 4, art. 4:94 e.v.). Raadpleeg altijd uw notaris voor officiële vastlegging.",
     "ja": "Ja",
     "nee": "Nee",
+    "disclaimer": "<strong>Let op:</strong> Een rechtsgeldig testament vereist een <strong>notaris</strong>. Dit document is geen juridisch bindend testament, maar een persoonlijk overzicht voor uw nabestaanden.",
     "legitimairePortie": {
       "titel": "Mogelijke schending legitimaire portie",
       "beschrijving": "Op basis van {aantalKinderen, plural, one {# kind} other {# kinderen}}{heeftPartner, select, true { en een partner} other {}} bedraagt de minimale legitimaire portie per kind {percentage}% van de nalatenschap (BW Boek 4, art. 4:63-4:69).",
@@ -2442,9 +2408,7 @@
       "summaryAlgemeneWensen": "Algemene wensen:",
       "genereren": "Genereren...",
       "downloadPdf": "Concept-testament downloaden (PDF)"
-    },
-    "bevestigenTitel": "Testament opslaan",
-    "bevestigenBeschrijving": "U staat op het punt uw testamentgegevens op te slaan. Controleer of alle gegevens correct zijn voordat u bevestigt."
+    }
   },
   "personSelect": {
     "selecteer": "— Kies bestaand persoon —",
@@ -2744,11 +2708,12 @@
     "opslaanMislukt": "Opslaan mislukt.",
     "verwijderenMislukt": "Verwijderen mislukt.",
     "bewerken": "Bewerken",
-    "wizardStarten": "Invullen starten",
+    "wizardStarten": "Wizard starten",
     "annuleren": "Annuleren",
     "opslaan": "Opslaan",
     "toevoegen": "Toevoegen",
     "geenWensen": "Nog geen uitvaartwensen vastgelegd.",
+    "disclaimer": "<strong>Let op:</strong> Uw uitvaartwensen zijn een persoonlijke richtlijn voor uw nabestaanden en zijn niet juridisch bindend. Kosten- en verzekeringsgegevens zijn informatief — raadpleeg uw verzekeraar of notaris voor uw specifieke situatie.",
     "ja": "Ja",
     "nee": "Nee",
     "uitvaartCard": {
@@ -2876,8 +2841,6 @@
   "uitvaartWizard": {
     "titel": "Uitvaartwensen",
     "laden": "Laden...",
-    "bevestigenTitel": "Uitvaartwensen opslaan",
-    "bevestigenBeschrijving": "U staat op het punt uw uitvaartwensen op te slaan. Controleer of alle ingevulde gegevens correct zijn voordat u bevestigt.",
     "type": {
       "titel": "Type Uitvaart",
       "beschrijving": "Wat is uw voorkeur voor de uitvaart?",

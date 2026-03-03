@@ -1,85 +1,96 @@
-# Aanbevelingen Output Contract
-> Versie: 1.0 | Van toepassing op alle aanbevelingen-deliverables van alle agents
+````markdown
+# Recommendations Output Contract
+> Version: 1.0 | Applies to all recommendations deliverables of all agents
 
 ---
 
-## DOEL
-Dit contract definieert de verplichte structuur en kwaliteitseisen voor de **Aanbevelingen**-deliverable.
-Elke aanbeveling moet onderbouwd, meetbaar en afhankelijkheidsbewust zijn.
+## PURPOSE
+This contract defines the mandatory structure and quality requirements for the **Recommendations** deliverable.
+Every recommendation must be substantiated, measurable, and dependency-aware.
 
 ---
 
-## VERPLICHT SCHEMA
+## MANDATORY SCHEMA
 
-### MARKDOWN STRUCTUUR
+### MARKDOWN STRUCTURE
 
 ```markdown
-# Aanbevelingen – [Discipline] – [Datum]
+# Recommendations – [Discipline] – [Date]
 
 ## Metadata
-- Agent: [naam]
-- Fase: [1 / 2 / 3 / 4]
-- Gebaseerd op analyse: [referentie naar analyse-document]
-- Datum: [ISO 8601]
+- Agent: [name]
+- Phase: [1 / 2 / 3 / 4]
+- Based on analysis: [reference to analysis document]
+- Date: [ISO 8601]
 
-## Aanbeveling [REC-NNN]
+## Scope Change Impact — Recommendations *(SCOPE_CHANGE mode only — omit in normal audit cycles)*
+> Required as the FIRST section (directly after Metadata) when `cycle_type: SCOPE_CHANGE` in session state. Used by Synthesis Agent (17) for SC-[N] impact summaries in department reports.
 
-### Probleem
-[Concrete beschrijving van het probleem – verwijs naar bevinding ID uit analyse]
-**Analyse referentie:** [GAP-NNN / RISK-NNN / CS-NNN]
+| Status | Recommendation ID | Reason |
+|--------|------------------|--------|
+| Still Applicable | REC-NNN | [one-line reason why still relevant under new premise] |
+| Superseded | REC-NNN | [what changed that makes this recommendation no longer applicable] |
+| Net-New | REC-NNN | [short description of recommendation with no equivalent in prior analysis] |
 
-### Oplossing
-[Concrete, specifieke oplossing – niet generiek]
-**Implementatie-aanpak:**
-1. Stap 1: [wat, hoe, door wie, wanneer]
-2. Stap 2: [...]
+## Recommendation [REC-NNN]
+
+### Problem
+[Concrete description of the problem – reference finding ID from analysis]
+**Analysis reference:** [GAP-NNN / RISK-NNN / CS-NNN]
+
+### Solution
+[Concrete, specific solution – not generic]
+**Implementation approach:**
+1. Step 1: [what, how, by whom, when]
+2. Step 2: [...]
 
 ### Impact
-| Dimensie | Verwacht effect | Rationale |
+| Dimension | Expected effect | Rationale |
 |----------|----------------|-----------|
-| Revenue | [bedrag / % / INSUFFICIENT_DATA:] | [onderbouwing of databron] |
-| Risk Reductie | [beschrijving + niveau] | [onderbouwing] |
-| Cost | [bedrag / % / INSUFFICIENT_DATA:] | [onderbouwing] |
-| UX | [beschrijving] | [onderbouwing] |
+| Revenue | [amount / % / INSUFFICIENT_DATA:] | [substantiation or data source] |
+| Risk Reduction | [description + level] | [substantiation] |
+| Cost | [amount / % / INSUFFICIENT_DATA:] | [substantiation] |
+| UX | [description] | [substantiation] |
 
 ### Rationale
-[Theoretisch kader, bewezen aanpak, of data die de keuze onderbouwt]
+[Theoretical framework, proven approach, or data that substantiates the choice]
 
-### Afhankelijkheden
-- Vereist: [andere aanbeveling / technische vereiste / externe factor]
-- Geblokkeerd door: [als van toepassing]
-- Afhankelijk van output van: [agent naam als van toepassing]
+### Dependencies
+- Requires: [other recommendation / technical requirement / external factor]
+- Blocked by: [if applicable]
+- Depends on output of: [agent name if applicable]
 
-### Risico's van niet uitvoeren
-[Wat zijn de gevolgen als deze aanbeveling NIET wordt geïmplementeerd]
+### Risk of Not Implementing
+[What are the consequences if this recommendation is NOT implemented]
 
-### Meetcriterium
-- KPI: [specifieke KPI]
-- Baseline: [huidige waarde of INSUFFICIENT_DATA:]
-- Target: [beoogde waarde]
-- Meetmethode: [hoe gemeten]
-- Tijdshorizon: [wanneer te meten]
+### Measurement Criterion
+- KPI: [specific KPI]
+- Baseline: [current value or INSUFFICIENT_DATA:]
+- Target: [intended value]
+- Measurement method: [how measured]
+- Time horizon: [when to measure]
 
 ---
 
-## PRIORITEITENMATRIX (VERPLICHT)
+## PRIORITY MATRIX (MANDATORY)
 
-| Aanbeveling ID | Impact | Effort | Prioriteit | Sprint |
+| Recommendation ID | Impact | Effort | Priority | Sprint |
 |----------------|--------|--------|------------|--------|
-| REC-001 | Hoog | Laag | P1 | Sprint 1 |
+| REC-001 | High | Low | P1 | Sprint 1 |
 | REC-002 | [...] | [...] | [...] | [...] |
 
-Impact en Effort: Hoog / Midden / Laag (met expliciete rationale in bijlage)
+Impact and Effort: High / Medium / Low (with explicit rationale in appendix)
 
 ## HANDOFF CHECKLIST
-- [ ] Alle aanbevelingen verwijzen naar een analyse-bevinding (GAP/RISK/CS ID)
-- [ ] Alle impacts hebben rationale (geen lege cellen)
-- [ ] Alle INSUFFICIENT_DATA: items zijn gedocumenteerd
-- [ ] Meetcriteria zijn SMART geformuleerd
-- [ ] Prioriteitenmatrix is volledig ingevuld
-- [ ] Afhankelijkheden zijn gedocumenteerd
-- [ ] Geen aanbevelingen buiten competentiedomein
-- [ ] JSON export is valide en compleet
+- [ ] All recommendations reference an analysis finding (GAP/RISK/CS ID)
+- [ ] All impacts have rationale (no empty cells)
+- [ ] All INSUFFICIENT_DATA: items are documented
+- [ ] Measurement criteria are SMART formulated
+- [ ] Priority matrix is fully completed
+- [ ] Dependencies are documented
+- [ ] No recommendations outside competence domain
+- [ ] If cycle_type is SCOPE_CHANGE: Scope Change Impact — Recommendations section present as FIRST section (Still Applicable / Superseded / Net-New) (or `NOT_APPLICABLE` — normal audit cycle)
+- [ ] JSON export is valid and complete
 ```
 
 ---
@@ -146,6 +157,7 @@ Impact en Effort: Hoog / Midden / Laag (met expliciete rationale in bijlage)
     "priority_matrix_complete": true,
     "dependencies_documented": true,
     "no_out_of_scope_recs": true,
+    "scope_change_impact_present": "true | NOT_APPLICABLE",
     "json_valid": true,
     "ready_for_handoff": true
   }
@@ -154,10 +166,12 @@ Impact en Effort: Hoog / Midden / Laag (met expliciete rationale in bijlage)
 
 ---
 
-## AFWIJZINGSCRITERIA
-Een aanbevelingen-document wordt AFGEWEZEN als:
-- Een aanbeveling geen verwijzing heeft naar een analyse-bevinding
-- Impact-velden leeg zijn zonder `INSUFFICIENT_DATA:` markering
-- Meetcriteria ontbreken of niet SMART zijn
-- De prioriteitenmatrix ontbreekt
-- Een aanbeveling buiten het competentiedomein valt
+## REJECTION CRITERIA
+A recommendations document is REJECTED if:
+- A recommendation has no reference to an analysis finding
+- Impact fields are empty without `INSUFFICIENT_DATA:` marking
+- Measurement criteria are missing or not SMART
+- The priority matrix is missing
+- A recommendation falls outside the competence domain
+
+````

@@ -1,77 +1,88 @@
+````markdown
 # Guardrails Output Contract
-> Versie: 1.0 | Van toepassing op alle guardrail-deliverables van alle agents
+> Version: 1.0 | Applies to all guardrail deliverables of all agents
 
 ---
 
-## DOEL
-Dit contract definieert de structuur voor de **Guardrails**-deliverable per discipline.
-Een guardrail is een TESTBARE, BINDENDE beslissingsregel — GEEN vage richtlijn.
+## PURPOSE
+This contract defines the structure for the **Guardrails** deliverable per discipline.
+A guardrail is a TESTABLE, BINDING decision rule — NOT a vague guideline.
 
 ---
 
-## DEFINITIE VAN EEN GUARDRAIL
-Een guardrail:
-- Formuleert een **verbod** of **verplichting** in concrete termen
-- Is **testbaar**: je kunt vaststellen of een beslissing of artefact de guardrail schendt
-- Heeft een **schending-actie**: wat er gebeurt als de guardrail wordt overtreden
-- Heeft een **scope**: voor wie en wanneer geldt de guardrail
-- Heeft een **rationale**: waarom is dit een guardrail
+## DEFINITION OF A GUARDRAIL
+A guardrail:
+- Formulates a **prohibition** or **obligation** in concrete terms
+- Is **testable**: you can determine whether a decision or artifact violates the guardrail
+- Has a **violation action**: what happens if the guardrail is breached
+- Has a **scope**: for whom and when the guardrail applies
+- Has a **rationale**: why this is a guardrail
 
-**NIET geldig als guardrail:** "Zorg voor goede code kwaliteit"  
-**WEL geldig:** "Code mag niet in production gemerged worden zonder 80% testdekking (G-ARCH-10)"
+**NOT valid as a guardrail:** "Ensure good code quality"  
+**VALID:** "Code may not be merged to production without 80% test coverage (G-ARCH-10)"
 
 ---
 
-## VERPLICHT SCHEMA
+## MANDATORY SCHEMA
 
-### MARKDOWN STRUCTUUR
+### MARKDOWN STRUCTURE
 
 ```markdown
-# Guardrails – [Discipline] – [Datum]
+# Guardrails – [Discipline] – [Date]
 
 ## Metadata
-- Agent: [naam]
-- Fase: [1 / 2 / 3 / 4]
-- Datum: [ISO 8601]
-- Gebaseerd op analyse: [referentie]
+- Agent: [name]
+- Phase: [1 / 2 / 3 / 4]
+- Date: [ISO 8601]
+- Based on analysis: [reference]
+
+## Scope Change Impact *(SCOPE_CHANGE mode only — omit in normal audit cycles)*
+> Required as the FIRST section when `cycle_type: SCOPE_CHANGE` in session state.
+### Still Valid
+- [G-DISC-NNN]: [one sentence — guardrail still applicable under the new premise]
+### Superseded
+- [G-DISC-NNN]: [what changed that makes this guardrail no longer applicable or requiring revision]
+### Net-New
+- [G-DISC-NNN new]: [description of guardrail with no equivalent in the prior analysis]
 
 ## Guardrail [G-DISC-NNN]
 
-### Titel
-[Korte, beschrijvende naam]
+### Title
+[Short, descriptive name]
 
 ### Scope
-- Van toepassing op: [welke agents / fasen / artefacten]
-- Tijdshorizon: [permanent / tot sprint N / review datum]
+- Applies to: [which agents / phases / artifacts]
+- Time horizon: [permanent / until sprint N / review date]
 
-### Regel
-[Concrete, testbare formulering. Begin met een werkwoord: "Mag niet", "Moet altijd", "Vereist", etc.]
+### Rule
+[Concrete, testable formulation. Start with a verb: "May not", "Must always", "Requires", etc.]
 
-### Schending Actie
-[Wat gebeurt er bij overtreding? Bijv: "Markeer als GUARDRAIL_VIOLATION: G-DISC-NNN, blokkeer handoff, escaleer naar Orchestrator"]
+### Violation Action
+[What happens on breach? E.g.: "Mark as GUARDRAIL_VIOLATION: G-DISC-NNN, block handoff, escalate to Orchestrator"]
 
 ### Rationale
-[Waarom is dit een guardrail? Gebaseerd op welke bevinding of risico? Verwijs naar RISK-NNN of GAP-NNN]
+[Why is this a guardrail? Based on which finding or risk? Reference RISK-NNN or GAP-NNN]
 
-### Verificatiemethode
-[Hoe verifieer je of een artefact voldoet? Bijv: "Automated test aanwezig in CI", "Code review checklist item", "Handmatige audit bij elke sprint review"]
+### Verification Method
+[How do you verify whether an artifact complies? E.g.: "Automated test present in CI", "Code review checklist item", "Manual audit at every sprint review"]
 
 ---
 
-## Guardrail Overzicht
+## Guardrail Overview
 
-| ID | Titel | Scope | Prioriteit | Verificatie |
+| ID | Title | Scope | Priority | Verification |
 |----|-------|-------|------------|-------------|
-| G-DISC-001 | [...] | [...] | Kritiek / Hoog / Midden | [...] |
+| G-DISC-001 | [...] | [...] | Critical / High / Medium | [...] |
 
 ## HANDOFF CHECKLIST
-- [ ] Alle guardrails zijn testbaar geformuleerd
-- [ ] Alle guardrails hebben een schending-actie
-- [ ] Alle guardrails hebben een rationale met bronverwijzing
-- [ ] Alle guardrails hebben een verificatiemethode
-- [ ] Overzichtstabel is volledig
-- [ ] Geen duplicaten met bestaande guardrails in /docs/guardrails/
-- [ ] JSON export is valide
+- [ ] All guardrails are formulated as testable
+- [ ] All guardrails have a violation action
+- [ ] All guardrails have a rationale with source reference
+- [ ] All guardrails have a verification method
+- [ ] Overview table is complete
+- [ ] No duplicates with existing guardrails in /docs/guardrails/
+- [ ] If cycle_type is SCOPE_CHANGE: `## Scope Change Impact` section present as FIRST section with Still Valid / Superseded / Net-New sub-sections (or `NOT_APPLICABLE` — normal audit cycle)
+- [ ] JSON export is valid
 ```
 
 ---
@@ -109,6 +120,7 @@ Een guardrail:
     "all_have_verification": true,
     "overview_complete": true,
     "no_duplicates_with_existing": true,
+    "scope_change_impact_present": "true | NOT_APPLICABLE",
     "json_valid": true,
     "ready_for_handoff": true
   }
@@ -117,9 +129,11 @@ Een guardrail:
 
 ---
 
-## AFWIJZINGSCRITERIA
-Een guardrail-document wordt AFGEWEZEN als:
-- Een guardrail niet testbaar is geformuleerd
-- Een schending-actie ontbreekt
-- Een rationale niet verwijst naar een analyse-bevinding
-- Een verificatiemethode ontbreekt
+## REJECTION CRITERIA
+A guardrail document is REJECTED if:
+- A guardrail is not formulated as testable
+- A violation action is missing
+- A rationale does not reference an analysis finding
+- A verification method is missing
+
+````

@@ -14,8 +14,12 @@ interface BezitItemProps {
 
 export function BezitItem({ bezit, onEdit, onDelete }: BezitItemProps) {
   const t = useTranslations("boedel");
+  const tEnum = useTranslations("enums");
   const locale = useLocale();
   const currencyLocale = locale === "en" ? "en-NL" : "nl-NL";
+  function toCamelCase(s: string): string {
+    return s.split(" ").map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join("");
+  }
 
   return (
     <div className="flex items-center justify-between rounded-md border p-3">
@@ -26,7 +30,7 @@ export function BezitItem({ bezit, onEdit, onDelete }: BezitItemProps) {
         <div>
           <p className="text-sm font-medium">{bezit.omschrijving}</p>
           <p className="text-xs text-muted-foreground">
-            {bezit.categorie}
+            {bezit.categorie ? tEnum(`bezitCategorie.${toCamelCase(bezit.categorie)}` as Parameters<typeof tEnum>[0]) : ""}
             {bezit.locatie ? ` — ${bezit.locatie}` : ""}
             {bezit.kadastraalNummer ? ` — ${t("bezittingen.kadLabel")} ${bezit.kadastraalNummer}` : ""}
             {bezit.kenteken ? ` — ${bezit.kenteken}` : ""}

@@ -1,35 +1,36 @@
-# Commercial Software Audit – Volledig Playbook
-> End-to-end auditproces voor bestaande commerciële software
+# Commercial Software Audit – Complete Playbook
+> End-to-end audit process for existing commercial software
 
 ---
 
-## OVERZICHT
+## OVERVIEW
 
-Dit playbook beschrijft het volledige auditproces van A tot Z. Het dekt vijf fasen over 14–17 weken en produceert een eindrapport én geïmplementeerde code met Executive Summary, Capability Heatmap, Risk Matrix, 12-maanden roadmap, Guardrail document, KPI baseline + targets, en Sprint Completion Reports per geïmplementeerde sprint.
+This playbook describes the complete audit process from A to Z. It covers five phases over 14–17 weeks and produces a final report and implemented code with Executive Summary, Capability Heatmap, Risk Matrix, 12-month roadmap, Guardrail document, KPI baseline + targets, and Sprint Completion Reports per implemented sprint.
 
-**De volgorde is niet onderhandelbaar.** Strategie → Techniek → Ervaring → Groei → Implementatie.
+**The order is non-negotiable.** Strategy → Technology → Experience → Growth → Implementation.
 
 ---
 
-## FASE 1: BUSINESS & STRATEGIE (2–3 weken)
+## PHASE 1: BUSINESS & STRATEGY (2–3 weeks)
 
-### Doelstelling
-Volledig begrip van het huidige business model, capabilities, business rules, en strategische positie voordat enige technische of UX analyse start.
+### Objective
+Complete understanding of the current business model, capabilities, business rules, and strategic position before any technical or UX analysis starts.
 
-### Agents (In Volgorde)
+### Agents (In Order)
 1. **Business Analyst** (skill: `01-business-analyst.md`)
 2. **Domain Expert** (skill: `02-domain-expert.md`)
 3. **Sales Strategist** (skill: `03-sales-strategist.md`)
 4. **Financial Analyst** (skill: `04-financial-analyst.md`)
+5. **Product Manager** (skill: `34-product-manager.md`)
 
-### Benodigde Input
-- Volledige codebase (of toegang daartoe)
-- Productdocumentatie (requirements, specs, wiki, README)
-- Business documentatie (financieel, pricing, ICP, CRM exports)
-- Domein-informatie (industrie, compliance-kader)
-- Eventueel: interviews met stakeholders, support ticket data, analytics exports
+### Required Input
+- Complete codebase (or access to it)
+- Product documentation (requirements, specs, wiki, README)
+- Business documentation (financial, pricing, ICP, CRM exports)
+- Domain information (industry, compliance framework)
+- Optional: stakeholder interviews, support ticket data, analytics exports
 
-### Verplichte Output (Fase 1)
+### Required Output (Phase 1)
 ```json
 {
   "capabilities": [],
@@ -49,33 +50,41 @@ Volledig begrip van het huidige business model, capabilities, business rules, en
 }
 ```
 
-### Validatie
-Na Fase 1: **Critic Agent** + **Risk Agent** validatie verplicht.  
-Fase 2 start NIET zonder beide validaties APPROVED.
+### Validation
+After Phase 1: **Critic Agent** + **Risk Agent** validation mandatory.
+Phase 2 does NOT start without both validations APPROVED.
+
+### Post-Phase 1: Questionnaire Agent
+After Critic + Risk PASSED:
+1. **Questionnaire Agent** (skill: `36-questionnaire-agent.md`) — collects all `INSUFFICIENT_DATA:` items from Phase 1 agents and generates customer-facing questionnaires in `BusinessDocs/Phase1-Business/Questionnaires/`
+2. **Questionnaire Agent** — creates or updates `BusinessDocs/OfficialDocuments/product-vision.md` and `financial-model-overview.md` based on verified Phase 1 output and any answered questionnaire data
+
+Questionnaire generation NEVER blocks Phase 2. Answers fed back via REEVALUATE or new AUDIT.
 
 ---
 
-## FASE 2: TECHNIEK & ARCHITECTUUR (3–4 weken)
+## PHASE 2: TECHNOLOGY & ARCHITECTURE (3–4 weeks)
 
-### Doelstelling
-Volledig beeld van de technische staat van de software: architectuur, codekwaliteit, infra, security, en data — getoetst aan de strategische ambities uit Fase 1.
+### Objective
+Complete picture of the technical state of the software: architecture, code quality, infrastructure, security, and data — assessed against the strategic ambitions from Phase 1.
 
-### Agents (In Volgorde)
+### Agents (In Order)
 1. **Software Architect** (skill: `05-software-architect.md`)
 2. **Senior Developer** (skill: `06-senior-developer.md`)
 3. **DevOps Engineer** (skill: `07-devops-engineer.md`)
 4. **Security Architect** (skill: `08-security-architect.md`)
 5. **Data Architect** (skill: `09-data-architect.md`)
+6. **Legal / Privacy Counsel** (skill: `33-legal-counsel.md`)
 
-### Benodigde Input
-- Fase 1 output (volledig)
-- Volledige codebase met git history
-- CI/CD configuratiebestanden
-- Infrastructuur-documentatie / IaC bestanden
+### Required Input
+- Phase 1 output (complete)
+- Complete codebase with git history
+- CI/CD configuration files
+- Infrastructure documentation / IaC files
 - Database schemas
-- Security scan output (indien beschikbaar)
+- Security scan output (if available)
 
-### Verplichte Output (Fase 2)
+### Required Output (Phase 2)
 ```json
 {
   "architecture_gaps": [],
@@ -84,34 +93,42 @@ Volledig beeld van de technische staat van de software: architectuur, codekwalit
   "security_findings": [],
   "ci_cd_maturity_level": 0,
   "observability_gaps": [],
-  "data_lineage_map": {}
+  "data_lineage_map": {},
+  "legal_compliance_gaps": []
 }
 ```
 
-### Validatie
-Na Fase 2: **Critic Agent** + **Risk Agent** validatie verplicht.
+### Validation
+After Phase 2: **Critic Agent** + **Risk Agent** validation mandatory.
+
+### Post-Phase 2: Questionnaire Agent
+After Critic + Risk PASSED:
+1. **Questionnaire Agent** — generates questionnaires in `BusinessDocs/Phase2-Tech/Questionnaires/`
+2. **Questionnaire Agent** — creates or updates `BusinessDocs/OfficialDocuments/technical-overview.md` and `legal-compliance-overview.md`
 
 ---
 
-## FASE 3: UX & PRODUCT EXPERIENCE (2–3 weken)
+## PHASE 3: UX & PRODUCT EXPERIENCE (2–3 weeks)
 
-### Doelstelling
-Volledig beeld van de gebruikerservaring, getoetst aan de technische kaders uit Fase 2 en de business-doelen uit Fase 1.
+### Objective
+Complete picture of the user experience, assessed against the technical frameworks from Phase 2 and the business goals from Phase 1.
 
-### Agents (In Volgorde)
+### Agents (In Order)
 1. **UX Researcher** (skill: `10-ux-researcher.md`)
 2. **UX Designer** (skill: `11-ux-designer.md`)
 3. **UI Designer** (skill: `12-ui-designer.md`)
 4. **Accessibility Specialist** (skill: `13-accessibility-specialist.md`)
+5. **Content Strategist / UX Writer** (skill: `32-content-strategist.md`)
+6. **Localization Specialist** (skill: `35-localization-specialist.md`)
 
-### Benodigde Input
-- Fase 1 + Fase 2 output (volledig)
-- Toegang tot het live product of screenshots/recordings
-- Analytics data (pageflows, funnel data)
-- Usability test data (indien beschikbaar)
-- Design bestanden (Figma, Sketch, etc. – indien beschikbaar)
+### Required Input
+- Phase 1 + Phase 2 output (complete)
+- Access to the live product or screenshots/recordings
+- Analytics data (page flows, funnel data)
+- Usability test data (if available)
+- Design files (Figma, Sketch, etc. – if available)
 
-### Verplichte Output (Fase 3)
+### Required Output (Phase 3)
 ```json
 {
   "journey_gaps": [],
@@ -119,87 +136,105 @@ Volledig beeld van de gebruikerservaring, getoetst aan de technische kaders uit 
   "accessibility_score": "WCAG-AA",
   "heuristic_evaluation": [],
   "design_debt_estimate": {},
-  "friction_points": []
+  "friction_points": [],
+  "content_gaps": [],
+  "localization_readiness": {}
 }
 ```
 
-### Validatie
-Na Fase 3: **Critic Agent** + **Risk Agent** validatie verplicht.
+### Validation
+After Phase 3: **Critic Agent** + **Risk Agent** validation mandatory.
+
+### Post-Phase 3: Questionnaire Agent
+After Critic + Risk PASSED:
+1. **Questionnaire Agent** — generates questionnaires in `BusinessDocs/Phase3-UX/Questionnaires/`
+2. **Questionnaire Agent** — creates or updates `BusinessDocs/OfficialDocuments/ux-design-brief.md` and `content-strategy-brief.md`
 
 ---
 
-## FASE 4: BRAND, MARKETING & GROWTH (2 weken)
+## PHASE 4: BRAND, MARKETING & GROWTH (2 weeks)
 
-### Doelstelling
-Optimaliseren van het externe beeld en de groei-strategie op basis van de product-realiteit die in de voorgaande fasen is vastgesteld.
+### Objective
+Optimize the external image and growth strategy based on the product reality established in the preceding phases.
 
-### Agents (In Volgorde)
+### Agents (In Order)
 1. **Brand Strategist** (skill: `14-brand-strategist.md`)
 2. **Growth Marketer** (skill: `15-growth-marketer.md`)
 3. **CRO Specialist** (skill: `16-cro-specialist.md`)
 
-### Benodigde Input
-- Fase 1 t/m Fase 3 output (volledig)
-- Marketing materialen (website, sales decks, social media)
-- Analytics data (web, advertenties, email)
-- CRM data (funnel, conversie)
+### Required Input
+- Phase 1 through Phase 3 output (complete)
+- Marketing materials (website, sales decks, social media)
+- Analytics data (web, advertising, email)
+- CRM data (funnel, conversion)
 
-### Verplichte Output (Fase 4)
+### Required Output (Phase 4)
 ```json
 {
   "message_alignment_score": 0,
   "funnel_dropoffs": [],
   "experiment_backlog": [],
   "brand_consistency_audit": [],
-  "competitive_positioning": {}
+  "competitive_positioning": {},
+  "seo_analysis": {}
 }
 ```
 
-### Validatie
-Na Fase 4: **Critic Agent** + **Risk Agent** validatie verplicht.
+### Validation
+After Phase 4: **Critic Agent** + **Risk Agent** validation mandatory.
+
+### Post-Phase 4: Questionnaire Agent
+After Critic + Risk PASSED:
+1. **Questionnaire Agent** — generates questionnaires in `BusinessDocs/Phase4-Marketing/Questionnaires/`
+2. **Questionnaire Agent** — creates or updates `BusinessDocs/OfficialDocuments/brand-brief.md` and `market-positioning.md`
+
+### Post-Phase 4: Brand & Storybook
+After Critic + Risk validation:
+1. **Brand & Assets Agent** (skill: `30-brand-assets-agent.md`) — design tokens + brand assets (`docs/brand/`)
+2. **Storybook Agent** (skill: `31-storybook-agent.md`) — component library + a11y baseline (`docs/storybook/`)
 
 ---
 
-## FASE 5: AUTONOME IMPLEMENTATIE (Doorlopend per sprint)
+## PHASE 5: AUTONOMOUS IMPLEMENTATION (Ongoing per sprint)
 
-### Doelstelling
-Daadwerkelijke implementatie van de goedgekeurde sprint stories uit Fasen 1–4, volledig autonoom en traceerbaar, met geautomatiseerde tests, guardrail validatie, en Sprint Completion Reports per sprint.
+### Objective
+Actual implementation of the approved sprint stories from Phases 1–4, fully autonomous and traceable, with automated tests, guardrail validation, and Sprint Completion Reports per sprint.
 
-### Agents (Per Sprint, In Volgorde)
-1. **Implementation Agent** (skill: `20-implementation-agent.md`) — schrijft code per story
-2. **Test Agent** (skill: `21-test-agent.md`) — valideert implementatie tegen acceptatiecriteria
-3. **PR/Review Agent** (skill: `22-pr-review-agent.md`) — finale review, PR aanmaken, sprint afsluiten
-4. ↓ **Critic Agent** (skill: `18-critic-agent.md`) — validatie sprint output
-5. ↓ **Risk Agent** (skill: `19-risk-agent.md`) — risicobeoordeling per sprint
+### Agents (Per Sprint, In Order)
+1. **Implementation Agent** (skill: `20-implementation-agent.md`) — writes code per story
+2. **Test Agent** (skill: `21-test-agent.md`) — validates implementation against acceptance criteria
+3. **PR/Review Agent** (skill: `22-pr-review-agent.md`) — final review, create PR, close sprint
+4. ↓ **Critic Agent** (skill: `18-critic-agent.md`) — validate sprint output
+5. ↓ **Risk Agent** (skill: `19-risk-agent.md`) — risk assessment per sprint
 
-### Benodigde Input
-- Synthesis Eindrapport (volledig, Critic + Risk APPROVED)
-- Goedgekeurde sprintplannen van alle 16 specialist-agents
-- Codebase (lees + schrijf toegang)
-- Architectuurbeslissingen Fase 2 (Software Architect + Senior Developer output)
-- Guardrails (`docs/guardrails/00–06`)
+### Required Input
+- Synthesis Final Report (complete, Critic + Risk APPROVED)
+- Approved sprint plans from all 20 specialist agents
+- Codebase (read + write access)
+- Architecture decisions Phase 2 (Software Architect + Senior Developer output)
+- Guardrails (`docs/guardrails/00–08`)
 - Implementation Output Contract (`docs/contracts/implementation-output-contract.md`)
 
-**HALT:** Fase 5 start NOOIT zonder volledig APPROVED Synthesis Eindrapport én gevalideerde sprintplannen (Critic + Risk PASSED per fase).
+**HALT:** Phase 5 NEVER starts without a fully APPROVED Synthesis Final Report and validated sprint plans (Critic + Risk PASSED per phase).
 
-### Uitvoering Per Sprint
+### Execution Per Sprint
 
 ```
-Voor elke sprint (SP-1, SP-2, ...):
-  1. Orchestrator: activeer stories conform sprintplan (parallel tracks = gelijktijdig)
-  2. Per story: Implementation Agent → Test Agent (retour bij REJECTED)
-  3. Na alle stories: PR/Review Agent assembleert sprint PR
-  4. Critic Agent valideert Sprint Completion Report
-  5. Risk Agent beoordeelt nieuwe findings
-  6. Bij PASSED: merge PR, activeer volgende sprint
-  7. Bij FAILED: retour naar Implementation Agent per bevinding
+For each sprint (SP-1, SP-2, ...):
+  1. Orchestrator: activate stories per sprint plan (parallel tracks = simultaneously)
+  2. Per story: Implementation Agent → Test Agent (return if REJECTED)
+  3. After all stories: PR/Review Agent assembles sprint PR
+  4. Critic Agent validates Sprint Completion Report
+  5. Risk Agent assesses new findings
+  6. On PASSED: merge PR, activate next sprint
+  7. On FAILED: return to Implementation Agent per finding
 ```
 
-### Parallelle Tracks
+### Parallel Tracks
 
-Stories in dezelfde sprint die GEEN onderlinge afhankelijkheden hebben (geïdentificeerd in Stap F2 van de sprintplannen) worden **gelijktijdig** door meerdere Implementation Agent instanties opgepakt. De PR/Review Agent assembleert alle story-outputs in één sprint PR nadat alle stories APPROVED zijn.
+Stories in the same sprint that have NO mutual dependencies (identified in Step F2 of the sprint plans) are picked up **simultaneously** by multiple Implementation Agent instances. The PR/Review Agent assembles all story outputs into one sprint PR after all stories are APPROVED.
 
-### Verplichte Output (Per Sprint)
+### Required Output (Per Sprint)
 ```json
 {
   "sprint_id": "SP-N",
@@ -215,80 +250,129 @@ Stories in dezelfde sprint die GEEN onderlinge afhankelijkheden hebben (geïdent
 }
 ```
 
-### Validatie Per Sprint
-Na elke sprint: **Critic Agent** + **Risk Agent** validatie verplicht.  
-Volgende sprint start NIET zonder beide validaties APPROVED.
+### Validation Per Sprint
+After each sprint: **Critic Agent** + **Risk Agent** validation mandatory.
+Next sprint does NOT start without both validations APPROVED.
 
 ---
 
-## SYNTHESE (1 week)
+## SYNTHESIS (1 week)
 
-### Doelstelling
-Consolidatie van alle fase-outputs in één coherent eindrapport voor besluitmakers.
+### Objective
+Consolidation of all phase outputs into one coherent final report for decision-makers.
 
 ### Agent
 **Synthesis Agent** (skill: `17-synthesis-agent.md`)
 
-### Verplichte Output (Eindrapport)
-1. Executive Summary (board-level, max 2 pagina's)
+### Required Output (Final Report)
+1. Executive Summary (board-level, max 2 pages)
 2. Capability Heatmap
-3. Risk Matrix (geconsolideerd)
-4. 12-maanden roadmap
-5. Gecombineerd Guardrail Document
+3. Risk Matrix (consolidated)
+4. 12-month roadmap
+5. Combined Guardrail Document
 6. KPI Baseline + Target Dashboard
 7. Open Items Register
 
 ---
 
-## GOVERNANCE STRUCTUUR
+## ON-DEMAND COMMANDS
 
-| Overleg | Frequentie | Deelnemers | Doel |
+These commands can be triggered at any time, independent of the running sprint cycle:
+
+### REEVALUATE [scope]
+Re-analyzes one or more phases after the code or context has changed — direction stays the same, findings are updated via delta.
+
+| Scope | What is re-analyzed |
+|-------|---------------------|
+| `PHASE-1` through `PHASE-4` | The specified phase only |
+| `ALL` | All four phases |
+| `DELTA-ONLY` | Detect what changed, no full re-analysis |
+
+Agent: `23-reevaluate-agent.md` → Critic + Risk → Re-evaluation Report → Orchestrator (Sprint Gate impact)
+
+### SCOPE CHANGE [DIMENSION]: [description]
+Changes the fundamental premise on which the audit was built — not a delta, but a direction change.
+
+Use when: business model pivot, core architecture change, target audience shift, product discontinuation — situations where parts of the existing audit become actively *wrong*.
+
+| Dimension | Affected analysis |
+|-----------|------------------|
+| `BUSINESS` | Phase 1 agents |
+| `TECH` | Phase 2 agents |
+| `UX` | Phase 3 agents |
+| `MARKETING` | Phase 4 agents |
+| `ALL` | All phases |
+
+Agent: `37-scope-change-agent.md` → Backlog Hold → Invalidation marking → Re-analysis → Critic + Risk → Sprint Gate Reconciliation → Master Synthesis update
+Output: `docs/synthesis/scope-change-[N].md` + updated sprint statuses
+
+### FEATURE [name]: [description]
+Runs the complete Phase 1–4 + Synthesis + Sprint Plan cycle for a single new feature in an isolated workspace.
+
+Output: `Workitems/[FEATURENAME]/` — own sprint IDs, own Sprint Gate, no impact on main backlog without Orchestrator approval.
+Agent: `24-feature-agent.md`
+
+### HOTFIX [description]
+Emergency protocol for critical production issues. Bypasses Sprint Gate.
+
+Agent pipeline: Implementation → Test (abbreviated) → PR/Review (secret scan mandatory) → merge → KPI → Documentation → GitHub Integration → Retrospective
+Sprint ID: `HOTFIX-[N]` | Mandatory: LESSON_CANDIDATE + DECIDED item if structural constraint results.
+
+### REFRESH ONBOARDING
+Re-runs steps 3+4 of the Onboarding Agent (codebase scan + tooling check) without re-asking intake questions.
+Useful after significant code changes when a full REEVALUATE is premature.
+
+---
+
+## GOVERNANCE STRUCTURE
+
+| Meeting | Frequency | Participants | Purpose |
 |---------|-----------|------------|------|
-| Agent Handoff Review | Per handoff | Orchestrator | Kwaliteitscontrole |
-| Fase Review | Einde van elke fase | Critic + Risk + Orchestrator | Go/No-Go beslissing |
-| Stakeholder Update | Wekelijks | Product owner / opdrachtgever | Voortgangsrapportage |
-| Eindpresentatie | Week 12 | Alle stakeholders | Eindrapport presentatie |
+| Agent Handoff Review | Per handoff | Orchestrator | Quality control |
+| Phase Review | End of each phase | Critic + Risk + Orchestrator | Go/No-Go decision |
+| Stakeholder Update | Weekly | Product owner / client | Progress reporting |
+| Final Presentation | Week 12 | All stakeholders | Final report presentation |
 
 ---
 
-## TIJDSINDICATIE
+## TIME ESTIMATE
 
-| Fase | Duur |
+| Phase | Duration |
 |------|------|
-| Fase 1: Business & Strategie | 2–3 weken |
-| Fase 2: Techniek & Architectuur | 3–4 weken |
-| Fase 3: UX & Product Experience | 2–3 weken |
-| Fase 4: Brand, Marketing & Growth | 2 weken |
-| Synthese & Roadmap | 1 week |
-| Fase 5: Implementatie (per sprint) | 2 weken/sprint × [n sprints] |
-| **Totaal (analyse + eerste sprint)** | **12–14 weken** |
+| Phase 1: Business & Strategy | 2–3 weeks |
+| Phase 2: Technology & Architecture | 3–4 weeks |
+| Phase 3: UX & Product Experience | 2–3 weeks |
+| Phase 4: Brand, Marketing & Growth | 2 weeks |
+| Synthesis & Roadmap | 1 week |
+| Phase 5: Implementation (per sprint) | 2 weeks/sprint × [n sprints] |
+| **Total (analysis + first sprint)** | **12–14 weeks** |
 
 ---
 
-## DEFINITION OF DONE (SYSTEEM)
+## DEFINITION OF DONE (SYSTEM)
 
-Het auditproces is COMPLEET wanneer:
-1. Alle vier analysefasen zijn Critic + Risk APPROVED
-2. De Synthesis Agent het eindrapport heeft geproduceerd
-3. Het eindrapport alle 7 verplichte onderdelen bevat
-4. Geen open `CRITICAL_FINDING` of `CRITICAL_GAP` items zonder resolutie
-5. Geen open `CRITICAL_MISALIGNMENT` items zonder resolutie
-6. KPI baseline is gedocumenteerd (of `INSUFFICIENT_DATA:` met escalaties opgelost)
+The audit process is COMPLETE when:
+1. All four analysis phases are Critic + Risk APPROVED
+2. The Synthesis Agent has produced the final report
+3. The final report contains all 7 required components
+4. No open `CRITICAL_FINDING` or `CRITICAL_GAP` items without resolution
+5. No open `CRITICAL_MISALIGNMENT` items without resolution
+6. KPI baseline is documented (or `INSUFFICIENT_DATA:` with escalations resolved)
 
-Het implementatieproces (Fase 5) is COMPLEET per sprint wanneer:
-7. Alle stories in de sprint zijn IMPLEMENTED of BLOCKED (met escalatie)
-8. Sprint Completion Report JSON is aanwezig en APPROVED door Critic + Risk Agent
-9. KPI-meting per sprint is uitgevoerd en gedocumenteerd
-10. Geen nieuwe `CRITICAL_FINDING` zonder resolutie in de sprint-output
-11. De PR is gemerged in de main branch
+The implementation process (Phase 5) is COMPLETE per sprint when:
+7. All stories in the sprint are IMPLEMENTED or BLOCKED (with escalation)
+8. Sprint Completion Report JSON is present and APPROVED by Critic + Risk Agent
+9. KPI measurement per sprint has been performed and documented
+10. No new `CRITICAL_FINDING` without resolution in the sprint output
+11. The PR has been merged into the main branch
 
 ---
 
-## KERNPRINCIPE
+## CORE PRINCIPLE
 
-> **Optimaliseren zonder strategische validatie leidt tot lokale verbeteringen zonder structurele waarde.**
+> **Optimizing without strategic validation leads to local improvements without structural value.**
 
-De volgorde:  
-**Strategie → Techniek → Ervaring → Groei → Implementatie**
+The order:
+**Strategy → Technology → Experience → Growth → Implementation**
 
-is bewust en onwijzigbaar.
+is deliberate and immutable.

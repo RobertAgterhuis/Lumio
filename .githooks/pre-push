@@ -1,0 +1,78 @@
+#!/usr/bin/env sh
+# .githooks/pre-push — Secret scan using TruffleHog
+#
+# Blocks pushes that introduce secrets (API keys, passwords, tokens).
+# Activate once per clone:  git config core.hooksPath .githooks
+#
+# Requires TruffleHog v3+:
+#   Linux/macOS:  brew install trufflehog
+#   Windows:      winget install trufflesecurity.trufflehog
+#                 OR: curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
+
+set -e
+
+# ── Check TruffleHog availability ────────────────────────────────────────────
+if ! command -v trufflehog >/dev/null 2>&1; then
+  echo "⚠️  WARNING: TruffleHog is not installed — secret scan SKIPPED."
+  echo "   Install: https://github.com/trufflesecurity/trufflehog#installation"
+  echo "   To suppress this warning after installing, run:"
+  echo "     git config core.hooksPath .githooks"
+  exit 0
+fi
+
+# ── Collect commits being pushed ─────────────────────────────────────────────
+# stdin line format: <local_ref> <local_sha> <remote_ref> <remote_sha>
+FOUND_SECRETS=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  # Skip deletions
+  zero_sha="0000000000000000000000000000000000000000"
+  if [ "$local_sha" = "$zero_sha" ]; then
+    continue
+  fi
+
+  # For new branches, compare to the common ancestor or scan full range
+  if [ "$remote_sha" = "$zero_sha" ]; then
+    # New branch — find divergence from HEAD of default branch or scan tip only
+    RANGE="$local_sha"
+    SCAN_ARGS="--since-commit $local_sha"
+  else
+    RANGE="$remote_sha..$local_sha"
+    SCAN_ARGS="--since-commit $remote_sha"
+  fi
+
+  echo "🔍 TruffleHog: scanning $local_ref ($RANGE)…"
+
+  # Run TruffleHog on the git range
+  if [ "$remote_sha" = "$zero_sha" ]; then
+    trufflehog git "file://$(git rev-parse --show-toplevel)" \
+      --since-commit "$local_sha" \
+      --only-verified \
+      --fail \
+      --no-update \
+      --json 2>/dev/null && true
+  else
+    trufflehog git "file://$(git rev-parse --show-toplevel)" \
+      --since-commit "$remote_sha" \
+      --only-verified \
+      --fail \
+      --no-update \
+      --json 2>/dev/null && true
+  fi
+
+  EXIT=$?
+  if [ $EXIT -ne 0 ]; then
+    FOUND_SECRETS=1
+  fi
+done
+
+if [ $FOUND_SECRETS -ne 0 ]; then
+  echo ""
+  echo "❌ TruffleHog detected verified secrets in the commits being pushed."
+  echo "   Push BLOCKED. Rotate the exposed credentials immediately, then"
+  echo "   rewrite history (git rebase -i / git filter-repo) before retrying."
+  exit 1
+fi
+
+echo "✅ No verified secrets detected by TruffleHog."
+exit 0

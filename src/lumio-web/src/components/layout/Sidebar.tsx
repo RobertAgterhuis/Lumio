@@ -23,6 +23,7 @@ import {
   Video,
   PanelLeftClose,
   PanelLeftOpen,
+  ExternalLink,
   type LucideIcon,
 } from "lucide-react";
 
@@ -247,6 +248,21 @@ export function Sidebar() {
                 aria-label={t("voortgangAria", { percentage: compleetheid.percentage })}
               />
             </div>
+          </div>
+        )}
+
+        {/* Privacy link */}
+        {!sidebarCollapsed && (
+          <div className="shrink-0 px-3 pb-1">
+            <a
+              href="https://lumio-legacy.nl/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ExternalLink aria-hidden="true" className="h-3 w-3" />
+              {t("privacyverklaring")}
+            </a>
           </div>
         )}
 

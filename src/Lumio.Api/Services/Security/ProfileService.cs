@@ -158,6 +158,17 @@ public class ProfileService : IProfileService
         }
     }
 
+    public void UpdateShamirDrempel(Guid profileId, int drempel)
+    {
+        lock (_lock)
+        {
+            var profile = _profiles.FirstOrDefault(p => p.Id == profileId);
+            if (profile is null) return;
+            profile.ShamirDrempel = drempel;
+            SaveProfiles();
+        }
+    }
+
     private List<Profile> LoadProfiles()
     {
         if (!File.Exists(_profilesPath))

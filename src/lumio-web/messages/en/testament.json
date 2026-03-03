@@ -9,6 +9,7 @@
     "verwijderenMislukt": "Delete failed.",
     "ja": "Yes",
     "nee": "No",
+    "disclaimer": "<strong>Please note:</strong> A legally valid will requires a <strong>notary</strong>. This document is not a legally binding will, but a personal overview for your next of kin.",
     "legitimairePortie": {
       "titel": "Possible violation of legitimate portion (legitimaire portie)",
       "beschrijving": "Based on {aantalKinderen, plural, one {# child} other {# children}}{heeftPartner, select, true { and a partner} other {}}, the minimum legitimate portion per child is {percentage}% of the estate (Civil Code Book 4, art. 4:63-4:69).",

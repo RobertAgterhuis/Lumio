@@ -14,6 +14,7 @@ interface VerzekeringItemProps {
 
 export function VerzekeringItem({ verzekering, onEdit, onDelete }: VerzekeringItemProps) {
   const t = useTranslations("boedel");
+  const tEnum = useTranslations("enums");
   const locale = useLocale();
   const currencyLocale = locale === "en" ? "en-NL" : "nl-NL";
 
@@ -25,7 +26,7 @@ export function VerzekeringItem({ verzekering, onEdit, onDelete }: VerzekeringIt
         </Badge>
         <div>
           <p className="text-sm font-medium">{verzekering.verzekeraar}</p>
-          <p className="text-xs text-muted-foreground">{verzekering.type} — {t("verzekeringen.polisLabel")} {verzekering.polisNummer}</p>
+          <p className="text-xs text-muted-foreground">{tEnum(`verzekeringsType.${verzekering.type.toLowerCase()}` as Parameters<typeof tEnum>[0])} — {t("verzekeringen.polisLabel")} {verzekering.polisNummer}</p>
         </div>
       </div>
       <div className="flex items-center gap-2">

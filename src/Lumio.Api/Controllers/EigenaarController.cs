@@ -80,8 +80,10 @@ public class EigenaarController : ControllerBase
 
     [HttpPost("foto")]
     [RequestSizeLimit(10_485_760)] // 10 MB (compile-time upper bound)
-    public async Task<IActionResult> UploadFoto([FromForm] IFormFile bestand)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadFoto([FromForm] BestandUploadRequest request)
     {
+        var bestand = request.Bestand;
         var eigenaar = await _eigenaarRepo.FindAsync();
         if (eigenaar is null)
             return BadRequest(new { error = "Maak eerst een eigenaar profiel aan." });

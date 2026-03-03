@@ -17,6 +17,7 @@
     "start": "next start",
     "lint": "eslint src",
     "generate-api": "openapi-ts",
+    "export-spec": "node -e \"require('https').get || require('http').get('http://127.0.0.1:5123/swagger/v1/swagger.json', r => { let d=''; r.on('data',c=>d+=c); r.on('end',()=>require('fs').writeFileSync('openapi.json',d)); }).on('error',e=>{ console.error('API not running? Start it first.'); process.exit(1); })\"",
     "test": "vitest run --project unit",
     "test:coverage": "vitest run --project unit --coverage",
     "test:storybook": "vitest run --project storybook",

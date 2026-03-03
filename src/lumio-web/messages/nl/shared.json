@@ -31,14 +31,18 @@
     "activiteitenlog": "Activiteitenlog",
     "instellingen": "Instellingen",
     "handleiding": "Handleiding",
+    "privacyverklaring": "Privacyverklaring",
     "navigatie": "Hoofdnavigatie",
     "groep": {
       "overzicht": "Overzicht",
       "wensen": "Wensen",
       "bezittingen": "Bezittingen",
       "personen": "Personen",
-      "hulpmiddelen": "Hulpmiddelen"
-    }
+      "hulpmiddelen": "Hulpmiddelen",
+      "beheer": "Beheer"
+    },
+    "voortgang": "{aantalIngevuld} van {totaal} secties ingevuld",
+    "voortgangAria": "Voortgang nalatenschap: {percentage}% ingevuld"
   },
   "enums": {
     "burgerlijkeStaat": {

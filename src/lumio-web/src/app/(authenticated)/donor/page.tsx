@@ -70,7 +70,20 @@ export default function DonorPage() {
 
       <div className="rounded-lg border border-secure bg-secure-100 p-4">
         <p className="text-sm text-secure">
-          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+          {t.rich("disclaimer", {
+            strong: (chunks) => <strong>{chunks}</strong>,
+            // SP-1-009: donorregister.nl as clickable external link (AC: directe link aanwezig)
+            link: (chunks) => (
+              <a
+                href="https://donorregister.nl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline font-medium"
+              >
+                {chunks}
+              </a>
+            ),
+          })}
         </p>
       </div>
 

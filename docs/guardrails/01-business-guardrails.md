@@ -1,47 +1,48 @@
-# Business Guardrails – Fase 1 Agents
-> Van toepassing op: Business Analyst, Domain Expert, Sales Strategist, Financial Analyst
+```markdown
+# Business Guardrails – Phase 1 Agents
+> Applies to: Business Analyst, Domain Expert, Sales Strategist, Financial Analyst, Product Manager
 
 ---
 
-## DOMEIN: BUSINESS & STRATEGIE
+## DOMAIN: BUSINESS & STRATEGY
 
-### G-BUS-01 – Revenue Hypothese Vereist
-**Regel:** Geen feature of aanbeveling mag worden opgenomen in het sprintplan zonder een expliciete, toetsbare revenue-hypothese.  
-**Format:** "Als we [actie] uitvoeren, verwachten we [meting] te verbeteren met [range] op basis van [rationale]."  
-**Schending:** Markeer als `GUARDRAIL_VIOLATION: G-BUS-01` en verwijder uit sprintplan.
+### G-BUS-01 – Revenue Hypothesis Required
+**Rule:** No feature or recommendation may be included in the sprint plan without an explicit, testable revenue hypothesis.  
+**Format:** "If we execute [action], we expect [metric] to improve by [range] based on [rationale]."  
+**Violation:** Mark as `GUARDRAIL_VIOLATION: G-BUS-01` and remove from sprint plan.
 
-### G-BUS-02 – Gecentraliseerde Business Rules
-**Regel:** Business rules worden NOOIT geïmplementeerd als hardcoded logica. Ze worden geïdentificeerd en gedocumenteerd in een centrale rule inventory.  
-**Verificatie:** Controleer of geïdentificeerde business rules traceerbaar zijn naar een authoritative source (BPMN, decision table, of specification document).  
-**Schending:** Markeer als `GUARDRAIL_VIOLATION: G-BUS-02`.
+### G-BUS-02 – Centralized Business Rules
+**Rule:** Business rules are NEVER implemented as hardcoded logic. They are identified and documented in a central rule inventory.  
+**Verification:** Verify that identified business rules are traceable to an authoritative source (BPMN, decision table, or specification document).  
+**Violation:** Mark as `GUARDRAIL_VIOLATION: G-BUS-02`.
 
-### G-BUS-03 – ICP Validatie
-**Regel:** Aanbevelingen voor product of sales mogen NIET worden gedaan voordat het Ideal Customer Profile (ICP) is vastgesteld op basis van aantoonbare data.  
-**Bronvereiste:** ICP moet gebaseerd zijn op: bestaande klantdata, interviews, CRM-data of marktonderzoek – NIET op aannames.
+### G-BUS-03 – ICP Validation
+**Rule:** Recommendations for product or sales may NOT be made before the Ideal Customer Profile (ICP) has been established based on demonstrable data.  
+**Source requirement:** ICP must be based on: existing customer data, interviews, CRM data, or market research – NOT on assumptions.
 
-### G-BUS-04 – Gap Analyse Volledigheid
-**Regel:** De gap-analyse MOET alle vier dimensies dekken: Markt, Product, Revenue, Operations.  
-**Schending:** Als één dimensie ontbreekt, is de gap-analyse onvolledig en mag het document NIET als gereed worden gemarkeerd.
+### G-BUS-04 – Gap Analysis Completeness
+**Rule:** The gap analysis MUST cover all four dimensions: Market, Product, Revenue, Operations.  
+**Violation:** If any dimension is missing, the gap analysis is incomplete and the document may NOT be marked as ready.
 
-### G-BUS-05 – Prioriteitenmatrix Verplicht
-**Regel:** Elke set aanbevelingen moet vergezeld gaan van een impact-effort matrix.  
-**Format:** 2x2 matrix (high/low impact × high/low effort), ingevuld met concrete items – geen generieke categorieën.
+### G-BUS-05 – Priority Matrix Mandatory
+**Rule:** Every set of recommendations must be accompanied by an impact-effort matrix.  
+**Format:** 2×2 matrix (high/low impact × high/low effort), filled with concrete items – no generic categories.
 
-### G-BUS-06 – Financial Analyse Onafhankelijkheid
-**Regel:** De Financial Analyst baseert alle KPI-schattingen UITSLUITEND op aangeleverde financiële data.  
-**Verbod:** Gebruik NOOIT industrie-benchmarks als vervanging voor ontbrekende bedrijfsdata. Markeer als `INSUFFICIENT_DATA:` en escaleer.
+### G-BUS-06 – Financial Analysis Independence
+**Rule:** The Financial Analyst bases all KPI estimates EXCLUSIVELY on provided financial data.  
+**Prohibition:** Never use industry benchmarks as a substitute for missing company data. Mark as `INSUFFICIENT_DATA:` and escalate.
 
-### G-BUS-07 – Sales Cycle Documentatie
-**Regel:** De Sales Strategist documenteert ALTIJD de volledige, actuele sales cycle met alle stappen, handoffs, en frictie-punten – gebaseerd op aangeleverd bewijsmateriaal.
+### G-BUS-07 – Sales Cycle Documentation
+**Rule:** The Sales Strategist ALWAYS documents the complete, current sales cycle with all steps, handoffs, and friction points – based on provided evidence.
 
-### G-BUS-08 – Geen Strategische Sprong
-**Regel:** Strategische aanbevelingen die niet direct herleidbaar zijn tot een bevinding uit de Analyse worden geblokkeerd.  
-**Schending:** Markeer als `UNSUBSTANTIATED_RECOMMENDATION` en verwijder uit deliverable.
+### G-BUS-08 – No Strategic Leap
+**Rule:** Strategic recommendations that are not directly traceable to a finding from the Analysis are blocked.  
+**Violation:** Mark as `UNSUBSTANTIATED_RECOMMENDATION` and remove from deliverable.
 
 ---
 
-## HANDOFF VEREISTEN (FASE 1 SPECIFIEK)
-Na Fase 1 MOET de output beschikbaar zijn als gestructureerde JSON of Markdown met de volgende velden (conform `analysis-output-contract.md`):
+## HANDOFF REQUIREMENTS (PHASE 1 SPECIFIC)
+After Phase 1 the output MUST be available as structured JSON or Markdown with the following fields (per `analysis-output-contract.md`):
 - `capabilities[]`
 - `business_rules[]`
 - `risk_assessment[]`
@@ -49,4 +50,6 @@ Na Fase 1 MOET de output beschikbaar zijn als gestructureerde JSON of Markdown m
 - `gap_analysis{}`
 - `priority_matrix[]`
 
-Elke ontbrekende veld blokkeert de start van Fase 2.
+Any missing field blocks the start of Phase 2.
+
+```

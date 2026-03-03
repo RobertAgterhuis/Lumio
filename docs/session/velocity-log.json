@@ -1,0 +1,27 @@
+{
+  "velocity_log": [
+    {
+      "sprint_id": "SP-1",
+      "sprint_goal": "Stabilize, Unblock, Comply",
+      "sprint_date": "2026-03-03",
+      "stories_planned": 17,
+      "stories_delivered": 14,
+      "stories_vervallen": 3,
+      "stories_blocked_carried_over": 0,
+      "effective_delivery_rate_pct": 100,
+      "blockers_resolved": 6,
+      "critical_bugs_found": 1,
+      "critical_bugs_resolved": 1,
+      "backend_tests_pass_rate_pct": 100,
+      "frontend_build": "PASS",
+      "sprint_gate": "PASS",
+      "notes": "Sprint 1 completed in 1 day. 3 VERVALLEN stories due to explicit decisions (DEC-109, DEC-110) — not failures. BUG-SHAMIR-001 found and fixed (was a launch blocker for heir unlock flow). All 6 BLOCKING items cleared for Sprint 2."
+    }
+  ],
+  "running_average_delivery_rate_pct": 100,
+  "total_sprints_completed": 1,
+  "total_stories_delivered": 14,
+  "total_critical_bugs_found": 1,
+  "total_critical_bugs_resolved": 1,
+  "last_updated": "2026-03-03T23:59:00Z"
+}

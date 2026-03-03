@@ -1,123 +1,126 @@
+````markdown
 # Contract: Tooling
-> Versie 1.0 | Definieert welke tools agents mogen gebruiken en hoe tool-beschikbaarheid wordt beheerd
+> Version 1.0 | Defines which tools agents may use and how tool availability is managed
 
 ---
 
-## DOEL
+## PURPOSE
 
-Dit contract definieert:
-1. Welke tools beschikbaar moeten zijn voor elke fase
-2. Hoe agents tool-beschikbaarheid verifiëren en rapporteren
-3. Wat agents doen bij ontbrekende of falende tools
-4. Verboden toolacties (security en integriteit)
+This contract defines:
+1. Which tools must be available for each phase
+2. How agents verify and report tool availability
+3. What agents do when tools are missing or failing
+4. Prohibited tool actions (security and integrity)
 
 ---
 
-## TOOL CATEGORIEËN
+## TOOL CATEGORIES
 
-### Categorie A: Lezen & Analyseren (vereist voor Fase 1–4)
+### Category A: Reading & Analyzing (required for Phase 1–4)
 
-| Tool | Doel | Minimale versie | Verificatiecommando |
+| Tool | Purpose | Minimum version | Verification command |
 |------|------|----------------|-------------------|
-| Bestandssysteem (lees) | Codebase en documentatie inlezen | - | Bestandspad resolveert |
-| Git (read-only) | Commit-history, blame, diff | 2.x | `git --version` |
-| Grep / zoeken | Patronen detecteren in code | - | Bestandsinhoud doorzoekbaar |
+| File system (read) | Read codebase and documentation | - | File path resolves |
+| Git (read-only) | Commit history, blame, diff | 2.x | `git --version` |
+| Grep / search | Detect patterns in code | - | File content searchable |
 
-### Categorie B: Schrijven & Opslaan (vereist voor alle fasen)
+### Category B: Writing & Storing (required for all phases)
 
-| Tool | Doel | Minimale versie | Verificatiecommando |
+| Tool | Purpose | Minimum version | Verification command |
 |------|------|----------------|-------------------|
-| Bestandssysteem (schrijf) | Output-documenten wegschrijven | - | Schrijfrechten op werkmap |
-| JSON validator | Session state en contracten valideren | - | JSON parseert zonder fout |
+| File system (write) | Write output documents | - | Write permissions on working directory |
+| JSON validator | Validate session state and contracts | - | JSON parses without error |
 
-### Categorie C: Bouwen & Testen (vereist voor Fase 5)
+### Category C: Building & Testing (required for Phase 5)
 
-| Tool | Doel | Minimale versie | Verificatiecommando |
+| Tool | Purpose | Minimum version | Verification command |
 |------|------|----------------|-------------------|
-| Test-runner | Unittests en integratietests uitvoeren | Projectspecifiek | `[runner] --version` |
-| Linter / statische analyse | Code-kwaliteit en stijl controleren | Projectspecifiek | `[linter] --version` |
-| Build-tool | Project bouwen en compileren | Projectspecifiek | `[buildtool] --version` |
-| Git (schrijf) | Commits, branches, PR's aanmaken | 2.x | `git --version` |
+| Test runner | Run unit tests and integration tests | Project-specific | `[runner] --version` |
+| Linter / static analysis | Check code quality and style | Project-specific | `[linter] --version` |
+| Build tool | Build and compile project | Project-specific | `[buildtool] --version` |
+| Git (write) | Create commits, branches, PRs | 2.x | `git --version` |
 
-### Categorie D: Optioneel (verhoogt analysekwaliteit)
+### Category D: Optional (improves analysis quality)
 
-| Tool | Doel |
+| Tool | Purpose |
 |------|------|
-| Dependency scanner | Verouderde of kwetsbare dependencies detecteren |
-| Code coverage tool | Testdekking meten |
-| Performance profiler | Bottlenecks identificeren |
-| Accessibility checker | WCAG-compliance valideren |
+| Dependency scanner | Detect outdated or vulnerable dependencies |
+| Code coverage tool | Measure test coverage |
+| Performance profiler | Identify bottlenecks |
+| Accessibility checker | Validate WCAG compliance |
 
 ---
 
-## TOOL-BESCHIKBAARHEID PROTOCOL
+## TOOL AVAILABILITY PROTOCOL
 
-### Bij verificatie (Onboarding Agent, verplicht):
+### During verification (Onboarding Agent, mandatory):
 
 ```markdown
-## TOOLING STATUS RAPPORT
-| Tool | Status | Versie | Categorie | Blokkeert |
+## TOOLING STATUS REPORT
+| Tool | Status | Version | Category | Blocks |
 |------|--------|--------|-----------|-----------|
-| Bestandssysteem (lees) | BESCHIKBAAR | - | A | Fase 1–4 + Fase 5 |
-| Git (read-only) | BESCHIKBAAR | 2.43.0 | A | Geen (AANBEVOLEN) |
-| Bestandssysteem (schrijf) | BESCHIKBAAR | - | B | Alle fasen |
-| Test-runner | TOOL_UNAVAILABLE | - | C | Fase 5 |
+| File system (read) | AVAILABLE | - | A | Phase 1–4 + Phase 5 |
+| Git (read-only) | AVAILABLE | 2.43.0 | A | None (RECOMMENDED) |
+| File system (write) | AVAILABLE | - | B | All phases |
+| Test runner | TOOL_UNAVAILABLE | - | C | Phase 5 |
 ```
 
-### Status waarden:
+### Status values:
 
-| Status | Betekenis | Actie |
+| Status | Meaning | Action |
 |--------|-----------|-------|
-| `BESCHIKBAAR` | Tool aanwezig en functioneel | Doorgaan |
-| `TOOL_UNAVAILABLE` | Tool niet gevonden | Documenteer, blokkeer afhankelijke fase |
-| `TOOL_DEGRADED` | Tool aanwezig maar problemen (verkeerde versie, rechtenprobleem) | Documenteer, escaleer als kritiek |
-| `TOOL_UNTESTED` | Niet geverifieerd | Behandel als TOOL_UNAVAILABLE |
+| `AVAILABLE` | Tool present and functional | Continue |
+| `TOOL_UNAVAILABLE` | Tool not found | Document, block dependent phase |
+| `TOOL_DEGRADED` | Tool present but issues (wrong version, permission problem) | Document, escalate if critical |
+| `TOOL_UNTESTED` | Not verified | Treat as TOOL_UNAVAILABLE |
 
 ---
 
-## FASE-AFHANKELIJKHEID
+## PHASE DEPENDENCY
 
-| Fase | Vereiste categorieën | Fase start als... |
+| Phase | Required categories | Phase starts when... |
 |------|---------------------|-------------------|
-| Onboarding | A + B | Altijd (minimumcheck) |
-| Fase 1–4 (analyse) | A + B | Alle Categorie A + B BESCHIKBAAR |
-| Fase 5 (implementatie) | A + B + C | Alle Categorie A + B + C BESCHIKBAAR |
+| Onboarding | A + B | Always (minimum check) |
+| Phase 1–4 (analysis) | A + B | All Category A + B AVAILABLE |
+| Phase 5 (implementation) | A + B + C | All Category A + B + C AVAILABLE |
 
-**TOOLING_GAP voor Categorie C blokkeert Fase 5, maar NIET Fase 1–4.** Dit moet expliciet gedocumenteerd worden in de Onboarding Output zodat de Synthesis Agent een aanbeveling kan opnemen.
+**TOOLING_GAP for Category C blocks Phase 5, but NOT Phase 1–4.** This must be explicitly documented in the Onboarding Output so that the Synthesis Agent can include a recommendation.
 
 ---
 
-## VERBODEN TOOLACTIES (ALLE AGENTS, ALTIJD)
+## PROHIBITED TOOL ACTIONS (ALL AGENTS, ALWAYS)
 
-1. **VERBOD:** Geen enkel geheim, credential, API-sleutel of wachtwoord lezen, loggen of doorgeven — ook niet tijdelijk in geheugen
-2. **VERBOD:** Geen productie-database direct benaderen of mutaties uitvoeren buiten de aangewezen testomgeving
-3. **VERBOD:** Geen externe netwerkaanroepen maken buiten de expliciete toolset (geen willekeurige HTTP-calls)
-4. **VERBOD:** Geen destructieve git-operaties (`--force push`, `reset --hard` op main/master) zonder expliciete menselijke bevestiging via het Human Escalation Protocol
-5. **VERBOD:** Geen binaire bestanden of gegenereerde artefacten committen die niet tot de implementatie behoren
-6. **VERBOD:** Geen installatie van nieuwe tools of packages buiten de gedefinieerde toolset zonder `TOOL_INSTALL_REQUEST` escalatie
+1. **PROHIBITION:** Do not read, log, or pass on any secret, credential, API key, or password — not even temporarily in memory
+2. **PROHIBITION:** Do not directly access or mutate a production database outside the designated test environment
+3. **PROHIBITION:** Do not make external network calls outside the explicit toolset (no arbitrary HTTP calls)
+4. **PROHIBITION:** Do not perform destructive git operations (`--force push`, `reset --hard` on main/master) without explicit human confirmation via the Human Escalation Protocol
+5. **PROHIBITION:** Do not commit binary files or generated artifacts that do not belong to the implementation
+6. **PROHIBITION:** Do not install new tools or packages outside the defined toolset without a `TOOL_INSTALL_REQUEST` escalation
 
 ---
 
 ## TOOL_INSTALL_REQUEST PROTOCOL
 
-Als een agent concludeert dat een ontbrekende tool noodzakelijk is voor uitvoering:
+If an agent concludes that a missing tool is necessary for execution:
 
 ```markdown
 ## TOOL_INSTALL_REQUEST
-- Aanvragende agent: [agent naam]
-- Tool: [naam + versie]
-- Reden: [waarom is deze tool noodzakelijk?]
-- Alternatief zonder tool: [of GEEN ALTERNATIEF]
-- Risico van niet-installeren: [impact op cyclus]
-- Vereiste actie van de gebruiker: [installatie-instructie of goedkeuring]
+- Requesting agent: [agent name]
+- Tool: [name + version]
+- Reason: [why is this tool necessary?]
+- Alternative without tool: [or NO ALTERNATIVE]
+- Risk of not installing: [impact on cycle]
+- Required action from user: [installation instruction or approval]
 ```
 
-Escaleer naar de gebruiker via het Human Escalation Protocol. Wacht op bevestiging. NOOIT zelfstandig installeren.
+Escalate to the user via the Human Escalation Protocol. Wait for confirmation. NEVER install independently.
 
 ---
 
-## TOOL OUTPUT BEWARING
+## TOOL OUTPUT PRESERVATION
 
-- Alle tool-output die gebruikt wordt als bewijs voor een bevinding MOET geciteerd worden met: tool naam, commando, exacte output-snippet
-- Tijdelijke tool-output (bijv. test-logs) worden bewaard in `docs/tool-output/[fase]/[agent]/` voor traceerbaarheid
-- Tool-output ouder dan de huidige sessie: markeer als `STALE_OUTPUT: [datum]` — niet gebruiken als primair bewijs
+- All tool output used as evidence for a finding MUST be cited with: tool name, command, exact output snippet
+- Temporary tool output (e.g. test logs) is stored in `docs/tool-output/[phase]/[agent]/` for traceability
+- Tool output older than the current session: mark as `STALE_OUTPUT: [date]` — do not use as primary evidence
+
+````

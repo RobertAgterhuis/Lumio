@@ -46,6 +46,30 @@ Before submitting a PR, ensure the following items are addressed:
 - [ ] If intentionally breaking: baseline updated and frontend adapted
 - [ ] DTO changes reflected in OpenAPI spec
 - [ ] Validators updated for new fields
+- [ ] If API contract changed: `openapi.json` and `src/lib/api/` regenerated (see below)
+
+### Regenerating the OpenAPI Client (SP-1-004)
+
+The committed `src/lumio-web/openapi.json` documents the API contract. `src/lumio-web/src/lib/api/` contains the generated TypeScript client. Regenerate whenever the API changes:
+
+```powershell
+# 1. Start the backend API (Development mode)
+cd src/Lumio.Api
+$env:ASPNETCORE_ENVIRONMENT = "Development"
+dotnet run
+
+# 2. In a second terminal: export the live spec, then regenerate the TS client
+cd src/lumio-web
+npm run export-spec        # saves openapi.json from http://127.0.0.1:5123/swagger/v1/swagger.json
+npm run generate-api       # regenerates src/lib/api/ from openapi.json
+
+# 3. Commit both files
+git add openapi.json src/lib/api/
+git commit -m "chore(api): regenerate OpenAPI spec and TypeScript client"
+```
+
+> **CI drift detection** (future): once CI is active, a lint step will compare the committed `openapi.json`
+> against the live spec to catch uncommitted contract drift.
 
 ### Security (Electron)
 - [ ] No `nodeIntegration: true` in webPreferences
@@ -134,6 +158,26 @@ npm run size          # Bundle size check
 4. Document in Storybook
 
 ## 🔒 Security Guidelines
+
+### TruffleHog Pre-Push Hook (Required)
+
+This repo ships a Git hook that blocks pushes containing verified secrets (API keys, passwords, tokens).
+
+**Activate once per clone:**
+```powershell
+git config core.hooksPath .githooks
+```
+
+**Install TruffleHog** (required; hook warns but does not block if missing):
+```powershell
+# Windows (winget)
+winget install trufflesecurity.trufflehog
+
+# macOS / Linux (brew)
+brew install trufflehog
+```
+
+If TruffleHog finds a secret, the push is blocked. Rotate the exposed credential immediately, then rewrite history with `git rebase -i` or `git filter-repo` before retrying.
 
 ### Electron IPC
 All IPC channels must:

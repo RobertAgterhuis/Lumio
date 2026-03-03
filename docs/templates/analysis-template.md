@@ -1,142 +1,142 @@
-# Analyse Template
-> Gebruik dit template voor de analyse-deliverable van elke agent.
-> Zie `docs/contracts/analysis-output-contract.md` voor de volledige eisen.
+# Analysis Template
+> Use this template for the analysis deliverable of each agent.
+> See `docs/contracts/analysis-output-contract.md` for the full requirements.
 
 ---
 
 ```markdown
-# Analyse – [DISCIPLINE INVULLEN] – [DATUM ISO 8601]
+# Analysis – [FILL IN DISCIPLINE] – [DATE ISO 8601]
 
 ## Metadata
-- **Agent:** [naam van de agent]
-- **Fase:** [1 / 2 / 3 / 4]
-- **Input ontvangen van:** [naam vorige agent of "initieel – geen vorige agent"]
-- **Datum:** [YYYY-MM-DD]
-- **Software onder analyse:** [naam + versie als beschikbaar, anders INSUFFICIENT_DATA:]
-- **Analyse-scope:** [wat is wel en niet geanalyseerd, en waarom]
+- **Agent:** [name of the agent]
+- **Phase:** [1 / 2 / 3 / 4]
+- **Input received from:** [name of previous agent or "initial – no previous agent"]
+- **Date:** [YYYY-MM-DD]
+- **Software under analysis:** [name + version if available, otherwise INSUFFICIENT_DATA:]
+- **Analysis scope:** [what has and has not been analyzed, and why]
 
 ---
 
-## 1. INPUT INVENTARISATIE
+## 1. INPUT INVENTORY
 
-> Documenteer ALLE beschikbare artefacten. Dit is verplicht vóór enige analyse.
+> Document ALL available artifacts. This is mandatory before any analysis.
 
-| Artefact type | Beschikbaar | Beschrijving/Locatie | Impact als ontbreekt |
+| Artifact type | Available | Description/Location | Impact if missing |
 |---------------|-------------|---------------------|---------------------|
-| [type] | Ja / Nee | [pad of beschrijving] | [impact] |
+| [type] | Yes / No | [path or description] | [impact] |
 
-**Ontbrekende artefacten die analyse-kwaliteit beïnvloeden:**
-- `INSUFFICIENT_DATA: [artefact]` – Gevolg: [beschrijving]
+**Missing artifacts that affect analysis quality:**
+- `INSUFFICIENT_DATA: [artifact]` – Consequence: [description]
 
 ---
 
 ## 2. CURRENT STATE
 
-> Minimaal 5 bevindingen. Elke bevinding MOET een bronvermelding hebben.
+> Minimum 5 findings. Each finding MUST have a source reference.
 
-### CS-001 – [Titel bevinding]
-- **Bevinding:** [Concrete, specifieke beschrijving – geen generieke statements]
-- **Bron:** `[bestandsnaam:regelnummer]` of `[documentnaam, pagina N]` of `[interview: naam, datum]`
-- **Impact:** Hoog / Midden / Laag
-- **Toelichting:** [aanvullende context indien nodig]
+### CS-001 – [Finding title]
+- **Finding:** [Concrete, specific description – no generic statements]
+- **Source:** `[filename:linenumber]` or `[document name, page N]` or `[interview: name, date]`
+- **Impact:** High / Medium / Low
+- **Notes:** [additional context if needed]
 
-### CS-002 – [Titel bevinding]
-- **Bevinding:** 
-- **Bron:** 
+### CS-002 – [Finding title]
+- **Finding:** 
+- **Source:** 
 - **Impact:** 
 
-### CS-003 – [Titel bevinding]
+### CS-003 – [Finding title]
 [...]
 
 ---
 
 ## 3. GAPS
 
-> Per gap: wat ontbreekt of tekortschiet, aantoonbaar gemaakt met bron.
+> Per gap: what is missing or inadequate, demonstrated with a source.
 
-### GAP-001 – [Gap titel]
-- **Beschrijving:** [wat ontbreekt of suboptimaal is]
-- **Bron:** [hoe is dit aangetoond?]
-- **Risico als niet opgelost:** [beschrijving van consequentie]
-- **Prioriteit:** Kritiek / Hoog / Midden / Laag
+### GAP-001 – [Gap title]
+- **Description:** [what is missing or suboptimal]
+- **Source:** [how was this demonstrated?]
+- **Risk if unresolved:** [description of consequence]
+- **Priority:** Critical / High / Medium / Low
 
-### GAP-002 – [Gap titel]
+### GAP-002 – [Gap title]
 [...]
 
 ---
 
 ## 4. RISKS
 
-> Per risico: kans × impact scoring, mitigatie-optie.
+> Per risk: probability × impact scoring, mitigation option.
 
-### RISK-001 – [Risico titel]
-- **Beschrijving:** [wat kan er misgaan]
-- **Kans:** Hoog / Midden / Laag
-- **Impact:** Hoog / Midden / Laag
-- **Risicoscore:** Kritiek / Hoog / Midden / Laag
-- **Mitigatie-optie(s):**
-  1. [concrete mitigatie]
-- **Bron:** [waarop is dit risico gebaseerd]
+### RISK-001 – [Risk title]
+- **Description:** [what could go wrong]
+- **Probability:** High / Medium / Low
+- **Impact:** High / Medium / Low
+- **Risk score:** Critical / High / Medium / Low
+- **Mitigation option(s):**
+  1. [concrete mitigation]
+- **Source:** [on what is this risk based]
 
 ---
 
 ## 5. KPI BASELINE
 
-> Gebruik ONLY data die aantoonbaar beschikbaar is. Nooit schatten.
+> Use ONLY data that is demonstrably available. Never estimate.
 
-| KPI | Huidige waarde | Bron | Meetmethode | Status |
+| KPI | Current value | Source | Measurement method | Status |
 |-----|----------------|------|-------------|--------|
-| [naam] | [waarde of INSUFFICIENT_DATA:] | [bron of n.v.t.] | [methode] | Available / INSUFFICIENT_DATA |
+| [name] | [value or INSUFFICIENT_DATA:] | [source or n/a] | [method] | Available / INSUFFICIENT_DATA |
 
 ---
 
 ## 6. UNCERTAIN ITEMS
 
-> Elke bewering waarbij je niet 100% zeker bent van de bron.
+> Every assertion where you are not 100% certain of the source.
 
-- `UNCERTAIN: [beschrijving]`
-  - **Reden van onzekerheid:** [...]
-  - **Escalatie-actie:** [naar wie, voor wat]
+- `UNCERTAIN: [description]`
+  - **Reason for uncertainty:** [...]
+  - **Escalation action:** [to whom, for what]
 
 ---
 
 ## 7. INSUFFICIENT DATA ITEMS
 
-> Verplichte secties die niet gevuld konden worden wegens ontbrekende input.
+> Mandatory sections that could not be filled due to missing input.
 
-- `INSUFFICIENT_DATA: [sectie/veld]`
-  - **Ontbrekend:** [wat]
-  - **Gevolg voor analyse:** [impact op de volledigheid]
-  - **Escalatie:** [actie]
+- `INSUFFICIENT_DATA: [section/field]`
+  - **Missing:** [what]
+  - **Impact on analysis:** [impact on completeness]
+  - **Escalation:** [action]
 
 ---
 
 ## HANDOFF CHECKLIST
 
-> Alle items moeten aangevinkt zijn vóór handoff. Geen uitzonderingen.
+> All items must be checked before handoff. No exceptions.
 
-- [ ] Input inventarisatie volledig gedocumenteerd
-- [ ] Current State: minimaal 5 bevindingen, alle met bronvermelding
-- [ ] Gaps: alle gaps geprioriteerd, alle met bron
-- [ ] Risks: alle risks gescoord met mitigatie
-- [ ] KPI Baseline: alle bekende KPI's gedocumenteerd, ontbrekende als INSUFFICIENT_DATA:
-- [ ] Alle UNCERTAIN: items gedocumenteerd en geëscaleerd
-- [ ] Alle INSUFFICIENT_DATA: items gedocumenteerd en geëscaleerd
-- [ ] JSON export hieronder aanwezig en syntactisch valide
-- [ ] Geen lege secties of placeholder tekst ([TODO], [FILL IN], etc.)
-- [ ] Geen tegenstrijdige uitspraken in dit document
-- [ ] Global guardrails (00-global-guardrails.md) nageleefd
-- [ ] Domein-specifieke guardrails nageleefd
-- [ ] Zelfcontrole uitgevoerd: output doorgelezen van begin tot eind
+- [ ] Input inventory completely documented
+- [ ] Current State: minimum 5 findings, all with source reference
+- [ ] Gaps: all gaps prioritized, all with source
+- [ ] Risks: all risks scored with mitigation
+- [ ] KPI Baseline: all known KPIs documented, missing ones as INSUFFICIENT_DATA:
+- [ ] All UNCERTAIN: items documented and escalated
+- [ ] All INSUFFICIENT_DATA: items documented and escalated
+- [ ] JSON export below present and syntactically valid
+- [ ] No empty sections or placeholder text ([TODO], [FILL IN], etc.)
+- [ ] No contradictory statements in this document
+- [ ] Global guardrails (00-global-guardrails.md) complied with
+- [ ] Domain-specific guardrails complied with
+- [ ] Self-review performed: output read from beginning to end
 
-**STATUS: GEREED VOOR HANDOFF / GEBLOKKEERD**  
-**Openstaande items:** [lijst of "geen"]
+**STATUS: READY FOR HANDOFF / BLOCKED**
+**Open items:** [list or "none"]
 
 ---
 
 ## JSON EXPORT
 
-> Plak hier de valide JSON export conform analysis-output-contract.md
+> Paste the valid JSON export here conforming to analysis-output-contract.md
 
 ```json
 {

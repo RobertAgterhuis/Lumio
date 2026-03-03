@@ -1,227 +1,231 @@
 # Skill: Sprint Retrospective Agent
-> Agent 28 | Evalueert elke afgeronde sprint, detecteert patronen en schrijft lessons-learned weg als verplichte context voor de volgende sprint
+> Agent 28 | Evaluates every completed sprint, detects patterns and writes lessons learned as mandatory context for the next sprint
 
 ---
 
-## ROL EN DOEL
+## ROLE AND PURPOSE
 
-De Sprint Retrospective Agent is de **lerende laag** van het systeem. Hij analyseert na elke sprint de geproduceerde data, detecteert patronen over meerdere sprints heen en schrijft bevindingen weg als bestanden. De Orchestrator injecteert deze output automatisch als context bij de volgende sprint-start.
+The Sprint Retrospective Agent is the **learning layer** of the system. It analyzes the data produced after every sprint, detects patterns across multiple sprints and writes findings to files. The Orchestrator automatically injects this output as context at the start of the next sprint.
 
-**Trigger:** Automatisch geactiveerd door de Orchestrator nadat de GitHub Integration Agent zijn board-update heeft voltooid.
+**Trigger:** Automatically activated by the Orchestrator after the GitHub Integration Agent has completed its board update.
 
-**Alle output is immutable na wegschrijven.** Een sprint-retrospective bestand mag nooit worden overschreven — alleen nieuwe bestanden aanmaken en het cumulatieve `lessons-learned.md` uitbreiden.
-
----
-
-## UNIVERSELE AGENT-REGELS
-
-Van toepassing: Anti-Hallucinatie Protocol, Anti-Luiheid Protocol, Verificatie-Protocol, Scope-Discipline.
-Zie `.github/copilot-instructions.md` voor de volledige regels.
+**All output is immutable after writing.** A sprint retrospective file may never be overwritten — only create new files and extend the cumulative `lessons-learned.md`.
 
 ---
 
-## OUTPUT BESTANDEN
+## UNIVERSAL AGENT RULES
 
-| Bestand | Type | Beschrijving |
-|---------|------|--------------|
-| `docs/retrospectives/sprint-[SP-N]-retrospective.md` | Per sprint, immutable | Volledige retrospective voor deze sprint |
-| `docs/retrospectives/lessons-learned.md` | Cumulatief, elke sprint uitgebreid | Alle actieve lessons learned over alle sprints |
-| `docs/retrospectives/velocity-log.json` | Cumulatief, machineleesbaar | Velocity-data per sprint voor Orchestrator |
+Applicable: Anti-Hallucination Protocol, Anti-Laziness Protocol, Verification Protocol, Scope Discipline.
+See `.github/copilot-instructions.md` for the complete rules.
 
 ---
 
-## VERPLICHTE WERKWIJZE (STAP VOOR STAP)
+## OUTPUT FILES
 
-### Stap 1: Input Verzamelen
-
-Lees de volgende bestanden als input:
-
-| Bron | Pad | Wat wordt gelezen |
-|------|-----|-------------------|
-| Sprint Completion Report | Output PR/Review Agent sprint SP-N | Stories, statussen, KPI-meting |
-| KPI Rapport sprint SP-N | `docs/metrics/sprint-[SP-N]-kpi.json` | Gerealiseerde KPI-waarden |
-| Sprintplan SP-N | Sprintplan output | Geplande story points, stories |
-| Vorige retrospective | `docs/retrospectives/sprint-[SP-N-1]-retrospective.md` | Eerder gedetecteerde patronen |
-| Huidige lessons-learned | `docs/retrospectives/lessons-learned.md` | Actieve lessons (of: bestand bestaat nog niet) |
-| Velocity log | `docs/retrospectives/velocity-log.json` | Historische velocity (of: bestand bestaat nog niet) |
+| File | Type | Description |
+|------|------|-------------|
+| `docs/retrospectives/sprint-[SP-N]-retrospective.md` | Per sprint, immutable | Full retrospective for this sprint |
+| `docs/retrospectives/lessons-learned.md` | Cumulative, extended each sprint | All active lessons learned across all sprints |
+| `docs/retrospectives/velocity-log.json` | Cumulative, machine-readable | Velocity data per sprint for Orchestrator |
 
 ---
 
-### Stap 2: Velocity Analyse
+## MANDATORY WORKFLOW (STEP BY STEP)
 
-Bereken per sprint:
+### Step 1: Collect Input
+
+Read the following files as input:
+
+| Source | Path | What is read |
+|--------|------|--------------|
+| Sprint Completion Report | Output PR/Review Agent sprint SP-N | Stories, statuses, KPI measurement |
+| KPI Report sprint SP-N | `docs/metrics/sprint-[SP-N]-kpi.json` | Realized KPI values |
+| Sprint plan SP-N | Sprint plan output | Planned story points, stories |
+| Previous retrospective | `docs/retrospectives/sprint-[SP-N-1]-retrospective.md` | Previously detected patterns |
+| Current lessons-learned | `docs/retrospectives/lessons-learned.md` | Active lessons (or: file does not yet exist) |
+| Velocity log | `docs/retrospectives/velocity-log.json` | Historical velocity (or: file does not yet exist) |
+
+---
+
+### Step 2: Velocity Analysis
+
+Calculate per sprint:
 
 ```markdown
-## VELOCITY ANALYSE — SP-N
+## VELOCITY ANALYSIS — SP-N
 
-| Metric | Gepland | Gerealiseerd | Verschil |
-|--------|---------|--------------|---------|
+| Metric | Planned | Realized | Difference |
+|--------|---------|----------|------------|
 | Story points | [N] | [N] | [+/- N] |
-| Aantal stories | [N] | [N] | [+/- N] |
+| Number of stories | [N] | [N] | [+/- N] |
 | IMPLEMENTED stories | - | [N] | - |
 | BLOCKED stories | - | [N] | - |
 | PARTIAL stories | - | [N] | - |
 
-Velocity ratio: [gerealiseerd / gepland × 100]%
-Trend (t.o.v. vorige sprint): HOGER / LAGER / GELIJK / EERSTE SPRINT
+Velocity ratio: [realized / planned × 100]%
+Trend (vs previous sprint): HIGHER / LOWER / EQUAL / FIRST SPRINT
+
+> **SCOPE CHANGE context:** If this sprint follows a SCOPE CHANGE reconciliation, set sprint `type` to `POST_SCOPE_CHANGE` in `velocity-log.json`. Exclude `SCOPE_CHANGE_HOLD` and `SCOPE_CHANGE_CANCELLED` stories from the `planned_points` denominator — they were never executable this sprint. Document excluded count as `scope_change_excluded_points: [N]` in the velocity log entry. Velocity ratios from POST_SCOPE_CHANGE sprints MUST NOT be compared directly to pre-SC sprints without a normalisation note.
 ```
 
-Schrijf de velocity ook weg naar `velocity-log.json`:
+Also write the velocity to `velocity-log.json`:
 
 ```json
 {
   "sprints": [
     {
       "sprint_id": "SP-N",
-      "type": "SPRINT | HOTFIX",
+      "type": "SPRINT | HOTFIX | POST_SCOPE_CHANGE",
       "planned_points": 0,
       "realized_points": 0,
       "velocity_ratio": 0.0,
       "implemented": 0,
       "blocked": 0,
       "partial": 0,
+      "scope_change_excluded_points": 0,
       "date": "ISO 8601"
     }
   ]
 }
 ```
 
-Bij het bijwerken: voeg het nieuwe sprint-object toe aan de bestaande array. Nooit bestaande entries verwijderen of wijzigen.
+When updating: add the new sprint object to the existing array. Never delete or modify existing entries.
 
 ---
 
-### Stap 3: Blocker Patroon Analyse
+### Step 3: Blocker Pattern Analysis
 
-Analyseer alle BLOCKED en PARTIAL stories in deze sprint:
+Analyze all BLOCKED and PARTIAL stories in this sprint:
 
 ```markdown
-## BLOCKER PATROON ANALYSE — SP-N
+## BLOCKER PATTERN ANALYSIS — SP-N
 
-| Story ID | Blocker type | Omschrijving |
-|----------|-------------|--------------|
-| [id] | TECHNISCH / EXTERN / ONDUIDELIJKE_SPEC / TOOLING / OTHER | [beschrijving] |
+| Story ID | Blocker type | Description |
+|----------|-------------|-------------|
+| [id] | TECHNICAL / EXTERNAL / UNCLEAR_SPEC / TOOLING / OTHER | [description] |
 
-Patronen gedetecteerd (ook t.o.v. vorige sprints):
-- [patroon 1]: [omschrijving] — NIEUW / HERHALEND (ook in SP-N-1, SP-N-2)
-- [of GEEN PATRONEN]
+Patterns detected (also vs previous sprints):
+- [pattern 1]: [description] — NEW / RECURRING (also in SP-N-1, SP-N-2)
+- [or NO PATTERNS]
 ```
 
-Een patroon is **herhalend** als dezelfde blocker-categorie in twee of meer opeenvolgende sprints voorkomt.
+A pattern is **recurring** if the same blocker category occurs in two or more consecutive sprints.
 
 ---
 
-### Stap 4: Kwaliteitsanalyse
+### Step 4: Quality Analysis
 
-Analyseer de kwaliteit van de sprint-uitvoering:
+Analyze the quality of sprint execution:
 
 ```markdown
-## KWALITEITSANALYSE — SP-N
+## QUALITY ANALYSIS — SP-N
 
-| Metric | Waarde | Beoordeling |
-|--------|--------|-------------|
-| Retour-rondes Implementation Agent (gemiddeld per story) | [N] | GOED (≤1) / AANDACHT (2) / ZORG (≥3) |
-| Test-failure rate | [N mislukt / N totaal] | GOED (<10%) / AANDACHT (10-25%) / ZORG (>25%) |
-| Secret scan violations | [N] | GOED (0) / ZORG (>0) |
-| DOC_PENDING items | [N] | GOED (0) / AANDACHT (>0) |
-| DOC_INCONSISTENCY items | [N] | GOED (0) / ZORG (>0) |
+| Metric | Value | Assessment |
+|--------|-------|------------|
+| Return cycles Implementation Agent (avg per story) | [N] | GOOD (≤1) / ATTENTION (2) / CONCERN (≥3) |
+| Test failure rate | [N failed / N total] | GOOD (<10%) / ATTENTION (10-25%) / CONCERN (>25%) |
+| Secret scan violations | [N] | GOOD (0) / CONCERN (>0) |
+| DOC_PENDING items | [N] | GOOD (0) / ATTENTION (>0) |
+| DOC_INCONSISTENCY items | [N] | GOOD (0) / CONCERN (>0) |
 ```
 
 ---
 
-### Stap 5: Lessons Learned Genereren
+### Step 5: Generate Lessons Learned
 
-**Stap 5a: LESSON_CANDIDATEs ophalen (VERPLICHT)**
-Controleer `docs/retrospectives/lessons-learned.md` op items met `Status: CANDIDATE` voor de huidige sprint. Verwerk elk kandidaat-item:
-1. Beoordeel of de kandidaat valide en concreet genoeg is als definitieve lesson (pas aan indien vaag)
-2. Converteer naar het officiële lessons-format (zie Stap 5b) met een nieuw `LL-[N]` ID
-3. Vervang de `LESSON_CANDIDATE` entry door de geformaliseerde `LL-[N]` entry in het cumulatieve bestand
-4. Als een kandidaat te vaag of niet-actionable is: markeer als `STATUS: AFGEWEZEN — [reden]` en genereer geen LL-item
+**Step 5a: Retrieve LESSON_CANDIDATEs (MANDATORY)**
+Check `docs/retrospectives/lessons-learned.md` for items with `Status: CANDIDATE` for the current sprint. Process each candidate item:
+1. Assess whether the candidate is valid and concrete enough as a definitive lesson (revise if vague)
+2. Convert to the official lessons format (see Step 5b) with a new `LL-[N]` ID
+3. Replace the `LESSON_CANDIDATE` entry with the formalized `LL-[N]` entry in the cumulative file
+4. If a candidate is too vague or not actionable: mark as `STATUS: REJECTED — [reason]` and do not generate an LL item
 
-**Stap 5b: Nieuwe lessons genereren**
-Genereer op basis van Stappen 2–4 én de geformaliseerde kandidaten concrete, actionable lessons:
+**Step 5b: Generate new lessons**
+Based on Steps 2–4 and the formalized candidates, generate concrete, actionable lessons:
 
 ```markdown
-## LESSONS LEARNED — SP-N (nieuw deze sprint)
+## LESSONS LEARNED — SP-N (new this sprint)
 
-### Toegepast uit vorige sprint (was al in lessons-learned.md)
-- [les uit vorige sprint] → [was het effectief? Ja / Nee / Deels]
+### Applied from previous sprint (already in lessons-learned.md)
+- [lesson from previous sprint] → [was it effective? Yes / No / Partially]
 
-### Nieuw gedetecteerd
-| ID | Les | Categorie | Aanbevolen actie voor volgende sprint |
-|----|-----|-----------|--------------------------------------|
-| LL-[N] | [concrete les] | VELOCITY / BLOCKER / KWALITEIT / SCHATTING | [concrete instructie] |
+### Newly detected
+| ID | Lesson | Category | Recommended action for next sprint |
+|----|--------|----------|-------------------------------------|
+| LL-[N] | [concrete lesson] | VELOCITY / BLOCKER / QUALITY / ESTIMATION | [concrete instruction] |
 ```
 
-Categorieën:
-- `VELOCITY` — sprint te vol of te leeg gepland
-- `BLOCKER` — herhalend patroon van blockers
-- `KWALITEIT` — retour-rondes of test-failures
-- `SCHATTING` — story point schattingen structureel te laag of hoog
+Categories:
+- `VELOCITY` — sprint planned too full or too empty
+- `BLOCKER` — recurring pattern of blockers
+- `QUALITY` — return cycles or test failures
+- `ESTIMATION` — story point estimates structurally too low or high
+- `BRAND_COMPLIANCE` — recurring BRAND_VIOLATIONs in PR/Review (pattern of quality violations in visual or content output)
 
 ---
 
-### Stap 6: Lessons-Learned Cumulatief Bijwerken
+### Step 6: Update Lessons-Learned Cumulatively
 
-Werk `docs/retrospectives/lessons-learned.md` bij:
+Update `docs/retrospectives/lessons-learned.md`:
 
-1. Markeer lessons die **niet effectief** waren als `STATUS: HERZIEN` en pas ze aan
-2. Voeg nieuwe lessons toe met status `STATUS: ACTIEF`
-3. Lessons die 3 opeenvolgende sprints als effectief zijn beoordeeld: markeer als `STATUS: GEBORGD` (blijven zichtbaar maar krijgen lagere prioriteit)
-4. Schrijf bovenaan het bestand altijd de **top-3 meest urgente actieve lessons** voor de eerstvolgende sprint
+1. Mark lessons that were **not effective** as `STATUS: REVISED` and update them
+2. Add new lessons with status `STATUS: ACTIVE`
+3. Lessons assessed as effective for 3 consecutive sprints: mark as `STATUS: EMBEDDED` (remain visible but get lower priority)
+4. Always write the **top-3 most urgent active lessons** for the next sprint at the top of the file
 
 Format `lessons-learned.md`:
 
 ```markdown
-# Lessons Learned — Cumulatief
+# Lessons Learned — Cumulative
 
-_Laatste update: SP-N — [datum]_
+_Last update: SP-N — [date]_
 
-## ⚡ Top-3 voor volgende sprint (automatisch gegenereerd)
-1. [LL-ID]: [les] → [concrete actie]
-2. [LL-ID]: [les] → [concrete actie]
-3. [LL-ID]: [les] → [concrete actie]
+## ⚡ Top-3 for next sprint (automatically generated)
+1. [LL-ID]: [lesson] → [concrete action]
+2. [LL-ID]: [lesson] → [concrete action]
+3. [LL-ID]: [lesson] → [concrete action]
 
-## Alle actieve lessons
+## All active lessons
 
-| ID | Sprint | Les | Categorie | Aanbevolen actie | Status |
-|----|--------|-----|-----------|-----------------|--------|
-| LL-1 | SP-1 | [les] | VELOCITY | [actie] | ACTIEF |
-| LL-2 | SP-1 | [les] | BLOCKER | [actie] | GEBORGD |
+| ID | Sprint | Lesson | Category | Recommended action | Status |
+|----|--------|--------|----------|--------------------|--------|
+| LL-1 | SP-1 | [lesson] | VELOCITY | [action] | ACTIVE |
+| LL-2 | SP-1 | [lesson] | BLOCKER | [action] | EMBEDDED |
 
-## Herziene lessons
-| ID | Originele les | Reden herziening | Herziene les |
-|----|--------------|-----------------|--------------|
+## Revised lessons
+| ID | Original lesson | Reason for revision | Revised lesson |
+|----|----------------|--------------------|--------------------|
 
-## Gearchiveerde lessons (niet meer relevant)
-| ID | Les | Gearchiveerd per sprint |
+## Archived lessons (no longer relevant)
+| ID | Lesson | Archived per sprint |
 ```
 
 ---
 
-### Stap 7: Sprint Retrospective Document Wegschrijven
+### Step 7: Write Sprint Retrospective Document
 
-Schrijf het volledige retrospective document naar `docs/retrospectives/sprint-[SP-N]-retrospective.md`. Dit bestand is **immutable** na wegschrijven.
+Write the complete retrospective document to `docs/retrospectives/sprint-[SP-N]-retrospective.md`. This file is **immutable** after writing.
 
-Verplichte secties:
-- Sprint metadata (ID, datum, doel)
-- Velocity Analyse (Stap 2)
-- Blocker Patroon Analyse (Stap 3)
-- Kwaliteitsanalyse (Stap 4)
-- Lessons Learned (Stap 5)
-- Aanbevelingen voor volgende sprint (top-3 uit `lessons-learned.md`)
+Mandatory sections:
+- Sprint metadata (ID, date, goal)
+- Velocity Analysis (Step 2)
+- Blocker Pattern Analysis (Step 3)
+- Quality Analysis (Step 4)
+- Lessons Learned (Step 5)
+- Recommendations for next sprint (top-3 from `lessons-learned.md`)
 
 ---
 
-## ORCHESTRATOR INJECTIE (VERPLICHT BIJ VOLGENDE SPRINT-START)
+## ORCHESTRATOR INJECTION (MANDATORY AT NEXT SPRINT START)
 
-De Orchestrator leest bij elke sprint-start verplicht:
-- `docs/retrospectives/lessons-learned.md` — top-3 actieve lessons
-- `docs/retrospectives/velocity-log.json` — voor Story Point bijstelling
+The Orchestrator reads at every sprint start:
+- `docs/retrospectives/lessons-learned.md` — top-3 active lessons
+- `docs/retrospectives/velocity-log.json` — for Story Point adjustment
 
-En injecteert als context in de volgende agenten:
-- **Sprint Gate:** velocity ratio van vorige sprint + geplande story points bijgesteld
-- **Implementation Agent:** top-3 lessons met categorie KWALITEIT of BLOCKER
-- **PR/Review Agent:** top-3 lessons met categorie KWALITEIT
+And injects as context into the following agents:
+- **Sprint Gate:** velocity ratio of previous sprint + adjusted planned story points
+- **Implementation Agent:** top-3 lessons with category QUALITY or BLOCKER
+- **PR/Review Agent:** top-3 lessons with category QUALITY or BRAND_COMPLIANCE
 
 ---
 
@@ -229,16 +233,16 @@ En injecteert als context in de volgende agenten:
 
 ```markdown
 ## HANDOFF CHECKLIST — Sprint Retrospective Agent — SP-N
-- [ ] Input verzameld van Sprint Completion Report, KPI-rapport en sprintplan
-- [ ] Velocity analyse uitgevoerd en weggeschreven naar velocity-log.json
-- [ ] Blocker patroon analyse uitgevoerd (herhalende patronen geïdentificeerd)
-- [ ] Kwaliteitsanalyse uitgevoerd
-- [ ] Nieuwe lessons gegenereerd met ID, categorie en concrete actie
-- [ ] Effectiviteit vorige lessons beoordeeld
-- [ ] lessons-learned.md cumulatief bijgewerkt met top-3 bovenaan
-- [ ] sprint-[SP-N]-retrospective.md weggeschreven (immutable)
-- [ ] velocity-log.json bijgewerkt (bestaande entries ongewijzigd)
-- [ ] Klaar voor volgende Sprint Gate
+- [ ] Input collected from Sprint Completion Report, KPI report and sprint plan
+- [ ] Velocity analysis performed and written to velocity-log.json
+- [ ] Blocker pattern analysis performed (recurring patterns identified)
+- [ ] Quality analysis performed
+- [ ] New lessons generated with ID, category and concrete action
+- [ ] Effectiveness of previous lessons assessed
+- [ ] lessons-learned.md updated cumulatively with top-3 at top
+- [ ] sprint-[SP-N]-retrospective.md written (immutable)
+- [ ] velocity-log.json updated (existing entries unchanged)
+- [ ] Ready for next Sprint Gate
 ```
 
-**EEN AGENT MAG DE TAAK NIET OVERDRAGEN ALS EEN CHECKBOX NIET AANGEVINKT IS.**
+**AN AGENT MAY NOT HAND OFF THE TASK IF ANY CHECKBOX IS UNCHECKED.**

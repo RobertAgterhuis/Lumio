@@ -1,67 +1,111 @@
 # Security Handoff Context
-_Gegenereerd door Security Architect op 2026-03-02 — v1_  
-_Bijwerken bij elke REEVALUATE of HOTFIX die security-bevindingen wijzigt._
+
+> Agent: Security Architect (Agent 08)  
+> Last updated: 2026-03-03  
+> Status: **UP TO DATE** — resolves `SECURITY_HANDOFF_STATUS: UPDATE_REQUIRED` from DEC-108 / reevaluation-report-v2
 
 ---
 
-## IMPL-CONSTRAINTs
+## Purpose
 
-### IMPL-CONSTRAINT-001
-- **Afgeleid van:** GAP-ARCH-002 / A05 Security Misconfiguration / REC-SEC-001
-- **Scope:** `src/lumio-web/src/app/layout.tsx` — CSP meta-tag
-- **⚠️ GECORRIGEERD (2026-03-02) — SECURITY_FLAG: GAP-ARCH-002 — DEC-105:**
-  `unsafe-inline` in `script-src` is een **harde architectuurconstraint**, GEEN tijdelijke schuld die verwijderd kan worden zonder SSR-migratie. Next.js `output: "export"` (static export) injecteert inline hydration scripts bij build-time; verwijdering van `unsafe-inline` breekt de applicatie volledig.
-- **Bilaterale constraint:**
-  - Mag NIET: nieuwe `<script>` tags inline toevoegen of `unsafe-inline` uitbreiden naar andere directives.
-  - Mag OOK NIET: `unsafe-inline` verwijderen uit de huidige CSP totdat de volledige SSR-migratie (SP-15, REC-SEC-001) compleet is.
-- **Vereiste (status quo protected):** De bestaande `unsafe-inline` in layout.tsx L44 MOET aanwezig blijven. Bij elke wijziging aan de CSP-header: voer CSP-evaluatie uit vóór merge en zorg dat precies 1 treffer aanwezig is (de gedocumenteerde in layout.tsx).
-- **Verificatie:** `grep -n "unsafe-inline" src/lumio-web/src/app/layout.tsx` → precies 1 treffer op L44. Nul nieuwe treffers in andere bestanden.
-- **Guardrail referentie:** GAP-ARCH-002, DEC-105
-
-### IMPL-CONSTRAINT-002
-- **Afgeleid van:** GAP-SEC-001 / A07 Auth Failures / REC-SEC-003
-- **Scope:** `src/lumio-desktop/src/main/` — Electron main process; `src/Lumio.Api/Services/Security/IMasterPasswordService`
-- **Vereiste:** Moet: inactiviteits-timer implementeren die na configureerbare timeout (standaard 15 min) automatisch `POST /api/setup/lock` aanroept. Mag niet: de in-memory unlock-state van `IMasterPasswordService` onbeperkt actief laten zonder gebruikersinteractie.
-- **Verificatie:** Integratietest: mock 15 minuten inactiviteit → verifieer dat `DatabaseUnlockMiddleware` vervolgens 401 retourneert.
-- **Guardrail referentie:** GAP-SEC-001
-
-### IMPL-CONSTRAINT-003
-- **Afgeleid van:** GAP-DEVOPS-002 / A08 Software/Data Integrity / REC-SEC-002 / REC-DEVOPS-002
-- **Scope:** `.github/workflows/ci.yml` — alle PRs naar `main`
-- **Vereiste:** Moet: TruffleHog GitHub Action uitvoeren op elke PR naar `main`. Mag niet: een PR mergen naar `main` zonder geslaagde TruffleHog scan.
-- **Verificatie:** Branch protection rule op `main`: `secret-scan` job is required status check.
-- **Guardrail referentie:** GAP-DEVOPS-002
-
-### IMPL-CONSTRAINT-004
-- **Afgeleid van:** A03 Injection / ADR-001 MigratieDbHelper
-- **Scope:** `src/Lumio.Api/Data/MigratieDbHelper.cs` (of vergelijkbaar) — raw DDL SQL
-- **Vereiste:** Mag niet: nieuwe raw DDL SQL-constructies toevoegen met tabelnam- of kolomnaaminterpolatie via gebruikersinvoer. Bestaande MigratieDbHelper-code: mag alleen worden uitgebreid als de input uitsluitend hardcoded constanten zijn (geen user-supplied strings).
-- **Verificatie:** Code review checklist: elke PR die `MigratieDbHelper` raakt vereist expliciete reviewer-signoff op A03-compliance.
-- **Guardrail referentie:** ADR-001
-
-### IMPL-CONSTRAINT-005
-- **Afgeleid van:** A02 Cryptographic Failures / GAP-SEC-01 (ISqlCipherKdfService)
-- **Scope:** `src/Lumio.Api/Services/Security/` — alle wachtwoordverwerkende services
-- **Vereiste:** Mag niet: het masterpassword opslaan als `string` buiten de `UsePassword()` callback scope. Vereist: versleuteloperaties uitsluitend via `UsePassword(pw => { ... })` callback patroon om `SecureString`-graad van beheersing te handhaven.
-- **Verificatie:** CI GUARD-002 check (`ci.yml`: "no plaintext CurrentPassword in interface") afdwingen op alle commits. Uitbreiden naar `plaintext.*Password` patroon in toekomstige GUARD-versie.
-- **Guardrail referentie:** GUARD-002
-
-### IMPL-CONSTRAINT-006
-- **Afgeleid van:** A09 Logging Failures / GUARD-SEC-01 / BsnMaskingEnricher
-- **Scope:** Alle log-statements in `src/Lumio.Api/` en `src/lumio-web/`
-- **Vereiste:** Mag niet: BSN of andere bijzondere persoonsgegevens (gezondheidsgegevens, erfenisdetails) direct in log-berichten plaatsen. Vereist: gebruikmaken van structured logging properties zodat `BsnMaskingEnricher` automatisch masking kan toepassen. Mag niet: `ToString()` voor entiteiten met BSN-veld in een log-context.
-- **Verificatie:** Automated lint rule: voeg `no-log-sensitive-data` ESLint rule toe voor frontend; dotnet Analyzer voor backend (of manuele code review checklist).
-- **Guardrail referentie:** GUARD-SEC-01
+This document tracks structural security constraints that every agent, developer, and sprint must be aware of. It is updated whenever a security-relevant architectural decision is made that changes the attack surface, the authentication boundary, or the trust model of the application.
 
 ---
 
-## Openstaande Risico's (UNCERTAIN)
+## 1. DatabaseUnlockMiddleware — Unauthenticated Whitelist (AllowedPrefixes)
 
-| ID | Beschrijving | Actie vereist |
+**File:** `src/Lumio.Api/Middleware/DatabaseUnlockMiddleware.cs` — lines 8–20  
+**Decision:** DEC-108 (2026-03-03)  
+**Bug that triggered this update:** BUG-SHAMIR-001
+
+### What it does
+
+`DatabaseUnlockMiddleware` intercepts every API request. If the database is locked (no active profile + master password not set), it returns HTTP **423 Locked** — except for paths listed in `AllowedPrefixes`.
+
+### Current AllowedPrefixes
+
+| Path prefix | Reason | Added |
 |---|---|---|
-| UNCERTAIN-SEC-001 | next@16.1.6 pre-release status — mogelijk RC met ongepatchte CVEs | DevOps Engineer: verifieer npm registry (`npm view next@16.1.6 dist-tags`) vóór SP-11 release |
-| UNCERTAIN-SEC-002 | ESLint lint CI-blokkerstatus niet geverifieerd (UNCERTAIN-DEVOPS-001) | DevOps Engineer: bevestig exit-code gedrag van `npm run lint` in CI |
+| `/api/v1/auth/` | Login / setup flows — must work before unlock | Initial |
+| `/api/v1/profielen` | Profile selection — must work before unlock | Initial |
+| `/api/v1/backup/restore` | Restoring a backup is the unlock path for new installs | Initial |
+| `/swagger` | Developer tooling — non-production | Initial |
+| `/api/v1/shamir/drempel` | Public endpoint: heirs need the threshold before entering codes | SP-10-COR-001 |
+| `/api/v1/shamir/reconstrueer-en-ontgrendel` | **BUG-SHAMIR-001 fix**: heir unlock endpoint MUST be reachable before DB unlock — otherwise heirs can never unlock by design. Self-validates via Shamir reconstruction + PBKDF2. | SP-1-016 / DEC-108 |
+
+### Security rationale for `/api/v1/shamir/reconstrueer-en-ontgrendel`
+
+Placing this endpoint in `AllowedPrefixes` does **not** reduce security because:
+1. The controller (`ShamirController.reconstrueerEnOntgrendel`) accepts Shamir secret shares.
+2. It reconstructs the master password via Shamir's Secret Sharing.
+3. It then calls `_masterPassword.UnlockAsync(reconstructedPassword)` — which performs PBKDF2 key derivation and verifies the result against the stored salt.
+4. Access without valid shares produces HTTP 401. There is no data exposure path.
+
+Unauthenticated bypass of this endpoint without correct Shamir shares is computationally infeasible.
+
+### Structural Constraint (DEC-108)
+
+> **Any future endpoint that must be reachable before DB unlock MUST be explicitly added to `AllowedPrefixes` with a security comment explaining why it is safe to expose unauthenticated.**
+
+Examples: SSO callback, future password reset flow, future B2B provisioning endpoint.
+
+**Failure to add new required endpoints** = HTTP 423 for that functionality (BUG-SHAMIR-001 class of bug).  
+**Incorrectly adding endpoints** = unauthenticated data exposure (security regression).
+
+### Regression Guard
+
+`DatabaseUnlockMiddlewareTests.cs` — test `LockedDatabase_AllowedPrefix_PassesThrough` (Theory with InlineData):
+- Verifies all `AllowedPrefixes` paths pass through when DB is locked.
+- Verifies protected paths return 423 when DB is locked.
+- **This test MUST fail if `/api/v1/shamir/reconstrueer-en-ontgrendel` is (accidentally) removed from AllowedPrefixes.**
+
+**REC-SEC-005:** All future changes to `AllowedPrefixes` must update the `[InlineData]` test cases.
 
 ---
 
-_Bijwerken: bij elke REEVALUATE die impact heeft op bovenstaande constraints, nieuwe versie opslaan als `docs/security/security-handoff-context-v[N].md`._
+## 2. ReadOnlyAllowedPrefixes — Heir/Erfgenaam Mode
+
+When a successful Shamir reconstruction unlocks the DB in read-only mode (heir context), a second filter (`ReadOnlyAllowedPrefixes`) applies: only read-oriented and export endpoints pass write-method requests.
+
+**Current ReadOnlyAllowedPrefixes:**
+
+| Path prefix | Reason |
+|---|---|
+| `/api/v1/auth/` | Session management |
+| `/api/v1/export/` | Heir may export the estate overview |
+| `/api/v1/status` | Status polling |
+| `/api/v1/afhandeling` | Post-death action handlers |
+| `/api/v1/profielen` | Profile selection |
+| `/api/v1/backup/restore` | Backup restore path |
+| `/swagger` | Dev tooling |
+
+All other paths receiving POST / PUT / PATCH / DELETE return HTTP **423** in read-only mode.
+
+**Frontend enforcement:** `ErfgenaamItem.tsx` hides all mutating buttons (`isReadOnly` prop) when `authStore.isReadOnly === true` (set after successful Shamir unlock). This is a UX guard only — the backend is the authoritative gate.
+
+---
+
+## 3. CSP / unsafe-inline Constraint
+
+`unsafe-inline` is present in the Content Security Policy (DEC-105, DEC-106). This is an accepted architectural constraint for Next.js static export with inline hydration scripts. **Must not be removed** until SSR migration (SP-15+).
+
+---
+
+## 4. TruffleHog Pre-Push Hook
+
+Active: `.githooks/pre-push`  
+Activated via: SP-1-001 (issue #140)  
+Purpose: Scan all commits in a push for secrets before they reach the remote.  
+Bypass: git push --no-verify (forbidden except in documented emergencies; must be noted in decisions.md).
+
+---
+
+## 5. Open Security Items
+
+| ID | Risk | Sprint | Status |
+|---|---|---|---|
+| REC-SEC-005 | Integration test for AllowedPrefixes whitelist completeness | SP-1 | ✅ IMPLEMENTED — `DatabaseUnlockMiddlewareTests.cs` |
+| GAP-A11Y-001 | Color contrast / WCAG 2.1 AA — design tokens extracted | SP-1 | ✅ RESOLVED — `docs/brand/design-tokens.json` present |
+| DEC-202 | Penetration test | SP-14 | UITGESTELD — after v1.0 |
+| REC-SEC-001 | Nonce-based CSP via SSR | Post-v1.0 | ACCEPTED RISK — DEC-106 |
+| NEW-002 | Whitelist is a static array — no automated enforcement beyond test | Ongoing | MITIGATED by REC-SEC-005; acceptable for v1.0 |

@@ -1,85 +1,86 @@
+````markdown
 # Contract: Implementation Output
-> Versie 1.0 | Fase 5 – Autonome Implementatie
+> Version 1.0 | Phase 5 – Autonomous Implementation
 
 ---
 
-## DOEL VAN DIT CONTRACT
+## PURPOSE OF THIS CONTRACT
 
-Dit contract definieert wat een **volledig geïmplementeerde sprint story** betekent in het autonome implementatiesysteem. Elke output van de Implementation Agent, Test Agent, en PR/Review Agent MOET aan dit contract voldoen voordat een handoff plaatsvindt.
+This contract defines what a **fully implemented sprint story** means in the autonomous implementation system. Every output of the Implementation Agent, Test Agent, and PR/Review Agent MUST comply with this contract before a handoff takes place.
 
 ---
 
-## INVOER (VERPLICHT AANWEZIG VÓÓR IMPLEMENTATIE START)
+## INPUT (MANDATORY PRESENT BEFORE IMPLEMENTATION STARTS)
 
-> **SCOPE:** Dit contract is uitsluitend van toepassing op stories met `story_type` **`CODE`** of **`INFRA`**. Stories van type `DESIGN`, `CONTENT` of `ANALYSIS` worden **NIET** verwerkt door de Implementation Agent pipeline. Bij ontvangst van een story met een ander type: `ROUTING_ERROR` → escaleer naar Orchestrator.
+> **SCOPE:** This contract applies exclusively to stories with `story_type` **`CODE`** or **`INFRA`**. Stories of type `DESIGN`, `CONTENT`, or `ANALYSIS` are **NOT** processed by the Implementation Agent pipeline. Upon receiving a story with a different type: `ROUTING_ERROR` → escalate to Orchestrator.
 
-| Veld | Bron | Verplicht |
+| Field | Source | Required |
 |------|------|-----------|
-| Sprint story (SP-N-NNN) | Goedgekeurd sprintplan uit Fasen 1–4 | JA |
-| story_type | Sprint story veld 3 — MOET `CODE` of `INFRA` zijn | JA |
-| sprint_status | Sprint veld `sprint_status` — MOET `IN_PROGRESS` zijn | JA |
-| Architectuurbeslissingen | Fase 2 output (Software Architect + Senior Developer) | JA |
-| Tech stack definitie | Fase 2 output | JA |
-| Guardrails (alle fasen) | `docs/guardrails/00-06` | JA |
-| Acceptatiecriteria | Sprint story veld 4 | JA |
-| Blocker status | Sprint story veld 7 — MOET `NONE` zijn of INTERN opgelost | JA |
-| Codebase toegang | Git repository (lees + schrijf) | JA |
+| Sprint story (SP-N-NNN) | Approved sprint plan from Phases 1–4 | YES |
+| story_type | Sprint story field 3 — MUST be `CODE` or `INFRA` | YES |
+| sprint_status | Sprint field `sprint_status` — MUST be `IN_PROGRESS` | YES |
+| Architecture decisions | Phase 2 output (Software Architect + Senior Developer) | YES |
+| Tech stack definition | Phase 2 output | YES |
+| Guardrails (all phases) | `docs/guardrails/00-08` | YES |
+| Acceptance criteria | Sprint story field 4 | YES |
+| Blocker status | Sprint story field 7 — MUST be `NONE` or INTERNALLY resolved | YES |
+| Codebase access | Git repository (read + write) | YES |
 
-**HALT:** Als één van bovenstaande verplichte inputs ontbreekt, als `story_type` niet `CODE` of `INFRA` is, als `sprint_status` niet `IN_PROGRESS` is, of als de Blocker-status `EXTERN: [open]` is → GEEN implementatie starten. Escaleer naar Orchestrator.
+**HALT:** If any of the above mandatory inputs is missing, if `story_type` is not `CODE` or `INFRA`, if `sprint_status` is not `IN_PROGRESS`, or if the Blocker status is `EXTERN: [open]` → do NOT start implementation. Escalate to Orchestrator.
 
 ---
 
-## OUTPUT PER STORY (VERPLICHT)
+## OUTPUT PER STORY (MANDATORY)
 
-### A. Code Wijzigingen
+### A. Code Changes
 ```
 IMPL-OUTPUT-A:
-- Gewijzigde bestanden: lijst van absolute paden
-- Toegevoegde bestanden: lijst van absolute paden
-- Verwijderde bestanden: lijst van absolute paden
-- Reden per wijziging: één zin per bestand gekoppeld aan acceptatiecriterium
+- Changed files: list of absolute paths
+- Added files: list of absolute paths
+- Deleted files: list of absolute paths
+- Reason per change: one sentence per file linked to acceptance criterion
 ```
 
-**VERBOD:** Geen code wijzigen buiten de scope van de story zonder expliciete `SCOPE_EXTENSION: [reden]` melding.
+**PROHIBITION:** Do not change code outside the story scope without an explicit `SCOPE_EXTENSION: [reason]` notification.
 
 ### B. Test Coverage
 ```
 IMPL-OUTPUT-B:
-- Nieuwe tests: bestandspad + testnaam + welk acceptatiecriterium het dekt
-- Gewijzigde tests: bestandspad + reden
-- Coverage delta: [voor implementatie] → [na implementatie]
-- Alle bestaande tests: PASSED / FAILED (met details bij FAILED)
+- New tests: file path + test name + which acceptance criterion it covers
+- Changed tests: file path + reason
+- Coverage delta: [before implementation] → [after implementation]
+- All existing tests: PASSED / FAILED (with details on FAILED)
 ```
 
-**VERBOD:** Een story is NIET compleet als bestaande tests door de implementatie breken.  
-**VERBOD:** Een story is NIET compleet als er geen test is voor elk acceptatiecriterium.
+**PROHIBITION:** A story is NOT complete if existing tests break due to the implementation.  
+**PROHIBITION:** A story is NOT complete if there is no test for every acceptance criterion.
 
-### C. Guardrail Validatie
+### C. Guardrail Validation
 ```
 IMPL-OUTPUT-C:
-Per guardrail-bestand (00–06):
+Per guardrail file (00–08):
 - Status: COMPLIANT / VIOLATION / NOT_APPLICABLE
-- Bij VIOLATION: beschrijf precies welke regel, waarom, en wat de herstelactie is
+- On VIOLATION: describe exactly which rule, why, and what the remediation action is
 ```
 
-**VERBOD:** Een story met een VIOLATION die niet is opgelost mag NIET naar Test Agent gaan.
+**PROHIBITION:** A story with an unresolved VIOLATION may NOT proceed to Test Agent.
 
 ### D. Story Completion Declaration
 ```
 IMPL-OUTPUT-D:
 Story ID: SP-N-NNN
-Aanbeveling referentie: REC-NNN
+Recommendation reference: REC-NNN
 Status: IMPLEMENTED / PARTIAL / BLOCKED
-Acceptatiecriteria:
-  - AC-1: COVERED BY [testnaam] | PASSED/FAILED
-  - AC-2: COVERED BY [testnaam] | PASSED/FAILED
-Openstaande items: [NONE of beschrijving]
-Escalaties: [NONE of ESCALATE: beschrijving]
+Acceptance criteria:
+  - AC-1: COVERED BY [testname] | PASSED/FAILED
+  - AC-2: COVERED BY [testname] | PASSED/FAILED
+Outstanding items: [NONE or description]
+Escalations: [NONE or ESCALATE: description]
 ```
 
 ---
 
-## OUTPUT PER SPRINT (VERPLICHT NA ALLE STORIES)
+## OUTPUT PER SPRINT (MANDATORY AFTER ALL STORIES)
 
 ### Sprint Completion Report
 ```json
@@ -110,74 +111,76 @@ Escalaties: [NONE of ESCALATE: beschrijving]
 }
 ```
 
-**VERBOD:** `new_critical_findings` mag NOOIT gevuld zijn zonder escalatie naar Orchestrator.
+**PROHIBITION:** `new_critical_findings` may NEVER be filled without escalation to Orchestrator.
 
 ---
 
 ## DEFINITION OF DONE (PER STORY)
 
-Een story is DONE wanneer:
-- [ ] Alle code wijzigingen zijn doorgevoerd
-- [ ] Alle acceptatiecriteria zijn gedekt door tests
-- [ ] Alle bestaande tests PASSED (geen regressie)
-- [ ] Guardrail validatie: COMPLIANT of gedocumenteerde VIOLATION met herstelactie
-- [ ] Story Completion Declaration is ingevuld
-- [ ] Code review door PR/Review Agent is APPROVED
+A story is DONE when:
+- [ ] All code changes have been applied
+- [ ] All acceptance criteria are covered by tests
+- [ ] All existing tests PASSED (no regression)
+- [ ] Guardrail validation: COMPLIANT or documented VIOLATION with remediation action
+- [ ] Story Completion Declaration is completed
+- [ ] Code review by PR/Review Agent is APPROVED
 
 ## DEFINITION OF DONE (PER SPRINT)
 
-Een sprint is DONE wanneer:
-- [ ] Alle stories in de sprint zijn DONE (of BLOCKED met escalatie)
-- [ ] Sprint KPI-meting is uitgevoerd en gedocumenteerd
-- [ ] Sprint Completion Report JSON is machine-leesbaar en compleet
-- [ ] Alle INTERN-blockers zijn opgelost
-- [ ] Geen nieuwe CRITICAL_FINDING zonder resolutie
-- [ ] Critic Agent validatie PASSED
-- [ ] Risk Agent validatie PASSED
+A sprint is DONE when:
+- [ ] All stories in the sprint are DONE (or BLOCKED with escalation)
+- [ ] Sprint KPI measurement has been executed and documented
+- [ ] Sprint Completion Report JSON is machine-readable and complete
+- [ ] All INTERN blockers are resolved
+- [ ] No new CRITICAL_FINDING without resolution
+- [ ] Critic Agent validation PASSED
+- [ ] Risk Agent validation PASSED
 
 ---
 
 ## HANDOFF CHECKLIST (IMPLEMENTATION AGENT → TEST AGENT)
 ```
-## IMPLEMENTATION HANDOFF CHECKLIST – [Story ID] – [Datum]
-- [ ] IMPL-OUTPUT-A aanwezig (gewijzigde bestanden gedocumenteerd)
-- [ ] IMPL-OUTPUT-B aanwezig (tests geschreven per acceptatiecriterium)
-- [ ] IMPL-OUTPUT-C aanwezig (guardrail validatie compleet)
-- [ ] IMPL-OUTPUT-D aanwezig (story completion declaration)
-- [ ] Geen scope-uitbreiding zonder SCOPE_EXTENSION melding
-- [ ] Geen EXTERN-open blockers
-- [ ] Geen nieuwe CRITICAL_FINDING zonder escalatie
+## IMPLEMENTATION HANDOFF CHECKLIST – [Story ID] – [Date]
+- [ ] IMPL-OUTPUT-A present (changed files documented)
+- [ ] IMPL-OUTPUT-B present (tests written per acceptance criterion)
+- [ ] IMPL-OUTPUT-C present (guardrail validation complete)
+- [ ] IMPL-OUTPUT-D present (story completion declaration)
+- [ ] No scope extension without SCOPE_EXTENSION notification
+- [ ] No EXTERN-open blockers
+- [ ] No new CRITICAL_FINDING without escalation
 ```
 
 ## HANDOFF CHECKLIST (TEST AGENT → PR/REVIEW AGENT)
 ```
-## TEST HANDOFF CHECKLIST – [Sprint ID] – [Datum]
-- [ ] Alle stories: acceptatiecriteria tests PASSED
-- [ ] Alle bestaande tests PASSED (geen regressie)
-- [ ] Coverage delta gedocumenteerd
-- [ ] Sprint Completion Report JSON aanwezig
-- [ ] Geen VIOLATION in IMPL-OUTPUT-C zonder resolutie
+## TEST HANDOFF CHECKLIST – [Sprint ID] – [Date]
+- [ ] All stories: acceptance criteria tests PASSED
+- [ ] All existing tests PASSED (no regression)
+- [ ] Coverage delta documented
+- [ ] Sprint Completion Report JSON present
+- [ ] No VIOLATION in IMPL-OUTPUT-C without resolution
 ```
 
 ## HANDOFF CHECKLIST (PR/REVIEW AGENT → ORCHESTRATOR)
 ```
-## PR HANDOFF CHECKLIST – [Sprint ID] – [Datum]
-- [ ] PR aangemaakt met correcte beschrijving en story referenties
-- [ ] Alle checks groen (CI/CD, tests, linting)
+## PR HANDOFF CHECKLIST – [Sprint ID] – [Date]
+- [ ] PR created with correct description and story references
+- [ ] All checks green (CI/CD, tests, linting)
 - [ ] Guardrail review COMPLIANT
-- [ ] Sprint Completion Report bijgevoegd aan PR
-- [ ] KPI-meting gedocumenteerd
-- [ ] Orchestrator Log bijgewerkt
+- [ ] Sprint Completion Report attached to PR
+- [ ] KPI measurement documented
+- [ ] Orchestrator Log updated
 ```
 
 ---
 
-## AFWIJZINGSCRITERIA (AUTOMATIC REJECT)
+## REJECTION CRITERIA (AUTOMATIC REJECT)
 
-Een output wordt automatisch afgewezen als:
-1. Één of meer acceptatiecriteria niet gedekt zijn door een test
-2. Bestaande tests breken door de implementatie (regressie)
-3. Een VIOLATION in guardrail-validatie is zonder herstelactie gedocumenteerd
-4. Story Completion Declaration ontbreekt
-5. Nieuwe `CRITICAL_FINDING` zonder escalatie aanwezig is
-6. Sprint KPI-meting ontbreekt in Sprint Completion Report
+An output is automatically rejected if:
+1. One or more acceptance criteria are not covered by a test
+2. Existing tests break due to the implementation (regression)
+3. A VIOLATION in guardrail validation is documented without remediation action
+4. Story Completion Declaration is missing
+5. New `CRITICAL_FINDING` without escalation is present
+6. Sprint KPI measurement is missing in Sprint Completion Report
+
+````

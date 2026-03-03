@@ -1,121 +1,121 @@
-# Sprintplan Template
-> Gebruik dit template voor de sprintplan-deliverable van elke agent.
-> Zie `docs/contracts/sprintplan-output-contract.md` voor de volledige eisen.
+# Sprint Plan Template
+> Use this template for the sprint plan deliverable of each agent.
+> See `docs/contracts/sprintplan-output-contract.md` for the full requirements.
 
 ---
 
 ```markdown
-# Sprintplan – [DISCIPLINE INVULLEN] – [DATUM ISO 8601]
+# Sprint Plan – [FILL IN DISCIPLINE] – [DATE ISO 8601]
 
 ## Metadata
-- **Agent:** [naam]
-- **Fase:** [1 / 2 / 3 / 4]
-- **Gebaseerd op aanbevelingen:** [referentie naar aanbevelingen-document]
-- **Datum:** [YYYY-MM-DD]
-- **Totale scope:** [N sprints]
+- **Agent:** [name]
+- **Phase:** [1 / 2 / 3 / 4]
+- **Based on recommendations:** [reference to recommendations document]
+- **Date:** [YYYY-MM-DD]
+- **Total scope:** [N sprints]
 
 ---
 
-## ⚠️ VERPLICHTE AANNAMES (INVULLEN VÓÓR SPRINTPLAN)
+## ⚠️ MANDATORY ASSUMPTIONS (FILL IN BEFORE SPRINT PLAN)
 
-> Als deze aannames niet beschikbaar zijn: markeer als INSUFFICIENT_DATA: en stel GEEN fictief plan op.
+> If these assumptions are not available: mark as INSUFFICIENT_DATA: and do NOT create a fictitious plan.
 
-- **Team samenstelling:** [rollen + aantal personen – bijv. "2 backend developers, 1 designer"]
-- **Sprint duur:** [N weken – standaard 2 weken]
-- **Capaciteit per sprint:** [story points of uren – bijv. "40 story points per sprint"]
-- **Technologie stack:** [relevant voor de uitvoering]
-- **Randvoorwaarden:** [wat moet aanwezig zijn vóór sprint 1 start]
-- **Geblokkeerde items:** [wat kan NIET starten zonder externe input of beslissing]
+- **Team composition:** [roles + number of people – e.g. "2 backend developers, 1 designer"]
+- **Sprint duration:** [N weeks – default 2 weeks]
+- **Capacity per sprint:** [story points or hours – e.g. "40 story points per sprint"]
+- **Technology stack:** [relevant for execution]
+- **Prerequisites:** [what must be in place before sprint 1 starts]
+- **Blocked items:** [what CANNOT start without external input or decision]
 
-**Aanname-status:** Volledig beschikbaar / Gedeeltelijk beschikbaar (INSUFFICIENT_DATA: [items]) / Niet beschikbaar (HALT)
+**Assumption status:** Fully available / Partially available (INSUFFICIENT_DATA: [items]) / Not available (HALT)
 
 ---
 
-## SPRINT 1 – [Sprint naam]
+## SPRINT 1 – [Sprint name]
 
-### Sprint Doel
-> Wat is het OUTCOME (resultaat voor de business/gebruiker), niet alleen de output?
+### Sprint Goal
+> What is the OUTCOME (result for the business/user), not just the output?
 
-[Beschrijf het concrete resultaat dat na deze sprint zichtbaar is voor een gebruiker of stakeholder]
+[Describe the concrete result that is visible to a user or stakeholder after this sprint]
 
 ### Stories
 
-| Story ID | Beschrijving | Acceptatiecriteria | Story Points | Afhankelijkheden | Aanbeveling Ref |
+| Story ID | Description | Acceptance Criteria | Story Points | Dependencies | Recommendation Ref |
 |----------|-------------|-------------------|--------------|-----------------|-----------------|
-| SP-1-001 | [concrete, specifieke taak] | [SMART, testbaar – minimaal 1 criterium] | [getal] | [story ID of "geen"] | REC-NNN |
+| SP-1-001 | [concrete, specific task] | [SMART, testable – minimum 1 criterion] | [number] | [story ID or "none"] | REC-NNN |
 | SP-1-002 | [...] | [...] | [...] | [...] | [...] |
 
-> **Acceptatiecriteria format:** "Gegeven [context], wanneer [actie], dan [verwacht resultaat]"
+> **Acceptance criteria format:** "Given [context], when [action], then [expected result]"
 
-### Sprint KPI's
+### Sprint KPIs
 
-| KPI | Baseline | Target na sprint | Meetmethode | Meetverantwoordelijke |
+| KPI | Baseline | Target after sprint | Measurement method | Measurement owner |
 |-----|----------|-----------------|-------------|----------------------|
-| [naam] | [waarde of INSUFFICIENT_DATA:] | [concrete waarde] | [hoe meten] | [rol] |
+| [name] | [value or INSUFFICIENT_DATA:] | [concrete value] | [how to measure] | [role] |
 
 ### Definition of Done – Sprint 1
-- [ ] Alle stories hebben hun acceptatiecriteria behaald
-- [ ] Code review uitgevoerd voor alle gewijzigde code
-- [ ] Geautomatiseerde tests geslaagd
-- [ ] KPI-meting uitgevoerd en gedocumenteerd
-- [ ] Documentatie bijgewerkt waar van toepassing
-- [ ] Geen nieuwe `CRITICAL_FINDING` geïntroduceerd
-- [ ] Demo uitgevoerd voor stakeholder
+- [ ] All stories have met their acceptance criteria
+- [ ] Code review performed for all changed code
+- [ ] Automated tests passed
+- [ ] KPI measurement performed and documented
+- [ ] Documentation updated where applicable
+- [ ] No new `CRITICAL_FINDING` introduced
+- [ ] Demo performed for stakeholder
 
 ---
 
-## SPRINT 2 – [Sprint naam]
+## SPRINT 2 – [Sprint name]
 
-### Sprint Doel
+### Sprint Goal
 [...]
 
 ### Stories
 
-| Story ID | Beschrijving | Acceptatiecriteria | Story Points | Afhankelijkheden | Aanbeveling Ref |
+| Story ID | Description | Acceptance Criteria | Story Points | Dependencies | Recommendation Ref |
 |----------|-------------|-------------------|--------------|-----------------|-----------------|
 | SP-2-001 | [...] | [...] | [...] | SP-1-001 | REC-NNN |
 
-### Sprint KPI's
+### Sprint KPIs
 [...]
 
 ### Definition of Done – Sprint 2
-[Herhaal DoD-structuur]
+[Repeat DoD structure]
 
 ---
 
-## AFHANKELIJKHEIDSOVERZICHT
+## DEPENDENCY OVERVIEW
 
-> Documenteer alle cross-story afhankelijkheden.
+> Document all cross-story dependencies.
 
-| Story | Afhankelijk van | Reden |
+| Story | Depends on | Reason |
 |-------|----------------|-------|
-| SP-2-001 | SP-1-001 | [waarom deze volgorde vereist is] |
+| SP-2-001 | SP-1-001 | [why this order is required] |
 
 ---
 
-## RISICOLOG SPRINTPLAN
+## SPRINT PLAN RISK LOG
 
-| Risico | Kans | Impact | Mitigatie | Sprint |
+| Risk | Probability | Impact | Mitigation | Sprint |
 |--------|------|--------|-----------|--------|
-| [beschrijving] | Hoog/Midden/Laag | Hoog/Midden/Laag | [concrete actie] | [sprint N] |
+| [description] | High/Medium/Low | High/Medium/Low | [concrete action] | [sprint N] |
 
 ---
 
 ## HANDOFF CHECKLIST
 
-- [ ] Verplichte aannames zijn expliciet gedocumenteerd (of INSUFFICIENT_DATA:)
-- [ ] Elke story heeft minimaal één SMART acceptatiecriterium
-- [ ] Elke story heeft een story point schatting (of INSUFFICIENT_DATA: met reden)
-- [ ] Sprint KPI's zijn SMART geformuleerd
-- [ ] Sprint doelen zijn outcome-gericht (niet alleen output)
-- [ ] Afhankelijkheden zijn volledig gedocumenteerd
-- [ ] Definition of Done is aanwezig per sprint
-- [ ] Geen fictieve capaciteitsaannames (of expliciet als aanname gelabeld)
-- [ ] Risicolog aanwezig
-- [ ] JSON export aanwezig en syntactisch valide
-- [ ] Zelfcontrole uitgevoerd
+- [ ] Mandatory assumptions are explicitly documented (or INSUFFICIENT_DATA:)
+- [ ] Every story has at least one SMART acceptance criterion
+- [ ] Every story has a story point estimate (or INSUFFICIENT_DATA: with reason)
+- [ ] Sprint KPIs are formulated as SMART
+- [ ] Sprint goals are outcome-oriented (not just output)
+- [ ] Dependencies are fully documented
+- [ ] Definition of Done is present per sprint
+- [ ] No fictitious capacity assumptions (or explicitly labeled as assumption)
+- [ ] Risk log present
+- [ ] JSON export present and syntactically valid
+- [ ] Self-review performed
 
-**STATUS: GEREED VOOR HANDOFF / GEBLOKKEERD**
+**STATUS: READY FOR HANDOFF / BLOCKED**
 
 ---
 

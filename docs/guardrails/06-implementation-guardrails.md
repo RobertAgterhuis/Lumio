@@ -1,148 +1,151 @@
-# Guardrails: Implementatie (Fase 5)
-> Versie 1.0 | Van toepassing op: Implementation Agent, Test Agent, PR/Review Agent
+````markdown
+# Guardrails: Implementation (Phase 5)
+> Version 1.0 | Applies to: Implementation Agent, Test Agent, PR/Review Agent
 
 ---
 
-## DOEL
+## PURPOSE
 
-Deze guardrails bewaken de kwaliteit, veiligheid en traceerbaarheid van elke autonome code-implementatie. Ze zijn aanvullend op de globale guardrails (`00-global-guardrails.md`) en de fase-specifieke guardrails uit de analyseperiode.
-
----
-
-## SECTIE 1: SCOPE DISCIPLINE
-
-**IMPL-GUARD-01 (KRITIEK):** Een Implementation Agent implementeert UITSLUITEND de sprint story waarvoor hij is geactiveerd (SP-N-NNN). Wijzigingen buiten de story scope vereisen een expliciete `SCOPE_EXTENSION:` melding met goedkeuring van de Orchestrator.
-
-**IMPL-GUARD-02 (KRITIEK):** De implementatie MOET traceerbaar zijn naar een goedgekeurde aanbeveling (REC-NNN) via het sprintplan. Geen code zonder aanbevelings-referentie.
-
-**IMPL-GUARD-03:** Bij twijfel over scope: HALT, documenteer als `UNCERTAIN: scope`, escaleer naar Orchestrator. NOOIT zelf de scope uitbreiden.
+These guardrails safeguard the quality, security, and traceability of every autonomous code implementation. They are supplementary to the global guardrails (`00-global-guardrails.md`) and the phase-specific guardrails from the analysis period.
 
 ---
 
-## SECTIE 2: ARCHITECTUUR INTEGRITEIT
+## SECTION 1: SCOPE DISCIPLINE
 
-**IMPL-GUARD-04 (KRITIEK):** Elke architectuurkeuze in de implementatie MOET consistent zijn met de beslissingen in de Fase 2 output (Software Architect + Senior Developer). Bij conflict: HALT + `ARCH_CONFLICT: [beschrijving]` + escaleer.
+**IMPL-GUARD-01 (CRITICAL):** An Implementation Agent implements EXCLUSIVELY the sprint story for which it has been activated (SP-N-NNN). Changes outside the story scope require an explicit `SCOPE_EXTENSION:` notification with approval from the Orchestrator.
 
-**IMPL-GUARD-05:** Geen nieuwe externe dependencies introduceren zonder:
-- Expliciete vermelding in de sprint story of architectuurbeslissing
-- `DEPENDENCY_ADDED: [naam, versie, reden]` melding in de output
+**IMPL-GUARD-02 (CRITICAL):** The implementation MUST be traceable to an approved recommendation (REC-NNN) via the sprint plan. No code without a recommendation reference.
 
-**IMPL-GUARD-06:** Bestaande API-contracten (intern en extern) mogen NIET gebroken worden door implementatie. Breaking changes vereisen `BREAKING_CHANGE: [beschrijving, impact, migratie-pad]`.
-
-**IMPL-GUARD-07:** Database schema-wijzigingen vereisen:
-- Voorwaartse compatibiliteit (migration up)
-- Terugwaartse compatibiliteit (migration down) TENZIJ expliciet vrijgesteld door Data Architect output
-- `SCHEMA_CHANGE: [tabel, kolom/index, reden]` documentatie
+**IMPL-GUARD-03:** When in doubt about scope: HALT, document as `UNCERTAIN: scope`, escalate to Orchestrator. NEVER expand the scope independently.
 
 ---
 
-## SECTIE 3: CODE KWALITEIT
+## SECTION 2: ARCHITECTURE INTEGRITY
 
-**IMPL-GUARD-08:** De implementation MOET de bestaande code-conventies volgen die zijn geïdentificeerd in de Fase 2 Senior Developer analyse. Geen afwijkende stijl zonder `STYLE_EXCEPTION: [reden]`.
+**IMPL-GUARD-04 (CRITICAL):** Every architecture choice in the implementation MUST be consistent with the decisions in the Phase 2 output (Software Architect + Senior Developer). On conflict: HALT + `ARCH_CONFLICT: [description]` + escalate.
 
-**IMPL-GUARD-09:** Geen hardcoded credentials, API keys, tokens, of secrets in code. Bij detectie: HALT, `SECURITY_VIOLATION: hardcoded secret`, escaleer onmiddellijk naar Security Architect.
+**IMPL-GUARD-05:** Do not introduce new external dependencies without:
+- Explicit mention in the sprint story or architecture decision
+- `DEPENDENCY_ADDED: [name, version, reason]` notification in the output
 
-**IMPL-GUARD-10:** Geen `TODO`, `FIXME`, `HACK`, of `XXX` comments in geïmplementeerde code tenzij voorzien van een story-referentie en geschatte oplostermijn.
+**IMPL-GUARD-06:** Existing API contracts (internal and external) may NOT be broken by implementation. Breaking changes require `BREAKING_CHANGE: [description, impact, migration path]`.
 
-**IMPL-GUARD-11:** Dead code (unreachable code, unused variables, unused imports) mag niet worden geïntroduceerd.
-
----
-
-## SECTIE 4: TEST VEREISTEN
-
-**IMPL-GUARD-12 (KRITIEK):** Elk acceptatiecriterium van de sprint story MOET gedekt zijn door minimaal één geautomatiseerde test. Geen uitzondering.
-
-**IMPL-GUARD-13 (KRITIEK):** Regressie is NIET toegestaan. Als bestaande tests falen na de implementatie: HALT, analyseer oorzaak, herstel VOORDAT handoff.
-
-**IMPL-GUARD-14:** Test-types per acceptatiecriterium:
-- Unit test: voor geïsoleerde logica
-- Integratietest: voor interactie tussen componenten
-- End-to-end test: voor gebruikersflows (indien van toepassing)
-- Kies het meest passende type — documenteer de keuze
-
-**IMPL-GUARD-15:** Test coverage mag niet dalen t.o.v. de baseline. `COVERAGE_DELTA` in IMPL-OUTPUT-B MOET ≥ 0 zijn.
+**IMPL-GUARD-07:** Database schema changes require:
+- Forward compatibility (migration up)
+- Backward compatibility (migration down) UNLESS explicitly exempted by Data Architect output
+- `SCHEMA_CHANGE: [table, column/index, reason]` documentation
 
 ---
 
-## SECTIE 5: SECURITY
+## SECTION 3: CODE QUALITY
 
-**IMPL-GUARD-16 (KRITIEK):** Alle input van buiten de systeemgrens (gebruikersinput, API responses, bestandsuploads) MOET gevalideerd en gesanitized worden.
+**IMPL-GUARD-08:** The implementation MUST follow the existing code conventions identified in the Phase 2 Senior Developer analysis. No deviating style without `STYLE_EXCEPTION: [reason]`.
 
-**IMPL-GUARD-17 (KRITIEK):** Geen SQL string concatenation met user input. Gebruik altijd parameterized queries of ORM.
+**IMPL-GUARD-09:** No hardcoded credentials, API keys, tokens, or secrets in code. Upon detection: HALT, `SECURITY_VIOLATION: hardcoded secret`, escalate immediately to Security Architect.
 
-**IMPL-GUARD-18:** Authenticatie en autorisatie checks mogen niet worden omzeild of uitgeschakeld, ook niet in test/debug code.
+**IMPL-GUARD-10:** No `TODO`, `FIXME`, `HACK`, or `XXX` comments in implemented code unless accompanied by a story reference and estimated resolution date.
 
-**IMPL-GUARD-19:** Logging mag NOOIT persoonlijk identificeerbare informatie (PII), passwords, of tokens bevatten.
-
-**IMPL-GUARD-20:** Security findings uit Fase 2 (Security Architect) die als P1 of P2 zijn geclassificeerd, worden bij aanraking van gerelateerde code NIET genegeerd. `SEC_FINDING_PRESENT: [id]` documenteren als de story de aangrenzende code wijzigt.
+**IMPL-GUARD-11:** Dead code (unreachable code, unused variables, unused imports) may not be introduced.
 
 ---
 
-## SECTIE 6: TRACEERBAARHEID EN DOCUMENTATIE
+## SECTION 4: TEST REQUIREMENTS
 
-**IMPL-GUARD-21:** Elke commit MOET een duidelijke conventionele commit message bevatten met story-referentie:
-- Format: `[type](scope): beschrijving [SP-N-NNN]`
-- Typen: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`
+**IMPL-GUARD-12 (CRITICAL):** Every acceptance criterion of the sprint story MUST be covered by at least one automated test. No exceptions.
 
-**IMPL-GUARD-22:** Publieke API wijzigingen (endpoints, SDK interfaces, events) vereisen bijgewerkte documentatie in dezelfde commit.
+**IMPL-GUARD-13 (CRITICAL):** Regression is NOT allowed. If existing tests fail after implementation: HALT, analyze root cause, fix BEFORE handoff.
 
-**IMPL-GUARD-23:** De Sprint Completion Report JSON MOET machine-leesbaar en valide zijn voor overdracht naar het Eindrapport.
+**IMPL-GUARD-14:** Test types per acceptance criterion:
+- Unit test: for isolated logic
+- Integration test: for interaction between components
+- End-to-end test: for user flows (where applicable)
+- Choose the most appropriate type — document the choice
+
+**IMPL-GUARD-15:** Test coverage may not decrease relative to the baseline. `COVERAGE_DELTA` in IMPL-OUTPUT-B MUST be ≥ 0.
 
 ---
 
-## SECTIE 7: AUTONOME BESLISSINGSLIMIETEN
+## SECTION 5: SECURITY
 
-**IMPL-GUARD-24 (KRITIEK):** De Implementation Agent mag ZELFSTANDIG beslissen over:
-- Keuze van algoritmische implementatie binnen de story scope
-- Interne structuur van nieuwe bestanden
-- Testnaming en testopbouw
-- Refactoring van code BINNEN de gewijzigde bestanden (geen scope-uitbreiding)
+**IMPL-GUARD-16 (CRITICAL):** All input from outside the system boundary (user input, API responses, file uploads) MUST be validated and sanitized.
 
-**IMPL-GUARD-25 (KRITIEK):** De Implementation Agent MOET ALTIJD escaleren bij:
-- Architectuurkeuzes die de Fase 2 beslissingen tegenspreken
-- Ontdekking van een nieuw CRITICAL_FINDING (security, data, architectuur)
-- Conflict tussen twee guardrails
-- Onduidelijkheid over acceptatiecriteria
-- Een blocker die tijdens implementatie ontstaat
+**IMPL-GUARD-17 (CRITICAL):** No SQL string concatenation with user input. Always use parameterized queries or ORM.
 
-**IMPL-GUARD-26:** Escalatie-format:
+**IMPL-GUARD-18:** Authentication and authorization checks may not be bypassed or disabled, not even in test/debug code.
+
+**IMPL-GUARD-19:** Logging may NEVER contain personally identifiable information (PII), passwords, or tokens.
+
+**IMPL-GUARD-20:** Security findings from Phase 2 (Security Architect) classified as P1 or P2 are NOT ignored when touching related code. Document `SEC_FINDING_PRESENT: [id]` when the story modifies adjacent code.
+
+---
+
+## SECTION 6: TRACEABILITY AND DOCUMENTATION
+
+**IMPL-GUARD-21:** Every commit MUST contain a clear conventional commit message with story reference:
+- Format: `[type](scope): description [SP-N-NNN]`
+- Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`
+
+**IMPL-GUARD-22:** Public API changes (endpoints, SDK interfaces, events) require updated documentation in the same commit.
+
+**IMPL-GUARD-23:** The Sprint Completion Report JSON MUST be machine-readable and valid for transfer to the Final Report.
+
+---
+
+## SECTION 7: AUTONOMOUS DECISION LIMITS
+
+**IMPL-GUARD-24 (CRITICAL):** The Implementation Agent may decide INDEPENDENTLY on:
+- Choice of algorithmic implementation within the story scope
+- Internal structure of new files
+- Test naming and test structure
+- Refactoring of code WITHIN the modified files (no scope extension)
+
+**IMPL-GUARD-25 (CRITICAL):** The Implementation Agent MUST ALWAYS escalate when:
+- Architecture choices contradict Phase 2 decisions
+- Discovery of a new CRITICAL_FINDING (security, data, architecture)
+- Conflict between two guardrails
+- Ambiguity about acceptance criteria
+- A blocker arises during implementation
+
+**IMPL-GUARD-26:** Escalation format:
 ```
 ESCALATE:
   Type: ARCH_CONFLICT | CRITICAL_FINDING | GUARDRAIL_CONFLICT | AC_UNCLEAR | NEW_BLOCKER
   Story: SP-N-NNN
-  Beschrijving: [exact wat er is ontdekt]
-  Impactschatting: [welke andere stories/systemen geraakt worden]
-  Aanbevolen actie: [wat de agent denkt dat er moet gebeuren]
-  Status: HALT — wacht op Orchestrator beslissing
+  Description: [exactly what was discovered]
+  Impact estimate: [which other stories/systems are affected]
+  Recommended action: [what the agent thinks should happen]
+  Status: HALT — awaiting Orchestrator decision
 ```
 
 ---
 
-## SECTIE 8: KPI EN METING
+## SECTION 8: KPI AND MEASUREMENT
 
-**IMPL-GUARD-27:** Na voltooiing van een sprint MOET de Sprint KPI gemeten worden conform de SMART doelen uit het sprintplan. Geen schatting — werkelijke meting of `MEASUREMENT_IMPOSSIBLE: [reden]` met escalatie.
+**IMPL-GUARD-27:** After completion of a sprint the Sprint KPI MUST be measured per the SMART goals from the sprint plan. No estimation — actual measurement or `MEASUREMENT_IMPOSSIBLE: [reason]` with escalation.
 
-**IMPL-GUARD-28:** Als een KPI-target NIET gehaald is na sprint: documenteer als `KPI_MISS: [id, target, gerealiseerd, analyse]` in het Sprint Completion Report. Geen verberg-acties.
-
----
-
-## GUARD 29–30: TRACK-ONAFHANKELIJKHEID (KRITIEK)
-
-**IMPL-GUARD-29 (KRITIEK):** De Implementation Agent verwerkt UITSLUITEND stories met `story_type` `CODE` of `INFRA`. Bij ontvangst van een story met type `DESIGN`, `CONTENT` of `ANALYSIS`: **HALT**, `ROUTING_ERROR: story_type [type] hoort niet in de implementatie-pipeline`, escaleer naar Orchestrator.
-
-**IMPL-GUARD-30 (KRITIEK):** Een blocker op een DESIGN-, CONTENT- of ANALYSIS-story mag NOOIT worden geregistreerd als blocker op een CODE- of INFRA-story. Bij detectie: `CROSS_TRACK_BLOCKER: [story-id van blocker-bron] heeft type [type] en mag story [code-story-id] niet blokkeren`, escaleer naar Orchestrator.
+**IMPL-GUARD-28:** If a KPI target is NOT met after sprint: document as `KPI_MISS: [id, target, realized, analysis]` in the Sprint Completion Report. No cover-up actions.
 
 ---
 
-## VIOLATED? DAN DIT:
+## GUARD 29–30: TRACK INDEPENDENCE (CRITICAL)
 
-| Guardcode | Bij schending |
+**IMPL-GUARD-29 (CRITICAL):** The Implementation Agent processes EXCLUSIVELY stories with `story_type` `CODE` or `INFRA`. Upon receiving a story with type `DESIGN`, `CONTENT`, or `ANALYSIS`: **HALT**, `ROUTING_ERROR: story_type [type] does not belong in the implementation pipeline`, escalate to Orchestrator.
+
+**IMPL-GUARD-30 (CRITICAL):** A blocker on a DESIGN-, CONTENT-, or ANALYSIS-story may NEVER be registered as a blocker on a CODE- or INFRA-story. Upon detection: `CROSS_TRACK_BLOCKER: [story-id of blocker source] has type [type] and may not block story [code-story-id]`, escalate to Orchestrator.
+
+---
+
+## VIOLATED? THEN DO THIS:
+
+| Guard code | On violation |
 |-----------|--------------|
-| IMPL-GUARD-01/02 | HALT, documenteer, wacht op Orchestrator |
-| IMPL-GUARD-04 | HALT, `ARCH_CONFLICT:`, escaleer |
-| IMPL-GUARD-09 | HALT, `SECURITY_VIOLATION:`, escaleer onmiddellijk |
-| IMPL-GUARD-12 | Story is NIET done, schrijf test |
-| IMPL-GUARD-13 | HALT, herstel regressie VOOR handoff |
-| IMPL-GUARD-25 | HALT, escaleer per IMPL-GUARD-26 format |
-| IMPL-GUARD-29 | HALT, `ROUTING_ERROR:`, escaleer naar Orchestrator |
-| IMPL-GUARD-30 | HALT, `CROSS_TRACK_BLOCKER:`, escaleer naar Orchestrator |
+| IMPL-GUARD-01/02 | HALT, document, await Orchestrator |
+| IMPL-GUARD-04 | HALT, `ARCH_CONFLICT:`, escalate |
+| IMPL-GUARD-09 | HALT, `SECURITY_VIOLATION:`, escalate immediately |
+| IMPL-GUARD-12 | Story is NOT done, write test |
+| IMPL-GUARD-13 | HALT, fix regression BEFORE handoff |
+| IMPL-GUARD-25 | HALT, escalate per IMPL-GUARD-26 format |
+| IMPL-GUARD-29 | HALT, `ROUTING_ERROR:`, escalate to Orchestrator |
+| IMPL-GUARD-30 | HALT, `CROSS_TRACK_BLOCKER:`, escalate to Orchestrator |
+
+````
