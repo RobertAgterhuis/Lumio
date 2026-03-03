@@ -22,7 +22,7 @@ An `ADVISORY` dependency means the other team can help or provide input but is n
 | **Business** | — | Privacy policy (REC-LEGAL-001) enables AVG-compliant B2B onboarding **BLOCKING** | Activation completion rate data **ADVISORY** | — |
 | **Tech** | Revenue model + payment provider decision **BLOCKING** · Financial model for infrastructure investment **ADVISORY** | — | Design token specification **BLOCKING** · Session timeout business rule **ADVISORY** | — |
 | **UX** | Session timeout duration specification **BLOCKING** · AVG consent sign-off (legal review) **BLOCKING** | CI re-enabled for a11y test automation **BLOCKING** · Design token extraction from Tailwind config **BLOCKING** | — | — |
-| **Marketing** | Payment provider decision **BLOCKING** · B2C/B2B audience priority **BLOCKING** | Structured data (JSON-LD) implementation on all pages **BLOCKING** · Domain migration/redirect **ADVISORY** | Shamir UX test results (validate "in één middag" claim) **BLOCKING** · Design tokens (brand consistency) **BLOCKING** | — |
+| **Marketing** | Payment provider decision **BLOCKING** · ~~B2C/B2B audience priority~~ ✅ RESOLVED | Structured data (JSON-LD) implementation on all pages **BLOCKING** · ~~Domain migration/redirect~~ ✅ RESOLVED | Shamir UX test results (validate "in één middag" claim) **BLOCKING** · Design tokens (brand consistency) **BLOCKING** | — |
 
 ---
 
@@ -32,7 +32,7 @@ An `ADVISORY` dependency means the other team can help or provide input but is n
 |------------|-----------------|----------------|-------------|------|----------|--------------------|
 | BLK-001 | Tech | Business | **Payment provider decision required** — REC-CRO-001 (automated B2C checkout, SP-CRO1-001) is EXTERN_BLOCKED until CEO/Sales decides on payment integration (Odoo vs Stripe). Source: `site/src/lib/constants.ts` L34–38. | BLOCKING | CRITICAL | CEO/Sales decision within 2 sprints. Orchestrator escalation required. |
 | BLK-002 | Marketing | Business | **Same as BLK-001** — all B2C growth investments (paid channels, SEO content, conversion experiments) are unmonetisable until automated checkout exists. Source: RISK-MKT-001, RISK-MKT-006. | BLOCKING | CRITICAL | CEO/Sales decision within 2 sprints. |
-| BLK-003 | Marketing | Business | **B2C/B2B audience priority decision** — without knowing which audience is primary for Phase 5 sprints, marketing copy and funnel architecture cannot be finalized. Source: Q-MKT-B-004 OPEN. | BLOCKING | HIGH | Answer Q-MKT-B-004 via questionnaire. Sprint 1 gate. |
+| BLK-003 | Marketing | Business | ~~**B2C/B2B audience priority decision**~~ ✅ **RESOLVED 2026-03-04** — Both channels equally prioritised. Dynamic dual-audience `HeroSection` implemented with B2C/B2B toggle tabs (Q-MKT-B-004 ANSWERED). No single-audience funnel architecture required. | ~~BLOCKING~~ RESOLVED | — | — |
 | BLK-004 | Business | Tech | **Privacy policy (REC-LEGAL-001)** — B2B customer onboarding is legally blocked without user-facing AVG art. 13 information. No B2B joint-controller agreement (GAP-LEGAL-002) can be signed without this. Source: phase2-analysis.md REC-LEGAL-001. | BLOCKING | CRITICAL | Developer task: create `/privacy` page + deploy. Estimated: 1.5 days. Sprint 1. |
 | BLK-005 | Tech | UX | **Design token specification** — Dev team cannot implement a11y fixes (color contrast WCAG 2.1 AA) or brand-consistent components without documented color values. BLOCKING-P3-002. Source: GAP-A11Y-001, GAP-UI-002. | BLOCKING | HIGH | Extract current tokens from `tailwind.config.ts` into `docs/brand/design-tokens.json`. Owner: Dev + Design. |
 | BLK-006 | UX | Tech | **CI re-enabling** — automated a11y tests (axe + Playwright) cannot run in CI until GitHub Actions billing is resolved (GAP-DEVOPS-001). Source: phase2-analysis.md REC-DEVOPS-001 + PLANNING_RISK-P2-002. | BLOCKING | HIGH | Resolve GitHub billing limit (Q-05-001). Mitigation: run tests in nightly local mode until resolved. |
@@ -43,7 +43,7 @@ An `ADVISORY` dependency means the other team can help or provide input but is n
 | BLK-011 | Marketing | Tech | **JSON-LD structured data** — SEO_TECH_ISSUE: SCHEMA. No structured data present on any marketing site page. This is a developer implementation task that gates organic search performance improvements. Source: phase4-analysis.md GAP-GROWTH-001. | BLOCKING | HIGH | Developer adds JSON-LD Organisation schema + WebPage schema per REC-CRO-002. Estimated: 0.5 day. Sprint 1. |
 | BLK-012 | Business | UX | **Activation completion rate data** — financial model (SP-BIZ-02-005) relies on conversion assumptions that are currently INSUFFICIENT_DATA. UX funnel instrumentation (pending DEC-102 constraint) would supply this data. Source: financial-model-overview.md 25% completeness. | ADVISORY | MEDIUM | Coordinate with Product Owner on Plausible step-tracking (within DEC-102 bounds: no new PostHog, but Plausible is permitted). |
 | BLK-013 | Tech | Business | **Financial model for infrastructure** — video encryption decision (REC-DATA-001) may change storage strategy (filesystem vs SQLite BLOB). Without Q-09-001 answer (video file sizes), implementation risk is unquantifiable. Source: PLANNING_RISK-P2-001. | ADVISORY | MEDIUM | Answer Q-09-001 before scheduling REC-DATA-001. |
-| BLK-014 | Marketing | Tech | **Domain migration** — `lumio-legacy.nl` carries negative legacy association (GAP-BRAND-001). Tech team must handle DNS, Next.js redirect config, and Plausible domain update if Q-MKT-B-002 results in domain change decision. Source: brand-brief.md, phase4-analysis.md. | ADVISORY | MEDIUM | Answer Q-MKT-B-002. If domain change decided, Dev handles redirect + analytics update. |
+| BLK-014 | Marketing | Tech | ~~**Domain migration**~~ ✅ **RESOLVED 2026-03-04** — Domain stays `lumio-legacy.nl` by deliberate brand decision. All alternative domains taken. Q-MKT-B-002 ANSWERED. GAP-BRAND-001 closed. No DNS/redirect work required. | ~~ADVISORY~~ RESOLVED | — | — |
 
 ---
 
@@ -52,7 +52,7 @@ An `ADVISORY` dependency means the other team can help or provide input but is n
 | Escalation | Owner | Deadline |
 |-----------|-------|---------|
 | BLK-001 + BLK-002: Payment provider decision | CEO / Sales | Sprint 1 gate |
-| BLK-003: Audience priority decision | Product Owner / CEO | Sprint 1 gate |
+| ~~BLK-003: Audience priority decision~~ | ✅ RESOLVED 2026-03-04 | Dynamic hero implemented |
 | BLK-006: GitHub billing resolution | Product Owner (external: GitHub billing) | Q-05-001 |
 | BLK-007: Session timeout specification | Product Owner | Sprint 1 gate |
 | BLK-008: AVG consent sign-off | Product Owner + Legal | Sprint 1 gate |

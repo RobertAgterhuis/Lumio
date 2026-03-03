@@ -42,7 +42,7 @@ Please answer:
 2. What is the approximate budget for domain acquisition (€0 / <€1k / €1k–€10k / no budget constraint)?
 3. Is there a brand or legal reason why "legacy" was chosen that should be preserved?
 
-**Answer:** _[client to fill in]_
+**Answer:** `ANSWERED 2026-03-04` — Domain stays **lumio-legacy.nl**. All alternative domains (lumio.nl, mijnlumio.nl, lumio.app) are taken. The team has evaluated the domain and considers "legacy" an acceptable and intentional brand choice in the context of life planning. No domain migration will be pursued. GAP-BRAND-001 and BLK-014 are **RESOLVED** — no DNS/redirect work needed.
 
 ---
 
@@ -72,10 +72,10 @@ For each testimonial:
 **Question:** What is the primary commercial priority for the next 12 months?
 - [ ] B2C (individual licences) is primary; B2B is secondary
 - [ ] B2B (employer benefits) is primary; B2C is secondary
-- [ ] Both channels are equally prioritised
+- [x] Both channels are equally prioritised
 - [ ] Other: _[please describe]_
 
-**Answer:** _[client to fill in]_
+**Answer:** `ANSWERED 2026-03-04` — **Both channels are equally prioritised.** No single primary audience. To handle this cleanly on the marketing site, a dynamic dual-audience `HeroSection` component was implemented (`site/src/components/sections/HeroSection.tsx`): visitors toggle between "Voor mezelf" (B2C) and "Voor werkgevers" (B2B) tabs, each with audience-specific headline, sub-copy, and CTAs. Default view is B2C. Navigation from `/werkgevers` context auto-selects the B2B tab via URL hash. BLK-003 **RESOLVED**.
 
 ---
 
@@ -123,9 +123,9 @@ Please answer:
 | Q-ID | Agent | Priority | Topic | Status |
 |---|---|---|---|---|
 | Q-MKT-B-001 | Brand Strategist | REQUIRED | Competitive landscape | OPEN |
-| Q-MKT-B-002 | Brand Strategist | REQUIRED | Domain strategy | OPEN |
+| Q-MKT-B-002 | Brand Strategist | REQUIRED | Domain strategy | ✅ ANSWERED 2026-03-04 |
 | Q-MKT-B-003 | Brand Strategist | REQUIRED | Testimonial consent | OPEN |
-| Q-MKT-B-004 | Brand Strategist | OPTIONAL | Audience priority | OPEN |
+| Q-MKT-B-004 | Brand Strategist | OPTIONAL | Audience priority | ✅ ANSWERED 2026-03-04 |
 | Q-MKT-CRO-001 | CRO Specialist | REQUIRED | Payment integration | OPEN |
 | Q-MKT-CRO-002 | CRO Specialist | OPTIONAL | B2B lead volume | OPEN |
 | Q-MKT-B-005 | Brand Strategist | OPTIONAL | One-pager availability | OPEN |

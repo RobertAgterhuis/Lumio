@@ -26,7 +26,7 @@ The testimonial situation requires immediate resolution: three hardcoded names (
 | P1 | **REC-CRO-003 + REC-G-002:** Add Plausible custom goals + fix EXP-003 DOM event capture | CRO + Growth / RISK-MKT-002 | S (1 day) | L — enables all data-informed decisions |
 | P1 | **SP-04-007 / REC-CRO-002:** Add JSON-LD structured data (Organisation + WebPage schemas) | CRO / GAP-GROWTH-001 | S (0.5 day) | M — organic CTR improvement |
 | P1 | **BLOCKING-P4-002 / REC-B-003:** Document testimonial consent OR add "representatief citaat" disclaimer | Brand / RISK-MKT-003 | XS (0.5 day) | M — removes legal exposure |
-| P2 | **REC-B-001:** B2C domain strategy decision (Q-MKT-B-002) — move domain away from lumio-legacy.nl | Brand / GAP-BRAND-001 | M (DNS + redirects) | L — brand positioning alignment |
+| ~~P2~~ ✅ | ~~**REC-B-001:** B2C domain strategy decision~~ — **RESOLVED 2026-03-04**: domain stays `lumio-legacy.nl` by intentional brand decision (Q-MKT-B-002 ANSWERED). GAP-BRAND-001 closed. No action required. | Brand / GAP-BRAND-001 RESOLVED | — | — |
 | P2 | **REC-G-001:** Implement post-purchase / post-setup reminder email or in-app notification | Growth / GAP-GROWTH-003 | M | M — retention improvement |
 | P2 | **H-GROWTH-002:** SEO content strategy — first 4 articles targeting "digitale nalatenschap nederland", "levenstestament app", etc. | Growth / GAP-GROWTH-001 | M | M — organic acquisition funnel |
 | P2 | **EXP-002:** Pricing trust signal experiment (trustbadge vs social proof vs nothing) | CRO | M (post-Plausible fix) | M — conversion at /prijzen |
@@ -44,8 +44,8 @@ The testimonial situation requires immediate resolution: three hardcoded names (
 | Q1 — Sprint 1 | JSON-LD structured data (REC-CRO-002) | NONE | Rich snippets eligible |
 | Q1 — Sprint 1 | Testimonial consent documentation or disclaimer (REC-B-003) | BLOCKED: PO/CEO decision | Legal exposure removed |
 | Q1 — Sprint 1 | GA4 / Search Console verification (Q-MKT-G-001) | NONE | Organic search baseline established |
-| Q1 — Sprint 2 | Domain strategy decision (Q-MKT-B-002) | CEO decision | Decision documented |
-| Q1 — Sprint 2 | B2C audience priority decision (Q-MKT-B-004) | CEO/PO decision | Funnel architecture confirmed |
+| ~~Q1 — Sprint 2~~ ✅ | ~~Domain strategy decision (Q-MKT-B-002)~~ **RESOLVED**: domain stays `lumio-legacy.nl` | Answered 2026-03-04 | GAP-BRAND-001 closed |
+| ~~Q1 — Sprint 2~~ ✅ | ~~B2C audience priority decision (Q-MKT-B-004)~~ **RESOLVED**: both channels equally prioritised; dynamic hero implemented | Answered 2026-03-04 | BLK-003 closed |
 | Q2 — Sprint 5 | SP-CRO1-001: Automated B2C checkout | BLOCKED: BLK-001 (payment provider) | Checkout live |
 | Q2 — Sprint 5 | First SEO content piece (H-GROWTH-002) | NONE | 1 article published |
 | Q2 — Sprint 6 | EXP-002: Pricing trust signal experiment | Plausible custom events live | Experiment data collecting |

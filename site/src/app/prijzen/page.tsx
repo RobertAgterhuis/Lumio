@@ -5,6 +5,7 @@ import FaqAccordion from "@/components/sections/FaqAccordion";
 import ConsumerPricing from "@/components/sections/ConsumerPricing";
 import Container from "@/components/layout/Container";
 import type { Metadata } from "next";
+import { FAQ_ITEMS } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Prijzen – Lumio voor particulieren & werkgevers",
@@ -21,9 +22,28 @@ export const metadata: Metadata = {
 
 const FEATURED_TIERS = [10, 25, 50, 100];
 
+// SP-04-007: FAQPage JSON-LD — improves Google rich results (FAQ snippets in SERP)
+const faqPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
+
 export default function PrijzenPage() {
   return (
     <>
+      {/* SP-04-007: FAQPage JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageJsonLd) }}
+      />
       {/* Page hero */}
       <section className="py-16 bg-primary-700 text-white">
         <Container>

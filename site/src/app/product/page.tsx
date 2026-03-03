@@ -20,9 +20,41 @@ export const metadata: Metadata = {
   },
 };
 
+// SP-04-007: SoftwareApplication JSON-LD — enables Google rich results for the product
+const softwareJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Lumio",
+  applicationCategory: "LifestyleApplication",
+  operatingSystem: "Windows, macOS",
+  url: "https://www.lumio-legacy.nl/product",
+  description:
+    "Lumio helpt je testament, wilsverklaring, digitale bezittingen en noodcontacten veilig offline bijhouden. " +
+    "€125 eenmalig, geen abonnement, geen cloud.",
+  inLanguage: "nl-NL",
+  offers: {
+    "@type": "Offer",
+    price: "125",
+    priceCurrency: "EUR",
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price: "125",
+      priceCurrency: "EUR",
+      unitText: "eenmalig",
+    },
+    seller: { "@type": "Organization", name: "Lumio" },
+    availability: "https://schema.org/InStock",
+  },
+};
+
 export default function ProductPage() {
   return (
     <>
+      {/* SP-04-007: SoftwareApplication JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+      />
       {/* Page hero */}
       <section className="py-16 bg-primary-700 text-white">
         <Container>

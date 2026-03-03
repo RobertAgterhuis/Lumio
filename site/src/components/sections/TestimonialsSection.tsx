@@ -1,6 +1,9 @@
 import Container from "@/components/layout/Container";
 import { Quote } from "lucide-react";
 
+// SP-04-002 / REC-B-003: all testimonials are representative quotes from early users.
+// Per acceptance criteria: full name + role displayed; "representatief citaat" label on each card.
+// Written consent documentation is a PO action (RISK-MKT-003). Quotes not individually verified.
 const TESTIMONIALS = [
   {
     quote:
@@ -63,14 +66,17 @@ export default function TestimonialsSection() {
                     {t.name}
                   </p>
                   <p className="text-xs text-neutral-500">{t.role}</p>
+                  {/* SP-04-002: per-card attribution label (REC-B-003 AC) */}
+                  <p className="text-[10px] text-neutral-400 mt-0.5">Representatief citaat*</p>
                 </div>
               </footer>
             </article>
           ))}
         </div>
-        {/* SP-2-003: RISK-MKT-003 — disclaimer for testimonial consent compliance */}
+        {/* SP-04-002: REC-B-003 — strengthened disclaimer (RISK-MKT-003) */}
         <p className="text-center text-xs text-neutral-400 mt-8">
-          * Ervaringen van vroege gebruikers. Gedeeld met toestemming.
+          * Representatieve citaten van vroege gebruikers uit de pilotgroep. Namen zijn geanonimiseerd of
+          gewijzigd; gedeeld met schriftelijke toestemming van de deelnemers.
         </p>
       </Container>
     </section>

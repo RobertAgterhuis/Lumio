@@ -30,6 +30,9 @@ export const PRICE_PER_USER = 125;
  */
 export const BUY_CONSUMER_HREF = "/voor-jezelf#particulier";
 
+/** Primary employer CTA destination — the /werkgevers page anchored at the businesscase section. */
+export const BUY_EMPLOYER_HREF = "/werkgevers#businesscase";
+
 /**
  * Mailto fallback used inside ConsumerPricing while the Odoo checkout
  * is EXTERN_BLOCKED (SP-CRO1-001). Replace with the Odoo payment link once available.
