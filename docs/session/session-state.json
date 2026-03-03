@@ -162,12 +162,12 @@
   },
   "official_documents": {
     "product-vision.md": { "version": "v1", "completeness_pct": 55, "status": "DRAFT" },
-    "financial-model-overview.md": { "version": "v1", "completeness_pct": 25, "status": "DRAFT" },
-    "technical-overview.md": { "version": "v1", "completeness_pct": 70, "status": "DRAFT" },
-    "legal-compliance-overview.md": { "version": "v1", "completeness_pct": 55, "status": "DRAFT" },
-    "ux-design-brief.md": { "version": "v1", "completeness_pct": 60, "status": "DRAFT" },
+    "financial-model-overview.md": { "version": "v2", "completeness_pct": 80, "status": "APPROVED" },
+    "technical-overview.md": { "version": "v1.1", "completeness_pct": 75, "status": "DRAFT" },
+    "legal-compliance-overview.md": { "version": "v1.1", "completeness_pct": 65, "status": "DRAFT" },
+    "ux-design-brief.md": { "version": "v1.1", "completeness_pct": 65, "status": "DRAFT" },
     "content-strategy-brief.md": { "version": "v1", "completeness_pct": 55, "status": "DRAFT" },
-    "brand-brief.md": { "version": "v1", "completeness_pct": 55, "status": "DRAFT" },
+    "brand-brief.md": { "version": "v1.1", "completeness_pct": 70, "status": "DRAFT" },
     "market-positioning.md": { "version": "v1.1", "completeness_pct": 55, "status": "DRAFT" }
   },
   "phase1_critical_risks": [

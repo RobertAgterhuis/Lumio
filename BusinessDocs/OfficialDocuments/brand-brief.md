@@ -1,9 +1,10 @@
 # Brand Brief — Lumio
 **Document type:** Official Document
-**Version:** v1 | Completeness: 55% | Status: DRAFT
+**Version:** v1.1 | Completeness: 70% | Status: DRAFT
 **Owner:** Brand Strategist (Phase 4)
-**Last updated:** 2025-07-18
-**INSUFFICIENT_DATA items:** Competitive landscape (Q-MKT-B-001), domain decision (Q-MKT-B-002), testimonial consent (Q-MKT-B-003), audience priority (Q-MKT-B-004)
+**Last updated:** 2026-03-03
+**INSUFFICIENT_DATA items:** Domain decision (Q-MKT-B-002), testimonial consent (Q-MKT-B-003), audience priority (Q-MKT-B-004)
+**RESOLVED this update:** Competitive landscape (RESOLVED_BY_QUESTIONNAIRE: Q-03-010/Q-03-011), design tokens (RESOLVED SP-1-005), testimonial disclaimer (RESOLVED SP-MKT-01)
 
 ---
 
@@ -110,15 +111,19 @@ Core guarantee: When a life event (illness, death, incapacitation) occurs, the p
 
 ### 4.2 Positioning Axes
 
-| Axis | Lumio | Alternatives (INSUFFICIENT_DATA: specific competitors) |
-|---|---|---|
-| Storage | 100% offline / local | INSUFFICIENT_DATA: cloud-based competitors |
-| Pricing | €125 one-time | INSUFFICIENT_DATA: subscription models |
-| Privacy | AVG-proof, no data leaves device | INSUFFICIENT_DATA: cloud alternatives |
-| Completeness | Testament + wilsverklaring + passwords + digital assets + video messages | INSUFFICIENT_DATA: scope of alternatives |
-| Target audience | B2C + B2B dual | INSUFFICIENT_DATA |
+> Source: RESOLVED_BY_QUESTIONNAIRE Q-03-010/Q-03-011 (2026-03-03). Confidence: UNCERTAIN (derived from site copy + founder knowledge; no external market research).
 
-**INCOMPLETE:** Competitive benchmarking requires Q-MKT-B-001 answer.
+| Axis | Lumio | Papieren map | Google Drive / Dropbox | 1Password / Bitwarden | Notariskluis | Niets doen |
+|---|---|---|---|---|---|---|
+| Storage | 100% offline, lokaall | Fysiek (brandgevaar, verlies) | Cloud (VS servers, CLOUD Act risico) | Cloud (VS servers) | Fysiek bij notaris | — |
+| Pricing | €125 eenmalig | Gratis | €0–24/jaar | €36–120/jaar | €50–200/jaar | Gratis |
+| Privacy | AVG-proof, niets verlaat apparaat | Volledig privé, maar onbeveiligd | AVG-risico (derde partij, VS) | Cloud-afhankelijk | Beperkt (notaris heeft inzage) | N/A |
+| Volledigheid | Testament + wilsv. + donor + wachtwoorden + digitale bezittingen + video's + noodcontacten | Juridisch beperkt, ongestructureerd | Ongestructureerd, geen templates | Alleen wachtwoorden | Beperkt tot notariële documenten | Nihil |
+| Nederlandse modules | ✅ Alle NL juridische documenten ingebouwd | ❌ | ❌ | ❌ | Deels | ❌ |
+| Erfgenaamentoegang | Shamir — cryptografisch gegarandeerd | Afhankelijk van fysieke overdracht | Afhankelijk van account-overdracht | Afhankelijk van account-overdracht | Via notariële procedure | — |
+| Doelgroep | B2C (40–65) + B2B (werkgevers) | B2C | B2C/B2B | B2C/B2B | B2C | — |
+
+**Conclusie:** Lumio is de enige aanbieder die offline opslag, NL juridische modules, Shamir-erfgenaamentoegang en een eenmalige prijs combineert. Geen directe concurrent heeft alle zes assen tegelijk.
 
 ### 4.3 Category
 **INSUFFICIENT_DATA: no category name has been established.** Candidate terms: "persoonlijke nalatenschapsplanning", "life event voorbereiding", "digitale nalatenschap app". Category ownership strategy pending Phase 4 questionnaire answers.
@@ -144,20 +149,26 @@ Core guarantee: When a life event (illness, death, incapacitation) occurs, the p
 | GAP-BRAND-001 | Domain "legacy" negative B2C associations | HIGH | Q-MKT-B-002 → domain decision |
 | GAP-BRAND-002 | OG metaTitle B2B-framed for all social shares | HIGH | REC-B-002 (1-line code fix, SP-04-001) |
 | GAP-BRAND-005 | EAA non-compliance risks B2B procurement | HIGH | Phase 3 BLOCKING-P3-002 |
-| GAP-BRAND-006 | No design tokens — colour palette unverifiable | HIGH | Phase 3 BLOCKING-P3-002 |
+| GAP-BRAND-006 | No design tokens — colour palette unverifiable | ~~HIGH~~ **RESOLVED** | `docs/brand/design-tokens.json` committed SP-1-005 (2026-03-03) |
 | CRITICAL_MISALIGNMENT-001 | "In één middag" vs 7-step wizard complexity | HIGH | Disclaimer + Phase 3 BLOCKING-P3-001 |
-| CRITICAL_MISALIGNMENT-003 | Testimonials unverifiable | HIGH | Q-MKT-B-003 + REC-B-003 |
+| CRITICAL_MISALIGNMENT-003 | Testimonials unverifiable | **PARTIALLY RESOLVED** | Per-card disclaimer toegevoegd SP-MKT-01 (d1a8c2f); formele consent Q-MKT-B-003 nog open |
 
 ---
 
 ## Document Completeness Note
 
-This document is **55% complete**. The following sections require answers to open questionnaires before they can be fully populated:
+This document is **70% complete** (was 55% — competitive table filled, design tokens resolved, testimonial disclaimer added). The following sections still require questionnaire answers:
 
-| Section | Missing data | Questionnaire |
-|---|---|---|
-| Competitive positioning table (Section 4.2) | Competitor names, pricing, positioning | Q-MKT-B-001 |
-| Domain decision (Section 1.2) | Domain acquisition plan | Q-MKT-B-002 |
-| Testimonial status (Section 5) | Consent confirmation | Q-MKT-B-003 |
-| Audience priority (Section 2.3) | B2B vs B2C primary | Q-MKT-B-004 |
-| Colour palette hex values (Section 1.3) | Design tokens | Phase 3 BLOCKING-P3-002 |
+| Section | Missing data | Questionnaire | Status |
+|---|---|---|---|
+| ~~Competitive positioning table (Section 4.2)~~ | ~~Competitor names, pricing, positioning~~ | Q-03-010/011 | ✅ RESOLVED |
+| Domain decision (Section 1.2) | Domain acquisition plan | Q-MKT-B-002 | OPEN |
+| Testimonial legal consent (Section 5) | Formele toestemming getuigen | Q-MKT-B-003 | OPEN |
+| Audience priority (Section 2.3) | B2B vs B2C primary | Q-MKT-B-004 | OPEN |
+| ~~Colour palette hex values (Section 1.3)~~ | ~~Design tokens~~ | SP-1-005 | ✅ RESOLVED |
+
+### Document History
+| Version | Date | Changes |
+|---------|------|---------|
+| v1 | 2025-07-18 | Initiële DRAFT door audit-systeem (Phase 4) |
+| v1.1 | 2026-03-03 | Competitive positioning axes ingevuld (Q-03-010/011); GAP-BRAND-006 gesloten (design-tokens.json); CRITICAL_MISALIGNMENT-003 gedeeltelijk opgelost (SP-MKT-01) |

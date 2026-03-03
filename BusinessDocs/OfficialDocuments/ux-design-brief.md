@@ -1,7 +1,7 @@
 # UX Design Brief — Lumio
 **Document type:** Official Document — Phase 3 output  
-**Version:** v1  
-**Completeness:** 60%  
+**Version:** v1.1
+**Completeness:** 65% (was 60% — design tokens resolved)
 **Date:** 2026-07-14  
 **Owner:** UX Lead  
 **Source:** `BusinessDocs/Phase3-UX/phase3-analysis.md`  
@@ -112,7 +112,7 @@ Current module list (alphabetical): audit-log, boedel, dashboard, digitaal-bezit
 **Gaps to close:**
 - Missing stories: `status-badge`, `toast`, `tooltip`, `help-tooltip`, `LabelWithHelp`
 - Missing complex-flow stories: `OnboardingWizard`, `InterviewWizard`, `IdleWarningDialog`
-- `INSUFFICIENT_DATA:` Design tokens file — Q-UX-UI-001 required
+- ~~`INSUFFICIENT_DATA:` Design tokens file — Q-UX-UI-001 required~~ **RESOLVED:** `docs/brand/design-tokens.json` aanwezig (SP-1-005, 2026-03-03)
 
 **Target design system completeness:** 100% component story coverage + design-tokens.json committed
 
@@ -125,7 +125,7 @@ Current module list (alphabetical): audit-log, boedel, dashboard, digitaal-bezit
 **`UNCERTAIN:` EAA scope** for USB-portable delivery model — legal confirmation required (Q-UX-A11Y-002)
 
 **Open compliance gaps (all must be resolved):**
-- GAP-A11Y-001: Color contrast ratios unverified (BLOCKING — requires design tokens)
+- GAP-A11Y-001: Color contrast ratios unverified (design-tokens.json beschikbaar sinds SP-1-005; contrast-verificatie vs. WCAG 2.1 AA nog nodig)
 - GAP-A11Y-002: No skip-to-main link in authenticated layout
 - GAP-A11Y-003: Focus trap behavior in IdleWarningDialog/ShamirDialog unverified
 - GAP-A11Y-004: `<html lang>` in static export not verified
@@ -136,14 +136,15 @@ Current module list (alphabetical): audit-log, boedel, dashboard, digitaal-bezit
 
 ## 8. Open Items (INSUFFICIENT_DATA)
 
-| Item | Required for | Q-ID |
-|------|-------------|------|
-| Validated user personas | Segment targeting, journey validation | Q-UX-R-001 |
-| Activation completion rate | Conversion baseline, ROI of wizard redesign | Q-UX-R-002 |
-| Figma/design tokens | Color contrast verification, WCAG compliance | Q-UX-UI-001 |
-| Backup/export flow step count | G-UX-02 compliance check | Q-UX-D-001 |
-| IA grouping rationale | Validated sidebar redesign | Q-UX-D-002 |
-| WCAG audit results | A11y baseline | Q-UX-A11Y-001 |
+| Item | Required for | Q-ID | Status |
+|------|-------------|------|--------|
+| Validated user personas | Segment targeting, journey validation | Q-UX-R-001 | OPEN |
+| Activation completion rate | Conversion baseline, ROI of wizard redesign | Q-UX-R-002 | OPEN |
+| ~~Design tokens~~ | ~~Color contrast verification~~ | Q-UX-UI-001 | ✅ RESOLVED: `docs/brand/design-tokens.json` (SP-1-005) |
+| Figma bronbestanden | Exacte design specs per component | Q-UX-UI-001 (rest) | OPEN |
+| Backup/export flow step count | G-UX-02 compliance check | Q-UX-D-001 | OPEN |
+| IA grouping rationale | Validated sidebar redesign | Q-UX-D-002 | OPEN |
+| WCAG audit results | A11y baseline | Q-UX-A11Y-001 | OPEN |
 
 ---
 
@@ -151,4 +152,5 @@ Current module list (alphabetical): audit-log, boedel, dashboard, digitaal-bezit
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v1 (DRAFT) | 2026-07-14 | Initial creation from Phase 3 analysis. 60% complete. |
+| v1 (DRAFT) | 2026-07-14 | Initiële aanmaak vanuit Phase 3-analyse. 60% compleet. |
+| v1.1 | 2026-03-03 | Design tokens RESOLVED (SP-1-005); GAP-A11Y-001 bijgewerkt (tokens beschikbaar); open-items-tabel bijgewerkt. 65% compleet. |
