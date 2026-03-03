@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import { HelpButton } from "@/components/help/HelpButton";
+import { DossierVolledigBanner } from "@/components/wizard/DossierVolledigBanner";
 
 interface DomeinStatus {
   domein: string;
@@ -328,6 +329,9 @@ export default function DashboardPage() {
           {t("beschrijving")}
         </p>
       </div>
+
+      {/* SP-UX-03-001: Celebration banner — shows for 5s after first wizard completion */}
+      <DossierVolledigBanner />
 
       {/* Individual draggable widgets — 2-column grid, each widget independently reorderable */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>

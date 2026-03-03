@@ -2202,6 +2202,10 @@
       "volgende": "Next",
       "voortgangHersteld": "Your progress has been restored. You are at step {stap}.",
       "opnieuwBeginnen": "Start over"
+    },
+    "dossierVolledigBanner": {
+      "titel": "Dossier complete",
+      "beschrijving": "All 7 steps are completed. Your legacy is fully set up."
     }
   },
   "testament": {

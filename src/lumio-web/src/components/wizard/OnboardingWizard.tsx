@@ -105,6 +105,8 @@ export function OnboardingWizard() {
           stappen_voltooid: 7,
           activatie_reden: "onboarding_wizard_compleet",
         });
+        // SP-UX-03-001: trigger celebration banner on dashboard
+        window.dispatchEvent(new CustomEvent("lumio:dossier-volledig"));
       }
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(false);
@@ -137,6 +139,8 @@ export function OnboardingWizard() {
           stappen_voltooid: 7,
           activatie_reden: "onboarding_wizard_compleet",
         });
+        // SP-UX-03-001: trigger celebration banner on dashboard
+        window.dispatchEvent(new CustomEvent("lumio:dossier-volledig"));
       }
     }
     setVisible(false);
