@@ -1,0 +1,111 @@
+{
+  "sprint_id": "SP-UX-02",
+  "sprint_name": "Onboarding Optimalisatie & Nabestaanden Tooling",
+  "milestone_number": 13,
+  "period": {
+    "start": "2026-03-03",
+    "end": "2026-03-03"
+  },
+  "pull_request": {
+    "number": 127,
+    "url": "https://github.com/RobertAgterhuis/Lumio/pull/127",
+    "merge_sha": null,
+    "merged_at": null
+  },
+  "stories": [
+    {
+      "id": "SP-UX-02-001",
+      "title": "Wizard volgorde — uitvaart naar positie 6",
+      "issue": 120,
+      "status": "DONE",
+      "story_points": 2,
+      "commit": "08de2a3"
+    },
+    {
+      "id": "SP-UX-02-002",
+      "title": "Exporteerbaar nabestaanden-instructiekaartje (QuestPDF)",
+      "issue": 121,
+      "status": "DONE",
+      "story_points": 5,
+      "commit": "5ffd68a"
+    },
+    {
+      "id": "SP-UX-02-003",
+      "title": "ShamirDialog + nabestaanden-component Storybook stories",
+      "issue": 122,
+      "status": "DONE",
+      "story_points": 3,
+      "commit": "cf3d738"
+    },
+    {
+      "id": "SP-UX-02-004",
+      "title": "Videoboodschappen caption-support analyse",
+      "issue": 123,
+      "status": "ANALYSIS_PENDING",
+      "story_points": 2,
+      "commit": null,
+      "note": "Handmatige analyse — geen code deliverable"
+    },
+    {
+      "id": "SP-UX-02-005",
+      "title": "Handmatige screen reader test NVDA/VoiceOver",
+      "issue": 124,
+      "status": "ANALYSIS_PENDING",
+      "story_points": 3,
+      "commit": null,
+      "note": "Handmatige test — geen code deliverable"
+    },
+    {
+      "id": "SP-UX-02-006",
+      "title": "Heading-hierarchie validatie en fix",
+      "issue": 125,
+      "status": "DONE",
+      "story_points": 2,
+      "commit": "df49322"
+    },
+    {
+      "id": "SP-UX-02-007",
+      "title": "Onboarding usability-test met 5 deelnemers",
+      "issue": 126,
+      "status": "ANALYSIS_PENDING",
+      "story_points": 5,
+      "commit": null,
+      "note": "Gebruikerstest met externe deelnemers — geen code deliverable"
+    }
+  ],
+  "stories_planned_code": 4,
+  "stories_completed_code": 4,
+  "stories_planned_analysis": 3,
+  "stories_completed_analysis": 0,
+  "completion_rate_code_pct": 100,
+  "test_results": {
+    "backend_passed": 409,
+    "backend_failed": 0,
+    "frontend_passed": 354,
+    "frontend_failed": 0,
+    "frontend_test_files": 49
+  },
+  "quality": {
+    "build_passed": true,
+    "secret_scan": "NOT_RUN_PR_OPEN",
+    "ts_typecheck": "PASSED",
+    "a11y_stories": "heading-order rule enabled"
+  },
+  "changed_files": [
+    "src/Lumio.Api/Services/Pdf/Generators/NabestaandenInstructieGenerator.cs",
+    "src/Lumio.Api/Services/Pdf/LumioPdfService.cs",
+    "src/Lumio.Api/Program.cs",
+    "src/Lumio.Api/Controllers/ExportController.cs",
+    "src/Lumio.Api/Resources/Services/Pdf/LumioPdfService.resx",
+    "src/Lumio.Api/Resources/Services/Pdf/LumioPdfService.en.resx",
+    "src/lumio-web/src/components/wizard/OnboardingWizard.tsx",
+    "src/lumio-web/src/components/wizard/OnboardingWizard.stappen.test.ts",
+    "src/lumio-web/src/components/erfgenamen/ShamirDialog.stories.tsx",
+    "src/lumio-web/src/components/auth/HeirUnlockForm.stories.tsx",
+    "src/lumio-web/src/app/(authenticated)/eigenaar/page.tsx",
+    "src/lumio-web/.storybook/preview.ts",
+    "src/lumio-web/src/components/nabestaanden/NabestaandenDashboard.tsx",
+    "src/lumio-web/messages/nl.json",
+    "src/lumio-web/messages/en.json"
+  ]
+}

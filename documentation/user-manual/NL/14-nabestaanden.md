@@ -54,6 +54,19 @@ In de nabestaanden-modus:
 - Er kunnen geen items worden toegevoegd of verwijderd
 - Exportfuncties zijn wel beschikbaar
 
+## Instructiekaartje Downloaden
+
+Via de knop **Instructiekaartje downloaden** in het nabestaanden-dashboard kunt u een PDF (NL of EN) genereren met de direct bruikbare informatie:
+
+- **Noodcontacten** — namen, telefoonnummers en e-mailadressen
+- **Digitale sleutels** — wie de Shamir-sleuteldelen heeft en hoeveel er nodig zijn
+- **Te nemen stappen** — een genummerde checklist om niets te vergeten
+- **Lumio backup locatie** — waar het versleutelde bestand staat
+
+> **Privacy**: het instructiekaartje bevat bewust **geen** BSN of medische gegevens. Het is bedoeld als praktisch overzichtskaartje, niet als volledig dossier.
+
+Het bestand wordt opgeslagen als `lumio-nabestaanden-instructie.pdf`.
+
 ## Compleetheidsoverzicht
 
 Het nabestaanden-dashboard toont ook een **compleetheidsoverzicht** — welke secties de overledene had ingevuld en welke niet. Dit helpt bij het inschatten welke informatie beschikbaar is.

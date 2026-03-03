@@ -112,13 +112,13 @@
     "branch": "feature/SP-UX-02-onboarding-optimalisatie-nabestaanden",
     "dor_cleared": true,
     "sprint_gate_date": "2026-03-04T00:00:00Z",
-    "implementation_status": "CODE_COMPLETE",
-    "test_results": null
+    "implementation_status": "RETROSPECTIVE_COMPLETE",
+    "test_results": {"backend": 409, "frontend": 354, "status": "ALL_PASS"}
   },
   "onboarding_output_path": "docs/onboarding/onboarding-output.md",
   "synthesis_path": "docs/synthesis/",
   "sprint_backlog_path": "docs/fase-3/sprintplan.md",
-  "last_updated": "2026-03-04T00:00:00Z",
+  "last_updated": "2026-03-03T00:00:00Z",
   "open_human_escalations": [],
   "insufficient_data_items": [
     "INSUFFICIENT_DATA: KPI-definities — geen docs/metrics/ aanwezig",
