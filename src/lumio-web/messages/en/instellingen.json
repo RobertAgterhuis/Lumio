@@ -1,7 +1,13 @@
 {
   "instellingen": {
     "titel": "Settings",
-    "ondertitel": "Manage your security settings",
+    "ondertitel": "Manage your preferences, security and account.",
+    "tabs": {
+      "voorkeuren": "Preferences",
+      "weergave": "Appearance",
+      "beveiliging": "Security",
+      "account": "Account"
+    },
     "timeoutOpties": {
       "0": "Disabled",
       "1": "1 minute",
