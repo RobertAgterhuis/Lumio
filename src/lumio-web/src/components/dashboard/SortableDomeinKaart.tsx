@@ -160,8 +160,8 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
                     e.stopPropagation();
                     openPanel(chapterSlug);
                   }}
-                  title={`Hoe werkt ${t(`domein.${card.domeinKey}.titel`)}?`}
-                  aria-label={`Hoe werkt ${t(`domein.${card.domeinKey}.titel`)}?`}
+                  title={t("hoeWerkt", { titel: t(`domein.${card.domeinKey}.titel`) })}
+                  aria-label={t("hoeWerkt", { titel: t(`domein.${card.domeinKey}.titel`) })}
                 >
                   <BookOpen className="h-3.5 w-3.5" />
                   {t("helpHint")}

@@ -56,7 +56,7 @@ export function AccountItem({
               variant="ghost"
               size="sm"
               onClick={onToggleInstructie}
-              title="Afsluitinstructies"
+              title={t("accounts.afsluitInstructiesTooltip")}
             >
               <Info className={`h-3 w-3 ${isInstructieOpen ? "text-info" : ""}`} />
             </Button>

@@ -416,7 +416,7 @@ export default function DashboardPage() {
                 <SortableSection key="granulair" id="granulair">
                   <div className="relative h-full">
                     <div className="absolute top-3 right-3 z-10">
-                      <HideButton section="showVoortgangGranulair" label="Gedetailleerde voortgang" />
+                      <HideButton section="showVoortgangGranulair" label={t("voortgangGranulair.titel")} />
                     </div>
                     <VoortgangGranulair />
                   </div>
@@ -426,7 +426,7 @@ export default function DashboardPage() {
                 <SortableSection key="suggesties" id="suggesties">
                   <div className="relative h-full">
                     <div className="absolute top-3 right-3 z-10">
-                      <HideButton section="showSuggesties" label="Slimme suggesties" />
+                      <HideButton section="showSuggesties" label={t("suggesties.titel")} />
                     </div>
                     <ProfielSuggesties profileIsEmpty={!compleetheid || compleetheid.aantalIngevuld === 0} />
                   </div>

@@ -134,7 +134,7 @@ export function Sidebar() {
               <p className="flex-1 text-xl font-bold text-primary transition-opacity duration-300">Lumio</p>
               <button
                 onClick={toggleSidebar}
-                aria-label="Navigatiemenu verbergen"
+                aria-label={t("sidebarVerbergen")}
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <PanelLeftClose aria-hidden="true" className="h-4 w-4" />
@@ -215,7 +215,7 @@ export function Sidebar() {
                       ) : null}
                       <span className="flex-1">{label}</span>
                       {isCompleted && (
-                        <CheckCircle2 className="h-4 w-4 text-success" aria-label="Voltooid" />
+                        <CheckCircle2 className="h-4 w-4 text-success" aria-label={t("voltooid")} />
                       )}
                     </Link>
                   );
@@ -288,7 +288,7 @@ export function Sidebar() {
         <div className="shrink-0 border-t border-border/50 bg-linear-to-t from-muted/30 to-transparent p-2">
           <button
             onClick={toggleSidebar}
-            aria-label={sidebarCollapsed ? "Navigatiemenu tonen" : "Navigatiemenu verbergen"}
+            aria-label={sidebarCollapsed ? t("sidebarTonen") : t("sidebarVerbergen")}
             className={cn(
               "flex w-full items-center gap-2 rounded-md py-2 text-sm font-medium hover:bg-muted transition-all duration-200",
               sidebarCollapsed

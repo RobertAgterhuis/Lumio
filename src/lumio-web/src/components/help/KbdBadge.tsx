@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 /**
  * Renders keyboard shortcuts extracted from inline `` `code` `` spans.
  * Handles modifier combos (Ctrl+K), single keys (Esc, Enter), and
@@ -43,6 +47,7 @@ interface KbdBadgeProps {
  * Combos like "Ctrl+Shift+K" become a single badge.
  */
 export function KbdBadge({ children }: KbdBadgeProps) {
+  const tAria = useTranslations("aria");
   const text = children.trim();
 
   // Multi-key sequences: "G dan D" / "G then D"
@@ -51,7 +56,7 @@ export function KbdBadge({ children }: KbdBadgeProps) {
     return (
       <span
         className="inline-flex items-center gap-1"
-        aria-label={`Toetscombinatie: ${text}`}
+        aria-label={tAria("toetscombinatie", { keys: text })}
       >
         <Key>{sequenceMatch[1]}</Key>
         <span className="text-muted-foreground text-xs">→</span>
@@ -62,7 +67,7 @@ export function KbdBadge({ children }: KbdBadgeProps) {
 
   return (
     <Key>
-      <span aria-label={`Toetscombinatie: ${text}`}>{text}</span>
+      <span aria-label={tAria("toetscombinatie", { keys: text })}>{text}</span>
     </Key>
   );
 }

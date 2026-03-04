@@ -29,6 +29,7 @@ import { useHelpSearch } from "@/hooks/useHelpSearch";
  */
 export function HelpPanel() {
   const t = useTranslations("help");
+  const tAria = useTranslations("aria");
   const locale = useLocale();
   const panelRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -209,7 +210,7 @@ export function HelpPanel() {
                 type="button"
                 onClick={() => setSearchQuery("")}
                 className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
-                aria-label="Zoekopdracht wissen"
+                aria-label={tAria("zoekopdachtWissen")}
               >
                 <X className="h-3.5 w-3.5" />
               </button>

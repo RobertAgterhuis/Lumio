@@ -55,7 +55,8 @@
       "maxDuur": "Maximum {minuten} minutes",
       "maxOver": "{seconden} sec remaining",
       "nietBeschikbaar": "Recording not available in this browser.",
-      "httpsVereist": "Camera recording requires a secure connection (HTTPS)."
+      "httpsVereist": "Camera recording requires a secure connection (HTTPS).",
+      "previewUploadMislukt": "Preview upload failed"
     },
     "aantalGebruikt": "{gebruikt} of {max} video messages used",
     "opslagGebruikt": "{gebruikt} of {max} storage used",

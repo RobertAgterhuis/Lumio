@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const toastVariants = cva(
   "pointer-events-auto relative flex w-full items-start gap-3 rounded-lg border p-4 pr-10 shadow-lg transition-all animate-in slide-in-from-bottom-4 fade-in-0 duration-300",
@@ -55,6 +56,7 @@ export function Toast({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [dismissing, setDismissing] = useState(false);
   const IconComponent = toastIcons[variant ?? "info"];
+  const tAria = useTranslations("aria");
 
   const handleDismiss = useCallback(() => {
     setDismissing(true);
@@ -91,7 +93,7 @@ export function Toast({
         type="button"
         onClick={() => handleDismiss()}
         className="absolute right-2 top-2 rounded-md p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-        aria-label="Dismiss"
+        aria-label={tAria("toastSluiten")}
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </button>

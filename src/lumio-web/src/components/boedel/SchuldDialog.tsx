@@ -118,7 +118,7 @@ export function SchuldDialog({
                   step="0.01"
                   value={form.rentepercentage}
                   onChange={(e) => onFormChange({ ...form, rentepercentage: e.target.value })}
-                  placeholder="bijv. 3.5"
+                  placeholder={t("schuldDialog.rentePlaceholder")}
                 />
               </div>
               <div className="space-y-2">

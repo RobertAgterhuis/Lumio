@@ -24,6 +24,7 @@
       "geenAccounts": "No accounts yet. Click Add.",
       "geenInCategorie": "No accounts in category \"{categorie}\".",
       "afsluitInstructies": "Closure instructions — {platform}",
+      "afsluitInstructiesTooltip": "Closure instructions",
       "bekijkInstructies": "View official instructions",
       "verbergen": "Hide",
       "ontsluiten": "Decrypt"

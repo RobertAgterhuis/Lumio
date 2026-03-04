@@ -139,7 +139,8 @@
     "overLumio": {
       "titel": "Over Lumio",
       "beschrijving": "Lumio is een hulpmiddel voor het vastleggen van uw digitale nalatenschap. Alle gegevens worden lokaal en versleuteld opgeslagen.",
-      "juridisch": "Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4)."
+      "juridisch": "Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4).",
+      "versie": "Versie {versie}"
     },
     "verwijderen": {
       "titel": "Alle gegevens wissen",

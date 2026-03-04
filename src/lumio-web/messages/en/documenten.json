@@ -29,6 +29,8 @@
     "opgeslagenDocumenten": "Stored documents ({aantal})",
     "versie": "version {nummer}",
     "versiegeschiedenis": "Version history",
+    "versieDownload": "Download version {versie}",
+    "versieVerwijder": "Delete version {versie}",
     "uploadDialog": {
       "titel": "Upload document",
       "naam": "Name",

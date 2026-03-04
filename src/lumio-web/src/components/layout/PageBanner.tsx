@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import type { ReactNode } from "react";
 
@@ -56,6 +57,7 @@ export function PageBanner({
   const dismissed = usePreferencesStore((s) => s.dismissedBanners.includes(id));
   const dismissBanner = usePreferencesStore((s) => s.dismissBanner);
   const [exiting, setExiting] = useState(false);
+  const tAria = useTranslations("aria");
 
   const handleDismiss = () => {
     setExiting(true);
@@ -91,7 +93,7 @@ export function PageBanner({
       <button
         type="button"
         onClick={handleDismiss}
-        aria-label="Melding verbergen"
+        aria-label={tAria("meldingVerbergen")}
         className="shrink-0 opacity-60 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
       >
         <X className="h-4 w-4" />

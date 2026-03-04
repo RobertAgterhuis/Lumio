@@ -1,5 +1,6 @@
 {
   "common": {
+    "gaNaarHoofdinhoud": "Skip to main content",
     "zoeken": "Search",
     "vergrendelen": "Lock",
     "hulp": "Help",
@@ -34,6 +35,9 @@
     "handleiding": "User Guide",
     "privacyverklaring": "Privacy Policy",
     "navigatie": "Main navigation",
+    "sidebarVerbergen": "Hide navigation menu",
+    "sidebarTonen": "Show navigation menu",
+    "voltooid": "Completed",
     "groep": {
       "overzicht": "Overview",
       "wensen": "Wishes",

@@ -91,7 +91,7 @@ export function VideoRecorder({
       method: "POST",
       body: fd,
     });
-    if (!res.ok) throw new Error("Preview upload mislukt");
+    if (!res.ok) throw new Error(t("previewUploadMislukt"));
     const json = (await res.json()) as { tempId: string };
     return json.tempId;
   };

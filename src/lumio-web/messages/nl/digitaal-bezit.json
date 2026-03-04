@@ -24,6 +24,7 @@
       "geenAccounts": "Nog geen accounts. Klik op Toevoegen.",
       "geenInCategorie": "Geen accounts in categorie \"{categorie}\".",
       "afsluitInstructies": "Afsluitinstructies — {platform}",
+      "afsluitInstructiesTooltip": "Afsluitinstructies",
       "bekijkInstructies": "Bekijk officiële instructies",
       "verbergen": "Verbergen",
       "ontsluiten": "Ontsluiten"

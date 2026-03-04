@@ -398,7 +398,7 @@ export default function DocumentenPage() {
                               size="sm"
                               className="h-6 w-6 p-0"
                               onClick={() => handleDownload(v.id, v.bestandsNaam)}
-                              title={`Download versie ${v.versie}`}
+                              title={t("versieDownload", { versie: v.versie })}
                             >
                               <Download className="h-3 w-3" />
                             </Button>
@@ -408,7 +408,7 @@ export default function DocumentenPage() {
                                 size="sm"
                                 className="h-6 w-6 p-0"
                                 onClick={() => handleDelete(v.id)}
-                                title={`Verwijder versie ${v.versie}`}
+                                title={t("versieVerwijder", { versie: v.versie })}
                               >
                                 <Trash2 className="h-3 w-3 text-danger" />
                               </Button>

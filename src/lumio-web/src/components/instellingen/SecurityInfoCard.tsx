@@ -186,7 +186,7 @@ export function AboutCard() {
         <p className="mt-2">{t("overLumio.juridisch")}</p>
         {appVersion !== null && (
           <p className="mt-3 text-xs text-muted-foreground/70">
-            Versie {appVersion}
+            {t("overLumio.versie", { versie: appVersion })}
           </p>
         )}
       </CardContent>
