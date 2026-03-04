@@ -89,7 +89,7 @@
     "SP-1-013": 148, "SP-1-014": 149, "SP-1-015": 150, "SP-1-016": 151,
     "SP-1-017": 152
   },
-  "last_updated": "2026-03-05T18:00:00Z",
+  "last_updated": "2026-03-04T12:00:00Z",
   "reevaluation_version": "v3",
   "last_reevaluation": "2026-03-04T11:00:00Z",
   "reevaluation_report_path": "docs/synthesis/reevaluation-report-v3-20260303.md",
@@ -197,13 +197,21 @@
   "sys_risk_002_status": "ACCEPTED_RISK (see DEC-112)",
   "sp_04_005_status": "CANCELLED_SUPERSEDED (see DEC-111)",
   "sp_mkt_01_status": "MERGED_SQUASH — commit d1a8c2f on main",
-  "ui_premium_polish_status": "IN_PROGRESS — 5 rounds (181e9f6) + settings rewrite (3765647) + i18n hardcoded strings (d31cec5) + i18n namespace loading (1b5823a) + theme default light (3d1cdce) — branch feature/UI-premium-polish — unpushed commits: 4",
+  "ui_premium_polish_status": "COMPLETE — squash merged to main via PR. 13 commits total: 5 UI polish rounds, settings rewrite, i18n audit, namespace loading, theme default, session/decisions updates, testament layout restructure, 7-page header cleanup, noodcontacten header cleanup.",
   "ui_premium_polish_commits": [
+    { "hash": "17bb028", "desc": "UI polish round 1 — premium visual polish (cards, buttons, dashboard hero, animations)" },
+    { "hash": "29ba112", "desc": "UI polish round 2 — 21 improvements" },
+    { "hash": "3862c2b", "desc": "UI polish round 3 — 25 improvements" },
+    { "hash": "767123a", "desc": "UI polish round 4 — 25 improvements" },
     { "hash": "181e9f6", "desc": "UI polish round 5 — 62 improvements across 48 files" },
     { "hash": "3765647", "desc": "Reorganize settings page: tab-based layout (384→163 lines)" },
     { "hash": "d31cec5", "desc": "i18n: replace all hardcoded strings with translation keys (29 violations fixed, 16 files)" },
     { "hash": "1b5823a", "desc": "i18n: add missing namespace imports to all 11 domain layouts" },
-    { "hash": "3d1cdce", "desc": "Theme: default to light mode — no OS dark mode fallback" }
+    { "hash": "3d1cdce", "desc": "Theme: default to light mode — no OS dark mode fallback" },
+    { "hash": "e4ca160", "desc": "docs: update session-state + decisions (DEC-115/116/117)" },
+    { "hash": "90cf49b", "desc": "Testament layout restructure — collapsible JuridischeCheck, 3-column entity grid" },
+    { "hash": "b47b5b6", "desc": "Clean header layout across 7 domain pages" },
+    { "hash": "88bf719", "desc": "Clean header layout noodcontacten page" }
   ],
-  "decisions_added_this_session": ["DEC-115", "DEC-116", "DEC-117"]
+  "decisions_added_this_session": ["DEC-115", "DEC-116", "DEC-117", "DEC-118"]
 }
