@@ -19,6 +19,12 @@ interface PageBannerProps {
   show?: boolean;
   variant?: "warning" | "info" | "destructive" | "secure";
   className?: string;
+  /**
+   * When true, renders the banner inline in the normal document flow instead of
+   * via a portal. Use this when combining with DomainStatusBanner in a side-by-side
+   * grid layout.
+   */
+  inline?: boolean;
 }
 
 const variantClasses: Record<string, string> = {
@@ -45,24 +51,30 @@ export function PageBanner({
   show = true,
   variant = "warning",
   className,
+  inline = false,
 }: PageBannerProps) {
   const dismissed = usePreferencesStore((s) => s.dismissedBanners.includes(id));
   const dismissBanner = usePreferencesStore((s) => s.dismissBanner);
   const [portal, setPortal] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    setPortal(document.getElementById("page-banner-portal"));
+    // Portal is only needed in non-inline mode; prop is effectively static after mount
+    if (!inline) setPortal(document.getElementById("page-banner-portal"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!show || dismissed || !portal) return null;
+  if (!show || dismissed) return null;
+  if (!inline && !portal) return null;
 
-  return createPortal(
+  const content = (
     <div
       role="status"
       aria-live="polite"
       aria-atomic="true"
       className={cn(
-        "border-b px-6 py-3 flex items-center justify-between gap-4",
+        inline
+          ? "rounded-lg border p-4 flex items-start justify-between gap-3 h-full"
+          : "border-b px-6 py-3 flex items-center justify-between gap-4",
         variantClasses[variant] ?? variantClasses.warning,
         className
       )}
@@ -76,7 +88,9 @@ export function PageBanner({
       >
         <X className="h-4 w-4" />
       </button>
-    </div>,
-    portal
+    </div>
   );
+
+  if (inline) return content;
+  return createPortal(content, portal!);
 }

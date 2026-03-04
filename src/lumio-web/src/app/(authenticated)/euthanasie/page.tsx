@@ -173,11 +173,12 @@ export default function EuthanasiePage() {
         </Link>
       </div>
 
-      <DomainStatusBanner domein="euthanasie" />
-
-      <PageBanner id="euthanasie-disclaimer" variant="secure">
-        {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
-      </PageBanner>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="euthanasie" />
+        <PageBanner id="euthanasie-disclaimer" variant="secure" inline>
+          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </PageBanner>
+      </div>
 
       {!data ? (
         <Card>

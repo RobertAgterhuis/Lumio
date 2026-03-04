@@ -132,11 +132,12 @@ export default function TestamentPage() {
         </Link>
       </div>
 
-      <DomainStatusBanner domein="testament" />
-
-      <PageBanner id="testament-notaris-disclaimer" variant="secure">
-        {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
-      </PageBanner>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="testament" />
+        <PageBanner id="testament-notaris-disclaimer" variant="secure" inline>
+          {t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </PageBanner>
+      </div>
 
       {testament ? (
         <>

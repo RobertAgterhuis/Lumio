@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { api, ApiError } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { api, ApiError, getApiUrl } from "@/lib/api-client";
+import { useDomainQuery, domainKeys } from "@/hooks";
 import { User, Save, Loader2, Camera, Trash2, AlertTriangle, UserPlus, Heart, CreditCard, Scale } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
@@ -80,6 +81,7 @@ const emptyForm = {
 
 export default function EigenaarPage() {
   const bumpProfileFoto = useAuthStore((s) => s.bumpProfileFoto);
+  const queryClient = useQueryClient();
   const t = useTranslations("eigenaar");
   const te = useTranslations("enums");
   const tf = useTranslations("feedback");
@@ -102,7 +104,6 @@ export default function EigenaarPage() {
 
   // Populate form when data loads
   useEffect(() => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
     if (eigenaarData) {
       setExists(true);
       const loaded = {
@@ -135,7 +136,7 @@ export default function EigenaarPage() {
       // S9-07: snapshot the loaded form so we can detect dirty state
       originalFormRef.current = loaded;
       if (eigenaarData.heeftProfielFoto) {
-        setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+        setFotoUrl(`${getApiUrl("/api/eigenaar/foto")}?t=${Date.now()}`);
       }
     }
   }, [eigenaarData]);
@@ -230,8 +231,8 @@ export default function EigenaarPage() {
       const fd = new FormData();
       fd.append("bestand", file);
       await api.upload("/api/eigenaar/foto", fd);
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-      setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+      setFotoUrl(`${getApiUrl("/api/eigenaar/foto")}?t=${Date.now()}`);
+      queryClient.invalidateQueries({ queryKey: domainKeys.all("eigenaar") });
       bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.uploadMislukt"));
@@ -246,6 +247,7 @@ export default function EigenaarPage() {
     try {
       await api.delete("/api/eigenaar/foto");
       setFotoUrl(null);
+      queryClient.invalidateQueries({ queryKey: domainKeys.all("eigenaar") });
       bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.verwijderenMislukt"));

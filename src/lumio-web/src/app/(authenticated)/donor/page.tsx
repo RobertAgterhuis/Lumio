@@ -67,27 +67,29 @@ export default function DonorPage() {
         </Link>
       </div>
 
-      <DomainStatusBanner domein="donor" />
-
-      <PageBanner id="donor-disclaimer" variant="secure">
-        {t.rich("disclaimer", {
-          strong: (chunks) => <strong>{chunks}</strong>,
-          link: (chunks) => (
-            <a
-              href="https://donorregister.nl"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline font-medium"
-            >
-              {chunks}
-            </a>
-          ),
-        })}
-      </PageBanner>
-
-      <PageBanner id="donor-tip" variant="info">
-        {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
-      </PageBanner>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="donor" />
+        <div className="flex flex-col gap-3">
+          <PageBanner id="donor-disclaimer" variant="secure" inline>
+            {t.rich("disclaimer", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+              link: (chunks) => (
+                <a
+                  href="https://donorregister.nl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline font-medium"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </PageBanner>
+          <PageBanner id="donor-tip" variant="info" inline>
+            {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
+          </PageBanner>
+        </div>
+      </div>
 
       {!data ? (
         <Card>

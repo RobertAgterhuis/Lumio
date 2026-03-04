@@ -256,11 +256,12 @@ export default function DocumentenPage() {
         </Button>
       </div>
 
-      <DomainStatusBanner domein="documenten" />
-
-      <PageBanner id="documenten-letop" variant="info">
-        {t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}
-      </PageBanner>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="documenten" />
+        <PageBanner id="documenten-letop" variant="info" inline>
+          {t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </PageBanner>
+      </div>
 
       {(error || uploadError) && (
         <div className="rounded-lg border border-danger bg-danger-100 p-3">

@@ -97,12 +97,13 @@ export default function DigitaalBezitPage() {
         <SectieNotitie sectie="digitaal-bezit" />
       </div>
 
-      <DomainStatusBanner domein="digitaal-bezit" />
-
-      <div className="rounded-lg border border-success bg-success-100 p-4">
-        <p className="text-sm text-success">
-          <strong>{t("beveiligingsTipLabel")}</strong> {t("beveiligingsTip")}
-        </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="digitaal-bezit" />
+        <div className="rounded-lg border border-success bg-success-100 p-4 flex items-center">
+          <p className="text-sm text-success">
+            <strong>{t("beveiligingsTipLabel")}</strong> {t("beveiligingsTip")}
+          </p>
+        </div>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
