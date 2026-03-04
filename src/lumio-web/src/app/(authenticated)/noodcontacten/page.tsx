@@ -72,6 +72,9 @@ export default function NoodcontactenPage() {
         <p className="text-muted-foreground mt-1">
           {t("beschrijving")}
         </p>
+      </div>
+
+      <div className="flex items-center gap-4">
         <VoorbeeldDialog domein="noodcontacten" />
         <SectieNotitie sectie="noodcontacten" />
       </div>
