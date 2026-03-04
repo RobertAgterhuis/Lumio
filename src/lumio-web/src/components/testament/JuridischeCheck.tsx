@@ -118,7 +118,8 @@ export function JuridischeCheck() {
                 {result.waarschuwingen.map((w, i) => (
                   <div
                     key={i}
-                    className={`rounded-lg border p-4 ${ernstKleur(w.ernst)}`}
+                    className={`rounded-lg border p-4 animate-[fadeSlideIn_300ms_ease-out_both] ${ernstKleur(w.ernst)}`}
+                    style={{ animationDelay: `${i * 80}ms` }}
                   >
                     <div className="flex items-start gap-3">
                       {ernstIcon(w.ernst)}

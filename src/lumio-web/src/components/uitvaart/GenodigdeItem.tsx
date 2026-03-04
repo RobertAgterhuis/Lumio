@@ -16,7 +16,7 @@ export function GenodigdeItem({
   onDelete,
 }: GenodigdeItemProps) {
   return (
-    <div className="flex items-center justify-between rounded-md border p-3">
+    <div className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50">
       <div>
         <p className="font-medium text-sm">{genodigde.naam}</p>
         <div className="flex flex-wrap gap-x-3 text-xs text-muted-foreground">

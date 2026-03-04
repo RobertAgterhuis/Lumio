@@ -118,7 +118,7 @@ export function ProfielSuggesties({ profileIsEmpty }: ProfielSuggestiesProps) {
                   {t("aantalGevonden", { aantal: result.aantalSuggesties })}
                 </p>
                 {result.suggesties.map((s, i) => (
-                  <Alert key={i} variant="info">
+                  <Alert key={i} variant="info" className="animate-[fadeSlideIn_300ms_ease-out_both]" style={{ animationDelay: `${i * 80}ms` }}>
                     <AlertDescription>
                       <div className="flex items-start gap-3">
                         <Link2 className="h-4 w-4 shrink-0 mt-0.5" />

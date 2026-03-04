@@ -4,6 +4,7 @@ import { PageTransition } from "@/components/ui/transitions";
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -266,7 +267,10 @@ export default function VideoboodschappenPage() {
             return (
               <Card
                 key={item.id}
-                className={isDeleting ? "opacity-50 pointer-events-none" : ""}
+                className={cn(
+                  "transition-shadow hover:shadow-md",
+                  isDeleting && "opacity-50 pointer-events-none"
+                )}
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between gap-3">

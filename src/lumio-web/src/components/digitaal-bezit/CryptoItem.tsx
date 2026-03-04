@@ -14,7 +14,7 @@ interface CryptoItemProps {
 export function CryptoItem({ wallet, onEdit, onDelete }: CryptoItemProps) {
   const tEnum = useTranslations("enums");
   return (
-    <div className="flex items-center justify-between rounded-md border p-3">
+    <div className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50">
       <div>
         <p className="font-medium text-sm">{wallet.walletNaam}</p>
         <p className="text-xs text-muted-foreground">

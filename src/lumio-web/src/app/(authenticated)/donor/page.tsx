@@ -156,7 +156,7 @@ export default function DonorPage() {
                   {orgaanKeuzes.map((o) => (
                     <div
                       key={o.id}
-                      className="flex items-center justify-between rounded-md border p-2"
+                      className="flex items-center justify-between rounded-md border p-2 transition-colors hover:bg-muted/50"
                     >
                       <span className="text-sm">{o.orgaan}</span>
                       <Badge variant={o.welDoneren ? "secondary" : "outline"} className={!o.welDoneren ? "text-muted-foreground" : undefined}>

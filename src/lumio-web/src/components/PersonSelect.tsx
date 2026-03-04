@@ -295,7 +295,7 @@ export function PersonSelect({
         <button
           type="button"
           onClick={handleBackToSelect}
-          className="text-xs text-info hover:underline"
+          className="text-xs text-info hover:underline transition-colors"
         >
           {t("kiesUitLijst")}
         </button>

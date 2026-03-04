@@ -292,7 +292,7 @@ export default function DocumentenPage() {
             <div className="space-y-2">
               {documenten.map((doc) => (
                 <div key={doc.id}>
-                  <div className="flex items-center justify-between rounded-md border p-3">
+                  <div className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50">
                     <div className="flex items-center gap-3">
                       <FileText className="h-5 w-5 text-muted-foreground" />
                       <div>

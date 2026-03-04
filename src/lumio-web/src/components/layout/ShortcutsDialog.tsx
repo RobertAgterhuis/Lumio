@@ -29,7 +29,7 @@ export function ShortcutsDialog() {
           {SHORTCUT_LIST.map((s) => (
             <div
               key={s.keys}
-              className="flex items-center justify-between py-1.5 px-1"
+              className="flex items-center justify-between py-1.5 px-1 rounded-md transition-colors hover:bg-muted/50"
             >
               <span className="text-sm text-foreground">
                 {t(s.beschrijvingKey)}

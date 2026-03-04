@@ -242,7 +242,7 @@ export function VideoRecorder({
   if (state === "preview" && previewTempId) {
     const previewSrc = `${getApiBase()}/api/videoboodschappen/preview/${previewTempId}/stream`;
     return (
-      <div className="space-y-3">
+      <div className="space-y-3 animate-[fadeSlideIn_200ms_ease-out_both]">
         {/* Server-streamed playback — same mechanism as confirmed-working post-save player */}
         <video
           key={previewTempId}
@@ -290,7 +290,7 @@ export function VideoRecorder({
               {formatTime(elapsed)}
             </span>
             {remaining <= 30 && (
-              <span className="text-xs text-destructive">
+              <span className="text-xs text-destructive transition-colors duration-300">
                 {t("maxOver", { seconden: remaining })}
               </span>
             )}

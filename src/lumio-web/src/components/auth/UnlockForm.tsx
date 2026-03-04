@@ -78,7 +78,7 @@ export function UnlockForm({ onHeirMode }: { onHeirMode?: () => void }) {
           </div>
 
           {error && (
-            <p className="text-sm text-destructive">{error}</p>
+            <p className="text-sm text-destructive animate-[fadeSlideIn_200ms_ease-out_both]">{error}</p>
           )}
 
           <Button type="submit" className="w-full" disabled={loading || !password}>

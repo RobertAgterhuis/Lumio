@@ -62,7 +62,7 @@ export function AanbevolenStapWidget({ onStartInterview }: { onStartInterview?: 
   const href = DOMEIN_HREF_MAP[aanbevolen.domein] ?? "/dashboard";
 
   return (
-    <Card className="border-primary/30 bg-primary/5">
+    <Card className="border-primary/30 bg-primary/5 animate-[fadeSlideIn_400ms_ease-out_both] transition-shadow hover:shadow-md">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm font-semibold text-primary">

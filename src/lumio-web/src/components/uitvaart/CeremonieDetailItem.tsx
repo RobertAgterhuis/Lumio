@@ -16,7 +16,7 @@ export function CeremonieDetailItem({
   onDelete,
 }: CeremonieDetailItemProps) {
   return (
-    <div className="flex items-center justify-between rounded-md border p-3">
+    <div className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50">
       <div>
         <p className="font-medium text-sm">
           <span className="text-muted-foreground mr-2">{detail.volgorde}.</span>

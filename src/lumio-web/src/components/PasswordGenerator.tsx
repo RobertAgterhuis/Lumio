@@ -94,14 +94,14 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
           {t("titel")}
         </span>
         {expanded ? (
-          <ChevronUp className="h-4 w-4" />
+          <ChevronUp className="h-4 w-4 transition-transform duration-200" />
         ) : (
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="h-4 w-4 transition-transform duration-200" />
         )}
       </button>
 
       {expanded && (
-        <div className="mt-3 space-y-3">
+        <div className="mt-3 space-y-3 animate-[fadeSlideIn_200ms_ease-out_both]">
           {/* Generated password display */}
           {generated && (
             <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export function PasswordGenerator({ onUse }: PasswordGeneratorProps) {
                 className="shrink-0"
               >
                 {copied ? (
-                  <Check className="h-4 w-4 text-success" />
+                  <Check className="h-4 w-4 text-success animate-[fadeSlideIn_150ms_ease-out_both]" />
                 ) : (
                   <Copy className="h-4 w-4" />
                 )}

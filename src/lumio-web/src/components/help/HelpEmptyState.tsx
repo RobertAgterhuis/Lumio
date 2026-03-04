@@ -91,7 +91,7 @@ export function HelpEmptyState({
 
   return (
     <Card className="border-dashed">
-      <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+        <CardContent className="flex flex-col items-center gap-4 py-12 text-center animate-[fadeSlideIn_300ms_ease-out_both]">
         {/* Domain icon */}
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
           <LumioIcon

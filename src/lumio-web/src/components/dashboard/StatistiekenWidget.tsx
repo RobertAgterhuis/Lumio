@@ -172,10 +172,11 @@ export function StatistiekenWidget({ onHasContent }: StatistiekenWidgetProps) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {items.map((item) => (
+        {items.map((item, index) => (
             <div
               key={item.label}
-              className="flex items-center gap-3 rounded-md border p-3"
+              className="flex items-center gap-3 rounded-md border p-3 transition-all hover:bg-muted/50 hover:shadow-sm animate-[fadeSlideIn_300ms_ease-out_both]"
+              style={{ animationDelay: `${index * 60}ms` }}
             >
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-lg ${item.bgColor} shrink-0`}

@@ -70,7 +70,7 @@ export function ErfbelastingCalculator() {
       </Button>
 
       {open && data && (
-        <Card className="mt-4">
+        <Card className="mt-4 animate-[fadeSlideIn_300ms_ease-out_both]">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -115,7 +115,7 @@ export function ErfbelastingCalculator() {
                     </thead>
                     <tbody>
                       {data.resultaten.map((r) => (
-                        <tr key={r.erfgenaamId} className="border-b last:border-0">
+                        <tr key={r.erfgenaamId} className="border-b last:border-0 transition-colors hover:bg-muted/50">
                           <td className="py-2 pr-4 font-medium">{r.naam}</td>
                           <td className="py-2 pr-4 text-muted-foreground text-xs">
                             {r.tariefgroep}

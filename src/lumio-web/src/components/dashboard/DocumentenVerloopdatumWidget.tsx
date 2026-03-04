@@ -83,8 +83,8 @@ export function DocumentenVerloopdatumWidget({ onHasContent }: { onHasContent?: 
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        {verlopen.map((doc) => (
-          <div key={doc.id} className="flex items-center justify-between gap-2">
+        {verlopen.map((doc, index) => (
+          <div key={doc.id} className="flex items-center justify-between gap-2 rounded-md px-2 py-1 -mx-2 transition-colors hover:bg-muted/50 animate-[fadeSlideIn_200ms_ease-out_both]" style={{ animationDelay: `${index * 60}ms` }}>
             <div className="flex items-center gap-2 min-w-0">
               <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
               <span className="text-sm truncate">{doc.naam}</span>

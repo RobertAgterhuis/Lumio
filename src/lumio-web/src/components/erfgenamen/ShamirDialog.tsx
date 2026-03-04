@@ -151,7 +151,7 @@ export function ShamirDialog({
 
       {/* Step 1 — Uitleg */}
       {step === 1 && (
-        <>
+        <div key="step1" className="animate-[fadeSlideIn_200ms_ease-out_both]">
           <div className="space-y-4 py-4">
             <div className="flex items-start gap-3">
               <ShieldCheck className="h-8 w-8 shrink-0 text-primary mt-0.5" aria-hidden="true" />
@@ -181,12 +181,12 @@ export function ShamirDialog({
             </Button>
             <Button onClick={() => setStep(2)}>{t.volgende}</Button>
           </DialogFooter>
-        </>
+        </div>
       )}
 
       {/* Step 2 — Instellingen */}
       {step === 2 && (
-        <>
+        <div key="step2" className="animate-[fadeSlideIn_200ms_ease-out_both]">
           <div className="space-y-4 py-4">
             <h3 className="flex items-center gap-2 font-semibold">
               <Users className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -232,12 +232,12 @@ export function ShamirDialog({
             </Button>
             <Button onClick={() => setStep(3)}>{t.volgende}</Button>
           </DialogFooter>
-        </>
+        </div>
       )}
 
       {/* Step 3 — Beveiliging */}
       {step === 3 && (
-        <>
+        <div key="step3" className="animate-[fadeSlideIn_200ms_ease-out_both]">
           <div className="space-y-4 py-4">
             <h3 className="flex items-center gap-2 font-semibold">
               <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -278,12 +278,12 @@ export function ShamirDialog({
               )}
             </Button>
           </DialogFooter>
-        </>
+        </div>
       )}
 
       {/* Step 4 — Verdelen */}
       {step === 4 && generatedShares && (
-        <>
+        <div key="step4" className="animate-[fadeSlideIn_200ms_ease-out_both]">
           <div className="space-y-4 py-4">
             <Alert variant="success">
               <AlertDescription>
@@ -354,7 +354,7 @@ export function ShamirDialog({
               {t.sluiten}
             </Button>
           </DialogFooter>
-        </>
+        </div>
       )}
     </Dialog>
   );

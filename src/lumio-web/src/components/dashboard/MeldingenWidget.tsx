@@ -86,7 +86,7 @@ export function MeldingenWidget() {
         {!isLoading && !isError && meldingen.length > 0 && (
           <ul className="space-y-2">
             {meldingen.map((m, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm">
+              <li key={i} className="flex items-start gap-2 text-sm rounded-md px-2 py-1 -mx-2 transition-colors hover:bg-muted/50 animate-[fadeSlideIn_200ms_ease-out_both]" style={{ animationDelay: `${i * 50}ms` }}>
                 {m.type === "waarschuwing" ? (
                   <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-warning" />
                 ) : (

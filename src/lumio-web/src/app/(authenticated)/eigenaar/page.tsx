@@ -679,7 +679,7 @@ export default function EigenaarPage() {
         </Alert>
       )}
       {success && (
-        <Alert variant="success">
+        <Alert variant="success" className="animate-[fadeSlideIn_300ms_ease-out_both]">
           <AlertDescription>{success}</AlertDescription>
         </Alert>
       )}

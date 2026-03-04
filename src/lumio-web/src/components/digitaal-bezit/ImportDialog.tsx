@@ -52,7 +52,7 @@ export function ImportDialog({
         </div>
         {importResult && (
           <div
-            className={`rounded-lg border p-3 ${
+            className={`rounded-lg border p-3 animate-[fadeSlideIn_300ms_ease-out_both] ${
               importResult.fouten > 0
                 ? "border-warning bg-warning-100 dark:bg-warning/20"
                 : "border-success bg-success-100 dark:bg-success/20"

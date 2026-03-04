@@ -49,7 +49,7 @@ export function VergelijkingDialog({
               </thead>
               <tbody>
                 {vergelijking?.verschillen.map((v, i) => (
-                  <tr key={i} className="border-t">
+                  <tr key={i} className="border-t transition-colors hover:bg-muted/50">
                     <td className="p-2 font-medium">{v.veld}</td>
                     <td className="p-2 text-danger bg-danger-100 dark:bg-danger/20">{v.waardeVersie1 || "—"}</td>
                     <td className="p-2 text-success bg-success-100 dark:bg-success/20">{v.waardeVersie2 || "—"}</td>

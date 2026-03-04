@@ -52,7 +52,7 @@ export function ActivityLogItem({
   const relative = formatRelativeTime(date);
 
   return (
-    <div className={cn("flex items-start gap-3 py-2", className)}>
+    <div className={cn("flex items-start gap-3 py-2 rounded-md px-2 -mx-2 transition-colors hover:bg-muted/50", className)}>
       <div
         className={cn(
           "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full",

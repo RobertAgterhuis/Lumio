@@ -149,7 +149,7 @@ export default function NoodcontactenPage() {
                 {filteredContacten.map((c) => (
                 <div
                   key={c.id}
-                  className="flex items-center justify-between rounded-md border p-3"
+                  className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50"
                 >
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">

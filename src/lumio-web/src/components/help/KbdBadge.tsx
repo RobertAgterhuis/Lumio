@@ -27,7 +27,7 @@ interface KbdProps {
 
 function Key({ children }: KbdProps) {
   return (
-    <kbd className="help-kbd inline-flex items-center font-mono text-xs px-1.5 py-0.5 rounded border border-border bg-muted shadow-[inset_0_-1px_0_0_hsl(var(--border))]">
+    <kbd className="help-kbd inline-flex items-center font-mono text-xs px-1.5 py-0.5 rounded border border-border bg-muted shadow-[inset_0_-1px_0_0_hsl(var(--border))] transition-transform hover:-translate-y-px">
       {children}
     </kbd>
   );

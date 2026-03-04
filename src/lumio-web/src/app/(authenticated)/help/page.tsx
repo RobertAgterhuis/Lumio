@@ -93,7 +93,7 @@ function HelpPageContent() {
                         setActiveSlug(result.slug);
                         setSearchQuery("");
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left hover:bg-muted"
+                      className="w-full rounded-md px-3 py-2 text-left transition-colors hover:bg-muted"
                     >
                       <span className="text-sm font-medium">
                         {chapter.number}. {t(`chapters.${chapter.titleKey}`)}

@@ -56,7 +56,7 @@ export function HelpCalloutCard({ type, children }: HelpCalloutCardProps) {
 
   return (
     <div
-      className={cn("my-4 flex gap-3 rounded-lg border px-4 py-3 text-sm", classes)}
+      className={cn("my-4 flex gap-3 rounded-lg border px-4 py-3 text-sm animate-[fadeSlideIn_300ms_ease-out_both]", classes)}
       role={type === "danger" || type === "warning" ? "alert" : "note"}
     >
       <Icon className={cn("mt-0.5 h-4 w-4 shrink-0", iconClass)} aria-hidden />
