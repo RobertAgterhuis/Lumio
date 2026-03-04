@@ -41,9 +41,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
+import { cn } from "@/lib/utils";
 import { HelpButton } from "@/components/help/HelpButton";
 import { DossierVolledigBanner } from "@/components/wizard/DossierVolledigBanner";
 import { PageBanner } from "@/components/layout/PageBanner";
+import { FadeIn, SlideIn } from "@/components/ui/transitions";
 
 interface DomeinStatus {
   domein: string;
@@ -299,22 +301,25 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-2">
-          <h1 className="text-3xl font-bold text-primary">
-            {(() => {
-              const uur = new Date().getHours();
-              const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");
-              const naam = (eigenaarData as { voornaam?: string } | null)?.voornaam;
-              return naam ? `${dagdeel}, ${naam}` : t("titel");
-            })()}
-          </h1>
-          <HelpButton />
+      {/* ── Hero Welcome Card ────────────────────────────────────────── */}
+      <FadeIn show={!isInitializing} duration={400}>
+        <div className="rounded-xl border border-primary/15 bg-linear-to-br from-primary-50 via-card to-sage-100/30 p-6 shadow-md ring-1 ring-primary/5">
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-primary">
+              {(() => {
+                const uur = new Date().getHours();
+                const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");
+                const naam = (eigenaarData as { voornaam?: string } | null)?.voornaam;
+                return naam ? `${dagdeel}, ${naam}` : t("titel");
+              })()}
+            </h1>
+            <HelpButton />
+          </div>
+          <p className="text-muted-foreground mt-1">
+            {t("beschrijving")}
+          </p>
         </div>
-        <p className="text-muted-foreground mt-1">
-          {t("beschrijving")}
-        </p>
-      </div>
+      </FadeIn>
 
       {/* Legal notice — shown until permanently dismissed */}
       <PageBanner id="dashboard-juridisch-notice" variant="info">
@@ -325,6 +330,7 @@ export default function DashboardPage() {
       <DossierVolledigBanner />
 
       {/* Individual draggable widgets — 2-column grid, each widget independently reorderable */}
+      <SlideIn show={!isInitializing} from="up" distance={12} duration={500}>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
         <SortableContext items={orderedSectieIds} strategy={rectSortingStrategy}>
           <div className="grid gap-6 md:grid-cols-2 pt-4">
@@ -332,7 +338,7 @@ export default function DashboardPage() {
               if (widgetId === "voortgang") return (
                 <SortableSection key="voortgang" id="voortgang">
                   {compleetheid ? (
-                    <div className="rounded-lg border bg-card p-5 h-full">
+                    <div className="rounded-lg border bg-card p-5 h-full shadow-sm hover:shadow-md transition-shadow duration-200">
                       <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-semibold text-primary">{t("voortgang.titel")}</h2>
                         <div className="flex items-center gap-2">
@@ -342,7 +348,12 @@ export default function DashboardPage() {
                       </div>
                       <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-primary transition-all duration-500"
+                          className={cn(
+                            "h-full rounded-full transition-all duration-700 ease-out",
+                            compleetheid.percentage === 100
+                              ? "bg-linear-to-r from-success to-success/80 shadow-[0_0_8px_rgba(45,107,49,0.4)]"
+                              : "bg-linear-to-r from-primary to-primary-400"
+                          )}
                           style={{ width: `${compleetheid.percentage}%` }}
                         />
                       </div>
@@ -400,9 +411,11 @@ export default function DashboardPage() {
           </div>
         </SortableContext>
       </DndContext>
+      </SlideIn>
 
       {/* Domain cards — independently reorderable within their own grid */}
       {orderedVisibleCards.length > 0 && (
+        <SlideIn show={!isInitializing} from="up" distance={16} duration={600}>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDomainDragEnd}>
           <SortableContext items={orderedVisibleCards.map((c) => c.domein)} strategy={rectSortingStrategy}>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -436,6 +449,7 @@ export default function DashboardPage() {
             </div>
           </SortableContext>
         </DndContext>
+        </SlideIn>
       )}
 
       {showInterview && (

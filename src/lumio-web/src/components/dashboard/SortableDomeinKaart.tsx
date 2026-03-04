@@ -77,15 +77,16 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.4 : 1,
+        opacity: isDragging ? 0.6 : 1,
+        scale: isDragging ? "1.03" : undefined,
         position: "relative",
         zIndex: isDragging ? 10 : undefined,
         cursor: isDragging ? "grabbing" : "grab",
       }}
     >
       <Link href={card.href} draggable={false}>
-        <Card className={`h-full overflow-hidden transition-shadow hover:shadow-md cursor-[inherit] select-none ${
-          isAanbevolen ? "border-primary/60 ring-2 ring-primary/20 shadow-sm" : ""
+        <Card className={`h-full overflow-hidden transition-all duration-200 cursor-[inherit] select-none hover:shadow-lg hover:-translate-y-0.5 ${
+          isAanbevolen ? "border-primary/60 ring-2 ring-primary/30 shadow-md bg-linear-to-b from-primary-50/50 to-card" : ""
         }`}>
 
           {/* ── Coloured header row ────────────────────────────────────── */}

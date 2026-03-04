@@ -52,23 +52,27 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center py-12 px-4 text-center",
+        "flex flex-col items-center justify-center py-12 px-4 text-center rounded-xl bg-linear-to-b from-muted/40 to-transparent",
         className
       )}
       role="status"
       aria-live="polite"
     >
       {lumioIcon ? (
-        <LumioIcon
-          name={lumioIcon}
-          size="xl"
-          className="text-muted-foreground mb-4"
-        />
+        <div className="mb-4 rounded-full bg-primary-50 p-4 ring-1 ring-primary/10">
+          <LumioIcon
+            name={lumioIcon}
+            size="xl"
+            className="text-primary-400"
+          />
+        </div>
       ) : (
-        <Icon
-          className="h-12 w-12 text-muted-foreground mb-4"
-          aria-hidden="true"
-        />
+        <div className="mb-4 rounded-full bg-primary-50 p-4 ring-1 ring-primary/10">
+          <Icon
+            className="h-12 w-12 text-primary-400"
+            aria-hidden="true"
+          />
+        </div>
       )}
       <p className="text-base font-medium text-foreground mb-1">{title}</p>
       {description && (
