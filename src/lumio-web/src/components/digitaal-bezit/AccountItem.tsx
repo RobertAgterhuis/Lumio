@@ -30,7 +30,7 @@ export function AccountItem({
   const tEnum = useTranslations("enums");
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border transition-colors hover:bg-muted/50">
       <div className="flex items-center justify-between p-3">
         <div>
           <p className="font-medium text-sm">{account.platformNaam}</p>
@@ -56,7 +56,7 @@ export function AccountItem({
               variant="ghost"
               size="sm"
               onClick={onToggleInstructie}
-              title="Afsluitinstructies"
+              title={t("accounts.afsluitInstructiesTooltip")}
             >
               <Info className={`h-3 w-3 ${isInstructieOpen ? "text-info" : ""}`} />
             </Button>
@@ -70,7 +70,7 @@ export function AccountItem({
         </div>
       </div>
       {instructie && isInstructieOpen && (
-        <div className="border-t bg-info-100 dark:bg-info/20 px-3 py-2">
+        <div className="border-t bg-info-100 dark:bg-info/20 px-3 py-2 animate-[fadeSlideIn_200ms_ease-out_both]">
           <p className="text-xs font-medium text-info mb-1">
             {t("accounts.afsluitInstructies", { platform: instructie.platform })}
           </p>

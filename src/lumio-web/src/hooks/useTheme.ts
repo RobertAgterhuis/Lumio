@@ -22,10 +22,8 @@ export function useTheme() {
       applyTheme(saved);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setThemeState(saved);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      applyTheme("dark");
-      setThemeState("dark");
     }
+    // No OS fallback — default is always light until the user explicitly chooses dark
   }, []);
 
   const setTheme = (t: Theme) => {

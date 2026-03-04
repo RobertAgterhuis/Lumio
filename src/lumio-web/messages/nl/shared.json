@@ -1,5 +1,6 @@
 {
   "common": {
+    "gaNaarHoofdinhoud": "Ga naar hoofdinhoud",
     "zoeken": "Zoeken",
     "vergrendelen": "Vergrendelen",
     "hulp": "Hulp",
@@ -34,6 +35,9 @@
     "handleiding": "Handleiding",
     "privacyverklaring": "Privacyverklaring",
     "navigatie": "Hoofdnavigatie",
+    "sidebarVerbergen": "Navigatiemenu verbergen",
+    "sidebarTonen": "Navigatiemenu tonen",
+    "voltooid": "Voltooid",
     "groep": {
       "overzicht": "Overzicht",
       "wensen": "Wensen",

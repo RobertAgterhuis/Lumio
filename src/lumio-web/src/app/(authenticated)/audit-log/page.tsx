@@ -146,7 +146,7 @@ export default function AuditLogPage() {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               {/* Date range pill buttons */}
-              <div className="flex overflow-hidden rounded-md border">
+              <div className="flex overflow-hidden rounded-md border shadow-sm">
                 {DATE_FILTER_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}

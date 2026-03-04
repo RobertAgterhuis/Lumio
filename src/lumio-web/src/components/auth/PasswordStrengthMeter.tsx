@@ -76,7 +76,7 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
           {[0, 1, 2, 3].map((i) => (
             <div
               key={i}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
+              className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
                 i < strength.score ? strength.color : "bg-muted"
               }`}
             />

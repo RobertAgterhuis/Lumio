@@ -135,6 +135,7 @@
       "hypotheekDetails": "Mortgage details",
       "hypotheekVorm": "Mortgage type",
       "rentepercentage": "Interest rate (%)",
+      "rentePlaceholder": "e.g. 3.5",
       "maandelijkseRente": "Monthly interest (€)",
       "einddatum": "Mortgage end date",
       "restschuld": "Remaining balance (€)"

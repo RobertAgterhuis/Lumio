@@ -1,4 +1,5 @@
 "use client";
+import { PageTransition } from "@/components/ui/transitions";
 
 import {
   Card,
@@ -188,9 +189,9 @@ export default function TijdlijnPage() {
   });
 
   return (
-    <div className="space-y-8">
+    <PageTransition className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <LumioIcon name="tijdlijn" size="lg" className="text-primary" />
           {t("titel")}
           <HelpButton />
@@ -250,6 +251,6 @@ export default function TijdlijnPage() {
           <p className="text-sm text-muted-foreground">{t.rich("disclaimer", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
         </CardContent>
       </Card>
-    </div>
+    </PageTransition>
   );
 }

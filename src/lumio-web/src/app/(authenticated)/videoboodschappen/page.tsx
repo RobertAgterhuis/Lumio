@@ -1,8 +1,10 @@
 "use client";
+import { PageTransition } from "@/components/ui/transitions";
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -167,12 +169,12 @@ export default function VideoboodschappenPage() {
   // ── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
+    <PageTransition className="mx-auto max-w-3xl space-y-6 p-6">
 
       {/* ── Header ── */}
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold tracking-tight">{t("titel")}</h1>
+          <h1 className="text-2xl font-bold font-display tracking-tight">{t("titel")}</h1>
           <p className="text-muted-foreground text-sm mt-1">{t("subtitel")}</p>
 
           {showStorageBar && (
@@ -265,7 +267,10 @@ export default function VideoboodschappenPage() {
             return (
               <Card
                 key={item.id}
-                className={isDeleting ? "opacity-50 pointer-events-none" : ""}
+                className={cn(
+                  "transition-shadow hover:shadow-md",
+                  isDeleting && "opacity-50 pointer-events-none"
+                )}
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between gap-3">
@@ -415,6 +420,6 @@ export default function VideoboodschappenPage() {
         </DialogFooter>
       </Dialog>
 
-    </div>
+    </PageTransition>
   );
 }

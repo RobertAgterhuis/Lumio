@@ -29,7 +29,7 @@ export function ShortcutsDialog() {
           {SHORTCUT_LIST.map((s) => (
             <div
               key={s.keys}
-              className="flex items-center justify-between py-1.5 px-1"
+              className="flex items-center justify-between py-1.5 px-1 rounded-md transition-colors hover:bg-muted/50"
             >
               <span className="text-sm text-foreground">
                 {t(s.beschrijvingKey)}
@@ -40,7 +40,7 @@ export function ShortcutsDialog() {
                     {i > 0 && (
                       <span className="text-xs text-muted-foreground mx-0.5">+</span>
                     )}
-                    <kbd className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
+                    <kbd className="inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-mono font-medium text-muted-foreground shadow-sm">
                       {key.trim().replace("→ ", "")}
                     </kbd>
                   </span>

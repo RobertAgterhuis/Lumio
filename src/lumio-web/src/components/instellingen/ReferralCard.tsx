@@ -35,10 +35,10 @@ export function ReferralCard() {
         <div className="flex gap-2 flex-wrap">
           <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2">
             {copied ? (
-              <>
+              <span className="flex items-center gap-2 animate-[fadeSlideIn_150ms_ease-out_both]">
                 <Check className="h-4 w-4 text-success" aria-hidden="true" />
                 {t("gekopieerd")}
-              </>
+              </span>
             ) : (
               <>
                 <Copy className="h-4 w-4" aria-hidden="true" />

@@ -42,7 +42,7 @@ function WizardReturnBadgeInner() {
       aria-label={t("terugkeerBadgeAria")}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="fixed bottom-6 right-6 z-40 flex cursor-pointer items-center gap-2 rounded-full border border-primary/30 bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      className="fixed bottom-6 right-6 z-40 flex cursor-pointer items-center gap-2 rounded-full border border-primary/30 bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 animate-[bounceIn_500ms_ease-out_both]"
     >
       <Sparkles className="h-4 w-4" aria-hidden="true" />
       {t("terugkeerBadge")}

@@ -130,7 +130,7 @@ export function OnboardingWizardModal({
             aria-label={t("voortgang")}
           >
             <div
-              className="h-full rounded-full bg-primary transition-all duration-500"
+              className="h-full rounded-full bg-linear-to-r from-primary to-primary-400 transition-all duration-500"
               style={{ width: `${(completedCount / stappen.length) * 100}%` }}
             />
           </div>
@@ -138,14 +138,15 @@ export function OnboardingWizardModal({
 
         {/* Steps */}
         <div className="px-6 py-4 space-y-2">
-          {stappen.map((stap) => {
+          {stappen.map((stap, idx) => {
             const isDone = stapStatus[stap.id] ?? false;
             const Icon = stap.icon;
             return (
               <Card
                 key={stap.id}
+                style={{ animationDelay: `${idx * 50}ms` }}
                 className={cn(
-                  "cursor-pointer transition-colors hover:bg-muted/50",
+                  "cursor-pointer transition-colors hover:bg-muted/50 animate-[fadeSlideIn_300ms_ease-out_both]",
                   isDone && "bg-success-100 border-success"
                 )}
                 onClick={() => !isDone && onNavigate(stap.href)}

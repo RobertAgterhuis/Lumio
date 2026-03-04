@@ -128,13 +128,13 @@ export function Sidebar() {
             sidebarCollapsed ? "justify-center" : "gap-2.5 px-5"
           )}
         >
-          <LumioLogoIcon size={28} />
+          <LumioLogoIcon size={28} className="transition-transform duration-300 hover:scale-105" />
           {!sidebarCollapsed && (
             <>
-              <p className="flex-1 text-xl font-bold text-primary">Lumio</p>
+              <p className="flex-1 text-xl font-bold text-primary transition-opacity duration-300">Lumio</p>
               <button
                 onClick={toggleSidebar}
-                aria-label="Navigatiemenu verbergen"
+                aria-label={t("sidebarVerbergen")}
                 className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <PanelLeftClose aria-hidden="true" className="h-4 w-4" />
@@ -148,7 +148,7 @@ export function Sidebar() {
           {navGroups.map((group, groupIndex) => (
             <div key={group.labelKey} className={cn(groupIndex > 0 && "mt-4")}>
               {!sidebarCollapsed ? (
-                <h2 className="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <h2 className="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-opacity duration-300">
                   {t(group.labelKey)}
                 </h2>
               ) : groupIndex > 0 ? (
@@ -171,10 +171,10 @@ export function Sidebar() {
                             aria-current={isActive ? "page" : undefined}
                             aria-label={label}
                             className={cn(
-                              "flex h-9 w-9 items-center justify-center rounded-md mx-auto transition-colors",
+                              "flex h-9 w-9 items-center justify-center rounded-md mx-auto transition-all duration-200",
                               isActive
-                                ? "bg-sidebar-active text-sidebar-active-foreground"
-                                : "text-sidebar-foreground hover:bg-muted"
+                                ? "bg-sidebar-active text-sidebar-active-foreground shadow-sm"
+                                : "text-sidebar-foreground hover:bg-muted hover:scale-110"
                             )}
                           >
                             {item.lumioIcon ? (
@@ -202,10 +202,10 @@ export function Sidebar() {
                       href={item.href}
                       aria-current={isActive ? "page" : undefined}
                       className={cn(
-                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200",
                         isActive
-                          ? "bg-sidebar-active text-sidebar-active-foreground"
-                          : "text-sidebar-foreground hover:bg-muted"
+                          ? "bg-sidebar-active text-sidebar-active-foreground border-l-3 border-primary-400 shadow-sm"
+                          : "text-sidebar-foreground hover:bg-muted hover:translate-x-0.5 border-l-3 border-transparent"
                       )}
                     >
                       {item.lumioIcon ? (
@@ -215,7 +215,7 @@ export function Sidebar() {
                       ) : null}
                       <span className="flex-1">{label}</span>
                       {isCompleted && (
-                        <CheckCircle2 className="h-4 w-4 text-success" aria-label="Voltooid" />
+                        <CheckCircle2 className="h-4 w-4 text-success" aria-label={t("voltooid")} />
                       )}
                     </Link>
                   );
@@ -239,13 +239,31 @@ export function Sidebar() {
             </div>
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full rounded-full bg-primary transition-all duration-300"
+                className={cn(
+                  "h-full rounded-full transition-all duration-300 bg-linear-to-r from-primary to-primary-400",
+                  compleetheid.percentage >= 100 && "shadow-[0_0_6px_rgba(var(--color-primary-400),0.4)]"
+                )}
                 style={{ width: `${compleetheid.percentage}%` }}
                 role="progressbar"
                 aria-valuenow={compleetheid.percentage}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-label={t("voortgangAria", { percentage: compleetheid.percentage })}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed completeness mini-indicator */}
+        {sidebarCollapsed && compleetheid && (
+          <div className="shrink-0 border-t border-border/50 px-2 py-2">
+            <div
+              className="mx-auto h-1.5 w-8 overflow-hidden rounded-full bg-muted"
+              title={`${compleetheid.percentage}%`}
+            >
+              <div
+                className="h-full rounded-full bg-linear-to-r from-primary to-primary-400 transition-all duration-300"
+                style={{ width: `${compleetheid.percentage}%` }}
               />
             </div>
           </div>
@@ -258,7 +276,7 @@ export function Sidebar() {
               href="https://lumio-legacy.nl/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors"
             >
               <ExternalLink aria-hidden="true" className="h-3 w-3" />
               {t("privacyverklaring")}
@@ -267,22 +285,22 @@ export function Sidebar() {
         )}
 
         {/* Footer toggle */}
-        <div className="shrink-0 border-t border-border p-2">
+        <div className="shrink-0 border-t border-border/50 bg-linear-to-t from-muted/30 to-transparent p-2">
           <button
             onClick={toggleSidebar}
-            aria-label={sidebarCollapsed ? "Navigatiemenu tonen" : "Navigatiemenu verbergen"}
+            aria-label={sidebarCollapsed ? t("sidebarTonen") : t("sidebarVerbergen")}
             className={cn(
-              "flex w-full items-center gap-2 rounded-md py-2 text-sm font-medium hover:bg-muted transition-colors",
+              "flex w-full items-center gap-2 rounded-md py-2 text-sm font-medium hover:bg-muted transition-all duration-200",
               sidebarCollapsed
                 ? "justify-center px-0 text-primary hover:text-primary"
                 : "px-3 text-muted-foreground hover:text-foreground"
             )}
           >
             {sidebarCollapsed ? (
-              <PanelLeftOpen aria-hidden="true" className="h-4 w-4" />
+              <PanelLeftOpen aria-hidden="true" className="h-4 w-4 transition-transform duration-200 hover:scale-110" />
             ) : (
               <>
-                <PanelLeftClose aria-hidden="true" className="h-4 w-4" />
+                <PanelLeftClose aria-hidden="true" className="h-4 w-4 transition-transform duration-200" />
                 <span>Verberg menu</span>
               </>
             )}

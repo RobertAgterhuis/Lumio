@@ -140,7 +140,7 @@ const components: Components = {
     return <tbody>{children}</tbody>;
   },
   tr({ children }) {
-    return <tr className="even:bg-muted/10">{children}</tr>;
+    return <tr className="even:bg-muted/10 transition-colors hover:bg-muted/50">{children}</tr>;
   },
   th({ children }) {
     return (

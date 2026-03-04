@@ -1,29 +1,49 @@
 import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 import { forwardRef, type HTMLAttributes } from "react";
+
+const cardVariants = cva(
+  "rounded-lg border bg-card text-card-foreground transition-shadow duration-200",
+  {
+    variants: {
+      variant: {
+        default: "border-border shadow-sm",
+        elevated:
+          "border-border/60 shadow-md hover:shadow-lg hover:border-primary/20",
+        hero:
+          "border-primary/20 shadow-lg ring-1 ring-primary/10 bg-linear-to-br from-card to-primary-50/40",
+      },
+    },
+    defaultVariants: { variant: "default" },
+  }
+);
+
+export type CardVariant = VariantProps<typeof cardVariants>["variant"];
 
 /**
  * Card container component with rounded borders and shadow.
+ * Supports three elevation variants:
+ *  - `default`: flat card with subtle shadow (dashboard secondary)
+ *  - `elevated`: mid-depth card with hover lift (widgets, forms)
+ *  - `hero`: high-emphasis card with gradient tint + ring (dashboard hero, CTAs)
  *
  * @example
- * <Card>
+ * <Card variant="hero">
  *   <CardHeader>
- *     <CardTitle>Account Settings</CardTitle>
- *     <CardDescription>Manage your account preferences.</CardDescription>
+ *     <CardTitle>Welcome back</CardTitle>
  *   </CardHeader>
- *   <CardContent>
- *     <p>Content goes here</p>
- *   </CardContent>
  * </Card>
  */
-const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn("rounded-lg border border-border bg-card text-card-foreground shadow-sm", className)}
-      {...props}
-    />
-  )
-);
+const Card = forwardRef<
+  HTMLDivElement,
+  HTMLAttributes<HTMLDivElement> & VariantProps<typeof cardVariants>
+>(({ className, variant, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(cardVariants({ variant }), className)}
+    {...props}
+  />
+));
 Card.displayName = "Card";
 
 /** Header section of a Card. Contains title and description. */
@@ -58,4 +78,12 @@ const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 );
 CardContent.displayName = "CardContent";
 
-export { Card, CardHeader, CardTitle, CardDescription, CardContent };
+/** Footer section of a Card – typically used for actions or meta info. */
+const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("flex items-center p-6 pt-0", className)} {...props} />
+  )
+);
+CardFooter.displayName = "CardFooter";
+
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter };

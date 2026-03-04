@@ -119,8 +119,8 @@ export function WizardShell({
           <div
             key={s.id}
             className={cn(
-              "h-1.5 flex-1 rounded-full transition-colors",
-              i <= currentStep ? "bg-primary" : "bg-muted"
+              "h-1.5 flex-1 rounded-full transition-all duration-300",
+              i <= currentStep ? "bg-linear-to-r from-primary to-primary-400" : "bg-muted"
             )}
           />
         ))}
@@ -133,9 +133,9 @@ export function WizardShell({
             key={s.id}
             onClick={() => i < currentStep && setCurrentStep(i)}
             className={cn(
-              "flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition-colors",
+              "flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium transition-all duration-200",
               i === currentStep
-                ? "bg-primary text-primary-foreground"
+                ? "bg-primary text-primary-foreground shadow-sm ring-2 ring-primary/30"
                 : i < currentStep
                 ? "bg-muted text-foreground cursor-pointer hover:bg-muted/80"
                 : "bg-muted/50 text-muted-foreground"
@@ -148,11 +148,13 @@ export function WizardShell({
       </div>
 
       {/* Step content */}
-      <div className="min-h-75">
-        {step.beschrijving && (
-          <p className="text-sm text-muted-foreground mb-4">{step.beschrijving}</p>
-        )}
-        {step.content}
+      <div className="min-h-75" key={step.id}>
+        <div className="animate-in fade-in-50 duration-200">
+          {step.beschrijving && (
+            <p className="text-sm text-muted-foreground mb-4">{step.beschrijving}</p>
+          )}
+          {step.content}
+        </div>
       </div>
 
       {/* Error display */}

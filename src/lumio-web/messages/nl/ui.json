@@ -289,5 +289,13 @@
       "titel": "Geen activiteiten",
       "beschrijving": "Er zijn nog geen activiteiten geregistreerd in uw account."
     }
+  },
+  "aria": {
+    "meldingVerbergen": "Melding verbergen",
+    "uitlegBijVeld": "Uitleg bij dit veld",
+    "toastSluiten": "Melding sluiten",
+    "zoekopdachtWissen": "Zoekopdracht wissen",
+    "kaartVerplaatsen": "Kaart verplaatsen",
+    "toetscombinatie": "Toetscombinatie: {keys}"
   }
 }

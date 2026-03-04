@@ -289,5 +289,13 @@
       "titel": "No activities",
       "beschrijving": "No activities have been recorded in your account yet."
     }
+  },
+  "aria": {
+    "meldingVerbergen": "Dismiss notification",
+    "uitlegBijVeld": "Help for this field",
+    "toastSluiten": "Dismiss",
+    "zoekopdachtWissen": "Clear search",
+    "kaartVerplaatsen": "Move card",
+    "toetscombinatie": "Keyboard shortcut: {keys}"
   }
 }

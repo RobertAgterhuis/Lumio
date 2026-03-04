@@ -22,7 +22,7 @@ export function BezitItem({ bezit, onEdit, onDelete }: BezitItemProps) {
   }
 
   return (
-    <div className="flex items-center justify-between rounded-md border p-3">
+    <div className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50">
       <div className="flex items-center gap-2">
         <Badge variant={bezit.vermogensSoort === 1 ? "secondary" : "outline"} className="text-xs px-1.5 py-0">
           {bezit.vermogensSoort === 1 ? t("bezittingen.gemeenschap") : t("bezittingen.prive")}

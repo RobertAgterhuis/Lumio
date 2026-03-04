@@ -107,7 +107,10 @@ export function BackupStatusWidget({ onHasContent }: { onHasContent?: (v: boolea
         </CardHeader>
         <CardContent>
           {isLoading && (
-            <p className="text-sm text-muted-foreground">{t("laden")}</p>
+            <div className="space-y-2 animate-pulse">
+              <div className="h-4 w-3/4 rounded bg-muted" />
+              <div className="h-3 w-1/2 rounded bg-muted" />
+            </div>
           )}
           {isError && (
             <p className="text-sm text-danger">{t("fout")}</p>

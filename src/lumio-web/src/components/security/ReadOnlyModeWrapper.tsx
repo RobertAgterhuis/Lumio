@@ -44,7 +44,7 @@ export function ReadOnlyModeWrapper({
         </Alert>
       )}
       <div
-        className="pointer-events-none select-none opacity-80"
+        className="pointer-events-none select-none opacity-80 transition-opacity duration-300"
         aria-disabled="true"
         // @ts-expect-error -- inert is a valid HTML attribute but React types lag behind
         inert=""

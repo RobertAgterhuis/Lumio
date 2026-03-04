@@ -43,8 +43,9 @@ export function VoorbeeldDialog({ domein }: VoorbeeldDialogProps) {
           <DialogDescription>{data.beschrijving}</DialogDescription>
         </DialogHeader>
         <div className="max-h-[60vh] overflow-y-auto space-y-5 pr-1">
-          {data.secties.map((sectie) => (
+          {data.secties.map((sectie, idx) => (
             <div key={sectie.titel}>
+              {idx > 0 && <div className="border-t border-border mb-5" />}
               <h4 className="text-sm font-semibold text-primary mb-2">
                 {sectie.titel}
               </h4>
@@ -54,7 +55,7 @@ export function VoorbeeldDialog({ domein }: VoorbeeldDialogProps) {
                     key={veld.label}
                     className="flex gap-3 text-sm"
                   >
-                    <span className="text-muted-foreground shrink-0 min-w-[140px]">
+                    <span className="text-muted-foreground shrink-0 min-w-[140px] font-medium">
                       {veld.label}
                     </span>
                     <span className="text-foreground">{veld.waarde}</span>

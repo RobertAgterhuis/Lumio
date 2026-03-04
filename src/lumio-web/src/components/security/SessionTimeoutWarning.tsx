@@ -51,8 +51,8 @@ export function SessionTimeoutWarning({
       <div className="my-4 flex justify-center">
         <span
           className={cn(
-            "rounded-lg bg-muted px-6 py-3 text-3xl font-mono font-bold tabular-nums text-foreground",
-            secondsLeft <= 30 && "text-danger"
+            "rounded-lg bg-muted px-6 py-3 text-3xl font-mono font-bold tabular-nums transition-colors duration-300",
+            secondsLeft <= 30 ? "text-danger" : "text-foreground"
           )}
           aria-live="polite"
           aria-atomic="true"

@@ -1,5 +1,7 @@
 "use client";
 
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useState, useRef, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -213,14 +215,10 @@ export default function DocumentenPage() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
+  if (loading) return <PageSkeleton />;
 
   return (
+    <PageTransition>
     <div
       className="space-y-6 relative"
       onDragEnter={handleDragEnter}
@@ -243,9 +241,9 @@ export default function DocumentenPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="documenten" size="lg" className="text-primary" />
             {t("titel")}
             <HelpButton />
@@ -253,11 +251,14 @@ export default function DocumentenPage() {
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
-          <SectieNotitie sectie="documenten" />
         </div>
         <Button onClick={() => setUploadOpen(true)}>
           <Upload className="h-4 w-4 mr-2" /> {t("uploaden")}
         </Button>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <SectieNotitie sectie="documenten" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -294,7 +295,7 @@ export default function DocumentenPage() {
             <div className="space-y-2">
               {documenten.map((doc) => (
                 <div key={doc.id}>
-                  <div className="flex items-center justify-between rounded-md border p-3">
+                  <div className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50">
                     <div className="flex items-center gap-3">
                       <FileText className="h-5 w-5 text-muted-foreground" />
                       <div>
@@ -400,7 +401,7 @@ export default function DocumentenPage() {
                               size="sm"
                               className="h-6 w-6 p-0"
                               onClick={() => handleDownload(v.id, v.bestandsNaam)}
-                              title={`Download versie ${v.versie}`}
+                              title={t("versieDownload", { versie: v.versie })}
                             >
                               <Download className="h-3 w-3" />
                             </Button>
@@ -410,7 +411,7 @@ export default function DocumentenPage() {
                                 size="sm"
                                 className="h-6 w-6 p-0"
                                 onClick={() => handleDelete(v.id)}
-                                title={`Verwijder versie ${v.versie}`}
+                                title={t("versieVerwijder", { versie: v.versie })}
                               >
                                 <Trash2 className="h-3 w-3 text-danger" />
                               </Button>
@@ -684,5 +685,6 @@ export default function DocumentenPage() {
       </Dialog>
 
     </div>
+    </PageTransition>
   );
 }

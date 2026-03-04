@@ -39,7 +39,10 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
           aria-label={label}
         >
           <div
-            className="h-full rounded-full bg-primary transition-all duration-300 ease-in-out"
+            className={cn(
+              "h-full rounded-full transition-all duration-300 ease-in-out bg-linear-to-r from-primary to-primary-400",
+              percent >= 100 && "shadow-[0_0_8px_rgba(var(--color-primary-400),0.5)]"
+            )}
             style={{ width: `${percent}%` }}
           />
         </div>

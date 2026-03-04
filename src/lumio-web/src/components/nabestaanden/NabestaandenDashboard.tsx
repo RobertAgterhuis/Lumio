@@ -297,7 +297,7 @@ export function NabestaandenDashboard() {
   return (
     <div className="space-y-6">
       {/* Header — empathisch ontwerp */}
-      <div className="rounded-lg border border-muted bg-gradient-to-br from-muted/50 to-background p-6 dark:from-muted/20">
+      <div className="rounded-lg border border-muted bg-linear-to-br from-muted/50 to-background p-6 dark:from-muted/20">
         <div className="flex items-center gap-2 mb-2">
           <ShieldAlert className="h-5 w-5 text-muted-foreground" />
           <h1 className="text-3xl font-bold">{t("titel")}</h1>

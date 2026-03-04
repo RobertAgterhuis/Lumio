@@ -48,7 +48,7 @@ export function ErfgenaamItem({
   const { relatie, entityType, geenBezittingen, toewijzenKnop, toegewezenBezittingen, bezitToewijzen, pdfDownloaden, deelOverzicht } = translations;
 
   return (
-    <div className="rounded-md border p-3">
+    <div className="rounded-md border p-3 transition-colors hover:bg-muted/50">
       <div className="flex items-center justify-between">
         <div className="flex-1 cursor-pointer" onClick={onToggleExpand}>
           <p className="text-sm font-medium">{displayName(erfgenaam)}</p>
@@ -118,7 +118,7 @@ export function ErfgenaamItem({
         </div>
       </div>
       {isExpanded && (
-        <div className="mt-3 border-t pt-3">
+        <div className="mt-3 border-t pt-3 animate-[fadeSlideIn_200ms_ease-out_both]">
           {toewijzingen.length === 0 ? (
             <p className="text-xs text-muted-foreground italic">
               {geenBezittingen}{" "}

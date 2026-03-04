@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import { FadeIn, ScaleIn } from "@/components/ui/transitions";
 
 export default function AuthenticatedError({
   error,
@@ -20,10 +21,13 @@ export default function AuthenticatedError({
 
   return (
     <div className="flex flex-1 items-center justify-center p-6">
+      <FadeIn show>
       <div className="text-center space-y-4 max-w-md">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-          <AlertTriangle className="h-8 w-8 text-destructive" />
-        </div>
+        <ScaleIn show>
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+            <AlertTriangle className="h-8 w-8 text-destructive" />
+          </div>
+        </ScaleIn>
         <h2 className="text-xl font-semibold">{t("titel")}</h2>
         <p className="text-sm text-muted-foreground">
           {t("beschrijving")}
@@ -38,6 +42,7 @@ export default function AuthenticatedError({
           <Button onClick={reset}>{t("opnieuw")}</Button>
         </div>
       </div>
+      </FadeIn>
     </div>
   );
 }

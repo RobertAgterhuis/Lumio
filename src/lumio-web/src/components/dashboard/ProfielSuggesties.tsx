@@ -57,9 +57,16 @@ export function ProfielSuggesties({ profileIsEmpty }: ProfielSuggestiesProps) {
         </Button>
 
         {isLoading && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            {t("laden")}
+          <div className="space-y-3 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-start gap-3 rounded-lg border p-3">
+                <div className="h-5 w-5 rounded bg-muted shrink-0" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-20 rounded bg-muted" />
+                  <div className="h-4 w-full rounded bg-muted" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -111,7 +118,7 @@ export function ProfielSuggesties({ profileIsEmpty }: ProfielSuggestiesProps) {
                   {t("aantalGevonden", { aantal: result.aantalSuggesties })}
                 </p>
                 {result.suggesties.map((s, i) => (
-                  <Alert key={i} variant="info">
+                  <Alert key={i} variant="info" className="animate-[fadeSlideIn_300ms_ease-out_both]" style={{ animationDelay: `${i * 80}ms` }}>
                     <AlertDescription>
                       <div className="flex items-start gap-3">
                         <Link2 className="h-4 w-4 shrink-0 mt-0.5" />

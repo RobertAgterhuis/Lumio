@@ -15,7 +15,7 @@ export function SnapshotItem({ snapshot, onDelete }: SnapshotItemProps) {
   const locale = useLocale();
 
   return (
-    <li className="flex items-center justify-between text-sm rounded-md border p-2">
+    <li className="flex items-center justify-between text-sm rounded-md border p-2 transition-colors hover:bg-muted/50">
       <div>
         <span className="font-medium">{t("versies.versie", { nummer: snapshot.versie })}</span>
         <span className="text-muted-foreground ml-2">

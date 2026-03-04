@@ -10,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFieldHelp } from "@/hooks/useFieldHelp";
+import { useTranslations } from "next-intl";
 
 interface LabelWithHelpProps extends LabelHTMLAttributes<HTMLLabelElement> {
   /** Domain key used to look up help text, e.g. "eigenaar" */
@@ -36,6 +37,7 @@ export function LabelWithHelp({
   ...props
 }: LabelWithHelpProps) {
   const helpText = useFieldHelp(domain, field);
+  const tAria = useTranslations("aria");
 
   if (!helpText) {
     return <Label {...props}>{children}</Label>;
@@ -50,7 +52,7 @@ export function LabelWithHelp({
             <button
               type="button"
               className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Uitleg bij dit veld"
+              aria-label={tAria("uitlegBijVeld")}
             >
               <HelpCircle className="h-3.5 w-3.5" aria-hidden />
             </button>

@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,13 +73,7 @@ export default function ErfgenamenPage() {
 
   const state = useErfgenamen(hookTranslations);
 
-  if (state.loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
-  }
+  if (state.loading) return <PageSkeleton />;
 
   const itemTranslations = {
     relatie: (key: string) => te(`relatie.${key}`),
@@ -205,17 +202,15 @@ export default function ErfgenamenPage() {
     : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <PageTransition className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="erfgenamen" size="lg" className="text-primary" />
             {t("titel")}
             <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
-          <VoorbeeldDialog domein="erfgenamen" />
-          <SectieNotitie sectie="erfgenamen" />
         </div>
         <div className="flex gap-2">
           {state.erfgenamen.length >= 2 && !isReadOnly && (
@@ -229,6 +224,11 @@ export default function ErfgenamenPage() {
             </Button>
           )}
         </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <VoorbeeldDialog domein="erfgenamen" />
+        <SectieNotitie sectie="erfgenamen" />
       </div>
 
       <DomainStatusBanner domein="erfgenamen" />
@@ -363,6 +363,6 @@ export default function ErfgenamenPage() {
           </Button>
         </DialogFooter>
       </Dialog>
-    </div>
+    </PageTransition>
   );
 }

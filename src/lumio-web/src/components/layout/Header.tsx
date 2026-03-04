@@ -104,7 +104,7 @@ export function Header() {
   return (
     <>
       <header
-        className="flex h-16 items-center justify-between border-b border-border bg-primary px-6 text-primary-foreground"
+        className="flex h-16 items-center justify-between border-b border-border bg-primary px-6 text-primary-foreground shadow-sm"
         style={{ WebkitAppRegion: "drag" } as any}
       >
         {activeProfile ? (
@@ -113,9 +113,9 @@ export function Header() {
               <Image
                 src={fotoUrl}
                 alt={activeProfile.naam}
-                width={24}
-                height={24}
-                className="h-6 w-6 rounded-full object-cover"
+                width={28}
+                height={28}
+                className="h-7 w-7 rounded-full object-cover ring-2 ring-primary-foreground/20 transition-all duration-200 hover:ring-primary-foreground/40 hover:scale-105"
               />
             ) : (
               <UserCircle aria-hidden="true" className="h-4 w-4" />
@@ -139,6 +139,7 @@ export function Header() {
             </kbd>
           </Button>
           <NotificationsDropdown />
+          <div className="h-5 w-px bg-linear-to-b from-transparent via-primary-foreground/25 to-transparent" aria-hidden="true" />
           <Button
             variant="ghost"
             size="icon"
@@ -164,6 +165,7 @@ export function Header() {
               <Moon aria-hidden="true" className="h-4 w-4" />
             )}
           </Button>
+          <div className="h-5 w-px bg-linear-to-b from-transparent via-primary-foreground/25 to-transparent" aria-hidden="true" />
           <Button
             variant="ghost"
             size="sm"

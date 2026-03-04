@@ -38,12 +38,16 @@ export function SecureValueReveal({
     <div className={cn("inline-flex items-center gap-2", className)}>
       <span
         className={cn(
-          "font-mono text-sm",
+          "font-mono text-sm transition-opacity duration-200",
           visible ? "text-foreground" : "text-muted-foreground select-none"
         )}
         aria-live="polite"
       >
-        {visible ? value : maskedText}
+        {visible ? (
+          <span className="animate-[fadeSlideIn_150ms_ease-out_both]">{value}</span>
+        ) : (
+          maskedText
+        )}
       </span>
       <button
         type="button"

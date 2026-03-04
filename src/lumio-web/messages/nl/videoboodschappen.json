@@ -55,7 +55,8 @@
       "maxDuur": "Maximaal {minuten} minuten",
       "maxOver": "Nog {seconden} sec.",
       "nietBeschikbaar": "Opname niet beschikbaar in deze browser.",
-      "httpsVereist": "Camera-opname vereist een beveiligde verbinding (HTTPS)."
+      "httpsVereist": "Camera-opname vereist een beveiligde verbinding (HTTPS).",
+      "previewUploadMislukt": "Preview upload mislukt"
     },
     "aantalGebruikt": "{gebruikt} van {max} videoboodschappen gebruikt",
     "opslagGebruikt": "{gebruikt} van {max} opslagruimte in gebruik",

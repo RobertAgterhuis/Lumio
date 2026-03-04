@@ -99,7 +99,7 @@ export function ProfilesCard({ onDeleteRequest }: ProfilesCardProps) {
           {profiles.map((profile) => (
             <div
               key={profile.id}
-              className="flex items-center justify-between rounded-lg border border-border p-3"
+              className="flex items-center justify-between rounded-lg border border-border p-3 transition-colors hover:bg-muted/50"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <LumioIcon name="profiel" size="xl" className="text-primary/60 shrink-0" />

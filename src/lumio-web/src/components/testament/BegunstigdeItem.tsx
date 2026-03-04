@@ -13,7 +13,7 @@ interface BegunstigdeItemProps {
 
 export function BegunstigdeItem({ begunstigde, onEdit, onDelete }: BegunstigdeItemProps) {
   return (
-    <li className="flex items-center justify-between text-sm rounded-md border p-2">
+    <li className="flex items-center justify-between text-sm rounded-md border p-2 transition-colors hover:bg-muted/50">
       <div>
         <span className="font-medium">{begunstigde.naam}</span>
         <span className="text-muted-foreground ml-2">({begunstigde.relatie})</span>

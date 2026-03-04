@@ -77,15 +77,16 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.4 : 1,
+        opacity: isDragging ? 0.6 : 1,
+        scale: isDragging ? "1.03" : undefined,
         position: "relative",
         zIndex: isDragging ? 10 : undefined,
         cursor: isDragging ? "grabbing" : "grab",
       }}
     >
       <Link href={card.href} draggable={false}>
-        <Card className={`h-full overflow-hidden transition-shadow hover:shadow-md cursor-[inherit] select-none ${
-          isAanbevolen ? "border-primary/60 ring-2 ring-primary/20 shadow-sm" : ""
+        <Card className={`h-full overflow-hidden transition-all duration-200 cursor-[inherit] select-none hover:shadow-lg hover:-translate-y-0.5 ${
+          isAanbevolen ? "border-primary/60 ring-2 ring-primary/30 shadow-md bg-linear-to-b from-primary-50/50 to-card" : ""
         }`}>
 
           {/* ── Coloured header row ────────────────────────────────────── */}
@@ -104,17 +105,17 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
             {/* Right: status badge + hide button */}
             <div className="flex items-center gap-1">
               {cardStatus === "afgerond" ? (
-                <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
+                <Badge variant="soft-success" className="gap-1">
                   <CheckCircle2 className="h-3 w-3" />
                   {t("status.afgerond")}
                 </Badge>
               ) : cardStatus === "reviewNodig" ? (
-                <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
+                <Badge variant="soft-warning" className="gap-1">
                   <AlertTriangle className="h-3 w-3" />
                   {t("status.reviewNodig")}
                 </Badge>
               ) : cardStatus === "bezig" ? (
-                <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
+                <Badge variant="soft-info" className="gap-1">
                   <Clock className="h-3 w-3" />
                   {t("status.bezig")}
                 </Badge>
@@ -159,8 +160,8 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
                     e.stopPropagation();
                     openPanel(chapterSlug);
                   }}
-                  title={`Hoe werkt ${t(`domein.${card.domeinKey}.titel`)}?`}
-                  aria-label={`Hoe werkt ${t(`domein.${card.domeinKey}.titel`)}?`}
+                  title={t("hoeWerkt", { titel: t(`domein.${card.domeinKey}.titel`) })}
+                  aria-label={t("hoeWerkt", { titel: t(`domein.${card.domeinKey}.titel`) })}
                 >
                   <BookOpen className="h-3.5 w-3.5" />
                   {t("helpHint")}

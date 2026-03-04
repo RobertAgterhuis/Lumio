@@ -42,7 +42,7 @@ export function ShamirStatusBanner({
   return (
     <div
       className={cn(
-        "rounded-lg border p-4 space-y-4",
+        "rounded-lg border p-4 space-y-4 animate-[fadeSlideIn_300ms_ease-out_both]",
         allesVerdeeld
           ? "border-success bg-success/5"
           : aantalOntvangen > 0
@@ -85,7 +85,7 @@ export function ShamirStatusBanner({
           <div
             key={e.id}
             className={cn(
-              "flex items-center justify-between rounded-md px-3 py-2 text-sm",
+              "flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted/30",
               e.heeftShareOntvangen
                 ? "bg-success/10"
                 : "bg-muted/60"

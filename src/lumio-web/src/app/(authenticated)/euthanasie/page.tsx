@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -143,18 +146,13 @@ export default function EuthanasiePage() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <PageTransition className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="wilsverklaring" size="lg" className="text-primary" />
             <span className="text-primary">{t("titel")}</span>
             <HelpButton />
@@ -162,8 +160,6 @@ export default function EuthanasiePage() {
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
-          <VoorbeeldDialog domein="euthanasie" />
-          <SectieNotitie sectie="euthanasie" />
         </div>
         <Link href="/euthanasie/wizard">
           <Button>
@@ -171,6 +167,11 @@ export default function EuthanasiePage() {
             {data ? t("bewerken") : t("wizardStarten")}
           </Button>
         </Link>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <VoorbeeldDialog domein="euthanasie" />
+        <SectieNotitie sectie="euthanasie" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -475,6 +476,6 @@ export default function EuthanasiePage() {
         description={t("editDialog.bevestigenBeschrijving")}
         onConfirm={saveEdit}
       />
-    </div>
+    </PageTransition>
   );
 }

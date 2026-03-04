@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,18 +40,13 @@ export default function DonorPage() {
 
   const loading = donorLoading || orgaanLoading;
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <PageTransition className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="donor" size="lg" className="text-primary" />
             {t("titel")}
             <HelpButton />
@@ -56,8 +54,6 @@ export default function DonorPage() {
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
-          <VoorbeeldDialog domein="donor" />
-          <SectieNotitie sectie="donor" />
         </div>
         <Link href="/donor/formulier">
           <Button>
@@ -65,6 +61,11 @@ export default function DonorPage() {
             {data ? t("bewerken") : t("registratieStarten")}
           </Button>
         </Link>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <VoorbeeldDialog domein="donor" />
+        <SectieNotitie sectie="donor" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -158,7 +159,7 @@ export default function DonorPage() {
                   {orgaanKeuzes.map((o) => (
                     <div
                       key={o.id}
-                      className="flex items-center justify-between rounded-md border p-2"
+                      className="flex items-center justify-between rounded-md border p-2 transition-colors hover:bg-muted/50"
                     >
                       <span className="text-sm">{o.orgaan}</span>
                       <Badge variant={o.welDoneren ? "secondary" : "outline"} className={!o.welDoneren ? "text-muted-foreground" : undefined}>
@@ -172,6 +173,6 @@ export default function DonorPage() {
           )}
         </div>
       )}
-    </div>
+    </PageTransition>
   );
 }

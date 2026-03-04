@@ -24,7 +24,7 @@ export function WachtwoordItem({
   const t = useTranslations("digitaalBezit.wachtwoorden");
 
   return (
-    <div className="flex items-center justify-between rounded-md border p-3">
+    <div className="flex items-center justify-between rounded-md border p-3 transition-colors hover:bg-muted/50">
       <div>
         <p className="font-medium text-sm">{wachtwoord.naam}</p>
         {wachtwoord.gebruikersnaam && (

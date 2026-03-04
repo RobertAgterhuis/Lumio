@@ -132,9 +132,9 @@ export function TijdlijnStapRow({
               )}
               {isLinked && (
                 open ? (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200" />
                 ) : (
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform duration-200" />
                 )
               )}
             </div>
@@ -152,7 +152,7 @@ export function TijdlijnStapRow({
 
         {/* Expanded panel — only for linked steps */}
         {isLinked && open && (
-          <CardContent className="pt-0">
+          <CardContent className="pt-0 animate-[fadeSlideIn_200ms_ease-out_both]">
             {isLoading ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
                 <Loader2 className="h-4 w-4 animate-spin" />

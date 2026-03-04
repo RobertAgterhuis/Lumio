@@ -41,9 +41,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
+import { cn } from "@/lib/utils";
 import { HelpButton } from "@/components/help/HelpButton";
 import { DossierVolledigBanner } from "@/components/wizard/DossierVolledigBanner";
 import { PageBanner } from "@/components/layout/PageBanner";
+import { FadeIn, SlideIn } from "@/components/ui/transitions";
 
 interface DomeinStatus {
   domein: string;
@@ -287,11 +289,49 @@ export default function DashboardPage() {
 
   if (isInitializing) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-        <div>
-          <p className="text-lg font-semibold text-primary">{t("laden.titel")}</p>
-          <p className="text-sm text-muted-foreground mt-1">{t("laden.beschrijving")}</p>
+      <div className="space-y-6 animate-pulse">
+        {/* Hero skeleton */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-full bg-muted" />
+            <div className="space-y-2 flex-1">
+              <div className="h-5 w-48 rounded bg-muted" />
+              <div className="h-3 w-72 rounded bg-muted" />
+            </div>
+          </div>
+          <div className="mt-4 h-2 w-full rounded-full bg-muted" />
+        </div>
+        {/* Quick action & tip skeletons */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 rounded-lg border bg-card p-5 space-y-3">
+            <div className="h-4 w-32 rounded bg-muted" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="h-20 rounded-lg bg-muted" />
+              ))}
+            </div>
+          </div>
+          <div className="rounded-lg border bg-card p-5 space-y-3">
+            <div className="h-4 w-28 rounded bg-muted" />
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-4 w-full rounded bg-muted" />
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Domain card skeletons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="rounded-lg border bg-card overflow-hidden">
+              <div className="h-10 bg-muted" />
+              <div className="p-4 space-y-2">
+                <div className="h-4 w-32 rounded bg-muted" />
+                <div className="h-3 w-full rounded bg-muted" />
+                <div className="h-3 w-2/3 rounded bg-muted" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -299,22 +339,25 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-2">
-          <h1 className="text-3xl font-bold text-primary">
-            {(() => {
-              const uur = new Date().getHours();
-              const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");
-              const naam = (eigenaarData as { voornaam?: string } | null)?.voornaam;
-              return naam ? `${dagdeel}, ${naam}` : t("titel");
-            })()}
-          </h1>
-          <HelpButton />
+      {/* ── Hero Welcome Card ────────────────────────────────────────── */}
+      <FadeIn show={!isInitializing} duration={400}>
+        <div className="rounded-xl border border-primary/15 bg-linear-to-br from-primary-50 via-card to-sage-100/30 p-6 shadow-md ring-1 ring-primary/5">
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-bold font-display text-primary">
+              {(() => {
+                const uur = new Date().getHours();
+                const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");
+                const naam = (eigenaarData as { voornaam?: string } | null)?.voornaam;
+                return naam ? `${dagdeel}, ${naam}` : t("titel");
+              })()}
+            </h1>
+            <HelpButton />
+          </div>
+          <p className="text-muted-foreground mt-1">
+            {t("beschrijving")}
+          </p>
         </div>
-        <p className="text-muted-foreground mt-1">
-          {t("beschrijving")}
-        </p>
-      </div>
+      </FadeIn>
 
       {/* Legal notice — shown until permanently dismissed */}
       <PageBanner id="dashboard-juridisch-notice" variant="info">
@@ -325,6 +368,7 @@ export default function DashboardPage() {
       <DossierVolledigBanner />
 
       {/* Individual draggable widgets — 2-column grid, each widget independently reorderable */}
+      <SlideIn show={!isInitializing} from="up" distance={12} duration={500}>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSectionDragEnd}>
         <SortableContext items={orderedSectieIds} strategy={rectSortingStrategy}>
           <div className="grid gap-6 md:grid-cols-2 pt-4">
@@ -332,7 +376,7 @@ export default function DashboardPage() {
               if (widgetId === "voortgang") return (
                 <SortableSection key="voortgang" id="voortgang">
                   {compleetheid ? (
-                    <div className="rounded-lg border bg-card p-5 h-full">
+                    <div className="rounded-lg border bg-card p-5 h-full shadow-sm hover:shadow-md transition-shadow duration-200">
                       <div className="flex items-center justify-between mb-3">
                         <h2 className="text-sm font-semibold text-primary">{t("voortgang.titel")}</h2>
                         <div className="flex items-center gap-2">
@@ -342,7 +386,12 @@ export default function DashboardPage() {
                       </div>
                       <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-primary transition-all duration-500"
+                          className={cn(
+                            "h-full rounded-full transition-all duration-700 ease-out",
+                            compleetheid.percentage === 100
+                              ? "bg-linear-to-r from-success to-success/80 shadow-[0_0_8px_rgba(45,107,49,0.4)]"
+                              : "bg-linear-to-r from-primary to-primary-400"
+                          )}
                           style={{ width: `${compleetheid.percentage}%` }}
                         />
                       </div>
@@ -367,7 +416,7 @@ export default function DashboardPage() {
                 <SortableSection key="granulair" id="granulair">
                   <div className="relative h-full">
                     <div className="absolute top-3 right-3 z-10">
-                      <HideButton section="showVoortgangGranulair" label="Gedetailleerde voortgang" />
+                      <HideButton section="showVoortgangGranulair" label={t("voortgangGranulair.titel")} />
                     </div>
                     <VoortgangGranulair />
                   </div>
@@ -377,7 +426,7 @@ export default function DashboardPage() {
                 <SortableSection key="suggesties" id="suggesties">
                   <div className="relative h-full">
                     <div className="absolute top-3 right-3 z-10">
-                      <HideButton section="showSuggesties" label="Slimme suggesties" />
+                      <HideButton section="showSuggesties" label={t("suggesties.titel")} />
                     </div>
                     <ProfielSuggesties profileIsEmpty={!compleetheid || compleetheid.aantalIngevuld === 0} />
                   </div>
@@ -400,9 +449,11 @@ export default function DashboardPage() {
           </div>
         </SortableContext>
       </DndContext>
+      </SlideIn>
 
       {/* Domain cards — independently reorderable within their own grid */}
       {orderedVisibleCards.length > 0 && (
+        <SlideIn show={!isInitializing} from="up" distance={16} duration={600}>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDomainDragEnd}>
           <SortableContext items={orderedVisibleCards.map((c) => c.domein)} strategy={rectSortingStrategy}>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -436,6 +487,7 @@ export default function DashboardPage() {
             </div>
           </SortableContext>
         </DndContext>
+        </SlideIn>
       )}
 
       {showInterview && (

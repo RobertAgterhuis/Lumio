@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 
 const statusVariants = cva(
-  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold",
+  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-all",
   {
     variants: {
       status: {

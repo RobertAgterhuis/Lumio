@@ -3,6 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   id: string;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function SortableInstellingenCard({ id, children }: Props) {
+  const tAria = useTranslations("aria");
   const {
     attributes,
     listeners,
@@ -40,7 +42,7 @@ export function SortableInstellingenCard({ id, children }: Props) {
           {...listeners}
           className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-background border shadow-sm text-muted-foreground/60 hover:text-muted-foreground cursor-grab active:cursor-grabbing"
           tabIndex={-1}
-          aria-label="Kaart verplaatsen"
+          aria-label={tAria("kaartVerplaatsen")}
         >
           <GripHorizontal className="h-3 w-3" />
         </button>

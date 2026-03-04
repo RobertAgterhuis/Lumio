@@ -301,7 +301,8 @@ const Error = forwardRef<HTMLParagraphElement, FormFieldErrorProps>(
         ref={ref}
         id={errorId}
         role="alert"
-        className={cn("text-sm text-destructive", className)}
+        className={cn("text-sm text-destructive animate-in fade-in-50 duration-200", className)}
+        style={{ animation: "shake 0.4s ease-out" }}
         {...props}
       >
         {message}

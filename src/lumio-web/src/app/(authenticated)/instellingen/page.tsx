@@ -1,5 +1,6 @@
 "use client";
 
+import { PageTransition } from "@/components/ui/transitions";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,30 +11,12 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { api } from "@/lib/api-client";
 import { useDomainQuery } from "@/hooks";
 import { useAuthStore, type Profile } from "@/stores/authStore";
-import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useTranslations } from "next-intl";
 import { Settings } from "lucide-react";
-import {
-  DndContext,
-  DragOverlay,
-  closestCenter,
-  PointerSensor,
-  KeyboardSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  verticalListSortingStrategy,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
 import {
   PasswordChangeCard,
   ProfilesCard,
@@ -46,77 +29,47 @@ import {
   DashboardWeergaveCard,
   TaalkeuzeCard,
   ActualisatieCard,
-  SortableInstellingenCard,
   ReferralCard,
 } from "@/components/instellingen";
 import { HelpButton } from "@/components/help/HelpButton";
 
-const DEFAULT_LINKS = ["autolock", "grote-tekst", "dashboard-weergave", "taalkeuze", "actualisatie"] as const;
-const DEFAULT_RECHTS = ["profielen", "wachtwoord", "backup", "beveiliging", "over", "aanbevelen", "verwijderen"] as const;
-const ALL_CARDS = [...DEFAULT_LINKS, ...DEFAULT_RECHTS] as readonly string[];
-
-function resolveOrder(stored: string[], defaults: readonly string[], exclude: string[] = []): string[] {
-  const base =
-    stored.length > 0
-      ? [
-          ...stored.filter((k) => ALL_CARDS.includes(k)),
-          ...defaults.filter((k) => !stored.includes(k)),
-        ]
-      : [...defaults];
-  return base.filter((k) => !exclude.includes(k));
+/** Resolve initial tab from URL hash (e.g. #backup → beveiliging). */
+function getInitialTab(): string {
+  if (typeof window === "undefined") return "voorkeuren";
+  const hash = window.location.hash.replace("#", "");
+  if (hash === "backup" || hash === "beveiliging") return "beveiliging";
+  if (["voorkeuren", "weergave", "account"].includes(hash)) return hash;
+  return "voorkeuren";
 }
 
 export default function InstellingenPage() {
   const router = useRouter();
   const { lock, setProfiles } = useAuthStore();
-  const {
-    instellingenVolgordeLinks,
-    instellingenVolgordeRechts,
-    setInstellingenVolgordeLinks,
-    setInstellingenVolgordeRechts,
-  } = usePreferencesStore();
   const backupRef = useRef<HTMLDivElement>(null);
-  const isDraggingRef = useRef(false);
-
-  // Local column state — mutated optimistically during drag, persisted on drop
-  // colRechts excludes whatever is already in colLinks to prevent duplicates
-  const [colLinks, setColLinks] = useState<string[]>(() =>
-    resolveOrder(instellingenVolgordeLinks, DEFAULT_LINKS),
-  );
-  const [colRechts, setColRechts] = useState<string[]>(() => {
-    const links = resolveOrder(instellingenVolgordeLinks, DEFAULT_LINKS);
-    return resolveOrder(instellingenVolgordeRechts, DEFAULT_RECHTS, links);
-  });
-  const [activeId, setActiveId] = useState<string | null>(null);
-
-  // Sync store → local when not dragging (e.g. after external reset)
-  useEffect(() => {
-    if (!isDraggingRef.current) {
-      const links = resolveOrder(instellingenVolgordeLinks, DEFAULT_LINKS);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setColLinks(links);
-      setColRechts(resolveOrder(instellingenVolgordeRechts, DEFAULT_RECHTS, links));
-    }
-  }, [instellingenVolgordeLinks, instellingenVolgordeRechts]);
-
-  // Scroll to and focus backup section when navigated via #backup hash
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.location.hash === "#backup" && backupRef.current) {
-      backupRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      backupRef.current.focus();
-    }
-  }, []);
+  const [activeTab, setActiveTab] = useState(getInitialTab);
 
   const t = useTranslations("instellingen");
 
-  // Dialog state
+  // Scroll to backup card when deep-linked via #backup
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash === "#backup" && backupRef.current) {
+      // Small delay to let the tab content render first
+      requestAnimationFrame(() => {
+        backupRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        backupRef.current?.focus();
+      });
+    }
+  }, [activeTab]);
+
+  // ── Dialog state ──────────────────────────────────────────────────────
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDeleteProfileConfirm, setShowDeleteProfileConfirm] = useState<string | null>(null);
   const [pendingRestoreHandler, setPendingRestoreHandler] = useState<(() => void) | null>(null);
   const [pendingDeleteAccountHandler, setPendingDeleteAccountHandler] = useState<(() => void) | null>(null);
 
+  // ── Profiles data ─────────────────────────────────────────────────────
   const { data: profilesData, refetch: refetchProfiles } = useDomainQuery<Profile[]>("profielen");
   useEffect(() => {
     if (profilesData) setProfiles(profilesData);
@@ -147,128 +100,19 @@ export default function InstellingenPage() {
     router.replace("/");
   };
 
-  // ── DnD ──────────────────────────────────────────────────────────────
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
-
-  function findColumn(id: string): "links" | "rechts" | null {
-    if (colLinks.includes(id)) return "links";
-    if (colRechts.includes(id)) return "rechts";
-    return null;
-  }
-
-  function handleDragStart({ active }: DragStartEvent) {
-    isDraggingRef.current = true;
-    setActiveId(active.id as string);
-  }
-
-  function handleDragOver({ active, over }: DragOverEvent) {
-    if (!over || active.id === over.id) return;
-    const aId = active.id as string;
-    const oId = over.id as string;
-    const aCol = findColumn(aId);
-    const oCol = findColumn(oId);
-    if (!aCol || !oCol) return;
-
-    if (aCol === oCol) {
-      // Same-column reorder
-      if (aCol === "links") {
-        const oi = colLinks.indexOf(aId), ni = colLinks.indexOf(oId);
-        if (oi !== ni) setColLinks((c) => arrayMove(c, oi, ni));
-      } else {
-        const oi = colRechts.indexOf(aId), ni = colRechts.indexOf(oId);
-        if (oi !== ni) setColRechts((c) => arrayMove(c, oi, ni));
-      }
-    } else {
-      // Cross-column move: insert before the hovered card
-      if (aCol === "links") {
-        const overIdx = colRechts.indexOf(oId);
-        setColLinks((c) => c.filter((id) => id !== aId));
-        setColRechts((c) => {
-          const without = c.filter((id) => id !== aId);
-          return [...without.slice(0, overIdx), aId, ...without.slice(overIdx)];
-        });
-      } else {
-        const overIdx = colLinks.indexOf(oId);
-        setColRechts((c) => c.filter((id) => id !== aId));
-        setColLinks((c) => {
-          const without = c.filter((id) => id !== aId);
-          return [...without.slice(0, overIdx), aId, ...without.slice(overIdx)];
-        });
-      }
+  // Sync active tab to URL hash for deep-linking / back-button
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", `#${value}`);
     }
-  }
-
-  function handleDragEnd({ over }: DragEndEvent) {
-    isDraggingRef.current = false;
-    setActiveId(null);
-    if (!over) {
-      // Cancelled — revert
-      const links = resolveOrder(instellingenVolgordeLinks, DEFAULT_LINKS);
-      setColLinks(links);
-      setColRechts(resolveOrder(instellingenVolgordeRechts, DEFAULT_RECHTS, links));
-      return;
-    }
-    // Persist final layout
-    setInstellingenVolgordeLinks(colLinks);
-    setInstellingenVolgordeRechts(colRechts);
-  }
-
-  function handleDragCancel() {
-    isDraggingRef.current = false;
-    setActiveId(null);
-    const links = resolveOrder(instellingenVolgordeLinks, DEFAULT_LINKS);
-    setColLinks(links);
-    setColRechts(resolveOrder(instellingenVolgordeRechts, DEFAULT_RECHTS, links));
-  }
-
-  // ── Card renderer ─────────────────────────────────────────────────────
-  function renderCard(cardId: string) {
-    switch (cardId) {
-      case "autolock":         return <AutoLockCard />;
-      case "grote-tekst":      return <GroteTekstCard />;
-      case "dashboard-weergave": return <DashboardWeergaveCard />;
-      case "taalkeuze":        return <TaalkeuzeCard />;
-      case "actualisatie":     return <ActualisatieCard />;
-      case "profielen":
-        return <ProfilesCard onDeleteRequest={(id) => setShowDeleteProfileConfirm(id)} />;
-      case "wachtwoord":       return <PasswordChangeCard />;
-      case "backup":
-        return (
-          <div id="backup" ref={backupRef} tabIndex={-1} className="outline-none">
-            <BackupRestoreCard
-              onRestoreRequest={(handler: () => void) => {
-                setPendingRestoreHandler(() => handler);
-                setShowRestoreConfirm(true);
-              }}
-              onPostRestore={handlePostAction}
-            />
-          </div>
-        );
-      case "beveiliging":      return <SecurityInfoCard />;
-      case "over":             return <AboutCard />;
-      case "aanbevelen":      return <ReferralCard />;
-      case "verwijderen":
-        return (
-          <AccountDeletionCard
-            onDeleteRequest={(handler: () => void) => {
-              setPendingDeleteAccountHandler(() => handler);
-              setShowDeleteConfirm(true);
-            }}
-            onPostDelete={handlePostAction}
-          />
-        );
-      default: return null;
-    }
-  }
+  };
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       {/* Page header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <Settings className="h-8 w-8 text-primary" />
           {t("titel")}
           <HelpButton />
@@ -276,50 +120,78 @@ export default function InstellingenPage() {
         <p className="text-muted-foreground mt-1">{t("ondertitel")}</p>
       </div>
 
-      {/* Single DndContext — cards can move freely between both columns */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-        onDragCancel={handleDragCancel}
-      >
-        <div className="grid gap-6 pt-4 sm:grid-cols-2 items-start">
-          {/* Left column */}
-          <SortableContext items={colLinks} strategy={verticalListSortingStrategy}>
+      {/* Tab navigation */}
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
+        <TabsList className="w-full sm:w-auto">
+          <TabsTrigger value="voorkeuren">{t("tabs.voorkeuren")}</TabsTrigger>
+          <TabsTrigger value="weergave">{t("tabs.weergave")}</TabsTrigger>
+          <TabsTrigger value="beveiliging">{t("tabs.beveiliging")}</TabsTrigger>
+          <TabsTrigger value="account">{t("tabs.account")}</TabsTrigger>
+        </TabsList>
+
+        {/* ── Tab 1: Voorkeuren ──────────────────────────────────────── */}
+        <TabsContent value="voorkeuren" className="pt-4">
+          <div className="grid gap-6 sm:grid-cols-2 items-start">
             <div className="flex flex-col gap-6">
-              {colLinks.map((cardId) => (
-                <SortableInstellingenCard key={cardId} id={cardId}>
-                  {renderCard(cardId)}
-                </SortableInstellingenCard>
-              ))}
+              <AutoLockCard />
+              <TaalkeuzeCard />
             </div>
-          </SortableContext>
-
-          {/* Right column */}
-          <SortableContext items={colRechts} strategy={verticalListSortingStrategy}>
             <div className="flex flex-col gap-6">
-              {colRechts.map((cardId) => (
-                <SortableInstellingenCard key={cardId} id={cardId}>
-                  {renderCard(cardId)}
-                </SortableInstellingenCard>
-              ))}
+              <ActualisatieCard />
             </div>
-          </SortableContext>
-        </div>
+          </div>
+        </TabsContent>
 
-        {/* Ghost card shown while dragging */}
-        <DragOverlay>
-          {activeId ? (
-            <div className="opacity-90 rotate-1 scale-[1.02] shadow-2xl">
-              {renderCard(activeId)}
+        {/* ── Tab 2: Weergave ────────────────────────────────────────── */}
+        <TabsContent value="weergave" className="pt-4">
+          <div className="grid gap-6 sm:grid-cols-2 items-start">
+            <GroteTekstCard />
+            <DashboardWeergaveCard />
+          </div>
+        </TabsContent>
+
+        {/* ── Tab 3: Beveiliging ─────────────────────────────────────── */}
+        <TabsContent value="beveiliging" className="pt-4">
+          <div className="grid gap-6 sm:grid-cols-2 items-start">
+            <PasswordChangeCard />
+            <div className="flex flex-col gap-6">
+              <div id="backup" ref={backupRef} tabIndex={-1} className="outline-none">
+                <BackupRestoreCard
+                  onRestoreRequest={(handler: () => void) => {
+                    setPendingRestoreHandler(() => handler);
+                    setShowRestoreConfirm(true);
+                  }}
+                  onPostRestore={handlePostAction}
+                />
+              </div>
+              <SecurityInfoCard />
             </div>
-          ) : null}
-        </DragOverlay>
-      </DndContext>
+          </div>
+        </TabsContent>
 
-      {/* Restore confirmation dialog */}
+        {/* ── Tab 4: Account ─────────────────────────────────────────── */}
+        <TabsContent value="account" className="pt-4">
+          <div className="grid gap-6 sm:grid-cols-2 items-start">
+            <ProfilesCard onDeleteRequest={(id) => setShowDeleteProfileConfirm(id)} />
+            <div className="flex flex-col gap-6">
+              <ReferralCard />
+              <AboutCard />
+            </div>
+          </div>
+
+          {/* Destructive zone — visually separated */}
+          <hr className="my-8 border-border" />
+          <AccountDeletionCard
+            onDeleteRequest={(handler: () => void) => {
+              setPendingDeleteAccountHandler(() => handler);
+              setShowDeleteConfirm(true);
+            }}
+            onPostDelete={handlePostAction}
+          />
+        </TabsContent>
+      </Tabs>
+
+      {/* ── Confirmation dialogs ────────────────────────────────────── */}
       <Dialog open={showRestoreConfirm} onOpenChange={setShowRestoreConfirm}>
         <DialogHeader>
           <DialogTitle>{t("dialogen.herstel.titel")}</DialogTitle>
@@ -335,7 +207,6 @@ export default function InstellingenPage() {
         </DialogFooter>
       </Dialog>
 
-      {/* Delete account confirmation dialog */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <DialogHeader>
           <DialogTitle className="text-destructive">
@@ -353,7 +224,6 @@ export default function InstellingenPage() {
         </DialogFooter>
       </Dialog>
 
-      {/* Profile delete confirmation dialog */}
       <Dialog
         open={showDeleteProfileConfirm !== null}
         onOpenChange={(open) => !open && setShowDeleteProfileConfirm(null)}
@@ -376,6 +246,6 @@ export default function InstellingenPage() {
           </Button>
         </DialogFooter>
       </Dialog>
-    </div>
+    </PageTransition>
   );
 }

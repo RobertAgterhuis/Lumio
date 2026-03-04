@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
       const t = getErrorTranslations();
       return (
         <div className="flex flex-1 items-center justify-center p-6">
-          <div className="text-center space-y-4 max-w-md">
+          <div className="text-center space-y-4 max-w-md animate-[fadeSlideIn_300ms_ease-out_both]">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
               <AlertTriangle className="h-8 w-8 text-destructive" />
             </div>

@@ -25,6 +25,7 @@
     "verbergen": "Hide",
     "sectieVerplaatsen": "Move section",
     "helpHint": "More info",
+    "hoeWerkt": "How does {titel} work?",
     "voortgang": {
       "titel": "Legacy progress",
       "onderdelen": "{aantalIngevuld} of {totaal} sections completed"

@@ -85,7 +85,27 @@ export function StatistiekenWidget({ onHasContent }: StatistiekenWidgetProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps -- onHasContent changes on each parent render; adding it would cause infinite loop
   }, [stats]);
 
-  if (!stats) return null;
+  if (!stats) {
+    return (
+      <div className="rounded-lg border bg-card p-5 animate-pulse">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="h-4 w-4 rounded bg-muted" />
+          <div className="h-4 w-24 rounded bg-muted" />
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center gap-3 rounded-md border p-3">
+              <div className="h-8 w-8 rounded-lg bg-muted shrink-0" />
+              <div className="space-y-1.5 flex-1">
+                <div className="h-5 w-8 rounded bg-muted" />
+                <div className="h-3 w-16 rounded bg-muted" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   const hasFinancieel =
     stats.financieel.totaalBezittingen > 0 ||
@@ -152,10 +172,11 @@ export function StatistiekenWidget({ onHasContent }: StatistiekenWidgetProps) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {items.map((item) => (
+        {items.map((item, index) => (
             <div
               key={item.label}
-              className="flex items-center gap-3 rounded-md border p-3"
+              className="flex items-center gap-3 rounded-md border p-3 transition-all hover:bg-muted/50 hover:shadow-sm animate-[fadeSlideIn_300ms_ease-out_both]"
+              style={{ animationDelay: `${index * 60}ms` }}
             >
               <div
                 className={`flex h-8 w-8 items-center justify-center rounded-lg ${item.bgColor} shrink-0`}

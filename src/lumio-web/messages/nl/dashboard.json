@@ -25,6 +25,7 @@
     "verbergen": "Verbergen",
     "sectieVerplaatsen": "Sectie verplaatsen",
     "helpHint": "Meer info",
+    "hoeWerkt": "Hoe werkt {titel}?",
     "voortgang": {
       "titel": "Voortgang nalatenschap",
       "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"

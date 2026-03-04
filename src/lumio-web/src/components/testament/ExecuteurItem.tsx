@@ -12,7 +12,7 @@ interface ExecuteurItemProps {
 
 export function ExecuteurItem({ executeur, onEdit, onDelete }: ExecuteurItemProps) {
   return (
-    <li className="flex items-center justify-between text-sm rounded-md border p-2">
+    <li className="flex items-center justify-between text-sm rounded-md border p-2 transition-colors hover:bg-muted/50">
       <div>
         <span className="font-medium">{executeur.naam}</span>
         {executeur.relatie && <span className="text-muted-foreground ml-2">({executeur.relatie})</span>}

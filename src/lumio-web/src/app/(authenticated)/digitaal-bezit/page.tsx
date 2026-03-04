@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { LumioIcon } from "@/components/ui/lumio-icon";
@@ -76,23 +79,20 @@ export default function DigitaalBezitPage() {
     return undefined;
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
-  }
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <LumioIcon name="digitaal-bezit" size="lg" className="text-primary" />
           {t("titel")}
           <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
+      </div>
+
+      <div className="flex items-center gap-4">
         <VoorbeeldDialog domein="digitaal-bezit" />
         <SectieNotitie sectie="digitaal-bezit" />
       </div>
@@ -196,6 +196,6 @@ export default function DigitaalBezitPage() {
         onImport={handleImport}
         fileInputRef={importFileRef}
       />
-    </div>
+    </PageTransition>
   );
 }

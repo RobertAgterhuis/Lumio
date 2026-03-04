@@ -1,7 +1,13 @@
 {
   "instellingen": {
     "titel": "Settings",
-    "ondertitel": "Manage your security settings",
+    "ondertitel": "Manage your preferences, security and account.",
+    "tabs": {
+      "voorkeuren": "Preferences",
+      "weergave": "Appearance",
+      "beveiliging": "Security",
+      "account": "Account"
+    },
     "timeoutOpties": {
       "0": "Disabled",
       "1": "1 minute",
@@ -133,7 +139,8 @@
     "overLumio": {
       "titel": "About Lumio",
       "beschrijving": "Lumio is a tool for recording your digital legacy. All data is stored locally and encrypted.",
-      "juridisch": "A notarial will remains required for legal validity under the Dutch Civil Code (BW Book 4)."
+      "juridisch": "A notarial will remains required for legal validity under the Dutch Civil Code (BW Book 4).",
+      "versie": "Version {versie}"
     },
     "verwijderen": {
       "titel": "Delete all data",

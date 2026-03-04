@@ -2,14 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { AlertTriangle, Info, CheckCircle, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { AlertTriangle, Info, CheckCircle, Loader2, ChevronDown, RefreshCw } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { useTranslations } from "next-intl";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -32,6 +26,7 @@ export function JuridischeCheck() {
   const [result, setResult] = useState<CheckResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   // S5-04: Automatisch controleren bij mounten
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,40 +72,79 @@ export function JuridischeCheck() {
     }
   };
 
+  /* Severity summary badges */
+  const severityBadges = () => {
+    if (!result || result.aantalWaarschuwingen === 0) return null;
+    const counts = { hoog: 0, middel: 0, info: 0 };
+    result.waarschuwingen.forEach((w) => { counts[w.ernst] = (counts[w.ernst] || 0) + 1; });
+    return (
+      <div className="flex items-center gap-1.5">
+        {counts.hoog > 0 && <Badge variant="soft-danger">{counts.hoog} {t("ernstHoog")}</Badge>}
+        {counts.middel > 0 && <Badge variant="soft-warning">{counts.middel} {t("ernstMiddel")}</Badge>}
+        {counts.info > 0 && <Badge variant="soft-info">{counts.info} {t("ernstInfo")}</Badge>}
+      </div>
+    );
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <LumioIcon name="shield-check" size="md" /> {t("titel")}
-        </CardTitle>
-        <CardDescription>
-          {t("beschrijving")}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Button onClick={handleCheck} disabled={loading} variant="outline">
-          {loading ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-          ) : (
-            <LumioIcon name="shield-check" size="sm" className="mr-2" />
-          )}
-          {t("controleUitvoeren")}
+    <div className="rounded-lg border bg-card overflow-hidden">
+      {/* ── Compact summary bar ── */}
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <LumioIcon name="shield-check" size="sm" className="text-primary shrink-0" />
+        <span className="text-sm font-semibold flex-1">{t("titel")}</span>
+
+        {loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+        {error && <Badge variant="soft-danger">{t("controleMislukt")}</Badge>}
+        {result && result.aantalWaarschuwingen === 0 && (
+          <Badge variant="soft-success">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            {t("geenWaarschuwingen")}
+          </Badge>
+        )}
+        {severityBadges()}
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 w-7 p-0 shrink-0"
+          onClick={(e) => { e.stopPropagation(); handleCheck(); }}
+          disabled={loading}
+          aria-label={t("controleUitvoeren")}
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
         </Button>
 
-        {error && (
-          <Alert variant="danger">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+        />
+      </button>
 
-        {result && (
-          <div className="space-y-3">
-            {result.aantalWaarschuwingen === 0 ? (
+      {/* ── Expandable detail panel ── */}
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+      >
+        <div className="overflow-hidden">
+          <div className="px-4 pb-4 pt-2 space-y-3 border-t">
+            <p className="text-sm text-muted-foreground">{t("beschrijving")}</p>
+
+            {error && (
+              <Alert variant="danger">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {result && result.aantalWaarschuwingen === 0 && (
               <Alert variant="success">
                 <AlertTitle>{t("geenWaarschuwingen")}</AlertTitle>
                 <AlertDescription>{t("geenWaarschuwingenTekst")}</AlertDescription>
               </Alert>
-            ) : (
+            )}
+
+            {result && result.aantalWaarschuwingen > 0 && (
               <>
                 <p className="text-sm text-muted-foreground">
                   {t("aantalWaarschuwingen", { aantal: result.aantalWaarschuwingen })}
@@ -118,7 +152,8 @@ export function JuridischeCheck() {
                 {result.waarschuwingen.map((w, i) => (
                   <div
                     key={i}
-                    className={`rounded-lg border p-4 ${ernstKleur(w.ernst)}`}
+                    className={`rounded-lg border p-4 animate-[fadeSlideIn_300ms_ease-out_both] ${ernstKleur(w.ernst)}`}
+                    style={{ animationDelay: `${i * 80}ms` }}
                   >
                     <div className="flex items-start gap-3">
                       {ernstIcon(w.ernst)}
@@ -146,8 +181,8 @@ export function JuridischeCheck() {
               {t("disclaimer")}
             </p>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -167,3 +167,40 @@ export function SkeletonCard({ className }: { className?: string }) {
     </div>
   );
 }
+
+/**
+ * Full-page loading skeleton that mimics a typical domain page layout.
+ * Shows a heading placeholder, description, and card placeholders.
+ *
+ * @example
+ * if (loading) return <PageSkeleton />;
+ */
+export function PageSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn("space-y-6 animate-in fade-in-50 duration-300", className)}>
+      {/* Heading area */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-3">
+          <Skeleton shape="circle" className="h-8 w-8" />
+          <Skeleton className="h-8 w-48" />
+        </div>
+        <Skeleton className="h-4 w-80 max-w-full" />
+      </div>
+
+      {/* Status bar placeholder */}
+      <Skeleton className="h-10 w-full rounded-lg" />
+
+      {/* Content cards */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-lg border bg-card p-5 space-y-3">
+          <Skeleton className="h-5 w-32" />
+          <SkeletonText lines={3} />
+        </div>
+        <div className="rounded-lg border bg-card p-5 space-y-3">
+          <Skeleton className="h-5 w-24" />
+          <SkeletonText lines={3} />
+        </div>
+      </div>
+    </div>
+  );
+}

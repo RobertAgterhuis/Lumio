@@ -47,7 +47,20 @@ export function DocumentenVerloopdatumWidget({ onHasContent }: { onHasContent?: 
     }
   }, [isLoading, verlopen.length, onHasContent]);
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="rounded-lg border bg-card p-5 animate-pulse">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="h-4 w-4 rounded bg-muted" />
+          <div className="h-4 w-36 rounded bg-muted" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-full rounded bg-muted" />
+          <div className="h-3 w-2/3 rounded bg-muted" />
+        </div>
+      </div>
+    );
+  }
   if (verlopen.length === 0) return null;
 
   return (
@@ -70,8 +83,8 @@ export function DocumentenVerloopdatumWidget({ onHasContent }: { onHasContent?: 
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        {verlopen.map((doc) => (
-          <div key={doc.id} className="flex items-center justify-between gap-2">
+        {verlopen.map((doc, index) => (
+          <div key={doc.id} className="flex items-center justify-between gap-2 rounded-md px-2 py-1 -mx-2 transition-colors hover:bg-muted/50 animate-[fadeSlideIn_200ms_ease-out_both]" style={{ animationDelay: `${index * 60}ms` }}>
             <div className="flex items-center gap-2 min-w-0">
               <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
               <span className="text-sm truncate">{doc.naam}</span>
