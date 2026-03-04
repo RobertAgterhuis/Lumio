@@ -109,8 +109,8 @@ export default function TestamentPage() {
 
   return (
     <PageTransition className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* ── Header: title + primary action ── */}
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="testament" size="lg" className="text-primary" />
@@ -118,9 +118,6 @@ export default function TestamentPage() {
             <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
-          <VoorbeeldDialog domein="testament" />
-          <SectieNotitie sectie="testament" />
-          <JuridischeCheck />
         </div>
         <Link href="/testament/wizard">
           <Button>
@@ -133,6 +130,13 @@ export default function TestamentPage() {
         </Link>
       </div>
 
+      {/* ── Utility row: voorbeeld + notitie ── */}
+      <div className="flex items-center gap-4">
+        <VoorbeeldDialog domein="testament" />
+        <SectieNotitie sectie="testament" />
+      </div>
+
+      {/* ── Banners ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <DomainStatusBanner domein="testament" />
         <PageBanner id="testament-notaris-disclaimer" variant="secure" inline>
@@ -140,11 +144,16 @@ export default function TestamentPage() {
         </PageBanner>
       </div>
 
+      {/* ── Juridische controle (collapsible) ── */}
+      <JuridischeCheck />
+
       {testament ? (
         <>
+          {/* ── Legitiemaire portie alert ── */}
           <LegitimairePortieAlert check={legitiemaireCheck} />
 
-          <div className="grid gap-4 md:grid-cols-2">
+          {/* ── 3-column entity grid ── */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {/* Notaris card */}
             <Card className="overflow-hidden">
               <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
@@ -209,37 +218,37 @@ export default function TestamentPage() {
                 )}
               </CardContent>
             </Card>
-          </div>
 
-          {/* Executeurs card */}
-          <Card className="overflow-hidden">
-            <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
-              <UserCheck className="h-5 w-5 text-sage shrink-0" />
-              <div className="flex-1">
-                <h3 className="text-sm font-semibold text-sage leading-tight">{t("executeurs.titel")}</h3>
+            {/* Executeurs card */}
+            <Card className="overflow-hidden">
+              <div className="bg-sage-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+                <UserCheck className="h-5 w-5 text-sage shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-sage leading-tight">{t("executeurs.titel")}</h3>
+                </div>
+                <HelpTooltip tekst={t("executeurs.tooltip")} />
+                <Button size="sm" onClick={() => openExecDialog()}>
+                  <Plus className="h-4 w-4 mr-1" /> {t("executeurs.toevoegen")}
+                </Button>
               </div>
-              <HelpTooltip tekst={t("executeurs.tooltip")} />
-              <Button size="sm" onClick={() => openExecDialog()}>
-                <Plus className="h-4 w-4 mr-1" /> {t("executeurs.toevoegen")}
-              </Button>
-            </div>
-            <CardContent className="pt-5">
-              {executeurs.length === 0 ? (
-                <p className="text-sm text-muted-foreground">{t("executeurs.geenExecuteurs")}</p>
-              ) : (
-                <ul className="space-y-2">
-                  {executeurs.map((e) => (
-                    <ExecuteurItem
-                      key={e.id}
-                      executeur={e}
-                      onEdit={openExecDialog}
-                      onDelete={deleteExec}
-                    />
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
+              <CardContent className="pt-5">
+                {executeurs.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{t("executeurs.geenExecuteurs")}</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {executeurs.map((e) => (
+                      <ExecuteurItem
+                        key={e.id}
+                        executeur={e}
+                        onEdit={openExecDialog}
+                        onDelete={deleteExec}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Versiegeschiedenis card */}
           <Card className="overflow-hidden">
