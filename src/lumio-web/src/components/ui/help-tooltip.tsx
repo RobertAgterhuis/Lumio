@@ -37,12 +37,18 @@ export function HelpTooltip({ tekst, className }: HelpTooltipProps) {
       >
         <Info className="h-4 w-4" aria-hidden="true" />
       </button>
-      {open && (
-        <div className="absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-lg border border-border bg-popover p-3 text-xs text-popover-foreground shadow-lg">
-          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-l border-t border-border bg-popover" />
-          <p className="relative z-10">{tekst}</p>
-        </div>
-      )}
+      <div
+        className={cn(
+          "absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-lg border border-border bg-popover p-3 text-xs text-popover-foreground shadow-lg",
+          "transition-all duration-200 origin-top",
+          open
+            ? "opacity-100 scale-100 translate-y-0"
+            : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
+        )}
+      >
+        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-l border-t border-border bg-popover" />
+        <p className="relative z-10">{tekst}</p>
+      </div>
     </div>
   );
 }

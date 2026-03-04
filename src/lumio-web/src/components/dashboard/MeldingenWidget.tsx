@@ -62,7 +62,17 @@ export function MeldingenWidget() {
       </CardHeader>
       <CardContent>
         {isLoading && (
-          <p className="text-sm text-muted-foreground">{t("laden")}</p>
+          <div className="space-y-3 animate-pulse">
+            {[1, 2].map((i) => (
+              <div key={i} className="flex items-start gap-2">
+                <div className="h-4 w-4 rounded bg-muted shrink-0 mt-0.5" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-16 rounded bg-muted" />
+                  <div className="h-4 w-full rounded bg-muted" />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
         {isError && (
           <p className="text-sm text-danger">{t("fout")}</p>

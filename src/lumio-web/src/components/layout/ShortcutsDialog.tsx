@@ -40,7 +40,7 @@ export function ShortcutsDialog() {
                     {i > 0 && (
                       <span className="text-xs text-muted-foreground mx-0.5">+</span>
                     )}
-                    <kbd className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
+                    <kbd className="inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-mono font-medium text-muted-foreground shadow-sm">
                       {key.trim().replace("→ ", "")}
                     </kbd>
                   </span>

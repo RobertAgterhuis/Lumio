@@ -261,7 +261,7 @@ export function Sidebar() {
               href="https://lumio-legacy.nl/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline transition-colors"
             >
               <ExternalLink aria-hidden="true" className="h-3 w-3" />
               {t("privacyverklaring")}

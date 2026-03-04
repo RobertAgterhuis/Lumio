@@ -29,7 +29,7 @@ export function IdleWarningDialog({
     <Dialog open={open} onOpenChange={() => onDismiss()}>
       <DialogHeader>
         <DialogTitle className="flex items-center gap-2">
-          <Timer className="h-5 w-5 text-warning" />
+          <Timer className="h-5 w-5 text-warning animate-pulse" />
           {t("sessieVerloopt")}
         </DialogTitle>
         <DialogDescription>

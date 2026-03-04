@@ -289,11 +289,49 @@ export default function DashboardPage() {
 
   if (isInitializing) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-        <div>
-          <p className="text-lg font-semibold text-primary">{t("laden.titel")}</p>
-          <p className="text-sm text-muted-foreground mt-1">{t("laden.beschrijving")}</p>
+      <div className="space-y-6 animate-pulse">
+        {/* Hero skeleton */}
+        <div className="rounded-xl border bg-card p-6">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-full bg-muted" />
+            <div className="space-y-2 flex-1">
+              <div className="h-5 w-48 rounded bg-muted" />
+              <div className="h-3 w-72 rounded bg-muted" />
+            </div>
+          </div>
+          <div className="mt-4 h-2 w-full rounded-full bg-muted" />
+        </div>
+        {/* Quick action & tip skeletons */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 rounded-lg border bg-card p-5 space-y-3">
+            <div className="h-4 w-32 rounded bg-muted" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="h-20 rounded-lg bg-muted" />
+              ))}
+            </div>
+          </div>
+          <div className="rounded-lg border bg-card p-5 space-y-3">
+            <div className="h-4 w-28 rounded bg-muted" />
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-4 w-full rounded bg-muted" />
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Domain card skeletons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="rounded-lg border bg-card overflow-hidden">
+              <div className="h-10 bg-muted" />
+              <div className="p-4 space-y-2">
+                <div className="h-4 w-32 rounded bg-muted" />
+                <div className="h-3 w-full rounded bg-muted" />
+                <div className="h-3 w-2/3 rounded bg-muted" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );

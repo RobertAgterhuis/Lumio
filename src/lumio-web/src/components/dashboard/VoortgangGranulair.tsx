@@ -6,6 +6,7 @@ import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface DomeinDetail {
   domein: string;
@@ -61,7 +62,10 @@ export function VoortgangGranulair() {
       {/* Overall bar */}
       <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
         <div
-          className="h-full rounded-full bg-primary transition-all duration-500"
+          className={cn(
+            "h-full rounded-full transition-all duration-700 ease-out bg-linear-to-r from-primary to-primary-400",
+            data.percentage >= 100 && "shadow-[0_0_8px_rgba(var(--color-primary-400),0.5)]"
+          )}
           style={{ width: `${data.percentage}%` }}
         />
       </div>
@@ -71,7 +75,7 @@ export function VoortgangGranulair() {
 
       {/* Per-domain breakdown */}
       {expanded && (
-        <div className="mt-4 space-y-2">
+        <div className="mt-4 space-y-2 animate-[fadeSlideIn_200ms_ease-out_both]">
           {data.domeinen.map((d) => {
             const pct =
               d.totaal > 0
@@ -89,16 +93,15 @@ export function VoortgangGranulair() {
                   </span>
                   <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
                     <div
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{
-                        width: `${pct}%`,
-                        backgroundColor:
-                          pct === 100
-                            ? "var(--color-success)"
-                            : pct > 0
-                              ? "var(--color-accent)"
-                              : "var(--color-muted)",
-                      }}
+                      className={cn(
+                        "h-full rounded-full transition-all duration-500 ease-out",
+                        pct === 100
+                          ? "bg-linear-to-r from-success to-success/80"
+                          : pct > 0
+                            ? "bg-linear-to-r from-primary to-primary-400"
+                            : "bg-muted"
+                      )}
+                      style={{ width: `${pct}%` }}
                     />
                   </div>
                   <span className="text-xs w-16 text-right text-muted-foreground">

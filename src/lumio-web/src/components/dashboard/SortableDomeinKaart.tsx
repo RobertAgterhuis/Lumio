@@ -105,17 +105,17 @@ export function SortableDomeinKaart({ card, cardStatus, isAanbevolen, onHide, on
             {/* Right: status badge + hide button */}
             <div className="flex items-center gap-1">
               {cardStatus === "afgerond" ? (
-                <Badge className="bg-success-100 text-success hover:bg-success-100 gap-1 dark:bg-success/20 dark:text-success">
+                <Badge variant="soft-success" className="gap-1">
                   <CheckCircle2 className="h-3 w-3" />
                   {t("status.afgerond")}
                 </Badge>
               ) : cardStatus === "reviewNodig" ? (
-                <Badge className="bg-warning-100 text-warning hover:bg-warning-100 gap-1 dark:bg-warning/20 dark:text-warning">
+                <Badge variant="soft-warning" className="gap-1">
                   <AlertTriangle className="h-3 w-3" />
                   {t("status.reviewNodig")}
                 </Badge>
               ) : cardStatus === "bezig" ? (
-                <Badge className="bg-info-100 text-info hover:bg-info-100 gap-1 dark:bg-info/20 dark:text-info">
+                <Badge variant="soft-info" className="gap-1">
                   <Clock className="h-3 w-3" />
                   {t("status.bezig")}
                 </Badge>

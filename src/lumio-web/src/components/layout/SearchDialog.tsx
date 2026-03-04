@@ -505,7 +505,7 @@ export function SearchDialog({
                           {items.length}
                         </span>
                       </div>
-                      {items.map((item) => {
+                      {items.map((item, itemIdx) => {
                         const idx = flatIndex++;
                         return (
                           <button
@@ -516,7 +516,8 @@ export function SearchDialog({
                             data-active={idx === activeIndex}
                             onClick={() => handleNavigate(item.link)}
                             onMouseEnter={() => setActiveIndex(idx)}
-                            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                            style={{ animationDelay: `${itemIdx * 30}ms` }}
+                            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors animate-[fadeSlideIn_200ms_ease-out_both] ${
                               idx === activeIndex
                                 ? "bg-primary-100 text-primary-700"
                                 : "text-foreground hover:bg-muted"

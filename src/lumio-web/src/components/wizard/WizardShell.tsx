@@ -119,8 +119,8 @@ export function WizardShell({
           <div
             key={s.id}
             className={cn(
-              "h-1.5 flex-1 rounded-full transition-colors",
-              i <= currentStep ? "bg-primary" : "bg-muted"
+              "h-1.5 flex-1 rounded-full transition-all duration-300",
+              i <= currentStep ? "bg-linear-to-r from-primary to-primary-400" : "bg-muted"
             )}
           />
         ))}

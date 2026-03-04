@@ -266,14 +266,10 @@ export function PersonSelect({
     }
   };
 
-  // Still loading — show a disabled placeholder to avoid layout shift (M5-2)
+  // Still loading — show a shimmer placeholder to avoid layout shift (M5-2)
   if (isLoading) {
     return (
-      <Input
-        value=""
-        disabled
-        placeholder={t("laden")}
-      />
+      <div className="h-9 w-full rounded-md border border-border bg-muted animate-pulse" />
     );
   }
 
