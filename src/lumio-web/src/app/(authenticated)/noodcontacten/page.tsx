@@ -22,6 +22,7 @@ import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { NoodkaartQR } from "@/components/noodcontacten/NoodkaartQR";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { PersonSelect } from "@/components/PersonSelect";
 import { useNoodcontacten, ROLLEN, ROL_KEYS, PROFESSIONELE_ROLLEN, ROL_CATEGORIE, TABS } from "@/components/noodcontacten/useNoodcontacten";
 import type { Noodcontact, TabValue } from "@/components/noodcontacten/useNoodcontacten";
@@ -79,9 +80,9 @@ export default function NoodcontactenPage() {
 
       <DomainStatusBanner domein="noodcontacten" />
 
-      <div className="rounded-lg border border-info bg-info-100 p-4">
-        <p className="text-sm text-info">{t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
-      </div>
+      <PageBanner id="noodcontacten-tip" variant="info">
+        {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
+      </PageBanner>
 
       {/* Gedeelde noodcontacten */}
       <div className="rounded-lg border border-accent bg-accent/10 p-4">

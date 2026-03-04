@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import { api } from "@/lib/api-client";
+import { api, getApiUrl } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTheme } from "@/hooks/useTheme";
 import { useTranslations } from "next-intl";
@@ -19,8 +19,6 @@ const SearchDialog = dynamic(() => import("./SearchDialog").then(m => m.SearchDi
   ssr: false,
   loading: () => null,
 });
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 /** Static map of pathname prefixes → human-readable page titles.
  *  Used for the native OS window title (ALT+TAB / CMD+TAB). */
@@ -73,7 +71,7 @@ export function Header() {
     if (!activeProfile) { setFotoUrl(null); return; } // eslint-disable-line react-hooks/set-state-in-effect
     api.get<{ heeftProfielFoto?: boolean }>("/api/eigenaar")
       .then((data) => {
-        setFotoUrl(data.heeftProfielFoto ? `${API_BASE}/api/eigenaar/foto?t=${Date.now()}` : null);
+        setFotoUrl(data.heeftProfielFoto ? `${getApiUrl("/api/eigenaar/foto")}?t=${Date.now()}` : null);
       })
       .catch((err) => console.error("Failed to load profile:", err));
   }, [activeProfile, profileFotoVersion]);

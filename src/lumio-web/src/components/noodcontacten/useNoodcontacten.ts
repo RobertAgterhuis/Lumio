@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 
 export interface Noodcontact {
@@ -139,6 +139,8 @@ export function useNoodcontacten() {
   const { data: contacten = [], isLoading: loading, refetch } =
     useDomainQuery<Noodcontact[]>("noodcontacten");
 
+  const invalidateStatus = useInvalidateStatusKeys();
+
   const filteredContacten = activeTab === "alle"
     ? contacten
     : contacten.filter((c) => (ROL_CATEGORIE[c.rol] ?? "persoonlijk") === activeTab);
@@ -197,6 +199,7 @@ export function useNoodcontacten() {
       }
       setDialogOpen(false);
       refetch();
+      invalidateStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("opslaanMislukt"));
     } finally {
@@ -209,6 +212,7 @@ export function useNoodcontacten() {
       await api.delete(`/api/noodcontacten/${id}`);
       toast.success(tf("verwijderd"));
       refetch();
+      invalidateStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }

@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import { toast } from "@/stores/toastStore";
 import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import type {
   DigitaalAccount,
   WachtwoordEntry,
@@ -26,11 +26,13 @@ export function useDigitaalBezit(tf: (key: string) => string, t: (key: string) =
   const loading = accountsLoading || wachtwoordenLoading || walletsLoading;
   const [error, setError] = useState<string | null>(null);
 
+  const invalidateStatus = useInvalidateStatusKeys();
   const refetchAll = useCallback(() => {
     refetchAccounts();
     refetchWachtwoorden();
     refetchWallets();
-  }, [refetchAccounts, refetchWachtwoorden, refetchWallets]);
+    invalidateStatus();
+  }, [refetchAccounts, refetchWachtwoorden, refetchWallets, invalidateStatus]);
 
   // Dialog state
   const [dialogType, setDialogType] = useState<DialogType>(null);

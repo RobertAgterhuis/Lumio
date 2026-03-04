@@ -25,10 +25,11 @@ describe("preferencesStore", () => {
       hiddenDomeinKaarten: [],
       domeinKaartenVolgorde: [],
       sectieVolgorde: [],
-      showMeldingen: true,
+      showMeldingen: false,
       showBackup: true,
       showAanbevolen: true,
       showVerloopdatum: true,
+      dismissedBanners: [],
     });
   });
 
@@ -41,7 +42,7 @@ describe("preferencesStore", () => {
     expect(state.hiddenDomeinKaarten).toEqual([]);
     expect(state.domeinKaartenVolgorde).toEqual([]);
     expect(state.sectieVolgorde).toEqual([]);
-    expect(state.showMeldingen).toBe(true);
+    expect(state.showMeldingen).toBe(false);
     expect(state.showBackup).toBe(true);
     expect(state.showAanbevolen).toBe(true);
     expect(state.showVerloopdatum).toBe(true);

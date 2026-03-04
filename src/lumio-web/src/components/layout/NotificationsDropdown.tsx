@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { Bell, AlertTriangle, Info, X } from "lucide-react";
+import { useDomainQuery } from "@/hooks";
 
 interface Melding {
   type: "waarschuwing" | "herinnering";
@@ -22,18 +22,14 @@ interface MeldingenResponse {
 }
 
 export function NotificationsDropdown() {
-  const [meldingen, setMeldingen] = useState<Melding[]>([]);
   const [open, setOpen] = useState(false);
   const [dismissed, setDismissed] = useState<Set<number>>(new Set());
   const dropdownRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("dashboard.meldingen");
 
-  useEffect(() => {
-    api
-      .get<MeldingenResponse>("/api/status/meldingen")
-      .then((data) => setMeldingen(data.meldingen))
-      .catch((err) => console.error("Failed to load notifications:", err));
-  }, []);
+  // React Query — automatically re-fetches when any domain mutation invalidates status/meldingen
+  const { data } = useDomainQuery<MeldingenResponse>("status/meldingen");
+  const meldingen = data?.meldingen ?? [];
 
   // Close on click outside
   useEffect(() => {

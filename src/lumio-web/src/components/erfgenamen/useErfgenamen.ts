@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { api, downloadAndSave } from "@/lib/api-client";
-import { useDomainQuery, domainKeys } from "@/hooks";
+import { useDomainQuery, domainKeys, useInvalidateStatusKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { emptyErfgenaamForm, emptyToewijzingForm } from "./constants";
 import type {
@@ -38,11 +38,13 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
   const loading = erfgenamenLoading || toewijzingenLoading || assetsLoading;
   const [error, setError] = useState<string | null>(null);
 
+  const invalidateStatus = useInvalidateStatusKeys();
   const refetchAll = useCallback(() => {
     refetchErfgenamen();
     refetchToewijzingen();
     refetchAssets();
-  }, [refetchErfgenamen, refetchToewijzingen, refetchAssets]);
+    invalidateStatus();
+  }, [refetchErfgenamen, refetchToewijzingen, refetchAssets, invalidateStatus]);
 
   // Erfgenaam dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -220,6 +222,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
       toast.success(translations.aangemaakt);
       setToewijzingDialogOpen(false);
       refetchToewijzingen();
+      invalidateStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : translations.toewijzingOpslaanMislukt);
     } finally {
@@ -232,6 +235,7 @@ export function useErfgenamen(translations: UseErfgenamenTranslations) {
       await api.delete(`/api/toewijzingen/${id}`);
       toast.success(translations.verwijderd);
       refetchToewijzingen();
+      invalidateStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : translations.toewijzingVerwijderenMislukt);
     }

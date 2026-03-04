@@ -6,6 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/authStore";
 import { useTranslations } from "next-intl";
@@ -17,6 +23,7 @@ export function SetupForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [avgConsent, setAvgConsent] = useState(false);
+  const [avgModalOpen, setAvgModalOpen] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -120,16 +127,55 @@ export function SetupForm() {
             <p className="text-sm text-destructive">{error}</p>
           )}
 
-          {/* AVG art.9 consent — verplicht voor bijzondere categorieën (gezondheid, euthanasie, donorregistratie) */}
-          <div className="rounded-md border border-secure/30 bg-secure-100 p-3">
-            <Checkbox
-              id="avg-consent"
-              checked={avgConsent}
-              onChange={(e) => setAvgConsent(e.target.checked)}
-              label={t("avgConsent")}
-              className="mt-0.5 shrink-0"
-            />
+          {/* AVG art.9 consent */}
+          <div className="rounded-md border border-border bg-muted/40 p-3">
+            <div className="flex items-start space-x-2">
+              <Checkbox
+                id="avg-consent"
+                checked={avgConsent}
+                onChange={(e) => setAvgConsent(e.target.checked)}
+                className="mt-0.5 shrink-0"
+              />
+              <label
+                htmlFor="avg-consent"
+                className="text-sm leading-snug cursor-pointer select-none"
+              >
+                {t("avgConsentLabel")}{" "}
+                <button
+                  type="button"
+                  onClick={() => setAvgModalOpen(true)}
+                  className="font-medium text-primary underline underline-offset-2 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
+                >
+                  {t("avgConsentLink")}
+                </button>
+                {" "}{t("avgConsentLabelVervolg")}
+              </label>
+            </div>
           </div>
+
+          {/* AVG privacy modal */}
+          <Dialog open={avgModalOpen} onOpenChange={setAvgModalOpen}>
+            <DialogHeader>
+              <DialogTitle>{t("avgModalTitel")}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 text-sm text-muted-foreground leading-relaxed overflow-y-auto">
+              <p>{t("avgModalP1")}</p>
+              <p>{t("avgModalP2")}</p>
+              <p>{t("avgModalP3")}</p>
+              <p>{t("avgModalP4")}</p>
+              <p className="text-xs border-t pt-3">{t("avgModalVerantwoordelijke")}</p>
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={() => {
+                  setAvgConsent(true);
+                  setAvgModalOpen(false);
+                }}
+              >
+                {t("avgModalSluiten")}
+              </Button>
+            </DialogFooter>
+          </Dialog>
 
           <Alert variant="warning">
             <AlertDescription>
@@ -140,10 +186,6 @@ export function SetupForm() {
           <Button type="submit" className="w-full" disabled={loading || !avgConsent}>
             {loading ? t("bezig") : t("aanmaken")}
           </Button>
-
-          <p className="text-xs text-muted-foreground text-center">
-            {t("disclaimer")}
-          </p>
         </form>
       </CardContent>
     </Card>

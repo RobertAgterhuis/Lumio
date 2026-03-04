@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import {
   emptyBezitForm,
@@ -45,13 +45,15 @@ export function useBoedel() {
 
   const loading = bezittingenLoading || rekeningenLoading || verzekeringenLoading || schuldenLoading || samenvattingLoading;
 
+  const invalidateStatus = useInvalidateStatusKeys();
   const refetchAll = useCallback(() => {
     refetchBezittingen();
     refetchRekeningen();
     refetchVerzekeringen();
     refetchSchulden();
     refetchSamenvatting();
-  }, [refetchBezittingen, refetchRekeningen, refetchVerzekeringen, refetchSchulden, refetchSamenvatting]);
+    invalidateStatus();
+  }, [refetchBezittingen, refetchRekeningen, refetchVerzekeringen, refetchSchulden, refetchSamenvatting, invalidateStatus]);
 
   const [dialogKind, setDialogKind] = useState<DialogKind>(null);
   const [editId, setEditId] = useState<string | null>(null);

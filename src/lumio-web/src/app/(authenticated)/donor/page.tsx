@@ -11,6 +11,7 @@ import Link from "next/link";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { HelpButton } from "@/components/help/HelpButton";
 
 interface DonorRegistratie {
@@ -66,31 +67,28 @@ export default function DonorPage() {
         </Link>
       </div>
 
-      <DomainStatusBanner domein="donor" />
-
-      <div className="rounded-lg border border-secure bg-secure-100 p-4">
-        <p className="text-sm text-secure">
-          {t.rich("disclaimer", {
-            strong: (chunks) => <strong>{chunks}</strong>,
-            // SP-1-009: donorregister.nl as clickable external link (AC: directe link aanwezig)
-            link: (chunks) => (
-              <a
-                href="https://donorregister.nl"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline font-medium"
-              >
-                {chunks}
-              </a>
-            ),
-          })}
-        </p>
-      </div>
-
-      <div className="rounded-lg border border-info bg-info-100 p-4">
-        <p className="text-sm text-info">
-          {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
-        </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="donor" />
+        <div className="flex flex-col gap-3">
+          <PageBanner id="donor-disclaimer" variant="secure" inline>
+            {t.rich("disclaimer", {
+              strong: (chunks) => <strong>{chunks}</strong>,
+              link: (chunks) => (
+                <a
+                  href="https://donorregister.nl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline font-medium"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </PageBanner>
+          <PageBanner id="donor-tip" variant="info" inline>
+            {t.rich("tip", { strong: (chunks) => <strong>{chunks}</strong> })}
+          </PageBanner>
+        </div>
       </div>
 
       {!data ? (

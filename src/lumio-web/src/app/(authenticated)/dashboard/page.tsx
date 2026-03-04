@@ -43,6 +43,7 @@ import {
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
 import { HelpButton } from "@/components/help/HelpButton";
 import { DossierVolledigBanner } from "@/components/wizard/DossierVolledigBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 
 interface DomeinStatus {
   domein: string;
@@ -164,7 +165,6 @@ export default function DashboardPage() {
     toggleSection, toggleDomeinKaart, setDomeinKaartenVolgorde, setSectieVolgorde,
   } = usePreferencesStore();
   const [showInterview, setShowInterview] = useState(false);
-  const [showJuridisch, setShowJuridisch] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [widgetHasContent, setWidgetHasContent] = useState<Record<string, boolean>>({});
   const reportContent = (id: string) => (v: boolean) => setWidgetHasContent((prev) => ({ ...prev, [id]: v }));
@@ -242,20 +242,6 @@ export default function DashboardPage() {
     setSectieVolgorde(arrayMove(fullOrder, oldIndex, newIndex));
   }
 
-  // Load persistent dismiss state for the legal notice
-  useEffect(() => {
-    const key = `lumio_juridisch_begrepen`;
-    if (!localStorage.getItem(key)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setShowJuridisch(true);
-    }
-  }, []);
-
-  const handleJuridischDismiss = () => {
-    localStorage.setItem(`lumio_juridisch_begrepen`, "1");
-    setShowJuridisch(false);
-  };
-
   // React Query hooks for dashboard data
   // (eigenaarData, compleetheid, actualisatieData already declared above for sectionVisibility)
 
@@ -329,6 +315,11 @@ export default function DashboardPage() {
           {t("beschrijving")}
         </p>
       </div>
+
+      {/* Legal notice — shown until permanently dismissed */}
+      <PageBanner id="dashboard-juridisch-notice" variant="info">
+        <strong>{t("letOp")}</strong> {t("juridisch")}
+      </PageBanner>
 
       {/* SP-UX-03-001: Celebration banner — shows for 5s after first wizard completion */}
       <DossierVolledigBanner />
@@ -459,20 +450,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Legal notice — shown until permanently dismissed */}
-      {showJuridisch && (
-        <div className="rounded-lg border border-info bg-info-100 p-4 dark:bg-info/20 flex items-start justify-between gap-4">
-          <p className="text-sm text-info">
-            <strong>{t("letOp")}</strong> {t("juridisch")}
-          </p>
-          <button
-            onClick={handleJuridischDismiss}
-            className="shrink-0 text-xs text-info font-semibold underline underline-offset-2 hover:no-underline whitespace-nowrap"
-          >
-            {t("juridischBegrepen")}
-          </button>
-        </div>
-      )}
+
     </div>
   );
 }

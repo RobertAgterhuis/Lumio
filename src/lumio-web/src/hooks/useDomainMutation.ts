@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { api, ApiError } from "@/lib/api-client";
 import { toast } from "@/stores/toastStore";
 import { domainKeys } from "./useDomainQuery";
@@ -192,4 +193,27 @@ export function useDomainMutations<TData, TVariables>(
     remove,
     isLoading: create.isPending || update.isPending || remove.isPending,
   };
+}
+
+/**
+ * Returns a stable callback that invalidates all dashboard status queries
+ * (status/meldingen, status/compleetheid, status/actualisatie).
+ *
+ * Use this in any hook or page that calls the API directly (not via
+ * useDomainCreate / useDomainUpdate / useDomainDelete) so the notification
+ * bell and dashboard status cards stay in sync after every mutation.
+ *
+ * @example
+ * ```tsx
+ * const invalidateStatus = useInvalidateStatusKeys();
+ * // after a successful api.post / api.put / api.delete:
+ * await api.post("/api/some-endpoint", data);
+ * invalidateStatus();
+ * ```
+ */
+export function useInvalidateStatusKeys() {
+  const queryClient = useQueryClient();
+  return useCallback(() => {
+    invalidateStatusKeys(queryClient);
+  }, [queryClient]);
 }

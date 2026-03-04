@@ -1,7 +1,7 @@
 {
   "auth": {
     "laden": "Lumio laden...",
-    "tagline": "Uw digitale nalatenschap, veilig bewaard",
+    "tagline": "Alles geregeld voor uw naasten — offline en privé",
     "erfgenaamLink": "Ik ben een erfgenaam (ontgrendelen met noodcodes)",
     "wachtwoordLink": "Ontgrendelen met wachtwoord",
     "anderProfiel": "← Ander profiel kiezen",
@@ -1340,7 +1340,8 @@
       "backup": "Back-up status",
       "aanbevolen": "Aanbevolen volgende stap",
       "verloopdatum": "Verloopdatum documenten",
-      "allesHerstellen": "Alles weer tonen"
+      "allesHerstellen": "Alles weer tonen",
+      "meldingenHerstellen": "Verborgen meldingen herstellen"
     },
     "taal": {
       "titel": "Taal",

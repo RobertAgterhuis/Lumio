@@ -82,13 +82,14 @@ export default function BoedelPage() {
         <SectieNotitie sectie="boedel" />
       </div>
 
-      <DomainStatusBanner domein="boedel" />
-
-      {/* Tip */}
-      <div className="rounded-lg border border-warning bg-warning-100 dark:bg-warning/20 p-4">
-        <p className="text-sm text-warning">
-          <strong>{t("tipLabel")}</strong> {t("tip")}
-        </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="boedel" />
+        {/* Tip */}
+        <div className="rounded-lg border border-warning bg-warning-100 dark:bg-warning/20 p-4 flex items-center">
+          <p className="text-sm text-warning">
+            <strong>{t("tipLabel")}</strong> {t("tip")}
+          </p>
+        </div>
       </div>
 
       {/* Samenvatting */}

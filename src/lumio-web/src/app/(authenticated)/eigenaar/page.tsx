@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { api, ApiError } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { api, ApiError, getApiUrl } from "@/lib/api-client";
+import { useDomainQuery, domainKeys, useInvalidateStatusKeys } from "@/hooks";
 import { User, Save, Loader2, Camera, Trash2, AlertTriangle, UserPlus, Heart, CreditCard, Scale } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { HelpButton } from "@/components/help/HelpButton";
 import { WerkgeverCard } from "@/components/werkgever/WerkgeverCard";
+import { PageBanner } from "@/components/layout/PageBanner";
 
 interface Eigenaar {
   id: string;
@@ -79,6 +81,7 @@ const emptyForm = {
 
 export default function EigenaarPage() {
   const bumpProfileFoto = useAuthStore((s) => s.bumpProfileFoto);
+  const queryClient = useQueryClient();
   const t = useTranslations("eigenaar");
   const te = useTranslations("enums");
   const tf = useTranslations("feedback");
@@ -98,10 +101,10 @@ export default function EigenaarPage() {
 
   // React Query for loading eigenaar data
   const { data: eigenaarData, isLoading: loading } = useDomainQuery<Eigenaar | null>("eigenaar");
+  const invalidateStatus = useInvalidateStatusKeys();
 
   // Populate form when data loads
   useEffect(() => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
     if (eigenaarData) {
       setExists(true);
       const loaded = {
@@ -134,7 +137,7 @@ export default function EigenaarPage() {
       // S9-07: snapshot the loaded form so we can detect dirty state
       originalFormRef.current = loaded;
       if (eigenaarData.heeftProfielFoto) {
-        setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+        setFotoUrl(`${getApiUrl("/api/eigenaar/foto")}?t=${Date.now()}`);
       }
     }
   }, [eigenaarData]);
@@ -179,6 +182,7 @@ export default function EigenaarPage() {
         await api.post("/api/eigenaar", payload);
         setExists(true);
       }
+      invalidateStatus();
       setSuccess(t("profielOpgeslagen"));
       toast.success(tf("opgeslagen"));
       // S9-07: reset dirty state
@@ -212,6 +216,7 @@ export default function EigenaarPage() {
         postcode: form.notarisPostcode || null,
         woonplaats: form.notarisPlaats || null,
       });
+      invalidateStatus();
       toast.success(t("notaris.noodcontactToegevoegd"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("notaris.noodcontactToevoegenMislukt"));
@@ -229,8 +234,8 @@ export default function EigenaarPage() {
       const fd = new FormData();
       fd.append("bestand", file);
       await api.upload("/api/eigenaar/foto", fd);
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
-      setFotoUrl(`${API_BASE}/api/eigenaar/foto?t=${Date.now()}`);
+      setFotoUrl(`${getApiUrl("/api/eigenaar/foto")}?t=${Date.now()}`);
+      queryClient.invalidateQueries({ queryKey: domainKeys.all("eigenaar") });
       bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.uploadMislukt"));
@@ -245,6 +250,7 @@ export default function EigenaarPage() {
     try {
       await api.delete("/api/eigenaar/foto");
       setFotoUrl(null);
+      queryClient.invalidateQueries({ queryKey: domainKeys.all("eigenaar") });
       bumpProfileFoto();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("foto.verwijderenMislukt"));
@@ -265,6 +271,9 @@ export default function EigenaarPage() {
 
   return (
     <div className="space-y-6">
+      <PageBanner id="eigenaar-profiel-aanmaken" show={!exists && !loading}>
+        <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
+      </PageBanner>
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <User className="h-8 w-8 text-primary" />
@@ -278,14 +287,6 @@ export default function EigenaarPage() {
       </div>
 
       <DomainStatusBanner domein="eigenaar" />
-
-      {!exists && (
-        <div className="rounded-lg border border-warning bg-warning-100 p-4">
-          <p className="text-sm text-warning">
-            <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
-          </p>
-        </div>
-      )}
 
       {exists && (
         <Card className="overflow-hidden">

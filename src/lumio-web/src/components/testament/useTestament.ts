@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import { useTranslations } from "next-intl";
 import {
@@ -56,6 +56,8 @@ export function useTestament() {
   const { data: snapshots = [], isLoading: snapsLoading, refetch: refetchSnapshots } = useDomainQuery<TestamentSnapshot[]>("testament/snapshots");
 
   const loading = execLoading || snapsLoading;
+
+  const invalidateStatus = useInvalidateStatusKeys();
 
   const refetchAll = useCallback(() => {
     refetchTestament();
@@ -148,6 +150,7 @@ export function useTestament() {
       }
       setExecDialogOpen(false);
       refetchExecuteurs();
+      invalidateStatus();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
@@ -158,6 +161,7 @@ export function useTestament() {
       await api.delete(`/api/testament/executeurs/${id}`);
       toast.success(tf("verwijderd"));
       refetchExecuteurs();
+      invalidateStatus();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
@@ -226,6 +230,7 @@ export function useTestament() {
       setBegDialogOpen(false);
       refetchBegunstigden();
       refetchLegitiemaire();
+      invalidateStatus();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
@@ -237,6 +242,7 @@ export function useTestament() {
       toast.success(tf("verwijderd"));
       refetchBegunstigden();
       refetchLegitiemaire();
+      invalidateStatus();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
@@ -288,6 +294,7 @@ export function useTestament() {
       };
       const updated = await api.put<TestamentInfo>("/api/testament", payload);
       refetchTestament();
+      invalidateStatus();
       setTestEditOpen(false);
       toast.success(tf("opgeslagen"));
     } catch (err) {
@@ -310,6 +317,7 @@ export function useTestament() {
       setSnapDialogOpen(false);
       setSnapNotitie("");
       refetchSnapshots();
+      invalidateStatus();
     } catch (err) {
       setSnapError(err instanceof Error ? err.message : t("versies.snapshotMislukt"));
     }
@@ -320,6 +328,7 @@ export function useTestament() {
       await api.delete(`/api/testament/snapshots/${id}`);
       toast.success(tf("verwijderd"));
       refetchSnapshots();
+      invalidateStatus();
     } catch (err) {
       setSnapError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }

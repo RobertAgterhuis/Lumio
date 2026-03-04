@@ -16,12 +16,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
-import { useDocumenten, type PersoonlijkDocument } from "@/hooks";
+import { useDocumenten, useInvalidateStatusKeys, type PersoonlijkDocument } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Pencil } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
 import { SectieNotitie } from "@/components/notities/SectieNotitie";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { toast } from "@/stores/toastStore";
 import { HelpButton } from "@/components/help/HelpButton";
 import { HelpEmptyState } from "@/components/help/HelpEmptyState";
@@ -79,6 +80,8 @@ export default function DocumentenPage() {
     formatSize,
     getExpiryStatus,
   } = useDocumenten();
+
+  const invalidateStatus = useInvalidateStatusKeys();
 
   const openEditDoc = (doc: PersoonlijkDocument) => {
     setEditDocId(doc.id);
@@ -179,6 +182,7 @@ export default function DocumentenPage() {
       }
     }
     refetch();
+    invalidateStatus();
   };
 
   const handleUpload = async () => {
@@ -201,6 +205,7 @@ export default function DocumentenPage() {
       if (fileRef.current) fileRef.current.value = "";
       toast.success(tf("aangemaakt"));
       refetch();
+      invalidateStatus();
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : t("uploadenMislukt"));
     } finally {
@@ -255,10 +260,11 @@ export default function DocumentenPage() {
         </Button>
       </div>
 
-      <DomainStatusBanner domein="documenten" />
-
-      <div className="rounded-lg border border-info bg-info-100 p-4">
-        <p className="text-sm text-info">{t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DomainStatusBanner domein="documenten" />
+        <PageBanner id="documenten-letop" variant="info" inline>
+          {t.rich("letOp", { strong: (chunks) => <strong>{chunks}</strong> })}
+        </PageBanner>
       </div>
 
       {(error || uploadError) && (
