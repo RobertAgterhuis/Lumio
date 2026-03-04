@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { WizardShell, type WizardStep } from "@/components/wizard/WizardShell";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -613,7 +614,7 @@ export default function EuthanasieWizardPage() {
     s.id !== "dementie" || form.wilEuthanasie !== "false"
   );
 
-  if (loading) return <div className="flex items-center justify-center py-12"><p className="text-muted-foreground">{t("laden")}</p></div>;
+  if (loading) return <PageSkeleton />;
 
   return (
     <>

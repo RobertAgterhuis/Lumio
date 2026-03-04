@@ -167,6 +167,11 @@ body {
   color: var(--color-foreground);
 }
 
+/* Display font utility — used for page headings (H-04) */
+.font-display {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+}
+
 /* P-C8: Grote-tekst modus — scales typography tokens for accessibility */
 .grote-tekst {
   --font-size-xs:   0.8rem;

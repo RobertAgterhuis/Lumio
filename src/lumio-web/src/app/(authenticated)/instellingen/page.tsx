@@ -1,5 +1,7 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -265,10 +267,10 @@ export default function InstellingenPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       {/* Page header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <Settings className="h-8 w-8 text-primary" />
           {t("titel")}
           <HelpButton />
@@ -376,6 +378,6 @@ export default function InstellingenPage() {
           </Button>
         </DialogFooter>
       </Dialog>
-    </div>
+    </PageTransition>
   );
 }

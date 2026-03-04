@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -60,19 +63,13 @@ export default function BoedelPage() {
     deleteItem,
   } = useBoedel();
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
-  }
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <LumioIcon name="boedel" size="lg" className="text-primary" />
           {t("titel")}
           <HelpButton />
@@ -278,6 +275,6 @@ export default function BoedelPage() {
         onSave={saveSchuld}
         saving={saving}
       />
-    </div>
+    </PageTransition>
   );
 }

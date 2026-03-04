@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import { getLocale, getMessages } from "next-intl/server";
 import { LocaleProvider } from "@/components/providers/LocaleProvider";
 import { PostHogProvider } from "@/components/providers/PostHogProvider";
@@ -9,6 +9,13 @@ import "./globals.css";
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -30,7 +37,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className={dmSans.variable}>
+    <html lang={locale} suppressHydrationWarning className={`${dmSans.variable} ${dmSerifDisplay.variable}`}>
       <head>
 {/*
           CSP NOTE: Next.js with `output: "export"` (static) injects inline hydration scripts at build time.

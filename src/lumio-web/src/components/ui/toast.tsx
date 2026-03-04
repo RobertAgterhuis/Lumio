@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react";
 
 const toastVariants = cva(
-  "pointer-events-auto relative flex w-full items-start gap-3 rounded-lg border p-4 pr-10 shadow-lg transition-all",
+  "pointer-events-auto relative flex w-full items-start gap-3 rounded-lg border p-4 pr-10 shadow-lg transition-all animate-in slide-in-from-bottom-4 fade-in-0 duration-300",
   {
     variants: {
       variant: {
@@ -53,12 +53,18 @@ export function Toast({
   ...props
 }: ToastProps) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [dismissing, setDismissing] = useState(false);
   const IconComponent = toastIcons[variant ?? "info"];
+
+  const handleDismiss = useCallback(() => {
+    setDismissing(true);
+    setTimeout(() => onDismiss(toastId), 200);
+  }, [onDismiss, toastId]);
 
   useEffect(() => {
     if (duration > 0) {
       timerRef.current = setTimeout(() => {
-        onDismiss(toastId);
+        handleDismiss();
       }, duration);
     }
 
@@ -67,19 +73,23 @@ export function Toast({
         clearTimeout(timerRef.current);
       }
     };
-  }, [toastId, duration, onDismiss]);
+  }, [toastId, duration, handleDismiss]);
 
   return (
     <div
       role={variant === "error" || variant === "warning" ? "alert" : "status"}
-      className={cn(toastVariants({ variant }), className)}
+      className={cn(
+        toastVariants({ variant }),
+        dismissing && "animate-out fade-out-0 slide-out-to-right-full duration-200",
+        className
+      )}
       {...props}
     >
       <IconComponent className="h-5 w-5 shrink-0 mt-0.5" aria-hidden="true" />
       <p className="text-sm font-medium flex-1">{message}</p>
       <button
         type="button"
-        onClick={() => onDismiss(toastId)}
+        onClick={() => handleDismiss()}
         className="absolute right-2 top-2 rounded-md p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         aria-label="Dismiss"
       >

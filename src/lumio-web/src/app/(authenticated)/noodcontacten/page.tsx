@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,17 +59,12 @@ export default function NoodcontactenPage() {
     importGedeeld,
   } = useNoodcontacten();
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <LumioIcon name="noodcontacten" size="lg" className="text-primary" />
           {t("titel")}
           <HelpButton />
@@ -400,6 +398,6 @@ export default function NoodcontactenPage() {
           </Button>
         </DialogFooter>
       </Dialog>
-    </div>
+    </PageTransition>
   );
 }

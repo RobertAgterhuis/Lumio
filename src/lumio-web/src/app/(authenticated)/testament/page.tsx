@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription } from "@/components/ui/card";
@@ -102,16 +105,14 @@ export default function TestamentPage() {
     loadVergelijking,
   } = useTestament();
 
-  if (loading) {
-    return <div className="text-muted-foreground">{t("laden")}</div>;
-  }
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="testament" size="lg" className="text-primary" />
             {t("titel")}
             <HelpButton />
@@ -363,6 +364,6 @@ export default function TestamentPage() {
         onOpenChange={setVergelijkOpen}
         vergelijking={vergelijking}
       />
-    </div>
+    </PageTransition>
   );
 }

@@ -61,6 +61,25 @@ export function TabsList({
   ...props
 }: TabsListProps) {
   const listRef = React.useRef<HTMLDivElement>(null);
+  const [indicatorStyle, setIndicatorStyle] = React.useState<React.CSSProperties>({});
+
+  // Update sliding indicator position when active tab changes
+  React.useEffect(() => {
+    const list = listRef.current;
+    if (!list || !_activeValue) return;
+
+    const activeTab = list.querySelector<HTMLButtonElement>(
+      `[role="tab"][data-value="${_activeValue}"]`
+    );
+    if (!activeTab) return;
+
+    const listRect = list.getBoundingClientRect();
+    const tabRect = activeTab.getBoundingClientRect();
+    setIndicatorStyle({
+      left: tabRect.left - listRect.left,
+      width: tabRect.width,
+    });
+  }, [_activeValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const list = listRef.current;
@@ -96,12 +115,18 @@ export function TabsList({
       ref={listRef}
       role="tablist"
       className={cn(
-        "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+        "relative inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
         className
       )}
       onKeyDown={handleKeyDown}
       {...props}
     >
+      {/* Sliding active indicator */}
+      <div
+        className="absolute top-1 h-[calc(100%-0.5rem)] rounded-sm bg-background shadow-sm transition-all duration-200 ease-out"
+        style={indicatorStyle}
+        aria-hidden="true"
+      />
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, {
@@ -141,8 +166,8 @@ export function TabsTrigger({
       tabIndex={isActive ? 0 : -1}
       data-value={value}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-        isActive && "bg-background text-foreground shadow-sm",
+        "relative z-10 inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+        isActive && "text-foreground",
         className
       )}
       onClick={() => _onValueChange?.(value)}

@@ -171,9 +171,9 @@ export function Sidebar() {
                             aria-current={isActive ? "page" : undefined}
                             aria-label={label}
                             className={cn(
-                              "flex h-9 w-9 items-center justify-center rounded-md mx-auto transition-colors",
+                              "flex h-9 w-9 items-center justify-center rounded-md mx-auto transition-all duration-200",
                               isActive
-                                ? "bg-sidebar-active text-sidebar-active-foreground"
+                                ? "bg-sidebar-active text-sidebar-active-foreground shadow-sm"
                                 : "text-sidebar-foreground hover:bg-muted"
                             )}
                           >
@@ -202,10 +202,10 @@ export function Sidebar() {
                       href={item.href}
                       aria-current={isActive ? "page" : undefined}
                       className={cn(
-                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200",
                         isActive
-                          ? "bg-sidebar-active text-sidebar-active-foreground"
-                          : "text-sidebar-foreground hover:bg-muted"
+                          ? "bg-sidebar-active text-sidebar-active-foreground border-l-3 border-primary-400 shadow-sm"
+                          : "text-sidebar-foreground hover:bg-muted border-l-3 border-transparent"
                       )}
                     >
                       {item.lumioIcon ? (
@@ -239,7 +239,10 @@ export function Sidebar() {
             </div>
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full rounded-full bg-primary transition-all duration-300"
+                className={cn(
+                  "h-full rounded-full transition-all duration-300 bg-linear-to-r from-primary to-primary-400",
+                  compleetheid.percentage >= 100 && "shadow-[0_0_6px_rgba(var(--color-primary-400),0.4)]"
+                )}
                 style={{ width: `${compleetheid.percentage}%` }}
                 role="progressbar"
                 aria-valuenow={compleetheid.percentage}

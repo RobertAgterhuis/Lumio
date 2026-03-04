@@ -73,8 +73,8 @@ export function PageBanner({
       aria-atomic="true"
       className={cn(
         inline
-          ? "rounded-lg border p-4 flex items-start justify-between gap-3 h-full"
-          : "border-b px-6 py-3 flex items-center justify-between gap-4",
+          ? "rounded-lg border p-4 flex items-start justify-between gap-3 h-full animate-in fade-in-50 slide-in-from-top-2 duration-300"
+          : "border-b px-6 py-3 flex items-center justify-between gap-4 animate-in fade-in-50 slide-in-from-top-full duration-300",
         variantClasses[variant] ?? variantClasses.warning,
         className
       )}

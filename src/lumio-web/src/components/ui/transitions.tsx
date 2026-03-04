@@ -178,3 +178,37 @@ export function ScaleIn({
     </div>
   );
 }
+
+interface PageTransitionProps {
+  children: React.ReactNode;
+  className?: string;
+  /** Delay before starting the animation in ms (default: 0) */
+  delay?: number;
+}
+
+/**
+ * PageTransition — wraps page content in a subtle slide-up + fade entrance animation.
+ * Automatically plays on mount. Uses a stagger-friendly `delay` prop for child sections.
+ */
+export function PageTransition({ children, className, delay = 0 }: PageTransitionProps) {
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      requestAnimationFrame(() => setVisible(true));
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      className={cn(
+        "transition-all duration-300 ease-out",
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}

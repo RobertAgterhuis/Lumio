@@ -305,7 +305,7 @@ export default function DashboardPage() {
       <FadeIn show={!isInitializing} duration={400}>
         <div className="rounded-xl border border-primary/15 bg-linear-to-br from-primary-50 via-card to-sage-100/30 p-6 shadow-md ring-1 ring-primary/5">
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold text-primary">
+            <h1 className="text-3xl font-bold font-display text-primary">
               {(() => {
                 const uur = new Date().getHours();
                 const dagdeel = uur < 12 ? t("begroeting.ochtend") : uur < 18 ? t("begroeting.middag") : t("begroeting.avond");

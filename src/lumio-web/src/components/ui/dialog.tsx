@@ -112,7 +112,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
         {/* Backdrop with fade animation */}
         <div
           className={cn(
-            "fixed inset-0 bg-black/50 transition-opacity duration-200",
+            "fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200",
             animating ? "opacity-100" : "opacity-0"
           )}
         />

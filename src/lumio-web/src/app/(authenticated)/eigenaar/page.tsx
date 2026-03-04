@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -262,20 +265,15 @@ export default function EigenaarPage() {
   // S9-08: reset fotoLoaded when the URL changes to prevent pop-in
   useEffect(() => { setFotoLoaded(false); }, [fotoUrl]);
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       <PageBanner id="eigenaar-profiel-aanmaken" show={!exists && !loading}>
         <strong>{t("belangrijk")}</strong> {t("eersteProfielMelding")}
       </PageBanner>
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <User className="h-8 w-8 text-primary" />
           {t("titel")}
           <HelpButton />
@@ -709,6 +707,6 @@ export default function EigenaarPage() {
           )}
         </Button>
       </div>
-    </div>
+    </PageTransition>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useState, useRef, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -213,14 +215,10 @@ export default function DocumentenPage() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
+  if (loading) return <PageSkeleton />;
 
   return (
+    <PageTransition>
     <div
       className="space-y-6 relative"
       onDragEnter={handleDragEnter}
@@ -245,7 +243,7 @@ export default function DocumentenPage() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="documenten" size="lg" className="text-primary" />
             {t("titel")}
             <HelpButton />
@@ -684,5 +682,6 @@ export default function DocumentenPage() {
       </Dialog>
 
     </div>
+    </PageTransition>
   );
 }

@@ -26,18 +26,31 @@
     },
     "setup": {
       "titel": "Welcome to Lumio",
-      "beschrijving": "Choose a strong password to secure your digital legacy. This password encrypts all your data.",
+      "beschrijving": "Choose a strong password to secure your data. This password encrypts everything locally on this device.",
       "wachtwoord": "Password",
       "wachtwoordPlaceholder": "At least 8 characters",
       "bevestig": "Confirm password",
       "bevestigPlaceholder": "Repeat your password",
+      "toonWachtwoord": "Show password",
+      "verbergWachtwoord": "Hide password",
       "bezig": "Creating database...",
       "aanmaken": "Create Database",
       "disclaimer": "Your data is stored encrypted. Keep your password safe — without it, your data cannot be accessed.",
       "foutMinimaal": "Password must contain at least 8 characters.",
       "foutOvereenkomst": "Passwords do not match.",
       "foutSetup": "Failed to create database. Check write permissions and try again.",
-      "wachtwoordWaarschuwing": "Store your password, emergency codes, and recovery codes in a safe place. Losing your password means losing access to all your Lumio data."
+      "wachtwoordWaarschuwing": "Store your password in a safe place. If you forget your password, your data is permanently inaccessible.",
+      "avgConsentLabel": "I have read the",
+      "avgConsentLink": "privacy statement",
+      "avgConsentLabelVervolg": "and agree to the processing of my personal data.",
+      "avgConsentFout": "You must agree to the privacy statement to continue.",
+      "avgModalTitel": "Privacy Statement — your data in Lumio",
+      "avgModalSluiten": "Read and understood",
+      "avgModalP1": "Lumio stores your personal data exclusively locally on this device, encrypted with AES-256. Lumio has no access to your data and never sends data to a server or cloud service.",
+      "avgModalP2": "Lumio may process special categories of personal data including health data (euthanasia directive, donor registration) based on your explicit consent (GDPR art. 9(2)(a)).",
+      "avgModalP3": "You may withdraw your consent at any time by deleting your account via Settings → Delete account. All data will then be permanently erased.",
+      "avgModalP4": "You have the right to access, correct and delete your data. Your data is retained until you delete your account.",
+      "avgModalVerantwoordelijke": "Data controller: Lumio (personal use, no external processors for your content)."
     },
     "ontgrendel": {
       "titel": "Unlock Lumio",
@@ -1340,8 +1353,7 @@
       "backup": "Backup status",
       "aanbevolen": "Recommended next step",
       "verloopdatum": "Document expiry dates",
-      "allesHerstellen": "Show all",
-      "meldingenHerstellen": "Reset dismissed notifications"
+      "allesHerstellen": "Show all"
     },
     "taal": {
       "titel": "Language",

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 const alertVariants = cva(
-  "relative flex items-start gap-3 rounded-lg border p-4 text-sm transition-colors [&>svg]:shrink-0 [&>svg]:mt-0.5",
+  "relative flex items-start gap-3 rounded-lg border p-4 text-sm transition-colors animate-in fade-in-50 slide-in-from-bottom-2 duration-300 [&>svg]:shrink-0 [&>svg]:mt-0.5",
   {
     variants: {
       variant: {

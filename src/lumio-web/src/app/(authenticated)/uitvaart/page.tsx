@@ -1,5 +1,8 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
+import { PageSkeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Plus, Pencil, Users, Flower2, Music, MapPin, ListOrdered } from "lucide-react";
@@ -70,20 +73,14 @@ export default function UitvaartPage() {
     deleteGen,
   } = useUitvaart();
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <p className="text-muted-foreground">{t("laden")}</p>
-      </div>
-    );
-  }
+  if (loading) return <PageSkeleton />;
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="uitvaart" size="lg" className="text-primary" />
             {t("titel")}
             <HelpButton />
@@ -441,6 +438,6 @@ export default function UitvaartPage() {
             </Button>
           </DialogFooter>
       </Dialog>
-    </div>
+    </PageTransition>
   );
 }

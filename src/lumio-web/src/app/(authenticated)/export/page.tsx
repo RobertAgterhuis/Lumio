@@ -1,5 +1,7 @@
 "use client";
 
+
+import { PageTransition } from "@/components/ui/transitions";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -143,9 +145,9 @@ export default function ExportPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="text-3xl font-bold font-display flex items-center gap-3">
           <Archive className="h-8 w-8 text-primary" />
           {t("titel")}
           <HelpButton />
@@ -375,6 +377,6 @@ export default function ExportPage() {
           );
         })}
       </div>
-    </div>
+    </PageTransition>
   );
 }

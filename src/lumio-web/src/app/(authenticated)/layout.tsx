@@ -137,7 +137,7 @@ export default function AuthenticatedLayout({
         {/* Portal target for PageBanner — same visual position as the read-only banner */}
         <div id="page-banner-portal" className="shrink-0" />
         <ErrorBoundary>
-          <main id="authenticated-main" tabIndex={-1} className="flex-1 overflow-y-auto p-6 outline-none">
+          <main id="authenticated-main" tabIndex={-1} className="flex-1 overflow-y-auto p-6 outline-none bg-[radial-gradient(ellipse_at_top_left,var(--color-primary-100)_0%,transparent_50%)] dark:bg-[radial-gradient(ellipse_at_top_left,var(--color-primary-100)/0.05_0%,transparent_50%)]">
             {children}
           </main>
         </ErrorBoundary>
