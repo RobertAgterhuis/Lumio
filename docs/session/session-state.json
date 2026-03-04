@@ -50,9 +50,9 @@
   "phase4_validation_path": "BusinessDocs/Phase4-Marketing/phase4-critic-risk-validation.md",
   "synthesis_path": "docs/synthesis/final-report-master.md",
   "sprint_backlog_path": "docs/synthesis/final-report-master.md",
-  "active_sprint": "UI-WALKTHROUGH",
-  "sprint_goal": "UI-walkthrough door PO vóór UAT — bevindingen opnemen en direct fixen",
-  "sprint_branch": "feature/UI-walkthrough",
+  "active_sprint": "UI-PREMIUM-POLISH",
+  "sprint_goal": "UI premium polish + i18n audit + theme fix — alle visuele en vertalings-issues oplossen vóór UAT",
+  "sprint_branch": "feature/UI-premium-polish",
   "previous_sprint": "SP-UX-04",
   "sp_ux04_status": "IMPLEMENTATION_DONE — user-test items moved to SP-UT-01",
   "next_planned_sprints": [
@@ -89,7 +89,7 @@
     "SP-1-013": 148, "SP-1-014": 149, "SP-1-015": 150, "SP-1-016": 151,
     "SP-1-017": 152
   },
-  "last_updated": "2026-03-03T12:00:00Z",
+  "last_updated": "2026-03-05T18:00:00Z",
   "reevaluation_version": "v3",
   "last_reevaluation": "2026-03-04T11:00:00Z",
   "reevaluation_report_path": "docs/synthesis/reevaluation-report-v3-20260303.md",
@@ -193,8 +193,17 @@
     "GAP-BRAND-001: Domain lumio-legacy.nl — legacy association undermines B2C positioning — HIGH",
     "CRITICAL_MISALIGNMENT-001: Brand promise vs 7-step wizard complexity — HIGH"
   ],
-  "reevaluation_v3_decisions": ["DEC-111", "DEC-112", "DEC-113", "DEC-114"],
+  "reevaluation_v3_decisions": ["DEC-111", "DEC-112", "DEC-113", "DEC-114", "DEC-115", "DEC-116", "DEC-117"],
   "sys_risk_002_status": "ACCEPTED_RISK (see DEC-112)",
   "sp_04_005_status": "CANCELLED_SUPERSEDED (see DEC-111)",
-  "sp_mkt_01_status": "MERGED_SQUASH — commit d1a8c2f on main"
+  "sp_mkt_01_status": "MERGED_SQUASH — commit d1a8c2f on main",
+  "ui_premium_polish_status": "IN_PROGRESS — 5 rounds (181e9f6) + settings rewrite (3765647) + i18n hardcoded strings (d31cec5) + i18n namespace loading (1b5823a) + theme default light (3d1cdce) — branch feature/UI-premium-polish — unpushed commits: 4",
+  "ui_premium_polish_commits": [
+    { "hash": "181e9f6", "desc": "UI polish round 5 — 62 improvements across 48 files" },
+    { "hash": "3765647", "desc": "Reorganize settings page: tab-based layout (384→163 lines)" },
+    { "hash": "d31cec5", "desc": "i18n: replace all hardcoded strings with translation keys (29 violations fixed, 16 files)" },
+    { "hash": "1b5823a", "desc": "i18n: add missing namespace imports to all 11 domain layouts" },
+    { "hash": "3d1cdce", "desc": "Theme: default to light mode — no OS dark mode fallback" }
+  ],
+  "decisions_added_this_session": ["DEC-115", "DEC-116", "DEC-117"]
 }
