@@ -103,9 +103,9 @@ export function getVoorbeeldData(
         {
           titel: t("testament.secties.begunstigden.titel"),
           velden: [
-            { label: t("testament.secties.begunstigden.maria"), waarde: t("testament.secties.begunstigden.mariaWaarde") },
-            { label: t("testament.secties.begunstigden.thomas"), waarde: t("testament.secties.begunstigden.thomasWaarde") },
-            { label: t("testament.secties.begunstigden.sophie"), waarde: t("testament.secties.begunstigden.sophieWaarde") },
+            { label: t("testament.secties.begunstigden.mariaDeVoorbeeldJansen"), waarde: t("testament.secties.begunstigden.mariaDeVoorbeeldJansenWaarde") },
+            { label: t("testament.secties.begunstigden.thomasDeVoorbeeld"), waarde: t("testament.secties.begunstigden.thomasDeVoorbeeldWaarde") },
+            { label: t("testament.secties.begunstigden.sophieDeVoorbeeld"), waarde: t("testament.secties.begunstigden.sophieDeVoorbeeldWaarde") },
           ],
         },
         {
@@ -170,8 +170,8 @@ export function getVoorbeeldData(
         {
           titel: t("boedel.secties.fysiekeBezittingen.titel"),
           velden: [
-            { label: t("boedel.secties.fysiekeBezittingen.woning"), waarde: t("boedel.secties.fysiekeBezittingen.woningWaarde") },
-            { label: t("boedel.secties.fysiekeBezittingen.auto"), waarde: t("boedel.secties.fysiekeBezittingen.autoWaarde") },
+            { label: t("boedel.secties.fysiekeBezittingen.woningVoorbeeldstraat"), waarde: t("boedel.secties.fysiekeBezittingen.woningVoorbeeldstraatWaarde") },
+            { label: t("boedel.secties.fysiekeBezittingen.volkswagenId4"), waarde: t("boedel.secties.fysiekeBezittingen.volkswagenId4Waarde") },
             { label: t("boedel.secties.fysiekeBezittingen.antiekDressoir"), waarde: t("boedel.secties.fysiekeBezittingen.antiekDressoirWaarde") },
             { label: t("boedel.secties.fysiekeBezittingen.zonnepanelen"), waarde: t("boedel.secties.fysiekeBezittingen.zonnepanelenWaarde") },
           ],
@@ -315,11 +315,11 @@ export function getVoorbeeldData(
         {
           titel: t("noodcontacten.secties.contactpersonen.titel"),
           velden: [
-            { label: t("noodcontacten.secties.contactpersonen.maria"), waarde: t("noodcontacten.secties.contactpersonen.mariaWaarde") },
-            { label: t("noodcontacten.secties.contactpersonen.notaris"), waarde: t("noodcontacten.secties.contactpersonen.notarisWaarde") },
-            { label: t("noodcontacten.secties.contactpersonen.huisarts"), waarde: t("noodcontacten.secties.contactpersonen.huisartsWaarde") },
-            { label: t("noodcontacten.secties.contactpersonen.financieelAdviseur"), waarde: t("noodcontacten.secties.contactpersonen.financieelAdviseurWaarde") },
-            { label: t("noodcontacten.secties.contactpersonen.buurman"), waarde: t("noodcontacten.secties.contactpersonen.buurmanWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.mariaDeVoorbeeldJansen"), waarde: t("noodcontacten.secties.contactpersonen.mariaDeVoorbeeldJansenWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.mrJhBakker"), waarde: t("noodcontacten.secties.contactpersonen.mrJhBakkerWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.drAbSmit"), waarde: t("noodcontacten.secties.contactpersonen.drAbSmitWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.janDeVries"), waarde: t("noodcontacten.secties.contactpersonen.janDeVriesWaarde") },
+            { label: t("noodcontacten.secties.contactpersonen.karelJansen"), waarde: t("noodcontacten.secties.contactpersonen.karelJansenWaarde") },
           ],
         },
       ],

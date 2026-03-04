@@ -3,10 +3,13 @@ import { DomainMessagesProvider } from "@/components/providers/DomainMessagesPro
 import type { AbstractIntlMessages } from "next-intl";
 import nlMessages from "@messages/nl/boedel.json";
 import enMessages from "@messages/en/boedel.json";
+// voorbeeldData lives in videoboodschappen.json
+import nlVideo from "@messages/nl/videoboodschappen.json";
+import enVideo from "@messages/en/videoboodschappen.json";
 
 const MESSAGES: Record<string, AbstractIntlMessages> = {
-  nl: nlMessages as AbstractIntlMessages,
-  en: enMessages as AbstractIntlMessages,
+  nl: { ...nlMessages, ...nlVideo } as AbstractIntlMessages,
+  en: { ...enMessages, ...enVideo } as AbstractIntlMessages,
 };
 
 export default function BoedelLayout({ children }: { children: ReactNode }) {
