@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { AlertTriangle, Clock } from "lucide-react";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { useDomainQuery } from "./useDomainQuery";
+import { useInvalidateStatusKeys } from "./useDomainMutation";
 import { toast } from "@/stores/toastStore";
 
 export interface PersoonlijkDocument {
@@ -41,6 +42,7 @@ export function useDocumenten() {
 
   const [error, setError] = useState<string | null>(null);
   const clearError = () => setError(null);
+  const invalidateStatus = useInvalidateStatusKeys();
 
   const [expandedVersions, setExpandedVersions] = useState<string | null>(null);
   const [versionHistory, setVersionHistory] = useState<DocumentVersie[]>([]);
@@ -62,6 +64,7 @@ export function useDocumenten() {
       if (expandedVersions === id) setExpandedVersions(null);
       toast.success(tf("verwijderd"));
       refetch();
+      invalidateStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
@@ -74,6 +77,7 @@ export function useDocumenten() {
       setExpandedVersions(null);
       toast.success(tf("verwijderd"));
       refetch();
+      invalidateStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
     }
@@ -87,6 +91,7 @@ export function useDocumenten() {
     await api.patch(`/api/documenten/${id}`, data);
     toast.success(tf("opgeslagen"));
     refetch();
+    invalidateStatus();
   };
 
   const toggleVersionHistory = async (docId: string) => {

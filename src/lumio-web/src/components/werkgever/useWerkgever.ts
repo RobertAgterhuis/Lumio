@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -68,6 +68,8 @@ export function useWerkgever() {
   } = useDomainQuery<Werkgever[]>("werkgever");
 
   const werkgever = werkgevers?.[0] ?? null;
+
+  const invalidateStatus = useInvalidateStatusKeys();
 
   const [form, setForm] = useState<WerkgeverForm>(emptyWerkgeverForm);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -151,6 +153,7 @@ export function useWerkgever() {
       }
 
       refresh();
+      invalidateStatus();
       setDialogOpen(false);
       setForm(emptyWerkgeverForm);
       setEditId(null);
@@ -167,6 +170,7 @@ export function useWerkgever() {
     try {
       await api.delete(`/api/werkgever/${id}`);
       refresh();
+      invalidateStatus();
       toast.success(successMsg);
     } catch {
       toast.error(errorMsg);

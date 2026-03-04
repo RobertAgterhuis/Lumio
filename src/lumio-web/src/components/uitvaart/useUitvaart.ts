@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks/useDomainQuery";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 import type {
   UitvaartWensen,
@@ -60,6 +60,8 @@ export function useUitvaart() {
     refetchDetails();
     refetchGenodigden();
   }, [refetchData, refetchDetails, refetchGenodigden]);
+
+  const invalidateStatus = useInvalidateStatusKeys();
 
   // Ceremonie detail dialog state
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
@@ -159,6 +161,7 @@ export function useUitvaart() {
       };
       const updated = await api.put<UitvaartWensen>("/api/uitvaart", payload);
       refetchData();
+      invalidateStatus();
       setUitvaartEditOpen(false);
       toast.success(tf("opgeslagen"));
     } catch (err) {
@@ -220,6 +223,7 @@ export function useUitvaart() {
       };
       await api.put<UitvaartWensen>("/api/uitvaart", payload);
       refetchData();
+      invalidateStatus();
       setLocatieEditOpen(false);
       toast.success(tf("opgeslagen"));
     } catch (err) {
@@ -277,6 +281,7 @@ export function useUitvaart() {
       }
       setDetailDialogOpen(false);
       refetchDetails();
+      invalidateStatus();
     } catch (err) {
       setDetailError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
@@ -288,6 +293,7 @@ export function useUitvaart() {
         await api.delete(`/api/uitvaart/details/${id}`);
         toast.success(tf("verwijderd"));
         refetchDetails();
+        invalidateStatus();
       } catch (err) {
         setDetailError(
           err instanceof Error ? err.message : t("verwijderenMislukt")
@@ -359,6 +365,7 @@ export function useUitvaart() {
       }
       setGenDialogOpen(false);
       refetchGenodigden();
+      invalidateStatus();
     } catch (err) {
       setGenError(err instanceof Error ? err.message : t("opslaanMislukt"));
     }
@@ -370,6 +377,7 @@ export function useUitvaart() {
         await api.delete(`/api/uitvaart/genodigden/${id}`);
         toast.success(tf("verwijderd"));
         refetchGenodigden();
+        invalidateStatus();
       } catch (err) {
         setGenError(
           err instanceof Error ? err.message : t("verwijderenMislukt")

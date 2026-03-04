@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
 import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
@@ -77,6 +77,7 @@ export default function UitvaartWizardPage() {
 
   // Load existing data with React Query
   const { data: existingData, isLoading: loading } = useDomainQuery<UitvaartData | null>("uitvaart");
+  const invalidateStatus = useInvalidateStatusKeys();
   const [confirmCompleteOpen, setConfirmCompleteOpen] = useState(false);
 
   // Populate form when data loads
@@ -539,6 +540,7 @@ export default function UitvaartWizardPage() {
       voorkeurAulaAdres: form.voorkeurAulaAdres || null,
       budgetRichting: form.budgetRichting || null,
     });
+    invalidateStatus();
     router.push("/uitvaart");
   };
 

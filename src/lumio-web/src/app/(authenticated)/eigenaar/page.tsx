@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { api, ApiError, getApiUrl } from "@/lib/api-client";
-import { useDomainQuery, domainKeys } from "@/hooks";
+import { useDomainQuery, domainKeys, useInvalidateStatusKeys } from "@/hooks";
 import { User, Save, Loader2, Camera, Trash2, AlertTriangle, UserPlus, Heart, CreditCard, Scale } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
@@ -101,6 +101,7 @@ export default function EigenaarPage() {
 
   // React Query for loading eigenaar data
   const { data: eigenaarData, isLoading: loading } = useDomainQuery<Eigenaar | null>("eigenaar");
+  const invalidateStatus = useInvalidateStatusKeys();
 
   // Populate form when data loads
   useEffect(() => {
@@ -181,6 +182,7 @@ export default function EigenaarPage() {
         await api.post("/api/eigenaar", payload);
         setExists(true);
       }
+      invalidateStatus();
       setSuccess(t("profielOpgeslagen"));
       toast.success(tf("opgeslagen"));
       // S9-07: reset dirty state
@@ -214,6 +216,7 @@ export default function EigenaarPage() {
         postcode: form.notarisPostcode || null,
         woonplaats: form.notarisPlaats || null,
       });
+      invalidateStatus();
       toast.success(t("notaris.noodcontactToegevoegd"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("notaris.noodcontactToevoegenMislukt"));

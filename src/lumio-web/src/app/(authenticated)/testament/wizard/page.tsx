@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
-import { useDomainQuery, useWizardProgress } from "@/hooks";
+import { useDomainQuery, useWizardProgress, useInvalidateStatusKeys } from "@/hooks";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -22,6 +22,7 @@ const TOTAL_STEPS = 6;
 export default function TestamentWizardPage() {
   const router = useRouter();
   const t = useTranslations("testamentWizard");
+  const invalidateStatus = useInvalidateStatusKeys();
 
   // Wizard progress persistence
   const {
@@ -370,6 +371,7 @@ export default function TestamentWizardPage() {
       legaten: form.legaten || null,
     });
     // Clear wizard progress on successful save
+    invalidateStatus();
     markComplete();
     router.push("/testament");
   };

@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useDomainQuery, domainKeys } from "@/hooks/useDomainQuery";
+import { useDomainQuery, domainKeys, useInvalidateStatusKeys } from "@/hooks";
 import { api } from "@/lib/api-client";
 import { toast } from "@/stores/toastStore";
 import type { Videoboodschap } from "./types";
@@ -14,6 +14,8 @@ export function useVideoboodschappen() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [saving, setSaving] = useState(false);
+
+  const invalidateStatus = useInvalidateStatusKeys();
 
   const { data: videoboodschappen = [], isLoading } =
     useDomainQuery<Videoboodschap[]>(ENDPOINT);
@@ -98,6 +100,7 @@ export function useVideoboodschappen() {
         await queryClient.invalidateQueries({
           queryKey: domainKeys.all(ENDPOINT),
         });
+        invalidateStatus();
         return result;
       } finally {
         setUploading(false);
@@ -122,9 +125,9 @@ export function useVideoboodschappen() {
         await queryClient.invalidateQueries({
           queryKey: domainKeys.all(ENDPOINT),
         });
-        return result;
-      } finally {
-        setSaving(false);
+        invalidateStatus();
+      } catch {
+        // ignore
       }
     },
     [queryClient]
@@ -137,6 +140,7 @@ export function useVideoboodschappen() {
       await queryClient.invalidateQueries({
         queryKey: domainKeys.all(ENDPOINT),
       });
+      invalidateStatus();
       toast.success(`"${titelVoorToast}" verwijderd`);
     },
     [queryClient]

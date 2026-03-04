@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { api } from "@/lib/api-client";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { useTranslations } from "next-intl";
 import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
 
@@ -70,6 +70,7 @@ export default function DonorFormulierPage() {
     { id: string; orgaan: string; welDoneren: boolean }[]
   >("donor/orgaankeuzes");
   const loading = donorLoading || orgaanLoading;
+  const invalidateStatus = useInvalidateStatusKeys();
 
   useEffect(() => {
     if (donorData) {
@@ -358,6 +359,7 @@ export default function DonorFormulierPage() {
     }));
     await api.put("/api/donor/orgaankeuzes/batch", batchKeuzes);
 
+    invalidateStatus();
     router.push("/donor");
   };
 

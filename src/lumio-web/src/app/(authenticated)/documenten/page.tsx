@@ -16,7 +16,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api-client";
-import { useDocumenten, type PersoonlijkDocument } from "@/hooks";
+import { useDocumenten, useInvalidateStatusKeys, type PersoonlijkDocument } from "@/hooks";
 import { cn } from "@/lib/utils";
 import { FileText, Download, Trash2, Upload, Loader2, CloudUpload, History, ChevronDown, ChevronUp, AlertTriangle, Pencil } from "lucide-react";
 import { LumioIcon } from "@/components/ui/lumio-icon";
@@ -80,6 +80,8 @@ export default function DocumentenPage() {
     formatSize,
     getExpiryStatus,
   } = useDocumenten();
+
+  const invalidateStatus = useInvalidateStatusKeys();
 
   const openEditDoc = (doc: PersoonlijkDocument) => {
     setEditDocId(doc.id);
@@ -180,6 +182,7 @@ export default function DocumentenPage() {
       }
     }
     refetch();
+    invalidateStatus();
   };
 
   const handleUpload = async () => {
@@ -202,6 +205,7 @@ export default function DocumentenPage() {
       if (fileRef.current) fileRef.current.value = "";
       toast.success(tf("aangemaakt"));
       refetch();
+      invalidateStatus();
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : t("uploadenMislukt"));
     } finally {

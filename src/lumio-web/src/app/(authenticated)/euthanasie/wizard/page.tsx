@@ -12,7 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { PersonSelect } from "@/components/PersonSelect";
 import type { PersonDetails } from "@/components/PersonSelect";
-import { useDomainQuery } from "@/hooks";
+import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { api, downloadAndSave } from "@/lib/api-client";
 import { Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -57,6 +57,7 @@ export default function EuthanasieWizardPage() {
 
   // Load existing data with React Query
   const { data: existingData, isLoading: loading } = useDomainQuery<Record<string, unknown> | null>("euthanasie");
+  const invalidateStatus = useInvalidateStatusKeys();
 
   // Populate form when data loads
   useEffect(() => {
@@ -603,6 +604,7 @@ export default function EuthanasieWizardPage() {
       vertegenwoordiger2Telefoon: form.vertegenwoordiger2Telefoon || null,
       vertegenwoordiger2Email: form.vertegenwoordiger2Email || null,
     });
+    invalidateStatus();
     router.push("/euthanasie");
   };
 
