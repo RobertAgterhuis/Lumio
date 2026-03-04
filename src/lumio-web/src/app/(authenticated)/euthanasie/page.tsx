@@ -150,7 +150,7 @@ export default function EuthanasiePage() {
 
   return (
     <PageTransition className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="wilsverklaring" size="lg" className="text-primary" />
@@ -160,8 +160,6 @@ export default function EuthanasiePage() {
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
-          <VoorbeeldDialog domein="euthanasie" />
-          <SectieNotitie sectie="euthanasie" />
         </div>
         <Link href="/euthanasie/wizard">
           <Button>
@@ -169,6 +167,11 @@ export default function EuthanasiePage() {
             {data ? t("bewerken") : t("wizardStarten")}
           </Button>
         </Link>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <VoorbeeldDialog domein="euthanasie" />
+        <SectieNotitie sectie="euthanasie" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

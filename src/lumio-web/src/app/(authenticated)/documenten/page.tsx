@@ -241,7 +241,7 @@ export default function DocumentenPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="documenten" size="lg" className="text-primary" />
@@ -251,11 +251,14 @@ export default function DocumentenPage() {
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
-          <SectieNotitie sectie="documenten" />
         </div>
         <Button onClick={() => setUploadOpen(true)}>
           <Upload className="h-4 w-4 mr-2" /> {t("uploaden")}
         </Button>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <SectieNotitie sectie="documenten" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

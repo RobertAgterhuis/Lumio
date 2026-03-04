@@ -203,7 +203,7 @@ export default function ErfgenamenPage() {
 
   return (
     <PageTransition className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="erfgenamen" size="lg" className="text-primary" />
@@ -211,8 +211,6 @@ export default function ErfgenamenPage() {
             <HelpButton />
           </h1>
           <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
-          <VoorbeeldDialog domein="erfgenamen" />
-          <SectieNotitie sectie="erfgenamen" />
         </div>
         <div className="flex gap-2">
           {state.erfgenamen.length >= 2 && !isReadOnly && (
@@ -226,6 +224,11 @@ export default function ErfgenamenPage() {
             </Button>
           )}
         </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <VoorbeeldDialog domein="erfgenamen" />
+        <SectieNotitie sectie="erfgenamen" />
       </div>
 
       <DomainStatusBanner domein="erfgenamen" />

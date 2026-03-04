@@ -44,7 +44,7 @@ export default function DonorPage() {
 
   return (
     <PageTransition className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold font-display flex items-center gap-3">
             <LumioIcon name="donor" size="lg" className="text-primary" />
@@ -54,8 +54,6 @@ export default function DonorPage() {
           <p className="text-muted-foreground mt-1">
             {t("beschrijving")}
           </p>
-          <VoorbeeldDialog domein="donor" />
-          <SectieNotitie sectie="donor" />
         </div>
         <Link href="/donor/formulier">
           <Button>
@@ -63,6 +61,11 @@ export default function DonorPage() {
             {data ? t("bewerken") : t("registratieStarten")}
           </Button>
         </Link>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <VoorbeeldDialog domein="donor" />
+        <SectieNotitie sectie="donor" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

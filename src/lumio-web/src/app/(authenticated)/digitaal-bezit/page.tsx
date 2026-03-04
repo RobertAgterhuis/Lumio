@@ -90,6 +90,9 @@ export default function DigitaalBezitPage() {
           <HelpButton />
         </h1>
         <p className="text-muted-foreground mt-1">{t("beschrijving")}</p>
+      </div>
+
+      <div className="flex items-center gap-4">
         <VoorbeeldDialog domein="digitaal-bezit" />
         <SectieNotitie sectie="digitaal-bezit" />
       </div>
