@@ -473,7 +473,7 @@ export function SearchDialog({
             {/* No results */}
             {!loading && query.length >= 2 && totalResults === 0 && (
               <div className="flex flex-col items-center gap-3 px-6 py-10 text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted" style={{ animation: "bounceIn 0.4s ease-out" }}>
                   <SearchX className="h-6 w-6 text-muted-foreground" />
                 </div>
                 <div>

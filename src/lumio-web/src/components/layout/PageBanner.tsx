@@ -55,6 +55,13 @@ export function PageBanner({
 }: PageBannerProps) {
   const dismissed = usePreferencesStore((s) => s.dismissedBanners.includes(id));
   const dismissBanner = usePreferencesStore((s) => s.dismissBanner);
+  const [exiting, setExiting] = useState(false);
+
+  const handleDismiss = () => {
+    setExiting(true);
+    setTimeout(() => dismissBanner(id), 200);
+  };
+
   const [portal, setPortal] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -75,6 +82,7 @@ export function PageBanner({
         inline
           ? "rounded-lg border p-4 flex items-start justify-between gap-3 h-full animate-in fade-in-50 slide-in-from-top-2 duration-300"
           : "border-b px-6 py-3 flex items-center justify-between gap-4 animate-in fade-in-50 slide-in-from-top-full duration-300",
+        exiting && "animate-out fade-out-0 slide-out-to-top-full duration-200",
         variantClasses[variant] ?? variantClasses.warning,
         className
       )}
@@ -82,7 +90,7 @@ export function PageBanner({
       <p className="text-sm">{children}</p>
       <button
         type="button"
-        onClick={() => dismissBanner(id)}
+        onClick={handleDismiss}
         aria-label="Melding verbergen"
         className="shrink-0 opacity-60 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring rounded"
       >

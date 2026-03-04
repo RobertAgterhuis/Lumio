@@ -9,7 +9,7 @@ const cardVariants = cva(
       variant: {
         default: "border-border shadow-sm",
         elevated:
-          "border-border/60 shadow-md hover:shadow-lg",
+          "border-border/60 shadow-md hover:shadow-lg hover:border-primary/20",
         hero:
           "border-primary/20 shadow-lg ring-1 ring-primary/10 bg-linear-to-br from-card to-primary-50/40",
       },

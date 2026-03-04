@@ -71,7 +71,7 @@ export function NotificationsDropdown() {
       >
         <Bell className="h-4 w-4" />
         {count > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-xs font-bold text-white">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-xs font-bold text-white" style={{ animation: "badgePop 0.3s ease-out" }}>
             {count > 9 ? "9+" : count}
           </span>
         )}
@@ -103,7 +103,11 @@ export function NotificationsDropdown() {
                 {meldingen.map((melding, idx) => {
                   if (dismissed.has(idx)) return null;
                   return (
-                    <div key={idx} className="group relative">
+                    <div
+                      key={idx}
+                      className="group relative animate-in fade-in-50 slide-in-from-top-1 duration-200"
+                      style={{ animationDelay: `${idx * 50}ms`, animationFillMode: "both" }}
+                    >
                       <Link
                         href={melding.actie}
                         onClick={() => setOpen(false)}

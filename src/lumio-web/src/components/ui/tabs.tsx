@@ -197,7 +197,7 @@ export function TabsContent({
       aria-labelledby={_idPrefix ? `${_idPrefix}-tab-${value}` : undefined}
       tabIndex={0}
       className={cn(
-        "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 animate-in fade-in-50 duration-200",
         className
       )}
       {...props}

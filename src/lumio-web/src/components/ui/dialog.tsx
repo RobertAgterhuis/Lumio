@@ -112,7 +112,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
         {/* Backdrop with fade animation */}
         <div
           className={cn(
-            "fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-200",
+            "fixed inset-0 bg-black/50 backdrop-blur-md transition-opacity duration-200",
             animating ? "opacity-100" : "opacity-0"
           )}
         />
@@ -128,7 +128,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
             aria-labelledby={titleId}
             aria-describedby={descriptionId}
             className={cn(
-              "relative z-50 w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg",
+              "relative z-50 w-full max-w-lg rounded-lg border bg-background p-6 shadow-xl",
               "flex flex-col max-h-[90vh] overflow-hidden",
               "transition-all duration-200 ease-out",
               animating

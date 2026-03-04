@@ -81,7 +81,7 @@ function StatusBadge({
   const IconComponent = status ? statusIcons[status] : null;
 
   return (
-    <div className={cn(statusBadgeVariants({ status, showIcon }), className)} {...props}>
+    <div className={cn(statusBadgeVariants({ status, showIcon }), "animate-in fade-in-0 zoom-in-95 duration-150", className)} {...props}>
       {showIcon && IconComponent && <IconComponent className="h-3 w-3" aria-hidden="true" />}
       {children}
     </div>

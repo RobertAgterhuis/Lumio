@@ -103,7 +103,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         </span>
         {/* Loading spinner - absolutely positioned to center */}
         {loading && (
-          <span className="absolute inset-0 flex items-center justify-center">
+          <span className="absolute inset-0 flex items-center justify-center animate-in fade-in-0 duration-150">
             <Loader2 className="h-4 w-4 animate-spin" />
           </span>
         )}

@@ -52,7 +52,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center py-12 px-4 text-center rounded-xl bg-linear-to-b from-muted/40 to-transparent",
+        "flex flex-col items-center justify-center py-12 px-4 text-center rounded-xl bg-linear-to-b from-muted/40 to-transparent animate-in fade-in-50 zoom-in-95 duration-300",
         className
       )}
       role="status"

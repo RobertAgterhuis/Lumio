@@ -78,7 +78,7 @@ export function DomainStatusBanner({ domein }: DomainStatusBannerProps) {
   const showReview = isAfgerond && needsReview;
 
   return (
-    <div className="flex items-center justify-between rounded-lg border bg-card px-4 py-3">
+    <div className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 animate-in fade-in-50 slide-in-from-top-2 duration-300">
       <div className="flex items-center gap-3">
         {showReview ? (
           <>
