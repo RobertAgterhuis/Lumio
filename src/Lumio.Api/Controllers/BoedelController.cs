@@ -45,6 +45,11 @@ public class BoedelController : ControllerBase
         var schulden = await _repo.GetSchuldenAsync(eid);
 
         var totaalBezittingen = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
+        var totaalRestWaardeVoertuigen = bezittingen
+            .Where(b => b.Categorie == "Voertuig")
+            .Sum(b => b.RestWaarde ?? 0);
+        var totaalBezittendingenMetRestWaarde = totaalBezittingen + totaalRestWaardeVoertuigen;
+        
         var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
         var totaalVerzekeringen = verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
         var totaalVerzekeringenMetBegunstigde = verzekeringen
@@ -52,11 +57,13 @@ public class BoedelController : ControllerBase
             .Sum(v => v.VerzekerdBedrag ?? 0);
         var totaalSchulden = schulden.Sum(s => s.Bedrag);
         var (brutoNalatenschap, nettoNalatenschap) = NalatenschapHelper.Bereken(
-            totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden, totaalVerzekeringenMetBegunstigde);
+            totaalBezittendingenMetRestWaarde, totaalSaldi, totaalVerzekeringen, totaalSchulden, totaalVerzekeringenMetBegunstigde);
 
         return Ok(new
         {
             totaalBezittingen,
+            totaalRestWaardeVoertuigen,
+            totaalBezittendingenMetRestWaarde,
             totaalSaldi,
             totaalVerzekeringen,
             totaalSchulden,
