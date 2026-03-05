@@ -299,19 +299,19 @@ export default function EigenaarPage() {
           <CardContent className="pt-5">
             <div className="flex items-center gap-6">
               <div className="h-28 w-28 rounded-full bg-muted border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden shrink-0">
-                {/* S9-08: show placeholder until the image has loaded */}
-                {(!fotoUrl || !fotoLoaded) && (
-                  <Camera className="h-10 w-10 text-muted-foreground/50" />
-                )}
+                {!fotoUrl && <Camera className="h-10 w-10 text-muted-foreground/50" />}
                 {fotoUrl && (
                   <Image
                     src={fotoUrl}
                     alt={t("foto.alt")}
                     width={112}
                     height={112}
-                    className={cn("h-full w-full object-cover", !fotoLoaded && "hidden")}
+                    className="h-full w-full object-cover"
                     onLoad={() => setFotoLoaded(true)}
-                    onError={() => setFotoLoaded(false)}
+                    onError={() => {
+                      setFotoLoaded(false);
+                      setFotoUrl(null);
+                    }}
                   />
                 )}
               </div>

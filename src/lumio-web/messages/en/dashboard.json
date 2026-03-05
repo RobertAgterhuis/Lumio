@@ -30,6 +30,15 @@
       "titel": "Legacy progress",
       "onderdelen": "{aantalIngevuld} of {totaal} sections completed"
     },
+    "activiteit": {
+      "titel": "Recent activity",
+      "beschrijving": "Recently updated sections in your dossier.",
+      "geen": "No recent activity found yet.",
+      "vandaag": "Today",
+      "gisteren": "Yesterday",
+      "dagenGeleden": "{aantal} days ago",
+      "onbekend": "Unknown"
+    },
     "meldingen": {
       "titel": "Notifications",
       "laden": "Loading notifications...",
@@ -42,6 +51,8 @@
       "titel": "Backup status",
       "laden": "Loading status...",
       "fout": "Could not load backup status.",
+      "negeren": "Dismiss",
+      "naarInstellingen": "Open backup settings",
       "status": {
         "ok": "Up to date",
         "warning": "Outdated",

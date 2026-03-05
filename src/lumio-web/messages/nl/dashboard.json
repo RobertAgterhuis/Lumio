@@ -30,6 +30,15 @@
       "titel": "Voortgang nalatenschap",
       "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"
     },
+    "activiteit": {
+      "titel": "Laatste activiteit",
+      "beschrijving": "Recent bijgewerkte onderdelen in uw dossier.",
+      "geen": "Nog geen recente activiteit gevonden.",
+      "vandaag": "Vandaag",
+      "gisteren": "Gisteren",
+      "dagenGeleden": "{aantal} dagen geleden",
+      "onbekend": "Onbekend"
+    },
     "meldingen": {
       "titel": "Meldingen",
       "laden": "Meldingen laden...",
@@ -42,6 +51,8 @@
       "titel": "Back-up status",
       "laden": "Status ophalen...",
       "fout": "Kan back-up status niet laden.",
+      "negeren": "Negeren",
+      "naarInstellingen": "Back-up instellingen openen",
       "status": {
         "ok": "Up-to-date",
         "warning": "Verouderd",

@@ -26,7 +26,6 @@ import { useAuthStore } from "@/stores/authStore";
 import { usePreferencesStore, type DashboardPreferences, type BooleanPreferenceKey } from "@/stores/preferencesStore";
 import { NabestaandenDashboard } from "@/components/nabestaanden/NabestaandenDashboard";
 import { StatistiekenWidget } from "@/components/dashboard/StatistiekenWidget";
-import { VoortgangGranulair } from "@/components/dashboard/VoortgangGranulair";
 import { ProfielSuggesties } from "@/components/dashboard/ProfielSuggesties";
 import { MeldingenWidget } from "@/components/dashboard/MeldingenWidget";
 import { BackupStatusWidget } from "@/components/dashboard/BackupStatusWidget";
@@ -41,7 +40,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { LumioIcon, type LumioIconName } from "@/components/ui/lumio-icon";
-import { cn } from "@/lib/utils";
 import { HelpButton } from "@/components/help/HelpButton";
 import { DossierVolledigBanner } from "@/components/wizard/DossierVolledigBanner";
 import { PageBanner } from "@/components/layout/PageBanner";
@@ -161,7 +159,7 @@ interface ActualisatieDomein {
 export default function DashboardPage() {
   const { isReadOnly } = useAuthStore();
   const {
-    showVoortgang, showStatistieken, showVoortgangGranulair, showSuggesties,
+    showVoortgang, showStatistieken, showSuggesties,
     hiddenDomeinKaarten, domeinKaartenVolgorde, sectieVolgorde,
     showMeldingen, showBackup, showAanbevolen, showVerloopdatum,
     toggleSection, toggleDomeinKaart, setDomeinKaartenVolgorde, setSectieVolgorde,
@@ -211,12 +209,29 @@ export default function DashboardPage() {
   }, [profileFetched, compleetheitFetched]);
   const actualisatie = actualisatieData?.domeinen ?? [];
   const aanbevolenDomein = compleetheid?.domeinen.find((d) => !d.ingevuld)?.domein ?? null;
+  const recenteActiviteiten = [...actualisatie]
+    .filter((d) => d.laatsteBevestiging)
+    .sort((a, b) => new Date(b.laatsteBevestiging ?? 0).getTime() - new Date(a.laatsteBevestiging ?? 0).getTime())
+    .slice(0, 3);
 
-  const DEFAULT_SECTIONS = ["suggesties", "statistieken", "meldingen", "aanbevolen", "voortgang", "granulair", "backup", "verloopdatum"];
+  const formatActiviteitDatum = (iso: string | null) => {
+    if (!iso) return t("activiteit.onbekend");
+    const datum = new Date(iso);
+    if (Number.isNaN(datum.getTime())) return t("activiteit.onbekend");
+    const vandaag = new Date();
+    const startVandaag = new Date(vandaag.getFullYear(), vandaag.getMonth(), vandaag.getDate()).getTime();
+    const startDatum = new Date(datum.getFullYear(), datum.getMonth(), datum.getDate()).getTime();
+    const dagenVerschil = Math.round((startVandaag - startDatum) / (1000 * 60 * 60 * 24));
+    if (dagenVerschil <= 0) return t("activiteit.vandaag");
+    if (dagenVerschil === 1) return t("activiteit.gisteren");
+    if (dagenVerschil < 7) return t("activiteit.dagenGeleden", { aantal: dagenVerschil });
+    return datum.toLocaleDateString("nl-NL", { day: "2-digit", month: "short" });
+  };
+
+  const DEFAULT_SECTIONS = ["suggesties", "statistieken", "meldingen", "aanbevolen", "voortgang", "backup", "verloopdatum"];
   const sectionVisibility: Record<string, boolean> = {
     voortgang: showVoortgang,
     statistieken: showStatistieken && (widgetHasContent.statistieken !== false),
-    granulair: showVoortgangGranulair,
     suggesties: showSuggesties,
     meldingen: showMeldingen,
     backup: showBackup && (widgetHasContent.backup !== false),
@@ -375,31 +390,25 @@ export default function DashboardPage() {
             {orderedSectieIds.map((widgetId) => {
               if (widgetId === "voortgang") return (
                 <SortableSection key="voortgang" id="voortgang">
-                  {compleetheid ? (
-                    <div className="rounded-lg border bg-card p-5 h-full shadow-sm hover:shadow-md transition-shadow duration-200">
-                      <div className="flex items-center justify-between mb-3">
-                        <h2 className="text-sm font-semibold text-primary">{t("voortgang.titel")}</h2>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-primary">{compleetheid.percentage}%</span>
-                          <HideButton section="showVoortgang" label={t("voortgang.titel")} />
-                        </div>
-                      </div>
-                      <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
-                        <div
-                          className={cn(
-                            "h-full rounded-full transition-all duration-700 ease-out",
-                            compleetheid.percentage === 100
-                              ? "bg-linear-to-r from-success to-success/80 shadow-[0_0_8px_rgba(45,107,49,0.4)]"
-                              : "bg-linear-to-r from-primary to-primary-400"
-                          )}
-                          style={{ width: `${compleetheid.percentage}%` }}
-                        />
-                      </div>
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        {t("voortgang.onderdelen", { aantalIngevuld: compleetheid.aantalIngevuld, totaal: compleetheid.totaal })}
-                      </p>
+                  <div className="rounded-lg border bg-card p-5 h-full shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <h2 className="text-sm font-semibold text-primary">{t("activiteit.titel")}</h2>
+                      <HideButton section="showVoortgang" label={t("activiteit.titel")} />
                     </div>
-                  ) : null}
+                    {recenteActiviteiten.length > 0 ? (
+                      <div className="space-y-2.5">
+                        {recenteActiviteiten.map((item) => (
+                          <div key={`${item.domein}-${item.laatsteBevestiging}`} className="flex items-center justify-between gap-3 text-sm">
+                            <span className="truncate text-foreground">{item.label}</span>
+                            <span className="text-xs text-muted-foreground shrink-0">{formatActiviteitDatum(item.laatsteBevestiging)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">{t("activiteit.geen")}</p>
+                    )}
+                    <p className="mt-3 text-xs text-muted-foreground">{t("activiteit.beschrijving")}</p>
+                  </div>
                 </SortableSection>
               );
               if (widgetId === "statistieken") return (
@@ -412,24 +421,12 @@ export default function DashboardPage() {
                   </div>
                 </SortableSection>
               );
-              if (widgetId === "granulair") return (
-                <SortableSection key="granulair" id="granulair">
-                  <div className="relative h-full">
-                    <div className="absolute top-3 right-3 z-10">
-                      <HideButton section="showVoortgangGranulair" label={t("voortgangGranulair.titel")} />
-                    </div>
-                    <VoortgangGranulair />
-                  </div>
-                </SortableSection>
-              );
               if (widgetId === "suggesties") return (
                 <SortableSection key="suggesties" id="suggesties">
-                  <div className="relative h-full">
-                    <div className="absolute top-3 right-3 z-10">
-                      <HideButton section="showSuggesties" label={t("suggesties.titel")} />
-                    </div>
-                    <ProfielSuggesties profileIsEmpty={!compleetheid || compleetheid.aantalIngevuld === 0} />
-                  </div>
+                  <ProfielSuggesties
+                    profileIsEmpty={!compleetheid || compleetheid.aantalIngevuld === 0}
+                    onHide={() => toggleSection("showSuggesties")}
+                  />
                 </SortableSection>
               );
               if (widgetId === "meldingen") return (

@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
-import { HardDrive, CheckCircle2, AlertTriangle, XCircle, EyeOff } from "lucide-react";
+import { HardDrive, CheckCircle2, AlertTriangle, XCircle, EyeOff, ChevronDown, ChevronUp } from "lucide-react";
 
 interface BackupStatus {
   lastBackup: string | null;
@@ -43,6 +43,8 @@ export function BackupStatusWidget({ onHasContent }: { onHasContent?: (v: boolea
   const { activeProfile } = useAuthStore();
   const toggleSection = usePreferencesStore((s) => s.toggleSection);
   const [isFirstRun, setIsFirstRun] = useState<boolean | null>(null);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const { data, isLoading, isError } = useDomainQuery<BackupStatus>("status/backup", {
     staleTime: 5 * 60 * 1000,
   });
@@ -52,6 +54,7 @@ export function BackupStatusWidget({ onHasContent }: { onHasContent?: (v: boolea
     const key = `lumio_backupwidget_seen_${activeProfile.id}`;
     const stored = localStorage.getItem(key);
     const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const dismissKey = `lumio_backupwidget_dismissed_${activeProfile.id}`;
 
     if (!stored) {
       // First ever visit: record today's date and hide the widget all day
@@ -62,59 +65,64 @@ export function BackupStatusWidget({ onHasContent }: { onHasContent?: (v: boolea
       // Show the widget starting the day after first use
       setIsFirstRun(stored === today);
     }
+
+    setIsDismissed(localStorage.getItem(dismissKey) === "1");
   }, [activeProfile]);
 
   // Report to parent whether this widget has visible content
   useEffect(() => {
     if (isFirstRun !== null) {
-      onHasContent?.(!isFirstRun);
+      onHasContent?.(!isFirstRun && !isDismissed);
     }
-  }, [isFirstRun, onHasContent]);
+  }, [isDismissed, isFirstRun, onHasContent]);
 
   // Hide until we've determined run status, and hide on first run
-  if (isFirstRun === null || isFirstRun) return null;
+  if (isFirstRun === null || isFirstRun || isDismissed) return null;
 
   const status = data?.status ?? "noBackup";
   const { icon: Icon, badgeClass } = statusConfig[status];
 
   return (
-    <Link href="/instellingen#backup" className="block group">
-      <Card className="transition-shadow group-hover:shadow-md cursor-pointer">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-base">
-              <HardDrive className="h-4 w-4" />
-              {t("titel")}
-            </div>
-            <div className="flex items-center gap-2">
-              {data && (
-                <Badge className={badgeClass}>
-                  <Icon className="h-3 w-3 mr-1" />
-                  {t(`status.${status}`)}
-                </Badge>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSection("showBackup"); }}
-                className="text-xs text-muted-foreground gap-1 h-7 px-2"
-              >
-                <EyeOff className="h-3.5 w-3.5" />
-                {tDash("verbergen")}
-              </Button>
-            </div>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+    <Card className="overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setExpanded((prev) => !prev)}
+        className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <HardDrive className="h-4 w-4 text-primary shrink-0" />
+        <span className="text-sm font-semibold flex-1">{t("titel")}</span>
+        {data && (
+          <Badge className={badgeClass}>
+            <Icon className="h-3 w-3 mr-1" />
+            {t(`status.${status}`)}
+          </Badge>
+        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (activeProfile) {
+              localStorage.setItem(`lumio_backupwidget_dismissed_${activeProfile.id}`, "1");
+            }
+            setIsDismissed(true);
+          }}
+          className="text-xs text-muted-foreground h-7 px-2"
+        >
+          {t("negeren")}
+        </Button>
+        {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+      </button>
+
+      {expanded && (
+        <CardContent className="pt-4 space-y-3 animate-[fadeSlideIn_220ms_ease-out_both]">
           {isLoading && (
             <div className="space-y-2 animate-pulse">
               <div className="h-4 w-3/4 rounded bg-muted" />
               <div className="h-3 w-1/2 rounded bg-muted" />
             </div>
           )}
-          {isError && (
-            <p className="text-sm text-danger">{t("fout")}</p>
-          )}
+          {isError && <p className="text-sm text-danger">{t("fout")}</p>}
           {data && (
             <div className="text-sm text-muted-foreground space-y-1">
               {data.lastBackup ? (
@@ -129,17 +137,30 @@ export function BackupStatusWidget({ onHasContent }: { onHasContent?: (v: boolea
                       })}
                     </span>
                   </p>
-                  {data.daysSince !== null && data.daysSince > 0 && (
-                    <p>{t("dagenGeleden", { dagen: data.daysSince })}</p>
-                  )}
+                  {data.daysSince !== null && data.daysSince > 0 && <p>{t("dagenGeleden", { dagen: data.daysSince })}</p>}
                 </>
               ) : (
                 <p>{t("nooit")}</p>
               )}
             </div>
           )}
+
+          <div className="flex items-center gap-2 pt-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleSection("showBackup")}
+              className="text-xs text-muted-foreground gap-1 h-7 px-2"
+            >
+              <EyeOff className="h-3.5 w-3.5" />
+              {tDash("verbergen")}
+            </Button>
+            <Button asChild size="sm" variant="outline" className="h-7 text-xs">
+              <Link href="/instellingen#backup">{t("naarInstellingen")}</Link>
+            </Button>
+          </div>
         </CardContent>
-      </Card>
-    </Link>
+      )}
+    </Card>
   );
 }
