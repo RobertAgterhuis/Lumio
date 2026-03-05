@@ -89,10 +89,15 @@
     "SP-1-013": 148, "SP-1-014": 149, "SP-1-015": 150, "SP-1-016": 151,
     "SP-1-017": 152
   },
-  "last_updated": "2026-03-04T12:00:00Z",
+  "last_updated": "2026-03-05T14:30:00Z",
   "reevaluation_version": "v4",
   "last_reevaluation": "2026-03-04T00:00:00Z",
   "reevaluation_report_path": "docs/synthesis/reevaluation-report-v4-20260304.md",
+  "recent_improvements": [
+    "PR#155 merged: auto-refresh for noodcontacten/testament/uitvaart after contact selection",
+    "DEC-120 updated: cache invalidation + per-field validation feedback constraints",
+    "User feedback fix: contacts now appear live after contact select + navigation without manual refresh"
+  ],
   "security_handoff_status": "UP_TO_DATE",
   "security_handoff_note": "docs/security/security-handoff-context.md created and up to date. BUG-SHAMIR-001 documented, AllowedPrefixes whitelist rationale explained, REC-SEC-005 regression test reference added. Resolved 2026-03-03.",
   "open_human_escalations": [],
