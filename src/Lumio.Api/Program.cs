@@ -111,6 +111,13 @@ builder.Services.AddScoped<INuvExportService, NuvExportService>();
 builder.Services.AddScoped<IHtmlExportService, HtmlExportService>();
 builder.Services.AddScoped<IEncryptedBackupService, EncryptedBackupService>();
 
+// HTTP client for external RDW OpenAPI (with configurable timeout)
+builder.Services.AddHttpClient<IRdwApiService, RdwApiService>()
+    .ConfigureHttpClient(client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(10);
+    });
+
 // Asset Registry services (scoped — used in Boedel domain for vehicle valuation + calculations)
 builder.Services.AddScoped<IVehicleResidualValueService, VehicleResidualValueService>();
 

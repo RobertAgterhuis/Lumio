@@ -19,8 +19,9 @@ public class FysiekBezit : BaseEntity
     public string? Kenteken { get; set; }
     public string? KvKNummer { get; set; }
 
-    // RDW: Voertuig restwaarde (read-only berekend op basis van depreciatietabel)
-    public decimal? RestWaarde { get; set; }
+    // RDW: Voertuig-specifieke velden
+    public int? BouwJaar { get; set; }          // Bouwjaar voor depreciatieberekening
+    public decimal? RestWaarde { get; set; }    // Read-only berekend op basis van depreciatietabel
 
     // Relatie naar kentekenbewijzen via DocumentGroepId
     public Guid? KentekenBewijsDocumentGroepId { get; set; }

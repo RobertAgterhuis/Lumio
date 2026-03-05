@@ -3,6 +3,7 @@ using Lumio.Api.Dtos.AssetRegistry;
 using Lumio.Api.Repositories;
 using Lumio.Api.Rules;
 using Lumio.Api.Services;
+using Lumio.Api.Services.AssetRegistry;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,19 @@ public class BoedelController : ControllerBase
 {
     private readonly IBoedelRepository _repo;
     private readonly IAuditService _audit;
+    private readonly IRdwApiService _rdwApi;
+    private readonly IVehicleResidualValueService _vehicleValueService;
 
-    public BoedelController(IBoedelRepository repo, IAuditService audit)
+    public BoedelController(
+        IBoedelRepository repo, 
+        IAuditService audit,
+        IRdwApiService rdwApi,
+        IVehicleResidualValueService vehicleValueService)
     {
         _repo = repo;
         _audit = audit;
+        _rdwApi = rdwApi;
+        _vehicleValueService = vehicleValueService;
     }
 
     // --- Samenvatting ---
@@ -79,6 +88,10 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         await _repo.AddAsync(item);
         await _repo.CommitAsync();
+        
+        // Calculate RestWaarde for vehicles
+        await CalculateAndSaveRestWaardeAsync(item);
+        
         await _audit.LogAsync("Aangemaakt", "FysiekBezit", item.Id);
         return Created($"/api/boedel/bezittingen/{item.Id}", ToBezitResponse(item));
     }
@@ -90,6 +103,10 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _repo.CommitAsync();
+        
+        // Recalculate RestWaarde for vehicles
+        await CalculateAndSaveRestWaardeAsync(item);
+        
         await _audit.LogAsync("Gewijzigd", "FysiekBezit", id);
         return Ok(ToBezitResponse(item));
     }
@@ -114,7 +131,7 @@ public class BoedelController : ControllerBase
             : null,
         f.VermogensSoort,
         f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
-        f.RestWaarde, f.KentekenBewijsDocumentGroepId,
+        f.BouwJaar, f.RestWaarde, f.KentekenBewijsDocumentGroepId,
         f.LinkedSchulden.Select(s => new BezitSchuldSummary(
             s.Id, s.Schuldeiser, s.Type, s.Bedrag,
             s.MaandelijkseAflossing, s.LeaseMaatschappij,
@@ -357,5 +374,70 @@ public class BoedelController : ControllerBase
         await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Schuld", id);
         return NoContent();
+    }
+
+    // --- Helper Methods ---
+
+    /// <summary>
+    /// Calculate and save RestWaarde for vehicle-type bezittingen.
+    /// Called after Create/Update to compute depreciation-based residual value.
+    /// </summary>
+    private async Task CalculateAndSaveRestWaardeAsync(FysiekBezit item)
+    {
+        // Only apply to vehicles with required data
+        if (item.Categorie != "Voertuig" || item.GeschatteWaarde is null or 0)
+            return;
+
+        try
+        {
+            // Get current item from DB to refresh from latest saved state
+            var currentItem = await _repo.FindBezitWithNavigationAsync(item.Id);
+            if (currentItem?.GeschatteWaarde is null or 0)
+                return;
+
+            // Calculate residual value based on estimated value + vehicle age (from BouwJaar)
+            var restWaarde = _vehicleValueService.CalculateResidualValue(
+                currentItem.GeschatteWaarde,
+                currentItem.BouwJaar);
+
+            if (restWaarde > 0)
+            {
+                currentItem.RestWaarde = Math.Round(restWaarde.Value, 2);
+                await _repo.CommitAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log but don't throw — RestWaarde is optional
+            System.Diagnostics.Debug.WriteLine($"RestWaarde calculation failed: {ex.Message}");
+        }
+    }
+
+    // --- RDW Vehicle Integration ---
+
+    /// <summary>
+    /// Lookup voertuiggegevens via RDW OpenAPI op basis van kenteken.
+    /// Gebruikt voor auto-aanvullen van merk/model/bouwjaar in voertuig-selector.
+    /// </summary>
+    [HttpPost("rdw-lookup")]
+    public async Task<IActionResult> RdwLookup(
+        [FromBody] RdwLookupRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.Kenteken))
+            return BadRequest(new { error = "Kenteken is verplicht." });
+
+        var voertuigGegevens = await _rdwApi.LookupByKentekenAsync(request.Kenteken, cancellationToken);
+        
+        if (voertuigGegevens is null)
+            return NotFound(new { error = $"Voertuig met kenteken '{request.Kenteken}' niet gevonden in RDW-register." });
+
+        return Ok(new RdwLookupResponse(
+            Merk: voertuigGegevens.Merk,
+            Model: voertuigGegevens.Model,
+            BouwJaar: voertuigGegevens.BouwJaar,
+            Klasse: voertuigGegevens.Klasse,
+            Brandstof: voertuigGegevens.Brandstof
+        ));
     }
 }

@@ -14,6 +14,7 @@ public record FysiekBezitResponse(
     Guid? BestemdeErfgenaamId, string? BestemdeErfgenaamNaam, VermogensSoort VermogensSoort,
     string? Notities,
     string? KadastraalNummer, string? Kenteken, string? KvKNummer,
+    int? BouwJaar,
     decimal? RestWaarde,
     Guid? KentekenBewijsDocumentGroepId,
     List<BezitSchuldSummary> LinkedSchulden);
@@ -24,6 +25,7 @@ public record FysiekBezitUpsertRequest(
     Guid? BestemdeErfgenaamId, VermogensSoort VermogensSoort,
     string? Notities,
     string? KadastraalNummer, string? Kenteken, string? KvKNummer,
+    int? BouwJaar,
     Guid? KentekenBewijsDocumentGroepId);
 
 public record BankrekeningResponse(
@@ -86,3 +88,12 @@ public record BezitSchuldUpsertRequest(
     string? LeaseMaatschappij,
     decimal? Rentepercentage,
     DateTime? Einddatum);
+// RDW OpenAPI integration DTOs
+public record RdwLookupRequest(string Kenteken);
+
+public record RdwLookupResponse(
+    string Merk,
+    string Model,
+    int BouwJaar,
+    string? Klasse,
+    string? Brandstof);
