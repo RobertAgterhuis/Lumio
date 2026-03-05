@@ -2,12 +2,7 @@ export interface UitvaartWensen {
   id: string;
   voorkeurType: string;
   begraafplaats?: string;
-  uitvaartOndernemer?: string;
-  uitvaartOndernemerTelefoon?: string;
-  uitvaartOndernemerEmail?: string;
-  uitvaartOndernemerAdres?: string;
-  uitvaartOndernemerPostcode?: string;
-  uitvaartOndernemerPlaats?: string;
+  uitvaartOndernemerContactId?: string | null;
   heeftUitvaartVerzekering: boolean;
   uitvaartVerzekeringDetails?: string;
   ceremonieSoort?: string;
@@ -82,12 +77,7 @@ export interface GenodigdeFormData {
 export interface UitvaartEditFormData {
   voorkeurType: string;
   begraafplaats: string;
-  uitvaartOndernemer: string;
-  uitvaartOndernemerTelefoon: string;
-  uitvaartOndernemerEmail: string;
-  uitvaartOndernemerAdres: string;
-  uitvaartOndernemerPostcode: string;
-  uitvaartOndernemerPlaats: string;
+  uitvaartOndernemerContactId: string | null;
   heeftUitvaartVerzekering: boolean;
   uitvaartVerzekeringDetails: string;
   ceremonieSoort: string;

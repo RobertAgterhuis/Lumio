@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "storybook/test";
 import { IdleWarningDialog } from "./IdleWarningDialog";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 
 const meta: Meta<typeof IdleWarningDialog> = {
   title: "Layout/IdleWarningDialog",
@@ -21,7 +21,7 @@ const meta: Meta<typeof IdleWarningDialog> = {
   },
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <Story />
       </NextIntlClientProvider>
     ),

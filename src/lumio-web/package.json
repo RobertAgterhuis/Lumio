@@ -9,9 +9,9 @@
     "url": "https://blog.agterhuis.net"
   },
   "scripts": {
-    "predev": "node scripts/generate-help-content.js && npx tsx scripts/merge-messages.ts",
+    "predev": "node scripts/generate-help-content.js",
     "dev": "next dev --port 3000",
-    "prebuild": "node scripts/generate-help-content.js && npx tsx scripts/merge-messages.ts",
+    "prebuild": "node scripts/generate-help-content.js",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",

@@ -9,7 +9,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "storybook/test";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 import {
   User,
   Phone,
@@ -60,7 +60,7 @@ const meta: Meta<typeof OnboardingWizardModal> = {
   },
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         {/* Provide backdrop so modal renders correctly in Storybook canvas */}
         <div className="relative min-h-screen bg-black/50">
           <Story />

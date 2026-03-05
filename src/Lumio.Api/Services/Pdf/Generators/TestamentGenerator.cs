@@ -43,12 +43,12 @@ public class TestamentGenerator : IPdfPageGenerator
                     PdfComponents.Section(col, L["Section_TestamentInformatie"].Value, t =>
                     {
                         PdfComponents.Row(t, L["Label_Type"].Value, testament.TestamentType ?? "—");
-                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament.NotarisNaam ?? "—");
-                        PdfComponents.Row(t, L["Label_Kantoor"].Value, testament.NotarisKantoor ?? "—");
-                        if (!string.IsNullOrEmpty(testament.NotarisTelefoon))
-                            PdfComponents.Row(t, L["Label_TelNotaris"].Value, testament.NotarisTelefoon);
-                        if (!string.IsNullOrEmpty(testament.NotarisEmail))
-                            PdfComponents.Row(t, L["Label_EMailNotaris"].Value, testament.NotarisEmail);
+                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament.NotarisContact?.Naam ?? "—");
+                        PdfComponents.Row(t, L["Label_Kantoor"].Value, testament.NotarisContact?.BedrijfsNaam ?? "—");
+                        if (!string.IsNullOrEmpty(testament.NotarisContact?.Telefoon))
+                            PdfComponents.Row(t, L["Label_TelNotaris"].Value, testament.NotarisContact.Telefoon);
+                        if (!string.IsNullOrEmpty(testament.NotarisContact?.Email))
+                            PdfComponents.Row(t, L["Label_EMailNotaris"].Value, testament.NotarisContact.Email);
                         PdfComponents.Row(t, L["Label_Datum"].Value, testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
                         PdfComponents.Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer ?? "—");
                         PdfComponents.Row(t, L["Label_Bewaarlocatie"].Value, testament.TestamentLocatie ?? "—");

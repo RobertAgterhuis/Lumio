@@ -67,7 +67,7 @@ public class TestamentJuridischeCheckController : ControllerBase
                 waarschuwingen.Add(new { ernst = pctErnst, categorie = L["CategoryDistribution"].Value, melding = L["WarningPercentageMismatch", totPct].Value, suggestie = L["SuggestionCheckPercentages"].Value });
             }
 
-            if (string.IsNullOrWhiteSpace(testament.NotarisNaam))
+            if (string.IsNullOrWhiteSpace(testament.NotarisContact?.Naam))
                 waarschuwingen.Add(new { ernst = L["SeverityInfo"].Value, categorie = L["CategoryNotary"].Value, melding = L["WarningNoNotary"].Value, suggestie = L["SuggestionFillInNotary"].Value });
 
             var executeurNamen = executeurs.Select(e => e.Naam.ToLowerInvariant()).ToHashSet();

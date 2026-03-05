@@ -134,15 +134,15 @@ public class TestamentConceptGenerator : IPdfPageGenerator
                     });
 
                 // Notarisgegevens
-                if (!string.IsNullOrEmpty(testament?.NotarisNaam))
+                if (!string.IsNullOrEmpty(testament?.NotarisContact?.Naam))
                     PdfComponents.Section(col, L["Section_Notaris"].Value, t =>
                     {
-                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament!.NotarisNaam ?? "—");
-                        PdfComponents.Row(t, L["Label_Kantoor"].Value, testament.NotarisKantoor ?? "—");
-                        if (!string.IsNullOrEmpty(testament.NotarisTelefoon))
-                            PdfComponents.Row(t, L["Label_Telefoon"].Value, testament.NotarisTelefoon);
-                        if (!string.IsNullOrEmpty(testament.NotarisEmail))
-                            PdfComponents.Row(t, L["Label_EMail"].Value, testament.NotarisEmail);
+                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament!.NotarisContact?.Naam ?? "—");
+                        PdfComponents.Row(t, L["Label_Kantoor"].Value, testament.NotarisContact?.BedrijfsNaam ?? "—");
+                        if (!string.IsNullOrEmpty(testament.NotarisContact?.Telefoon))
+                            PdfComponents.Row(t, L["Label_Telefoon"].Value, testament.NotarisContact.Telefoon);
+                        if (!string.IsNullOrEmpty(testament.NotarisContact?.Email))
+                            PdfComponents.Row(t, L["Label_EMail"].Value, testament.NotarisContact.Email);
                         if (!string.IsNullOrEmpty(testament.CTR_Nummer))
                             PdfComponents.Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer);
                     });

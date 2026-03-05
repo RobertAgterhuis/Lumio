@@ -7,14 +7,12 @@ public class UitvaartWensen : BaseEntity
     public Guid EigenaarId { get; set; }
     public Eigenaar Eigenaar { get; set; } = null!;
 
+    // SharedContact FK voor uitvaartondernemer
+    public Guid? UitvaartOndernemerContactId { get; set; }
+    public SharedContact? UitvaartOndernemerContact { get; set; }
+
     public string VoorkeurType { get; set; } = string.Empty;
     public string? Begraafplaats { get; set; }
-    public string? UitvaartOndernemer { get; set; }
-    public string? UitvaartOndernemerTelefoon { get; set; }
-    public string? UitvaartOndernemerEmail { get; set; }
-    public string? UitvaartOndernemerAdres { get; set; }
-    public string? UitvaartOndernemerPostcode { get; set; }
-    public string? UitvaartOndernemerPlaats { get; set; }
     public bool HeeftUitvaartVerzekering { get; set; }
     public string? UitvaartVerzekeringDetails { get; set; }
     public string? CeremonieSoort { get; set; }

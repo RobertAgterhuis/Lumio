@@ -91,18 +91,29 @@ export function useUitvaart() {
   const [locatieEditError, setLocatieEditError] = useState<string | null>(null);
 
   // Uitvaart edit dialog handlers
-  const openUitvaartEdit = useCallback(() => {
+  const openUitvaartEdit = useCallback(async () => {
     if (!data) return;
     setUitvaartEditError(null);
+
+    // Start with existing uitvaart data
+    let uitvaartOndernemerContactId = data.uitvaartOndernemerContactId ?? null;
+
+    // If no funeral director selected yet, try to load from eigenaar profile
+    if (!uitvaartOndernemerContactId) {
+      try {
+        const eigenaar = await api.get<{ uitvaartOndernemerContactId?: string | null }>("/api/eigenaar");
+        if (eigenaar?.uitvaartOndernemerContactId) {
+          uitvaartOndernemerContactId = eigenaar.uitvaartOndernemerContactId;
+        }
+      } catch {
+        // Silently fail — show existing saved data or empty field
+      }
+    }
+
     setUitvaartEditForm({
       voorkeurType: data.voorkeurType ?? "",
       begraafplaats: data.begraafplaats ?? "",
-      uitvaartOndernemer: data.uitvaartOndernemer ?? "",
-      uitvaartOndernemerTelefoon: data.uitvaartOndernemerTelefoon ?? "",
-      uitvaartOndernemerEmail: data.uitvaartOndernemerEmail ?? "",
-      uitvaartOndernemerAdres: data.uitvaartOndernemerAdres ?? "",
-      uitvaartOndernemerPostcode: data.uitvaartOndernemerPostcode ?? "",
-      uitvaartOndernemerPlaats: data.uitvaartOndernemerPlaats ?? "",
+      uitvaartOndernemerContactId: uitvaartOndernemerContactId,
       heeftUitvaartVerzekering: data.heeftUitvaartVerzekering ?? false,
       uitvaartVerzekeringDetails: data.uitvaartVerzekeringDetails ?? "",
       ceremonieSoort: data.ceremonieSoort ?? "",
@@ -133,12 +144,7 @@ export function useUitvaart() {
       const payload = {
         voorkeurType: f.voorkeurType,
         begraafplaats: f.begraafplaats || null,
-        uitvaartOndernemer: f.uitvaartOndernemer || null,
-        uitvaartOndernemerTelefoon: f.uitvaartOndernemerTelefoon || null,
-        uitvaartOndernemerEmail: f.uitvaartOndernemerEmail || null,
-        uitvaartOndernemerAdres: f.uitvaartOndernemerAdres || null,
-        uitvaartOndernemerPostcode: f.uitvaartOndernemerPostcode || null,
-        uitvaartOndernemerPlaats: f.uitvaartOndernemerPlaats || null,
+        uitvaartOndernemerContactId: f.uitvaartOndernemerContactId || null,
         heeftUitvaartVerzekering: f.heeftUitvaartVerzekering,
         uitvaartVerzekeringDetails: f.uitvaartVerzekeringDetails || null,
         ceremonieSoort: f.ceremonieSoort || null,
@@ -195,12 +201,7 @@ export function useUitvaart() {
       const payload = {
         voorkeurType: d.voorkeurType,
         begraafplaats: d.begraafplaats || null,
-        uitvaartOndernemer: d.uitvaartOndernemer || null,
-        uitvaartOndernemerTelefoon: d.uitvaartOndernemerTelefoon || null,
-        uitvaartOndernemerEmail: d.uitvaartOndernemerEmail || null,
-        uitvaartOndernemerAdres: d.uitvaartOndernemerAdres || null,
-        uitvaartOndernemerPostcode: d.uitvaartOndernemerPostcode || null,
-        uitvaartOndernemerPlaats: d.uitvaartOndernemerPlaats || null,
+        uitvaartOndernemerContactId: d.uitvaartOndernemerContactId || null,
         heeftUitvaartVerzekering: d.heeftUitvaartVerzekering ?? false,
         uitvaartVerzekeringDetails: d.uitvaartVerzekeringDetails || null,
         ceremonieSoort: d.ceremonieSoort || null,

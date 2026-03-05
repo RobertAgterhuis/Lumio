@@ -1,0 +1,67 @@
+{
+  "documenten": {
+    "laden": "Laden...",
+    "titel": "Documenten",
+    "beschrijving": "Belangrijke documenten veilig opslaan",
+    "uploaden": "Document uploaden",
+    "uploadenBezig": "Uploaden...",
+    "uploadMislukt": "Upload mislukt.",
+    "uploadenMislukt": "Uploaden mislukt.",
+    "downloadMislukt": "Download mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "versieLadenMislukt": "Versiegeschiedenis laden mislukt.",
+    "naamCategorieVerplicht": "Naam en categorie zijn verplicht.",
+    "verlopen": "Verlopen",
+    "verlooptOver": "Verloopt over {dagen} {dagen, plural, one {dag} other {dagen}}",
+    "verwijderenAlleVersiesTitel": "Alle versies verwijderen",
+    "verwijderenAlleVersiesBevestig": "Weet u zeker dat u alle versies van dit document wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "verwijderenAlleVersies": "Alle versies verwijderen",
+    "verwijderenTitel": "Document verwijderen",
+    "verwijderenBevestig": "Weet u zeker dat u dit document wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "verwijderen": "Verwijderen",
+    "nieuweVersieUploaden": "Nieuwe versie uploaden",
+    "dropzone": {
+      "titel": "Bestanden hier loslaten",
+      "beschrijving": "Sleep bestanden hierheen om te uploaden"
+    },
+    "letOp": "<strong>Let op:</strong> Documenten worden versleuteld opgeslagen in de database. Upload hier kopieën van belangrijke documenten zoals uw testament, paspoort of verzekeringspapieren.",
+    "geenDocumenten": "Nog geen documenten geüpload.",
+    "opgeslagenDocumenten": "Opgeslagen documenten ({aantal})",
+    "versie": "versie {nummer}",
+    "versiegeschiedenis": "Versiegeschiedenis",
+    "versieDownload": "Download versie {versie}",
+    "versieVerwijder": "Verwijder versie {versie}",
+    "uploadDialog": {
+      "titel": "Document uploaden",
+      "naam": "Naam",
+      "naamPlaceholder": "bijv. Kopie testament, Paspoort",
+      "categorie": "Categorie",
+      "selecteer": "Selecteer...",
+      "bestand": "Bestand",
+      "verloopdatum": "Verloopdatum",
+      "optioneel": "(optioneel)",
+      "verloopdatumHint": "Stel een verloopdatum in om een herinnering te ontvangen wanneer dit document vernieuwd moet worden.",
+      "verloopdatumVerleden": "Opgelet: de ingevulde verloopdatum ligt in het verleden.",
+      "annuleren": "Annuleren",
+      "uploaden": "Uploaden",
+      "uploadenBezig": "Uploaden..."
+    },
+    "dropDialog": {
+      "titel": "{aantal, plural, one {# bestand} other {# bestanden}} uploaden",
+      "naamPlaceholder": "Naam",
+      "uploadenBezig": "Uploaden...",
+      "geupload": "Geüpload",
+      "sluiten": "Sluiten",
+      "klaar": "Klaar",
+      "allesUploaden": "Alles uploaden ({aantal})"
+    },
+    "editDialog": {
+      "titel": "Document bewerken",
+      "bewerken": "Bewerken",
+      "notities": "Notities",
+      "notitiesPlaceholder": "Notities bij dit document...",
+      "opslaan": "Opslaan",
+      "opslaanMislukt": "Opslaan mislukt."
+    }
+  }
+}

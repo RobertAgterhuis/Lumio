@@ -53,18 +53,18 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
                 !string.IsNullOrEmpty(eigenaar.Email),
                 !string.IsNullOrEmpty(eigenaar.Adres),
                 !string.IsNullOrEmpty(eigenaar.BSN),
-                !string.IsNullOrEmpty(eigenaar.Notaris)) : null,
+                eigenaar.NotarisContactId.HasValue) : null,
             testament is not null ? new TestamentCompleetInfo(
                 !string.IsNullOrEmpty(testament.TestamentType),
-                !string.IsNullOrEmpty(testament.NotarisNaam),
+                testament.NotarisContactId.HasValue,
                 testament.DatumTestament.HasValue,
                 !string.IsNullOrEmpty(testament.AlgemeneWensen),
                 testament.Begunstigden.Count,
                 testament.Executeurs.Count) : null,
             euth is not null ? new EuthanasieCompleetInfo(
                 euth.DatumOndertekening.HasValue,
-                !string.IsNullOrEmpty(euth.Huisarts),
-                !string.IsNullOrEmpty(euth.VertegenwoordigerNaam),
+                euth.HuisartsContactId.HasValue,
+                euth.VertegenwoordigerContactId.HasValue,
                 WilEuthanasieIngevuld: true,
                 DementieClausuleIngevuld: !euth.WilEuthanasie || euth.DementieClausule) : null,
             donor is not null ? new DonorCompleetInfo(
@@ -75,7 +75,7 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
             new[] { await _db.FysiekeBezittingen.AnyAsync(), await _db.Bankrekeningen.AnyAsync(), await _db.Verzekeringen.AnyAsync(), await _db.Schulden.AnyAsync() },
             uitvaart is not null ? new UitvaartCompleetInfo(
                 !string.IsNullOrEmpty(uitvaart.VoorkeurType),
-                !string.IsNullOrEmpty(uitvaart.UitvaartOndernemer),
+                uitvaart.UitvaartOndernemerContactId.HasValue,
                 !string.IsNullOrEmpty(uitvaart.CeremonieSoort),
                 !string.IsNullOrEmpty(uitvaart.RouwkaartTekst),
                 !string.IsNullOrEmpty(uitvaart.VoorkeurBegraafplaatsNaam) || !string.IsNullOrEmpty(uitvaart.VoorkeurCrematoriumnaam) || !string.IsNullOrEmpty(uitvaart.VoorkeurAulaNaam),
@@ -237,7 +237,7 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
             testament != null && await _db.TestamentSnapshots.AnyAsync(s => s.TestamentInfoId == testament.Id),
             testament?.AangemaaktOp,
             wilsVerouderd,
-            !string.IsNullOrEmpty(wils?.VertegenwoordigerNaam),
+            wils?.VertegenwoordigerContactId.HasValue ?? false,
             wils?.WilEuthanasie ?? false,
             !string.IsNullOrEmpty(wils?.BehandelVerbod),
             donor?.Keuze,
@@ -290,7 +290,7 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
             var begunstigden = await _db.Begunstigden.Where(b => b.TestamentInfoId == testament.Id).ToListAsync();
             var executeurs = await _db.Executeurs.Where(e => e.TestamentInfoId == testament.Id).ToListAsync();
             testamentFact = new SuggestieTestamentFact(
-                testament.NotarisNaam,
+                testament.NotarisContact?.Naam,
                 begunstigden.Select(b => b.Naam).ToList(),
                 executeurs.Select(e => e.Naam).ToList(),
                 testament.DatumTestament,
@@ -321,9 +321,9 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
         var wilsverklaring = await _db.Wilsverklaringen
             .FirstOrDefaultAsync(w => w.EigenaarId == eigenaar.Id);
         SuggestieWilsverklaringFact? wilsverklaringFact = wilsverklaring is null ? null :
-            new(wilsverklaring.VertegenwoordigerNaam,
-                wilsverklaring.Vertegenwoordiger2Naam,
-                wilsverklaring.Huisarts,
+            new(wilsverklaring.VertegenwoordigerContact?.Naam,
+                wilsverklaring.Vertegenwoordiger2Contact?.Naam,
+                wilsverklaring.HuisartsContact?.Naam,
                 wilsverklaring.DatumOndertekening);
 
         var donor = await _db.DonorRegistraties
@@ -333,11 +333,11 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
 
         return new SuggestieFacts(
             true,
-            eigenaar.Notaris,
+            eigenaar.NotarisContact?.Naam,
             erfgenamen.Select(e => new SuggestieErfgenaamFact(FullName(e), e.Telefoon, e.Relatie)).ToList(),
             noodcontacten.Select(n => new SuggestieNoodcontactFact(n.Naam, n.Telefoon, n.Rol)).ToList(),
             testamentFact,
-            uitvaart?.UitvaartOndernemer,
+            uitvaart?.UitvaartOndernemerContact?.Naam,
             aantalVerzekeringenZonderBegunstigde,
             heeftHypotheekZonderBezit,
             heeftAccountOverdragenZonderNaam,

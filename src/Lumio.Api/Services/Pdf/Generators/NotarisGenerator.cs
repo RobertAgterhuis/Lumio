@@ -108,8 +108,8 @@ public class NotarisGenerator : IPdfPageGenerator
                         PdfComponents.Row(t, L["Label_DatumTestament"].Value, testament.DatumTestament?.ToString("dd-MM-yyyy") ?? "—");
                         PdfComponents.Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer ?? "—");
                         PdfComponents.Row(t, L["Label_LocatieColon"].Value, testament.TestamentLocatie ?? "—");
-                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament.NotarisNaam ?? "—");
-                        PdfComponents.Row(t, L["Label_Kantoor"].Value, testament.NotarisKantoor ?? "—");
+                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament.NotarisContact?.Naam ?? "—");
+                        PdfComponents.Row(t, L["Label_Kantoor"].Value, testament.NotarisContact?.BedrijfsNaam ?? "—");
                         PdfComponents.Row(t, L["Label_Uitsluitingsclausule"].Value,
                             testament.UitsluitingsClausule == true ? L["Value_Ja"].Value :
                             testament.UitsluitingsClausule == false ? L["Value_Nee"].Value : "—");

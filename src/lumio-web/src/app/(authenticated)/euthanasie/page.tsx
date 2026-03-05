@@ -76,15 +76,28 @@ export default function EuthanasiePage() {
   const [editError, setEditError] = useState<string | null>(null);
   const [confirmSaveOpen, setConfirmSaveOpen] = useState(false);
 
-  const openEdit = () => {
+  const openEdit = async () => {
     if (!data) return;
     setEditError(null);
+
+    // Load eigenaar data to pre-fill GP field
+    let prefilledHuisarts = data.huisarts ?? "";
+    try {
+      const eigenaar = await api.get<{ huisartsContactId?: string | null }>("/api/eigenaar");
+      if (eigenaar?.huisartsContactId && !prefilledHuisarts) {
+        // Pre-fill with indicator that GP is selected from profile
+        prefilledHuisarts = "✓ Geselecteerd vanuit profiel";
+      }
+    } catch {
+      // Silently fail — show existing saved data
+    }
+
     setEditForm({
       wilEuthanasie: data.wilEuthanasie,
       situatieBeschrijving: data.situatieBeschrijving ?? "",
       aanvullendeWensen: data.aanvullendeWensen ?? "",
       datumOndertekening: data.datumOndertekening ?? "",
-      huisarts: data.huisarts ?? "",
+      huisarts: prefilledHuisarts,
       huisartsPraktijk: data.huisartsPraktijk ?? "",
       huisartsTelefoon: data.huisartsTelefoon ?? "",
       huisartsEmail: data.huisartsEmail ?? "",

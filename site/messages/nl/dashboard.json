@@ -1,0 +1,155 @@
+{
+  "dashboard": {
+    "titel": "Dashboard",
+    "beschrijving": "Beheer uw nalatenschap. Klik op een onderdeel om te beginnen.",
+    "laden": {
+      "titel": "Even geduld",
+      "beschrijving": "We laden uw nalatenschap..."
+    },
+    "begroeting": {
+      "ochtend": "Goedemorgen",
+      "middag": "Goedemiddag",
+      "avond": "Goedenavond"
+    },
+    "aanbevolenStap": {
+      "titel": "Aanbevolen volgende stap",
+      "beschrijving": "Dit onderdeel is nog niet ingevuld",
+      "actie": "Invullen"
+    },
+    "verloopdatumWidget": {
+      "titel": "Documenten verlopen binnenkort",
+      "verlopen": "Verlopen",
+      "dagenOver": "{dagen} dagen",
+      "beherenLink": "Documenten beheren →"
+    },
+    "verbergen": "Verbergen",
+    "sectieVerplaatsen": "Sectie verplaatsen",
+    "helpHint": "Meer info",
+    "hoeWerkt": "Hoe werkt {titel}?",
+    "voortgang": {
+      "titel": "Voortgang nalatenschap",
+      "onderdelen": "{aantalIngevuld} van {totaal} onderdelen ingevuld"
+    },
+    "activiteit": {
+      "titel": "Laatste activiteit",
+      "beschrijving": "Recent bijgewerkte onderdelen in uw dossier.",
+      "geen": "Nog geen recente activiteit gevonden.",
+      "vandaag": "Vandaag",
+      "gisteren": "Gisteren",
+      "dagenGeleden": "{aantal} dagen geleden",
+      "onbekend": "Onbekend"
+    },
+    "meldingen": {
+      "titel": "Meldingen",
+      "laden": "Meldingen laden...",
+      "fout": "Kan meldingen niet laden.",
+      "geenMeldingen": "Geen meldingen — alles is in orde.",
+      "verbergen": "Verbergen",
+      "verwijder": "Verwijder melding"
+    },
+    "backup": {
+      "titel": "Back-up status",
+      "laden": "Status ophalen...",
+      "fout": "Kan back-up status niet laden.",
+      "negeren": "Negeren",
+      "naarInstellingen": "Back-up instellingen openen",
+      "status": {
+        "ok": "Up-to-date",
+        "warning": "Verouderd",
+        "noBackup": "Geen back-up"
+      },
+      "laatste": "Laatste back-up",
+      "dagenGeleden": "{dagen} dag(en) geleden",
+      "nooit": "Er is nog nooit een back-up gemaakt."
+    },
+    "geenProfiel": {
+      "titel": "Vul eerst uw profiel in om te beginnen",
+      "beschrijving": "Voordat u gegevens kunt opslaan in Lumio, moet u eerst uw persoonsgegevens invullen. Kies hoe u wilt starten:",
+      "interview": "Begeleid invullen (interview)",
+      "direct": "Direct profiel aanmaken"
+    },
+    "letOp": "Let op:",
+    "juridisch": "Lumio is een hulpmiddel voor het vastleggen van uw wensen. Een notarieel testament blijft vereist voor juridische geldigheid conform het Burgerlijk Wetboek (BW Boek 4).",
+    "juridischBegrepen": "Begrepen, niet meer tonen",
+    "status": {
+      "ingevuld": "Ingevuld",
+      "beginnen": "Beginnen",
+      "openen": "Openen",
+      "afgerond": "Afgerond",
+      "bezig": "Bezig",
+      "reviewNodig": "Review nodig",
+      "markeerAfgerond": "Markeer afgerond",
+      "markeringOpheffen": "Heropenen"
+    },
+    "domein": {
+      "eigenaar": {
+        "titel": "Mijn Profiel",
+        "beschrijving": "Persoonlijke gegevens en contactinformatie"
+      },
+      "testament": {
+        "titel": "Testament",
+        "beschrijving": "Testamentaire informatie, begunstigden en executeurs"
+      },
+      "euthanasie": {
+        "titel": "Wilsverklaring Euthanasie",
+        "beschrijving": "Uw wensen rondom euthanasie en medische behandeling"
+      },
+      "donor": {
+        "titel": "Donorregistratie",
+        "beschrijving": "Orgaandonatie keuzes en registratie"
+      },
+      "digitaalBezit": {
+        "titel": "Digitaal Bezit",
+        "beschrijving": "Online accounts, wachtwoorden en crypto wallets"
+      },
+      "boedel": {
+        "titel": "Boedel",
+        "beschrijving": "Bezittingen, bankrekeningen, verzekeringen en schulden"
+      },
+      "uitvaart": {
+        "titel": "Uitvaartwensen",
+        "beschrijving": "Begrafenis of crematie, ceremonie en rouwkaart"
+      },
+      "documenten": {
+        "titel": "Documenten",
+        "beschrijving": "Belangrijke documenten veilig opslaan"
+      },
+      "erfgenamen": {
+        "titel": "Erfgenamen",
+        "beschrijving": "Erfgenamen beheren en noodcodes verdelen"
+      },
+      "noodcontacten": {
+        "titel": "Noodcontacten",
+        "beschrijving": "Vertrouwenspersonen en hulpverleners voor noodsituaties"
+      }
+    },
+    "suggesties": {
+      "titel": "Slimme suggesties",
+      "beschrijving": "Analyseer uw profiel en ontvang suggesties voor ontbrekende koppelingen en verbeteringen.",
+      "analyseren": "Profiel analyseren",
+      "analyseMislukt": "Analyse mislukt",
+      "laden": "Suggesties laden...",
+      "fout": "Kon de analyse niet uitvoeren.",
+      "geenSuggesties": "Geen suggesties",
+      "geenSuggestiesBeschrijving": "Uw profiel is goed ingevuld en alle gegevens zijn consistent.",
+      "profielLeeg": "Nog geen gegevens om te analyseren",
+      "profielLeegBeschrijving": "Vul eerst uw profiel in om suggesties te ontvangen.",
+      "aantalGevonden": "{aantal, plural, one {# suggestie} other {# suggesties}} gevonden:"
+    },
+    "statistieken": {
+      "titel": "Statistieken",
+      "erfgenamen": "Erfgenamen",
+      "digitaleAccounts": "Digitale accounts",
+      "documenten": "Documenten",
+      "boedelitems": "Boedelitems",
+      "noodcontacten": "Noodcontacten",
+      "totaleWaarde": "Totale waarde",
+      "schulden": "Schulden",
+      "nettoNalatenschap": "Netto nalatenschap"
+    },
+    "voortgangGranulair": {
+      "titel": "Gedetailleerde voortgang",
+      "veldenIngevuld": "{ingevuld} van {totaal} velden ingevuld"
+    }
+  }
+}

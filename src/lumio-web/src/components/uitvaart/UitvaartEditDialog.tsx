@@ -8,13 +8,13 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ContactSelector } from "@/components/common/ContactSelector";
 import {
   Dialog,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { PersonSelect } from "@/components/PersonSelect";
 import type { UitvaartEditFormData } from "./types";
 
 interface UitvaartEditDialogProps {
@@ -24,6 +24,7 @@ interface UitvaartEditDialogProps {
   onFormChange: (form: UitvaartEditFormData) => void;
   onSave: () => void;
   error: string | null;
+  onUitvaartOndernemerSelect?: (contactId: string | null) => void;
 }
 
 export function UitvaartEditDialog({
@@ -33,6 +34,7 @@ export function UitvaartEditDialog({
   onFormChange,
   onSave,
   error,
+  onUitvaartOndernemerSelect,
 }: UitvaartEditDialogProps) {
   const t = useTranslations("uitvaart");
 
@@ -86,80 +88,25 @@ export function UitvaartEditDialog({
             </Select>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-2">
-            <Label>{t("editDialog.ondernemer")}</Label>
-            <PersonSelect
-              source={{ noodcontactRol: "Uitvaartondernemer" }}
-              value={form.uitvaartOndernemer}
-              onChange={(v) =>
-                onFormChange({ ...form, uitvaartOndernemer: v })
-              }
-              onPersonSelect={(p) =>
-                onFormChange({
-                  ...form,
-                  uitvaartOndernemer: p.naam,
-                  uitvaartOndernemerTelefoon:
-                    p.telefoon || form.uitvaartOndernemerTelefoon,
-                  uitvaartOndernemerEmail:
-                    p.email || form.uitvaartOndernemerEmail,
-                  uitvaartOndernemerAdres:
-                    p.adres || form.uitvaartOndernemerAdres,
-                  uitvaartOndernemerPostcode:
-                    p.postcode || form.uitvaartOndernemerPostcode,
-                  uitvaartOndernemerPlaats:
-                    p.woonplaats || form.uitvaartOndernemerPlaats,
-                })
-              }
-              onClear={() =>
-                onFormChange({
-                  ...form,
-                  uitvaartOndernemer: "",
-                  uitvaartOndernemerTelefoon: "",
-                  uitvaartOndernemerEmail: "",
-                  uitvaartOndernemerAdres: "",
-                  uitvaartOndernemerPostcode: "",
-                  uitvaartOndernemerPlaats: "",
-                })
-              }
-              showCreateNew
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>{t("editDialog.telOndernemer")}</Label>
-            <Input
-              value={form.uitvaartOndernemerTelefoon}
-              onChange={(e) =>
-                onFormChange({
-                  ...form,
-                  uitvaartOndernemerTelefoon: e.target.value,
-                })
-              }
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-2">
-            <Label>{t("editDialog.emailOndernemer")}</Label>
-            <Input
-              value={form.uitvaartOndernemerEmail}
-              onChange={(e) =>
-                onFormChange({
-                  ...form,
-                  uitvaartOndernemerEmail: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>{t("editDialog.kleding")}</Label>
-            <Input
-              value={form.kledingwensen}
-              onChange={(e) =>
-                onFormChange({ ...form, kledingwensen: e.target.value })
-              }
-            />
-          </div>
+        <ContactSelector
+          label={t("editDialog.ondernemer")}
+          contactType={2}
+          selectedContactId={form.uitvaartOndernemerContactId}
+          onSelect={(contactId) => {
+            onFormChange({ ...form, uitvaartOndernemerContactId: contactId });
+            onUitvaartOndernemerSelect?.(contactId);
+          }}
+          required={false}
+          showCreateNew={true}
+        />
+        <div className="space-y-2">
+          <Label>{t("editDialog.kleding")}</Label>
+          <Input
+            value={form.kledingwensen}
+            onChange={(e) =>
+              onFormChange({ ...form, kledingwensen: e.target.value })
+            }
+          />
         </div>
         <Checkbox
           id="verzekering"

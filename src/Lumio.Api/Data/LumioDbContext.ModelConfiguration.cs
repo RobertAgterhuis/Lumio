@@ -128,6 +128,77 @@ public partial class LumioDbContext
             .HasForeignKey(s => s.EigenaarId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // SharedContact → Eigenaar
+        modelBuilder.Entity<SharedContact>()
+            .HasOne(c => c.Eigenaar)
+            .WithMany()
+            .HasForeignKey(c => c.EigenaarId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Eigenaar → SharedContact (Notaris) - Optional FK
+        modelBuilder.Entity<Eigenaar>()
+            .HasOne(e => e.NotarisContact)
+            .WithMany()
+            .HasForeignKey(e => e.NotarisContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        // Eigenaar → SharedContact (Huisarts) - Optional FK
+        modelBuilder.Entity<Eigenaar>()
+            .HasOne(e => e.HuisartsContact)
+            .WithMany()
+            .HasForeignKey(e => e.HuisartsContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        // Eigenaar → SharedContact (UitvaartOndernemer) - Optional FK
+        modelBuilder.Entity<Eigenaar>()
+            .HasOne(e => e.UitvaartOndernemerContact)
+            .WithMany()
+            .HasForeignKey(e => e.UitvaartOndernemerContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        // TestamentInfo → SharedContact (Notaris) - Optional FK
+        modelBuilder.Entity<TestamentInfo>()
+            .HasOne(t => t.NotarisContact)
+            .WithMany()
+            .HasForeignKey(t => t.NotarisContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        // UitvaartWensen → SharedContact (UitvaartOndernemer) - Optional FK
+        modelBuilder.Entity<UitvaartWensen>()
+            .HasOne(u => u.UitvaartOndernemerContact)
+            .WithMany()
+            .HasForeignKey(u => u.UitvaartOndernemerContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        // WilsverklaringEuthanasie → SharedContact (Huisarts) - Optional FK
+        modelBuilder.Entity<WilsverklaringEuthanasie>()
+            .HasOne(w => w.HuisartsContact)
+            .WithMany()
+            .HasForeignKey(w => w.HuisartsContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        // WilsverklaringEuthanasie → SharedContact (Vertegenwoordiger) - Optional FK
+        modelBuilder.Entity<WilsverklaringEuthanasie>()
+            .HasOne(w => w.VertegenwoordigerContact)
+            .WithMany()
+            .HasForeignKey(w => w.VertegenwoordigerContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
+        // WilsverklaringEuthanasie → SharedContact (Vertegenwoordiger2) - Optional FK
+        modelBuilder.Entity<WilsverklaringEuthanasie>()
+            .HasOne(w => w.Vertegenwoordiger2Contact)
+            .WithMany()
+            .HasForeignKey(w => w.Vertegenwoordiger2ContactId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
+
         // DigitalEstate → Eigenaar
         modelBuilder.Entity<DigitaalAccount>()
             .HasOne<Eigenaar>()

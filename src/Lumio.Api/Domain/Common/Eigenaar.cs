@@ -37,13 +37,18 @@ public class Eigenaar : BaseEntity
     public string? Woonplaats { get; set; }
     public string? Telefoon { get; set; }
     public string? Email { get; set; }
-    public string? Notaris { get; set; }
-    public string? NotarisKantoor { get; set; }
-    public string? NotarisTelefoon { get; set; }
-    public string? NotarisEmail { get; set; }
-    public string? NotarisAdres { get; set; }
-    public string? NotarisPostcode { get; set; }
-    public string? NotarisPlaats { get; set; }
+
+    // Relatie naar gedeeld notaris contact
+    public Guid? NotarisContactId { get; set; }
+    public SharedContact? NotarisContact { get; set; }
+
+    // Relatie naar gedeeld huisarts contact
+    public Guid? HuisartsContactId { get; set; }
+    public SharedContact? HuisartsContact { get; set; }
+
+    // Relatie naar gedeeld uitvaartondernemer contact
+    public Guid? UitvaartOndernemerContactId { get; set; }
+    public SharedContact? UitvaartOndernemerContact { get; set; }
 
     // P-M4: Burgerlijke staat en huwelijksvoorwaarden
     public BurgerlijkeStaat BurgerlijkeStaat { get; set; } = BurgerlijkeStaat.Ongehuwd;

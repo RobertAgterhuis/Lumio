@@ -29,12 +29,7 @@ export const emptyGenodigdeForm: GenodigdeFormData = {
 export const emptyUitvaartEditForm: UitvaartEditFormData = {
   voorkeurType: "",
   begraafplaats: "",
-  uitvaartOndernemer: "",
-  uitvaartOndernemerTelefoon: "",
-  uitvaartOndernemerEmail: "",
-  uitvaartOndernemerAdres: "",
-  uitvaartOndernemerPostcode: "",
-  uitvaartOndernemerPlaats: "",
+  uitvaartOndernemerContactId: null,
   heeftUitvaartVerzekering: false,
   uitvaartVerzekeringDetails: "",
   ceremonieSoort: "",

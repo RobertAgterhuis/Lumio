@@ -8,7 +8,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "storybook/test";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 import { ShamirDialog } from "./ShamirDialog";
 import type { Erfgenaam, GenereerResponse } from "./types";
 import type { ReactNode } from "react";
@@ -87,7 +87,7 @@ const MOCK_GENERATED_SHARES: GenereerResponse = {
   totaalAantalDelen: 3,
 };
 
-/** Hardcoded NL translations — gespiegeld vanuit messages/nl.json#erfgenamen.shamir */
+/** Hardcoded NL translations — gespiegeld vanuit messages/nl/erfgenamen.json#erfgenamen.shamir */
 const TRANSLATIONS = {
   stap1Titel: "Wat zijn noodcodes?",
   stap1Uitleg:
@@ -170,7 +170,7 @@ const meta: Meta<typeof ShamirDialog> = {
   },
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <div className="w-full max-w-lg">
           <Story />
         </div>

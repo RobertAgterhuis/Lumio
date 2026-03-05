@@ -101,9 +101,9 @@ public class ExecuteurRapportGenerator : IPdfPageGenerator
                         PdfComponents.Row(t, L["Label_DatumTestament"].Value, testament.DatumTestament.Value.ToString("dd-MM-yyyy"));
                     if (!string.IsNullOrEmpty(testament.CTR_Nummer))
                         PdfComponents.Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer);
-                    if (!string.IsNullOrEmpty(testament.NotarisNaam))
+                    if (!string.IsNullOrEmpty(testament.NotarisContact?.Naam))
                         PdfComponents.Row(t, L["Label_Notaris"].Value,
-                            $"{testament.NotarisNaam}{(!string.IsNullOrEmpty(testament.NotarisKantoor) ? $" ({testament.NotarisKantoor})" : "")}");
+                            $"{testament.NotarisContact?.Naam}{(!string.IsNullOrEmpty(testament.NotarisContact?.BedrijfsNaam) ? $" ({testament.NotarisContact.BedrijfsNaam})" : "")}");
                     if (!string.IsNullOrEmpty(testament.AlgemeneWensen))
                         PdfComponents.Row(t, L["Label_AlgemeneWensen"].Value, testament.AlgemeneWensen);
                     if (!string.IsNullOrEmpty(testament.BijzondereBepalingen))

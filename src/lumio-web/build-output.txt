@@ -1,0 +1,61 @@
+
+> lumio-web@1.0.0 prebuild
+> node scripts/generate-help-content.js && npx tsx scripts/merge-messages.ts
+
+  [nl] 01-aan-de-slag.md
+  [nl] 02-dashboard.md
+  [nl] 03-mijn-profiel.md
+  [nl] 04-testament.md
+  [nl] 05-wilsverklaring.md
+  [nl] 06-donorregistratie.md
+  [nl] 07-digitaal-bezit.md
+  [nl] 08-boedel.md
+  [nl] 09-uitvaartwensen.md
+  [nl] 10-documenten.md
+  [nl] 11-erfgenamen.md
+  [nl] 12-noodcontacten.md
+  [nl] 13-overige-functies.md
+  [nl] 14-nabestaanden.md
+  [nl] 15-videoboodschappen.md
+  [en] 01-getting-started.md
+  [en] 02-dashboard.md
+  [en] 03-my-profile.md
+  [en] 04-will.md
+  [en] 05-advance-directive.md
+  [en] 06-organ-donation.md
+  [en] 07-digital-assets.md
+  [en] 08-estate.md
+  [en] 09-funeral-wishes.md
+  [en] 10-documents.md
+  [en] 11-heirs.md
+  [en] 12-emergency-contacts.md
+  [en] 13-other-features.md
+  [en] 14-heir-mode.md
+  [en] 15-video-messages.md
+
+Γ£ô Generated src\content\help-content.ts
+  2 locales, NL: 15 files, EN: 15 files
+[merge-messages] nl.json written ΓÇö 18 domain files, 47 top-level namespaces
+[merge-messages] en.json written ΓÇö 18 domain files, 47 top-level namespaces
+
+> lumio-web@1.0.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 3.9s
+  Running TypeScript ...
+Failed to compile.
+
+./src/components/uitvaart/useUitvaart.ts:188:31
+Type error: Property 'uitvaartOndernemer' does not exist on type 'UitvaartWensen'.
+
+  186 |         voorkeurType: d.voorkeurType,
+  187 |         begraafplaats: d.begraafplaats || null,
+> 188 |         uitvaartOndernemer: d.uitvaartOndernemer || null,
+      |                               ^
+  189 |         uitvaartOndernemerTelefoon: d.uitvaartOndernemerTelefoon || null,
+  190 |         uitvaartOndernemerEmail: d.uitvaartOndernemerEmail || null,
+  191 |         uitvaartOndernemerAdres: d.uitvaartOndernemerAdres || null,
+Next.js build worker exited with code: 1 and signal: null

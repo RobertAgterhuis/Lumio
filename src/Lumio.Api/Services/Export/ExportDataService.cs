@@ -65,8 +65,8 @@ public sealed class ExportDataService : IExportDataService
                 eigenaar.Geboortedatum.ToString("yyyy-MM-dd"),
                 eigenaar.BSN, eigenaar.Adres, eigenaar.Postcode, eigenaar.Woonplaats,
                 eigenaar.Telefoon, eigenaar.Email,
-                eigenaar.Notaris, eigenaar.NotarisKantoor, eigenaar.NotarisTelefoon,
-                eigenaar.NotarisEmail, eigenaar.NotarisAdres, eigenaar.NotarisPostcode, eigenaar.NotarisPlaats,
+                eigenaar.NotarisContact?.Naam, eigenaar.NotarisContact?.BedrijfsNaam, eigenaar.NotarisContact?.Telefoon,
+                eigenaar.NotarisContact?.Email, eigenaar.NotarisContact?.Adres, eigenaar.NotarisContact?.Postcode, eigenaar.NotarisContact?.Woonplaats,
                 eigenaar.BurgerlijkeStaat.ToString(), eigenaar.HuwelijksVoorwaarden.ToString(),
                 eigenaar.DatumHuwelijk?.ToString("yyyy-MM-dd"),
                 eigenaar.LegitimatieSoort.ToString(), eigenaar.LegitimatieNummer,
@@ -86,7 +86,7 @@ public sealed class ExportDataService : IExportDataService
                 n.Telefoon, n.Email, n.Adres, n.Postcode, n.Woonplaats, n.Instructies)).ToList(),
 
             Testament = testament is null ? null : new TestamentExport(
-                testament.TestamentType, testament.NotarisNaam, testament.NotarisKantoor,
+                testament.TestamentType, testament.NotarisContact?.Naam, testament.NotarisContact?.BedrijfsNaam,
                 testament.DatumTestament?.ToString("yyyy-MM-dd"),
                 testament.TestamentLocatie, testament.CTR_Nummer,
                 testament.AlgemeneWensen, testament.BijzondereBepalingen,
@@ -100,10 +100,10 @@ public sealed class ExportDataService : IExportDataService
             Euthanasie = wilsverklaring is null ? null : new EuthanasieExport(
                 wilsverklaring.DatumOndertekening?.ToString("yyyy-MM-dd"),
                 wilsverklaring.WilEuthanasie, wilsverklaring.SituatieBeschrijving,
-                wilsverklaring.Huisarts, wilsverklaring.HuisartsPraktijk,
-                wilsverklaring.HuisartsTelefoon,
-                wilsverklaring.VertegenwoordigerNaam, wilsverklaring.VertegenwoordigerRelatie,
-                wilsverklaring.VertegenwoordigerTelefoon,
+                wilsverklaring.HuisartsContact?.Naam, wilsverklaring.HuisartsContact?.BedrijfsNaam,
+                wilsverklaring.HuisartsContact?.Telefoon,
+                wilsverklaring.VertegenwoordigerContact?.Naam, wilsverklaring.VertegenwoordigerContact?.Relatie,
+                wilsverklaring.VertegenwoordigerContact?.Telefoon,
                 wilsverklaring.AanvullendeWensen,
                 wilsverklaring.DementieClausule, wilsverklaring.DementieClausuleToelichting,
                 wilsverklaring.BehandelVerbod,
@@ -118,8 +118,8 @@ public sealed class ExportDataService : IExportDataService
 
             Uitvaart = uitvaart is null ? null : new UitvaartExport(
                 uitvaart.VoorkeurType, uitvaart.Begraafplaats,
-                uitvaart.UitvaartOndernemer, uitvaart.UitvaartOndernemerTelefoon,
-                uitvaart.UitvaartOndernemerEmail,
+                uitvaart.UitvaartOndernemerContact?.Naam, uitvaart.UitvaartOndernemerContact?.Telefoon,
+                uitvaart.UitvaartOndernemerContact?.Email,
                 uitvaart.HeeftUitvaartVerzekering, uitvaart.UitvaartVerzekeringDetails,
                 uitvaart.CeremonieSoort, uitvaart.CeremonieLocatie,
                 uitvaart.Muziekwensen, uitvaart.Sprekers, uitvaart.Bloemen,

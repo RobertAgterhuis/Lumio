@@ -144,30 +144,10 @@ export default function UitvaartPage() {
                     {data.begraafplaats}
                   </p>
                 )}
-                {data.uitvaartOndernemer && (
+                {data.uitvaartOndernemerContactId && (
                   <p>
                     <span className="text-muted-foreground">{t("uitvaartCard.ondernemer")}</span>{" "}
-                    {data.uitvaartOndernemer}
-                  </p>
-                )}
-                {data.uitvaartOndernemerTelefoon && (
-                  <p>
-                    <span className="text-muted-foreground">{t("uitvaartCard.telOndernemer")}</span>{" "}
-                    {data.uitvaartOndernemerTelefoon}
-                  </p>
-                )}
-                {data.uitvaartOndernemerEmail && (
-                  <p>
-                    <span className="text-muted-foreground">{t("uitvaartCard.emailOndernemer")}</span>{" "}
-                    {data.uitvaartOndernemerEmail}
-                  </p>
-                )}
-                {data.uitvaartOndernemerAdres && (
-                  <p>
-                    <span className="text-muted-foreground">{t("uitvaartCard.adresOndernemer")}</span>{" "}
-                    {data.uitvaartOndernemerAdres}
-                    {data.uitvaartOndernemerPostcode ? `, ${data.uitvaartOndernemerPostcode}` : ""}
-                    {data.uitvaartOndernemerPlaats ? ` ${data.uitvaartOndernemerPlaats}` : ""}
+                    ✓ {t("common.selected")}
                   </p>
                 )}
                 {data.kledingwensen && (

@@ -14,7 +14,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within, expect } from "storybook/test";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 import { HeirUnlockForm } from "./HeirUnlockForm";
 
 // ---------------------------------------------------------------------------
@@ -35,7 +35,7 @@ const meta: Meta<typeof HeirUnlockForm> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <div className="w-full max-w-lg p-4">
           <Story />
         </div>

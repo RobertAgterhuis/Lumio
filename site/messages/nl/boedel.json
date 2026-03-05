@@ -1,0 +1,144 @@
+{
+  "boedel": {
+    "laden": "Laden...",
+    "titel": "Boedel",
+    "beschrijving": "Bezittingen, bankrekeningen, verzekeringen en schulden",
+    "tip": "Een volledig overzicht van uw boedel helpt erfgenamen bij de afwikkeling conform BW Boek 4.",
+    "tipLabel": "Tip:",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "bedragVerplicht": "Bedrag is verplicht en moet groter zijn dan 0.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "toevoegen": "Toevoegen",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "opslaanBezig": "Opslaan...",
+    "overzicht": {
+      "titel": "Financieel overzicht",
+      "bezittingen": "Bezittingen ({aantal})",
+      "saldi": "Saldi ({aantal})",
+      "verzekeringen": "Verzekeringen ({aantal})",
+      "schulden": "Schulden ({aantal})",
+      "brutoNalatenschap": "Bruto nalatenschap",
+      "nettoNalatenschap": "Netto nalatenschap"
+    },
+    "tabs": {
+      "bezittingen": "Bezittingen ({aantal})",
+      "rekeningen": "Rekeningen ({aantal})",
+      "verzekeringen": "Verzekeringen ({aantal})",
+      "schulden": "Schulden ({aantal})"
+    },
+    "bezittingen": {
+      "titel": "Bezittingen",
+      "geenBezittingen": "Nog geen bezittingen. Klik op Toevoegen.",
+      "gemeenschap": "G",
+      "prive": "P",
+      "kadLabel": "Kad:",
+      "kvkLabel": "KvK:"
+    },
+    "rekeningen": {
+      "titel": "Bankrekeningen",
+      "geenRekeningen": "Nog geen rekeningen. Klik op Toevoegen."
+    },
+    "verzekeringen": {
+      "titel": "Verzekeringen",
+      "geenVerzekeringen": "Nog geen verzekeringen. Klik op Toevoegen.",
+      "polisLabel": "Polis:"
+    },
+    "schulden": {
+      "titel": "Schulden",
+      "geenSchulden": "Nog geen schulden. Klik op Toevoegen."
+    },
+    "bezitDialog": {
+      "bewerken": "Bezit bewerken",
+      "toevoegen": "Bezit toevoegen",
+      "categorie": "Categorie",
+      "omschrijving": "Omschrijving",
+      "omschrijvingPlaceholder": "bijv. Woning aan de Keizersgracht, BMW 3-serie",
+      "geschatteWaarde": "Geschatte waarde (€)",
+      "locatie": "Locatie",
+      "locatiePlaceholder": "Waar bevindt dit zich?",
+      "bestemdeErfgenaam": "Bestemde erfgenaam",
+      "bestemdeErfgenaamPlaceholder": "Wie moet dit ontvangen?",
+      "vermogensSoort": "Vermogenssoort",
+      "vermogensSoortTooltip": "Privévermogen is eigendom van één persoon. Gemeenschapsvermogen valt in de gemeenschap van goederen en wordt bij scheiding of overlijden verdeeld. Dit onderscheid is belangrijk voor de erfbelasting en verdeling.",
+      "kadastraalNummer": "Kadastraal nummer",
+      "kadastraalPlaceholder": "bijv. ASD02 K 1234",
+      "kenteken": "Kenteken",
+      "kentekenPlaceholder": "bijv. AB-123-CD",
+      "kvkNummer": "KvK-nummer",
+      "kvkPlaceholder": "Kamer van Koophandel nummer (indien van toepassing)",
+      "notities": "Notities",
+      "schulden": {
+        "titel": "Schulden / financieringsverplichtingen",
+        "schuldeiser": "Schuldeiser",
+        "schuldeiserPlaceholder": "bijv. ABN AMRO, ING",
+        "type": "Type",
+        "types": {
+          "hypotheek": "Hypotheek",
+          "lening": "Lening",
+          "lease": "Lease",
+          "overig": "Overig"
+        },
+        "leaseMaatschappij": "Leasemaatschappij",
+        "leaseMaatschappijPlaceholder": "bijv. Alphabet, LeasePlan",
+        "bedrag": "Bedrag (€)",
+        "maandelijkseAflossing": "Maandelijkse aflossing (€)",
+        "einddatum": "Einddatum",
+        "toevoegen": "Schuld toevoegen",
+        "optioneel": "optioneel"
+      }
+    },
+    "rekeningDialog": {
+      "bewerken": "Rekening bewerken",
+      "toevoegen": "Rekening toevoegen",
+      "bank": "Bank",
+      "bankPlaceholder": "bijv. ING, ABN AMRO, Rabobank",
+      "type": "Type",
+      "iban": "IBAN",
+      "ibanPlaceholder": "NL00 BANK 0000 0000 00",
+      "saldo": "Saldo (€)",
+      "saldoPlaceholder": "Huidig saldo",
+      "vermogensSoort": "Vermogenssoort",
+      "notities": "Notities"
+    },
+    "verzekerDialog": {
+      "bewerken": "Verzekering bewerken",
+      "toevoegen": "Verzekering toevoegen",
+      "verzekeraar": "Verzekeraar",
+      "verzekeraarPlaceholder": "bijv. Nationale-Nederlanden, Aegon",
+      "telefoon": "Telefoon verzekeraar",
+      "telefoonPlaceholder": "Telefoonnummer",
+      "email": "E-mail verzekeraar",
+      "emailPlaceholder": "info@verzekeraar.nl",
+      "type": "Type",
+      "polisNummer": "Polisnummer",
+      "verzekerdBedrag": "Verzekerd bedrag (€)",
+      "begunstigde": "Begunstigde",
+      "vermogensSoort": "Vermogenssoort",
+      "notities": "Notities"
+    },
+    "schuldDialog": {
+      "bewerken": "Schuld bewerken",
+      "toevoegen": "Schuld toevoegen",
+      "schuldeiser": "Schuldeiser",
+      "schuldeiserPlaceholder": "bijv. ING, DUO, Rabobank",
+      "telefoon": "Telefoon schuldeiser",
+      "telefoonPlaceholder": "Telefoonnummer",
+      "email": "E-mail schuldeiser",
+      "emailPlaceholder": "info@schuldeiser.nl",
+      "type": "Type",
+      "bedrag": "Bedrag (€)",
+      "maandelijkseAflossing": "Maandelijkse aflossing (€)",
+      "referentie": "Referentie / contractnummer",
+      "vermogensSoort": "Vermogenssoort",
+      "notities": "Notities",
+      "hypotheekDetails": "Hypotheek details",
+      "hypotheekVorm": "Hypotheekvorm",
+      "rentepercentage": "Rentepercentage (%)",
+      "rentePlaceholder": "bijv. 3.5",
+      "maandelijkseRente": "Maandelijkse rente (€)",
+      "einddatum": "Einddatum hypotheek",
+      "restschuld": "Restschuld (€)"
+    }
+  }
+}

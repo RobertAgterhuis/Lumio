@@ -115,22 +115,22 @@ public class WilsverklaringGenerator : IPdfPageGenerator
                 // Huisarts
                 PdfComponents.Section(col, L["Section_Huisarts"].Value, t =>
                 {
-                    PdfComponents.Row(t, L["Label_Naam"].Value, wv?.Huisarts ?? "Niet ingevuld");
-                    PdfComponents.Row(t, L["Label_Praktijk"].Value, wv?.HuisartsPraktijk ?? "—");
-                    if (!string.IsNullOrEmpty(wv?.HuisartsTelefoon))
-                        PdfComponents.Row(t, L["Label_Telefoon"].Value, wv!.HuisartsTelefoon);
+                    PdfComponents.Row(t, L["Label_Naam"].Value, wv?.HuisartsContact?.Naam ?? "Niet ingevuld");
+                    PdfComponents.Row(t, L["Label_Praktijk"].Value, wv?.HuisartsContact?.BedrijfsNaam ?? "—");
+                    if (!string.IsNullOrEmpty(wv?.HuisartsContact?.Telefoon))
+                        PdfComponents.Row(t, L["Label_Telefoon"].Value, wv!.HuisartsContact.Telefoon);
                 });
 
                 // Vertegenwoordiger
-                if (!string.IsNullOrEmpty(wv?.VertegenwoordigerNaam))
+                if (!string.IsNullOrEmpty(wv?.VertegenwoordigerContact?.Naam))
                     PdfComponents.Section(col, L["Section_GevolmachtigdeVertegenwoordiger"].Value, t =>
                     {
-                        PdfComponents.Row(t, L["Label_Naam"].Value, wv!.VertegenwoordigerNaam);
-                        PdfComponents.Row(t, L["Label_Relatie"].Value, wv.VertegenwoordigerRelatie ?? "—");
-                        if (!string.IsNullOrEmpty(wv.VertegenwoordigerTelefoon))
-                            PdfComponents.Row(t, L["Label_Telefoon"].Value, wv.VertegenwoordigerTelefoon);
-                        if (!string.IsNullOrEmpty(wv.VertegenwoordigerEmail))
-                            PdfComponents.Row(t, L["Label_EMail"].Value, wv.VertegenwoordigerEmail);
+                        PdfComponents.Row(t, L["Label_Naam"].Value, wv!.VertegenwoordigerContact?.Naam!);
+                        PdfComponents.Row(t, L["Label_Relatie"].Value, wv.VertegenwoordigerContact?.Relatie ?? "—");
+                        if (!string.IsNullOrEmpty(wv.VertegenwoordigerContact?.Telefoon))
+                            PdfComponents.Row(t, L["Label_Telefoon"].Value, wv.VertegenwoordigerContact.Telefoon);
+                        if (!string.IsNullOrEmpty(wv.VertegenwoordigerContact?.Email))
+                            PdfComponents.Row(t, L["Label_EMail"].Value, wv.VertegenwoordigerContact.Email);
                     });
 
                 // Aanvullende wensen

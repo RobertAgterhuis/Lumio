@@ -1,0 +1,94 @@
+{
+  "donor": {
+    "laden": "Loading...",
+    "titel": "Donor registration",
+    "beschrijving": "Your choice under the Donor Act (Donorwet)",
+    "bewerken": "Edit",
+    "registratieStarten": "Start registration",
+    "ja": "Yes",
+    "nee": "No",
+    "disclaimer": "<strong>Please note:</strong> Your wish in Lumio does <strong>not replace official registration</strong> in the Dutch Donor Register. Only a registration at <link>donorregister.nl</link> is legally binding.",
+    "tip": "<strong>Tip:</strong> Also register your choice officially with the Donor Register at donorregister.nl. The information here is for your next of kin.",
+    "geenKeuze": "No donor choice recorded yet.",
+    "keuzeCard": {
+      "titel": "Choice",
+      "keuze": "Choice:",
+      "geregistreerd": "Registered with Donor Register:",
+      "referentie": "Reference:",
+      "toelichting": "Explanation:"
+    },
+    "orgaanCard": {
+      "titel": "Organ choices"
+    }
+  },
+  "donorWizard": {
+    "titel": "Donor Registration",
+    "laden": "Loading...",
+    "organen": {
+      "hart": "Heart",
+      "longen": "Lungs",
+      "lever": "Liver",
+      "nieren": "Kidneys",
+      "alvleesklier": "Pancreas",
+      "dunneDarm": "Small intestine",
+      "hoornvliezen": "Corneas",
+      "huid": "Skin",
+      "botweefsel": "Bone tissue",
+      "hartkleppen": "Heart valves",
+      "bloedvaten": "Blood vessels"
+    },
+    "keuze": {
+      "titel": "Your Donor Choice",
+      "beschrijving": "Register your donor choice here. Don't forget to also officially report this to the Donor Register.",
+      "keuzeLabel": "Choice",
+      "keuzeTooltip": "Your donor choice is saved in Lumio as a personal overview. Don't forget to also officially register your choice with the Donor Register (donorregister.nl). Only the official registration is legally binding.",
+      "selecteer": "Select...",
+      "jaAlles": "Yes, I donate everything for transplantation",
+      "jaSpecifiek": "Yes, specific organs/tissues",
+      "nee": "No, I do not want to be a donor",
+      "nabestaanden": "My next of kin decide",
+      "specifiekPersoon": "A specific person decides",
+      "donorregisterLabel": "Registered with the Donor Register?",
+      "donorregisterJa": "Yes",
+      "donorregisterNee": "No",
+      "referentieLabel": "Donor Register reference number",
+      "referentiePlaceholder": "Your reference number"
+    },
+    "orgaankeuzes": {
+      "titel": "Organ Choices",
+      "beschrijving": "Indicate per organ/tissue whether you want to donate it. (Only relevant for 'specific organs')",
+      "ja": "Yes",
+      "nee": "No"
+    },
+    "toelichting": {
+      "titel": "Explanation",
+      "label": "Explanation",
+      "placeholder": "Any additional explanation regarding your donor choice..."
+    },
+    "samenvatting": {
+      "titel": "Summary",
+      "beschrijving": "Review your details before saving.",
+      "summaryKeuze": "Choice:",
+      "summaryDonorregister": "Donor Register:",
+      "summaryJa": "Yes",
+      "summaryNee": "No",
+      "summaryReferentie": "Reference:",
+      "summaryOrgaankeuzes": "Organ choices:",
+      "summaryToelichting": "Explanation:",
+      "summaryBeslisser": "Decision maker:",
+      "summaryBeslisserNaam": "Name:",
+      "summaryBeslisserRelatie": "Relation:",
+      "summaryBeslisserTelefoon": "Phone:"
+    },
+    "beslisser": {
+      "titel": "Decision maker",
+      "beschrijving": "Indicate who may make the donor decision on your behalf.",
+      "naamLabel": "Name of decision maker",
+      "naamPlaceholder": "First and last name",
+      "relatieLabel": "Relation to you",
+      "relatiePlaceholder": "e.g. Partner, Son, Daughter",
+      "telefoonLabel": "Phone number",
+      "telefoonPlaceholder": "Phone number"
+    }
+  }
+}

@@ -24,13 +24,7 @@ export const emptyBegunstigdeForm: BegunstigdeFormData = {
 
 export const emptyTestamentEditForm: TestamentEditFormData = {
   testamentType: "",
-  notarisNaam: "",
-  notarisKantoor: "",
-  notarisTelefoon: "",
-  notarisEmail: "",
-  notarisAdres: "",
-  notarisPostcode: "",
-  notarisPlaats: "",
+  notarisContactId: null,
   datumTestament: "",
   testamentLocatie: "",
   ctr_Nummer: "",

@@ -40,16 +40,16 @@ public class UitvaartGenerator : IPdfPageGenerator
                     {
                         PdfComponents.Row(t, L["Label_Type"].Value, uitvaart.VoorkeurType ?? "—");
                         PdfComponents.Row(t, L["Label_Begraafplaats"].Value, uitvaart.Begraafplaats ?? "—");
-                        if (!string.IsNullOrEmpty(uitvaart.UitvaartOndernemer))
+                        if (!string.IsNullOrEmpty(uitvaart.UitvaartOndernemerContact?.Naam))
                         {
-                            PdfComponents.Row(t, L["Label_Uitvaartondernemer"].Value, uitvaart.UitvaartOndernemer);
-                            if (!string.IsNullOrEmpty(uitvaart.UitvaartOndernemerTelefoon))
+                            PdfComponents.Row(t, L["Label_Uitvaartondernemer"].Value, uitvaart.UitvaartOndernemerContact.Naam);
+                            if (!string.IsNullOrEmpty(uitvaart.UitvaartOndernemerContact?.Telefoon))
                                 t.Item().PaddingLeft(PdfBrandTheme.LabelColumnWidth)
-                                    .Text(string.Format(L["Text_TelPrefix"].Value, uitvaart.UitvaartOndernemerTelefoon))
+                                    .Text(string.Format(L["Text_TelPrefix"].Value, uitvaart.UitvaartOndernemerContact.Telefoon))
                                     .FontSize(PdfBrandTheme.FontCaption + 1).FontColor(PdfBrandTheme.TextMuted);
-                            if (!string.IsNullOrEmpty(uitvaart.UitvaartOndernemerEmail))
+                            if (!string.IsNullOrEmpty(uitvaart.UitvaartOndernemerContact?.Email))
                                 t.Item().PaddingLeft(PdfBrandTheme.LabelColumnWidth)
-                                    .Text(string.Format(L["Text_EMailPrefix"].Value, uitvaart.UitvaartOndernemerEmail))
+                                    .Text(string.Format(L["Text_EMailPrefix"].Value, uitvaart.UitvaartOndernemerContact.Email))
                                     .FontSize(PdfBrandTheme.FontCaption + 1).FontColor(PdfBrandTheme.TextMuted);
                         }
                         PdfComponents.Row(t, L["Label_Uitvaartverzekering"].Value,

@@ -89,8 +89,8 @@ public sealed class HtmlExportService : IHtmlExportService
             sb.AppendLine("<table>");
             if (!string.IsNullOrWhiteSpace(testament.TestamentType))
                 sb.AppendLine($"<tr><th>{L["TypeLabel"]}</th><td>{H(testament.TestamentType)}</td></tr>");
-            if (!string.IsNullOrWhiteSpace(testament.NotarisNaam))
-                sb.AppendLine($"<tr><th>{L["NotaryLabel"]}</th><td>{H(testament.NotarisNaam)} — {H(testament.NotarisKantoor ?? "")}</td></tr>");
+            if (!string.IsNullOrWhiteSpace(testament.NotarisContact?.Naam))
+                sb.AppendLine($"<tr><th>{L["NotaryLabel"]}</th><td>{H(testament.NotarisContact?.Naam)} — {H(testament.NotarisContact?.BedrijfsNaam ?? "")}</td></tr>");
             if (testament.DatumTestament.HasValue)
                 sb.AppendLine($"<tr><th>{L["DateLabel"]}</th><td>{testament.DatumTestament:dd-MM-yyyy}</td></tr>");
             if (!string.IsNullOrWhiteSpace(testament.CTR_Nummer))
