@@ -37,6 +37,21 @@ export interface FysiekBezit {
   kadastraalNummer?: string;
   kenteken?: string;
   kvKNummer?: string;
+  bouwJaar?: number;
+  restWaarde?: number;
+  catalogusWaarde?: number;  // OVI value from RDW
+  merk?: string;
+  model?: string;
+  voertuigklasse?: string;
+  brandstof?: string;
+  vermogen?: number;  // kW
+  aantalCilinders?: number;
+  cilinderInhoud?: number;  // cc
+  kleur?: string;
+  massaRijklaar?: number;  // kg
+  aantalZitplaatsen?: number;
+  transmissie?: string;
+  kentekenBewijsDocumentGroepId?: string;
   linkedSchulden?: BezitSchuld[];
 }
 
@@ -98,6 +113,21 @@ export interface BezitFormData {
   kadastraalNummer: string;
   kenteken: string;
   kvKNummer: string;
+  bouwJaar: string;
+  restWaarde: string;
+  catalogusWaarde: string;  // OVI value from RDW
+  merk: string;
+  model: string;
+  voertuigklasse: string;
+  brandstof: string;
+  vermogen: string;  // kW
+  aantalCilinders: string;
+  cilinderInhoud: string;  // cc
+  kleur: string;
+  massaRijklaar: string;  // kg
+  aantalZitplaatsen: string;
+  transmissie: string;
+  kentekenBewijsDocumentGroepId: string;
   linkedSchulden: BezitSchuld[];
 }
 

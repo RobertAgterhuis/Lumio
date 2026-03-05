@@ -11,6 +11,21 @@ export const emptyBezitForm: BezitFormData = {
   kadastraalNummer: "",
   kenteken: "",
   kvKNummer: "",
+  bouwJaar: "",
+  restWaarde: "",
+  catalogusWaarde: "",  // OVI value from RDW
+  merk: "",
+  model: "",
+  voertuigklasse: "",
+  brandstof: "",
+  vermogen: "",  // kW
+  aantalCilinders: "",
+  cilinderInhoud: "",  // cc
+  kleur: "",
+  massaRijklaar: "",  // kg
+  aantalZitplaatsen: "",
+  transmissie: "",
+  kentekenBewijsDocumentGroepId: "",
   linkedSchulden: [],
 };
 

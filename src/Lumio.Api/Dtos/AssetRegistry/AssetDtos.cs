@@ -14,6 +14,13 @@ public record FysiekBezitResponse(
     Guid? BestemdeErfgenaamId, string? BestemdeErfgenaamNaam, VermogensSoort VermogensSoort,
     string? Notities,
     string? KadastraalNummer, string? Kenteken, string? KvKNummer,
+    int? BouwJaar,
+    decimal? RestWaarde,
+    decimal? CatalogusWaarde,  // OVI value from RDW
+    string? Merk, string? Model, string? Voertuigklasse, string? Brandstof,
+    int? Vermogen, int? AantalCilinders, int? CilinderInhoud,
+    string? Kleur, decimal? MassaRijklaar, int? AantalZitplaatsen, string? Transmissie,
+    Guid? KentekenBewijsDocumentGroepId,
     List<BezitSchuldSummary> LinkedSchulden);
 
 public record FysiekBezitUpsertRequest(
@@ -21,7 +28,13 @@ public record FysiekBezitUpsertRequest(
     decimal? GeschatteWaarde, string? Locatie,
     Guid? BestemdeErfgenaamId, VermogensSoort VermogensSoort,
     string? Notities,
-    string? KadastraalNummer, string? Kenteken, string? KvKNummer);
+    string? KadastraalNummer, string? Kenteken, string? KvKNummer,
+    int? BouwJaar,
+    decimal? CatalogusWaarde,  // OVI value from RDW lookup
+    string? Merk, string? Model, string? Voertuigklasse, string? Brandstof,
+    int? Vermogen, int? AantalCilinders, int? CilinderInhoud,
+    string? Kleur, decimal? MassaRijklaar, int? AantalZitplaatsen, string? Transmissie,
+    Guid? KentekenBewijsDocumentGroepId);
 
 public record BankrekeningResponse(
     Guid Id, string BankNaam, string IBAN,
@@ -83,3 +96,43 @@ public record BezitSchuldUpsertRequest(
     string? LeaseMaatschappij,
     decimal? Rentepercentage,
     DateTime? Einddatum);
+// RDW OpenAPI integration DTOs
+public record RdwLookupRequest(string Kenteken);
+
+public record RdwLookupResponse(
+    // Basis identificatie
+    string Merk,
+    string Model,
+    int BouwJaar,
+
+    // Voertuig classificatie
+    string? Klasse,
+    string? Brandstof,
+
+    // Motorspecificaties
+    int? Vermogen,
+    int? AantalCilinders,
+    int? CilinderInhoud,
+
+    // Fysieke afmetingen & gewicht
+    decimal? Lengte,
+    decimal? Breedte,
+    decimal? Hoogte,
+    decimal? MassaRijklaar,
+    decimal? MassaLedigGewicht,
+
+    // Capaciteit
+    int? AantalZitplaatsen,
+
+    // Styling
+    string? Kleur,
+
+    // Transmissie & handling
+    string? Transmissie,
+
+    // Uitvoering details
+    string? Uitvoering,
+    string? TypegoedkeuringNummer,
+
+    // OVI (Cataloguswaarde)
+    decimal? CatalogusWaarde);

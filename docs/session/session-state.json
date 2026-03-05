@@ -96,7 +96,11 @@
   "recent_improvements": [
     "PR#155 merged: auto-refresh for noodcontacten/testament/uitvaart after contact selection",
     "DEC-120 updated: cache invalidation + per-field validation feedback constraints",
-    "User feedback fix: contacts now appear live after contact select + navigation without manual refresh"
+    "User feedback fix: contacts now appear live after contact select + navigation without manual refresh",
+    "RDW Phase 1-2 complete: Voertuig rules + DTOs + VehicleResidualValueService + RDW OpenAPI service + RestWaarde calculation",
+    "EF migrations: AddVehicleResidualValueFields (RestWaarde + KentekenBewijsDocumentGroepId) + AddBouwJaarField for depreciation calc",
+    "StatusFactsBuilder+BoedelController updated to include RestWaarde in total boedel valuation",
+    "RDW lookup endpoint /api/v1/boedel/rdw-lookup implemented (mock + production OpenAPI)"
   ],
   "security_handoff_status": "UP_TO_DATE",
   "security_handoff_note": "docs/security/security-handoff-context.md created and up to date. BUG-SHAMIR-001 documented, AllowedPrefixes whitelist rationale explained, REC-SEC-005 regression test reference added. Resolved 2026-03-03.",

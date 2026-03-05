@@ -3,6 +3,7 @@ using Lumio.Api.Dtos.AssetRegistry;
 using Lumio.Api.Repositories;
 using Lumio.Api.Rules;
 using Lumio.Api.Services;
+using Lumio.Api.Services.AssetRegistry;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,19 @@ public class BoedelController : ControllerBase
 {
     private readonly IBoedelRepository _repo;
     private readonly IAuditService _audit;
+    private readonly IRdwApiService _rdwApi;
+    private readonly IVehicleResidualValueService _vehicleValueService;
 
-    public BoedelController(IBoedelRepository repo, IAuditService audit)
+    public BoedelController(
+        IBoedelRepository repo,
+        IAuditService audit,
+        IRdwApiService rdwApi,
+        IVehicleResidualValueService vehicleValueService)
     {
         _repo = repo;
         _audit = audit;
+        _rdwApi = rdwApi;
+        _vehicleValueService = vehicleValueService;
     }
 
     // --- Samenvatting ---
@@ -36,6 +45,16 @@ public class BoedelController : ControllerBase
         var schulden = await _repo.GetSchuldenAsync(eid);
 
         var totaalBezittingen = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
+        var totaalRestWaardeVoertuigen = bezittingen
+            .Where(b => b.Categorie == "Voertuig")
+            .Sum(b => _vehicleValueService.CalculateResidualValue(b.GeschatteWaarde, b.BouwJaar) ?? 0);
+
+        // Gebruik voor voertuigen de restwaarde als vervanging van geschatte waarde (geen dubbeltelling).
+        var totaalBezittendingenMetRestWaarde = bezittingen.Sum(b =>
+            b.Categorie == "Voertuig"
+                ? (_vehicleValueService.CalculateResidualValue(b.GeschatteWaarde, b.BouwJaar) ?? b.GeschatteWaarde ?? 0)
+                : (b.GeschatteWaarde ?? 0));
+
         var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
         var totaalVerzekeringen = verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
         var totaalVerzekeringenMetBegunstigde = verzekeringen
@@ -43,11 +62,13 @@ public class BoedelController : ControllerBase
             .Sum(v => v.VerzekerdBedrag ?? 0);
         var totaalSchulden = schulden.Sum(s => s.Bedrag);
         var (brutoNalatenschap, nettoNalatenschap) = NalatenschapHelper.Bereken(
-            totaalBezittingen, totaalSaldi, totaalVerzekeringen, totaalSchulden, totaalVerzekeringenMetBegunstigde);
+            totaalBezittendingenMetRestWaarde, totaalSaldi, totaalVerzekeringen, totaalSchulden, totaalVerzekeringenMetBegunstigde);
 
         return Ok(new
         {
             totaalBezittingen,
+            totaalRestWaardeVoertuigen,
+            totaalBezittendingenMetRestWaarde,
             totaalSaldi,
             totaalVerzekeringen,
             totaalSchulden,
@@ -79,6 +100,10 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         await _repo.AddAsync(item);
         await _repo.CommitAsync();
+
+        // Calculate RestWaarde for vehicles
+        await CalculateAndSaveRestWaardeAsync(item);
+
         await _audit.LogAsync("Aangemaakt", "FysiekBezit", item.Id);
         return Created($"/api/boedel/bezittingen/{item.Id}", ToBezitResponse(item));
     }
@@ -90,6 +115,10 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _repo.CommitAsync();
+
+        // Recalculate RestWaarde for vehicles
+        await CalculateAndSaveRestWaardeAsync(item);
+
         await _audit.LogAsync("Gewijzigd", "FysiekBezit", id);
         return Ok(ToBezitResponse(item));
     }
@@ -105,19 +134,33 @@ public class BoedelController : ControllerBase
         return NoContent();
     }
 
-    private static FysiekBezitResponse ToBezitResponse(FysiekBezit f) => new(
-        f.Id, f.Categorie, f.Omschrijving,
-        f.GeschatteWaarde, f.Locatie,
-        f.BestemdeErfgenaamId,
-        f.BestemdeErfgenaam != null
-            ? $"{f.BestemdeErfgenaam.Voornaam} {f.BestemdeErfgenaam.Tussenvoegsel} {f.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
-            : null,
-        f.VermogensSoort,
-        f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
-        f.LinkedSchulden.Select(s => new BezitSchuldSummary(
-            s.Id, s.Schuldeiser, s.Type, s.Bedrag,
-            s.MaandelijkseAflossing, s.LeaseMaatschappij,
-            s.Rentepercentage, s.Einddatum)).ToList());
+    private FysiekBezitResponse ToBezitResponse(FysiekBezit f)
+    {
+        // Voor voertuigen: bereken restWaarde dynamisch i.p.v. database waarde gebruiken
+        decimal? restWaarde = f.Categorie == "Voertuig"
+            ? _vehicleValueService.CalculateResidualValue(f.GeschatteWaarde, f.BouwJaar)
+            : f.RestWaarde;
+
+        return new FysiekBezitResponse(
+            f.Id, f.Categorie, f.Omschrijving,
+            f.GeschatteWaarde, f.Locatie,
+            f.BestemdeErfgenaamId,
+            f.BestemdeErfgenaam != null
+                ? $"{f.BestemdeErfgenaam.Voornaam} {f.BestemdeErfgenaam.Tussenvoegsel} {f.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
+                : null,
+            f.VermogensSoort,
+            f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
+            f.BouwJaar, restWaarde,
+            f.CatalogusWaarde,  // OVI value from RDW
+            f.Merk, f.Model, f.Voertuigklasse, f.Brandstof,
+            f.Vermogen, f.AantalCilinders, f.CilinderInhoud,
+            f.Kleur, f.MassaRijklaar, f.AantalZitplaatsen, f.Transmissie,
+            f.KentekenBewijsDocumentGroepId,
+            f.LinkedSchulden.Select(s => new BezitSchuldSummary(
+                s.Id, s.Schuldeiser, s.Type, s.Bedrag,
+                s.MaandelijkseAflossing, s.LeaseMaatschappij,
+                s.Rentepercentage, s.Einddatum)).ToList());
+    }
 
     // --- Bankrekeningen ---
 
@@ -356,5 +399,151 @@ public class BoedelController : ControllerBase
         await _repo.CommitAsync();
         await _audit.LogAsync("Verwijderd", "Schuld", id);
         return NoContent();
+    }
+
+    // --- Bulk Operations ---
+
+    /// <summary>
+    /// Recalculate residual value for ALL vehicles in the estate.
+    /// Use this to refresh calculations after config changes or for existing vehicles.
+    /// </summary>
+    [HttpPost("bezittingen/recalculate-vehicles")]
+    public async Task<IActionResult> RecalculateAllVehicles()
+    {
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return NotFound(new { error = "Geen eigenaar profiel gevonden." });
+
+        var vehicles = (await _repo.GetFysiekeBezittingenAsync(eigenaarId.Value))
+            .Where(b => b.Categorie == "Voertuig")
+            .ToList();
+
+        var updated = new List<object>();
+        var failed = new List<object>();
+
+        foreach (var vehicle in vehicles)
+        {
+            try
+            {
+                var oldValue = vehicle.RestWaarde;
+                var newValue = _vehicleValueService.CalculateResidualValue(
+                    vehicle.GeschatteWaarde,
+                    vehicle.BouwJaar);
+
+                if (newValue.HasValue && newValue.Value > 0)
+                {
+                    vehicle.RestWaarde = Math.Round(newValue.Value, 2);
+                    updated.Add(new
+                    {
+                        kenteken = vehicle.Kenteken,
+                        omschrijving = vehicle.Omschrijving,
+                        bouwJaar = vehicle.BouwJaar,
+                        geschatteWaarde = vehicle.GeschatteWaarde,
+                        oudRestWaarde = oldValue,
+                        nieuweRestWaarde = vehicle.RestWaarde
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                failed.Add(new { kenteken = vehicle.Kenteken, error = ex.Message });
+            }
+        }
+
+        await _repo.CommitAsync();
+        await _audit.LogAsync("Herberekend", "VoertuigRestwaarde", Guid.Empty);
+
+        return Ok(new
+        {
+            success = true,
+            totalVehicles = vehicles.Count,
+            updated = updated.Count,
+            failed = failed.Count,
+            updates = updated,
+            failures = failed
+        });
+    }
+
+    // --- Helper Methods ---
+
+    /// <summary>
+    /// Calculate and save RestWaarde for vehicle-type bezittingen.
+    /// Called after Create/Update to compute depreciation-based residual value.
+    /// </summary>
+    private async Task CalculateAndSaveRestWaardeAsync(FysiekBezit item)
+    {
+        // Only apply to vehicles
+        if (item.Categorie != "Voertuig")
+            return;
+
+        try
+        {
+            // Get current item from DB to refresh from latest saved state
+            var currentItem = await _repo.FindBezitWithNavigationAsync(item.Id);
+            if (currentItem is null)
+                return;
+
+            // Use GeschatteWaarde if available, otherwise fall back to CatalogusWaarde
+            var baseValue = currentItem.GeschatteWaarde ?? currentItem.CatalogusWaarde;
+            if (baseValue is null or 0)
+                return;
+
+            // Calculate residual value based on estimated value + vehicle age (from BouwJaar)
+            var restWaarde = _vehicleValueService.CalculateResidualValue(
+                baseValue,
+                currentItem.BouwJaar);
+
+            if (restWaarde.HasValue)
+            {
+                currentItem.RestWaarde = Math.Round(restWaarde.Value, 2);
+                await _repo.CommitAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log but don't throw — RestWaarde is optional
+            System.Diagnostics.Debug.WriteLine($"RestWaarde calculation failed: {ex.Message}");
+        }
+    }
+
+    // --- RDW Vehicle Integration ---
+
+    /// <summary>
+    /// Lookup voertuiggegevens via RDW OpenAPI op basis van kenteken.
+    /// Gebruikt voor auto-aanvullen van merk/model/bouwjaar in voertuig-selector.
+    /// </summary>
+    [HttpPost("rdw-lookup")]
+    public async Task<IActionResult> RdwLookup(
+        [FromBody] RdwLookupRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.Kenteken))
+            return BadRequest(new { error = "Kenteken is verplicht." });
+
+        var voertuigGegevens = await _rdwApi.LookupByKentekenAsync(request.Kenteken, cancellationToken);
+
+        if (voertuigGegevens is null)
+            return NotFound(new { error = $"Voertuig met kenteken '{request.Kenteken}' niet gevonden in RDW-register." });
+
+        return Ok(new RdwLookupResponse(
+            Merk: voertuigGegevens.Merk,
+            Model: voertuigGegevens.Model,
+            BouwJaar: voertuigGegevens.BouwJaar,
+            Klasse: voertuigGegevens.Klasse,
+            Brandstof: voertuigGegevens.Brandstof,
+            Vermogen: voertuigGegevens.Vermogen,
+            AantalCilinders: voertuigGegevens.AantalCilinders,
+            CilinderInhoud: voertuigGegevens.CilinderInhoud,
+            Lengte: voertuigGegevens.Lengte,
+            Breedte: voertuigGegevens.Breedte,
+            Hoogte: voertuigGegevens.Hoogte,
+            MassaRijklaar: voertuigGegevens.MassaRijklaar,
+            MassaLedigGewicht: voertuigGegevens.MassaLedigGewicht,
+            AantalZitplaatsen: voertuigGegevens.AantalZitplaatsen,
+            Kleur: voertuigGegevens.Kleur,
+            Transmissie: voertuigGegevens.Transmissie,
+            Uitvoering: voertuigGegevens.Uitvoering,
+            TypegoedkeuringNummer: voertuigGegevens.TypegoedkeuringNummer,
+            CatalogusWaarde: voertuigGegevens.CatalogusWaarde
+        ));
     }
 }

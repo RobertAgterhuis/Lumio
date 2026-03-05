@@ -19,14 +19,34 @@ public static class RuleServiceExtensions
         ConfigurationManager configuration)
     {
         // Probeer extern regelbestand te laden (optioneel)
-        var rulesPath = Path.Combine(AppContext.BaseDirectory, "rules", "lumio-rules.json");
-        if (File.Exists(rulesPath))
+        // Het bestand staat gewoonlijk in bin/Debug/net10.0/Rules/ (EF migrations)
+        // of in src/Lumio.Api/Rules/ (source)
+        var rulesPath = Path.Combine(AppContext.BaseDirectory, "Rules", "lumio-rules.json");
+
+        // AddJsonFile met optional:true ontbreekt geen file-not-found errors
+        if (!File.Exists(rulesPath))
         {
-            configuration.AddJsonFile(rulesPath, optional: true, reloadOnChange: false);
+            // Probeer relatief t.o.v. source directory (voor EF migrations)
+            var sourceRulesPath = Path.Combine(
+                AppContext.BaseDirectory,
+                "..", "..", "Rules", "lumio-rules.json");
+            if (File.Exists(sourceRulesPath))
+            {
+                rulesPath = sourceRulesPath;
+            }
         }
 
+        // AddJsonFile met optional:true - geen exception als bestand niet gevonden
+        configuration.AddJsonFile(rulesPath, optional: true, reloadOnChange: false);
+
+
         // Bind configuratie-secties naar Options
-        services.Configure<LumioRulesOptions>(configuration.GetSection("lumioRules"));
+        services.Configure<LumioRulesOptions>(options =>
+        {
+            configuration.GetSection("lumioRules").Bind(options);
+            options.Voertuig ??= new VoertuigRules();
+            configuration.GetSection("voertuig").Bind(options.Voertuig);
+        });
         services.Configure<ErfbelastingOptions>(configuration.GetSection("erfbelasting"));
         services.Configure<LimietenOptions>(configuration.GetSection("limieten"));
         services.Configure<VeldLengtesOptions>(configuration.GetSection("veldLengtes"));

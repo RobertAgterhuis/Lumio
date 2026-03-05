@@ -3,6 +3,7 @@ using System;
 using Lumio.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lumio.Api.Migrations
 {
     [DbContext(typeof(LumioDbContext))]
-    partial class LumioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260305105629_AddVehicleResidualValueFields")]
+    partial class AddVehicleResidualValueFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
@@ -106,30 +109,12 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("AangemaaktOp")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("AantalCilinders")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("AantalZitplaatsen")
-                        .HasColumnType("INTEGER");
-
                     b.Property<Guid?>("BestemdeErfgenaamId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("BouwJaar")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Brandstof")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("CatalogusWaarde")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Categorie")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int?>("CilinderInhoud")
-                        .HasColumnType("INTEGER");
 
                     b.Property<Guid>("EigenaarId")
                         .HasColumnType("TEXT");
@@ -149,22 +134,10 @@ namespace Lumio.Api.Migrations
                     b.Property<Guid?>("KentekenBewijsDocumentGroepId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Kleur")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("KvKNummer")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Locatie")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal?>("MassaRijklaar")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Merk")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Model")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notities")
@@ -175,19 +148,10 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("RestWaarde")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Transmissie")
                         .HasColumnType("TEXT");
-
-                    b.Property<int?>("Vermogen")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("VermogensSoort")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Voertuigklasse")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

@@ -80,6 +80,21 @@ export function useBoedel() {
       kadastraalNummer: item.kadastraalNummer ?? "",
       kenteken: item.kenteken ?? "",
       kvKNummer: item.kvKNummer ?? "",
+      bouwJaar: item.bouwJaar?.toString() ?? "",
+      restWaarde: item.restWaarde?.toString() ?? "",
+      catalogusWaarde: item.catalogusWaarde?.toString() ?? "",  // OVI value from RDW
+      merk: item.merk ?? "",
+      model: item.model ?? "",
+      voertuigklasse: item.voertuigklasse ?? "",
+      brandstof: item.brandstof ?? "",
+      vermogen: item.vermogen?.toString() ?? "",
+      aantalCilinders: item.aantalCilinders?.toString() ?? "",
+      cilinderInhoud: item.cilinderInhoud?.toString() ?? "",
+      kleur: item.kleur ?? "",
+      massaRijklaar: item.massaRijklaar?.toString() ?? "",
+      aantalZitplaatsen: item.aantalZitplaatsen?.toString() ?? "",
+      transmissie: item.transmissie ?? "",
+      kentekenBewijsDocumentGroepId: item.kentekenBewijsDocumentGroepId ?? "",
       linkedSchulden: item.linkedSchulden ?? [],
     } : { ...emptyBezitForm });
     setDialogKind("bezit");
@@ -157,6 +172,20 @@ export function useBoedel() {
         kadastraalNummer: bezitForm.kadastraalNummer || null,
         kenteken: bezitForm.kenteken || null,
         kvKNummer: bezitForm.kvKNummer || null,
+        bouwJaar: bezitForm.bouwJaar ? parseInt(bezitForm.bouwJaar) : null,
+        catalogusWaarde: bezitForm.catalogusWaarde ? parseFloat(bezitForm.catalogusWaarde) : null,  // OVI value from RDW
+        merk: bezitForm.merk || null,
+        model: bezitForm.model || null,
+        voertuigklasse: bezitForm.voertuigklasse || null,
+        brandstof: bezitForm.brandstof || null,
+        vermogen: bezitForm.vermogen ? parseInt(bezitForm.vermogen) : null,
+        aantalCilinders: bezitForm.aantalCilinders ? parseInt(bezitForm.aantalCilinders) : null,
+        cilinderInhoud: bezitForm.cilinderInhoud ? parseInt(bezitForm.cilinderInhoud) : null,
+        kleur: bezitForm.kleur || null,
+        massaRijklaar: bezitForm.massaRijklaar ? parseFloat(bezitForm.massaRijklaar) : null,
+        aantalZitplaatsen: bezitForm.aantalZitplaatsen ? parseInt(bezitForm.aantalZitplaatsen) : null,
+        transmissie: bezitForm.transmissie || null,
+        kentekenBewijsDocumentGroepId: bezitForm.kentekenBewijsDocumentGroepId || null,
       };
       let bezitId: string;
       if (editId) {
