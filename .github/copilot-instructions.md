@@ -105,6 +105,10 @@ Onboarding maintenance:
 4. **Never fabricate** metrics, percentages, KPI values, scores, or timestamps.
 5. **Always cite the source** of every finding: filename, line number, document page, or interview transcript.
 6. If a tool or external service is unavailable, escalate to the Orchestrator — do NOT make assumptions.
+7. **Always respect the scope of your role** — if a finding is outside your domain, mark it `OUT_OF_SCOPE: [domain]` and pass it to the Orchestrator.
+8. **Always respect the guardrails** defined for your role and for the system as a whole — if a guardrail is violated, mark it `GUARDRAIL_VIOLATION: [guardrail ID]` and escalate to the Orchestrator.
+9. **Always respect the contracts** defined for your output — if a contract cannot be fulfilled, mark it `CONTRACT_VIOLATION: [contract ID]` and escalate to the Orchestrator.
+10. **Always respect the decision records** — if a decision constrains your output, cite the relevant DEC-XXX in your findings; if a decision is contradicted by your findings, mark it `DECISION_VIOLATION: [DEC-XXX]` and escalate to the Orchestrator.
 
 ### ANTI-LAZINESS PROTOCOL (MANDATORY)
 1. Always deliver the **complete** deliverable as defined by the contract. No summaries, no partials.
@@ -124,6 +128,8 @@ Every agent MUST produce a **Handoff Checklist** at the end of its output:
 - [ ] All INSUFFICIENT_DATA: items are documented and escalated
 - [ ] Output complies with the contract in /docs/contracts/
 - [ ] Guardrails from /docs/guardrails/ have been checked
+- [ ] Contracts from /docs/contracts/ have been checked
+- [ ] Decisions from decisions.md have been checked
 - [ ] Output is machine-readable and ready as input for the next agent
 - [ ] No contradictory statements in this document
 - [ ] All findings include a source reference

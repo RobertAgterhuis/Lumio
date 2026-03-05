@@ -38,12 +38,16 @@ public class VehicleResidualValueService : IVehicleResidualValueService
         if (!estimatedValue.HasValue || estimatedValue <= 0 || !buildYear.HasValue)
             return null;
 
+        var currentYear = DateTime.UtcNow.Year;
+        if (buildYear.Value < 1886 || buildYear.Value > currentYear)
+            return null;
+
         // Haal depreciatietabel uit rules
         var depreciationTable = _rules.Voertuig?.DepreciatieTabel;
         if (depreciationTable == null || depreciationTable.Count == 0)
             return estimatedValue; // Fallback: geen depreciatie
 
-        int vehicleAge = DateTime.Now.Year - buildYear.Value;
+        int vehicleAge = currentYear - buildYear.Value;
 
         // Vind het juiste depreciatiepercentage: eerste entry waar jarenMeeRekenen >= vehicleAge
         var applicableRow = depreciationTable

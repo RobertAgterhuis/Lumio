@@ -29,6 +29,10 @@ public partial class LumioDbContext
             .Property(f => f.GeschatteWaarde)
             .HasColumnType("decimal(18,2)");
 
+        modelBuilder.Entity<FysiekBezit>()
+            .Property(f => f.RestWaarde)
+            .HasColumnType("decimal(18,2)");
+
         // Schuld
         modelBuilder.Entity<Schuld>(entity =>
         {

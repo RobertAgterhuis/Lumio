@@ -1,0 +1,217 @@
+{
+  "erfgenamen": {
+    "titel": "Erfgenamen",
+    "beschrijving": "Erfgenamen beheren en noodcodes verdelen",
+    "laden": "Laden...",
+    "noodcodesVerdelen": "Noodcodes verdelen",
+    "toevoegen": "Erfgenaam toevoegen",
+    "noodcodesInfoLabel": "Noodcodes verdelen:",
+    "noodcodesInfo": "Uw hoofdwachtwoord wordt veilig opgesplitst in unieke codes voor uw erfgenamen. Pas wanneer genoeg erfgenamen (de 'drempel') hun code samenvoegen, kan het wachtwoord worden hersteld. Eén code alleen is waardeloos.",
+    "synclinkMeldingLabel": "Let op:",
+    "synclinkMelding": "Wanneer u naam of contactgegevens van een erfgenaam wijzigt, worden eerder opgeslagen gegevens in gekoppelde formulieren (bijv. testament, uitvaart, wilsverklaring) niet automatisch bijgewerkt. Open het betreffende formulier opnieuw om de gegevens te vernieuwen.",
+    "geenErfgenamen": "Nog geen erfgenamen toegevoegd.",
+    "aantal": "Erfgenamen ({aantal})",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "exportMislukt": "Export mislukt.",
+    "exportMisluktCode": "Export mislukt ({code})",
+    "sleuteldelenMislukt": "Sleuteldelen genereren mislukt.",
+    "toewijzingOpslaanMislukt": "Toewijzing opslaan mislukt.",
+    "toewijzingVerwijderenMislukt": "Toewijzing verwijderen mislukt.",
+    "noodcontactAangemaakt": "Erfgenaam ook als noodcontact toegevoegd.",
+    "verwijderBevestiging": {
+      "titel": "Erfgenaam verwijderen?",
+      "vraag": "Weet u zeker dat u {naam} wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "bezittingenWaarschuwing": "{aantal, plural, one {# bezitting is} other {# bezittingen zijn}} aan deze erfgenaam toegewezen en worden losgekoppeld.",
+      "annuleren": "Annuleren",
+      "verwijderen": "Verwijderen"
+    },
+    "bezitToewijzen": "Bezit toewijzen",
+    "pdfDownloaden": "PDF downloaden",
+    "deelOverzicht": "Deel overzicht (HTML)",
+    "geenBezittingen": "Nog geen bezittingen toegewezen.",
+    "toewijzenKnop": "Toewijzen",
+    "toegewezenBezittingen": "Toegewezen bezittingen:",
+    "dialog": {
+      "bewerken": "Erfgenaam bewerken",
+      "toevoegen": "Erfgenaam toevoegen",
+      "voornaam": "Voornaam",
+      "achternaam": "Achternaam",
+      "tussenvoegsel": "Tussenvoegsel",
+      "tussenvoegselPlaceholder": "bijv. van, de, van der",
+      "relatie": "Relatie",
+      "email": "E-mail",
+      "telefoon": "Telefoon",
+      "geboortedatum": "Geboortedatum",
+      "bsn": "BSN (optioneel)",
+      "bsnTooltip": "Het Burgerservicenummer is nodig voor notariële aktes. Dit veld wordt versleuteld opgeslagen.",
+      "bsnPlaceholder": "123456789",
+      "adres": "Adres",
+      "adresPlaceholder": "Straat en huisnummer",
+      "postcode": "Postcode",
+      "postcodePlaceholder": "1234 AB",
+      "woonplaats": "Woonplaats",
+      "legitimatie": "Legitimatie",
+      "documentnummer": "Documentnummer",
+      "datumAfgifte": "Datum afgifte",
+      "geldigTot": "Geldig tot",
+      "annuleren": "Annuleren",
+      "opslaanBezig": "Opslaan...",
+      "opslaan": "Opslaan",
+      "alsNoodcontact": "Tevens toevoegen als noodcontact",
+      "alsNoodcontactTooltip": "Voegt deze erfgenaam ook toe als noodcontact zodat hij of zij zichtbaar is in de noodcontactenlijst. Contactgegevens worden overgenomen."
+    },
+    "toewijzingDialog": {
+      "titel": "Bezit toewijzen aan erfgenaam",
+      "beschrijving": "Wijs een bezitting, rekening of account toe aan een erfgenaam.",
+      "erfgenaam": "Erfgenaam",
+      "erfgenaamSelecteer": "Selecteer erfgenaam...",
+      "typeBezit": "Type bezit",
+      "alleTypes": "Alle types...",
+      "bezit": "Bezit",
+      "bezitSelecteer": "Selecteer bezit...",
+      "instructies": "Instructies (optioneel)",
+      "instructiesPlaceholder": "Bijv. 'Bewaar dit als aandenken' of 'Verkopen en opbrengst verdelen'",
+      "annuleren": "Annuleren",
+      "opslaanBezig": "Opslaan...",
+      "toewijzen": "Toewijzen"
+    },
+    "shamir": {
+      "titel": "Noodcodes Genereren",
+      "beschrijving": "Verdeel uw hoofdwachtwoord in {aantal} unieke noodcodes. Alleen wanneer het minimum aantal personen (drempel) hun code samenvoegt, kan het wachtwoord worden gereconstrueerd.",
+      "waarschuwing": "Waarschuwing:",
+      "waarschuwingTekst": "De inhoud van de noodcodes wordt nooit opgeslagen door Lumio. Lumio registreert alleen welke erfgenamen hun code hebben ontvangen. Noteer of druk elke code zorgvuldig af. Verloren codes kunnen niet worden hersteld.",
+      "wachtwoord": "Uw hoofdwachtwoord",
+      "wachtwoordPlaceholder": "Voer uw Lumio hoofdwachtwoord in",
+      "drempel": "Drempel (minimum aantal noodcodes voor reconstructie)",
+      "drempelTooltip": "De drempel bepaalt hoeveel erfgenamen samen nodig zijn om uw hoofdwachtwoord te reconstrueren. Bij een drempel van 3 moeten minimaal 3 erfgenamen hun code samenvoegen. Een hogere drempel is veiliger, maar vereist meer samenwerking.",
+      "drempelOptie": "{n} van {totaal} personen",
+      "delenInfo": "Er worden <strong>{aantal}</strong> delen gegenereerd, waarvan er minimaal <strong>{drempel}</strong> nodig zijn.",
+      "annuleren": "Annuleren",
+      "genererenBezig": "Genereren...",
+      "genereren": "Genereren",
+      "succes": "Succes!",
+      "succesTekst": "Er zijn {aantal} delen gegenereerd met een drempel van {drempel}. Kopieer elk deel en geef het aan de betreffende erfgenaam.",
+      "deel": "Deel {index}",
+      "erfgenaamFallback": "Erfgenaam {nummer}",
+      "gekopieerd": "Gekopieerd",
+      "kopieren": "Kopiëren",
+      "sluiten": "Sluiten",
+      "stap1Titel": "Wat zijn noodcodes?",
+      "stap1Uitleg": "Met de Shamir-methode wordt uw hoofdwachtwoord veilig opgesplitst in unieke codes. Elk van uw erfgenamen ontvangt één code. Pas wanneer het minimum aantal erfgenamen hun codes samenvoegt, kan uw nalatenschap worden ontgrendeld.",
+      "stap1Bullet1": "Eén code alleen is waardeloos — samenwerking is vereist.",
+      "stap1Bullet2": "U bepaalt het minimum aantal (de drempel) dat nodig is.",
+      "stap1Bullet3": "Veilig, zelfs als één erfgenaam zijn code kwijt is.",
+      "stap1Callout": "De geheime code-inhoud wordt nooit door Lumio opgeslagen. Lumio registreert alleen welke erfgenamen hun code hebben ontvangen. Noteer of druk elke code af en geef ze persoonlijk aan uw erfgenamen.",
+      "stap2Titel": "Instellingen",
+      "stap2ErfgenamenLabel": "Erfgenamen die een noodcode ontvangen",
+      "stap3Titel": "Beveiliging",
+      "stap4Titel": "Verdeel de noodcodes",
+      "stap4NogTeKopieren": "{n, plural, one {# code nog te kopiëren} other {# codes nog te kopiëren}}",
+      "stap4AlleGekopieerd": "✓ Alle codes gekopieerd",
+      "stap4CodeFormaat": "Geef de volledige code door inclusief het cijfer vóór het streepje (bijv. 01-XXXX). Het getal is vereist voor het samenstellen van het wachtwoord.",
+      "volgende": "Volgende",
+      "vorige": "Vorige",
+      "stapIndicator": "Stap {huidig} van {totaal}"
+    },
+    "shamirStatus": {
+      "titel": "Noodcodes verdelen",
+      "uitleg": "Geef elke erfgenaam hun persoonlijke noodcode — bewaard buiten Lumio.",
+      "differentiator": "✦ Lumio gebruikt Shamir Secret Sharing: geen enkele erfgenaam heeft alleen toegang. Uw privacy is gewaarborgd, zelfs als een code in verkeerde handen valt.",
+      "aantalLabel": "{ontvangen} van {totaal} codes verdeeld",
+      "shareStatus": "Code verdeeld",
+      "geenShare": "Nog geen code verdeeld",
+      "noodcodesHerdelen": "Noodcodes opnieuw genereren",
+      "noodcodesGenereren": "Noodcodes genereren",
+      "deelOverzicht": "Deel overzicht",
+      "drempelUitleg": "Stel in hoeveel erfgenamen hun code moeten samenvoegen om toegang te krijgen."
+    }
+  },
+  "erfbelasting": {
+    "berekenBezig": "Berekenen...",
+    "berekenen": "Erfbelasting berekenen",
+    "titel": "Indicatieve erfbelasting",
+    "sluiten": "Sluiten",
+    "nettoNalatenschap": "Netto nalatenschap",
+    "perErfgenaam": "Per erfgenaam",
+    "kolomNaam": "Naam",
+    "kolomTariefgroep": "Tariefgroep",
+    "kolomErfdeel": "Erfdeel",
+    "kolomVrijstelling": "Vrijstelling",
+    "kolomBelastbaar": "Belastbaar",
+    "kolomErfbelasting": "Erfbelasting",
+    "kolomNetto": "Netto",
+    "totaalErfbelasting": "Totaal erfbelasting",
+    "geenErfgenamen": "Voeg eerst erfgenamen toe om de erfbelasting te berekenen."
+  },
+  "nabestaanden": {
+    "titel": "Nabestaanden Dashboard",
+    "introTekst": "Gecondoleerd met uw verlies. Dit dashboard helpt u stap voor stap bij het afhandelen van de nalatenschap. Neem de tijd — u hoeft niet alles tegelijk te doen.",
+    "gegevensInfo": "Alle gegevens zijn beschikbaar in alleen-lezen modus. Gebruik de knoppen hieronder om bij te houden wat u al heeft afgehandeld.",
+    "exporteren": "Alles exporteren",
+    "noodcontactenBekijken": "Noodcontacten bekijken",
+    "hulpTitel": "Hulp nodig?",
+    "hulpTekst": "Het is normaal als dit overweldigend voelt. Begin met de urgente zaken bovenaan en werk rustig naar beneden. U kunt altijd terugkomen en verder gaan waar u gebleven was. Schakel hulp in van een notaris of uitvaartverzorger als dat prettig voelt.",
+    "voortgangTitel": "Voortgang afhandeling",
+    "voortgangTekst": "{afgehandeld} van {totaal} onderdelen afgehandeld",
+    "bekijken": "Bekijken",
+    "start": "Start",
+    "markeerAfgehandeld": "Afgehandeld",
+    "statusAfgehandeld": "Afgehandeld",
+    "statusInBehandeling": "In behandeling",
+    "statusBeschikbaar": "Beschikbaar",
+    "statusNietIngevuld": "Niet ingevuld",
+    "fases": {
+      "urgent": "Direct — eerste 24 uur",
+      "week1": "Week 1 — eerste week",
+      "maand1": "Maand 1 — eerste maand",
+      "afronden": "Afronden"
+    },
+    "stappen": {
+      "noodcontacten": {
+        "titel": "Noodcontacten informeren",
+        "beschrijving": "Neem contact op met de huisarts, notaris en andere vertrouwenspersonen."
+      },
+      "uitvaart": {
+        "titel": "Uitvaartwensen bekijken",
+        "beschrijving": "Bekijk de vastgelegde wensen voor de uitvaart en ceremonie."
+      },
+      "donor": {
+        "titel": "Donorregistratie controleren",
+        "beschrijving": "Controleer of er een donorregistratie is vastgelegd — dit heeft urgentie."
+      },
+      "euthanasie": {
+        "titel": "Wilsverklaring euthanasie",
+        "beschrijving": "Bekijk of er een wilsverklaring euthanasie is opgesteld."
+      },
+      "testament": {
+        "titel": "Testament bekijken",
+        "beschrijving": "Bekijk de testamentaire informatie, begunstigden en de aangewezen executeur."
+      },
+      "erfgenamen": {
+        "titel": "Erfgenamen overzicht",
+        "beschrijving": "Bekijk wie als erfgenaam is aangewezen en hun contactgegevens."
+      },
+      "documenten": {
+        "titel": "Belangrijke documenten",
+        "beschrijving": "Download kopieën van opgeslagen documenten (ID, polis, aktes)."
+      },
+      "boedel": {
+        "titel": "Boedel & financiën",
+        "beschrijving": "Overzicht van bezittingen, bankrekeningen, verzekeringen en schulden."
+      },
+      "digitaalBezit": {
+        "titel": "Digitaal bezit",
+        "beschrijving": "Online accounts, wachtwoorden en crypto wallets die afgehandeld moeten worden."
+      },
+      "export": {
+        "titel": "Compleet dossier exporteren",
+        "beschrijving": "Download alle informatie als PDF of ZIP voor uw administratie."
+      },
+      "eigenaar": {
+        "titel": "Persoonsgegevens overledene",
+        "beschrijving": "Persoonlijke gegevens voor overlijdensaangifte en uitvaartregeling."
+      }
+    }
+  }
+}

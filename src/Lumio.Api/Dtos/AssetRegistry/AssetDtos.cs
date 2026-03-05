@@ -16,6 +16,10 @@ public record FysiekBezitResponse(
     string? KadastraalNummer, string? Kenteken, string? KvKNummer,
     int? BouwJaar,
     decimal? RestWaarde,
+    decimal? CatalogusWaarde,  // OVI value from RDW
+    string? Merk, string? Model, string? Voertuigklasse, string? Brandstof,
+    int? Vermogen, int? AantalCilinders, int? CilinderInhoud,
+    string? Kleur, decimal? MassaRijklaar, int? AantalZitplaatsen, string? Transmissie,
     Guid? KentekenBewijsDocumentGroepId,
     List<BezitSchuldSummary> LinkedSchulden);
 
@@ -26,6 +30,10 @@ public record FysiekBezitUpsertRequest(
     string? Notities,
     string? KadastraalNummer, string? Kenteken, string? KvKNummer,
     int? BouwJaar,
+    decimal? CatalogusWaarde,  // OVI value from RDW lookup
+    string? Merk, string? Model, string? Voertuigklasse, string? Brandstof,
+    int? Vermogen, int? AantalCilinders, int? CilinderInhoud,
+    string? Kleur, decimal? MassaRijklaar, int? AantalZitplaatsen, string? Transmissie,
     Guid? KentekenBewijsDocumentGroepId);
 
 public record BankrekeningResponse(
@@ -92,8 +100,39 @@ public record BezitSchuldUpsertRequest(
 public record RdwLookupRequest(string Kenteken);
 
 public record RdwLookupResponse(
+    // Basis identificatie
     string Merk,
     string Model,
     int BouwJaar,
+
+    // Voertuig classificatie
     string? Klasse,
-    string? Brandstof);
+    string? Brandstof,
+
+    // Motorspecificaties
+    int? Vermogen,
+    int? AantalCilinders,
+    int? CilinderInhoud,
+
+    // Fysieke afmetingen & gewicht
+    decimal? Lengte,
+    decimal? Breedte,
+    decimal? Hoogte,
+    decimal? MassaRijklaar,
+    decimal? MassaLedigGewicht,
+
+    // Capaciteit
+    int? AantalZitplaatsen,
+
+    // Styling
+    string? Kleur,
+
+    // Transmissie & handling
+    string? Transmissie,
+
+    // Uitvoering details
+    string? Uitvoering,
+    string? TypegoedkeuringNummer,
+
+    // OVI (Cataloguswaarde)
+    decimal? CatalogusWaarde);

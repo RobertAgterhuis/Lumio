@@ -19,7 +19,7 @@ public class BoedelController : ControllerBase
     private readonly IVehicleResidualValueService _vehicleValueService;
 
     public BoedelController(
-        IBoedelRepository repo, 
+        IBoedelRepository repo,
         IAuditService audit,
         IRdwApiService rdwApi,
         IVehicleResidualValueService vehicleValueService)
@@ -47,9 +47,14 @@ public class BoedelController : ControllerBase
         var totaalBezittingen = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
         var totaalRestWaardeVoertuigen = bezittingen
             .Where(b => b.Categorie == "Voertuig")
-            .Sum(b => b.RestWaarde ?? 0);
-        var totaalBezittendingenMetRestWaarde = totaalBezittingen + totaalRestWaardeVoertuigen;
-        
+            .Sum(b => _vehicleValueService.CalculateResidualValue(b.GeschatteWaarde, b.BouwJaar) ?? 0);
+
+        // Gebruik voor voertuigen de restwaarde als vervanging van geschatte waarde (geen dubbeltelling).
+        var totaalBezittendingenMetRestWaarde = bezittingen.Sum(b =>
+            b.Categorie == "Voertuig"
+                ? (_vehicleValueService.CalculateResidualValue(b.GeschatteWaarde, b.BouwJaar) ?? b.GeschatteWaarde ?? 0)
+                : (b.GeschatteWaarde ?? 0));
+
         var totaalSaldi = rekeningen.Sum(r => r.Saldo ?? 0);
         var totaalVerzekeringen = verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
         var totaalVerzekeringenMetBegunstigde = verzekeringen
@@ -95,10 +100,10 @@ public class BoedelController : ControllerBase
         item.EigenaarId = eigenaarId.Value;
         await _repo.AddAsync(item);
         await _repo.CommitAsync();
-        
+
         // Calculate RestWaarde for vehicles
         await CalculateAndSaveRestWaardeAsync(item);
-        
+
         await _audit.LogAsync("Aangemaakt", "FysiekBezit", item.Id);
         return Created($"/api/boedel/bezittingen/{item.Id}", ToBezitResponse(item));
     }
@@ -110,10 +115,10 @@ public class BoedelController : ControllerBase
         if (item is null) return NotFound();
         request.Adapt(item);
         await _repo.CommitAsync();
-        
+
         // Recalculate RestWaarde for vehicles
         await CalculateAndSaveRestWaardeAsync(item);
-        
+
         await _audit.LogAsync("Gewijzigd", "FysiekBezit", id);
         return Ok(ToBezitResponse(item));
     }
@@ -138,7 +143,12 @@ public class BoedelController : ControllerBase
             : null,
         f.VermogensSoort,
         f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
-        f.BouwJaar, f.RestWaarde, f.KentekenBewijsDocumentGroepId,
+        f.BouwJaar, f.RestWaarde,
+        f.CatalogusWaarde,  // OVI value from RDW
+        f.Merk, f.Model, f.Voertuigklasse, f.Brandstof,
+        f.Vermogen, f.AantalCilinders, f.CilinderInhoud,
+        f.Kleur, f.MassaRijklaar, f.AantalZitplaatsen, f.Transmissie,
+        f.KentekenBewijsDocumentGroepId,
         f.LinkedSchulden.Select(s => new BezitSchuldSummary(
             s.Id, s.Schuldeiser, s.Type, s.Bedrag,
             s.MaandelijkseAflossing, s.LeaseMaatschappij,
@@ -435,7 +445,7 @@ public class BoedelController : ControllerBase
             return BadRequest(new { error = "Kenteken is verplicht." });
 
         var voertuigGegevens = await _rdwApi.LookupByKentekenAsync(request.Kenteken, cancellationToken);
-        
+
         if (voertuigGegevens is null)
             return NotFound(new { error = $"Voertuig met kenteken '{request.Kenteken}' niet gevonden in RDW-register." });
 
@@ -444,7 +454,21 @@ public class BoedelController : ControllerBase
             Model: voertuigGegevens.Model,
             BouwJaar: voertuigGegevens.BouwJaar,
             Klasse: voertuigGegevens.Klasse,
-            Brandstof: voertuigGegevens.Brandstof
+            Brandstof: voertuigGegevens.Brandstof,
+            Vermogen: voertuigGegevens.Vermogen,
+            AantalCilinders: voertuigGegevens.AantalCilinders,
+            CilinderInhoud: voertuigGegevens.CilinderInhoud,
+            Lengte: voertuigGegevens.Lengte,
+            Breedte: voertuigGegevens.Breedte,
+            Hoogte: voertuigGegevens.Hoogte,
+            MassaRijklaar: voertuigGegevens.MassaRijklaar,
+            MassaLedigGewicht: voertuigGegevens.MassaLedigGewicht,
+            AantalZitplaatsen: voertuigGegevens.AantalZitplaatsen,
+            Kleur: voertuigGegevens.Kleur,
+            Transmissie: voertuigGegevens.Transmissie,
+            Uitvoering: voertuigGegevens.Uitvoering,
+            TypegoedkeuringNummer: voertuigGegevens.TypegoedkeuringNummer,
+            CatalogusWaarde: voertuigGegevens.CatalogusWaarde
         ));
     }
 }

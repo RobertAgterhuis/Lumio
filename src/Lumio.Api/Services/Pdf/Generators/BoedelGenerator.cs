@@ -47,6 +47,11 @@ public class BoedelGenerator : IPdfPageGenerator
                                 t.Item().PaddingLeft(PdfBrandTheme.LabelColumnWidth)
                                     .Text($"€ {b.GeschatteWaarde:N2}")
                                     .FontSize(PdfBrandTheme.FontCaption + 1).FontColor(PdfBrandTheme.TextMuted);
+                            // RDW: Display RestWaarde for vehicles
+                            if (b.Categorie == "Voertuig" && b.RestWaarde.HasValue)
+                                t.Item().PaddingLeft(PdfBrandTheme.LabelColumnWidth)
+                                    .Text($"Restwaarde: € {b.RestWaarde:N2}")
+                                    .FontSize(PdfBrandTheme.FontCaption).FontColor(PdfBrandTheme.TextMuted);
                         }
                     });
 
@@ -98,6 +103,7 @@ public class BoedelGenerator : IPdfPageGenerator
                     });
 
                 var totBezit    = bezittingen.Sum(b => b.GeschatteWaarde ?? 0);
+                var totRestWaarde = bezittingen.Where(b => b.Categorie == "Voertuig" && b.RestWaarde.HasValue).Sum(b => b.RestWaarde ?? 0);
                 var totSaldi    = rekeningen.Sum(r => r.Saldo ?? 0);
                 var totVerzeker = verzekeringen.Sum(v => v.VerzekerdBedrag ?? 0);
                 var totActiva   = totBezit + totSaldi + totVerzeker;
@@ -108,6 +114,8 @@ public class BoedelGenerator : IPdfPageGenerator
                     {
                         if (totBezit > 0)
                             PdfComponents.Row(t, L["Label_SubtotaalBezittingen"].Value.TrimStart(), $"€ {totBezit:N2}");
+                        if (totRestWaarde > 0)
+                            PdfComponents.Row(t, "  Restwaarde voertuigen", $"€ {totRestWaarde:N2}");
                         if (totSaldi > 0)
                             PdfComponents.Row(t, L["Label_SubtotaalSaldi"].Value.TrimStart(), $"€ {totSaldi:N2}");
                         if (totVerzeker > 0)

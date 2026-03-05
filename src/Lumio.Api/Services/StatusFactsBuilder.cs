@@ -196,8 +196,11 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
         var totaalRestWaardeVoertuigen = await _db.FysiekeBezittingen
             .Where(b => b.Categorie == "Voertuig" && b.RestWaarde.HasValue)
             .SumAsync(b => b.RestWaarde ?? 0m);
-        var totaalBezitWaardering = totaalFysiekBezit + totaalRestWaardeVoertuigen;
-        
+        var totaalBezitWaardering = await _db.FysiekeBezittingen
+            .SumAsync(b => b.Categorie == "Voertuig"
+                ? (b.RestWaarde ?? b.GeschatteWaarde ?? 0m)
+                : (b.GeschatteWaarde ?? 0m));
+
         var totaalSaldiBoedel = await _db.Bankrekeningen.SumAsync(b => b.Saldo ?? 0m);
         var totaalSchuldenBoedel = await _db.Schulden.SumAsync(s => s.Bedrag);
         var nettoNalatenschapNegatief = eigenaar is not null

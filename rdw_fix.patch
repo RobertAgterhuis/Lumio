@@ -1,0 +1,18 @@
+FIX: Replace line 62-68 in RdwApiService.cs
+
+OLD:
+            // RDW stores kenteken with hyphens: "NS-840-G" format (AA-BB-CD or AA-YY-ZZ)
+            // Convert from "NS840G" to "NS-840-G" to match RDW database
+            var rdwFormattedKenteken = FormatKentekenForRdw(normalized);
+
+            // RDW API v3 (Socrata) uses SoQL — must POST with JSON query body, not GET with URL params
+            var url = $"{RdwBaseUrl}/{ResourceId}/query.json";
+            var soqlQuery = $"SELECT * WHERE kenteken = '{rdwFormattedKenteken}' LIMIT 1";
+
+NEW:
+            // RDW stores kenteken WITHOUT hyphens in database (e.g., "NS840G" not "NS-840-G")
+            // Use normalized format directly for the query
+
+            // RDW API v3 (Socrata) uses SoQL — must POST with JSON query body, not GET with URL params
+            var url = $"{RdwBaseUrl}/{ResourceId}/query.json";
+            var soqlQuery = $"SELECT * WHERE kenteken = '{normalized}' LIMIT 1";

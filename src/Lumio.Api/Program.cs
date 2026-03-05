@@ -29,6 +29,19 @@ var builder = WebApplication.CreateBuilder(args);
 // QuestPDF community license
 QuestPDF.Settings.License = LicenseType.Community;
 
+// Debug: Show environment
+var env = builder.Environment.EnvironmentName;
+Console.WriteLine($"[DEBUG] ASPNETCORE_ENVIRONMENT: {env}");
+Console.WriteLine($"[DEBUG] ContentRoot: {builder.Environment.ContentRootPath}");
+Console.WriteLine($"[DEBUG] Working Directory: {System.IO.Directory.GetCurrentDirectory()}");
+
+// Check if appsettings files exist
+var appSettingsPath = Path.Combine(builder.Environment.ContentRootPath, $"appsettings.{env}.json");
+Console.WriteLine($"[DEBUG] Looking for: {appSettingsPath} -> Exists: {System.IO.File.Exists(appSettingsPath)}");
+    // Now read the RDW token
+    var rdwAppToken = builder.Configuration["RdwAppToken"];
+    Console.WriteLine($"[DEBUG] RdwAppToken from config: '{rdwAppToken}' (length: {rdwAppToken?.Length ?? 0})");
+
 // Register DM Sans font weights so QuestPDF can use them across all generators
 foreach (var weight in new[] { "Regular", "Medium", "SemiBold", "Bold" })
     FontManager.RegisterFontFromEmbeddedResource($"Lumio.Api.Resources.Fonts.DMSans-{weight}.ttf");
@@ -111,11 +124,28 @@ builder.Services.AddScoped<INuvExportService, NuvExportService>();
 builder.Services.AddScoped<IHtmlExportService, HtmlExportService>();
 builder.Services.AddScoped<IEncryptedBackupService, EncryptedBackupService>();
 
-// HTTP client for external RDW OpenAPI (with configurable timeout)
+// HTTP client for external RDW OpenAPI (with configurable timeout + App Token)
+// Note: rdwAppToken was already read above with debugging
+Console.WriteLine($"[DEBUG] RdwAppToken being used for HttpClient: {(string.IsNullOrEmpty(rdwAppToken) ? "NOT FOUND" : "Found (" + rdwAppToken.Length + " chars)")}");
+
 builder.Services.AddHttpClient<IRdwApiService, RdwApiService>()
     .ConfigureHttpClient(client =>
     {
         client.Timeout = TimeSpan.FromSeconds(10);
+        client.DefaultRequestHeaders.Add("User-Agent", "Lumio-AssetRegistry/1.0");
+
+        // RDW Socrata API requires an Application Token for queries
+        // Register a free token at: https://opendata.rdw.nl (Settings → App Tokens)
+        // Configure in appsettings.json: "RdwAppToken": "your_token_here"
+        if (!string.IsNullOrEmpty(rdwAppToken))
+        {
+            client.DefaultRequestHeaders.Add("X-App-Token", rdwAppToken);
+            Console.WriteLine($"[DEBUG] X-App-Token header added to HttpClient");
+        }
+        else
+        {
+            Console.WriteLine($"[DEBUG] WARNING: RdwAppToken is empty/null - header NOT added!");
+        }
     });
 
 // Asset Registry services (scoped — used in Boedel domain for vehicle valuation + calculations)
