@@ -6,6 +6,7 @@ using Lumio.Api.Domain.EuthanasiaDirective;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Rules.Facts;
 using Lumio.Api.Rules.Services;
+using Lumio.Api.Services.AssetRegistry;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -21,17 +22,20 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
     private readonly LimietenOptions _limieten;
     private readonly ErfbelastingOptions _erfbelasting;
     private readonly ILegitimairePortieService _legitiemairePortieService;
+    private readonly IVehicleResidualValueService _vehicleValueService;
 
     public StatusFactsBuilder(
         LumioDbContext db,
         IOptions<LimietenOptions> limieten,
         IOptions<ErfbelastingOptions> erfbelasting,
-        ILegitimairePortieService legitiemairePortieService)
+        ILegitimairePortieService legitiemairePortieService,
+        IVehicleResidualValueService vehicleValueService)
     {
         _db = db;
         _limieten = limieten.Value;
         _erfbelasting = erfbelasting.Value;
         _legitiemairePortieService = legitiemairePortieService;
+        _vehicleValueService = vehicleValueService;
     }
 
     // ── BuildCompleetFacts ──────────────────────────────────────────────
@@ -193,13 +197,18 @@ public sealed class StatusFactsBuilder : IStatusFactsBuilder
                 && (b.GeschatteWaarde == null || b.GeschatteWaarde == 0));
 
         var totaalFysiekBezit = await _db.FysiekeBezittingen.SumAsync(b => b.GeschatteWaarde ?? 0m);
-        var totaalRestWaardeVoertuigen = await _db.FysiekeBezittingen
-            .Where(b => b.Categorie == "Voertuig" && b.RestWaarde.HasValue)
-            .SumAsync(b => b.RestWaarde ?? 0m);
+
+        // Bereken restwaarde voertuigen dynamisch i.p.v. database waarde gebruiken
+        var voertuigen = await _db.FysiekeBezittingen
+            .Where(b => b.Categorie == "Voertuig")
+            .ToListAsync();
+        var totaalRestWaardeVoertuigen = voertuigen
+            .Sum(v => _vehicleValueService.CalculateResidualValue(v.GeschatteWaarde, v.BouwJaar) ?? 0m);
+
+        // Gebruik dynamisch berekende restwaarde voor voertuigen in totaal
         var totaalBezitWaardering = await _db.FysiekeBezittingen
-            .SumAsync(b => b.Categorie == "Voertuig"
-                ? (b.RestWaarde ?? b.GeschatteWaarde ?? 0m)
-                : (b.GeschatteWaarde ?? 0m));
+            .Where(b => b.Categorie != "Voertuig")
+            .SumAsync(b => b.GeschatteWaarde ?? 0m) + totaalRestWaardeVoertuigen;
 
         var totaalSaldiBoedel = await _db.Bankrekeningen.SumAsync(b => b.Saldo ?? 0m);
         var totaalSchuldenBoedel = await _db.Schulden.SumAsync(s => s.Bedrag);

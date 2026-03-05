@@ -134,25 +134,33 @@ public class BoedelController : ControllerBase
         return NoContent();
     }
 
-    private static FysiekBezitResponse ToBezitResponse(FysiekBezit f) => new(
-        f.Id, f.Categorie, f.Omschrijving,
-        f.GeschatteWaarde, f.Locatie,
-        f.BestemdeErfgenaamId,
-        f.BestemdeErfgenaam != null
-            ? $"{f.BestemdeErfgenaam.Voornaam} {f.BestemdeErfgenaam.Tussenvoegsel} {f.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
-            : null,
-        f.VermogensSoort,
-        f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
-        f.BouwJaar, f.RestWaarde,
-        f.CatalogusWaarde,  // OVI value from RDW
-        f.Merk, f.Model, f.Voertuigklasse, f.Brandstof,
-        f.Vermogen, f.AantalCilinders, f.CilinderInhoud,
-        f.Kleur, f.MassaRijklaar, f.AantalZitplaatsen, f.Transmissie,
-        f.KentekenBewijsDocumentGroepId,
-        f.LinkedSchulden.Select(s => new BezitSchuldSummary(
-            s.Id, s.Schuldeiser, s.Type, s.Bedrag,
-            s.MaandelijkseAflossing, s.LeaseMaatschappij,
-            s.Rentepercentage, s.Einddatum)).ToList());
+    private FysiekBezitResponse ToBezitResponse(FysiekBezit f)
+    {
+        // Voor voertuigen: bereken restWaarde dynamisch i.p.v. database waarde gebruiken
+        decimal? restWaarde = f.Categorie == "Voertuig"
+            ? _vehicleValueService.CalculateResidualValue(f.GeschatteWaarde, f.BouwJaar)
+            : f.RestWaarde;
+
+        return new FysiekBezitResponse(
+            f.Id, f.Categorie, f.Omschrijving,
+            f.GeschatteWaarde, f.Locatie,
+            f.BestemdeErfgenaamId,
+            f.BestemdeErfgenaam != null
+                ? $"{f.BestemdeErfgenaam.Voornaam} {f.BestemdeErfgenaam.Tussenvoegsel} {f.BestemdeErfgenaam.Achternaam}".Replace("  ", " ").Trim()
+                : null,
+            f.VermogensSoort,
+            f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
+            f.BouwJaar, restWaarde,
+            f.CatalogusWaarde,  // OVI value from RDW
+            f.Merk, f.Model, f.Voertuigklasse, f.Brandstof,
+            f.Vermogen, f.AantalCilinders, f.CilinderInhoud,
+            f.Kleur, f.MassaRijklaar, f.AantalZitplaatsen, f.Transmissie,
+            f.KentekenBewijsDocumentGroepId,
+            f.LinkedSchulden.Select(s => new BezitSchuldSummary(
+                s.Id, s.Schuldeiser, s.Type, s.Bedrag,
+                s.MaandelijkseAflossing, s.LeaseMaatschappij,
+                s.Rentepercentage, s.Einddatum)).ToList());
+    }
 
     // --- Bankrekeningen ---
 
@@ -393,6 +401,68 @@ public class BoedelController : ControllerBase
         return NoContent();
     }
 
+    // --- Bulk Operations ---
+
+    /// <summary>
+    /// Recalculate residual value for ALL vehicles in the estate.
+    /// Use this to refresh calculations after config changes or for existing vehicles.
+    /// </summary>
+    [HttpPost("bezittingen/recalculate-vehicles")]
+    public async Task<IActionResult> RecalculateAllVehicles()
+    {
+        var eigenaarId = await _repo.GetEigenaarIdAsync();
+        if (eigenaarId is null) return NotFound(new { error = "Geen eigenaar profiel gevonden." });
+
+        var vehicles = (await _repo.GetFysiekeBezittingenAsync(eigenaarId.Value))
+            .Where(b => b.Categorie == "Voertuig")
+            .ToList();
+
+        var updated = new List<object>();
+        var failed = new List<object>();
+
+        foreach (var vehicle in vehicles)
+        {
+            try
+            {
+                var oldValue = vehicle.RestWaarde;
+                var newValue = _vehicleValueService.CalculateResidualValue(
+                    vehicle.GeschatteWaarde,
+                    vehicle.BouwJaar);
+
+                if (newValue.HasValue && newValue.Value > 0)
+                {
+                    vehicle.RestWaarde = Math.Round(newValue.Value, 2);
+                    updated.Add(new
+                    {
+                        kenteken = vehicle.Kenteken,
+                        omschrijving = vehicle.Omschrijving,
+                        bouwJaar = vehicle.BouwJaar,
+                        geschatteWaarde = vehicle.GeschatteWaarde,
+                        oudRestWaarde = oldValue,
+                        nieuweRestWaarde = vehicle.RestWaarde
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                failed.Add(new { kenteken = vehicle.Kenteken, error = ex.Message });
+            }
+        }
+
+        await _repo.CommitAsync();
+        await _audit.LogAsync("Herberekend", "VoertuigRestwaarde", Guid.Empty);
+
+        return Ok(new
+        {
+            success = true,
+            totalVehicles = vehicles.Count,
+            updated = updated.Count,
+            failed = failed.Count,
+            updates = updated,
+            failures = failed
+        });
+    }
+
     // --- Helper Methods ---
 
     /// <summary>
@@ -401,23 +471,28 @@ public class BoedelController : ControllerBase
     /// </summary>
     private async Task CalculateAndSaveRestWaardeAsync(FysiekBezit item)
     {
-        // Only apply to vehicles with required data
-        if (item.Categorie != "Voertuig" || item.GeschatteWaarde is null or 0)
+        // Only apply to vehicles
+        if (item.Categorie != "Voertuig")
             return;
 
         try
         {
             // Get current item from DB to refresh from latest saved state
             var currentItem = await _repo.FindBezitWithNavigationAsync(item.Id);
-            if (currentItem?.GeschatteWaarde is null or 0)
+            if (currentItem is null)
+                return;
+
+            // Use GeschatteWaarde if available, otherwise fall back to CatalogusWaarde
+            var baseValue = currentItem.GeschatteWaarde ?? currentItem.CatalogusWaarde;
+            if (baseValue is null or 0)
                 return;
 
             // Calculate residual value based on estimated value + vehicle age (from BouwJaar)
             var restWaarde = _vehicleValueService.CalculateResidualValue(
-                currentItem.GeschatteWaarde,
+                baseValue,
                 currentItem.BouwJaar);
 
-            if (restWaarde > 0)
+            if (restWaarde.HasValue)
             {
                 currentItem.RestWaarde = Math.Round(restWaarde.Value, 2);
                 await _repo.CommitAsync();
