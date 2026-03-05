@@ -7,27 +7,18 @@ public class WilsverklaringEuthanasie : BaseEntity
     public Guid EigenaarId { get; set; }
     public Eigenaar Eigenaar { get; set; } = null!;
 
+    // SharedContact FKs
+    public Guid? HuisartsContactId { get; set; }
+    public SharedContact? HuisartsContact { get; set; }
+    public Guid? VertegenwoordigerContactId { get; set; }
+    public SharedContact? VertegenwoordigerContact { get; set; }
+    public Guid? Vertegenwoordiger2ContactId { get; set; }
+    public SharedContact? Vertegenwoordiger2Contact { get; set; }
+
     public DateOnly? DatumOndertekening { get; set; }
     public bool WilEuthanasie { get; set; }
     public string? SituatieBeschrijving { get; set; }
-    public string? Huisarts { get; set; }
-    public string? HuisartsPraktijk { get; set; }
-    public string? HuisartsTelefoon { get; set; }
-    public string? HuisartsEmail { get; set; }
-    public string? VertegenwoordigerNaam { get; set; }
-    public string? VertegenwoordigerRelatie { get; set; }
-    public string? VertegenwoordigerTelefoon { get; set; }
-    public string? VertegenwoordigerEmail { get; set; }
-    public string? VertegenwoordigerAdres { get; set; }
-    public string? VertegenwoordigerPostcode { get; set; }
-    public string? VertegenwoordigerWoonplaats { get; set; }
     public string? AanvullendeWensen { get; set; }
-
-    // S3-01 — Tweede vertegenwoordiger + situatie-opties
-    public string? Vertegenwoordiger2Naam { get; set; }
-    public string? Vertegenwoordiger2Relatie { get; set; }
-    public string? Vertegenwoordiger2Telefoon { get; set; }
-    public string? Vertegenwoordiger2Email { get; set; }
     /// <summary>JSON-array van geselecteerde situatie-opties (bijv. ["Dementie","Coma"]).</summary>
     public string? SituatieOpties { get; set; }
     public string? SituatieNotitie { get; set; }

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { NextIntlClientProvider } from "next-intl";
 import { HelpEmptyState } from "@/components/help/HelpEmptyState";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 
 const meta = {
   title: "Help/HelpEmptyState",
@@ -14,7 +14,7 @@ const meta = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <div className="max-w-md mx-auto">
           <Story />
         </div>

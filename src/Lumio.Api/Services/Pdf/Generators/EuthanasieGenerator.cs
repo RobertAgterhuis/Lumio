@@ -37,10 +37,10 @@ public class EuthanasieGenerator : IPdfPageGenerator
                         PdfComponents.Row(t, L["Label_WilEuthanasie"].Value,
                             wv.WilEuthanasie ? L["Value_Ja"].Value : L["Value_Nee"].Value);
                         PdfComponents.Row(t, L["Label_Situatie"].Value, wv.SituatieBeschrijving ?? "—");
-                        PdfComponents.Row(t, L["Label_Huisarts"].Value, wv.Huisarts ?? "—");
-                        PdfComponents.Row(t, L["Label_Praktijk"].Value, wv.HuisartsPraktijk ?? "—");
-                        if (!string.IsNullOrEmpty(wv.VertegenwoordigerNaam))
-                            PdfComponents.Row(t, L["Label_Vertegenwoordiger"].Value, wv.VertegenwoordigerNaam);
+                        PdfComponents.Row(t, L["Label_Huisarts"].Value, wv.HuisartsContact?.Naam ?? "—");
+                        PdfComponents.Row(t, L["Label_Praktijk"].Value, wv.HuisartsContact?.BedrijfsNaam ?? "—");
+                        if (!string.IsNullOrEmpty(wv.VertegenwoordigerContact?.Naam))
+                            PdfComponents.Row(t, L["Label_Vertegenwoordiger"].Value, wv.VertegenwoordigerContact.Naam);
                     });
 
                 if (data.Voorwaarden.Count > 0)

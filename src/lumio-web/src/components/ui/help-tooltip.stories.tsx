@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { runA11yChecks } from "@/lib/test-utils/storybook-a11y";
 
@@ -40,7 +40,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <Story />
       </NextIntlClientProvider>
     ),
@@ -75,7 +75,7 @@ export const LangeTekst: Story = {
 export const NaastLabel: Story = {
   name: "Inline naast label",
   render: (args) => (
-    <NextIntlClientProvider locale="nl" messages={nlMessages}>
+    <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
       <div className="flex items-center gap-2">
         <label htmlFor="demo-field" className="text-sm font-medium">
           BSN

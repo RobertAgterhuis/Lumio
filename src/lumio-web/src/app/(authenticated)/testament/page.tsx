@@ -167,17 +167,7 @@ export default function TestamentPage() {
               </div>
               <CardContent className="pt-5 space-y-2 text-sm">
                 <div><span className="font-medium">{t("notaris.type")}</span> {testament.testamentType || "—"}</div>
-                <div><span className="font-medium">{t("notaris.notaris")}</span> {testament.notarisNaam || "—"}</div>
-                <div><span className="font-medium">{t("notaris.kantoor")}</span> {testament.notarisKantoor || "—"}</div>
-                {testament.notarisTelefoon && <div><span className="font-medium">{t("notaris.telefoon")}</span> {testament.notarisTelefoon}</div>}
-                {testament.notarisEmail && <div><span className="font-medium">{t("notaris.email")}</span> {testament.notarisEmail}</div>}
-                {testament.notarisAdres && (
-                  <div>
-                    <span className="font-medium">{t("notaris.adres")}</span> {testament.notarisAdres}
-                    {testament.notarisPostcode ? `, ${testament.notarisPostcode}` : ""}
-                    {testament.notarisPlaats ? ` ${testament.notarisPlaats}` : ""}
-                  </div>
-                )}
+                <div><span className="font-medium">{t("notaris.notaris")}</span> {testament.notarisContactId ? "✓ Geselecteerd" : "—"}</div>
                 <div><span className="font-medium">{t("notaris.datum")}</span> {testament.datumTestament || "—"}</div>
                 <div><span className="font-medium">{t("notaris.ctrNummer")}</span> {testament.ctr_Nummer || "—"}</div>
                 {testament.testamentLocatie && <div><span className="font-medium">{t("notaris.locatie")}</span> {testament.testamentLocatie}</div>}

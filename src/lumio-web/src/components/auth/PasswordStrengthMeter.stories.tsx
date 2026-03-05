@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { PasswordStrengthMeter } from "./PasswordStrengthMeter";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 
 const meta: Meta<typeof PasswordStrengthMeter> = {
   title: "Auth/PasswordStrengthMeter",
@@ -17,7 +17,7 @@ const meta: Meta<typeof PasswordStrengthMeter> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <div className="w-80">
           <Story />
         </div>

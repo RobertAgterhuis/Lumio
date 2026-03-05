@@ -1,0 +1,109 @@
+{
+  "digitaalBezit": {
+    "laden": "Laden...",
+    "titel": "Digitaal Bezit",
+    "beschrijving": "Online accounts, wachtwoorden en crypto wallets",
+    "beveiligingsTip": "Wachtwoorden en seed phrases worden extra versleuteld opgeslagen (AES-256-GCM). Alleen na ontgrendeling zijn deze zichtbaar.",
+    "beveiligingsTipLabel": "Let op:",
+    "opslaanMislukt": "Opslaan mislukt.",
+    "verwijderenMislukt": "Verwijderen mislukt.",
+    "ontsluitenMislukt": "Ontsluiten mislukt.",
+    "importerenMislukt": "Importeren mislukt.",
+    "wachtwoordOokOpgeslagen": "Account en wachtwoord opgeslagen.",
+    "toevoegen": "Toevoegen",
+    "annuleren": "Annuleren",
+    "opslaan": "Opslaan",
+    "opslaanBezig": "Opslaan...",
+    "tabs": {
+      "accounts": "Accounts ({aantal})",
+      "wachtwoorden": "Wachtwoorden ({aantal})",
+      "crypto": "Crypto ({aantal})"
+    },
+    "accounts": {
+      "titel": "Online Accounts",
+      "geenAccounts": "Nog geen accounts. Klik op Toevoegen.",
+      "geenInCategorie": "Geen accounts in categorie \"{categorie}\".",
+      "afsluitInstructies": "Afsluitinstructies — {platform}",
+      "afsluitInstructiesTooltip": "Afsluitinstructies",
+      "bekijkInstructies": "Bekijk officiële instructies",
+      "verbergen": "Verbergen",
+      "ontsluiten": "Ontsluiten"
+    },
+    "wachtwoorden": {
+      "titel": "Wachtwoorden",
+      "importeren": "Importeren",
+      "geenWachtwoorden": "Nog geen wachtwoorden. Klik op Toevoegen.",
+      "verbergen": "Verbergen",
+      "ontsluiten": "Ontsluiten",
+      "account": "Account"
+    },
+    "crypto": {
+      "titel": "Crypto Wallets",
+      "geenWallets": "Nog geen wallets. Klik op Toevoegen."
+    },
+    "accountDialog": {
+      "bewerken": "Account bewerken",
+      "toevoegen": "Account toevoegen",
+      "platformNaam": "Platform naam",
+      "platformPlaceholder": "bijv. Google, Facebook, LinkedIn",
+      "categorie": "Categorie",
+      "gebruikersnaam": "Gebruikersnaam",
+      "email": "E-mailadres",
+      "emailPlaceholder": "E-mailadres gekoppeld aan dit account",
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "gewensteActie": "Gewenste actie na overlijden",
+      "overdrachtAan": "Overdracht aan",
+      "overdrachtPlaceholder": "Naam van de persoon (bij overdracht)",
+      "notities": "Notities",
+      "wachtwoordOpslaan": "Wachtwoord opslaan",
+      "wachtwoord": "Wachtwoord",
+      "wachtwoordPlaceholder": "Voer het wachtwoord in",
+      "wachtwoordOpmerking": "Opmerking",
+      "wachtwoordOpmerkingPlaceholder": "Hint of locatienotitie",
+      "verbergen": "Verbergen",
+      "tonen": "Tonen"
+    },
+    "wachtwoordDialog": {
+      "bewerken": "Wachtwoord bewerken",
+      "toevoegen": "Wachtwoord toevoegen",
+      "naam": "Naam / dienst",
+      "naamPlaceholder": "bijv. Gmail, DigiD",
+      "gebruikersnaam": "Gebruikersnaam",
+      "wachtwoord": "Wachtwoord",
+      "nieuwWachtwoord": "Nieuw wachtwoord (laat leeg om niet te wijzigen)",
+      "wachtwoordPlaceholder": "Wachtwoord",
+      "nieuwWachtwoordPlaceholder": "Laat leeg om niet te wijzigen",
+      "url": "URL",
+      "urlPlaceholder": "https://...",
+      "notities": "Notities",
+      "notitiesPlaceholder": "Hint of instructies voor nabestaanden..."
+    },
+    "cryptoDialog": {
+      "bewerken": "Wallet bewerken",
+      "toevoegen": "Wallet toevoegen",
+      "walletNaam": "Wallet naam",
+      "walletPlaceholder": "bijv. Mijn Bitcoin Wallet",
+      "cryptoType": "Crypto type",
+      "walletAdres": "Wallet adres (publiek)",
+      "walletAdresPlaceholder": "Publiek wallet adres",
+      "exchange": "Exchange",
+      "exchangePlaceholder": "bijv. Coinbase, Binance, Bitvavo",
+      "seedPhrase": "Seed Phrase (optioneel)",
+      "seedPhrasePlaceholder": "Uw seed phrase wordt versleuteld opgeslagen",
+      "seedPhraseInfo": "De seed phrase wordt versleuteld opgeslagen met AES-256-GCM.",
+      "notities": "Notities",
+      "notitiesPlaceholder": "Instructies voor toegang, locatie seed phrase..."
+    },
+    "importDialog": {
+      "titel": "Wachtwoorden importeren",
+      "info": "Ondersteunt CSV-export van <strong>1Password</strong>, <strong>Bitwarden</strong>, <strong>LastPass</strong>, <strong>KeePass</strong> en <strong>Chrome</strong>. Exporteer uw wachtwoorden als CSV vanuit uw huidige wachtwoordmanager en upload het bestand hieronder.",
+      "csvBestand": "CSV-bestand",
+      "resultaat": "{geimporteerd} wachtwoorden geïmporteerd",
+      "resultaatMetFouten": "{geimporteerd} wachtwoorden geïmporteerd, {fouten} fouten",
+      "sluiten": "Sluiten",
+      "importerenKnop": "Importeren",
+      "importerenBezig": "Importeren..."
+    }
+  }
+}

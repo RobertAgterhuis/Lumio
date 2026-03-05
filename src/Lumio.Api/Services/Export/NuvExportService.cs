@@ -151,20 +151,20 @@ public sealed class NuvExportService : INuvExportService
             sb.AppendLine("  </Uitvaartwensen>");
         }
 
-        if (uitvaart != null && !string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemer))
+        if (uitvaart != null && !string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerContact?.Naam))
         {
             sb.AppendLine("  <Uitvaartondernemer>");
-            sb.AppendLine($"    <Naam>{X(uitvaart.UitvaartOndernemer)}</Naam>");
-            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerTelefoon))
-                sb.AppendLine($"    <Telefoon>{X(uitvaart.UitvaartOndernemerTelefoon)}</Telefoon>");
-            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerEmail))
-                sb.AppendLine($"    <Email>{X(uitvaart.UitvaartOndernemerEmail)}</Email>");
-            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerAdres))
-                sb.AppendLine($"    <Adres>{X(uitvaart.UitvaartOndernemerAdres)}</Adres>");
-            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerPostcode))
-                sb.AppendLine($"    <Postcode>{X(uitvaart.UitvaartOndernemerPostcode)}</Postcode>");
-            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerPlaats))
-                sb.AppendLine($"    <Plaats>{X(uitvaart.UitvaartOndernemerPlaats)}</Plaats>");
+            sb.AppendLine($"    <Naam>{X(uitvaart.UitvaartOndernemerContact?.Naam)}</Naam>");
+            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerContact?.Telefoon))
+                sb.AppendLine($"    <Telefoon>{X(uitvaart.UitvaartOndernemerContact?.Telefoon)}</Telefoon>");
+            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerContact?.Email))
+                sb.AppendLine($"    <Email>{X(uitvaart.UitvaartOndernemerContact?.Email)}</Email>");
+            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerContact?.Adres))
+                sb.AppendLine($"    <Adres>{X(uitvaart.UitvaartOndernemerContact?.Adres)}</Adres>");
+            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerContact?.Postcode))
+                sb.AppendLine($"    <Postcode>{X(uitvaart.UitvaartOndernemerContact?.Postcode)}</Postcode>");
+            if (!string.IsNullOrWhiteSpace(uitvaart.UitvaartOndernemerContact?.Woonplaats))
+                sb.AppendLine($"    <Plaats>{X(uitvaart.UitvaartOndernemerContact?.Woonplaats)}</Plaats>");
             sb.AppendLine("  </Uitvaartondernemer>");
         }
 

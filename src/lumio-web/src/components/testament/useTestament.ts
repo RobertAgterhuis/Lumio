@@ -249,18 +249,28 @@ export function useTestament() {
   }, [t, tf, refetchBegunstigden, refetchLegitiemaire]);
 
   // Testament edit
-  const openTestEdit = useCallback(() => {
+  const openTestEdit = useCallback(async () => {
     if (!testament) return;
     setTestEditError(null);
+
+    // Start with testament data
+    let notarisContactId = testament.notarisContactId ?? null;
+
+    // If no notaris selected yet, try to load from eigenaar profile
+    if (!notarisContactId) {
+      try {
+        const eigenaar = await api.get<{ notarisContactId?: string | null }>("/api/eigenaar");
+        if (eigenaar?.notarisContactId) {
+          notarisContactId = eigenaar.notarisContactId;
+        }
+      } catch {
+        // Silently fail — show existing saved data or empty field
+      }
+    }
+
     setTestEditForm({
       testamentType: testament.testamentType ?? "",
-      notarisNaam: testament.notarisNaam ?? "",
-      notarisKantoor: testament.notarisKantoor ?? "",
-      notarisTelefoon: testament.notarisTelefoon ?? "",
-      notarisEmail: testament.notarisEmail ?? "",
-      notarisAdres: testament.notarisAdres ?? "",
-      notarisPostcode: testament.notarisPostcode ?? "",
-      notarisPlaats: testament.notarisPlaats ?? "",
+      notarisContactId: notarisContactId,
       datumTestament: testament.datumTestament ?? "",
       testamentLocatie: testament.testamentLocatie ?? "",
       ctr_Nummer: testament.ctr_Nummer ?? "",
@@ -277,13 +287,7 @@ export function useTestament() {
     try {
       const payload = {
         testamentType: testEditForm.testamentType || null,
-        notarisNaam: testEditForm.notarisNaam || null,
-        notarisKantoor: testEditForm.notarisKantoor || null,
-        notarisTelefoon: testEditForm.notarisTelefoon || null,
-        notarisEmail: testEditForm.notarisEmail || null,
-        notarisAdres: testEditForm.notarisAdres || null,
-        notarisPostcode: testEditForm.notarisPostcode || null,
-        notarisPlaats: testEditForm.notarisPlaats || null,
+        notarisContactId: testEditForm.notarisContactId || null,
         datumTestament: testEditForm.datumTestament || null,
         testamentLocatie: testEditForm.testamentLocatie || null,
         ctr_Nummer: testEditForm.ctr_Nummer || null,

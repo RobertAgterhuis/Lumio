@@ -406,6 +406,9 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("GewijzigdOp")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("HuisartsContactId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("HuwelijksVoorwaarden")
                         .HasColumnType("INTEGER");
 
@@ -421,25 +424,7 @@ namespace Lumio.Api.Migrations
                     b.Property<int>("LegitimatieSoort")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Notaris")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisAdres")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisEmail")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisKantoor")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisPlaats")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisPostcode")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisTelefoon")
+                    b.Property<Guid?>("NotarisContactId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("OnboardingVoltooid")
@@ -469,6 +454,9 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Tussenvoegsel")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("UitvaartOndernemerContactId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Voornaam")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -477,6 +465,12 @@ namespace Lumio.Api.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HuisartsContactId");
+
+                    b.HasIndex("NotarisContactId");
+
+                    b.HasIndex("UitvaartOndernemerContactId");
 
                     b.ToTable("Eigenaren");
                 });
@@ -652,6 +646,68 @@ namespace Lumio.Api.Migrations
                     b.HasIndex("EigenaarId");
 
                     b.ToTable("SectieNotities");
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.Common.SharedContact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("AangemaaktOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Adres")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BedrijfsNaam")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EigenaarId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Functie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("GewijzigdOp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsGedeeld")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Naam")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notities")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Postcode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Relatie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SubType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Telefoon")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Woonplaats")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EigenaarId");
+
+                    b.ToTable("SharedContacts");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.Common.Werkgever", b =>
@@ -1059,16 +1115,7 @@ namespace Lumio.Api.Migrations
                     b.Property<DateTime>("GewijzigdOp")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Huisarts")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("HuisartsEmail")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("HuisartsPraktijk")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("HuisartsTelefoon")
+                    b.Property<Guid?>("HuisartsContactId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SituatieBeschrijving")
@@ -1080,37 +1127,10 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("SituatieOpties")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Vertegenwoordiger2Email")
+                    b.Property<Guid?>("Vertegenwoordiger2ContactId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Vertegenwoordiger2Naam")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Vertegenwoordiger2Relatie")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Vertegenwoordiger2Telefoon")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VertegenwoordigerAdres")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VertegenwoordigerEmail")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VertegenwoordigerNaam")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VertegenwoordigerPostcode")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VertegenwoordigerRelatie")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VertegenwoordigerTelefoon")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("VertegenwoordigerWoonplaats")
+                    b.Property<Guid?>("VertegenwoordigerContactId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("WilEuthanasie")
@@ -1119,6 +1139,12 @@ namespace Lumio.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EigenaarId");
+
+                    b.HasIndex("HuisartsContactId");
+
+                    b.HasIndex("Vertegenwoordiger2ContactId");
+
+                    b.HasIndex("VertegenwoordigerContactId");
 
                     b.ToTable("Wilsverklaringen");
                 });
@@ -1277,22 +1303,7 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Sprekers")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UitvaartOndernemer")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UitvaartOndernemerAdres")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UitvaartOndernemerEmail")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UitvaartOndernemerPlaats")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UitvaartOndernemerPostcode")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UitvaartOndernemerTelefoon")
+                    b.Property<Guid?>("UitvaartOndernemerContactId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UitvaartVerzekeringDetails")
@@ -1323,6 +1334,8 @@ namespace Lumio.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EigenaarId");
+
+                    b.HasIndex("UitvaartOndernemerContactId");
 
                     b.ToTable("UitvaartWensen");
                 });
@@ -1470,25 +1483,7 @@ namespace Lumio.Api.Migrations
                     b.Property<string>("Legaten")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("NotarisAdres")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisEmail")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisKantoor")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisNaam")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisPlaats")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisPostcode")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NotarisTelefoon")
+                    b.Property<Guid?>("NotarisContactId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TestamentLocatie")
@@ -1503,6 +1498,8 @@ namespace Lumio.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EigenaarId");
+
+                    b.HasIndex("NotarisContactId");
 
                     b.ToTable("Testamenten");
                 });
@@ -1694,6 +1691,30 @@ namespace Lumio.Api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Lumio.Api.Domain.Common.Eigenaar", b =>
+                {
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "HuisartsContact")
+                        .WithMany()
+                        .HasForeignKey("HuisartsContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "NotarisContact")
+                        .WithMany()
+                        .HasForeignKey("NotarisContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "UitvaartOndernemerContact")
+                        .WithMany()
+                        .HasForeignKey("UitvaartOndernemerContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("HuisartsContact");
+
+                    b.Navigation("NotarisContact");
+
+                    b.Navigation("UitvaartOndernemerContact");
+                });
+
             modelBuilder.Entity("Lumio.Api.Domain.Common.Erfgenaam", b =>
                 {
                     b.HasOne("Lumio.Api.Domain.Common.Eigenaar", "Eigenaar")
@@ -1721,6 +1742,17 @@ namespace Lumio.Api.Migrations
                         .HasForeignKey("EigenaarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Lumio.Api.Domain.Common.SharedContact", b =>
+                {
+                    b.HasOne("Lumio.Api.Domain.Common.Eigenaar", "Eigenaar")
+                        .WithMany()
+                        .HasForeignKey("EigenaarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Eigenaar");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.DigitalEstate.CryptoWallet", b =>
@@ -1800,7 +1832,28 @@ namespace Lumio.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "HuisartsContact")
+                        .WithMany()
+                        .HasForeignKey("HuisartsContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "Vertegenwoordiger2Contact")
+                        .WithMany()
+                        .HasForeignKey("Vertegenwoordiger2ContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "VertegenwoordigerContact")
+                        .WithMany()
+                        .HasForeignKey("VertegenwoordigerContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Eigenaar");
+
+                    b.Navigation("HuisartsContact");
+
+                    b.Navigation("Vertegenwoordiger2Contact");
+
+                    b.Navigation("VertegenwoordigerContact");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.FuneralWishes.CeremonieDetail", b =>
@@ -1833,7 +1886,14 @@ namespace Lumio.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "UitvaartOndernemerContact")
+                        .WithMany()
+                        .HasForeignKey("UitvaartOndernemerContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Eigenaar");
+
+                    b.Navigation("UitvaartOndernemerContact");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.Testament.Begunstigde", b =>
@@ -1866,7 +1926,14 @@ namespace Lumio.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Lumio.Api.Domain.Common.SharedContact", "NotarisContact")
+                        .WithMany()
+                        .HasForeignKey("NotarisContactId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Eigenaar");
+
+                    b.Navigation("NotarisContact");
                 });
 
             modelBuilder.Entity("Lumio.Api.Domain.Testament.TestamentSnapshot", b =>

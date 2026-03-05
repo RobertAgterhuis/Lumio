@@ -1,0 +1,405 @@
+{
+  "videoboodschappen": {
+    "titel": "Videoboodschappen",
+    "subtitel": "Persoonlijke video's voor uw erfgenamen, te bekijken na uw overlijden.",
+    "nieuw": "Nieuwe videoboodschap",
+    "opgeslagen": "Videoboodschap opgeslagen",
+    "toegevoegd": "Videoboodschap toegevoegd",
+    "afspelen": "Afspelen",
+    "bewerken": "Bewerken",
+    "verwijderen": "Verwijderen",
+    "onbekendeOntvanger": "Onbekend",
+    "verwijderenBevestig": "Weet u zeker dat u \"{titel}\" wilt verwijderen?",
+    "verwijderenBevestigTitel": "Video verwijderen",
+    "annuleren": "Annuleren",
+    "legeStaat": {
+      "titel": "Nog geen videoboodschappen",
+      "beschrijving": "Leg een persoonlijke boodschap vast voor uw erfgenamen. U kunt opnemen via uw webcam of een videobestand uploaden.",
+      "actie": "Eerste video toevoegen"
+    },
+    "dialog": {
+      "nieuw": "Nieuwe videoboodschap",
+      "bewerken": "Videoboodschap bewerken",
+      "video": "Video",
+      "tabOpnemen": "Opnemen",
+      "tabUploaden": "Uploaden",
+      "titel": "Titel",
+      "titelPlaceholder": "Bijv. Boodschap voor mijn kinderen",
+      "beschrijving": "Beschrijving (optioneel)",
+      "beschrijvingPlaceholder": "Korte omschrijving van de inhoud",
+      "ontvangers": "Voor wie is deze video?",
+      "aantalOntvangers": "{aantal, plural, one {# ontvanger geselecteerd} other {# ontvangers geselecteerd}}",
+      "annuleren": "Annuleren",
+      "opslaan": "Opslaan",
+      "uploading": "Uploaden...",
+      "titelVerplicht": "Vul een titel in.",
+      "videoVerplicht": "Kies of neem een video op.",
+      "alleenVideo": "Alleen videobestanden zijn toegestaan.",
+      "bestandTeGroot": "Bestand is te groot. Maximum is 100 MB.",
+      "fout": "Er ging iets mis. Probeer het opnieuw.",
+      "uploadKlik": "Klik om een bestand te kiezen",
+      "uploadTip": "MP4, WebM — maximaal 100 MB",
+      "standaardTitel": "Opname {{datum}}",
+      "bestaandeVideo": "Bestaande video"
+    },
+    "recorder": {
+      "start": "Start opname",
+      "stop": "Stop opname",
+      "gebruik": "Gebruik deze opname",
+      "opnieuw": "Opnieuw opnemen",
+      "toestemming": "Toestemming vragen voor camera en microfoon...",
+      "permissieGeweigerd": "Toegang tot camera of microfoon geweigerd.",
+      "fout": "Opname niet mogelijk. Controleer uw camera.",
+      "klaarVoorOpname": "Klaar om op te nemen",
+      "previewLaden": "Preview wordt voorbereid...",
+      "maxDuur": "Maximaal {minuten} minuten",
+      "maxOver": "Nog {seconden} sec.",
+      "nietBeschikbaar": "Opname niet beschikbaar in deze browser.",
+      "httpsVereist": "Camera-opname vereist een beveiligde verbinding (HTTPS).",
+      "previewUploadMislukt": "Preview upload mislukt"
+    },
+    "aantalGebruikt": "{gebruikt} van {max} videoboodschappen gebruikt",
+    "opslagGebruikt": "{gebruikt} van {max} opslagruimte in gebruik",
+    "erfgenaamToegangInfo": "Erfgenamen zien hun videoboodschappen pas wanneer zij de applicatie openen met noodcodes na uw overlijden. Uw video's zijn beveiligd.",
+    "erfgenaamModus": "U bekijkt videoboodschappen in erfgenaam-modus. Hieronder ziet u alle opgenomen video's."
+  },
+  "voorbeeldData": {
+    "disclaimer": "Dit is fictieve voorbeelddata van \"Familie de Voorbeeld\". Geen echte personen of gegevens.",
+    "bekijkVoorbeeld": "Bekijk voorbeeld",
+    "sluiten": "Sluiten",
+    "eigenaar": {
+      "titel": "Mijn Profiel — Voorbeeld",
+      "beschrijving": "Hieronder ziet u een voorbeeld van een ingevuld profiel. Gebruik dit als inspiratie voor uw eigen gegevens.",
+      "secties": {
+        "persoonsgegevens": {
+          "titel": "Persoonsgegevens",
+          "voornaam": "Voornaam",
+          "voornaamWaarde": "Pieter",
+          "tussenvoegsel": "Tussenvoegsel",
+          "tussenvoegselWaarde": "de",
+          "achternaam": "Achternaam",
+          "achternaamWaarde": "Voorbeeld",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "15-03-1965",
+          "bsn": "BSN",
+          "bsnWaarde": "123456789",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-12345678",
+          "email": "E-mail",
+          "emailWaarde": "pieter@voorbeeld.nl"
+        },
+        "adresgegevens": {
+          "titel": "Adresgegevens",
+          "adres": "Adres",
+          "adresWaarde": "Voorbeeldstraat 42",
+          "postcode": "Postcode",
+          "postcodeWaarde": "1234 AB",
+          "woonplaats": "Woonplaats",
+          "woonplaatsWaarde": "Voorbeeldstad"
+        },
+        "burgerlijkeStaat": {
+          "titel": "Burgerlijke staat",
+          "burgerlijkeStaat": "Burgerlijke staat",
+          "burgerlijkeStaatWaarde": "Gehuwd",
+          "huwelijksvoorwaarden": "Huwelijksvoorwaarden",
+          "huwelijksvoorwaardenWaarde": "Beperkte gemeenschap",
+          "datumHuwelijk": "Datum huwelijk",
+          "datumHuwelijkWaarde": "22-06-1992"
+        },
+        "legitimatie": {
+          "titel": "Legitimatie",
+          "soort": "Soort",
+          "soortWaarde": "Paspoort",
+          "documentnummer": "Documentnummer",
+          "documentnummerWaarde": "NX1234567",
+          "datumAfgifte": "Datum afgifte",
+          "datumAfgifteWaarde": "01-02-2022",
+          "geldigTot": "Geldig tot",
+          "geldigTotWaarde": "01-02-2032"
+        }
+      }
+    },
+    "testament": {
+      "titel": "Testament — Voorbeeld",
+      "beschrijving": "Een voorbeeld van testamentaire informatie. De inhoud is fictief.",
+      "secties": {
+        "testamentgegevens": {
+          "titel": "Testamentgegevens",
+          "typeTestament": "Type testament",
+          "typeTestamentWaarde": "Notarieel testament",
+          "datumTestament": "Datum testament",
+          "datumTestamentWaarde": "10-09-2020",
+          "ctrNummer": "CTR-nummer",
+          "ctrNummerWaarde": "CTR-2020-098765",
+          "locatie": "Locatie",
+          "locatieWaarde": "Kluis bij notaris"
+        },
+        "notaris": {
+          "titel": "Notaris",
+          "naam": "Naam",
+          "naamWaarde": "Mr. J.H. Bakker",
+          "kantoor": "Kantoor",
+          "kantoorWaarde": "Bakker & Partners Notarissen",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "020-1234567",
+          "email": "E-mail",
+          "emailWaarde": "info@bakkernotarissen.nl",
+          "adres": "Adres",
+          "adresWaarde": "Keizersgracht 100, 1015 AB Amsterdam"
+        },
+        "executeur": {
+          "titel": "Executeur",
+          "naam": "Naam",
+          "naamWaarde": "Maria de Voorbeeld-Jansen",
+          "relatie": "Relatie",
+          "relatieWaarde": "Echtgenote",
+          "bevoegdheden": "Bevoegdheden",
+          "bevoegdhedenWaarde": "Driestereenexecuteur (beheer, verdeling, verkoop)",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-98765432"
+        },
+        "begunstigden": {
+          "titel": "Begunstigden",
+          "mariaDeVoorbeeldJansen": "Maria de Voorbeeld-Jansen",
+          "mariaDeVoorbeeldJansenWaarde": "Echtgenote — 50%",
+          "thomasDeVoorbeeld": "Thomas de Voorbeeld",
+          "thomasDeVoorbeeldWaarde": "Zoon — 25%",
+          "sophieDeVoorbeeld": "Sophie de Voorbeeld",
+          "sophieDeVoorbeeldWaarde": "Dochter — 25%"
+        },
+        "aanvullend": {
+          "titel": "Aanvullend",
+          "uitsluitingsclausule": "Uitsluitingsclausule",
+          "uitsluitingsclausuleWaarde": "Ja",
+          "legaten": "Legaten",
+          "legatenWaarde": "Schilderij van opa → aan neef Karel",
+          "algemeneWensen": "Algemene wensen",
+          "algemeneWensenWaarde": "Mijn boekencollectie mag verdeeld worden onder de kinderen."
+        }
+      }
+    },
+    "euthanasie": {
+      "titel": "Wilsverklaring — Voorbeeld",
+      "beschrijving": "Een voorbeeld van een vastgelegde wilsverklaring euthanasie.",
+      "secties": {
+        "wilsverklaring": {
+          "titel": "Wilsverklaring",
+          "type": "Type",
+          "typeWaarde": "Euthanasieverzoek",
+          "datumOpgesteld": "Datum opgesteld",
+          "datumOpgesteldWaarde": "05-01-2021",
+          "locatieDocument": "Locatie document",
+          "locatieDocumentWaarde": "Huisarts en thuiskluis",
+          "huisarts": "Huisarts",
+          "huisartsWaarde": "Dr. A.B. Smit — Huisartsenpraktijk Centrum",
+          "telefoonHuisarts": "Telefoon huisarts",
+          "telefoonHuisartsWaarde": "020-7654321"
+        },
+        "wensenEnVoorwaarden": {
+          "titel": "Wensen & voorwaarden",
+          "wanneerVanToepassing": "Wanneer van toepassing",
+          "wanneerVanToepassingWaarde": "Bij uitzichtloos en ondraaglijk lijden, ook bij vergevorderde dementie waarbij ik mijzelf en naasten niet meer herken.",
+          "behandelverbod": "Behandelverbod",
+          "behandelverbodWaarde": "Geen reanimatie, geen kunstmatige beademing, geen sondevoeding.",
+          "aanvullendeWensen": "Aanvullende wensen",
+          "aanvullendeWensenWaarde": "Ik wil in mijn eigen huis overlijden indien mogelijk."
+        }
+      }
+    },
+    "donor": {
+      "titel": "Donorregistratie — Voorbeeld",
+      "beschrijving": "Een voorbeeld van een donorregistratie.",
+      "secties": {
+        "registratie": {
+          "titel": "Registratie",
+          "keuze": "Keuze",
+          "keuzeWaarde": "Ja, ik geef toestemming",
+          "specificatie": "Specificatie",
+          "specificatieWaarde": "Alle organen en weefsels, behalve cornea (ogen)",
+          "geregistreerdOp": "Geregistreerd op",
+          "geregistreerdOpWaarde": "12-04-2019",
+          "donorregister": "Donorregister",
+          "donorregisterWaarde": "Ja, ingeschreven bij het Donorregister"
+        }
+      }
+    },
+    "boedel": {
+      "titel": "Boedel — Voorbeeld",
+      "beschrijving": "Een voorbeeld van een ingevulde boedel met bezittingen, rekeningen, verzekeringen en schulden.",
+      "secties": {
+        "fysiekeBezittingen": {
+          "titel": "Fysieke bezittingen",
+          "woningVoorbeeldstraat": "Woning Voorbeeldstraat 42",
+          "woningVoorbeeldstraatWaarde": "€ 425.000 — Kad. ASD01-A-1234",
+          "volkswagenId4": "Volkswagen ID.4 (2023)",
+          "volkswagenId4Waarde": "€ 35.000 — AB-123-CD",
+          "antiekDressoir": "Antiek dressoir (erfstuk)",
+          "antiekDressoirWaarde": "€ 2.500",
+          "zonnepanelen": "Zonnepanelen (12 stuks)",
+          "zonnepanelenWaarde": "€ 4.000"
+        },
+        "bankrekeningen": {
+          "titel": "Bankrekeningen",
+          "ingBetaalrekening": "ING Betaalrekening",
+          "ingBetaalrekeningWaarde": "NL91INGB0001234567 — € 8.450",
+          "rabobankSpaarrekening": "Rabobank Spaarrekening",
+          "rabobankSpaarrekeningWaarde": "NL20RABO9876543210 — € 52.300",
+          "abnAmroBeleggingsrekening": "ABN AMRO Beleggingsrekening",
+          "abnAmroBeleggingsrekeningWaarde": "NL44ABNA5678901234 — € 87.000"
+        },
+        "verzekeringen": {
+          "titel": "Verzekeringen",
+          "overlijdensrisicoverzekering": "Overlijdensrisicoverzekering",
+          "overlijdensrisicoverzekeringWaarde": "Nationale-Nederlanden — € 200.000 — Polis VZ-2019-4567",
+          "uitvaartverzekering": "Uitvaartverzekering",
+          "uitvaartverzekeringWaarde": "DELA — € 12.500 — Polis UIT-2015-8901",
+          "inboedelverzekering": "Inboedelverzekering",
+          "inboedelverzekeringWaarde": "Centraal Beheer — € 75.000"
+        },
+        "schulden": {
+          "titel": "Schulden",
+          "hypotheekWoning": "Hypotheek woning",
+          "hypotheekWoningWaarde": "Rabobank — € 195.000 (restschuld)",
+          "persoonlijkeLening": "Persoonlijke lening",
+          "persoonlijkeLeningWaarde": "ING — € 5.000"
+        }
+      }
+    },
+    "uitvaart": {
+      "titel": "Uitvaartwensen — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde uitvaartwensen.",
+      "secties": {
+        "vormEnLocatie": {
+          "titel": "Vorm & locatie",
+          "voorkeur": "Voorkeur",
+          "voorkeurWaarde": "Crematie",
+          "locatie": "Locatie",
+          "locatieWaarde": "Crematorium Westgaarde, Amsterdam",
+          "uitvaartondernemer": "Uitvaartondernemer",
+          "uitvaartondernemerWaarde": "Monuta",
+          "verzekeraar": "Verzekeraar",
+          "verzekeraarWaarde": "DELA — Polisnummer UIT-2015-8901"
+        },
+        "ceremonie": {
+          "titel": "Ceremonie",
+          "type": "Type",
+          "typeWaarde": "Persoonlijke niet-religieuze bijeenkomst",
+          "muziek": "Muziek",
+          "muziekWaarde": "Time to Say Goodbye (Andrea Bocelli), Imagine (John Lennon)",
+          "sprekers": "Spreker(s)",
+          "sprekersWaarde": "Maria (echtgenote), Thomas (zoon), collega Jan",
+          "bloemen": "Bloemen",
+          "bloemenWaarde": "Witte rozen, geen kransen",
+          "dresscode": "Dresscode",
+          "dresscodeWaarde": "Geen zwart, kleurrijke kleding gewenst"
+        },
+        "naDeUitvaart": {
+          "titel": "Na de uitvaart",
+          "asbestemming": "Asbestemming",
+          "asbestemmingWaarde": "Verstrooien op de Noordzee bij Scheveningen",
+          "rouwkaart": "Rouwkaart",
+          "rouwkaartWaarde": "Eenvoudig, met foto uit 2023",
+          "condoleance": "Condoleance",
+          "condoleanceWaarde": "Thuis, op de dag van de uitvaart"
+        }
+      }
+    },
+    "erfgenamen": {
+      "titel": "Erfgenamen — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde erfgenamen.",
+      "secties": {
+        "erfgenaam1": {
+          "titel": "Erfgenaam 1",
+          "naam": "Naam",
+          "naamWaarde": "Maria de Voorbeeld-Jansen",
+          "relatie": "Relatie",
+          "relatieWaarde": "Echtgenote",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "28-07-1967",
+          "bsn": "BSN",
+          "bsnWaarde": "987654321",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-98765432",
+          "email": "E-mail",
+          "emailWaarde": "maria@voorbeeld.nl",
+          "legitimatie": "Legitimatie",
+          "legitimatieWaarde": "Identiteitskaart — ID9876543"
+        },
+        "erfgenaam2": {
+          "titel": "Erfgenaam 2",
+          "naam": "Naam",
+          "naamWaarde": "Thomas de Voorbeeld",
+          "relatie": "Relatie",
+          "relatieWaarde": "Kind",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "14-11-1995",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-11223344",
+          "email": "E-mail",
+          "emailWaarde": "thomas@voorbeeld.nl"
+        },
+        "erfgenaam3": {
+          "titel": "Erfgenaam 3",
+          "naam": "Naam",
+          "naamWaarde": "Sophie de Voorbeeld",
+          "relatie": "Relatie",
+          "relatieWaarde": "Kind",
+          "geboortedatum": "Geboortedatum",
+          "geboortedatumWaarde": "03-05-1998",
+          "telefoon": "Telefoon",
+          "telefoonWaarde": "06-55667788",
+          "email": "E-mail",
+          "emailWaarde": "sophie@voorbeeld.nl"
+        }
+      }
+    },
+    "digitaalBezit": {
+      "titel": "Digitaal Bezit — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde online accounts en digitale bezittingen.",
+      "secties": {
+        "emailEnCloud": {
+          "titel": "E-mail & Cloud",
+          "google": "Google (pieter@gmail.com)",
+          "googleWaarde": "Verwijderen na overlijden — Inactief Account Beheerder ingesteld",
+          "icloud": "iCloud (pieter@icloud.com)",
+          "icloudWaarde": "Overdragen aan echtgenote — Digital Legacy contact ingesteld"
+        },
+        "socialMedia": {
+          "titel": "Social media",
+          "facebook": "Facebook",
+          "facebookWaarde": "In memorial-modus plaatsen",
+          "linkedin": "LinkedIn",
+          "linkedinWaarde": "Profiel verwijderen",
+          "instagram": "Instagram (@pietervoorbeeld)",
+          "instagramWaarde": "Verwijderen"
+        },
+        "financieelEnCrypto": {
+          "titel": "Financieel & Crypto",
+          "paypal": "PayPal",
+          "paypalWaarde": "Saldo overmaken en sluiten",
+          "bitcoinWallet": "Bitcoin wallet (Ledger Nano)",
+          "bitcoinWalletWaarde": "Seed phrase in kluis — overdragen aan Thomas"
+        }
+      }
+    },
+    "noodcontacten": {
+      "titel": "Noodcontacten — Voorbeeld",
+      "beschrijving": "Een voorbeeld van vastgelegde noodcontacten.",
+      "secties": {
+        "contactpersonen": {
+          "titel": "Contactpersonen",
+          "mariaDeVoorbeeldJansen": "Maria de Voorbeeld-Jansen",
+          "mariaDeVoorbeeldJansenWaarde": "Echtgenote — 06-98765432 — maria@voorbeeld.nl",
+          "mrJhBakker": "Mr. J.H. Bakker",
+          "mrJhBakkerWaarde": "Notaris — 020-1234567 — info@bakkernotarissen.nl",
+          "drAbSmit": "Dr. A.B. Smit",
+          "drAbSmitWaarde": "Huisarts — 020-7654321",
+          "janDeVries": "Jan de Vries",
+          "janDeVriesWaarde": "Financieel adviseur — 030-9876543",
+          "karelJansen": "Karel Jansen",
+          "karelJansenWaarde": "Buurman (sleutelhouder) — 06-44556677"
+        }
+      }
+    }
+  }
+}

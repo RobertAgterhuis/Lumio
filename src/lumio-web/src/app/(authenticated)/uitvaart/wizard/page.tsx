@@ -12,49 +12,16 @@ import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { api } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
 import { ConfirmJuridischDialog } from "@/components/security/ConfirmJuridischDialog";
-
-interface UitvaartData {
-  voorkeurType: string;
-  begraafplaats: string;
-  uitvaartOndernemer: string;
-  uitvaartOndernemerTelefoon: string;
-  uitvaartOndernemerEmail: string;
-  uitvaartOndernemerAdres: string;
-  uitvaartOndernemerPostcode: string;
-  uitvaartOndernemerPlaats: string;
-  heeftUitvaartVerzekering: boolean;
-  uitvaartVerzekeringDetails: string;
-  ceremonieSoort: string;
-  ceremonieLocatie: string;
-  muziekwensen: string;
-  sprekers: string;
-  bloemen: string;
-  kledingwensen: string;
-  rouwkaartTekst: string;
-  rouwadvertentieTekst: string;
-  condoleance: string;
-  overigeWensen: string;
-  voorkeurBegraafplaatsNaam: string;
-  voorkeurBegraafplaatsAdres: string;
-  voorkeurCrematoriumnaam: string;
-  voorkeurCrematoriumAdres: string;
-  voorkeurAulaNaam: string;
-  voorkeurAulaAdres: string;
-  budgetRichting: string;
-}
+import { ContactSelector } from "@/components/common/ContactSelector";
+import { UitvaartWensen } from "@/components/uitvaart/types";
 
 export default function UitvaartWizardPage() {
   const router = useRouter();
   const t = useTranslations("uitvaartWizard");
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Partial<UitvaartWensen>>({
     voorkeurType: "",
     begraafplaats: "",
-    uitvaartOndernemer: "",
-    uitvaartOndernemerTelefoon: "",
-    uitvaartOndernemerEmail: "",
-    uitvaartOndernemerAdres: "",
-    uitvaartOndernemerPostcode: "",
-    uitvaartOndernemerPlaats: "",
+    uitvaartOndernemerContactId: null,
     heeftUitvaartVerzekering: false,
     uitvaartVerzekeringDetails: "",
     ceremonieSoort: "",
@@ -76,8 +43,11 @@ export default function UitvaartWizardPage() {
     budgetRichting: "",
   });
 
+  // Selected uitvaart ondernemer contact ID
+  const [selectedUitvaartOndernemerContactId, setSelectedUitvaartOndernemerContactId] = useState<string | null>(null);
+
   // Load existing data with React Query
-  const { data: existingData, isLoading: loading } = useDomainQuery<UitvaartData | null>("uitvaart");
+  const { data: existingData, isLoading: loading } = useDomainQuery<UitvaartWensen | null>("uitvaart");
   const invalidateStatus = useInvalidateStatusKeys();
   const [confirmCompleteOpen, setConfirmCompleteOpen] = useState(false);
 
@@ -88,12 +58,7 @@ export default function UitvaartWizardPage() {
       setForm({
         voorkeurType: existingData.voorkeurType ?? "",
         begraafplaats: existingData.begraafplaats ?? "",
-        uitvaartOndernemer: existingData.uitvaartOndernemer ?? "",
-        uitvaartOndernemerTelefoon: existingData.uitvaartOndernemerTelefoon ?? "",
-        uitvaartOndernemerEmail: existingData.uitvaartOndernemerEmail ?? "",
-        uitvaartOndernemerAdres: existingData.uitvaartOndernemerAdres ?? "",
-        uitvaartOndernemerPostcode: existingData.uitvaartOndernemerPostcode ?? "",
-        uitvaartOndernemerPlaats: existingData.uitvaartOndernemerPlaats ?? "",
+        uitvaartOndernemerContactId: existingData.uitvaartOndernemerContactId ?? null,
         heeftUitvaartVerzekering: existingData.heeftUitvaartVerzekering ?? false,
         uitvaartVerzekeringDetails: existingData.uitvaartVerzekeringDetails ?? "",
         ceremonieSoort: existingData.ceremonieSoort ?? "",
@@ -114,10 +79,14 @@ export default function UitvaartWizardPage() {
         voorkeurAulaAdres: existingData.voorkeurAulaAdres ?? "",
         budgetRichting: existingData.budgetRichting ?? "",
       });
+      // Set selected contact ID
+      if (existingData.uitvaartOndernemerContactId) {
+        setSelectedUitvaartOndernemerContactId(existingData.uitvaartOndernemerContactId);
+      }
     }
   }, [existingData]);
 
-  const update = (field: string, value: string) =>
+  const update = (field: string, value: any) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const stappen: WizardStep[] = [
@@ -150,55 +119,16 @@ export default function UitvaartWizardPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>{t("type.ondernemerLabel")}</Label>
-            <Input
-              value={form.uitvaartOndernemer}
-              onChange={(e) => update("uitvaartOndernemer", e.target.value)}
-              placeholder={t("type.ondernemerPlaceholder")}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-2">
-              <Label>{t("type.telefoonLabel")}</Label>
-              <Input
-                value={form.uitvaartOndernemerTelefoon}
-                onChange={(e) => update("uitvaartOndernemerTelefoon", e.target.value)}
-                placeholder={t("type.telefoonPlaceholder")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t("type.emailLabel")}</Label>
-              <Input
-                value={form.uitvaartOndernemerEmail}
-                onChange={(e) => update("uitvaartOndernemerEmail", e.target.value)}
-                placeholder={t("type.emailPlaceholder")}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="space-y-2 col-span-2">
-              <Label>{t("type.adresLabel")}</Label>
-              <Input
-                value={form.uitvaartOndernemerAdres}
-                onChange={(e) => update("uitvaartOndernemerAdres", e.target.value)}
-                placeholder={t("type.adresPlaceholder")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t("type.postcodeLabel")}</Label>
-              <Input
-                value={form.uitvaartOndernemerPostcode}
-                onChange={(e) => update("uitvaartOndernemerPostcode", e.target.value)}
-                placeholder={t("type.postcodePlaceholder")}
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label>{t("type.plaatsLabel")}</Label>
-            <Input
-              value={form.uitvaartOndernemerPlaats}
-              onChange={(e) => update("uitvaartOndernemerPlaats", e.target.value)}
-              placeholder={t("type.plaatsPlaceholder")}
+            <ContactSelector
+              label={t("type.ondernemerLabel") || "Uitvaartondernemer"}
+              contactType={2}
+              selectedContactId={selectedUitvaartOndernemerContactId}
+              onSelect={(contactId) => {
+                setSelectedUitvaartOndernemerContactId(contactId);
+                setForm((prev) => ({ ...prev, uitvaartOndernemerContactId: contactId }));
+              }}
+              required={false}
+              showCreateNew={false}
             />
           </div>
           <div className="space-y-2">
@@ -432,22 +362,8 @@ export default function UitvaartWizardPage() {
             </div>
             <div>
               <span className="font-medium">{t("samenvatting.summaryOndernemer")}</span>{" "}
-              {form.uitvaartOndernemer || "—"}
+              {form.uitvaartOndernemerContactId ? "✓ " + t("common.selected") : "—"}
             </div>
-            {(form.uitvaartOndernemerTelefoon || form.uitvaartOndernemerEmail) && (
-              <div>
-                {form.uitvaartOndernemerTelefoon && <span className="mr-4">{t("samenvatting.summaryTel")} {form.uitvaartOndernemerTelefoon}</span>}
-                {form.uitvaartOndernemerEmail && <span>{t("samenvatting.summaryEmail")} {form.uitvaartOndernemerEmail}</span>}
-              </div>
-            )}
-            {form.uitvaartOndernemerAdres && (
-              <div>
-                <span className="font-medium">{t("samenvatting.summaryAdres")}</span>{" "}
-                {form.uitvaartOndernemerAdres}
-                {form.uitvaartOndernemerPostcode && `, ${form.uitvaartOndernemerPostcode}`}
-                {form.uitvaartOndernemerPlaats && ` ${form.uitvaartOndernemerPlaats}`}
-              </div>
-            )}
             {form.ceremonieSoort && (
               <div>
                 <span className="font-medium">{t("samenvatting.summaryCeremonie")}</span>{" "}
@@ -513,15 +429,10 @@ export default function UitvaartWizardPage() {
 
   const executeComplete = async () => {
     await api.put("/api/uitvaart", {
-      ...form,
-      heeftUitvaartVerzekering: form.heeftUitvaartVerzekering,
+      voorkeurType: form.voorkeurType || null,
       begraafplaats: form.begraafplaats || null,
-      uitvaartOndernemer: form.uitvaartOndernemer || null,
-      uitvaartOndernemerTelefoon: form.uitvaartOndernemerTelefoon || null,
-      uitvaartOndernemerEmail: form.uitvaartOndernemerEmail || null,
-      uitvaartOndernemerAdres: form.uitvaartOndernemerAdres || null,
-      uitvaartOndernemerPostcode: form.uitvaartOndernemerPostcode || null,
-      uitvaartOndernemerPlaats: form.uitvaartOndernemerPlaats || null,
+      uitvaartOndernemerContactId: form.uitvaartOndernemerContactId || null,
+      heeftUitvaartVerzekering: form.heeftUitvaartVerzekering,
       uitvaartVerzekeringDetails: form.uitvaartVerzekeringDetails || null,
       ceremonieSoort: form.ceremonieSoort || null,
       ceremonieLocatie: form.ceremonieLocatie || null,

@@ -86,8 +86,8 @@ public class ErfgenaamGenerator : IPdfPageGenerator
                         PdfComponents.Row(t, L["Label_Telefoon"].Value, eigenaar.Telefoon);
                     if (!string.IsNullOrWhiteSpace(eigenaar.Email))
                         PdfComponents.Row(t, L["Label_EMail"].Value, eigenaar.Email);
-                    if (!string.IsNullOrWhiteSpace(eigenaar.Notaris))
-                        PdfComponents.Row(t, L["Label_Notaris"].Value, $"{eigenaar.Notaris} ({eigenaar.NotarisKantoor})");
+                    if (!string.IsNullOrWhiteSpace(eigenaar.NotarisContact?.Naam))
+                        PdfComponents.Row(t, L["Label_Notaris"].Value, $"{eigenaar.NotarisContact?.Naam} ({eigenaar.NotarisContact?.BedrijfsNaam})");
                 });
 
                 // Testament positie

@@ -17,13 +17,7 @@ export interface LegitimairePortieCheck {
 export interface TestamentInfo {
   id: string;
   testamentType?: string;
-  notarisNaam?: string;
-  notarisKantoor?: string;
-  notarisTelefoon?: string;
-  notarisEmail?: string;
-  notarisAdres?: string;
-  notarisPostcode?: string;
-  notarisPlaats?: string;
+  notarisContactId?: string | null;
   datumTestament?: string;
   testamentLocatie?: string;
   ctr_Nummer?: string;
@@ -114,13 +108,7 @@ export interface BegunstigdeFormData {
 
 export interface TestamentEditFormData {
   testamentType: string;
-  notarisNaam: string;
-  notarisKantoor: string;
-  notarisTelefoon: string;
-  notarisEmail: string;
-  notarisAdres: string;
-  notarisPostcode: string;
-  notarisPlaats: string;
+  notarisContactId: string | null;
   datumTestament: string;
   testamentLocatie: string;
   ctr_Nummer: string;

@@ -65,7 +65,7 @@ public class TestamentController : ControllerBase
 
         // Capture previous values to detect critical changes
         string? vorigeType = item?.TestamentType;
-        string? vorigeNotaris = item?.NotarisNaam;
+        string? vorigeNotaris = item?.NotarisContact?.Naam;
 
         if (isNieuw)
         {
@@ -85,7 +85,7 @@ public class TestamentController : ControllerBase
         if (!isNieuw)
         {
             bool typeGewijzigd = !string.Equals(vorigeType, item.TestamentType, StringComparison.OrdinalIgnoreCase);
-            bool notarisGewijzigd = !string.Equals(vorigeNotaris, item.NotarisNaam, StringComparison.OrdinalIgnoreCase);
+            bool notarisGewijzigd = !string.Equals(vorigeNotaris, item.NotarisContact?.Naam, StringComparison.OrdinalIgnoreCase);
 
             if (typeGewijzigd || notarisGewijzigd)
             {
@@ -100,7 +100,7 @@ public class TestamentController : ControllerBase
 
                 var veranderingen = new List<string>();
                 if (typeGewijzigd) veranderingen.Add($"Testament type gewijzigd van '{vorigeType}' naar '{item.TestamentType}'");
-                if (notarisGewijzigd) veranderingen.Add($"Notaris gewijzigd van '{vorigeNotaris}' naar '{item.NotarisNaam}'");
+                if (notarisGewijzigd) veranderingen.Add($"Notaris gewijzigd van '{vorigeNotaris}' naar '{item.NotarisContact?.Naam}'");
 
                 var autoSnapshot = new TestamentSnapshot
                 {

@@ -51,7 +51,7 @@
     "high": [
       {
         "id": "BUG-TRANSLATIONS-001",
-        "description": "Translation keys missing from runtime split message files (messages/nl|en/*.json) — prior edits went to unused monolithic messages/nl.json",
+        "description": "Translation keys missing from runtime split message files (messages/nl|en/*.json split files: shared.json, ui.json, auth.json, dashboard.json, domain-specific) — prior edits went to monolithic messages/nl.json which was deleted (DEC-119)",
         "story": "SP-1-013 follow-up",
         "fix_commit": "7d89c10"
       },

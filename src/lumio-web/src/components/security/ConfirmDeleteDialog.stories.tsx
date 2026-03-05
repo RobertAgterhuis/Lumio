@@ -3,7 +3,7 @@ import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 
 const meta: Meta<typeof ConfirmDeleteDialog> = {
   title: "Security/ConfirmDeleteDialog",
@@ -19,7 +19,7 @@ const meta: Meta<typeof ConfirmDeleteDialog> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <Story />
       </NextIntlClientProvider>
     ),

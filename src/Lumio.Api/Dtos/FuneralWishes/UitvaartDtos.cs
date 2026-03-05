@@ -3,6 +3,7 @@ namespace Lumio.Api.Dtos.FuneralWishes;
 public record UitvaartWensenResponse(
     Guid Id,
     Guid EigenaarId,
+    Guid? UitvaartOndernemerContactId,
     string VoorkeurType,
     string? Begraafplaats,
     string? UitvaartOndernemer,
@@ -35,6 +36,7 @@ public record UitvaartWensenResponse(
     DateTime GewijzigdOp);
 
 public record UitvaartWensenUpsertRequest(
+    Guid? UitvaartOndernemerContactId,
     string VoorkeurType,
     string? Begraafplaats,
     string? UitvaartOndernemer,

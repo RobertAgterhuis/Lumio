@@ -8,7 +8,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useEffect } from "react";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 import { DossierVolledigBanner } from "./DossierVolledigBanner";
 
 const meta: Meta<typeof DossierVolledigBanner> = {
@@ -30,7 +30,7 @@ const meta: Meta<typeof DossierVolledigBanner> = {
   },
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <Story />
       </NextIntlClientProvider>
     ),

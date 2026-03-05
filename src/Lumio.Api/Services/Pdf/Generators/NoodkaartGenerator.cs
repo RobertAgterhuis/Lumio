@@ -80,15 +80,15 @@ public class NoodkaartGenerator : IPdfPageGenerator
                     {
                         PdfComponents.Row(t, L["Label_TypeTestament"].Value, testament.TestamentType ?? "—");
                         PdfComponents.Row(t, L["Label_Bewaarlocatie"].Value, testament.TestamentLocatie ?? "—");
-                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament.NotarisNaam ?? eigenaar?.Notaris ?? "—");
-                        PdfComponents.Row(t, L["Label_Notariskantoor"].Value, testament.NotarisKantoor ?? eigenaar?.NotarisKantoor ?? "—");
+                        PdfComponents.Row(t, L["Label_Notaris"].Value, testament.NotarisContact?.Naam ?? eigenaar?.NotarisContact?.Naam ?? "—");
+                        PdfComponents.Row(t, L["Label_Notariskantoor"].Value, testament.NotarisContact?.BedrijfsNaam ?? eigenaar?.NotarisContact?.BedrijfsNaam ?? "—");
                         if (!string.IsNullOrEmpty(testament.CTR_Nummer))
                             PdfComponents.Row(t, L["Label_CTRNummer"].Value, testament.CTR_Nummer);
                     }
                     else
                     {
-                        PdfComponents.Row(t, L["Label_Notaris"].Value, eigenaar?.Notaris ?? L["Value_NietIngevuld"].Value);
-                        PdfComponents.Row(t, L["Label_Notariskantoor"].Value, eigenaar?.NotarisKantoor ?? L["Value_NietIngevuld"].Value);
+                        PdfComponents.Row(t, L["Label_Notaris"].Value, eigenaar?.NotarisContact?.Naam ?? L["Value_NietIngevuld"].Value);
+                        PdfComponents.Row(t, L["Label_Notariskantoor"].Value, eigenaar?.NotarisContact?.BedrijfsNaam ?? L["Value_NietIngevuld"].Value);
                     }
                 });
 
@@ -98,7 +98,7 @@ public class NoodkaartGenerator : IPdfPageGenerator
                     {
                         PdfComponents.Row(t, L["Label_Voorkeur"].Value, uitvaart.VoorkeurType ?? "—");
                         PdfComponents.Row(t, L["Label_Uitvaartondernemer"].Value,
-                            uitvaart.UitvaartOndernemer ?? L["Value_NietIngevuld"].Value);
+                            uitvaart.UitvaartOndernemerContact?.Naam ?? L["Value_NietIngevuld"].Value);
                     });
 
                 // Verzekeringen

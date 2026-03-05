@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { api } from "@/lib/api-client";
+import { api, ApiError } from "@/lib/api-client";
 import { useDomainQuery, useInvalidateStatusKeys } from "@/hooks";
 import { toast } from "@/stores/toastStore";
 
@@ -118,6 +118,28 @@ export const emptyNoodcontactForm = {
 
 export type NoodcontactForm = typeof emptyNoodcontactForm;
 
+function formatApiError(err: unknown, fallback: string): string {
+  if (err instanceof ApiError && err.errors && Object.keys(err.errors).length > 0) {
+    const fieldLabels: Record<string, string> = {
+      naam: "Naam",
+      relatie: "Relatie",
+      telefoon: "Telefoon (formaat: +31612345678 of 0612345678)",
+      email: "E-mail (formaat: naam@domein.nl)",
+      postcode: "Postcode (formaat: 1234AB)",
+      rol: "Rol",
+    };
+
+    const lines = Object.entries(err.errors).flatMap(([field, messages]) => {
+      const label = fieldLabels[field.toLowerCase()] ?? field;
+      return messages.map((message) => `${label}: ${message}`);
+    });
+
+    return lines.join("\n");
+  }
+
+  return err instanceof Error ? err.message : fallback;
+}
+
 export function useNoodcontacten() {
   const t = useTranslations("noodcontacten");
   const tf = useTranslations("feedback");
@@ -201,7 +223,7 @@ export function useNoodcontacten() {
       refetch();
       invalidateStatus();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("opslaanMislukt"));
+      setError(formatApiError(err, t("opslaanMislukt")));
     } finally {
       setSaving(false);
     }
@@ -214,7 +236,7 @@ export function useNoodcontacten() {
       refetch();
       invalidateStatus();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("verwijderenMislukt"));
+      setError(formatApiError(err, t("verwijderenMislukt")));
     }
   };
 
@@ -228,7 +250,7 @@ export function useNoodcontacten() {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("exportMislukt"));
+      setError(formatApiError(err, t("exportMislukt")));
     }
   };
 
@@ -249,7 +271,7 @@ export function useNoodcontacten() {
         refetch();
         toast.success(t("importResultaat", { toegevoegd: result?.toegevoegd ?? 0, overgeslagen: result?.overgeslagen ?? 0 }));
       } catch (err) {
-        setError(err instanceof Error ? err.message : t("importMislukt"));
+        setError(formatApiError(err, t("importMislukt")));
       }
     };
     input.click();

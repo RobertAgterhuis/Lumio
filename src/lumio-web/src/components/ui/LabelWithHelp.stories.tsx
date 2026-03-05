@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
 import { NextIntlClientProvider } from "next-intl";
-import nlMessages from "../../../messages/nl.json";
+import { storybookMessages } from "@/lib/test-utils/storybook-messages";
 import { LabelWithHelp } from "@/components/ui/LabelWithHelp";
 import { runA11yChecks } from "@/lib/test-utils/storybook-a11y";
 
@@ -39,7 +39,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <NextIntlClientProvider locale="nl" messages={nlMessages}>
+      <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
         <Story />
       </NextIntlClientProvider>
     ),
@@ -120,7 +120,7 @@ export const FormVoorbeeld: Story = {
     children: "BSN",
   },
   render: () => (
-    <NextIntlClientProvider locale="nl" messages={nlMessages}>
+    <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
       <div className="flex flex-col gap-4 w-72">
         {/* Has help text → tooltip rendered */}
         <div className="flex flex-col gap-1">
@@ -158,7 +158,7 @@ export const A11yAudit: Story = {
     children: "BSN",
   },
   render: () => (
-    <NextIntlClientProvider locale="nl" messages={nlMessages}>
+    <NextIntlClientProvider locale="nl" messages={storybookMessages("nl")}>
       <div className="flex flex-col gap-4 w-72">
         <div className="flex flex-col gap-1">
           <LabelWithHelp domain="eigenaar" field="bsn" htmlFor="a11y-bsn">

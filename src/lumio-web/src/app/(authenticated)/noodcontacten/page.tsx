@@ -212,7 +212,7 @@ export default function NoodcontactenPage() {
 
       {error && (
         <div className="rounded-lg border border-danger bg-danger-100 p-3">
-          <p className="text-sm text-danger">{error}</p>
+          <p className="text-sm text-danger whitespace-pre-line">{error}</p>
         </div>
       )}
 

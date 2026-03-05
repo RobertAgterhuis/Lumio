@@ -11,9 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { api, ApiError, getApiUrl } from "@/lib/api-client";
 import { useDomainQuery, domainKeys, useInvalidateStatusKeys } from "@/hooks";
-import { User, Save, Loader2, Camera, Trash2, AlertTriangle, UserPlus, Heart, CreditCard, Scale } from "lucide-react";
+import { User, Save, Loader2, Camera, Trash2, AlertTriangle, Heart, CreditCard, Scale } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { VoorbeeldDialog } from "@/components/VoorbeeldDialog";
+import { ContactSelector } from "@/components/common/ContactSelector";
+import type { SharedContact } from "@/components/common/ContactSelector";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTranslations } from "next-intl";
 import { DomainStatusBanner } from "@/components/domain/DomainStatusBanner";
@@ -38,13 +40,9 @@ interface Eigenaar {
   woonplaats?: string;
   telefoon?: string;
   email?: string;
-  notaris?: string;
-  notarisKantoor?: string;
-  notarisTelefoon?: string;
-  notarisEmail?: string;
-  notarisAdres?: string;
-  notarisPostcode?: string;
-  notarisPlaats?: string;
+  notarisContactId?: string | null;
+  huisartsContactId?: string | null;
+  uitvaartOndernemerContactId?: string | null;
   burgerlijkeStaat?: number;
   huwelijksVoorwaarden?: number;
   datumHuwelijk?: string;
@@ -53,6 +51,14 @@ interface Eigenaar {
   legitimatieDatumAfgifte?: string;
   legitimatieGeldigTot?: string;
   heeftProfielFoto?: boolean;
+}
+
+interface NoodcontactItem {
+  id: string;
+  naam: string;
+  rol: string;
+  telefoon?: string | null;
+  email?: string | null;
 }
 
 const emptyForm = {
@@ -66,13 +72,9 @@ const emptyForm = {
   woonplaats: "",
   telefoon: "",
   email: "",
-  notaris: "",
-  notarisKantoor: "",
-  notarisTelefoon: "",
-  notarisEmail: "",
-  notarisAdres: "",
-  notarisPostcode: "",
-  notarisPlaats: "",
+  notarisContactId: null as string | null,
+  huisartsContactId: null as string | null,
+  uitvaartOndernemerContactId: null as string | null,
   burgerlijkeStaat: "0",
   huwelijksVoorwaarden: "0",
   datumHuwelijk: "",
@@ -99,8 +101,20 @@ export default function EigenaarPage() {
   const [fotoLoaded, setFotoLoaded] = useState(false);
   // S9-07: dirty state — track the form at last save/load
   const originalFormRef = useRef(emptyForm);
-  // S9-06: notaris → noodcontact
-  const [addingNotarisNoodcontact, setAddingNotarisNoodcontact] = useState(false);
+  // Selected notaris contact ID
+  const [selectedNotarisContactId, setSelectedNotarisContactId] = useState<string | null>(null);
+  // S9-06: Selected notaris contact details (from SharedContact)
+  const [selectedNotarisContact, setSelectedNotarisContact] = useState<SharedContact | null>(null);
+
+  // Selected huisarts contact ID
+  const [selectedHuisartsContactId, setSelectedHuisartsContactId] = useState<string | null>(null);
+  // Selected huisarts contact details (from SharedContact)
+  const [selectedHuisartsContact, setSelectedHuisartsContact] = useState<SharedContact | null>(null);
+
+  // Selected uitvaartondernemer contact ID
+  const [selectedUitvaartOndernemerContactId, setSelectedUitvaartOndernemerContactId] = useState<string | null>(null);
+  // Selected uitvaartondernemer contact details (from SharedContact)
+  const [selectedUitvaartOndernemerContact, setSelectedUitvaartOndernemerContact] = useState<SharedContact | null>(null);
 
   // React Query for loading eigenaar data
   const { data: eigenaarData, isLoading: loading } = useDomainQuery<Eigenaar | null>("eigenaar");
@@ -121,13 +135,9 @@ export default function EigenaarPage() {
         woonplaats: eigenaarData.woonplaats ?? "",
         telefoon: eigenaarData.telefoon ?? "",
         email: eigenaarData.email ?? "",
-        notaris: eigenaarData.notaris ?? "",
-        notarisKantoor: eigenaarData.notarisKantoor ?? "",
-        notarisTelefoon: eigenaarData.notarisTelefoon ?? "",
-        notarisEmail: eigenaarData.notarisEmail ?? "",
-        notarisAdres: eigenaarData.notarisAdres ?? "",
-        notarisPostcode: eigenaarData.notarisPostcode ?? "",
-        notarisPlaats: eigenaarData.notarisPlaats ?? "",
+        notarisContactId: eigenaarData.notarisContactId ?? null,
+        huisartsContactId: eigenaarData.huisartsContactId ?? null,
+        uitvaartOndernemerContactId: eigenaarData.uitvaartOndernemerContactId ?? null,
         burgerlijkeStaat: String(eigenaarData.burgerlijkeStaat ?? 0),
         huwelijksVoorwaarden: String(eigenaarData.huwelijksVoorwaarden ?? 0),
         datumHuwelijk: eigenaarData.datumHuwelijk ?? "",
@@ -137,6 +147,10 @@ export default function EigenaarPage() {
         legitimatieGeldigTot: eigenaarData.legitimatieGeldigTot ?? "",
       };
       setForm(loaded);
+      // Set selected contact IDs
+      setSelectedNotarisContactId(eigenaarData.notarisContactId ?? null);
+      setSelectedHuisartsContactId(eigenaarData.huisartsContactId ?? null);
+      setSelectedUitvaartOndernemerContactId(eigenaarData.uitvaartOndernemerContactId ?? null);
       // S9-07: snapshot the loaded form so we can detect dirty state
       originalFormRef.current = loaded;
       if (eigenaarData.heeftProfielFoto) {
@@ -147,6 +161,111 @@ export default function EigenaarPage() {
 
   const update = (field: string, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
+
+  const ensureNoodcontactFromSharedContact = async (
+    selectedContactId: string | null,
+    selectedContact: SharedContact | null,
+    rol: "Notaris" | "Huisarts" | "Uitvaartondernemer"
+  ) => {
+    if (!selectedContactId) return;
+
+    let sourceContact = selectedContact;
+    if (!sourceContact) {
+      try {
+        sourceContact = await api.get<SharedContact>(`/api/v1/shared-contacts/${selectedContactId}`);
+      } catch {
+        return;
+      }
+    }
+
+    if (!sourceContact?.naam?.trim()) return;
+
+    const existing = await api.get<NoodcontactItem[]>("/api/noodcontacten");
+    const duplicate = existing.some((n) =>
+      n.rol.toLowerCase() === rol.toLowerCase() &&
+      n.naam.trim().toLowerCase() === sourceContact.naam.trim().toLowerCase() &&
+      (n.email ?? "").trim().toLowerCase() === (sourceContact.email ?? "").trim().toLowerCase() &&
+      (n.telefoon ?? "").trim() === (sourceContact.telefoon ?? "").trim()
+    );
+
+    if (duplicate) return;
+
+    await api.post("/api/noodcontacten", {
+      naam: sourceContact.naam,
+      relatie: sourceContact.relatie || rol,
+      telefoon: sourceContact.telefoon || null,
+      email: sourceContact.email || null,
+      adres: sourceContact.adres || null,
+      postcode: sourceContact.postcode || null,
+      woonplaats: sourceContact.woonplaats || null,
+      rol,
+      instructies: null,
+      bedrijfsNaam: sourceContact.bedrijfsNaam || null,
+      functie: sourceContact.functie || null,
+      prioriteit: 3,
+      isGedeeld: true,
+    });
+  };
+
+  // S9-06: Auto-save geselecteerde shared contacts op profiel + sync naar noodcontacten
+  useEffect(() => {
+    if ((!selectedNotarisContactId && !selectedHuisartsContactId && !selectedUitvaartOndernemerContactId) || !form.voornaam || !form.achternaam || !form.geboortedatum) {
+      return; // Don't auto-save if no contacts selected or required fields missing
+    }
+
+    const autoSaveContacts = async () => {
+      try {
+        const payload = {
+          voornaam: form.voornaam,
+          achternaam: form.achternaam,
+          tussenvoegsel: form.tussenvoegsel || null,
+          geboortedatum: form.geboortedatum,
+          bsn: form.bsn || null,
+          adres: form.adres || null,
+          postcode: form.postcode || null,
+          woonplaats: form.woonplaats || null,
+          telefoon: form.telefoon || null,
+          email: form.email || null,
+          notarisContactId: selectedNotarisContactId || null,
+          huisartsContactId: selectedHuisartsContactId || null,
+          uitvaartOndernemerContactId: selectedUitvaartOndernemerContactId || null,
+          burgerlijkeStaat: parseInt(form.burgerlijkeStaat),
+          huwelijksVoorwaarden: parseInt(form.huwelijksVoorwaarden),
+          datumHuwelijk: form.datumHuwelijk || null,
+          legitimatieSoort: parseInt(form.legitimatieSoort),
+          legitimatieNummer: form.legitimatieNummer || null,
+          legitimatieDatumAfgifte: form.legitimatieDatumAfgifte || null,
+          legitimatieGeldigTot: form.legitimatieGeldigTot || null,
+        };
+
+        if (exists) {
+          await api.put("/api/eigenaar", payload);
+        } else {
+          await api.post("/api/eigenaar", payload);
+          setExists(true);
+        }
+        invalidateStatus();
+
+        try {
+          await ensureNoodcontactFromSharedContact(selectedNotarisContactId, selectedNotarisContact, "Notaris");
+          await ensureNoodcontactFromSharedContact(selectedHuisartsContactId, selectedHuisartsContact, "Huisarts");
+          await ensureNoodcontactFromSharedContact(selectedUitvaartOndernemerContactId, selectedUitvaartOndernemerContact, "Uitvaartondernemer");
+          // Invalidate caches voor alle domeinen die eigenaar ContactIds gebruiken
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: domainKeys.all("noodcontacten") }),
+            queryClient.invalidateQueries({ queryKey: domainKeys.all("testament") }),
+            queryClient.invalidateQueries({ queryKey: domainKeys.all("uitvaart") }),
+          ]);
+        } catch (err) {
+          console.debug("Auto-sync shared contact naar noodcontacten mislukt (non-critical):", err);
+        }
+      } catch (err) {
+        console.error("Auto-save contacts failed:", err);
+      }
+    };
+
+    autoSaveContacts();
+  }, [selectedNotarisContactId, selectedNotarisContact, selectedHuisartsContactId, selectedHuisartsContact, selectedUitvaartOndernemerContactId, selectedUitvaartOndernemerContact, form.voornaam, form.achternaam, form.geboortedatum, exists, invalidateStatus, queryClient]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -164,13 +283,9 @@ export default function EigenaarPage() {
         woonplaats: form.woonplaats || null,
         telefoon: form.telefoon || null,
         email: form.email || null,
-        notaris: form.notaris || null,
-        notarisKantoor: form.notarisKantoor || null,
-        notarisTelefoon: form.notarisTelefoon || null,
-        notarisEmail: form.notarisEmail || null,
-        notarisAdres: form.notarisAdres || null,
-        notarisPostcode: form.notarisPostcode || null,
-        notarisPlaats: form.notarisPlaats || null,
+        notarisContactId: selectedNotarisContactId || null,
+        huisartsContactId: selectedHuisartsContactId || null,
+        uitvaartOndernemerContactId: selectedUitvaartOndernemerContactId || null,
         burgerlijkeStaat: parseInt(form.burgerlijkeStaat),
         huwelijksVoorwaarden: parseInt(form.huwelijksVoorwaarden),
         datumHuwelijk: form.datumHuwelijk || null,
@@ -205,28 +320,8 @@ export default function EigenaarPage() {
     }
   };
 
-  // S9-06: add notaris as emergency contact
-  const handleVoegNotarisToeAlsNoodcontact = async () => {
-    setAddingNotarisNoodcontact(true);
-    setError(null);
-    try {
-      await api.post("/api/noodcontacten", {
-        naam: form.notaris || form.notarisKantoor,
-        relatie: "Notaris",
-        telefoon: form.notarisTelefoon || null,
-        email: form.notarisEmail || null,
-        adres: form.notarisAdres || null,
-        postcode: form.notarisPostcode || null,
-        woonplaats: form.notarisPlaats || null,
-      });
-      invalidateStatus();
-      toast.success(t("notaris.noodcontactToegevoegd"));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("notaris.noodcontactToevoegenMislukt"));
-    } finally {
-      setAddingNotarisNoodcontact(false);
-    }
-  };
+  // S9-06: add notaris as emergency contact (now auto-handled in useEffect above)
+  // Keeping this function removed as it's superseded by auto-save + auto-add in useEffect
 
   const handleFotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -299,19 +394,19 @@ export default function EigenaarPage() {
           <CardContent className="pt-5">
             <div className="flex items-center gap-6">
               <div className="h-28 w-28 rounded-full bg-muted border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden shrink-0">
-                {/* S9-08: show placeholder until the image has loaded */}
-                {(!fotoUrl || !fotoLoaded) && (
-                  <Camera className="h-10 w-10 text-muted-foreground/50" />
-                )}
+                {!fotoUrl && <Camera className="h-10 w-10 text-muted-foreground/50" />}
                 {fotoUrl && (
                   <Image
                     src={fotoUrl}
                     alt={t("foto.alt")}
                     width={112}
                     height={112}
-                    className={cn("h-full w-full object-cover", !fotoLoaded && "hidden")}
+                    className="h-full w-full object-cover"
                     onLoad={() => setFotoLoaded(true)}
-                    onError={() => setFotoLoaded(false)}
+                    onError={() => {
+                      setFotoLoaded(false);
+                      setFotoUrl(null);
+                    }}
                   />
                 )}
               </div>
@@ -587,85 +682,73 @@ export default function EigenaarPage() {
             </div>
           </div>
         <CardContent className="pt-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{t("notaris.naam")}</Label>
-              <Input
-                value={form.notaris}
-                onChange={(e) => update("notaris", e.target.value)}
-                placeholder={t("notaris.naamPlaceholder")}
-              />
+          <ContactSelector
+            label={t("notaris.naam")}
+            contactType={0}
+            selectedContactId={selectedNotarisContactId}
+            onSelect={setSelectedNotarisContactId}
+            onContactDetailsSelect={setSelectedNotarisContact}
+            required={false}
+            showCreateNew={true}
+          />
+          {/* S9-06: Auto-add notaris as emergency contact (no button needed) */}
+          {selectedNotarisContactId && (
+            <div className="pt-2 border-t mt-4 text-xs text-muted-foreground">
+              ✓ {t("notaris.automatischToegevoegdAlsNoodcontact")}
             </div>
-            <div className="space-y-2">
-              <Label>{t("notaris.kantoor")}</Label>
-              <Input
-                value={form.notarisKantoor}
-                onChange={(e) => update("notarisKantoor", e.target.value)}
-                placeholder={t("notaris.kantoorPlaceholder")}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{t("notaris.telefoon")}</Label>
-              <Input
-                value={form.notarisTelefoon}
-                onChange={(e) => update("notarisTelefoon", e.target.value)}
-                placeholder={t("notaris.telefoonPlaceholder")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t("notaris.email")}</Label>
-              <Input
-                type="email"
-                value={form.notarisEmail}
-                onChange={(e) => update("notarisEmail", e.target.value)}
-                placeholder={t("notaris.emailPlaceholder")}
-              />
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden">
+          <div className="bg-info-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <LumioIcon name="noodcontacten" className="h-5 w-5 text-info shrink-0" />
+            <div>
+              <h2 className="text-sm font-semibold text-info leading-tight">{t("huisarts.titel")}</h2>
+              <p className="text-xs text-info/70 leading-tight mt-0.5">{t("huisarts.beschrijving")}</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2 md:col-span-2">
-              <Label>{t("notaris.adres")}</Label>
-              <Input
-                value={form.notarisAdres}
-                onChange={(e) => update("notarisAdres", e.target.value)}
-                placeholder={t("notaris.adresPlaceholder")}
-              />
+        <CardContent className="pt-5">
+          <ContactSelector
+            label={t("huisarts.naam")}
+            contactType={1}
+            selectedContactId={selectedHuisartsContactId}
+            onSelect={setSelectedHuisartsContactId}
+            onContactDetailsSelect={setSelectedHuisartsContact}
+            required={false}
+            showCreateNew={true}
+          />
+          {/* S9-06: Auto-add huisarts as emergency contact */}
+          {selectedHuisartsContactId && (
+            <div className="pt-2 border-t mt-4 text-xs text-muted-foreground">
+              ✓ {t("huisarts.automatischToegevoegdAlsNoodcontact")}
             </div>
-            <div className="space-y-2">
-              <Label>{t("notaris.postcode")}</Label>
-              <Input
-                value={form.notarisPostcode}
-                onChange={(e) => update("notarisPostcode", e.target.value)}
-                placeholder={t("notaris.postcodePlaceholder")}
-              />
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden">
+          <div className="bg-warning-100 px-4 py-3 flex items-center gap-3 border-b border-black/5 dark:border-white/10">
+            <LumioIcon name="uitvaart" className="h-5 w-5 text-warning shrink-0" />
+            <div>
+              <h2 className="text-sm font-semibold text-warning leading-tight">{t("uitvaartondernemer.titel")}</h2>
+              <p className="text-xs text-warning/70 leading-tight mt-0.5">{t("uitvaartondernemer.beschrijving")}</p>
             </div>
           </div>
-          <div className="space-y-2">
-            <Label>{t("notaris.plaats")}</Label>
-            <Input
-              value={form.notarisPlaats}
-              onChange={(e) => update("notarisPlaats", e.target.value)}
-              placeholder={t("notaris.plaats")}
-            />
-          </div>
-          {/* S9-06: Add notary as emergency contact */}
-          {(form.notaris || form.notarisKantoor) && (
-            <div className="flex justify-end pt-2 border-t mt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleVoegNotarisToeAlsNoodcontact}
-                disabled={addingNotarisNoodcontact}
-              >
-                {addingNotarisNoodcontact ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <UserPlus className="h-4 w-4 mr-2" />
-                )}
-                {t("notaris.voegToeAlsNoodcontact")}
-              </Button>
+        <CardContent className="pt-5">
+          <ContactSelector
+            label={t("uitvaartondernemer.naam")}
+            contactType={2}
+            selectedContactId={selectedUitvaartOndernemerContactId}
+            onSelect={setSelectedUitvaartOndernemerContactId}
+            onContactDetailsSelect={setSelectedUitvaartOndernemerContact}
+            required={false}
+            showCreateNew={true}
+          />
+          {/* Auto-add uitvaartondernemer info feedback */}
+          {selectedUitvaartOndernemerContactId && (
+            <div className="pt-2 border-t mt-4 text-xs text-muted-foreground">
+              ✓ {t("uitvaartondernemer.geselecteerd")}
             </div>
           )}
         </CardContent>

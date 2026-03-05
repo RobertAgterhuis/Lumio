@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ContactSelector } from "@/components/common/ContactSelector";
 import { useTranslations } from "next-intl";
 import type { TestamentEditFormData } from "./types";
 
@@ -16,6 +17,7 @@ interface TestamentEditDialogProps {
   onFormChange: (form: TestamentEditFormData) => void;
   onSave: () => void;
   error: string | null;
+  onNotarisSelect?: (contactId: string | null) => void;
 }
 
 export function TestamentEditDialog({
@@ -24,7 +26,8 @@ export function TestamentEditDialog({
   form,
   onFormChange,
   onSave,
-  error
+  error,
+  onNotarisSelect
 }: TestamentEditDialogProps) {
   const t = useTranslations("testament");
 
@@ -57,64 +60,26 @@ export function TestamentEditDialog({
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-2">
-            <Label>{t("testEditDialog.notaris")}</Label>
-            <Input
-              value={form.notarisNaam}
-              onChange={(e) => onFormChange({ ...form, notarisNaam: e.target.value })}
-              placeholder={t("testEditDialog.notarisPlaceholder")}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>{t("testEditDialog.kantoor")}</Label>
-            <Input
-              value={form.notarisKantoor}
-              onChange={(e) => onFormChange({ ...form, notarisKantoor: e.target.value })}
-              placeholder={t("testEditDialog.kantoorPlaceholder")}
-            />
-          </div>
+        <ContactSelector
+          label={t("testEditDialog.notaris")}
+          contactType={0}
+          selectedContactId={form.notarisContactId}
+          onSelect={(contactId) => {
+            onFormChange({ ...form, notarisContactId: contactId });
+            onNotarisSelect?.(contactId);
+          }}
+          required={false}
+          showCreateNew={true}
+        />
+        <div className="space-y-2">
+          <Label>{t("testEditDialog.locatie")}</Label>
+          <Input
+            value={form.testamentLocatie}
+            onChange={(e) => onFormChange({ ...form, testamentLocatie: e.target.value })}
+            placeholder={t("testEditDialog.locatiePlaceholder")}
+          />
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-2">
-            <Label>{t("testEditDialog.telefoon")}</Label>
-            <Input
-              value={form.notarisTelefoon}
-              onChange={(e) => onFormChange({ ...form, notarisTelefoon: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>{t("testEditDialog.email")}</Label>
-            <Input
-              value={form.notarisEmail}
-              onChange={(e) => onFormChange({ ...form, notarisEmail: e.target.value })}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <div className="space-y-2 col-span-2">
-            <Label>{t("testEditDialog.adres")}</Label>
-            <Input
-              value={form.notarisAdres}
-              onChange={(e) => onFormChange({ ...form, notarisAdres: e.target.value })}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>{t("testEditDialog.postcode")}</Label>
-            <Input
-              value={form.notarisPostcode}
-              onChange={(e) => onFormChange({ ...form, notarisPostcode: e.target.value })}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-2">
-            <Label>{t("testEditDialog.plaats")}</Label>
-            <Input
-              value={form.notarisPlaats}
-              onChange={(e) => onFormChange({ ...form, notarisPlaats: e.target.value })}
-            />
-          </div>
           <div className="space-y-2">
             <Label>{t("testEditDialog.ctrNummer")}</Label>
             <Input
@@ -123,14 +88,6 @@ export function TestamentEditDialog({
               placeholder={t("testEditDialog.ctrPlaceholder")}
             />
           </div>
-        </div>
-        <div className="space-y-2">
-          <Label>{t("testEditDialog.locatie")}</Label>
-          <Input
-            value={form.testamentLocatie}
-            onChange={(e) => onFormChange({ ...form, testamentLocatie: e.target.value })}
-            placeholder={t("testEditDialog.locatiePlaceholder")}
-          />
         </div>
         <Checkbox
           id="uitsluitingsclausule"
