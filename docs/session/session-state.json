@@ -3,9 +3,9 @@
   "cycle_type": "FULL_AUDIT",
   "audit_scope": ["BUSINESS", "TECH", "UX", "MARKETING"],
   "feature_name": null,
-  "status": "SPRINT_ACTIVE",
-  "current_phase": "SPRINT_UX4_IMPL_DONE__SP_UT01_PLANNED",
-  "current_agent": "20-implementation-agent",
+  "status": "REEVALUATION_COMPLETE",
+  "current_phase": "REEVALUATE_ALL_DONE__SPRINT_PLANNING_READY",
+  "current_agent": "23-reevaluate-agent",
   "github_project_name": "Lumio Board",
   "canva_api_token": "",
   "completed_phases": ["PHASE-1", "PHASE-2", "PHASE-3", "PHASE-4"],
@@ -50,9 +50,9 @@
   "phase4_validation_path": "BusinessDocs/Phase4-Marketing/phase4-critic-risk-validation.md",
   "synthesis_path": "docs/synthesis/final-report-master.md",
   "sprint_backlog_path": "docs/synthesis/final-report-master.md",
-  "active_sprint": "UI-PREMIUM-POLISH",
-  "sprint_goal": "UI premium polish + i18n audit + theme fix — alle visuele en vertalings-issues oplossen vóór UAT",
-  "sprint_branch": "feature/UI-premium-polish",
+  "active_sprint": null,
+  "sprint_goal": null,
+  "sprint_branch": null,
   "previous_sprint": "SP-UX-04",
   "sp_ux04_status": "IMPLEMENTATION_DONE — user-test items moved to SP-UT-01",
   "next_planned_sprints": [
@@ -90,9 +90,9 @@
     "SP-1-017": 152
   },
   "last_updated": "2026-03-04T12:00:00Z",
-  "reevaluation_version": "v3",
-  "last_reevaluation": "2026-03-04T11:00:00Z",
-  "reevaluation_report_path": "docs/synthesis/reevaluation-report-v3-20260303.md",
+  "reevaluation_version": "v4",
+  "last_reevaluation": "2026-03-04T00:00:00Z",
+  "reevaluation_report_path": "docs/synthesis/reevaluation-report-v4-20260304.md",
   "security_handoff_status": "UP_TO_DATE",
   "security_handoff_note": "docs/security/security-handoff-context.md created and up to date. BUG-SHAMIR-001 documented, AllowedPrefixes whitelist rationale explained, REC-SEC-005 regression test reference added. Resolved 2026-03-03.",
   "open_human_escalations": [],
@@ -197,7 +197,7 @@
   "sys_risk_002_status": "ACCEPTED_RISK (see DEC-112)",
   "sp_04_005_status": "CANCELLED_SUPERSEDED (see DEC-111)",
   "sp_mkt_01_status": "MERGED_SQUASH — commit d1a8c2f on main",
-  "ui_premium_polish_status": "COMPLETE — squash merged to main via PR. 13 commits total: 5 UI polish rounds, settings rewrite, i18n audit, namespace loading, theme default, session/decisions updates, testament layout restructure, 7-page header cleanup, noodcontacten header cleanup.",
+  "ui_premium_polish_status": "COMPLETE — squash merged to main via PR #154 (`8665f61`). 14 commits total on feature branch: 5 UI polish rounds, settings rewrite, i18n audit, namespace loading, theme default, session/decisions updates, testament layout restructure, 7-page header cleanup, noodcontacten header cleanup.",
   "ui_premium_polish_commits": [
     { "hash": "17bb028", "desc": "UI polish round 1 — premium visual polish (cards, buttons, dashboard hero, animations)" },
     { "hash": "29ba112", "desc": "UI polish round 2 — 21 improvements" },
@@ -211,7 +211,8 @@
     { "hash": "e4ca160", "desc": "docs: update session-state + decisions (DEC-115/116/117)" },
     { "hash": "90cf49b", "desc": "Testament layout restructure — collapsible JuridischeCheck, 3-column entity grid" },
     { "hash": "b47b5b6", "desc": "Clean header layout across 7 domain pages" },
-    { "hash": "88bf719", "desc": "Clean header layout noodcontacten page" }
+    { "hash": "88bf719", "desc": "Clean header layout noodcontacten page" },
+    { "hash": "3c05831", "desc": "docs: update session-state + decisions — DEC-118 (layout pattern)" }
   ],
   "decisions_added_this_session": ["DEC-115", "DEC-116", "DEC-117", "DEC-118"]
 }
