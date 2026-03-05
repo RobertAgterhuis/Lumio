@@ -114,5 +114,35 @@
     "euthanasieVelden": 5,
     "donorVelden": 1,
     "uitvaartVelden": 7
+  },
+  "voertuig": {
+    "depreciatieTabel": [
+      {
+        "jarenMeeRekenen": 1,
+        "restwaardeFractie": 0.75,
+        "beschrijving": "Voertuig ouder dan 1 jaar (75% van geschatte waarde)"
+      },
+      {
+        "jarenMeeRekenen": 3,
+        "restwaardeFractie": 0.55,
+        "beschrijving": "Voertuig ouder dan 3 jaar (55% van geschatte waarde)"
+      },
+      {
+        "jarenMeeRekenen": 5,
+        "restwaardeFractie": 0.40,
+        "beschrijving": "Voertuig ouder dan 5 jaar (40% van geschatte waarde)"
+      },
+      {
+        "jarenMeeRekenen": 8,
+        "restwaardeFractie": 0.25,
+        "beschrijving": "Voertuig ouder dan 8 jaar (25% van geschatte waarde)"
+      },
+      {
+        "jarenMeeRekenen": 12,
+        "restwaardeFractie": 0.10,
+        "beschrijving": "Voertuig ouder dan 12 jaar (10% van geschatte waarde)"
+      }
+    ],
+    "disclaimer": "Restwaarde berekening is indicatief op basis van marktconforme depreciatiestandaarden. Werkelijke waarde kan afwijken."
   }
 }

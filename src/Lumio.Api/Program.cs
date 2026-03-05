@@ -8,6 +8,7 @@ using Serilog.Events;
 using Lumio.Api.Middleware;
 using Lumio.Api.Rules.Configuration;
 using Lumio.Api.Services;
+using Lumio.Api.Services.AssetRegistry;
 using Lumio.Api.Services.Export;
 using Lumio.Api.Services.Pdf;
 using Lumio.Api.Services.Pdf.Data;
@@ -109,6 +110,9 @@ builder.Services.AddScoped<IZipExportService, ZipExportService>();
 builder.Services.AddScoped<INuvExportService, NuvExportService>();
 builder.Services.AddScoped<IHtmlExportService, HtmlExportService>();
 builder.Services.AddScoped<IEncryptedBackupService, EncryptedBackupService>();
+
+// Asset Registry services (scoped — used in Boedel domain for vehicle valuation + calculations)
+builder.Services.AddScoped<IVehicleResidualValueService, VehicleResidualValueService>();
 
 // ── Application Layer: Repository abstractions (SP-12-004) ──
 builder.Services.AddScoped<IEigenaarRepository, EfEigenaarRepository>();

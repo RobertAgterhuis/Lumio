@@ -14,6 +14,8 @@ public record FysiekBezitResponse(
     Guid? BestemdeErfgenaamId, string? BestemdeErfgenaamNaam, VermogensSoort VermogensSoort,
     string? Notities,
     string? KadastraalNummer, string? Kenteken, string? KvKNummer,
+    decimal? RestWaarde,
+    Guid? KentekenBewijsDocumentGroepId,
     List<BezitSchuldSummary> LinkedSchulden);
 
 public record FysiekBezitUpsertRequest(
@@ -21,7 +23,8 @@ public record FysiekBezitUpsertRequest(
     decimal? GeschatteWaarde, string? Locatie,
     Guid? BestemdeErfgenaamId, VermogensSoort VermogensSoort,
     string? Notities,
-    string? KadastraalNummer, string? Kenteken, string? KvKNummer);
+    string? KadastraalNummer, string? Kenteken, string? KvKNummer,
+    Guid? KentekenBewijsDocumentGroepId);
 
 public record BankrekeningResponse(
     Guid Id, string BankNaam, string IBAN,

@@ -19,6 +19,12 @@ public class FysiekBezit : BaseEntity
     public string? Kenteken { get; set; }
     public string? KvKNummer { get; set; }
 
+    // RDW: Voertuig restwaarde (read-only berekend op basis van depreciatietabel)
+    public decimal? RestWaarde { get; set; }
+
+    // Relatie naar kentekenbewijzen via DocumentGroepId
+    public Guid? KentekenBewijsDocumentGroepId { get; set; }
+
     // Gekoppelde schulden / financieringsverplichtingen
     public ICollection<Schuld> LinkedSchulden { get; set; } = new List<Schuld>();
 }

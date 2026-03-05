@@ -114,6 +114,7 @@ public class BoedelController : ControllerBase
             : null,
         f.VermogensSoort,
         f.Notities, f.KadastraalNummer, f.Kenteken, f.KvKNummer,
+        f.RestWaarde, f.KentekenBewijsDocumentGroepId,
         f.LinkedSchulden.Select(s => new BezitSchuldSummary(
             s.Id, s.Schuldeiser, s.Type, s.Bedrag,
             s.MaandelijkseAflossing, s.LeaseMaatschappij,
