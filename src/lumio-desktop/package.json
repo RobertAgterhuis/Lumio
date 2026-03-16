@@ -19,7 +19,7 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@types/node": "^25.3.3",
+    "@types/node": "^25.5.0",
     "electron": "^40.6.1",
     "electron-builder": "^26.0.12",
     "sharp": "^0.34.5",
