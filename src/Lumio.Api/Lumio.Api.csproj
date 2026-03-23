@@ -25,8 +25,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="10.0.3" />
     <PackageReference Include="QuestPDF" Version="2026.2.2" />
     <PackageReference Include="RulesEngine" Version="5.0.6" />
-    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="SecretSharingDotNet" Version="0.14.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />
