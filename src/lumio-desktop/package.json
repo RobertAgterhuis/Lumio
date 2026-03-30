@@ -23,7 +23,7 @@
     "electron": "^40.6.1",
     "electron-builder": "^26.0.12",
     "sharp": "^0.34.5",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "vitest": "^3.2.4"
   },
   "dependencies": {
