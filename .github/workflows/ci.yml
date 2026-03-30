@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run TruffleHog — only verified secrets (pinned v3.93.6)
-        uses: trufflesecurity/trufflehog@v3.93.6
+        uses: trufflesecurity/trufflehog@v3.94.1
         with:
           path: ./
           base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
